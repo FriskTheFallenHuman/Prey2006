@@ -403,6 +403,7 @@ try_again:
 		context = SDL_GL_CreateContext(window);
 
 		GLimp_SetSwapInterval( r_swapInterval.GetInteger() );
+		r_swapInterval.ClearModified();
 
 		SDL_GetWindowSize(window, &glConfig.vidWidth, &glConfig.vidHeight);
 
@@ -416,6 +417,8 @@ try_again:
 
 		if (SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, r_swapInterval.GetInteger()) < 0)
 			common->Warning("SDL_GL_SWAP_CONTROL not supported");
+
+		r_swapInterval.ClearModified();
 
 		window = SDL_SetVideoMode(parms.width, parms.height, colorbits, flags);
 		if (!window) {
