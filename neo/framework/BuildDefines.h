@@ -71,7 +71,7 @@ If you have questions concerning this license or the applicable additional terms
 //#define ID_DEDICATED
 
 // don't define ID_ALLOW_TOOLS when we don't want tool code in the executable. - DG: defined in cmake now
-#if 0 // defined( _WIN32 ) && defined(_MFC_VER) && !defined( ID_DEDICATED )
+#if 0
 	#define	ID_ALLOW_TOOLS
 #endif
 
