@@ -189,9 +189,6 @@ if(CMAKE_MAJOR_VERSION LESS 3 OR ( CMAKE_MAJOR_VERSION EQUAL 3 AND CMAKE_MINOR_V
 endif()
 
 # libs
-find_package(ZLIB REQUIRED)
-include_directories(${ZLIB_INCLUDE_DIRS})
-
 find_package(OpenAL REQUIRED)
 include_directories(${OPENAL_INCLUDE_DIR})
 
@@ -578,6 +575,7 @@ set(src_framework
 	framework/async/MsgChannel.cpp
 	framework/async/NetworkSystem.cpp
 	framework/async/ServerScan.cpp
+	framework/miniz/miniz.c
 	framework/minizip/ioapi.c
 	framework/minizip/unzip.cpp
 )
@@ -1171,7 +1169,6 @@ endif()
 		idlib
 		${OPENAL_LIBRARY}
 		${CURL_LIBRARY}
-		${ZLIB_LIBRARY}
 		${SDLx_LIBRARY}
 		${sys_libs}
 	)
@@ -1206,7 +1203,6 @@ endif()
 	target_link_libraries(${DHEWM3BINARY}ded
 		idlib
 		${CURL_LIBRARY}
-		${ZLIB_LIBRARY}
 		${SDLx_LIBRARY}
 		${sys_libs}
 	)
