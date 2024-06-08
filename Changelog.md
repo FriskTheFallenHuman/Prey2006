@@ -4,6 +4,24 @@ dhewm3 Changelog
 Note: Numbers starting with a "#" like #330 refer to the bugreport with that number
       at https://github.com/dhewm/dhewm3/issues/
 
+1.5.4 (WIP)
+------------------------------------------------------------------------
+
+* Replaced dependency on (external) zlib with integrated [miniz](https://github.com/richgel999/miniz)
+* HighDPI/Retina support
+* Allow inverted mouse look (horizontally, vertically or both) with `m_invertLook`
+* VSync can be enabled/disabled on the fly, without restarting the renderer (still with `r_swapInterval`
+  or in the menu, of course; needs SDL2)
+* Allow enabling/disabling [HRTF](https://en.wikipedia.org/wiki/Head-related_transfer_function)
+  with `s_alHRTF`
+* `s_alOutputLimiter`: Configure OpenAL's output-limiter which temporarily reduces the overall
+  volume when too many too loud sounds play at once, to avoid issues like clipping
+* `s_scaleDownAndClamp`: Clamp and reduce volume of all sounds to prevent clipping or temporary
+  downscaling by OpenAL's output limiter
+* If `r_windowResizable` is set, the dhewm3 window (when in windowed mode..) can be freely resized.
+  Needs SDL2; with 2.0.5 and newer it's applied immediately, otherwise when creating the window.
+
+
 1.5.3 (2024-03-29)
 ------------------------------------------------------------------------
 
