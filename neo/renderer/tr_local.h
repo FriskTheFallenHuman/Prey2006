@@ -981,6 +981,8 @@ extern idCVar r_materialOverride;		// override all materials
 
 extern idCVar r_debugRenderToTexture;
 
+extern idCVar r_glDebugContext;
+
 /*
 ====================================================================
 
