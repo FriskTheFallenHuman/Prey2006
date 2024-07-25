@@ -20,7 +20,15 @@ Note: Numbers starting with a "#" like #330 refer to the bugreport with that num
   downscaling by OpenAL's output limiter
 * If `r_windowResizable` is set, the dhewm3 window (when in windowed mode..) can be freely resized.
   Needs SDL2; with 2.0.5 and newer it's applied immediately, otherwise when creating the window.
-
+* If switching between fullscreen and windowed mode or similar changes causes issues (like
+  [here](https://github.com/dhewm/dhewm3/issues/587#issuecomment-2205807989)), you can set
+  `r_vidRestartAlwaysFull 1`, so (again) a full `vid_restart` is done, instead of the partial one
+  which *usually* suffices for just changing the resolution or fullscreen state. If you run into that
+  issue (probably a driver bug), you'll probably also want to set `r_windowResizable 0`, because
+  resizing the window that way also triggered the bug, and in that case no `vid_restart` is done at all
+* Fixed screenshots when using native Wayland (`SDL_VIDEODRIVER=wayland`)
+* If you enter the `map` command in the console, without any arguments, the current map name is printed
+* Support OpenGL debug contexts and messages (`GL_ARB_debug_output`). Can be enabled with `r_glDebugContext 1`. Changing that CVar requires a `vid_restart` (or set it as startup argument)
 
 1.5.3 (2024-03-29)
 ------------------------------------------------------------------------
