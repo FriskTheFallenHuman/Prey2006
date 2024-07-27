@@ -66,7 +66,8 @@ This can be configured with the following CVars:
 - `r_fillWindowAlphaChan` Make sure alpha channel of windows default framebuffer is completely opaque
   at the end of each frame. Needed at least when using Wayland.  
   `1`: do this, `0`: don't do it, `-1`: let dhewm3 decide (default)
-
+- `r_gammaInShader` If set to `1` (the default), gamma and brightness are applied in shaders
+   instead of using hardware gamma. May cause visual glitches with some mods like Sikkmod.
 - `r_useCarmacksReverse` Use Z-Fail ("Carmack's Reverse") when rendering shadows (default `1`)
 - `r_useStencilOpSeparate` Use glStencilOpSeparate() (if available) when rendering shadow (default `1`)
 - `r_scaleMenusTo43` Render full-screen menus in 4:3 by adding black bars on the left/right if necessary (default `1`)
