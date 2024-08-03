@@ -29,9 +29,11 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GAME_MISC_H__
 #define __GAME_MISC_H__
 
-#include "physics/Physics_Parametric.h"
-#include "physics/Force_Field.h"
-#include "physics/Force_Spring.h"
+//HUMANHEAD: aob
+extern const idEventDef EV_Animated_Start;
+extern const idEventDef EV_AnimDone;
+extern const idEventDef EV_StartRagdoll;
+//HUMANHEAD END
 
 /*
 ===============================================================================
@@ -88,7 +90,6 @@ private:
 	int					teleportStage;
 
 	void				Event_TeleportPlayer( idEntity *activator );
-	void				Event_TeleportStage( idEntity *player );
 	void				TeleportPlayer( idPlayer *player );
 };
 
@@ -209,9 +210,14 @@ public:
 
 	virtual void		Think( void );
 
+	// HUMANHEAD mdl:  Added Save/Restore
+	void				Save( idSaveGame *savefile ) const;
+	void				Restore( idRestoreGame *savefile );
+	// HUMANHEAD END
+
 private:
-	idEntity *			ent1;
-	idEntity *			ent2;
+	idEntityPtr< idEntity > ent1; // HUMANHEAD mdl:  Made idEntityPtr
+	idEntityPtr< idEntity > ent2; // HUMANHEAD mdl:  Made idEntityPtr
 	int					id1;
 	int					id2;
 	idVec3				p1;
@@ -241,7 +247,7 @@ public:
 
 	virtual void		Think( void );
 
-private:
+protected:	// HUMANHEAD
 	idForce_Field		forceField;
 
 	void				Toggle( void );
@@ -272,10 +278,11 @@ public:
 
 	void					Spawn( void );
 	virtual bool			LoadAF( void );
+	virtual		// HUMANHEAD
 	bool					StartRagdoll( void );
 	virtual bool			GetPhysicsToSoundTransform( idVec3 &origin, idMat3 &axis );
 
-private:
+protected:	// HUMANHEAD
 	int						num_anims;
 	int						current_anim_index;
 	int						anim;
@@ -286,6 +293,7 @@ private:
 
 	void					PlayNextAnim( void );
 
+	virtual		// HUMANHEAD
 	void					Event_Activate( idEntity *activator );
 	void					Event_Start( void );
 	void					Event_StartRagdoll( void );

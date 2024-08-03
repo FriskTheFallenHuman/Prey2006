@@ -26,16 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/CmdArgs.h"
-#include "framework/async/AsyncNetwork.h"
-#include "framework/Licensee.h"
-#include "framework/UsercmdGen.h"
-#include "renderer/tr_local.h"
-#include "sys/win32/rc/CreateResourceIDs.h"
-#include "sys/sys_local.h"
-
-#include "sys/win32/win_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 #include <errno.h>
 #include <float.h>
@@ -51,7 +43,9 @@ If you have questions concerning this license or the applicable additional terms
 #include <sys/stat.h>
 #endif
 
-#include "tools/edit_public.h"
+#include "../sys_local.h"
+#include "win_local.h"
+#include "../../renderer/tr_local.h"
 
 #include <SDL_main.h>
 
@@ -376,7 +370,7 @@ static int WPath2A(char *dst, size_t size, const WCHAR *src) {
 
 /*
 ==============
-Returns "My Documents"/My Games/dhewm3 directory (or equivalent - "CSIDL_PERSONAL").
+Returns "My Documents"/My Games/prey06 directory (or equivalent - "CSIDL_PERSONAL").
 To be used with Sys_GetPath(PATH_SAVE), so savegames, screenshots etc will be
 saved to the users files instead of systemwide.
 
@@ -398,7 +392,7 @@ extern "C" { // DG: I need this in SDL_win32_main.c
 		if (len == 0)
 			return 0;
 
-		idStr::Append(dst, size, "/My Games/dhewm3");
+		idStr::Append(dst, size, "/My Games/prey06");
 
 		return len;
 	}
@@ -742,16 +736,13 @@ void Sys_Init( void ) {
 	// get WM_TIMER messages pumped every millisecond
 //	SetTimer( NULL, 0, 100, NULL );
 
-#ifdef DEBUG
-	cmdSystem->AddCommand( "createResourceIDs", CreateResourceIDs_f, CMD_FL_TOOL, "assigns resource IDs in _resouce.h files" );
-#endif
 #if 0
 	cmdSystem->AddCommand( "setAsyncSound", Sys_SetAsyncSound_f, CMD_FL_SYSTEM, "set the async sound option" );
 #endif
 	{
 		idStr savepath;
 		Sys_GetPath( PATH_SAVE, savepath );
-		common->Printf( "Logging console output to %s/dhewm3log.txt\n", savepath.c_str() );
+		common->Printf( "Logging console output to %s/qconsolelog.txt\n", savepath.c_str() );
 	}
 
 	//
@@ -1007,7 +998,7 @@ WinMain
 ==================
 */
 int main(int argc, char *argv[]) {
-	// SDL_win32_main.c creates the dhewm3log.txt and redirects stdout into it
+	// SDL_win32_main.c creates the qconsolelog.txt and redirects stdout into it
 	// so here we can log its (approx.) creation time before anything else is logged:
 	{
 		time_t tt = time(NULL);
@@ -1131,10 +1122,6 @@ int main(int argc, char *argv[]) {
 				if ( com_editors & EDITOR_SCRIPT ) {
 					// in-game Script Editor
 					ScriptEditorRun();
-				}
-				if ( com_editors & EDITOR_PDA ) {
-					// in-game PDA Editor
-					PDAEditorRun();
 				}
 			}
 		}

@@ -26,11 +26,15 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "renderer/VertexCache.h"
-#include "renderer/Cinematic.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/tr_local.h"
+#include "tr_local.h"
+
+// 1.0 for standard, unlimited for floats
+// determines how much overbrighting needs
+// to be done post-process
+static const float backEndRendererMaxLight = 999;
 
 /*
 
@@ -535,12 +539,12 @@ void RB_DetermineLightScale( void ) {
 	}
 
 	backEnd.pc.maxLightValue = max;
-	if ( max <= tr.backEndRendererMaxLight ) {
+	if ( max <= backEndRendererMaxLight ) {
 		backEnd.lightScale = r_lightScale.GetFloat();
 		backEnd.overBright = 1.0;
 	} else {
-		backEnd.lightScale = r_lightScale.GetFloat() * tr.backEndRendererMaxLight / max;
-		backEnd.overBright = max / tr.backEndRendererMaxLight;
+		backEnd.lightScale = r_lightScale.GetFloat() * backEndRendererMaxLight / max;
+		backEnd.overBright = max / backEndRendererMaxLight;
 	}
 }
 

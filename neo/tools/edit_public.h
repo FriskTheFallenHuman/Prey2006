@@ -29,9 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __EDIT_PUBLIC_H__
 #define __EDIT_PUBLIC_H__
 
-#include "idlib/math/Vector.h"
-#include "idlib/Dict.h"
-
 /*
 ===============================================================================
 
@@ -75,13 +72,6 @@ void	AFEditorRun( void );
 void	ParticleEditorInit( const idDict *spawnArgs );
 void	ParticleEditorShutdown( void );
 void	ParticleEditorRun( void );
-
-
-// in-game PDA Editor
-void	PDAEditorInit( const idDict *spawnArgs );
-void	PDAEditorShutdown( void );
-void	PDAEditorRun( void );
-
 
 // in-game Script Editor
 void	ScriptEditorInit( const idDict *spawnArgs );

@@ -26,11 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/Session.h"
-#include "renderer/RenderWorld.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "sound/snd_local.h"
+#include "snd_local.h"
+
 
 /*
 ===================
@@ -184,7 +184,7 @@ void idSoundChannel::Clear( void ) {
 		lastV[j] = 0.0f;
 	}
 	memset( &parms, 0, sizeof(parms) );
-
+	parms.subIndex = -1;
 	triggered = false;
 	paused = false;
 	openalSource = 0;
@@ -383,6 +383,7 @@ void idSoundEmitterLocal::Clear( void ) {
 	spatializedOrigin.Zero();
 
 	memset( &parms, 0, sizeof( parms ) );
+	parms.subIndex = -1;
 }
 
 /*
@@ -420,6 +421,26 @@ void idSoundEmitterLocal::OverrideParms( const soundShaderParms_t *base,
 		out->soundClass = over->soundClass;
 	} else {
 		out->soundClass = base->soundClass;
+	}
+	if ( over->subIndex ) {
+		out->subIndex = over->subIndex;
+	} else {
+		out->subIndex = base->subIndex;
+	}
+	if ( over->profanityIndex ) {
+		out->profanityIndex = over->profanityIndex;
+	} else {
+		out->profanityIndex = base->profanityIndex;
+	}
+	if ( over->profanityDelay ) {
+		out->profanityDelay = over->profanityDelay;
+	} else {
+		out->profanityDelay = base->profanityDelay;
+	}
+	if ( over->profanityDuration ) {
+		out->profanityDuration = over->profanityDuration;
+	} else {
+		out->profanityDuration = base->profanityDuration;
 	}
 	out->soundShaderFlags = base->soundShaderFlags | over->soundShaderFlags;
 }
@@ -1139,6 +1160,29 @@ idSoundEmitterLocal::ResetSlowChannel
 void idSoundEmitterLocal::ResetSlowChannel( const idSoundChannel *chan ) {
 	int index = chan - channels;
 	slowChannels[index].Reset();
+}
+
+/*
+===================
+idSoundEmitterLocal::GetSoundParms
+===================
+*/
+soundShaderParms_t* idSoundEmitterLocal::GetSoundParms( idSoundShader *shader, const s_channelType channel ) {
+	idSoundChannel *chan = &channels[ channel ];
+	return &chan->parms; // jmarshall - I think this is right?
+}
+
+/*
+===================
+idSoundEmitterLocal::ModifySound
+===================
+*/
+void idSoundEmitterLocal::ModifySound( idSoundShader *shader, const s_channelType channel, const hhSoundShaderParmsModifier &parmModifier ) {
+	// jmarshall - implement me!
+	idSoundChannel *chan = &channels[channel];
+	if ( chan ) {
+		parmModifier.ModifyParms( chan->parms);
+	}
 }
 
 /*

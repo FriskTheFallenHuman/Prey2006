@@ -37,7 +37,7 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 */
 
-#define idQueue( type, next )		idQueueTemplate<type, (int)&(((type*)NULL)->next)>
+#define idQueue( type, next )		idQueueTemplate<type, (int)(offsetof(type, next))>
 
 template< class type, int nextOffset >
 class idQueueTemplate {

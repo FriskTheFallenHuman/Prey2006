@@ -29,8 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GAME_SOUND_H__
 #define __GAME_SOUND_H__
 
-#include "Entity.h"
-
 /*
 ===============================================================================
 
@@ -58,7 +56,7 @@ public:
 
 	virtual void	ShowEditingDialog( void );
 
-private:
+protected:	//HUMANHEAD: aob - made protected
 	float			lastSoundVol;
 	float			soundVol;
 	float			random;

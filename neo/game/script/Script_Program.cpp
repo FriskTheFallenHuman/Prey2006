@@ -26,27 +26,29 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/hashing/MD4.h"
-#include "framework/FileSystem.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/Event.h"
-#include "gamesys/SysCvar.h"
-#include "script/Script_Compiler.h"
-#include "script/Script_Thread.h"
-#include "Entity.h"
-#include "Game_local.h"
+#include "../Game_local.h"
 
-#include "script/Script_Program.h"
+//#define _HH_GLOBAL_COUNTER //HUMANHEAD rww
+
+#ifdef _HH_GLOBAL_COUNTER //HUMANHEAD rww
+static idFile *globalOutputFile = NULL;
+static int globalOutputUnique = 0;
+static int globalOutputRunningSize = 0;
+#endif //HUMANHEAD END
 
 // simple types.  function types are dynamically allocated
 idTypeDef	type_void( ev_void, &def_void, "void", 0, NULL );
 idTypeDef	type_scriptevent( ev_scriptevent, &def_scriptevent, "scriptevent", sizeof( intptr_t ), NULL );
 idTypeDef	type_namespace( ev_namespace, &def_namespace, "namespace", sizeof( intptr_t ), NULL );
-idTypeDef	type_string( ev_string, &def_string, "string", MAX_STRING_LEN, NULL );
-idTypeDef	type_float( ev_float, &def_float, "float", sizeof( intptr_t ), NULL );
-idTypeDef	type_vector( ev_vector, &def_vector, "vector", E_EVENT_SIZEOF_VEC, NULL );
-idTypeDef	type_entity( ev_entity, &def_entity, "entity", sizeof( intptr_t ), NULL );					// stored as entity number pointer
+//HUMANHEAD: aob - changed types to inherited types
+idTypeDefString	type_string( ev_string, &def_string, "string", MAX_STRING_LEN, NULL );
+idTypeDefFloat	type_float( ev_float, &def_float, "float", sizeof( intptr_t ), NULL );
+idTypeDefVector	type_vector( ev_vector, &def_vector, "vector", E_EVENT_SIZEOF_VEC, NULL );
+idTypeDefEntity	type_entity( ev_entity, &def_entity, "entity", sizeof( intptr_t ), NULL );					// stored as entity number pointer
+//HUMANHEAD END
 idTypeDef	type_field( ev_field, &def_field, "field", sizeof( intptr_t ), NULL );
 idTypeDef	type_function( ev_function, &def_function, "function", sizeof( intptr_t ), &type_void );
 idTypeDef	type_virtualfunction( ev_virtualfunction, &def_virtualfunction, "virtual function", sizeof( intptr_t ), NULL );
@@ -54,7 +56,9 @@ idTypeDef	type_pointer( ev_pointer, &def_pointer, "pointer", sizeof( intptr_t ),
 idTypeDef	type_object( ev_object, &def_object, "object", sizeof( intptr_t ), NULL );					// stored as entity number pointer
 idTypeDef	type_jumpoffset( ev_jumpoffset, &def_jumpoffset, "<jump>", sizeof( intptr_t ), NULL );		// only used for jump opcodes
 idTypeDef	type_argsize( ev_argsize, &def_argsize, "<argsize>", sizeof( intptr_t ), NULL );				// only used for function call and thread opcodes
-idTypeDef	type_boolean( ev_boolean, &def_boolean, "boolean", sizeof( intptr_t ), NULL );
+//HUMANHEAD: aob - changed types to inherited types
+idTypeDefBool	type_boolean( ev_boolean, &def_boolean, "boolean", sizeof( intptr_t ), NULL );
+//HUMANHEAD END
 
 idVarDef	def_void( &type_void );
 idVarDef	def_scriptevent( &type_scriptevent );
@@ -557,6 +561,102 @@ void idTypeDef::AddFunction( const function_t *func ) {
 	}
 	functions.Append( func );
 }
+
+//HUMANHEAD: aob
+idTypeDefString::idTypeDefString( const idTypeDef &other ) : idTypeDef( other ) {}
+idTypeDefString::idTypeDefString( etype_t etype, idVarDef *edef, const char *ename, int esize, idTypeDef *aux ) :
+	idTypeDef( etype, edef, ename, esize, aux ) {}
+
+void idTypeDefString::PushOntoStack( const char* parm, hhThread* thread ) const {
+	thread->PushString( parm );
+}
+
+const char* idTypeDefString::GetReturnValueAsString( idProgram& program ) const {
+	return program.GetReturnedString();
+}
+
+bool idTypeDefString::VerifyData( const char* data ) const {
+	return true;
+}
+
+idTypeDefVector::idTypeDefVector( const idTypeDef &other ) : idTypeDef( other ) {}
+idTypeDefVector::idTypeDefVector( etype_t etype, idVarDef *edef, const char *ename, int esize, idTypeDef *aux ) :
+	idTypeDef( etype, edef, ename, esize, aux ) {}
+
+void idTypeDefVector::PushOntoStack( const char* parm, hhThread* thread ) const {
+	idVec3 vec;
+	sscanf( parm, "%f %f %f", &vec.x, &vec.y, &vec.z );
+	thread->PushVector( vec );
+}
+
+const char* idTypeDefVector::GetReturnValueAsString( idProgram& program ) const {
+	return program.GetReturnedVector().ToString();
+}
+
+bool idTypeDefVector::VerifyData( const char* data ) const {
+	int strLen = idStr::Length( data );
+	return strLen == 5;//FIXME: Need something better
+}
+
+idTypeDefFloat::idTypeDefFloat( const idTypeDef &other ) : idTypeDef( other ) {}
+idTypeDefFloat::idTypeDefFloat( etype_t etype, idVarDef *edef, const char *ename, int esize, idTypeDef *aux ) :
+	idTypeDef( etype, edef, ename, esize, aux ) {}
+
+void idTypeDefFloat::PushOntoStack( const char* parm, hhThread* thread ) const {
+	float f = 0.0f;
+	sscanf( parm, "%.2f", &f );
+	thread->PushFloat( f );
+}
+
+const char* idTypeDefFloat::GetReturnValueAsString( idProgram& program ) const {
+	return va( "%.2f", program.GetReturnedFloat() );
+}
+
+bool idTypeDefFloat::VerifyData( const char* data ) const {
+	if( idStr::IsNumeric(data) ) {
+		return false;
+	}
+
+	return true;
+}
+
+idTypeDefEntity::idTypeDefEntity( const idTypeDef &other ) : idTypeDef( other ) {}
+idTypeDefEntity::idTypeDefEntity( etype_t etype, idVarDef *edef, const char *ename, int esize, idTypeDef *aux ) :
+	idTypeDef( etype, edef, ename, esize, aux ) {}
+
+void idTypeDefEntity::PushOntoStack( const char* parm, hhThread* thread ) const {
+	idEntity* ent = gameLocal.FindEntity( parm );
+	thread->PushEntity( ent );
+}
+
+const char* idTypeDefEntity::GetReturnValueAsString( idProgram& program ) const {
+	return program.GetReturnedString();
+}
+
+bool idTypeDefEntity::VerifyData( const char* data ) const {
+	return gameLocal.FindEntity( data ) != NULL;
+}
+
+idTypeDefBool::idTypeDefBool( const idTypeDef &other ) : idTypeDef( other ) {}
+idTypeDefBool::idTypeDefBool( etype_t etype, idVarDef *edef, const char *ename, int esize, idTypeDef *aux ) :
+	idTypeDef( etype, edef, ename, esize, aux ) {}
+
+void idTypeDefBool::PushOntoStack( const char* parm, hhThread* thread ) const {
+	bool b = false;
+	sscanf( parm, "%d", &b );
+	thread->PushInt( (int)b );
+}
+
+const char* idTypeDefBool::GetReturnValueAsString( idProgram& program ) const {
+	return va( "%d", program.GetReturnedBool() );
+};
+
+bool idTypeDefBool::VerifyData( const char* data ) const {
+	idStr localData( data );
+
+	return !localData.Icmp("1") || !localData.Icmp("0") || !localData.Icmp("true") || !localData.Icmp("false");
+}
+//HUMANHEAD END
 
 /***********************************************************************
 
@@ -1376,10 +1476,20 @@ idVarDef *idProgram::AllocDef( idTypeDef *type, const char *name, idVarDef *scop
 			scope->value.functionPtr->locals += type->Size();
 		}
 	} else {
-		//
-		// global variable
-		//
-		def->value.bytePtr = ReserveMem(def->TypeDef()->Size());
+			//
+			// global variable
+			//
+			def->value.bytePtr = ReserveMem(def->TypeDef()->Size());
+
+#ifdef _HH_GLOBAL_COUNTER //HUMANHEAD rww
+		if (globalOutputFile) {
+			globalOutputFile->Printf("%i. (%ib)		%s\r\n", globalOutputUnique, def->TypeDef()->Size(), def->Name());
+			globalOutputUnique++;
+			globalOutputRunningSize += def->TypeDef()->Size();
+		}
+#endif //HUMANHEAD END
+
+		memset( def->value.bytePtr, 0, def->TypeDef()->Size() );
 	}
 
 	return def;
@@ -1899,6 +2009,14 @@ void idProgram::CompileFile( const char *filename ) {
 		gameLocal.Error( "Couldn't load %s\n", filename );
 	}
 
+#ifdef _HH_GLOBAL_COUNTER //HUMANHEAD rww
+	if (globalOutputFile) {
+		globalOutputFile->Printf("========================\r\nScript %s\r\n========================\r\n", filename);
+		globalOutputUnique = 0;
+		globalOutputRunningSize = 0;
+	}
+#endif //HUMANHEAD END
+
 	result = CompileText( filename, src, false );
 
 	fileSystem->FreeFile( src );
@@ -1910,6 +2028,12 @@ void idProgram::CompileFile( const char *filename ) {
 	if ( !result ) {
 		gameLocal.Error( "Compile failed in file %s.", filename );
 	}
+
+#ifdef _HH_GLOBAL_COUNTER //HUMANHEAD rww
+	if (globalOutputFile) {
+		globalOutputFile->Printf("========================\r\n%s\r\nUnique variables: %i\r\nVariable size: %i\r\n========================\r\n", filename, globalOutputUnique, globalOutputRunningSize);
+	}
+#endif //HUMANHEAD END
 }
 
 /*
@@ -1967,6 +2091,12 @@ void idProgram::Startup( const char *defaultScript ) {
 	// make sure all data is freed up
 	idThread::Restart();
 
+#ifdef _HH_GLOBAL_COUNTER //HUMANHEAD rww
+	globalOutputFile = fileSystem->OpenFileByMode("scriptglobals.txt", FS_WRITE);
+	globalOutputUnique = 0;
+	globalOutputRunningSize = 0;
+#endif //HUMANHEAD END
+
 	// get ready for loading scripts
 	BeginCompilation();
 
@@ -1976,6 +2106,13 @@ void idProgram::Startup( const char *defaultScript ) {
 	}
 
 	FinishCompilation();
+
+#ifdef _HH_GLOBAL_COUNTER //HUMANHEAD rww
+	if (globalOutputFile) {
+		fileSystem->CloseFile(globalOutputFile);
+		globalOutputFile = NULL;
+	}
+#endif //HUMANHEAD END
 }
 
 /*
@@ -2007,7 +2144,7 @@ void idProgram::Save( idSaveGame *savefile ) const {
 		savefile->WriteByte( variables[i] );
 	}
 
-	int checksum = CalculateChecksum(false);
+	int checksum = CalculateChecksum();
 	savefile->WriteInt( checksum );
 }
 
@@ -2041,11 +2178,9 @@ bool idProgram::Restore( idRestoreGame *savefile ) {
 	int saved_checksum, checksum;
 
 	savefile->ReadInt( saved_checksum );
-	bool isOldSavegame = savefile->GetBuildNumber() <= 1304;
-	checksum = CalculateChecksum(isOldSavegame);
+	checksum = CalculateChecksum();
 
 	if ( saved_checksum != checksum ) {
-		gameLocal.Warning( "WARNING: Real Script checksum didn't match the one from the savegame!");
 		result = false;
 	}
 
@@ -2057,7 +2192,7 @@ bool idProgram::Restore( idRestoreGame *savefile ) {
 idProgram::CalculateChecksum
 ================
 */
-int idProgram::CalculateChecksum( bool forOldSavegame ) const {
+int idProgram::CalculateChecksum( void ) const {
 	int i, result;
 
 	typedef struct {
@@ -2072,17 +2207,6 @@ int idProgram::CalculateChecksum( bool forOldSavegame ) const {
 	statementBlock_t	*statementList = new statementBlock_t[ statements.Num() ];
 
 	memset( statementList, 0, ( sizeof(statementBlock_t) * statements.Num() ) );
-
-	// DG hack: get the vardef for the argSize == 0 constant for savegame-compat
-	int constantZeroNum = -1;
-	if ( forOldSavegame ) {
-		for( idVarDef* def = GetDefList( "<IMMEDIATE>" ); def != NULL; def = def->Next() ) {
-			if ( def->Type() == ev_argsize && def->value.argSize == 0 ) {
-				constantZeroNum = def->num;
-				break;
-			}
-		}
-	}
 
 	// Copy info into new list, using the variable numbers instead of a pointer to the variable
 	for( i = 0; i < statements.Num(); i++ ) {
@@ -2099,15 +2223,7 @@ int idProgram::CalculateChecksum( bool forOldSavegame ) const {
 			statementList[i].b = -1;
 		}
 		if ( statements[i].c ) {
-			// DG: old savegames wrongly assumed argSize 0 for some statements.
-			//     So for the checksums to match we need to use the corresponding vardef num here
-			//     See idCompiler::EmitFunctionParms() and ParseFunctionDef() for more details.
-			if ( forOldSavegame && statements[i].op == OP_OBJECTCALL
-			     && statements[i].flags == statement_t::FLAG_OBJECTCALL_IMPL_NOT_PARSED_YET ) {
-				statementList[i].c = constantZeroNum;
-			} else {
-				statementList[i].c = statements[i].c->num;
-			}
+			statementList[i].c = statements[i].c->num;
 		} else {
 			statementList[i].c = -1;
 		}

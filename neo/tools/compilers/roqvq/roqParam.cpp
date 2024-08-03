@@ -25,10 +25,10 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "sys/platform.h"
-
-#include "tools/compilers/roqvq/roqParam.h"
+#include "roqParam.h"
 
 //
 // read a parameter file in (true I bloddy well had to do this again) (and yet again to c++)

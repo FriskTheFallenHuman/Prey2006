@@ -29,12 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SCRIPT_INTERPRETER_H__
 #define __SCRIPT_INTERPRETER_H__
 
-#include "script/Script_Program.h"
-#include "Entity.h"
-#include "Game_local.h"
-
-class idThread;
-
 #define MAX_STACK_DEPTH	64
 #define LOCALSTACK_SIZE 	(6144 * 2)
 
@@ -43,6 +37,8 @@ typedef struct prstack_s {
 	const function_t	*f;
 	int					stackbase;
 } prstack_t;
+
+class hhThread;
 
 class idInterpreter {
 private:
@@ -67,7 +63,9 @@ private:
 	void				PopParms( int numParms );
 	void				PushString( const char *string );
 	void				PushVector( const idVec3 &vector );
+	public://HUMANHEAD: aob - so we can pass parms in manually
 	void				Push( intptr_t value );
+	private://HUMANHEAD: aob - undo the public declaration
 	const char			*FloatToString( float value );
 	void				AppendString( idVarDef *def, const char *from );
 	void				SetString( idVarDef *def, const char *from );
@@ -107,6 +105,9 @@ public:
 	bool				BeginMultiFrameEvent( idEntity *ent, const idEventDef *event );
 	void				EndMultiFrameEvent( idEntity *ent, const idEventDef *event );
 	bool				MultiFrameEventInProgress( void ) const;
+	// HUMANHEAD nla - Needed to check what the current event is
+	bool				RunningEvent( idEntity *ent, const idEventDef *event );
+	// HUMANHEAD END
 
 	void				ThreadCall( idInterpreter *source, const function_t *func, int args );
 	void				EnterFunction( const function_t *func, bool clearStack );
@@ -121,6 +122,7 @@ public:
 	const function_t	*GetCurrentFunction( void ) const;
 	idThread			*GetThread( void ) const;
 
+	friend class hhThread;
 };
 
 /*

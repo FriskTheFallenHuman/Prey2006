@@ -29,13 +29,12 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __WINDOW_H__
 #define __WINDOW_H__
 
-#include "idlib/math/Interpolate.h"
-#include "ui/Rectangle.h"
-#include "ui/DeviceContext.h"
-#include "ui/RegExp.h"
-#include "ui/Winvar.h"
-#include "ui/GuiScript.h"
-#include "ui/SimpleWindow.h"
+#include "Rectangle.h"
+#include "DeviceContext.h"
+#include "RegExp.h"
+#include "Winvar.h"
+#include "GuiScript.h"
+#include "SimpleWindow.h"
 
 const int WIN_CHILD			= 0x00000001;
 const int WIN_CAPTION		= 0x00000002;
@@ -73,9 +72,6 @@ const int SCROLLBAR_SIZE = 16;
 
 const int MAX_WINDOW_NAME = 32;
 const int MAX_LIST_ITEMS = 1024;
-
-const int MAX_EXPRESSION_OPS = 4096;
-const int MAX_EXPRESSION_REGISTERS = 4096;
 
 const char DEFAULT_BACKCOLOR[] = "1 1 1 1";
 const char DEFAULT_FORECOLOR[] = "0 0 0 1";
@@ -187,6 +183,10 @@ public:
 		ON_ACTIONRELEASE,
 		ON_ENTER,
 		ON_ENTERRELEASE,
+		ON_TABACTIVATE,
+		ON_STARTUP,
+		ON_MAXCHARS,
+		ON_SLIDERCHANGE, // sliderDef idSliderWindow
 		SCRIPT_COUNT
 	};
 
@@ -412,6 +412,22 @@ protected:
 	idWinFloat	rotate;
 	idWinStr	text;
 	idWinBackground	backGroundName;			//
+	idWinVec4 margins;
+	idWinVec2 cornerSize;
+	idWinVec2 edgeSize;
+	idWinVec4 hoverMatColor;
+	idWinVec4 focusColor;
+	idWinVec4 activeColor;
+	idWinVec4 seperatorLines;
+	idWinInt seperatorMargin;
+	idWinVec4 hoverBorderColor;
+	idWinInt activeTab;
+	idWinVec4 sepColor;
+	idWinVec2 tabMargins;
+	idWinFloat trailOffset;
+	idWinInt splineIn;
+
+	virtual void SetVisible( bool visible );
 
 	idList<idWinVar*> definedVars;
 	idList<idWinVar*> updateVars;

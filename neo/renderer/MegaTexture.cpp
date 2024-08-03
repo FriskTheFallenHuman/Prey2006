@@ -25,12 +25,10 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "sys/platform.h"
-#include "framework/Session.h"
-#include "renderer/tr_local.h"
-
-#include "renderer/MegaTexture.h"
+#include "tr_local.h"
 
 idCVar idMegaTexture::r_megaTextureLevel( "r_megaTextureLevel", "0", CVAR_RENDERER | CVAR_INTEGER, "draw only a specific level" );
 idCVar idMegaTexture::r_showMegaTexture( "r_showMegaTexture", "0", CVAR_RENDERER | CVAR_BOOL, "display all the level images" );

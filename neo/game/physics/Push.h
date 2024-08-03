@@ -29,13 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __PUSH_H__
 #define __PUSH_H__
 
-#include "cm/CollisionModel.h"
-
-#include "physics/Clip.h"
-#include "GameBase.h"
-
-class idEntity;
-
 /*
 ===============================================================================
 
@@ -49,6 +42,9 @@ class idEntity;
 #define PUSHFL_CLIP					4		// also clip against all non-moveable entities
 #define PUSHFL_CRUSH				8		// kill blocking entities
 #define PUSHFL_APPLYIMPULSE			16		// apply impulse to pushed entities
+// HUMANHEAD nla - Used to fix ragdolls colliding with movers when on them.
+#define PUSHFL_UNBLOCKABLE			128		// can not be blocked
+// HUMANHEAD END
 
 //#define NEW_PUSH
 

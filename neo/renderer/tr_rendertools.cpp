@@ -26,13 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "renderer/simplex.h"	// line font definition
-#include "renderer/VertexCache.h"
-#include "renderer/Cinematic.h"
-#include "renderer/RenderWorld_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/tr_local.h"
+#include "tr_local.h"
+#include "simplex.h"	// line font definition
 
 #define MAX_DEBUG_LINES			16384
 

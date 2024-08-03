@@ -46,10 +46,23 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 */
 
-class idSys;
-class idCommon;
-class idCVarSystem;
-class idFileSystem;
+#define assert_8_byte_aligned( pointer )		assert( (((UINT_PTR)(pointer))&7) == 0 );
+#define assert_16_byte_aligned( pointer )		assert( (((UINT_PTR)(pointer))&15) == 0 );
+#define assert_32_byte_aligned( pointer )		assert( (((UINT_PTR)(pointer))&31) == 0 );
+
+// HUMANHEAD mdl
+#ifdef ID_DEBUG_MEMORY //rww - this is the appropriate define to use
+# error "compile_time_asserts are not currently compatible with inline debug with memory builds.  Comment them out and disable this check to continue."
+#endif
+// HUMANHEAD END
+
+#define compile_time_assert( x )				{ typedef int compile_time_assert_failed[(x) ? 1 : -1]; }
+#define file_scoped_compile_time_assert( x )	extern int compile_time_assert_failed[(x) ? 1 : -1]
+#define assert_sizeof( type, size )				file_scoped_compile_time_assert( sizeof( type ) == size )
+#define assert_offsetof( type, field, offset )	file_scoped_compile_time_assert( offsetof( type, field ) == offset )
+#define assert_sizeof_8_byte_multiple( type )	file_scoped_compile_time_assert( ( sizeof( type ) & 8 ) == 0 )
+#define assert_sizeof_16_byte_multiple( type )	file_scoped_compile_time_assert( ( sizeof( type ) & 15 ) == 0 )
+#define assert_sizeof_32_byte_multiple( type )	file_scoped_compile_time_assert( ( sizeof( type ) & 31 ) == 0 )
 
 class idLib {
 public:
@@ -65,6 +78,10 @@ public:
 	// wrapper to idCommon functions
 	static void					Error( const char *fmt, ... );
 	static void					Warning( const char *fmt, ... );
+	
+#ifdef _HH_NET_DEBUGGING //HUMANHEAD rww
+	static void					NetworkEntStats(const char *typeName, int type);
+#endif //HUMANHEAD END
 };
 
 
@@ -125,8 +142,13 @@ int		IntForSixtets( byte *in );
 #ifdef _DEBUG
 void AssertFailed( const char *file, int line, const char *expression );
 #undef assert
+#ifdef HUMANHEAD_TESTSAVEGAME // HUMANHEAD mdl:  Disable asserts for automated savegame tests
+#  define assert( X )
+#else
 // DG: change assert to use ?: so I can use it in _alloca()/_alloca16() (MSVC didn't like if() in there)
-#define assert( X )			(X) ? 1 : (AssertFailed( __FILE__, __LINE__, #X ), 0)
+#	define assert( X )			(X) ? 1 : (AssertFailed( __FILE__, __LINE__, #X ), 0)
+#endif
+// HUMANHEAD END
 #endif
 
 class idException {
@@ -139,5 +161,97 @@ public:
 // move from Math.h to keep gcc happy
 template<class T> ID_INLINE T	Max( T x, T y ) { return ( x > y ) ? x : y; }
 template<class T> ID_INLINE T	Min( T x, T y ) { return ( x < y ) ? x : y; }
+
+/*
+===============================================================================
+
+	idLib headers.
+
+===============================================================================
+*/
+
+// memory management and arrays
+#include "Heap.h"
+#include "containers/List.h"
+
+// math
+#include "math/Simd.h"
+#include "math/Math.h"
+#include "math/Random.h"
+#include "math/Complex.h"
+#include "math/Vector.h"
+#include "math/Matrix.h"
+#include "math/Angles.h"
+#include "math/Quat.h"
+#include "math/Rotation.h"
+#include "math/Plane.h"
+#include "math/Pluecker.h"
+#include "math/Polynomial.h"
+#include "math/Extrapolate.h"
+#include "math/Interpolate.h"
+#include "math/prey_interpolate.h"		// HUMANHEAD pdm
+#include "math/prey_math.h"				// HUMANHEAD pdm
+#include "math/Curve.h"
+#include "math/Ode.h"
+#include "math/Lcp.h"
+
+// bounding volumes
+#include "bv/Sphere.h"
+#include "bv/Bounds.h"
+#include "bv/Box.h"
+#include "bv/Frustum.h"
+
+// geometry
+#include "geometry/DrawVert.h"
+#include "geometry/JointTransform.h"
+#include "geometry/Winding.h"
+#include "geometry/Winding2D.h"
+#include "geometry/Surface.h"
+#include "geometry/Surface_Patch.h"
+#include "geometry/Surface_Polytope.h"
+#include "geometry/Surface_SweptSpline.h"
+#include "geometry/TraceModel.h"
+
+// text manipulation
+#include "Str.h"
+#include "Token.h"
+#include "Lexer.h"
+#include "Parser.h"
+#include "Base64.h"
+#include "CmdArgs.h"
+
+// containers
+#include "containers/BTree.h"
+#include "containers/BinSearch.h"
+#include "containers/HashIndex.h"
+#include "containers/HashTable.h"
+#include "containers/StaticList.h"
+#include "containers/LinkList.h"
+#include "containers/Hierarchy.h"
+#include "containers/Queue.h"
+#include "containers/Stack.h"
+#include "containers/StrList.h"
+#include "containers/StrPool.h"
+#include "containers/VectorSet.h"
+#include "containers/PlaneSet.h"
+
+// HUMANHEAD pdm: idlib additions
+#include "containers/PreyStack.h"
+// HUMANHEAD END
+
+// hashing
+#include "hashing/CRC8.h"
+#include "hashing/CRC16.h"
+#include "hashing/CRC32.h"
+#include "hashing/Honeyman.h"
+#include "hashing/MD4.h"
+#include "hashing/MD5.h"
+
+// misc
+#include "Dict.h"
+#include "LangDict.h"
+#include "BitMsg.h"
+#include "MapFile.h"
+#include "Timer.h"
 
 #endif	/* !__LIB_H__ */

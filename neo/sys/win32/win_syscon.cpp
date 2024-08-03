@@ -26,15 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/Licensee.h"
-#include "framework/Common.h"
-#include "framework/KeyInput.h"
-#include "framework/EditField.h"
-#include "sys/win32/rc/AFEditor_resource.h"
-#include "sys/win32/rc/doom_resource.h"
-
-#include "sys/win32/win_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 #include <errno.h>
 #include <float.h>
@@ -43,6 +36,12 @@ If you have questions concerning this license or the applicable additional terms
 #include <direct.h>
 #include <io.h>
 #include <conio.h>
+#include "win_local.h"
+#ifdef ID_ALLOW_TOOLS
+#include "rc/prey_tools_resource.h"
+#else
+#include "rc/prey_resource.h"
+#endif
 
 #define COPY_ID			1
 #define QUIT_ID			2

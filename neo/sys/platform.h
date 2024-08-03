@@ -29,16 +29,9 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __PLATFORM__
 #define __PLATFORM__
 
-#include "config.h"
-#include "framework/BuildDefines.h"
-
-#ifdef _WIN32
-#include <malloc.h> // _alloca()
-#endif
-
 // NOTE: By default Win32 uses a 1MB stack. Doom3 1.3.1 uses 4MB (probably set after compiling with EDITBIN /STACK
-// dhewm3 now uses a 8MB stack, set with a linker flag in CMakeLists.txt (/STACK:8388608 for MSVC, -Wl,--stack,8388608 for mingw)
-// Linux has a 8MB stack by default, and so does macOS, at least for the main thread
+// the engine now uses a 8MB stack, set with a linker flag in CMakeLists.txt (/STACK:8388608 for MSVC, -Wl,--stack,8388608 for mingw)
+// Linux has a 8MB stack by default, at least for the main thread
 // anyway, a 2MB limit alloca should be safe even when using it multiple times in the same function
 #define ID_MAX_ALLOCA_SIZE 2097152 // 2MB
 
@@ -141,47 +134,10 @@ If you have questions concerning this license or the applicable additional terms
 #elif defined(_M_IX86)
   #define D3_ARCH "x86"
 #else
-  // if you're not targeting one of the aforementioned architectures,
-  // check https://learn.microsoft.com/en-us/cpp/preprocessor/predefined-macros
-  // to find out how to detect yours and add it here - and please send a patch :)
-  #error "Unknown CPU architecture!"
-  // (for a quick and dirty solution, comment out the previous line, but keep in mind
-  //  that savegames may not be compatible with other builds of dhewm3)
   #define D3_ARCH "UNKNOWN"
 #endif // _M_X64 etc
 
 #endif // _MSC_VER
-
-
-// Mac OSX
-#if defined(MACOS_X) || defined(__APPLE__)
-
-#ifdef GAME_DLL
-#define ID_GAME_API					__attribute__((visibility ("default")))
-#else
-#define ID_GAME_API
-#endif
-
-#define ALIGN16( x )				x __attribute__ ((aligned (16)))
-
-#define PACKED						__attribute__((packed))
-
-#define _alloca						alloca
-#define _alloca16( x )				((void *)((((uintptr_t)alloca( (x)+15 )) + 15) & ~15))
-
-#define PATHSEPERATOR_STR			"/"
-#define PATHSEPERATOR_CHAR			'/'
-
-#define __cdecl
-#define ASSERT						assert
-
-#define ID_INLINE					inline
-#define ID_STATIC_TEMPLATE
-
-#define assertmem( x, y )
-
-#endif
-
 
 // Unix
 #ifdef __unix__
@@ -243,23 +199,17 @@ If you have questions concerning this license or the applicable additional terms
 #include <typeinfo>
 #include <errno.h>
 #include <math.h>
+//#define FLT_EPSILON 1.19209290E-07F
+#include <cfloat>
+#include <limits>
+#include <chrono>
+#include <thread>
+#include <algorithm>
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #undef FindText								// stupid namespace poluting Microsoft monkeys
-#endif
-
-// Apple legacy
-#ifdef __APPLE__
-#include <Availability.h>
-#ifdef __MAC_OS_X_VERSION_MIN_REQUIRED
-#if __MAC_OS_X_VERSION_MIN_REQUIRED == 1040
-#define OSX_TIGER
-#elif __MAC_OS_X_VERSION_MIN_REQUIRED < 1060
-#define OSX_LEOPARD
-#endif
-#endif
 #endif
 
 #define ID_TIME_T time_t

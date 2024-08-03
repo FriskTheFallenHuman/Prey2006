@@ -26,10 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/FileSystem.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "sound/snd_local.h"
+#include "snd_local.h"
+
 
 /*
 ===============
@@ -44,6 +45,7 @@ void idSoundShader::Init( void ) {
 	numLeadins = 0;
 	leadinVolume = 0;
 	altSound = NULL;
+	parms.subIndex = -1;
 }
 
 /*
@@ -159,6 +161,7 @@ bool idSoundShader::ParseShader( idLexer &src ) {
 	parms.shakes = 0;
 	parms.soundShaderFlags = 0;
 	parms.soundClass = 0;
+	parms.subIndex = -1;
 
 	speakerMask = 0;
 	altSound = NULL;
@@ -254,7 +257,21 @@ bool idSoundShader::ParseShader( idLexer &src ) {
 		}
 		// soundClass
 		else if ( !token.Icmp( "soundClass" ) ) {
-			parms.soundClass = src.ParseInt();
+			//k: macros in prey
+			idToken t;
+			src.ReadToken( &t );
+			if ( !idStr::Icmp( t, "SC_MUSIC" ) ) {
+				parms.soundClass = 4;
+			} else if ( !idStr::Icmp( t, "SC_VOICE" ) ) {
+				parms.soundClass = 3;
+			} else if ( !idStr::Icmp( t, "SC_VOICEDUCKER" ) ) {
+				parms.soundClass = 1;
+			} else if ( !idStr::Icmp( t, "SC_SPIRIT" ) ) {
+				parms.soundClass = 2;
+			} else {
+				parms.soundClass = atoi( t.c_str() );
+			}
+
 			if ( parms.soundClass < 0 || parms.soundClass >= SOUND_MAX_CLASSES ) {
 				src.Warning( "SoundClass out of range" );
 				return false;
@@ -320,7 +337,31 @@ bool idSoundShader::ParseShader( idLexer &src ) {
 			// no longer loading sounds on demand
 			//onDemand = true;
 		}
+		else if ( !token.Icmp( "bleep" ) ) {
+			src.SkipRestOfLine();
+		}
+		else if ( !token.IcmpPrefix( "subtitle" ) ) { //k: subtitle1	2.0	"#str_30000"
+			idStr subChn = token.Right( token.Length() - strlen( "subtitle" ) );
+			int subChannel = atoi( subChn.c_str() );
+			float subTime = src.ParseFloat();
+			idToken subText;
+			src.ReadToken( &subText );
+			int subIndex = soundSystemLocal.GetSubtitleIndex( GetName() );
+			soundSystemLocal.SetSubtitleData( subIndex, subChannel, subText.c_str(), subTime, subChannel );
+			parms.subIndex = subIndex;
 
+			src.SkipRestOfLine();
+		}
+		else if ( !token.Icmp( "omniwhenclose" ) ) {
+			parms.soundShaderFlags |= SSF_OMNI_WHEN_CLOSE;
+		}
+		else if ( !token.Icmp( "jawflap" ) ) {
+		}
+		else if ( !token.Icmp( "NOREVERB" ) ) {
+			parms.soundShaderFlags |= SSF_NOREVERB;
+		}
+		else if ( !token.Icmp( "noportalflow" ) ) {
+		}
 		// the wave files
 		else if ( !token.Icmp( "leadin" ) ) {
 			// add to the leadin list

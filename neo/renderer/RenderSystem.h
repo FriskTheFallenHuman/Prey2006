@@ -29,9 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __RENDERER_H__
 #define __RENDERER_H__
 
-#include "framework/Common.h"
-#include "renderer/Model.h"
-
 /*
 ===============================================================================
 
@@ -86,8 +83,6 @@ typedef struct glconfig_s {
 	int					displayFrequency;
 
 	bool				isFullscreen;
-
-	bool				allowARB2Path;
 
 	bool				isInitialized;
 
@@ -232,6 +227,14 @@ public:
 	virtual void			DrawBigChar( int x, int y, int ch, const idMaterial *material ) = 0;
 	virtual void			DrawBigStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor, const idMaterial *material ) = 0;
 
+	virtual void			SetEntireSceneMaterial( idMaterial *material ) = 0; // HUMANHEAD CJR
+	virtual bool			IsScopeView() = 0;// HUMANHEAD CJR
+	virtual void			SetScopeView( bool view ) = 0; // HUMANHEAD CJR
+	virtual bool			IsShuttleView() = 0;// HUMANHEAD pdm
+	virtual void			SetShuttleView( bool view ) = 0;// HUMANHEAD pdm
+	virtual bool			SupportsFragmentPrograms( void ) = 0; // HUMANHEAD CJR
+	virtual int				VideoCardNumber( void ) = 0; // HUMANHEAD CJR
+
 	// dump all 2D drawing so far this frame to the demo file
 	virtual void			WriteDemoPics() = 0;
 
@@ -277,6 +280,10 @@ public:
 	// texture filter / mipmapping / repeat won't be modified by the upload
 	// returns false if the image wasn't found
 	virtual bool			UploadImage( const char *imageName, const byte *data, int width, int height ) = 0;
+
+#if _HH_RENDERDEMO_HACKS //HUMANHEAD rww
+	virtual void			LogViewRender(const struct renderView_s *view) = 0;
+#endif //HUMANHEAD END
 };
 
 extern idRenderSystem *			renderSystem;

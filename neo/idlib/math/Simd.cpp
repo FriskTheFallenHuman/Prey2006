@@ -26,31 +26,14 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#if MACOS_X
-#include <stdlib.h>
-#include <unistd.h>			// this is for sleep()
-#include <sys/time.h>
-#include <sys/resource.h>
-#include <mach/mach_time.h>
-#endif
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "sys/platform.h"
-#include "idlib/geometry/DrawVert.h"
-#include "idlib/geometry/JointTransform.h"
-#include "idlib/math/Simd_Generic.h"
-#include "idlib/math/Simd_MMX.h"
-#include "idlib/math/Simd_3DNow.h"
-#include "idlib/math/Simd_SSE.h"
-#include "idlib/math/Simd_SSE2.h"
-#include "idlib/math/Simd_SSE3.h"
-#include "idlib/math/Simd_AltiVec.h"
-#include "idlib/math/Plane.h"
-#include "idlib/bv/Bounds.h"
-#include "idlib/Lib.h"
-#include "framework/Common.h"
-#include "renderer/Model.h"
-
-#include "idlib/math/Simd.h"
+#include "Simd_Generic.h"
+#include "Simd_MMX.h"
+#include "Simd_SSE.h"
+#include "Simd_SSE2.h"
+#include "Simd_SSE3.h"
 
 idSIMDProcessor	*	processor = NULL;			// pointer to SIMD processor
 idSIMDProcessor *	generic = NULL;				// pointer to generic SIMD implementation
@@ -86,16 +69,12 @@ void idSIMD::InitProcessor( const char *module, bool forceGeneric ) {
 	} else {
 
 		if ( !processor ) {
-			if ( ( cpuid & CPUID_ALTIVEC ) ) {
-				processor = new idSIMD_AltiVec;
-			} else if ( ( cpuid & CPUID_MMX ) && ( cpuid & CPUID_SSE ) && ( cpuid & CPUID_SSE2 ) && ( cpuid & CPUID_SSE3 ) ) {
+			if ( ( cpuid & CPUID_MMX ) && ( cpuid & CPUID_SSE ) && ( cpuid & CPUID_SSE2 ) && ( cpuid & CPUID_SSE3 ) ) {
 				processor = new idSIMD_SSE3;
 			} else if ( ( cpuid & CPUID_MMX ) && ( cpuid & CPUID_SSE ) && ( cpuid & CPUID_SSE2 ) ) {
 				processor = new idSIMD_SSE2;
 			} else if ( ( cpuid & CPUID_MMX ) && ( cpuid & CPUID_SSE ) ) {
 				processor = new idSIMD_SSE;
-			} else if ( ( cpuid & CPUID_MMX ) && ( cpuid & CPUID_3DNOW ) ) {
-				processor = new idSIMD_3DNow;
 			} else if ( ( cpuid & CPUID_MMX ) ) {
 				processor = new idSIMD_MMX;
 			} else {
@@ -174,18 +153,6 @@ int saved_ebx = 0;
 	__asm mov ebx, saved_ebx				\
 	__asm xor eax, eax						\
 	__asm cpuid
-
-#elif MACOS_X
-
-double ticksPerNanosecond;
-
-#define TIME_TYPE uint64_t
-
-#define StartRecordTime( start )			\
-	start = mach_absolute_time();
-
-#define StopRecordTime( end )				\
-	end = mach_absolute_time();
 
 #else
 
@@ -4014,12 +3981,6 @@ void idSIMD::Test_f( const idCmdArgs &args ) {
 				return;
 			}
 			p_simd = new idSIMD_MMX;
-		} else if ( idStr::Icmp( argString, "3DNow" ) == 0 ) {
-			if ( !( cpuid & CPUID_MMX ) || !( cpuid & CPUID_3DNOW ) ) {
-				common->Printf( "CPU does not support MMX & 3DNow\n" );
-				return;
-			}
-			p_simd = new idSIMD_3DNow;
 		} else if ( idStr::Icmp( argString, "SSE" ) == 0 ) {
 			if ( !( cpuid & CPUID_MMX ) || !( cpuid & CPUID_SSE ) ) {
 				common->Printf( "CPU does not support MMX & SSE\n" );
@@ -4038,14 +3999,8 @@ void idSIMD::Test_f( const idCmdArgs &args ) {
 				return;
 			}
 			p_simd = new idSIMD_SSE3();
-		} else if ( idStr::Icmp( argString, "AltiVec" ) == 0 ) {
-			if ( !( cpuid & CPUID_ALTIVEC ) ) {
-				common->Printf( "CPU does not support AltiVec\n" );
-				return;
-			}
-			p_simd = new idSIMD_AltiVec();
 		} else {
-			common->Printf( "invalid argument, use: MMX, 3DNow, SSE, SSE2, SSE3, AltiVec\n" );
+			common->Printf( "invalid argument, use: MMX, SSE, SSE2, SSE3\n" );
 			return;
 		}
 	}

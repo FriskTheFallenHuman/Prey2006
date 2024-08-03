@@ -29,10 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __PHYSICS_MONSTER_H__
 #define __PHYSICS_MONSTER_H__
 
-#include "idlib/math/Vector.h"
-
-#include "physics/Physics_Actor.h"
-
 /*
 ===================================================================================
 
@@ -78,6 +74,7 @@ public:
 	void					SetMinFloorCosine( const float newMinFloorCosine );
 							// set delta for next move
 	void					SetDelta( const idVec3 &d );
+	idVec3					GetDelta(void) const {return delta;} // HUMANHEAD JRM
 							// returns true if monster is standing on the ground
 	bool					OnGround( void ) const;
 							// returns the movement result
@@ -127,7 +124,7 @@ public:	// common physics interface
 	void					WriteToSnapshot( idBitMsgDelta &msg ) const;
 	void					ReadFromSnapshot( const idBitMsgDelta &msg );
 
-private:
+protected://HUMANHEAD: aob
 	// monster physics state
 	monsterPState_t			current;
 	monsterPState_t			saved;
@@ -146,9 +143,10 @@ private:
 	monsterMoveResult_t		moveResult;
 	idEntity *				blockingEntity;
 
-private:
+protected://HUMANHEAD: aob
 	void					CheckGround( monsterPState_t &state );
-	monsterMoveResult_t		SlideMove( idVec3 &start, idVec3 &velocity, const idVec3 &delta );
+	virtual//HUMANHEAD: aob
+	monsterMoveResult_t		SlideMove( idVec3 &start, idVec3 &velocity, const idVec3 &delta, idList<int> *touched = NULL );
 	monsterMoveResult_t		StepMove( idVec3 &start, idVec3 &velocity, const idVec3 &delta );
 	void					Rest( void );
 };

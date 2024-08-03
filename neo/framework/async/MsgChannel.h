@@ -29,9 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __MSGCHANNEL_H__
 #define __MSGCHANNEL_H__
 
-#include "sys/sys_public.h"
-
-class idCompressor;
 
 /*
 ===============================================================================
@@ -52,41 +49,6 @@ class idCompressor;
 													// be fragmented into multiple packets
 #define CONNECTIONLESS_MESSAGE_ID		-1			// id for connectionless messages
 #define CONNECTIONLESS_MESSAGE_ID_MASK	0x7FFF		// value to mask away connectionless message id
-
-#define MAX_MSG_QUEUE_SIZE				16384		// must be a power of 2
-
-
-class idMsgQueue {
-public:
-					idMsgQueue();
-
-	void			Init( int sequence );
-
-	bool			Add( const byte *data, const int size );
-	bool			Get( byte *data, int &size );
-	int				GetTotalSize( void ) const;
-	int				GetSpaceLeft( void ) const;
-	int				GetFirst( void ) const { return first; }
-	int				GetLast( void ) const { return last; }
-	void			CopyToBuffer( byte *buf ) const;
-
-private:
-	byte			buffer[MAX_MSG_QUEUE_SIZE];
-	int				first;			// sequence number of first message in queue
-	int				last;			// sequence number of last message in queue
-	int				startIndex;		// index pointing to the first byte of the first message
-	int				endIndex;		// index pointing to the first byte after the last message
-
-	void			WriteByte( byte b );
-	byte			ReadByte( void );
-	void			WriteShort( int s );
-	int				ReadShort( void );
-	void			WriteInt( int l );
-	int				ReadInt( void );
-	void			WriteData( const byte *data, const int size );
-	void			ReadData( byte *data, const int size );
-};
-
 
 class idMsgChannel {
 public:

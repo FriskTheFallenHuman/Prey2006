@@ -29,11 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GAME_WEAPON_H__
 #define __GAME_WEAPON_H__
 
-#include "script/Script_Thread.h"
-#include "Entity.h"
-#include "Light.h"
-#include "Actor.h"
-
 /*
 ===============================================================================
 
@@ -48,6 +43,11 @@ typedef enum {
 	WP_RELOAD,
 	WP_HOLSTERED,
 	WP_RISING,
+	// HUMANHEAD nla - Added to allow weapons to go aside.  (OK, it is really just a bit of the puzzle to allow them to go to the side, not the whole logic.  But a very key piece none the less)
+	WP_ASIDE,
+	WP_PUTTING_ASIDE,
+	WP_UPRIGHTING,
+	// HUMANHEAD END
 	WP_LOWERING
 } weaponStatus_t;
 
@@ -58,6 +58,27 @@ class idPlayer;
 
 static const int LIGHTID_WORLD_MUZZLE_FLASH = 1;
 static const int LIGHTID_VIEW_MUZZLE_FLASH = 100;
+
+//HUMANHEAD: aob
+extern const idEventDef EV_Weapon_Next;
+extern const idEventDef EV_Weapon_State;
+extern const idEventDef EV_Weapon_AddToClip;
+extern const idEventDef EV_Weapon_AmmoInClip;
+extern const idEventDef EV_Weapon_AmmoAvailable;
+extern const idEventDef EV_Weapon_ClipSize;
+extern const idEventDef EV_Weapon_WeaponOutOfAmmo;
+extern const idEventDef EV_Weapon_WeaponReady;
+extern const idEventDef EV_Weapon_WeaponReloading;
+extern const idEventDef EV_Weapon_WeaponHolstered;
+extern const idEventDef EV_Weapon_WeaponRising;
+extern const idEventDef EV_Weapon_WeaponLowering;
+extern const idEventDef EV_Weapon_Flashlight;
+extern const idEventDef EV_Weapon_LaunchProjectiles;
+extern const idEventDef EV_Weapon_EjectBrass;
+extern const idEventDef EV_Weapon_Melee;
+extern const idEventDef EV_Weapon_GetOwner;
+extern const idEventDef EV_Weapon_UseAmmo;
+//HUMANHEAD END
 
 class idMoveableItem;
 
@@ -95,13 +116,21 @@ public:
 	void					SetPushVelocity( const idVec3 &pushVelocity );
 	bool					UpdateSkin( void );
 
+	//HUMANHEAD rww
+	virtual int				GetClipBits(void) const;
+	//HUMANHEAD END
+
 	// State control/player interface
 	void					Think( void );
+	virtual // HUMANHEAD:  made virtual
 	void					Raise( void );
+	virtual // HUMANHEAD:  made virtual
 	void					PutAway( void );
+	virtual // HUMANHEAD:  made virtual
 	void					Reload( void );
 	void					LowerWeapon( void );
 	void					RaiseWeapon( void );
+	virtual // HUMANHEAD:  made virtual
 	void					HideWeapon( void );
 	void					ShowWeapon( void );
 	void					HideWorldModel( void );
@@ -109,8 +138,11 @@ public:
 	void					OwnerDied( void );
 	void					BeginAttack( void );
 	void					EndAttack( void );
+	virtual // HUMANHEAD:  made virtual
 	bool					IsReady( void ) const;
+	virtual // HUMANHEAD:  made virtual
 	bool					IsReloading( void ) const;
+	virtual // HUMANHEAD:  made virtual
 	bool					IsHolstered( void ) const;
 	bool					ShowCrosshair( void ) const;
 	idEntity *				DropItem( const idVec3 &velocity, int activateDelay, int removeDelay, bool died );
@@ -138,11 +170,16 @@ public:
 	static const char		*GetAmmoNameForNum( ammo_t ammonum );
 	static const char		*GetAmmoPickupNameForNum( ammo_t ammonum );
 	ammo_t					GetAmmoType( void ) const;
+	virtual // HUMANHEAD:  made virtual
 	int						AmmoAvailable( void ) const;
+	virtual // HUMANHEAD:  made virtual
 	int						AmmoInClip( void ) const;
 	void					ResetAmmoClip( void );
+	virtual // HUMANHEAD:  made virtual
 	int						ClipSize( void ) const;
+	virtual // HUMANHEAD:  made virtual
 	int						LowAmmo( void ) const;
+	virtual // HUMANHEAD:  made virtual
 	int						AmmoRequired( void ) const;
 
 	virtual void			WriteToSnapshot( idBitMsgDelta &msg ) const;
@@ -158,7 +195,7 @@ public:
 
 	virtual void			ClientPredictionThink( void );
 
-private:
+protected:	// HUMANHEAD
 	// script control
 	idScriptBool			WEAPON_ATTACK;
 	idScriptBool			WEAPON_RELOAD;
@@ -167,6 +204,7 @@ private:
 	idScriptBool			WEAPON_NETFIRING;
 	idScriptBool			WEAPON_RAISEWEAPON;
 	idScriptBool			WEAPON_LOWERWEAPON;
+	idScriptFloat			WEAPON_NEXTATTACK; //HUMANHEAD rww
 	weaponStatus_t			status;
 	idThread *				thread;
 	idStr					state;
@@ -297,6 +335,11 @@ private:
 	idVec3					nozzleGlowColor;	// color of the nozzle glow
 	const idMaterial *		nozzleGlowShader;	// shader for glow light
 	float					nozzleGlowRadius;	// radius of glow light
+
+	// HUMANHEAD START
+	int					idleBob;			// Idle bob value
+	bool				bHasRemoteView;		// If true, this weapon has an active remote camera view
+	// HUMANHEAD END
 
 	// weighting for viewmodel angles
 	int						weaponAngleOffsetAverages;

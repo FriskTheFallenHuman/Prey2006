@@ -29,10 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __CVARSYSTEM_H__
 #define __CVARSYSTEM_H__
 
-#include "idlib/Dict.h"
-#include "idlib/CmdArgs.h"
-#include "framework/CmdSystem.h"
-
 /*
 ===============================================================================
 
@@ -253,6 +249,10 @@ public:
 
 							// Resets variables with one of the given flags set.
 	virtual void			ResetFlaggedVariables( int flags ) = 0;
+
+// HUMANHEAD pdm: Menu resets don't force ROM & INIT variables
+	virtual void			MenuResetFlaggedVariables( int flags ) = 0;
+// HUMANHEAD END
 
 							// Removes auto-completion from the flagged variables.
 	virtual void			RemoveFlaggedAutoCompletion( int flags ) = 0;

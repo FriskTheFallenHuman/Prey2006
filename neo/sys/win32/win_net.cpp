@@ -25,14 +25,13 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
-
-#include "sys/platform.h"
-#include "framework/Common.h"
-
-#include "sys/win32/win_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 #include <iptypes.h>
 #include <iphlpapi.h>
+
+#include "win_local.h"
 
 static WSADATA	winsockdata;
 static bool	winsockInitialized = false;

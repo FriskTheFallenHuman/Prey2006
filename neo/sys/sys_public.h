@@ -36,11 +36,9 @@ typedef enum {
 	CPUID_UNSUPPORTED					= 0x00001,	// unsupported (386/486)
 	CPUID_GENERIC						= 0x00002,	// unrecognized processor
 	CPUID_MMX							= 0x00010,	// Multi Media Extensions
-	CPUID_3DNOW							= 0x00020,	// 3DNow!
 	CPUID_SSE							= 0x00040,	// Streaming SIMD Extensions
 	CPUID_SSE2							= 0x00080,	// Streaming SIMD Extensions 2
 	CPUID_SSE3							= 0x00100,	// Streaming SIMD Extentions 3 aka Prescott's New Instructions
-	CPUID_ALTIVEC						= 0x00200,	// AltiVec
 } cpuidSimd_t;
 
 typedef enum {
@@ -139,6 +137,23 @@ int				Sys_GetSystemRam( void );
 // returns amount of drive space in path
 int				Sys_GetDriveFreeSpace( const char *path );
 
+#if 0
+//HUMANHEAD rww
+//logitech lcd keyboard interface functions
+bool			Sys_LGLCD_Init( void ) { return false; }
+void			Sys_LGLCD_Shutdown( void ) {}
+bool			Sys_LGLCD_Valid( void ) { return false; }
+void			Sys_LGLCD_UploadImage( unsigned char *pixels, int w, int h, bool highPriority, bool flipColor ) { (void)pixels; (void)w; (void)h; (void)highPriority; (void)flipColor; }
+bool			Sys_LGLCD_ReadSoftButtons( DWORD *out ) { (void)out; return false; }
+void			Sys_LGLCD_DrawBegin( void ) {}
+void			Sys_LGLCD_DrawFinish( bool clearBuffer ) { (void)clearBuffer; }
+void			Sys_LGLCD_DrawRaw( unsigned char *pixels, int x, int y, int w, int h, int pitch, bool flipColor, bool layered, int rotate ) { (void)pixels; (void)w; (void)h; (void)pitch; (void)flipColor; (void)layered; (void)rotate; }
+void			Sys_LGLCD_DrawText( const char *text, int x, int y, bool layered ) { (void)text; (void)x; (void)y; (void)text; }
+void			Sys_LGLCD_DrawShape( int shapeType, int x, int y, int sizeX, int sizeY, int parm, bool layered ) { (void)shapeType; (void)x; (void)y; (void)sizeX; (void)sizeY; (void)parm; (void)layered; }
+//HUMANHEAD END
+#endif
+
+// 
 // lock and unlock memory
 bool			Sys_LockMemory( void *ptr, int bytes );
 bool			Sys_UnlockMemory( void *ptr, int bytes );
@@ -189,6 +204,14 @@ int				Sys_PollMouseInputEvents( void );
 int				Sys_ReturnMouseInputEvent( const int n, int &action, int &value );
 void			Sys_EndMouseInputEvents( void );
 
+#if GAMEPAD_SUPPORT	// VENOM BEGIN
+void	Sys_UpdateJoystick( void );
+int		Sys_PollJockstickEvents( void );
+void	Sys_ReturnJoyStickInputEvent( int iEvent,  int &iKey, int &iState );
+SHORT	Sys_GetJoyStickAxis( int iAxis );
+float	Sys_GetJoyStickModifier( int iAxis );
+#endif // VENOM END
+
 // when the console is down, or the game is about to perform a lengthy
 // operation like map loading, the system can release the mouse cursor
 // when in windowed mode
@@ -209,6 +232,11 @@ bool			Sys_GetPath(sysPath_t type, idStr &path);
 // use fs_debug to verbose Sys_ListFiles
 // returns -1 if directory was not found (the list is cleared)
 int				Sys_ListFiles( const char *directory, const char *extension, idList<class idStr> &list );
+
+#if GAMEPAD_SUPPORT	// VENOM BEGIN
+void Sys_SetRumble ( int effect );
+void Sys_StopRumble( void );
+#endif // VENOM END
 
 /*
 ==============================================================
@@ -368,6 +396,20 @@ public:
 
 	virtual bool			LockMemory( void *ptr, int bytes ) = 0;
 	virtual bool			UnlockMemory( void *ptr, int bytes ) = 0;
+	
+	//HUMANHEAD rww
+	//logitech lcd keyboard interface functions
+	virtual bool			LGLCD_Init(void) = 0;
+	virtual void			LGLCD_Shutdown(void) = 0;
+	virtual bool			LGLCD_Valid(void) = 0;
+	virtual void			LGLCD_UploadImage(unsigned char *pixels, int w, int h, bool highPriority, bool flipColor) = 0;
+	virtual bool			LGLCD_ReadSoftButtons(DWORD *out) = 0;
+	virtual void			LGLCD_DrawBegin(void) = 0;
+	virtual void			LGLCD_DrawFinish(bool clearBuffer) = 0;
+	virtual void			LGLCD_DrawRaw(unsigned char *pixels, int x, int y, int w, int h, int pitch, bool flipColor, bool layered, int rotate) = 0;
+	virtual void			LGLCD_DrawText(const char *text, int x, int y, bool layered) = 0;
+	virtual void			LGLCD_DrawShape(int shapeType, int x, int y, int sizeX, int sizeY, int parm, bool layered) = 0;
+	//HUMANHEAD END
 
 	virtual uintptr_t		DLL_Load( const char *dllName ) = 0;
 	virtual void *			DLL_GetProcAddress( uintptr_t dllHandle, const char *procName ) = 0;

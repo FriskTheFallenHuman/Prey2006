@@ -29,9 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __MODEL_H__
 #define __MODEL_H__
 
-#include "idlib/bv/Bounds.h"
-#include "renderer/Material.h"
-
 /*
 ===============================================================================
 
@@ -160,6 +157,27 @@ typedef enum {
 	INVALID_JOINT				= -1
 } jointHandle_t;
 
+#if NEW_MESH_TRANSFORM
+struct jointWeight_t {
+	float					weight;					// joint weight
+	int						jointMatOffset;			// offset in bytes to the joint matrix
+	int						nextVertexOffset;		// offset in bytes to the first weight for the next vertex
+};
+
+// offsets for SIMD code
+#define BASEVECTOR_SIZE								(4*4)		// sizeof( idVec4 )
+#define JOINTWEIGHT_SIZE							(3*4)		// sizeof( jointWeight_t )
+#define JOINTWEIGHT_WEIGHT_OFFSET					(0*4)		// offsetof( jointWeight_t, weight )
+#define JOINTWEIGHT_JOINTMATOFFSET_OFFSET			(1*4)		// offsetof( jointWeight_t, jointMatOffset )
+#define JOINTWEIGHT_NEXTVERTEXOFFSET_OFFSET			(2*4)		// offsetof( jointWeight_t, nextVertexOffset )
+
+assert_sizeof( idVec4,								BASEVECTOR_SIZE );
+assert_sizeof( jointWeight_t,						JOINTWEIGHT_SIZE );
+assert_offsetof( jointWeight_t, weight,				JOINTWEIGHT_WEIGHT_OFFSET );
+assert_offsetof( jointWeight_t, jointMatOffset,		JOINTWEIGHT_JOINTMATOFFSET_OFFSET );
+assert_offsetof( jointWeight_t, nextVertexOffset,	JOINTWEIGHT_NEXTVERTEXOFFSET_OFFSET );
+#endif
+
 class idMD5Joint {
 public:
 								idMD5Joint() { parent = NULL; }
@@ -210,6 +228,10 @@ public:
 	// Upon exit, the model will absolutely be valid, but possibly as a default model
 	virtual void				LoadModel() = 0;
 
+#ifdef HUMANHEAD		//HUMANHEAD mdc: added to support purging of ppm modelfiles (for use in reloadModels)
+	virtual void				PurgePrecompressed() = 0;
+#endif
+
 	// internal use
 	virtual bool				IsLoaded() const = 0;
 	virtual void				SetLevelLoadReferenced( bool referenced ) = 0;
@@ -236,7 +258,7 @@ public:
 	virtual int					Memory() const = 0;
 
 	// for reloadModels
-	virtual ID_TIME_T				Timestamp() const = 0;
+	virtual ID_TIME_T			Timestamp() const = 0;
 
 	// returns the number of surfaces
 	virtual int					NumSurfaces() const = 0;
@@ -281,6 +303,17 @@ public:
 
 	// returns value != 0.0f if the model requires the depth hack
 	virtual float				DepthHack() const = 0;
+
+	// HUMANHEAD pdm: Game access to liquid models
+	virtual void				IntersectBounds( const idBounds &bounds, float displacement ) = 0;
+	// HUMANHEAD END
+
+#if _HH_RENDERDEMO_HACKS //HUMANHEAD rww
+	virtual bool					IsGameUpdatedModel(void) = 0;
+	virtual void					SetGameUpdatedModel(bool gum) = 0;
+	virtual idList<modelSurface_t>	&GetSurfaces(void) = 0;
+	virtual void					SetBounds(idBounds &newBounds) = 0;
+#endif //HUMANHEAD END
 
 	// returns a static model based on the definition and view
 	// currently, this will be regenerated for every view, even though

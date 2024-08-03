@@ -34,15 +34,11 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/Timer.h"
-#include "framework/Common.h"
-#include "framework/Session.h"
-#include "renderer/Material.h"
-#include "renderer/RenderWorld.h"
-#include "sys/sys_public.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "cm/CollisionModel_local.h"
+#include "CollisionModel_local.h"
+
 
 /*
 ===============================================================================
@@ -53,40 +49,77 @@ Visualisation code
 */
 
 const char *cm_contentsNameByIndex[] = {
-	"none",							// 0
-	"solid",						// 1
-	"opaque",						// 2
-	"water",						// 3
-	"playerclip",					// 4
-	"monsterclip",					// 5
-	"moveableclip",					// 6
-	"ikclip",						// 7
-	"blood",						// 8
-	"body",							// 9
+// HUMANHEAD: Redid these as they were out of sync
+	"none",							// 
+	"solid",						// bit 0
+	"opaque",						// 1
+	"water",						// 2
+	"playerclip",					// 3
+	"monsterclip",					// 4
+	"moveableclip",					// 5
+	"ikclip",						// 6
+	"blood",						// 7
+	"body",							// 8
+	"projectile",					// 9
 	"corpse",						// 10
-	"trigger",						// 11
-	"aas_solid",					// 12
-	"aas_obstacle",					// 13
-	"flashlight_trigger",			// 14
+	"rendermodel",					// 11
+	"trigger",						// 12
+	"aas_solid",					// 13
+	"aas_obstacle",					// 14
+	"flashlight_trigger",			// 15
+
+	// HUMANHEAD pdm: added our contents
+	"forcefield",					// 16
+	"spiritbridge",					// 17
+	"areaportal",					// 18
+	"nocsg",						// 19
+	"block_radiusdamage",			// 20
+	"shootable",					// 21
+	"deathvolume",					// 22
+	"vehicleclip",					// 23
+	"owner_to_owner",				// 24
+	"game_portal",					// 25
+	"shootablebyarrow",				// 26
+	"hunterclip",					// 27
+
+	// END HUMANHEAD
 	NULL
 };
 
 int cm_contentsFlagByIndex[] = {
-	-1,								// 0
-	CONTENTS_SOLID,					// 1
-	CONTENTS_OPAQUE,				// 2
-	CONTENTS_WATER,					// 3
-	CONTENTS_PLAYERCLIP,			// 4
-	CONTENTS_MONSTERCLIP,			// 5
-	CONTENTS_MOVEABLECLIP,			// 6
-	CONTENTS_IKCLIP,				// 7
-	CONTENTS_BLOOD,					// 8
-	CONTENTS_BODY,					// 9
+// HUMANHEAD: Redid these as they were out of sync
+	-1,								// -1
+	CONTENTS_SOLID,					// bit 0
+	CONTENTS_OPAQUE,				// 1
+	CONTENTS_WATER,					// 2
+	CONTENTS_PLAYERCLIP,			// 3
+	CONTENTS_MONSTERCLIP,			// 4
+	CONTENTS_MOVEABLECLIP,			// 5
+	CONTENTS_IKCLIP,				// 6
+	CONTENTS_BLOOD,					// 7
+	CONTENTS_BODY,					// 8
+	CONTENTS_PROJECTILE,			// 9
 	CONTENTS_CORPSE,				// 10
-	CONTENTS_TRIGGER,				// 11
-	CONTENTS_AAS_SOLID,				// 12
-	CONTENTS_AAS_OBSTACLE,			// 13
-	CONTENTS_FLASHLIGHT_TRIGGER,	// 14
+	CONTENTS_RENDERMODEL,			// 11
+	CONTENTS_TRIGGER,				// 12
+	CONTENTS_AAS_SOLID,				// 13
+	CONTENTS_AAS_OBSTACLE,			// 14
+	CONTENTS_FLASHLIGHT_TRIGGER,	// 15
+
+	// HUMANHEAD pdm: added our contents
+	CONTENTS_FORCEFIELD,			// 16
+	CONTENTS_SPIRITBRIDGE,			// 17
+	CONTENTS_AREAPORTAL,			// 18
+	CONTENTS_NOCSG,					// 19
+	CONTENTS_BLOCK_RADIUSDAMAGE,	// 20
+	CONTENTS_SHOOTABLE,				// 21
+	CONTENTS_DEATHVOLUME,			// 22
+	CONTENTS_VEHICLECLIP,			// 23
+	CONTENTS_OWNER_TO_OWNER,		// 24
+	CONTENTS_GAME_PORTAL,			// 25
+	CONTENTS_SHOOTABLEBYARROW,		// 26
+	CONTENTS_HUNTERCLIP,			// 27
+	// END HUMANHEAD
 	0
 };
 

@@ -1,0 +1,63 @@
+!!ARBfp1.0 
+OPTION ARB_precision_hint_fastest;
+
+TEMP color, color2, preturb, tc, temp, scaler, greyScale;
+
+PARAM one = { 1, 1, 1, 1 };
+PARAM two = { 2, 2, 2, 1 };
+PARAM zero = { 0, 0, 0, 0 };
+PARAM default = { 0, 0, 0, 1 };
+PARAM pointFive	= { 0.5, 0.5, 0.5, 1 };
+
+PARAM preturbScale = { 0.2, 0.2, 0, 1 };
+PARAM faceScale = { 0.1, 0.1, 0.1, 1 };
+PARAM colorShift = { 0.1, 0.1, 0.2, 1 };
+PARAM finalColorScale = { 0.6, 0.6, 1, 1 };
+
+MOV tc, default;
+MOV preturb, default;
+
+# get the preturbation value
+MOV tc, fragment.texcoord[0];
+SUB tc.xy, tc, pointFive;
+MUL tc.xy, tc, two;
+
+TXP	temp, tc, texture[0], 2D;
+MOV scaler, temp;
+
+MUL temp, temp, preturbScale;
+SUB preturb.xyz, one, temp;
+
+# do the preturbation of texture coords
+MOV tc, fragment.texcoord[1];
+MOV temp, tc;
+RCP temp.w, temp.w;
+MOV tc.w, default;
+MUL tc.xy, tc, temp.wwww;
+
+SUB tc.xy, tc, pointFive;
+MUL tc.xy, tc, preturb;
+ADD tc.xy, tc, pointFive;
+
+# get the actual lookup color from the preturbed texture coords
+TXP	color, tc, texture[1], 2D;
+MOV result.color, color;			# truncate!
+TXP	color2, tc, texture[2], 2D;
+
+MUL color2, color2, faceScale;
+
+# compute the color shift value
+# MUL scaler, scaler, colorShift;
+MOV greyScale, color.xxxx;
+MUL greyScale, finalColorScale, greyScale;
+MUL temp, greyScale, scaler.x;
+SUB tc, one, scaler;
+MUL color, color, tc.x;
+ADD color, color, temp;
+
+# final color mix
+ADD color, color, color2;
+
+# MOV result.color, color;
+
+END

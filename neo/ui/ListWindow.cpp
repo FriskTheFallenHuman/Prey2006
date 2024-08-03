@@ -26,15 +26,16 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/containers/HashTable.h"
-#include "framework/Session_local.h"
-#include "ui/DeviceContext.h"
-#include "ui/Window.h"
-#include "ui/UserInterfaceLocal.h"
-#include "ui/SliderWindow.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "ui/ListWindow.h"
+#include "../framework/Session_local.h"
+
+#include "DeviceContext.h"
+#include "Window.h"
+#include "UserInterfaceLocal.h"
+#include "SliderWindow.h"
+#include "ListWindow.h"
 
 // Number of pixels above the text that the rect starts
 static const int pixelOffset = 3;

@@ -26,9 +26,9 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/Common.h"
-#include "edit_public.h"
+#include "precompiled.h"
+#pragma hdrstop
+
 void	RadiantInit( void ) { common->Printf( "The level editor Radiant only runs on Win32\n" ); }
 void	RadiantShutdown( void ) {}
 void	RadiantRun( void ) {}
@@ -67,8 +67,6 @@ bool	GUIEditorHandleMessage( void *msg ) { return false; }
 
 void	DebuggerClientLaunch( void ) {}
 void	DebuggerClientInit( const char *cmdline ) { common->Printf( "The Script Debugger Client only runs on Win32\n" ); }
-
-void	PDAEditorInit( const idDict *spawnArgs ) { common->Printf( "The PDA editor only runs on Win32\n" ); }
 
 void	MaterialEditorInit() { common->Printf( "The Material editor only runs on Win32\n" ); }
 void	MaterialEditorPrintConsole( const char *text ) {}

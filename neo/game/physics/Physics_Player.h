@@ -29,8 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __PHYSICS_PLAYER_H__
 #define __PHYSICS_PLAYER_H__
 
-#include "physics/Physics_Actor.h"
-
 /*
 ===================================================================================
 
@@ -41,6 +39,39 @@ If you have questions concerning this license or the applicable additional terms
 
 ===================================================================================
 */
+
+//HUMANHEAD START: All these moved here from physics_player.cpp
+// movement parameters
+const float PM_STOPSPEED		= 100.0f;
+const float PM_SWIMSCALE		= 0.5f;
+const float PM_LADDERSPEED		= 100.0f;
+const float PM_STEPSCALE		= 1.0f;
+
+const float PM_ACCELERATE		= 10.0f;
+const float PM_AIRACCELERATE	= 1.0f;
+const float PM_WATERACCELERATE	= 4.0f;
+const float PM_FLYACCELERATE	= 8.0f;
+
+const float PM_FRICTION			= 6.0f;
+const float PM_AIRFRICTION		= 0.0f;
+const float PM_WATERFRICTION	= 1.0f;
+const float PM_FLYFRICTION		= 3.0f;
+const float PM_NOCLIPFRICTION	= 12.0f;
+
+const float MIN_WALK_NORMAL		= 0.7f;		// can't walk on very steep slopes
+const float OVERCLIP			= 1.001f;
+
+// movementFlags
+const int PMF_DUCKED			= 1;		// set when ducking
+const int PMF_JUMPED			= 2;		// set when the player jumped this frame
+const int PMF_STEPPED_UP		= 4;		// set when the player stepped up this frame
+const int PMF_STEPPED_DOWN		= 8;		// set when the player stepped down this frame
+const int PMF_JUMP_HELD			= 16;		// set when jump button is held down
+const int PMF_TIME_LAND			= 32;		// movementTime is time before rejump
+const int PMF_TIME_KNOCKBACK	= 64;		// movementTime is an air-accelerate only time
+const int PMF_TIME_WATERJUMP	= 128;		// movementTime is waterjump
+const int PMF_ALL_TIMES			= (PMF_TIME_WATERJUMP|PMF_TIME_LAND|PMF_TIME_KNOCKBACK);
+//HUMANHEAD END
 
 // movementType
 typedef enum {
@@ -58,10 +89,14 @@ typedef enum {
 	WATERLEVEL_HEAD
 } waterLevel_t;
 
-#define	MAXTOUCH					32
-
 typedef struct playerPState_s {
 	idVec3					origin;
+
+	//HUMANHEAD: aob - needed for saving state and vehicles
+	idMat3					axis;
+	idMat3					localAxis;
+	//HUMANHEAD END
+
 	idVec3					velocity;
 	idVec3					localOrigin;
 	idVec3					pushVelocity;
@@ -88,6 +123,7 @@ public:
 	void					SetMaxJumpHeight( const float newMaxJumpHeight );
 	void					SetMovementType( const pmtype_t type );
 	void					SetPlayerInput( const usercmd_t &cmd, const idAngles &newViewAngles );
+	virtual	//HUMANHEAD: Made virtual
 	void					SetKnockBack( const int knockBackTime );
 	void					SetDebugLevel( bool set );
 							// feed back from last physics frame
@@ -123,6 +159,7 @@ public:	// common physics interface
 
 	const idVec3 &			GetLinearVelocity( int id = 0 ) const;
 
+	virtual	//HUMANHEAD: Made virtual
 	void					SetPushed( int deltaTime );
 	const idVec3 &			GetPushedLinearVelocity( const int id = 0 ) const;
 	void					ClearPushedVelocity( void );
@@ -132,7 +169,7 @@ public:	// common physics interface
 	void					WriteToSnapshot( idBitMsgDelta &msg ) const;
 	void					ReadFromSnapshot( const idBitMsgDelta &msg );
 
-private:
+protected:	//HUMANHEAD
 	// player physics state
 	playerPState_t			current;
 	playerPState_t			saved;
@@ -158,7 +195,9 @@ private:
 	// walk movement
 	bool					walking;
 	bool					groundPlane;
-	trace_t					groundTrace;
+//HUMANHEAD: aob - moved to idPhysics_Actor
+//	trace_t					groundTrace;
+//HUMANHEAD END
 	const idMaterial *		groundMaterial;
 
 	// ladder movement
@@ -169,7 +208,13 @@ private:
 	waterLevel_t			waterLevel;
 	int						waterType;
 
-private:
+	idVec3		wishdir;	//HUMANHEAD
+
+protected://HUMANHEAD
+	// HUMANHEAD 
+	virtual	idVec3			DetermineJumpVelocity();
+	// HUMANHEAD END
+
 	float					CmdScale( const usercmd_t &cmd ) const;
 	void					Accelerate( const idVec3 &wishdir, const float wishspeed, const float accel );
 	bool					SlideMove( bool gravity, bool stepUp, bool stepDown, bool push );
@@ -177,13 +222,16 @@ private:
 	void					WaterJumpMove( void );
 	void					WaterMove( void );
 	void					FlyMove( void );
+	virtual	//HUMANHEAD: Made virtual
 	void					AirMove( void );
+	virtual	//HUMANHEAD: Made virtual
 	void					WalkMove( void );
 	void					DeadMove( void );
 	void					NoclipMove( void );
 	void					SpectatorMove( void );
 	void					LadderMove( void );
 	void					CorrectAllSolid( trace_t &trace, int contents );
+	virtual	//HUMANHEAD: Made virtual
 	void					CheckGround( void );
 	void					CheckDuck( void );
 	void					CheckLadder( void );

@@ -29,9 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GAME_CAMERA_H__
 #define __GAME_CAMERA_H__
 
-#include "idlib/math/Quat.h"
-
-#include "Entity.h"
 
 /*
 ===============================================================================
@@ -73,12 +70,14 @@ public:
 	virtual void			Stop( void );
 
 protected:
+	void					Event_SetFOV( float fieldOfView, float accelTime, float decelTime, float duration );				// HUMANHEAD pdm
 	void					Event_Activate( idEntity *activator );
 	void					Event_SetAttachments();
 	void					SetAttachment( idEntity **e, const char *p );
-	float					fov;
+	idInterpolateAccelDecelSine<float>	fov;
 	idEntity				*attachedTo;
 	idEntity				*attachedView;
+	bool					bPlayerBoundCamera;
 };
 
 

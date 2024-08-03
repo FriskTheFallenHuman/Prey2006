@@ -26,11 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/Common.h"
-#include "framework/KeyInput.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "sys/win32/win_local.h"
+#include "win_local.h"
 
 // DG: at least MinGW doesn't like the old scantokey tables, seems to be some kind of charcode-fuckup
 //     (no -finput-charset=ISO8859-1 doesn't seem to help, see #238) - so use plain numbers instead

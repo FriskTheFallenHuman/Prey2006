@@ -29,8 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __USERINTERFACE_H__
 #define __USERINTERFACE_H__
 
-#include "idlib/Dict.h"
-#include "ui/ListGUI.h"
+class idRectangle;
 
 /*
 ===============================================================================
@@ -104,6 +103,12 @@ public:
 								// Triggers the gui and runs the onTrigger scripts.
 	virtual void				Trigger( int time ) = 0;
 
+	// HUMANHEAD pdm: Translation effect
+	//virtual void				SetDemoGuiSource(const char *sourceName) = 0;
+	//virtual void				Translate(const char *fontname) = 0;
+	virtual void				CallStartup() = 0;
+	// HUMANHEAD END
+
 	virtual	void				ReadFromDemoFile( class idDemoFile *f ) = 0;
 	virtual	void				WriteToDemoFile( class idDemoFile *f ) = 0;
 
@@ -141,6 +146,15 @@ public:
 								// Returns true if gui exists.
 	virtual bool				CheckGui( const char *qpath ) const = 0;
 
+	// HUMANHEAD pdm: Retrieve usercmd
+	// Placed here simply because it is used for the GUIs, and this is within the engine.
+	// There were places in the game code (debugger) that need the fullscreen mouse coords
+	virtual void				GetMouseState( int *x, int *y, int *button, bool *down ) = 0;
+	virtual void				SetDebuggerInteractive(bool interactive) = 0;
+	virtual bool				DebuggerInteractive() = 0;
+	virtual void				StartWritingDemo( idDemoFile *demo ) = 0;
+	virtual void				StartReadingDemo( idDemoFile *demo ) = 0;
+	// HUMANHEAD END
 								// Allocates a new gui.
 	virtual idUserInterface *	Alloc( void ) const = 0;
 
@@ -148,7 +162,7 @@ public:
 	virtual void				DeAlloc( idUserInterface *gui ) = 0;
 
 								// Returns NULL if gui by that name does not exist.
-	virtual idUserInterface *	FindGui( const char *qpath, bool autoLoad = false, bool needUnique = false, bool forceUnique = false ) = 0;
+	virtual idUserInterface *	FindGui( const char *qpath, bool autoLoad = false, bool needUnique = false, bool forceNOTUnique = false ) = 0;
 
 								// Returns NULL if gui by that name does not exist.
 	virtual idUserInterface *	FindDemoGui( const char *qpath ) = 0;

@@ -26,9 +26,15 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "idlib/math/Simd_SSE3.h"
+#include "Simd_Generic.h"
+#include "Simd_MMX.h"
+#include "Simd_SSE.h"
+#include "Simd_SSE2.h"
+#include "Simd_SSE3.h"
+
 
 //===============================================================
 //
@@ -50,10 +56,6 @@ const char * idSIMD_SSE3::GetName( void ) const {
 #elif defined(_MSC_VER) && defined(_M_IX86)
 
 #include <xmmintrin.h>
-
-#include "idlib/geometry/JointTransform.h"
-#include "idlib/geometry/DrawVert.h"
-#include "idlib/math/Vector.h"
 
 #define SHUFFLEPS( x, y, z, w )		(( (x) & 3 ) << 6 | ( (y) & 3 ) << 4 | ( (z) & 3 ) << 2 | ( (w) & 3 ))
 #define R_SHUFFLEPS( x, y, z, w )	(( (w) & 3 ) << 6 | ( (z) & 3 ) << 4 | ( (y) & 3 ) << 2 | ( (x) & 3 ))

@@ -28,9 +28,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __roqParam_h__
 #define __roqParam_h__
 
-#include "idlib/containers/StrList.h"
-#include "framework/File.h"
-#include "tools/compilers/roqvq/gdefs.h"
+#include "gdefs.h"
 
 class roqParam
 {

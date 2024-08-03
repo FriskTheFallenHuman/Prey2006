@@ -29,21 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GAME_H__
 #define __GAME_H__
 
-#include "idlib/BitMsg.h"
-#include "idlib/Dict.h"
-#include "idlib/containers/StrList.h"
-#include "framework/UsercmdGen.h"
-#include "renderer/RenderWorld.h"
-#include "sound/sound.h"
-
-class idAASFileManager;
-class idCollisionModelManager;
-class idRenderSystem;
-class idRenderModelManager;
-class idUserInterface;
-class idUserInterfaceManager;
-class idNetworkSystem;
-
 /*
 ===============================================================================
 
@@ -188,6 +173,9 @@ public:
 
 	virtual void				GetBestGameType( const char* map, const char* gametype, char buf[ MAX_STRING_CHARS ] ) = 0;
 
+	// HUMANHEAD pdm: print game side memory statistics
+	virtual void				PrintMemInfo( MemInfo_t *mi ) = 0;
+
 	// Returns a summary of stats for a given client
 	virtual void				GetClientStats( int clientNum, char *data, const int len ) = 0;
 
@@ -197,6 +185,11 @@ public:
 	virtual bool				DownloadRequest( const char *IP, const char *guid, const char *paks, char urls[ MAX_STRING_CHARS ] ) = 0;
 
 	virtual void				GetMapLoadingGUI( char gui[ MAX_STRING_CHARS ] ) = 0;
+	
+	// HUMANHEAD mdl:  Check if we're deathwalking for game saves
+	virtual bool				PlayerIsDeathwalking( void ) = 0;
+	virtual unsigned int		GetTimePlayed( void ) = 0;
+	virtual void				ClearTimePlayed( void ) = 0;
 };
 
 extern idGame *					game;
@@ -262,6 +255,10 @@ public:
 	virtual int					ANIM_GetNumFrames( const idMD5Anim *anim );
 	virtual void				ANIM_CreateAnimFrame( const idRenderModel *model, const idMD5Anim *anim, int numJoints, idJointMat *frame, int time, const idVec3 &offset, bool remove_origin_offset );
 	virtual idRenderModel *		ANIM_CreateMeshForAnim( idRenderModel *model, const char *classname, const char *animname, int frame, bool remove_origin_offset );
+
+	// HUMANHEAD pdm
+	virtual const idMD5Anim *	ANIM_GetAnimFromArgs( const idDict *args, const char *animname );
+	// HUMANHEAD END
 
 	// Articulated Figure calls for AF editor and Radiant.
 	virtual bool				AF_SpawnEntity( const char *fileName );
@@ -363,7 +360,7 @@ public:
 ===============================================================================
 */
 
-const int GAME_API_VERSION		= 9;
+const int GAME_API_VERSION		= 10;
 
 typedef struct {
 
@@ -381,6 +378,12 @@ typedef struct {
 	idDeclManager *				declManager;			// declaration manager
 	idAASFileManager *			AASFileManager;			// AAS file manager
 	idCollisionModelManager *	collisionModelManager;	// collision model manager
+
+	// HUMANHEAD pdm
+#if INGAME_PROFILER_ENABLED
+	hhProfiler *				profiler;				// in-game profiler
+#endif	
+	// HUMANHEAD END
 
 } gameImport_t;
 

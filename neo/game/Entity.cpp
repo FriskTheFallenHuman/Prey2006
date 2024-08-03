@@ -26,25 +26,25 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/geometry/JointTransform.h"
-#include "idlib/LangDict.h"
-#include "framework/async/NetworkSystem.h"
-#include "framework/DeclEntityDef.h"
-#include "renderer/ModelManager.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/SysCvar.h"
-#include "physics/Physics_Parametric.h"
-#include "physics/Physics_Actor.h"
-#include "script/Script_Thread.h"
-#include "Fx.h"
-#include "AFEntity.h"
-#include "Player.h"
-#include "Mover.h"
-#include "WorldSpawn.h"
-#include "SmokeParticles.h"
 
-#include "Entity.h"
+#if GAMEPAD_SUPPORT	// VENOM BEGIN
+//#include "../sys/win32/win_local.h"
+#include "../sys/sys_public.h"
+#endif // VENOM END
+
+
+#include "Game_local.h"
+
+//HUMANHEAD: aob - needed for helper functions
+#include "../prey/ai_speech.h"
+#include "../prey/ai_reaction.h"
+//Needed so we can store what zones we are in.  Player resurrection needs this.
+#include "../prey/game_trigger.h"
+#include "../prey/game_zone.h"
+//HUMANHEAD END
 
 /*
 ===============================================================================
@@ -56,7 +56,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // overridable events
 const idEventDef EV_PostSpawn( "<postspawn>", NULL );
-const idEventDef EV_FindTargets( "<findTargets>", NULL );
+const idEventDef EV_FindTargets( "findTargets", NULL );	// HUMANHEAD pdm: made accessible for scripters
 const idEventDef EV_Touch( "<touch>", "et" );
 const idEventDef EV_GetName( "getName", NULL, 's' );
 const idEventDef EV_SetName( "setName", "s" );
@@ -73,7 +73,9 @@ const idEventDef EV_RemoveBinds( "removeBinds" );
 const idEventDef EV_SpawnBind( "<spawnbind>", NULL );
 const idEventDef EV_SetOwner( "setOwner", "e" );
 const idEventDef EV_SetModel( "setModel", "s" );
-const idEventDef EV_SetSkin( "setSkin", "s" );
+//HUMANHEAD: aob - changed setSkin's parm from "s" to "d" (pointer)
+const idEventDef EV_SetSkin( "<setSkin>", "d" );
+//const idEventDef EV_SetSkin( "setSkin", "s" );
 const idEventDef EV_GetWorldOrigin( "getWorldOrigin", NULL, 'v' );
 const idEventDef EV_SetWorldOrigin( "setWorldOrigin", "v" );
 const idEventDef EV_GetOrigin( "getOrigin", NULL, 'v' );
@@ -113,7 +115,7 @@ const idEventDef EV_GetFloatKey( "getFloatKey", "s", 'f' );
 const idEventDef EV_GetVectorKey( "getVectorKey", "s", 'v' );
 const idEventDef EV_GetEntityKey( "getEntityKey", "s", 'e' );
 const idEventDef EV_RestorePosition( "restorePosition" );
-const idEventDef EV_UpdateCameraTarget( "<updateCameraTarget>", NULL );
+const idEventDef EV_UpdateCameraTarget( "updateCameraTarget", NULL );		// HUMANHEAD pdm: made acessible to scripts
 const idEventDef EV_DistanceTo( "distanceTo", "E", 'f' );
 const idEventDef EV_DistanceToPoint( "distanceToPoint", "v", 'f' );
 const idEventDef EV_StartFx( "startFx", "s" );
@@ -121,7 +123,41 @@ const idEventDef EV_HasFunction( "hasFunction", "s", 'd' );
 const idEventDef EV_CallFunction( "callFunction", "s" );
 const idEventDef EV_SetNeverDormant( "setNeverDormant", "d" );
 
+// HUMANHEAD pdm: for optimization of feedingA
+const idEventDef EV_SetContents( "setContents", "d" );
+const idEventDef EV_SetClipMask( "setClipmask", "d" );
+
+const idEventDef EV_SetPortalCollision( "setPortalCollision", "d" ); // HUMANHEAD CJR
+
+//#if GAMEPAD_SUPPORT	// VENOM BEGIN
+const idEventDef EV_PlayRumbleEffect( "playRumble", "d", NULL );
+const idEventDef EV_StopRumbleEffect( "stopRumble", NULL, NULL );
+//#endif // VENOM END
+
 ABSTRACT_DECLARATION( idClass, idEntity )
+	// HUMANHEAD nla, aob
+	EVENT( EV_MoveToJoint,				idEntity::Event_MoveToJoint )
+	EVENT( EV_MoveToJointWeighted,		idEntity::Event_MoveToJointWeighted )
+	EVENT( EV_MoveJointToJoint,			idEntity::Event_MoveJointToJoint )
+	EVENT( EV_MoveJointToJointOffset,	idEntity::Event_MoveJointToJointOffset )
+	EVENT( EV_SetSkinByName,			idEntity::Event_SetSkinByName )
+	EVENT( EV_SpawnDebris,				idEntity::Event_SpawnDebris )
+	EVENT( EV_DamageEntity,				idEntity::Event_DamageEntity )
+	EVENT( EV_DelayDamageEntity,		idEntity::Event_DelayDamageEntity )
+	EVENT( EV_Dispose,					idEntity::Event_Dispose )
+	EVENT( EV_ResetGravity,				idEntity::Event_ResetGravity )
+	EVENT( EV_LoadReactions,			idEntity::Event_LoadReactions )
+	EVENT( EV_SetDeformation,			idEntity::Event_SetDeformation )
+	EVENT( EV_SetFloatKey,				idEntity::Event_SetFloatKey )
+	EVENT( EV_SetVectorKey,				idEntity::Event_SetVectorKey )
+	EVENT( EV_SetEntityKey,				idEntity::Event_SetEntityKey )
+	EVENT( EV_PlayerCanSee,				idEntity::Event_PlayerCanSee ) // cjr
+	EVENT( EV_SetContents,				idEntity::Event_SetContents )
+	EVENT( EV_SetClipMask,				idEntity::Event_SetClipmask )
+	EVENT( EV_SetPortalCollision,		idEntity::Event_SetPortalCollision ) // cjr
+	EVENT( EV_KillBox,					idEntity::Event_KillBox )			// pdm
+	EVENT( EV_Remove,					idEntity::Event_Remove )			// rww
+	// HUMANHEAD END
 	EVENT( EV_GetName,				idEntity::Event_GetName )
 	EVENT( EV_SetName,				idEntity::Event_SetName )
 	EVENT( EV_FindTargets,			idEntity::Event_FindTargets )
@@ -185,6 +221,11 @@ ABSTRACT_DECLARATION( idClass, idEntity )
 	EVENT( EV_HasFunction,			idEntity::Event_HasFunction )
 	EVENT( EV_CallFunction,			idEntity::Event_CallFunction )
 	EVENT( EV_SetNeverDormant,		idEntity::Event_SetNeverDormant )
+
+#if GAMEPAD_SUPPORT	// VENOM BEGIN
+	EVENT( EV_PlayRumbleEffect,		idEntity::Event_PlayRumbleEffect )
+	EVENT( EV_StopRumbleEffect,		idEntity::Event_StopRumbleEffect )
+#endif // VENOM END
 END_CLASS
 
 /*
@@ -203,6 +244,9 @@ void UpdateGuiParms( idUserInterface *gui, const idDict *args ) {
 	}
 	gui->SetStateBool( "noninteractive",  args->GetBool( "gui_noninteractive" ) ) ;
 	gui->StateChanged( gameLocal.time );
+	// HUMANHEAD pdm: Allow guis to initialize after all the gui_parms are setup
+	gui->CallStartup();
+	// HUMANHEAD END
 }
 
 /*
@@ -268,12 +312,22 @@ void idGameEdit::ParseSpawnArgsToRenderEntity( const idDict *args, renderEntity_
 
 	// get the rotation matrix in either full form, or single angle form
 	if ( !args->GetMatrix( "rotation", "1 0 0 0 1 0 0 0 1", renderEntity->axis ) ) {
+		//HUMANHEAD: aob - so editor 'up' and 'down' buttons work on entities
+		idAngles angles( ang_zero );
 		angle = args->GetFloat( "angle" );
-		if ( angle != 0.0f ) {
-			renderEntity->axis = idAngles( 0.0f, angle, 0.0f ).ToMat3();
-		} else {
-			renderEntity->axis.Identity();
+		if( angle == -1 ) {
+			angles[ 0 ] = -90.0f;
 		}
+		else if( angle == -2 ) {
+			angles[ 0 ] = 90.0f;
+		}
+		else {
+			angles[ 0 ] = args->GetFloat( "pitch" );
+			angles[ 1 ] = angle;
+			angles[ 2 ] = args->GetFloat( "roll" );
+		}
+		//HUMANHEAD END
+		renderEntity->axis = angles.ToMat3();
 	}
 
 	renderEntity->referenceSound = NULL;
@@ -292,6 +346,28 @@ void idGameEdit::ParseSpawnArgsToRenderEntity( const idDict *args, renderEntity_
 	renderEntity->shaderParms[ 9 ]					= args->GetFloat( "shaderParm9", "0" );
 	renderEntity->shaderParms[ 10 ]					= args->GetFloat( "shaderParm10", "0" );
 	renderEntity->shaderParms[ 11 ]					= args->GetFloat( "shaderParm11", "0" );
+
+	// HUMANHEAD pdm: added scale available at spawn time (should be visible in editor, but isn't)
+	renderEntity->shaderParms[ 12 ]					= args->GetFloat( "shaderParm12", "0" );
+	renderEntity->onlyVisibleInSpirit				= args->GetBool( "onlyVisibleInSpirit" );
+	renderEntity->onlyInvisibleInSpirit				= args->GetBool( "onlyInvisibleInSpirit" );	// tmj
+	renderEntity->lowSkippable						= args->GetBool( "lowSkippable" );	// bjk
+	if(renderEntity->onlyVisibleInSpirit && renderEntity->onlyInvisibleInSpirit) {
+		gameLocal.Warning( "Entity is both visible and invisible in spiritwalk: %s", args->GetString( "name" ));
+	}
+
+	if (args->FindKey("deformType")) {
+		int deformType = args->GetInt("deformType");
+		float parm1 = args->GetFloat("deformParm1");
+		float parm2 = args->GetFloat("deformParm2");
+		SetDeformationOnRenderEntity(renderEntity, deformType, parm1, parm2);
+	}
+
+	if (args->FindKey("scale")) {
+		renderEntity->shaderParms[SHADERPARM_ANY_DEFORM] = DEFORMTYPE_SCALE;
+		renderEntity->shaderParms[SHADERPARM_ANY_DEFORM_PARM1] = args->GetFloat("scale", "0");
+	}
+	// HUMANHEAD END
 
 	// check noDynamicInteractions flag
 	renderEntity->noDynamicInteractions = args->GetBool( "noDynamicInteractions" );
@@ -397,7 +473,7 @@ void idEntity::UpdateChangeableSpawnArgs( const idDict *source ) {
 idEntity::idEntity
 ================
 */
-idEntity::idEntity() {
+idEntity::idEntity() : reactions(1) { // HUMANHEAD JRM
 
 	entityNumber	= ENTITYNUM_NONE;
 	entityDefNumber = -1;
@@ -427,14 +503,35 @@ idEntity::idEntity() {
 	memset( PVSAreas, 0, sizeof( PVSAreas ) );
 	numPVSAreas		= -1;
 
+	// HUMANHEAD
+	spawnHealth		= 0;				// jrm
+	lastDamageTime	= -1;				// jrm
+	lastHealTime	= -1;				// jrm
+	thinkMS			= 0.0f;				// pdm
+	dormantMS		= 0.0f;				// pdm
+	InitCoreStateInfo();				// aob
+	lastTimeSoundPlayed = NULL;
+
+	nextCallbackTime = 0;
+	animCallback = NULL;
+	// HUMANHEAD END
+
+	// HUMANHEAD pdm: fixes uninitialized warnings in memory builds
+	pushes = false;
+	pushCosine = 0.0f;
+	// HUMANHEAD END
+
 	memset( &fl, 0, sizeof( fl ) );
-	fl.neverDormant	= true;			// most entities never go dormant
+	fl.neverDormant	= false;			// HUMANHEAD pdm: default to false, like other init code does
+	fl.applyDamageEffects = true;		// HUMANHEAD cjr: default to true, since most entities need damage effects
 
 	memset( &renderEntity, 0, sizeof( renderEntity ) );
 	modelDefHandle	= -1;
 	memset( &refSound, 0, sizeof( refSound ) );
 
 	mpGUIState = -1;
+
+	woundManager = NULL; // HUMANHEAD mdl:  So it doesn't crash on loadgame from a bad pointer
 }
 
 /*
@@ -504,6 +601,25 @@ void idEntity::Spawn( void ) {
 		UpdateGuiParms( renderEntity.gui[ i ], &spawnArgs );
 	}
 
+	// HUMANHEAD
+	fl.applyDamageEffects = spawnArgs.GetBool( "applyDamageEffects", "1" );	// HUMANHEAD cjr: default to true, since most entities need damage effects
+	fl.ignoreGravityZones = spawnArgs.GetBool( "ignoreGravityZones" );	// HUMANHEAD pdm
+	fl.touchTriggers = spawnArgs.GetBool("touch_triggers");	// nla
+	fl.canBeTractored = spawnArgs.GetBool("ShuttleAttachable");
+	fl.tooHeavyForTractor = spawnArgs.GetBool("TooHeavyForTractor");
+	fl.isTractored = false; //rww
+	fl.onlySpiritWalkTouch = spawnArgs.GetBool("onlySpiritWalkTouch");
+	fl.allowSpiritWalkTouch = gameLocal.isMultiplayer ? true : spawnArgs.GetBool("allowSpiritWalkTouch"); //rww - (mpspirittouching)
+	fl.noPortal = spawnArgs.GetBool( "noPortal", "0" ); // cjr: if the entity should be allowed to portal
+	fl.noJawFlap = spawnArgs.GetBool( "noJawFlap" );
+	fl.acceptsWounds = spawnArgs.GetBool( "accepts_wounds", "1" );
+	fl.accurateGuiTrace = spawnArgs.GetBool( "accurateguitrace" );
+	// HUMANHEAD END
+
+	//HUMANHEAD PCF rww 05/27/06 - force pusher sort
+	fl.forcePusherSort = spawnArgs.GetBool("forcePusherSort");
+	//HUMANHEAD END
+
 	fl.solidForTeam = spawnArgs.GetBool( "solidForTeam", "0" );
 	fl.neverDormant = spawnArgs.GetBool( "neverDormant", "0" );
 	fl.hidden = spawnArgs.GetBool( "hide", "0" );
@@ -543,6 +659,23 @@ void idEntity::Spawn( void ) {
 
 	health = spawnArgs.GetInt( "health" );
 
+	// HUMANHEAD jrm
+	spawnHealth = health;
+
+	// Load our reaction defs next frame if we are starting up. worldAI ent must be loaded before we can load reactions
+	// Only post event if we have some kind of reaction specified
+	if(spawnArgs.MatchPrefix("def_reaction") != NULL) {
+		if ( gameLocal.GameState() == GAMESTATE_STARTUP ) {
+			PostEventMS( &EV_LoadReactions, 0);
+		}
+		else {
+			LoadReactions();
+		}
+	}
+
+	woundManager = NULL;
+	// HUMANHEAD END
+
 	InitDefaultPhysics( origin, axis );
 
 	SetOrigin( origin );
@@ -570,6 +703,12 @@ void idEntity::Spawn( void ) {
 
 		ConstructScriptObject();
 	}
+
+	// HUMANHEAD:
+	SetDeformCallback();	// This needed to be after the SetModel call above, where callback is cleared
+	pushes = spawnArgs.GetBool( "pushes", "1" );
+	pushCosine = spawnArgs.GetFloat( "push_cosine", ".707" );
+	// HUMANHEAD end
 }
 
 /*
@@ -589,15 +728,36 @@ idEntity::~idEntity( void ) {
 		networkSystem->ServerSendReliableMessage( -1, msg );
 	}
 
+	//HUMANHEAD: aob
+	SAFE_DELETE_PTR( woundManager );
+	//HUMANHEAD END
+
 	DeconstructScriptObject();
 	scriptObject.Free();
 
 	if ( thinkFlags ) {
 		BecomeInactive( thinkFlags );
 	}
+	// nla
+	if ( lastTimeSoundPlayed ) {
+		delete lastTimeSoundPlayed;
+		lastTimeSoundPlayed = NULL;
+	}
+	// JRM delete reactions
+	reactions.DeleteContents(TRUE);
+	//HUMANHEAD END
+
 	activeNode.Remove();
 
 	Signal( SIG_REMOVED );
+
+#ifdef _DEBUG //HUMANHEAD rww - check for stray clipModels
+#if !GOLD
+	if (GetPhysics() && gameLocal.clip.CheckClipEntMatch(NULL, GetPhysics()->GetClipModel(), this)) {
+		gameLocal.Warning("Entity '%s' (num %i) left a lingering clipModel!", GetName(), entityNumber);
+	}
+#endif
+#endif //HUMANHEAD END
 
 	// we have to set back the default physics object before unbinding because the entity
 	// specific physics object might be an entity variable and as such could already be destroyed.
@@ -692,6 +852,17 @@ void idEntity::Save( idSaveGame *savefile ) const {
 	}
 
 	savefile->WriteInt( mpGUIState );
+
+	// HUMANHEAD mdl
+	savefile->WriteInt( spawnHealth );
+	savefile->WriteBool( pushes );
+	savefile->WriteFloat( pushCosine );
+
+	savefile->WriteInt( reactions.Num() );
+	for ( i = 0; i < reactions.Num(); i++ ) {
+		reactions[i]->Save( savefile );
+	}
+	// HUMANHEAD END
 }
 
 /*
@@ -778,6 +949,30 @@ void idEntity::Restore( idRestoreGame *savefile ) {
 	if ( modelDefHandle != -1 ) {
 		modelDefHandle = gameRenderWorld->AddEntityDef( &renderEntity );
 	}
+
+	// HUMANHEAD mdl
+	savefile->ReadInt( spawnHealth );
+	savefile->ReadBool( pushes );
+	savefile->ReadFloat( pushCosine );
+
+	// Restore reactions
+	reactions.DeleteContents( true );
+	savefile->ReadInt( num );
+	reactions.SetNum( num );
+	for ( i = 0; i < num; i++ ) {
+		reactions[i] = new hhReaction();
+		reactions[i]->Restore( savefile );
+	}
+
+	// Set the appropriate deform callback
+	animCallback = NULL;
+	SetDeformCallback();
+
+	lastHealTime = -1;
+	lastDamageTime = -1;
+	SAFE_DELETE_PTR( lastTimeSoundPlayed );
+	nextCallbackTime = 0;
+	// HUMANHEAD END
 }
 
 /*
@@ -836,6 +1031,19 @@ idEntity::Think
 */
 void idEntity::Think( void ) {
 	RunPhysics();
+
+	// HUMANHEAD pdm
+	if (thinkFlags & TH_TICKER) {
+		PROFILE_SCOPE("Tickers", PROFMASK_NORMAL);	// HUMANHEAD pdm
+		Ticker();
+	}
+	// nla - Added logic to allow things to touch triggers
+	if ( fl.touchTriggers ) {
+		PROFILE_SCOPE("Touch Triggers", PROFMASK_NORMAL);	// HUMANHEAD pdm
+		TouchTriggers();
+	}
+	// HUMANHEAD END
+
 	Present();
 }
 
@@ -853,10 +1061,25 @@ bool idEntity::DoDormantTests( void ) {
 		return false;
 	}
 
+	// HUMANHEAD pdm: allow skip of dormant tests
+	if (g_nodormant.GetBool()) {
+		return false;
+	}
+
 	// if the monster area is not topologically connected to a player
 	if ( !gameLocal.InPlayerConnectedArea( this ) ) {
 		if ( dormantStart == 0 ) {
 			dormantStart = gameLocal.time;
+			// HUMANHEAD JRM
+			if( g_showDormant.GetBool() )	{
+				gameLocal.Printf( "\n %s (%s)  Just went dormant!\n", name.c_str(), (const char*)this->GetClassname());
+				gameRenderWorld->DrawText( name.c_str(), GetOrigin(), 1.0f, colorYellow, gameLocal.GetLocalPlayer()->viewAngles.ToMat3(), 1, 3000 );
+				if( GetPhysics() ) {
+					gameRenderWorld->DebugBox( colorMdGrey, idBox(GetPhysics()->GetBounds(), GetOrigin(), GetAxis()), 3000 );
+				}
+			}
+			// HUMANHEAD END
+
 		}
 		if ( gameLocal.time - dormantStart < DELAY_DORMANT_TIME ) {
 			// just got closed off, don't go dormant yet
@@ -877,6 +1100,51 @@ bool idEntity::DoDormantTests( void ) {
 	dormantStart = 0;
 	fl.hasAwakened = true;		// only go dormant when area closed off now, not just out of PVS
 
+//CJRMERGE: See if this code still makes sense.  Id changed their dormant
+// code above quite a bit.  Don't know where/if this fits.
+#if 0
+	// HUMANHEAD CJR:  Robust dormant check
+	if ( ( numAreas > 1 && fl.robustDormant ) || g_robustDormantAll.GetBool() ) {
+		for( int i = 0; i < numAreas; i++ ) {
+			for( int j = 0; j < numPlayerAreas; j++ ) {
+				if ( gameRenderWorld->AreasAreConnected( areas[i], playerAreas[j], PS_BLOCK_VIEW ) ) { // Areas are connected
+					// the monster area is topologically connected to the player,
+					// but if the monster hasn't been woken up before, do the more precise
+					// PVS check
+					if ( !fl.hasAwakened ) {
+						if ( !gameLocal.InPlayerPVS( this ) ) {
+							return true;		// stay dormant
+						}
+					}
+
+					// wake up
+					dormantStart = 0;
+					fl.hasAwakened = true;		// only go dormant when area closed off now, not just out of PVS
+					return false;
+				}
+			}
+		}
+		// The areas are not connected, go dormant
+		if ( dormantStart == 0 ) {
+			dormantStart = gameLocal.time;
+			// HUMANHEAD JRM
+			if( g_showDormant.GetBool() )	{
+				gameLocal.Printf( "\n %s (%s)  Just went dormant!\n", name.c_str(), (const char*)this->GetClassname());
+				gameRenderWorld->DrawText( name.c_str(), GetOrigin(), 1.0f, colorYellow, gameLocal.GetLocalPlayer()->viewAngles.ToMat3(), 1, 3000 );
+				if( GetPhysics() ) {
+					gameRenderWorld->DebugBox( colorMdGrey, idBox(GetPhysics()->GetBounds(), GetOrigin(), GetAxis()), 3000 );
+				}
+			}
+			// HUMANHEAD END
+		}
+		if ( gameLocal.time - dormantStart < DELAY_DORMANT_TIME ) {
+			// just got closed off, don't go dormant yet
+			return false;
+		}
+		return true;
+	} // HUMANHEAD END
+#endif
+
 	return false;
 }
 
@@ -889,6 +1157,7 @@ off from the player can skip all of their work
 ================
 */
 bool idEntity::CheckDormant( void ) {
+	PROFILE_SCOPE("Dormant Tests", PROFMASK_NORMAL);
 	bool dormant;
 
 	dormant = DoDormantTests();
@@ -1015,8 +1284,10 @@ void idEntity::SetShaderParm( int parmnum, float value ) {
 		return;
 	}
 
-	renderEntity.shaderParms[ parmnum ] = value;
-	UpdateVisuals();
+	if (renderEntity.shaderParms[ parmnum ] != value) {		// HUMANHEAD pdm
+		renderEntity.shaderParms[ parmnum ] = value;
+		UpdateVisuals();
+	}														// HUMANHEAD pdm
 }
 
 /*
@@ -1184,6 +1455,11 @@ idEntity::Show
 void idEntity::Show( void ) {
 	if ( IsHidden() ) {
 		fl.hidden = false;
+
+		//HUMANHEAD: aob - getting guis back as they are set to NULL in Hide's FreeModelDef
+		RestoreGUIs();
+		//HUMANHEAD END
+
 		UpdateVisuals();
 	}
 }
@@ -1191,6 +1467,7 @@ void idEntity::Show( void ) {
 /*
 ================
 idEntity::UpdateModelTransform
+NOTE: Please notify nla if this changes. Is used in hhModelProxy::SetOriginAndAxis
 ================
 */
 void idEntity::UpdateModelTransform( void ) {
@@ -1236,6 +1513,9 @@ idEntity::UpdateVisuals
 void idEntity::UpdateVisuals( void ) {
 	UpdateModel();
 	UpdateSound();
+
+	// HUMANHEAD pdm: Handle deform callbacks after UpdateModel(), since callback is reset in there
+	SetDeformCallback();
 }
 
 /*
@@ -1255,6 +1535,18 @@ void idEntity::UpdatePVSAreas( void ) {
 	// the first MAX_PVS_AREAS may not be visible to a network client and as a result the particle system may not show up when it should
 	if ( localNumPVSAreas > MAX_PVS_AREAS ) {
 		localNumPVSAreas = gameLocal.pvs.GetPVSAreas( idBounds( modelAbsBounds.GetCenter() ).Expand( 64.0f ), localPVSAreas, sizeof( localPVSAreas ) / sizeof( localPVSAreas[0] ) );
+
+		//HUMANHEAD rww
+		if (gameLocal.isMultiplayer) { //only care for mp's big static models
+			if (!localNumPVSAreas) { //try from the renderEntity origin if the bounds center is bad
+				localNumPVSAreas = gameLocal.pvs.GetPVSAreas( idBounds( renderEntity.origin ).Expand( 256.0f ), localPVSAreas, sizeof( localPVSAreas ) / sizeof( localPVSAreas[0] ) );
+			}
+
+			if (localNumPVSAreas > MAX_PVS_AREAS) { //this could still happen in theory if something is placed right on some kind of horrible area cluster
+				gameLocal.Warning("Entity '%s' at (%f %f %f) would exceed bordering 4 areas even with a tiny bounds!", GetName(), GetOrigin().x, GetOrigin().y, GetOrigin().z);
+			}
+		}
+		//HUMANHEAD END
 	}
 
 	for ( numPVSAreas = 0; numPVSAreas < MAX_PVS_AREAS && numPVSAreas < localNumPVSAreas; numPVSAreas++ ) {
@@ -1395,6 +1687,7 @@ Present is called to allow entities to generate refEntities, lights, etc for the
 ================
 */
 void idEntity::Present( void ) {
+	PROFILE_SCOPE("Present", PROFMASK_NORMAL);
 
 	if ( !gameLocal.isNewFrame ) {
 		return;
@@ -1447,12 +1740,13 @@ int idEntity::GetModelDefHandle( void ) {
 idEntity::UpdateRenderEntity
 ================
 */
-bool idEntity::UpdateRenderEntity( renderEntity_s *renderEntity, const renderView_t *renderView ) {
+bool idEntity::UpdateRenderEntity( renderEntity_s *renderEntity, const renderView_t *renderView ) const {
 	if ( gameLocal.inCinematic && gameLocal.skipCinematic ) {
 		return false;
 	}
 
-	idAnimator *animator = GetAnimator();
+	//HUMANHEAD: nla - changed idAnimator to hhAnimator
+	hhAnimator *animator = (hhAnimator *)GetAnimator();
 	if ( animator ) {
 		return animator->CreateFrame( gameLocal.time, false );
 	}
@@ -1485,7 +1779,19 @@ idEntity::GetAnimator
 Subclasses will be responsible for allocating animator.
 ================
 */
-idAnimator *idEntity::GetAnimator( void ) {
+// HUMANHEAD nla: changed to return hhAnimator
+hhAnimator *idEntity::GetAnimator( void ) {
+	return NULL;
+}
+
+/*
+================
+idEntity::GetAnimator
+
+// HUMANHEAD: aob - added this const version
+================
+*/
+const hhAnimator *idEntity::GetAnimator( void ) const {
 	return NULL;
 }
 
@@ -1566,6 +1872,24 @@ bool idEntity::StartSound( const char *soundName, const s_channelType channel, i
 		return true;
 	}
 
+	// HUMANHEAD nla - Check if this sound should be played every X seconds
+	float minInterval;
+	int   lastPlayed;
+	//gameLocal.Printf(" Checking for sound %s\n", soundName );
+	if ( spawnArgs.GetFloat( va( "min_%s", soundName ), "0", minInterval ) &&
+		 minInterval > 0 ) {
+		//gameLocal.Printf( "Got min of %.2f\n", minInterval );
+		if ( GetLastTimeSoundPlayed()->GetInt( soundName, "-1", lastPlayed ) ) {
+			// gameLocal.Printf( "Had last time played %d!\n", lastPlayed );
+			if ( gameLocal.time - minInterval * 1000 < lastPlayed ) {
+				// gameLocal.Printf("I'm outta here!\n" );
+				return( false );
+			}
+		}
+		GetLastTimeSoundPlayed()->SetInt( soundName, gameLocal.time );
+	}
+	// HUMANHEAD END
+
 	shader = declManager->FindSound( sound );
 	return StartSoundShader( shader, channel, soundShaderFlags, broadcast, length );
 }
@@ -1599,7 +1923,7 @@ bool idEntity::StartSoundShader( const idSoundShader *shader, const s_channelTyp
 		msg.BeginWriting();
 		msg.WriteInt( gameLocal.ServerRemapDecl( -1, DECL_SOUND, shader->Index() ) );
 		msg.WriteByte( channel );
-		ServerSendEvent( EVENT_STARTSOUNDSHADER, &msg, false, -1 );
+		ServerSendEvent( EVENT_STARTSOUNDSHADER, &msg, false, -1, -1, true ); //HUMANHEAD rww - flag as unreliable
 	}
 
 	// set a random value for diversity unless one was parsed from the entity
@@ -1614,6 +1938,9 @@ bool idEntity::StartSoundShader( const idSoundShader *shader, const s_channelTyp
 		refSound.referenceSound = gameSoundWorld->AllocSoundEmitter();
 	}
 
+	//HUMANHEAD: aob - need to make sure the renderer gets updated with new referenceSound
+	UpdateVisuals();
+	//HUMANHEAD END
 	UpdateSound();
 
 	len = refSound.referenceSound->StartSound( shader, channel, diversity, soundShaderFlags );
@@ -1644,7 +1971,8 @@ void idEntity::StopSound( const s_channelType channel, bool broadcast ) {
 		msg.Init( msgBuf, sizeof( msgBuf ) );
 		msg.BeginWriting();
 		msg.WriteByte( channel );
-		ServerSendEvent( EVENT_STOPSOUNDSHADER, &msg, false, -1 );
+		ServerSendEvent( EVENT_STOPSOUNDSHADER, &msg, false, -1 );	//HUMANHEAD rww - could this be made unreliable?
+																	//probably don't want to take the chance of leaving looping sounds on the client.
 	}
 
 	if ( refSound.referenceSound ) {
@@ -2028,7 +2356,13 @@ void idEntity::RemoveBinds( void ) {
 		next = ent->teamChain;
 		if ( ent->bindMaster == this ) {
 			ent->Unbind();
-			ent->PostEventMS( &EV_Remove, 0 );
+			//HUMANHEAD: aob - added noRemoveWhenUnbound flag
+			if( !ent->fl.noRemoveWhenUnbound ) {
+				ent->PostEventMS( &EV_Remove, 0 );
+				if (gameLocal.isClient) {
+					ent->Hide(); //HUMANHEAD rww
+				}
+			}
 			next = teamChain;
 		}
 	}
@@ -2254,8 +2588,13 @@ bool idEntity::GetMasterPosition( idVec3 &masterOrigin, idMat3 &masterAxis ) con
 			masterOrigin = bindMaster->GetPhysics()->GetOrigin( bindBody );
 			masterAxis = bindMaster->GetPhysics()->GetAxis( bindBody );
 		} else {
+			//HUMANHEAD: aob
+#ifdef HUMANHEAD
+			GetMasterDefaultPosition(masterOrigin, masterAxis);
+#else
 			masterOrigin = bindMaster->renderEntity.origin;
 			masterAxis = bindMaster->renderEntity.axis;
+#endif
 		}
 		return true;
 	} else {
@@ -2523,15 +2862,6 @@ void idEntity::RestorePhysics( idPhysics *phys ) {
 
 /*
 ================
-idEntity::GetPhysics
-================
-*/
-idPhysics *idEntity::GetPhysics( void ) const {
-	return physics;
-}
-
-/*
-================
 idEntity::RunPhysics
 ================
 */
@@ -2539,6 +2869,7 @@ bool idEntity::RunPhysics( void ) {
 	int			i, reachedTime, startTime, endTime;
 	idEntity *	part, *blockedPart, *blockingEntity;
 	bool		moved;
+	PROFILE_SCOPE("Physics", PROFMASK_NORMAL|PROFMASK_PHYSICS);
 
 	// don't run physics if not enabled
 	if ( !( thinkFlags & TH_PHYSICS ) ) {
@@ -2715,13 +3046,15 @@ idEntity::SetAxis
 ================
 */
 void idEntity::SetAxis( const idMat3 &axis ) {
-
+#if HUMANHEAD//aob: hhAnimDriven have there physics inherit from idPhysics_Actor and its not an actor
+	GetPhysics()->SetAxis( axis );
+#else
 	if ( GetPhysics()->IsType( idPhysics_Actor::Type ) ) {
 		static_cast<idActor *>(this)->viewAxis = axis;
 	} else {
 		GetPhysics()->SetAxis( axis );
 	}
-
+#endif
 	UpdateVisuals();
 }
 
@@ -2860,7 +3193,9 @@ idEntity::RemoveContactEntity
 ================
 */
 void idEntity::RemoveContactEntity( idEntity *ent ) {
-	GetPhysics()->RemoveContactEntity( ent );
+	if( GetPhysics() ) { // HUMANHEAD mdl:  Added check to prevent crash on error during load
+		GetPhysics()->RemoveContactEntity( ent );
+	}
 }
 
 
@@ -2985,6 +3320,40 @@ void idEntity::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 		return;
 	}
 
+	//HUMANHEAD rww - clientside projectiles and stuff can get in here
+	if (gameLocal.isClient) {
+		return;
+	}
+	//HUMANHEAD END
+
+	// HUMANHEAD JRM
+	lastDamageTime = gameLocal.time;
+
+	// HUMANHEAD PDM: Immune to certain damage
+	const idKeyValue *kv = spawnArgs.MatchPrefix("immunity");
+	while( kv && kv->GetValue().Length() ) {
+		if ( !kv->GetValue().Icmp(damageDefName) ) {
+			return;
+		}
+		kv = spawnArgs.MatchPrefix("immunity", kv);
+	}
+
+	if (spawnArgs.MatchPrefix("onlyDamagedBy") != NULL) {
+		bool match = false;
+		const idKeyValue *kv = spawnArgs.MatchPrefix("onlyDamagedBy");
+		while( kv && kv->GetValue().Length() ) {
+			if ( !kv->GetValue().Icmp(damageDefName) ) {
+				match = true;
+				break;
+			}
+			kv = spawnArgs.MatchPrefix("onlyDamagedBy", kv);
+		}
+		if (!match) {
+			return;
+		}
+	}
+	// HUMANHEAD END
+
 	if ( !inflictor ) {
 		inflictor = gameLocal.world;
 	}
@@ -3022,6 +3391,50 @@ void idEntity::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 idEntity::AddDamageEffect
 ================
 */
+#ifdef HUMANHEAD
+void idEntity::AddDamageEffect( const trace_t &collision, const idVec3 &velocity, const char *damageDefName, bool broadcast ) { //HUMANHEAD rww - added broadcast
+	PROFILE_SCOPE("AddDamageEffect", PROFMASK_COMBAT);
+	jointHandle_t jointNum;
+	idVec3 dir, localOrigin, localNormal, localDir, localImpulse;
+
+	if (collision.c.material == NULL) {
+		return;
+	}
+
+	const idDeclEntityDef *def = gameLocal.FindEntityDef( damageDefName, false );
+	if ( def == NULL ) {
+		return;
+	}
+
+	GetWoundManager()->DetermineWoundInfo( collision, velocity, jointNum, localOrigin, localNormal, localDir );
+	localNormal.Normalize();	// HUMANHEAD pdm: Collision system introduces some slightly non normalized normals
+	localDir.Normalize();		// HUMANHEAD pdm: Collision system introduces some slightly non normalized normals
+
+	if (gameLocal.isServer && broadcast) { //rww - let's not use the reroute nonsense, it's needlessly inefficient
+		idBitMsg	msg;
+		byte		msgBuf[MAX_EVENT_PARAM_SIZE];
+
+		msg.Init( msgBuf, sizeof( msgBuf ) );
+		msg.BeginWriting();
+		msg.WriteShort( (int)jointNum );
+		msg.WriteFloat( localOrigin[0] );
+		msg.WriteFloat( localOrigin[1] );
+		msg.WriteFloat( localOrigin[2] );
+		msg.WriteDir( localNormal, 24 );
+		msg.WriteDir( localDir, 24 );
+
+		msg.WriteShort( def->Index() );
+		msg.WriteShort( collision.c.material->Index() );
+		//ServerSendEvent(EVENT_ADD_WOUND, &msg, false, -1, -1);
+		ServerSendPVSEvent(EVENT_ADD_WOUND, &msg, collision.endpos);
+	}
+
+	//rww - call directly (unless dedicated or otherwise missing a local player)
+	if (gameLocal.GetLocalPlayer()) {
+		AddLocalMatterWound( jointNum, localOrigin, localNormal, localDir, def->Index(), collision.c.material );
+	}
+}
+#else
 void idEntity::AddDamageEffect( const trace_t &collision, const idVec3 &velocity, const char *damageDefName ) {
 	const char *sound, *decal, *key;
 
@@ -3056,6 +3469,7 @@ void idEntity::AddDamageEffect( const trace_t &collision, const idVec3 &velocity
 		}
 	}
 }
+#endif	// HUMANHEAD
 
 /*
 ============
@@ -3349,6 +3763,9 @@ bool idEntity::HandleGuiCommands( idEntity *entityGui, const char *cmds ) {
 		idLexer src;
 		idToken token, token2, token3, token4;
 		src.LoadMemory( cmds, strlen( cmds ), "guiCommands" );
+
+		entityGui->ClearTalonTargetType(); // HUMANHEAD CJR:  When used, the gui clears the target type so Talon no longer squawks on the gui
+
 		while( 1 ) {
 
 			if ( !src.ReadToken( &token ) ) {
@@ -3360,6 +3777,7 @@ bool idEntity::HandleGuiCommands( idEntity *entityGui, const char *cmds ) {
 			}
 
 			if ( token.Icmp( "activate" ) == 0 ) {
+				entityGui->ConsoleActivated();	// HUMANHEAD
 				bool targets = true;
 				if ( src.ReadToken( &token2 ) ) {
 					if ( token2 == ";" ) {
@@ -3383,6 +3801,14 @@ bool idEntity::HandleGuiCommands( idEntity *entityGui, const char *cmds ) {
 				continue;
 			}
 
+			// HUMANHEAD pdm
+			if ( token.Icmp( "delayedactivate" ) == 0 ) {
+				if ( src.ReadToken( &token2 ) ) {
+					entityGui->ConsoleActivated();
+					entityGui->PostEventMS(&EV_ActivateTargets, atoi(token2), this);
+				}
+				continue;
+			}
 
 			if ( token.Icmp( "runScript" ) == 0 ) {
 				if ( src.ReadToken( &token2 ) ) {
@@ -3437,6 +3863,7 @@ bool idEntity::HandleGuiCommands( idEntity *entityGui, const char *cmds ) {
 				continue;
 			}
 
+/* HUMANHEAD pdm: not used
 			if ( !token.Icmp( "turkeyscore" ) ) {
 				if ( src.ReadToken( &token2 ) && entityGui->renderEntity.gui[0] ) {
 					int score = entityGui->renderEntity.gui[0]->State().GetInt( "score" );
@@ -3449,7 +3876,7 @@ bool idEntity::HandleGuiCommands( idEntity *entityGui, const char *cmds ) {
 				}
 				continue;
 			}
-
+*/
 
 			// handy for debugging GUI stuff
 			if ( !token.Icmp( "print" ) ) {
@@ -3470,7 +3897,8 @@ bool idEntity::HandleGuiCommands( idEntity *entityGui, const char *cmds ) {
 			if ( !HandleSingleGuiCommand( entityGui, &src ) ) {
 				// not handled there see if entity or any of its targets can handle it
 				// this will only work for one target atm
-				if ( entityGui->HandleSingleGuiCommand( entityGui, &src ) ) {
+				// HUMANHEAD: Changed to pass in player instead of the entityGui
+				if ( entityGui->HandleSingleGuiCommand( this, &src ) ) {
 					continue;
 				}
 
@@ -3487,6 +3915,11 @@ bool idEntity::HandleGuiCommands( idEntity *entityGui, const char *cmds ) {
 					// not handled
 					common->DPrintf( "idEntity::HandleGuiCommands: '%s' not handled\n", token.c_str() );
 					src.ReadToken( &token );
+
+					// HUMANHEAD pdm: Unrecognized command, try giving it to the console:
+					gameLocal.Printf("sending to console: %s\n", token.c_str());
+					cmdSystem->BufferCommandText( CMD_EXEC_NOW, token.c_str() );
+					// HUMANHEAD END
 				}
 			}
 
@@ -3576,6 +4009,32 @@ void idEntity::ActivateTargets( idEntity *activator ) const {
 	}
 }
 
+//HUMANHEAD jsh
+void idEntity::DeactivateTargetsType( const idTypeInfo &classdef ) const {
+	idEntity	*ent;
+	int			i, j;
+
+	for( i = 0; i < targets.Num(); i++ ) {
+		ent = targets[ i ].GetEntity();
+		if ( !ent ) {
+			continue;
+		}
+		if ( !ent->IsType( classdef ) ) {
+			continue;
+		}
+		if ( ent->RespondsTo( EV_Deactivate ) || ent->HasSignal( SIG_TRIGGER ) ) {
+			ent->Signal( SIG_TRIGGER );
+			ent->ProcessEvent( &EV_Deactivate );
+		}
+		for ( j = 0; j < MAX_RENDERENTITY_GUI; j++ ) {
+			if ( ent->renderEntity.gui[ j ] ) {
+				ent->renderEntity.gui[ j ]->Trigger( gameLocal.time );
+			}
+		}
+	}
+}
+//END HUMANHEAD
+
 /***********************************************************************
 
   Misc.
@@ -3628,6 +4087,12 @@ bool idEntity::TouchTriggers( void ) const {
 		if ( !ent->RespondsTo( EV_Touch ) && !ent->HasSignal( SIG_TOUCH ) ) {
 			continue;
 		}
+
+		//HUMANHEAD: aob - overridden by children.  Used by items to early out if spirit walking.
+		if( !ShouldTouchTrigger(ent) ) {
+			continue;
+		}
+		//HUMANHEAD END
 
 		if ( !GetPhysics()->ClipContents( cm ) ) {
 			continue;
@@ -3709,6 +4174,23 @@ void idEntity::ShowEditingDialog( void ) {
    Events
 
 ***********************************************************************/
+void idEntity::Event_MoveToJoint( idEntity *master, const char *bonename ) {
+	MoveToJoint(master, bonename);
+}
+void idEntity::Event_MoveToJointWeighted( idEntity *master, const char *bonename, idVec3 &weight ) {
+	MoveToJointWeighted(master, bonename, weight);
+}
+void idEntity::Event_MoveJointToJoint( const char *ourBone, idEntity *master, const char *masterBone ) {
+	MoveJointToJoint(ourBone, master, masterBone);
+}
+void idEntity::Event_MoveJointToJointOffset( const char *ourBone, idEntity *master, const char *masterBone, idVec3 &offset ) {
+	MoveJointToJointOffset(ourBone, master, masterBone, offset);
+}
+void idEntity::Event_SetSkinByName( const char *skinname ) {
+	SetSkinByName(skinname);
+}
+
+
 
 /*
 ================
@@ -3884,6 +4366,15 @@ void idEntity::Event_SpawnBind( void ) {
 		}
 		bindOrientated = spawnArgs.GetBool( "bindOrientated", "1" );
 		if ( parent ) {
+			// HUMANHEAD PDM
+			if ( spawnArgs.GetString( "moveToJoint", "", &joint ) && *joint ) {
+				MoveToJoint( parent, joint );
+			}
+			if ( spawnArgs.GetString( "alignToJoint", "", &joint ) && *joint ) {
+				AlignToJoint( parent, joint );
+			}
+			// HUMANHEAD END
+
 			// bind to a joint of the skeletal model of the parent
 			if ( spawnArgs.GetString( "bindToJoint", "", &joint ) && *joint ) {
 				parentAnimator = parent->GetAnimator();
@@ -3959,8 +4450,7 @@ idEntity::Event_SetSkin
 ================
 */
 void idEntity::Event_SetSkin( const char *skinname ) {
-	renderEntity.customSkin = declManager->FindSkin( skinname );
-	UpdateVisuals();
+	SetSkinByName(skinname);	// HUMANHEAD
 }
 
 /*
@@ -4582,6 +5072,20 @@ void idEntity::Event_SetNeverDormant( int enable ) {
 	dormantStart = 0;
 }
 
+#if GAMEPAD_SUPPORT	// VENOM BEGIN
+void idEntity::Event_PlayRumbleEffect( int effect ) {
+	if( bindMaster->entityNumber == gameLocal.GetLocalPlayer()->entityNumber ) {
+		common->SetGamePadRumble(effect);
+	}
+}
+
+void idEntity::Event_StopRumbleEffect( void ) {
+	if( bindMaster->entityNumber == gameLocal.GetLocalPlayer()->entityNumber ) {
+		common->SetGamePadRumble(0);
+	}
+}
+#endif // VENOM END
+
 /***********************************************************************
 
    Network
@@ -4634,28 +5138,29 @@ void idEntity::ReadBindFromSnapshot( const idBitMsgDelta &msg ) {
 
 	bindInfo = msg.ReadBits( GENTITYNUM_BITS + 3 + 9 );
 	bindEntityNum = bindInfo & ( ( 1 << GENTITYNUM_BITS ) - 1 );
-
 	if ( bindEntityNum != ENTITYNUM_NONE ) {
 		master = gameLocal.entities[ bindEntityNum ];
-
-		bindOrientated = ( bindInfo >> GENTITYNUM_BITS ) & 1;
-		bindPos = ( bindInfo >> ( GENTITYNUM_BITS + 3 ) );
-		switch( ( bindInfo >> ( GENTITYNUM_BITS + 1 ) ) & 3 ) {
-			case 1: {
-				BindToJoint( master, (jointHandle_t) bindPos, bindOrientated );
-				break;
+		if ( master != bindMaster ) {
+			if ( bindMaster ) {
+				Unbind();
 			}
-			case 2: {
-				BindToBody( master, bindPos, bindOrientated );
-				break;
-			}
-			default: {
-				Bind( master, bindOrientated );
-				break;
+			bindOrientated = ( bindInfo >> GENTITYNUM_BITS ) & 1;
+			bindPos = ( bindInfo >> ( GENTITYNUM_BITS + 3 ) ) & 3;
+			switch( ( bindInfo >> ( GENTITYNUM_BITS + 1 ) ) & 3 ) {
+				case 1: {
+					BindToJoint( master, (jointHandle_t) bindPos, bindOrientated );
+					break;
+				}
+				case 2: {
+					BindToBody( master, bindPos, bindOrientated );
+					break;
+				}
+				default: {
+					Bind( master, bindOrientated );
+					break;
+				}
 			}
 		}
-	} else if ( bindMaster ) {
-		Unbind();
 	}
 }
 
@@ -4736,15 +5241,15 @@ idEntity::ReadFromSnapshot
 void idEntity::ReadFromSnapshot( const idBitMsgDelta &msg ) {
 }
 
+//HUMANHEAD rww
 /*
 ================
-idEntity::ServerSendEvent
+idEntity::ServerSendPVSEvent
 
-   Saved events are also sent to any client that connects late so all clients
-   always receive the events nomatter what time they join the game.
+send a reliable message to all clients in a pvs to pvsPoint
 ================
 */
-void idEntity::ServerSendEvent( int eventId, const idBitMsg *msg, bool saveEvent, int excludeClient ) const {
+void idEntity::ServerSendPVSEvent( int eventId, const idBitMsg *msg, const idVec3 &pvsPoint ) const {
 	idBitMsg	outMsg;
 	byte		msgBuf[MAX_GAME_MESSAGE_SIZE];
 
@@ -4757,12 +5262,22 @@ void idEntity::ServerSendEvent( int eventId, const idBitMsg *msg, bool saveEvent
 		return;
 	}
 
+	if (gameLocal.isMultiplayer) {
+		if (!fl.networkSync && entityNumber != ENTITYNUM_WORLD && gameLocal.spawnIds[entityNumber] > gameLocal.GetMapSpawnCount()) { //HUMANHEAD rww - do not broadcast on unsync'd entities (except map ents) because unless baseline the event will be thrown away
+			//gameLocal.Warning("Entity %i (%s) threw away an event.\n", entityNumber, GetName());
+			return;
+		}
+	}
+
 	outMsg.Init( msgBuf, sizeof( msgBuf ) );
 	outMsg.BeginWriting();
 	outMsg.WriteByte( GAME_RELIABLE_MESSAGE_EVENT );
 	outMsg.WriteBits( gameLocal.GetSpawnId( this ), 32 );
 	outMsg.WriteByte( eventId );
 	outMsg.WriteInt( gameLocal.time );
+#ifdef _HH_NET_EVENT_TYPE_VALIDATION //HUMANHEAD rww
+	outMsg.WriteBits(GetType()->typeNum, idClass::GetTypeNumBits());
+#endif //HUMANHEAD END
 	if ( msg ) {
 		outMsg.WriteBits( msg->GetSize(), idMath::BitsForInteger( MAX_EVENT_PARAM_SIZE ) );
 		outMsg.WriteData( msg->GetData(), msg->GetSize() );
@@ -4770,10 +5285,141 @@ void idEntity::ServerSendEvent( int eventId, const idBitMsg *msg, bool saveEvent
 		outMsg.WriteBits( 0, idMath::BitsForInteger( MAX_EVENT_PARAM_SIZE ) );
 	}
 
-	if ( excludeClient != -1 ) {
-		networkSystem->ServerSendReliableMessageExcluding( excludeClient, outMsg );
+	//there should only be a single pvs since this is a point and not a bounds.
+	int pvsArea = gameLocal.pvs.GetPVSArea(pvsPoint);
+	pvsHandle_t pvs = gameLocal.pvs.SetupCurrentPVS(&pvsArea, 1);
+	for (int i = 0; i < MAX_CLIENTS; i++) { //let's go through all the clients and see who can see into this pvs.
+		if (i != gameLocal.localClientNum && gameLocal.entities[i] && gameLocal.entities[i]->IsType(hhPlayer::Type)) {
+			hhPlayer *pl = static_cast<hhPlayer *>(gameLocal.entities[i]);
+			const int *pvsAreas;
+			int numPvsAreas;
+
+			//if the player is spectating another player, use that player's pvs.
+			if (pl->spectating && pl->spectator >= 0 && pl->spectator < MAX_CLIENTS && gameLocal.entities[pl->spectator] && gameLocal.entities[pl->spectator]->IsType(hhPlayer::Type)) {
+				pvsAreas = gameLocal.entities[pl->spectator]->GetPVSAreas();
+				numPvsAreas = gameLocal.entities[pl->spectator]->GetNumPVSAreas();
+			}
+			else {
+				pvsAreas = pl->GetPVSAreas();
+				numPvsAreas = pl->GetNumPVSAreas();
+			}
+
+			if (gameLocal.pvs.InCurrentPVS(pvs, pvsAreas, numPvsAreas)) {
+				//networkSystem->ServerSendReliableMessage(i, outMsg);
+				gameLocal.ServerAddUnreliableSnapMessage(i, outMsg);
+			}
+		}
+	}
+	gameLocal.pvs.FreeCurrentPVS(pvs);
+}
+//HUMANHEAD END
+
+/*
+================
+idEntity::ServerSendEvent
+
+   Saved events are also sent to any client that connects late so all clients
+   always receive the events nomatter what time they join the game.
+================
+*/
+//HUMANHEAD rww - added singleClient and unreliable
+void idEntity::ServerSendEvent( int eventId, const idBitMsg *msg, bool saveEvent, int excludeClient, int singleClient, bool unreliable ) const {
+	idBitMsg	outMsg;
+	byte		msgBuf[MAX_GAME_MESSAGE_SIZE];
+	bool		sendOnlyToPVSClients = false; //HUMANHEAD rww
+
+	if ( !gameLocal.isServer ) {
+		return;
+	}
+
+	// prevent dupe events caused by frame re-runs
+	if ( !gameLocal.isNewFrame ) {
+		return;
+	}
+
+	//HUMANHEAD rww - do not broadcast on unsync'd entities (except map ents) because unless baseline the event will be thrown away.
+	//additionally, non-map-entity events outside of the pvs would usually be thrown out, because the client should no longer have the
+	//entity in his snapshot list once he gets this event.
+	if (gameLocal.isMultiplayer) { //sp has been known to call this function for "reroute" events (which should really be ELIMINATED).
+		if (entityNumber != ENTITYNUM_WORLD && gameLocal.spawnIds[entityNumber] > gameLocal.GetMapSpawnCount()) {
+			if (!fl.networkSync) {
+				return;
+			}
+
+			if (unreliable) { //if it's an unreliable event on a snapshot-dependant entity, do the pvs checking.
+				sendOnlyToPVSClients = true;
+			}
+		}
+	}
+	//HUMANHEAD END
+
+	outMsg.Init( msgBuf, sizeof( msgBuf ) );
+	outMsg.BeginWriting();
+	outMsg.WriteByte( GAME_RELIABLE_MESSAGE_EVENT );
+	outMsg.WriteBits( gameLocal.GetSpawnId( this ), 32 );
+	outMsg.WriteByte( eventId );
+	outMsg.WriteInt( gameLocal.time );
+#ifdef _HH_NET_EVENT_TYPE_VALIDATION //HUMANHEAD rww
+	outMsg.WriteBits(GetType()->typeNum, idClass::GetTypeNumBits());
+#endif //HUMANHEAD END
+	if ( msg ) {
+		outMsg.WriteBits( msg->GetSize(), idMath::BitsForInteger( MAX_EVENT_PARAM_SIZE ) );
+		outMsg.WriteData( msg->GetData(), msg->GetSize() );
 	} else {
-		networkSystem->ServerSendReliableMessage( -1, outMsg );
+		outMsg.WriteBits( 0, idMath::BitsForInteger( MAX_EVENT_PARAM_SIZE ) );
+	}
+
+	//HUMANHEAD rww - go through all clients and only send to those in the pvs of this entity
+	if (sendOnlyToPVSClients) {
+		pvsHandle_t pvsHandle;
+		idEntity *self = (idEntity *)this;
+
+		int i = 0;
+		int endClient = MAX_CLIENTS-1;
+		if (singleClient != -1) {
+			if (singleClient == entityNumber && !saveEvent) { //if this ent is the client the event is going to, pvs check is not needed
+				gameLocal.ServerAddUnreliableSnapMessage(singleClient, outMsg);
+				return;
+			}
+
+			i = singleClient;
+			endClient = i;
+		}
+
+		pvsHandle = gameLocal.pvs.SetupCurrentPVS(self->GetPVSAreas(), self->GetNumPVSAreas());
+
+		while (i <= endClient) { //let's go through all the clients and see who can see into this pvs.
+			if (i != gameLocal.localClientNum && i != excludeClient && gameLocal.entities[i] && gameLocal.entities[i]->IsType(hhPlayer::Type)) {
+				idPlayer *spectated = NULL;
+				idPlayer *player = static_cast<idPlayer *>( gameLocal.entities[ i ] );
+				if ( player->spectating && player->spectator != i && gameLocal.entities[ player->spectator ] ) {
+					spectated = static_cast< idPlayer * >( gameLocal.entities[ player->spectator ] );
+				}
+				else {
+					spectated = player;
+				}
+
+				if (spectated) {
+					if (spectated->PhysicsTeamInPVS(pvsHandle)) { //alright, i am in this client's pvs, so send away.
+						//networkSystem->ServerSendReliableMessage(i, outMsg);
+						//always send pvs-only events as unreliable.
+						gameLocal.ServerAddUnreliableSnapMessage(i, outMsg);
+					}
+				}
+			}
+			i++;
+		}
+
+		gameLocal.pvs.FreeCurrentPVS(pvsHandle);
+	}
+	//HUMANHEAD END
+	else { //HUMANHEAD rww - we could add unreliable support for map ents, but i doubt it would be highly beneficial.
+		if ( excludeClient != -1 ) {
+			networkSystem->ServerSendReliableMessageExcluding( excludeClient, outMsg );
+		} else {
+			//HUMANHEAD rww - allow sending events to a specific client
+			networkSystem->ServerSendReliableMessage( singleClient, outMsg );
+		}
 	}
 
 	if ( saveEvent ) {
@@ -4805,6 +5451,9 @@ void idEntity::ClientSendEvent( int eventId, const idBitMsg *msg ) const {
 	outMsg.WriteBits( gameLocal.GetSpawnId( this ), 32 );
 	outMsg.WriteByte( eventId );
 	outMsg.WriteInt( gameLocal.time );
+#ifdef _HH_NET_EVENT_TYPE_VALIDATION //HUMANHEAD rww
+	outMsg.WriteBits(GetType()->typeNum, idClass::GetTypeNumBits());
+#endif //HUMANHEAD END
 	if ( msg ) {
 		outMsg.WriteBits( msg->GetSize(), idMath::BitsForInteger( MAX_EVENT_PARAM_SIZE ) );
 		outMsg.WriteData( msg->GetData(), msg->GetSize() );
@@ -4840,6 +5489,16 @@ bool idEntity::ClientReceiveEvent( int event, int time, const idBitMsg &msg ) {
 	const idSoundShader	*shader;
 	s_channelType		channel;
 
+	// HUMANHEAD pdm
+	int damageDefIndex;
+	int materialIndex;
+	jointHandle_t jointNum;
+	idVec3 localOrigin, localNormal, localDir, localImpulse;
+	idMat3 localAxis;
+	const idDecl* decl = NULL;
+	const idEventDef* eventDef = NULL;
+	// HUMANHEAD END
+
 	switch( event ) {
 		case EVENT_STARTSOUNDSHADER: {
 			// the sound stuff would early out
@@ -4851,7 +5510,9 @@ bool idEntity::ClientReceiveEvent( int event, int time, const idBitMsg &msg ) {
 			}
 			index = gameLocal.ClientRemapDecl( DECL_SOUND, msg.ReadInt() );
 			if ( index >= 0 && index < declManager->GetNumDecls( DECL_SOUND ) ) {
-				shader = declManager->SoundByIndex( index, false );
+				//HUMANHEAD rww - forceParse true instead of false so that we're sure to play things that weren't precached right.
+				//this should be able to go away at some point, hopefully.
+				shader = declManager->SoundByIndex( index, true );
 				channel = (s_channelType)msg.ReadByte();
 				StartSoundShader( shader, channel, 0, false, NULL );
 			}
@@ -4864,12 +5525,117 @@ bool idEntity::ClientReceiveEvent( int event, int time, const idBitMsg &msg ) {
 			StopSound( channel, false );
 			return true;
 		}
+		// HUMANHEAD pdm: moved down here from actor, wounds allowed on any rendered entity
+		case EVENT_ADD_WOUND: {
+			jointNum = (jointHandle_t) msg.ReadShort();
+			localOrigin[0] = msg.ReadFloat();
+			localOrigin[1] = msg.ReadFloat();
+			localOrigin[2] = msg.ReadFloat();
+			localNormal = msg.ReadDir( 24 );
+			localDir = msg.ReadDir( 24 );
+			damageDefIndex = msg.ReadShort();
+			materialIndex = msg.ReadShort();
+			const idMaterial *collisionMaterial = static_cast<const idMaterial *>( declManager->DeclByIndex( DECL_MATERIAL, materialIndex ) );
+			AddLocalMatterWound( jointNum, localOrigin, localNormal, localDir, damageDefIndex, collisionMaterial );
+			return true;
+		}
+		case EVENT_PROJECT_DECAL:
+		{ //rww added - project a decal rwwFIXME - need for this has been eliminated i think. get rid of it.
+			idVec3 origin, normal, dir;
+			bool brittleFracture;
+			int entNum = 0;
+			char impactMarkBuf[128];
+			idStr impactMark;
+
+			assert(!"why are you using the EVENT_PROJECT_DECAL event? if it's really necessary, you should know that it's horribly inefficient.");
+
+			origin[0] = msg.ReadFloat();
+			origin[1] = msg.ReadFloat();
+			origin[2] = msg.ReadFloat();
+
+			normal = msg.ReadDir(24);
+			dir = msg.ReadDir(24);
+
+			//AGH. rwwFIXME: configstring type system?
+			msg.ReadString(impactMarkBuf, 128);
+			impactMark = impactMarkBuf;
+
+			brittleFracture = msg.ReadBool();
+			if (brittleFracture) {
+				idEntity *ent;
+
+				entNum = msg.ReadShort();
+				ent = gameLocal.entities[entNum];
+
+				assert(ent);
+
+				static_cast<idBrittleFracture *>(ent)->ProjectDecal( origin, normal, gameLocal.GetTime(), NULL );
+			}
+			else {
+				idList<idStr> strList;
+				idVec2 markSize;
+
+				markSize[0] = msg.ReadFloat();
+				markSize[1] = msg.ReadFloat();
+
+				hhUtils::SplitString( impactMark, strList );
+
+				//FIXME: needs to be cleaned up
+				float dot = (-normal * dir);
+				float depth = hhMath::Lerp( 10.0f, 100.0f, (1.0f - dot) );
+
+				//TEST: this is a temp test to allow bowman to have different fade times on his materials
+				for( int ix = strList.Num() - 1; ix >= 0; --ix ) {
+					gameLocal.ProjectDecal( origin, dir, depth, true, hhMath::Lerp(markSize, gameLocal.random.RandomFloat()), strList[ix] );
+				}
+			}
+
+			return true;
+		}
+		case EVENT_EVENTDEF: {
+			//JSHTODO fix this
+			if( !gameLocal.isClient ) {
+				eventDef = idEventDef::FindEvent( msg.ReadBits(MAX_EVENTS_NUM_BITS) );
+
+				if( eventDef ) {
+					ProcessEvent( eventDef );
+				}
+				return true;
+			}
+		}
+		case EVENT_DECL: {
+			//JSHTODO fix this
+			if( !gameLocal.isClient ) {
+				int declType = msg.ReadBits(DECL_MAX_TYPES_NUM_BITS);
+				decl = declManager->DeclByIndex( (declType_t)declType, msg.ReadShort(), false );
+				eventDef = idEventDef::FindEvent( msg.ReadBits(MAX_EVENTS_NUM_BITS) );
+
+				if( decl && eventDef ) {
+					ProcessEvent( eventDef, decl->GetName() );
+				}
+				return true;
+			}
+		}
+		//HUMANHEAD END
 		default:
 			break;
 	}
-
 	return false;
 }
+
+//HUMANHEAD rww - mp snapshot enter/exit functions
+void idEntity::NetZombify(void) {
+	fl.clientZombie = true;
+	FreeModelDef();
+	UpdateVisuals();
+	GetPhysics()->UnlinkClip();
+}
+
+void idEntity::NetResurrect(void) {
+	GetPhysics()->LinkClip();
+	fl.clientZombie = false;
+}
+//HUMANHEAD END
 
 /*
 ===============================================================================
@@ -4887,7 +5653,8 @@ const idEventDef EV_SetJointAngle( "setJointAngle", "ddv" );
 const idEventDef EV_GetJointPos( "getJointPos", "d", 'v' );
 const idEventDef EV_GetJointAngle( "getJointAngle", "d", 'v' );
 
-CLASS_DECLARATION( idEntity, idAnimatedEntity )
+//HUMANHEAD: aob - changed inheritance to hhRenderEntity
+CLASS_DECLARATION( hhRenderEntity, idAnimatedEntity )
 	EVENT( EV_GetJointHandle,		idAnimatedEntity::Event_GetJointHandle )
 	EVENT( EV_ClearAllJoints,		idAnimatedEntity::Event_ClearAllJoints )
 	EVENT( EV_ClearJoint,			idAnimatedEntity::Event_ClearJoint )
@@ -4964,6 +5731,17 @@ idAnimatedEntity::ClientPredictionThink
 */
 void idAnimatedEntity::ClientPredictionThink( void ) {
 	RunPhysics();
+
+	// HUMANHEAD pdm
+	if (thinkFlags & TH_TICKER) {
+		Ticker();
+	}
+	// nla - Added logic to allow things to touch triggers
+	if ( fl.touchTriggers ) {
+		TouchTriggers();
+	}
+	// HUMANHEAD END
+
 	UpdateAnimation();
 	Present();
 }
@@ -4975,9 +5753,25 @@ idAnimatedEntity::Think
 */
 void idAnimatedEntity::Think( void ) {
 	RunPhysics();
+
+	// HUMANHEAD pdm
+	if (thinkFlags & TH_TICKER) {
+		Ticker();
+	}
+	// nla - Added logic to allow things to touch triggers
+	if ( fl.touchTriggers ) {
+		TouchTriggers();
+	}
+	// HUMANHEAD END
+
 	UpdateAnimation();
 	Present();
 	UpdateDamageEffects();
+
+	//HUMANHEAD: aob - needed for combat models
+	LinkCombatModel( this, GetModelDefHandle() );
+	//HUMANHEAD END
+
 }
 
 /*
@@ -4986,6 +5780,8 @@ idAnimatedEntity::UpdateAnimation
 ================
 */
 void idAnimatedEntity::UpdateAnimation( void ) {
+	PROFILE_SCOPE("Animation", PROFMASK_NORMAL);	// HUMANHEAD pdm
+
 	// don't do animations if they're not enabled
 	if ( !( thinkFlags & TH_ANIMATE ) ) {
 		return;
@@ -5026,7 +5822,9 @@ void idAnimatedEntity::UpdateAnimation( void ) {
 idAnimatedEntity::GetAnimator
 ================
 */
-idAnimator *idAnimatedEntity::GetAnimator( void ) {
+// HUMANHEAD nla - Changed to return hhAnimator
+hhAnimator *idAnimatedEntity::GetAnimator( void ) {
+// HUMANHEAD END
 	return &animator;
 }
 
@@ -5038,9 +5836,26 @@ idAnimatedEntity::SetModel
 void idAnimatedEntity::SetModel( const char *modelname ) {
 	FreeModelDef();
 
+
 	renderEntity.hModel = animator.SetModel( modelname );
 	if ( !renderEntity.hModel ) {
 		idEntity::SetModel( modelname );
+
+		// HUMANHEAD pdm
+		// Since we are changing from animated to non-animated model, release any entities bound to joints
+		if (GetTeamMaster() != NULL) {
+			idList<idEntity *> unbindList;
+			unbindList.Clear();
+			for ( idEntity *part = GetTeamMaster(); part != NULL; part = part->GetTeamChain() ) {
+				if (part->GetBindMaster() == this && part->GetBindJoint() != INVALID_JOINT) {
+					unbindList.Append(part);
+				}
+			}
+			for (int ix=0; ix<unbindList.Num(); ix++) {
+				unbindList[ix]->Unbind();
+			}
+		}
+		// HUMANHEAD END
 		return;
 	}
 
@@ -5108,7 +5923,21 @@ idAnimatedEntity::AddDamageEffect
   Dammage effects track the animating impact position, spitting out particles.
 ==============
 */
-void idAnimatedEntity::AddDamageEffect( const trace_t &collision, const idVec3 &velocity, const char *damageDefName ) {
+void idAnimatedEntity::AddDamageEffect( const trace_t &collision, const idVec3 &velocity, const char *damageDefName, bool broadcast ) { //HUMANHEAD rww - added broadcast
+	PROFILE_SCOPE("AddDamageEffect", PROFMASK_COMBAT);
+
+	trace_t newCollision = collision;
+
+	// HUMANHEAD CJR: It's possible that the entity swapped the model in the damage function, hence
+	// invalidating the joint index used here.  If so, clear it from the collision
+	if ( CLIPMODEL_ID_TO_JOINT_HANDLE( collision.c.id ) && renderEntity.numJoints == 0 ) {
+		newCollision.c.id = 0; // Clear out the joint-specific collision
+	} // HUMANHEAD END
+
+	// HUMANHEAD pdm: We don't use id's system, all our entities are treated alike
+	idEntity::AddDamageEffect(newCollision, velocity, damageDefName, broadcast);
+	// HUMANHEAD END
+/*
 	jointHandle_t jointNum;
 	idVec3 origin, dir, localDir, localOrigin, localNormal;
 	idMat3 axis;
@@ -5155,6 +5984,7 @@ void idAnimatedEntity::AddDamageEffect( const trace_t &collision, const idVec3 &
 		msg.WriteInt( gameLocal.ServerRemapDecl( -1, DECL_MATERIAL, collision.c.material->Index() ) );
 		ServerSendEvent( EVENT_ADD_DAMAGE_EFFECT, &msg, false, -1 );
 	}
+*/
 }
 
 /*
@@ -5412,3 +6242,12 @@ void idAnimatedEntity::Event_GetJointAngle( jointHandle_t jointnum ) {
 	idVec3 vec( ang[ 0 ], ang[ 1 ], ang[ 2 ] );
 	idThread::ReturnVector( vec );
 }
+
+void idEntity::Event_SetContents(int contents) {
+	GetPhysics()->SetContents(contents);
+}
+
+void idEntity::Event_SetClipmask(int clipmask) {
+	GetPhysics()->SetClipMask(clipmask);
+}
+

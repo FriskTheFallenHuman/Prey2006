@@ -26,19 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/containers/BinSearch.h"
-#include "idlib/geometry/JointTransform.h"
-#include "idlib/math/Quat.h"
-#include "renderer/ModelManager.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/SysCvar.h"
-#include "ai/AI.h"
-#include "Entity.h"
-#include "Fx.h"
-#include "Game_local.h"
-
-#include "anim/Anim.h"
+#include "../Game_local.h"
 
 static const char *channelNames[ ANIM_NumAnimChannels ] = {
 	"all", "torso", "legs", "head", "eyelids"
@@ -91,6 +82,17 @@ idAnim::idAnim( const idDeclModelDef *modelDef, const idAnim *anim ) {
 		if ( anim->frameCommands[ i ].string ) {
 			frameCommands[ i ].string = new idStr( *anim->frameCommands[ i ].string );
 		}
+
+		// HUMANHEAD mdl
+		if ( anim->frameCommands[ i ].parmList ) {
+			frameCommands[ i ].parmList = new idList<idStr>;
+			int num = anim->frameCommands[ i ].parmList->Num();
+			frameCommands[ i ].parmList->SetNum( num );
+			for ( int j = 0; j < num; j++ ) {
+				(*frameCommands[ i ].parmList)[ j ] = (*anim->frameCommands[ i ].parmList)[ j ];
+			}
+		}
+		// HUMANHEAD END
 	}
 }
 
@@ -108,6 +110,10 @@ idAnim::~idAnim() {
 
 	for( i = 0; i < frameCommands.Num(); i++ ) {
 		delete frameCommands[ i ].string;
+
+		//HUMANHEAD: aob
+		SAFE_DELETE_PTR( frameCommands[ i ].parmList );
+		//HUMANHEAD END
 	}
 }
 
@@ -140,6 +146,10 @@ void idAnim::SetAnim( const idDeclModelDef *modelDef, const char *sourcename, co
 
 	for( i = 0; i < frameCommands.Num(); i++ ) {
 		delete frameCommands[ i ].string;
+
+		//HUMANHEAD: aob
+		SAFE_DELETE_PTR( frameCommands[ i ].parmList );
+		//HUMANHEAD END
 	}
 
 	frameLookup.Clear();
@@ -172,7 +182,7 @@ index 0 will never be NULL.  Any anim >= NumAnims will return NULL.
 =====================
 */
 const idMD5Anim *idAnim::MD5Anim( int num ) const {
-	if ( anims[0] == NULL ) {
+	if ( anims == NULL || anims[0] == NULL ) {
 		return NULL;
 	}
 	return anims[ num ];
@@ -318,6 +328,12 @@ const char *idAnim::AddFrameCommand( const idDeclModelDef *modelDef, int framenu
 		if ( !fc.function ) {
 			return va( "Function '%s' not found", token.c_str() );
 		}
+	// HUMANHEAD nla - Added callback to be overridden - //? Should we really use the text member var?
+	} else if ( AddFrameCommandExtra( token, fc, src, text ) ) {
+		if ( text.Length() ) {
+			return( va( "%s", text.c_str() ) );
+		}
+	// HUMANHEAD END
 	} else if ( token == "object_call" ) {
 		if( !src.ReadTokenOnLine( &token ) ) {
 			return "Unexpected end of line";
@@ -685,6 +701,11 @@ void idAnim::CallFrameCommands( idEntity *ent, int from, int to ) const {
 		end = index + frameLookup[ frame ].num;
 		while( index < end ) {
 			const frameCommand_t &command = frameCommands[ index++ ];
+			// HUMANHEAD nla -Hook to allow child classes to add frame commands
+			if ( CallFrameCommandsExtra( command, ent ) ) {
+				continue;
+			}
+			// HUMANHEAD END
 			switch( command.type ) {
 				case FC_SCRIPTFUNCTION: {
 					gameLocal.CallFrameCommand( ent, command.function );
@@ -812,6 +833,12 @@ void idAnim::CallFrameCommands( idEntity *ent, int from, int to ) const {
 					break;
 				}
 				case FC_FX: {
+					//HUMANHEAD rww - don't do on client
+					if (gameLocal.isClient)
+					{
+						break;
+					}
+					//HUMANHEAD END
 					idEntityFx::StartFx( command.string->c_str(), NULL, NULL, ent, true );
 					break;
 				}
@@ -1054,6 +1081,15 @@ void idAnimBlend::Save( idSaveGame *savefile ) const {
 	savefile->WriteShort( animNum );
 	savefile->WriteBool( allowMove );
 	savefile->WriteBool( allowFrameCommands );
+
+	// HUMANHEAD mdl
+	savefile->WriteBool( frozen );
+	savefile->WriteInt( freezeStart );
+	savefile->WriteInt( freezeCurrent );
+	savefile->WriteInt( freezeEnd );
+	savefile->WriteInt( rotateTime );
+	savefile->WriteEventDef( rotateEvent );
+	// HUMANHEAD END
 }
 
 /*
@@ -1092,6 +1128,15 @@ void idAnimBlend::Restore( idRestoreGame *savefile, const idDeclModelDef *modelD
 	}
 	savefile->ReadBool( allowMove );
 	savefile->ReadBool( allowFrameCommands );
+
+	// HUMANHEAD mdl
+	savefile->ReadBool( frozen );
+	savefile->ReadInt( freezeStart );
+	savefile->ReadInt( freezeCurrent );
+	savefile->ReadInt( freezeEnd );
+	savefile->ReadInt( rotateTime );
+	savefile->ReadEventDef( rotateEvent );
+	// HUMANHEAD END
 }
 
 /*
@@ -1110,6 +1155,15 @@ void idAnimBlend::Reset( const idDeclModelDef *_modelDef ) {
 	allowMove	= true;
 	allowFrameCommands = true;
 	animNum		= 0;
+
+	// HUMANHEAD nla - C++ stuff.  Must be in parent class.  See header.
+	frozen 		= false;
+	freezeStart = -1;
+	freezeEnd	= -1;
+	freezeCurrent = -1;
+	rotateTime 	= -1;
+	rotateEvent = NULL;
+	// HUMANHEAD END
 
 	memset( animWeights, 0, sizeof( animWeights ) );
 
@@ -2134,7 +2188,9 @@ void idDeclModelDef::CopyDecl( const idDeclModelDef *decl ) {
 
 	anims.SetNum( decl->anims.Num() );
 	for( i = 0; i < anims.Num(); i++ ) {
-		anims[ i ] = new idAnim( this, decl->anims[ i ] );
+		// HUMANHEAD nla - Changed from idAnim to hhAnim
+		anims[ i ] = new hhAnim( this, decl->anims[ i ] );
+		// HUMANHEAD END
 	}
 
 	joints.SetNum( decl->joints.Num() );
@@ -2144,6 +2200,11 @@ void idDeclModelDef::CopyDecl( const idDeclModelDef *decl ) {
 	for ( i = 0; i < ANIM_NumAnimChannels; i++ ) {
 		channelJoints[i] = decl->channelJoints[i];
 	}
+
+	// HUMANHEAD nla
+	channelDict = decl->channelDict;
+	// HUMANHEAD END
+
 }
 
 /*
@@ -2201,6 +2262,12 @@ idDeclModelDef::ModelHandle
 =====================
 */
 idRenderModel *idDeclModelDef::ModelHandle( void ) const {
+	// HUMANHEAD nla - Make sure the handle passed back is loaded/meaningful.  This fixes a sync problem with binding/moving to bones in spawn/before presented.  This was witnessed by loading up harvestercomplex, and then immediately loading up spindleb_tex1.  The first jetpack harvesters that spawn in the asteriod room cause an Error: Bone not Found
+	if ( modelHandle && !modelHandle->IsLoaded() ) {
+		modelHandle->LoadModel();
+	}
+	// HUMANHEAD
+
 	return ( idRenderModel * )modelHandle;
 }
 
@@ -2420,7 +2487,9 @@ bool idDeclModelDef::ParseAnim( idLexer &src, int numDefaultAnims ) {
 		anim = anims[ i ];
 	} else {
 		// create the alias associated with this animation
-		anim = new idAnim();
+		// HUMANHEAD nla - Changed from idAnim to hhAnim
+		anim = new hhAnim();
+		// HUMANHEAD END
 		anims.Append( anim );
 	}
 
@@ -2727,11 +2796,26 @@ bool idDeclModelDef::Parse( const char *text, const int textLength ) {
 				return false;
 			}
 
+#ifdef HUMANHEAD
+			// HUMANHEAD nla - Changed to allow channel definitions in script
+			i = channelDict.GetInt( token2.c_str(), "-1" );
+
+			if ( i < 0 ) {		// Resort to their old logic.
+				for( i = ANIMCHANNEL_ALL + 1; i < ANIM_NumAnimChannels; i++ ) {
+					if ( !stricmp( channelNames[ i ], token2.c_str() ) ) {
+						break;
+					}
+				}
+			}
+			// HUMANHEAD END
+#else
 			for( i = ANIMCHANNEL_ALL + 1; i < ANIM_NumAnimChannels; i++ ) {
 				if ( !idStr::Icmp( channelNames[ i ], token2 ) ) {
 					break;
 				}
 			}
+
+#endif /* HUMANHEAD */
 
 			if ( i >= ANIM_NumAnimChannels ) {
 				src.Warning( "Unknown channel '%s'", token2.c_str() );
@@ -2767,6 +2851,36 @@ bool idDeclModelDef::Parse( const char *text, const int textLength ) {
 				channelJoints[ channel ][ num++ ] = jointnum;
 			}
 			channelJoints[ channel ].SetNum( num );
+		// HUMANHEAD nla - Added ability to specify
+		} else if ( token == "channel2num" ) {
+			idToken		token3;
+
+			if( !src.ReadToken( &token2 ) ) {
+				gameLocal.Warning( "Unexpected end of file when looking for channel2num name" );
+				return false;
+			}
+
+			if( !src.ReadToken( &token3 ) ) {
+				gameLocal.Warning( "Unexpected end of file when looking for channel2num num" );
+				return false;
+			}
+
+			channelDict.Set( token2.c_str(), token3.c_str() );
+		} else if ( token == "channel4anim" ) {
+			idToken		token3;
+
+			if( !src.ReadToken( &token2 ) ) {
+				gameLocal.Warning( "Unexpected end of file when looking for channel4anim anim" );
+				return false;
+			}
+
+			if( !src.ReadToken( &token3 ) ) {
+				gameLocal.Warning( "Unexpected end of file when looking for channel4anim channel" );
+				return false;
+			}
+
+			channelDict.Set( va( "channel4anim_%s", token2.c_str() ), token3.c_str() );
+		// HUMANHEAD END
 		} else {
 			src.Warning( "unknown token '%s'", token.c_str() );
 			MakeDefault();
@@ -2821,6 +2935,9 @@ int idDeclModelDef::GetSpecificAnim( const char *name ) const {
 	// find a specific animation
 	for( i = 0; i < anims.Num(); i++ ) {
 		if ( !strcmp( anims[ i ]->FullName(), name ) ) {
+			// HUMANHED nla - Allow us to determine if they got the name exactly.  Used to determine if we should randomly cycle over this anim
+			(( hhAnim * ) anims[ i ])->exactMatch = true;
+			// HUMANHEAD END
 			return i + 1;
 		}
 	}
@@ -2879,6 +2996,11 @@ int idDeclModelDef::GetAnim( const char *name ) const {
 	// get a random anim
 	//FIXME: don't access gameLocal here?
 	which = gameLocal.random.RandomInt( numAnims );
+
+	// HUMANHED nla - Allow us to determine if they got the name exactly.  Used to determine if we should randomly cycle over this anim
+	(( hhAnim * ) anims[ animList[ which ] ])->exactMatch = false;
+	// HUMANHEAD END
+
 	return animList[ which ] + 1;
 }
 
@@ -3846,6 +3968,14 @@ bool idAnimator::GetBounds( int currentTime, idBounds &bounds ) {
 		}
 	}
 
+	//HUMANHEAD: aob - apply model scale to bounds
+	if( entity ) {
+		if (entity->IsScaled()) {
+			bounds = hhUtils::ScaleBounds( bounds, entity->GetScale() );
+		}
+	}
+	//HUMANHEAD END
+
 	bounds.TranslateSelf( modelDef->GetVisualOffset() );
 
 	if ( g_debugBounds.GetBool() ) {
@@ -4111,6 +4241,7 @@ void idAnimator::ServiceAnims( int fromtime, int totime ) {
 /*
 =====================
 idAnimator::IsAnimating
+// HUMANHEAD NOTE - Please tell Nick if this changes, is modified in hhAnimator
 =====================
 */
 bool idAnimator::IsAnimating( int currentTime ) const {
@@ -4141,6 +4272,7 @@ bool idAnimator::IsAnimating( int currentTime ) const {
 /*
 =====================
 idAnimator::FrameHasChanged
+// HUMANHEAD NOTE - Please tell Nick if this changes, is modified in hhAnimator
 =====================
 */
 bool idAnimator::FrameHasChanged( int currentTime ) const {
@@ -4212,10 +4344,14 @@ bool idAnimator::CreateFrame( int currentTime, bool force ) {
 	lastTransformTime = currentTime;
 	stoppedAnimatingUpdate = false;
 
-	if ( entity && ( ( g_debugAnim.GetInteger() == entity->entityNumber ) || ( g_debugAnim.GetInteger() == -2 ) ) ) {
+	if ( entity && entity->IsType( idAI::Type ) && ( g_debugAnim.GetInteger() == -3 ) ) {
 		debugInfo = true;
 		gameLocal.Printf( "---------------\n%d: entity '%s':\n", gameLocal.time, entity->GetName() );
-		gameLocal.Printf( "model '%s':\n", modelDef->GetModelName() );
+ 		gameLocal.Printf( "model '%s':\n", modelDef->GetModelName() );
+	} else if ( entity && ( ( g_debugAnim.GetInteger() == entity->entityNumber ) || ( g_debugAnim.GetInteger() == -2 ) ) ) {
+		debugInfo = true;
+		gameLocal.Printf( "---------------\n%d: entity '%s':\n", gameLocal.time, entity->GetName() );
+ 		gameLocal.Printf( "model '%s':\n", modelDef->GetModelName() );
 	} else {
 		debugInfo = false;
 	}
@@ -4474,17 +4610,15 @@ bool idAnimator::GetJointLocalTransform( jointHandle_t jointHandle, int currentT
 	// FIXME: overkill
 	CreateFrame( currentTime, false );
 
-	if ( jointHandle == 0 ) {
+	if ( jointHandle > 0 ) {
+		idJointMat m = joints[ jointHandle ];
+		m /= joints[ modelJoints[ jointHandle ].parentNum ];
+		offset = m.ToVec3();
+		axis = m.ToMat3();
+	} else {
 		offset = joints[ jointHandle ].ToVec3();
 		axis = joints[ jointHandle ].ToMat3();
-
-		return true;
 	}
-
-	idJointMat m = joints[ jointHandle ];
-	m /= joints[ modelJoints[ jointHandle ].parentNum ];
-	offset = m.ToVec3();
-	axis = m.ToMat3();
 
 	return true;
 }
@@ -4805,6 +4939,30 @@ const idMD5Anim *idGameEdit::ANIM_GetAnimFromEntityDef( const char *classname, c
 	if ( !args ) {
 		return NULL;
 	}
+
+	md5anim = NULL;
+	modelname = args->GetString( "model" );
+	modelDef = static_cast<const idDeclModelDef *>( declManager->FindType( DECL_MODELDEF, modelname, false ) );
+	if ( modelDef ) {
+		animNum = modelDef->GetAnim( animname );
+		if ( animNum ) {
+			anim = modelDef->GetAnim( animNum );
+			if ( anim ) {
+				md5anim = anim->MD5Anim( 0 );
+			}
+		}
+	}
+	return md5anim;
+}
+
+// HUMANHEAD pdm: Allow editor to query a dictionary to get animation to allow entitydefs that are not completely predefined
+// to display animated models.  (like func_animates)
+const idMD5Anim *idGameEdit::ANIM_GetAnimFromArgs( const idDict *args, const char *animname ) {
+	const idMD5Anim *md5anim;
+	const idAnim *anim;
+	int	animNum;
+	const char	*modelname;
+	const idDeclModelDef *modelDef;
 
 	md5anim = NULL;
 	modelname = args->GetString( "model" );

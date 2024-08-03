@@ -2,12 +2,6 @@
 #import "roq.h"
 #import "codec.h"
 
-#ifdef __MACOS__
-
-blah
-
-#endif
-
 @implementation roq
 
 

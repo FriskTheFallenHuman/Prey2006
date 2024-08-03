@@ -29,11 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __FILESYSTEM_H__
 #define __FILESYSTEM_H__
 
-#include <limits.h>
-
-#include "idlib/containers/StrList.h"
-#include "framework/File.h"
-
 /*
 ===============================================================================
 
@@ -242,6 +237,12 @@ public:
 	virtual idFile *		OpenExplicitFileRead( const char *OSPath ) = 0;
 							// Opens a file for writing to a full OS path.
 	virtual idFile *		OpenExplicitFileWrite( const char *OSPath ) = 0;
+
+	// HUMANHEAD pdm
+							// Opens a file for appending to a full OS path
+	virtual idFile *		OpenExplicitFileAppend( const char *OSPath, bool sync = false ) = 0;
+	// HUMANHEAD END
+
 							// Closes a file.
 	virtual void			CloseFile( idFile *f ) = 0;
 							// Returns immediately, performing the read from a background thread.
@@ -250,6 +251,10 @@ public:
 	virtual void			ResetReadCount( void ) = 0;
 							// retrieves the current read count
 	virtual int				GetReadCount( void ) = 0;
+	//HUMANHEAD rww
+							// sets the current read count
+	virtual void			SetReadCount( int count ) = 0;
+	//HUMANHEAD END
 							// adds to the read count
 	virtual void			AddToReadCount( int c ) = 0;
 							// look for a dynamic module
@@ -258,11 +263,6 @@ public:
 							// the cache is cleared when calling OpenFileWrite and RemoveFile
 							// in some cases you may need to use this directly
 	virtual void			ClearDirCache( void ) = 0;
-
-							// is D3XP installed? even if not running it atm
-	virtual bool			HasD3XP( void ) = 0;
-							// are we using D3XP content ( through a real d3xp run or through a double mod )
-	virtual bool			RunningD3XP( void ) = 0;
 
 							// don't use for large copies - allocates a single memory block for the copy
 	virtual void			CopyFile( const char *fromOSPath, const char *toOSPath ) = 0;

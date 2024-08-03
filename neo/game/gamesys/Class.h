@@ -29,19 +29,15 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SYS_CLASS_H__
 #define __SYS_CLASS_H__
 
-#include "idlib/containers/Hierarchy.h"
-
-#include "gamesys/Event.h"
-
-class idClass;
-class idTypeInfo;
-
 /*
 
 Base class for all game objects.  Provides fast run-time type checking and run-time
 instancing of objects.
 
 */
+
+class idClass;
+class idTypeInfo;
 
 extern const idEventDef EV_Remove;
 extern const idEventDef EV_SafeRemove;
@@ -67,11 +63,13 @@ public:
 	idEventArg()								{ type = D_EVENT_INTEGER; value = 0; };
 	idEventArg( int data )						{ type = D_EVENT_INTEGER; value = data; };
 	idEventArg( float data )					{ type = D_EVENT_FLOAT; value = *reinterpret_cast<int *>( &data ); };
-	idEventArg( idVec3 &data )					{ type = D_EVENT_VECTOR; value = reinterpret_cast<intptr_t>( &data ); };
+	//HUMANHEAD: aob - added const to idVec3
+	idEventArg( const idVec3 &data )			{ type = D_EVENT_VECTOR; value = reinterpret_cast<intptr_t>( &data ); };
 	idEventArg( const idStr &data )				{ type = D_EVENT_STRING; value = reinterpret_cast<intptr_t>( data.c_str() ); };
 	idEventArg( const char *data )				{ type = D_EVENT_STRING; value = reinterpret_cast<intptr_t>( data ); };
 	idEventArg( const class idEntity *data )	{ type = D_EVENT_ENTITY; value = reinterpret_cast<intptr_t>( data ); };
 	idEventArg( const struct trace_s *data )	{ type = D_EVENT_TRACE; value = reinterpret_cast<intptr_t>( data ); };
+	idEventArg( intptr_t data )					{ type = D_EVENT_INTPTR; value = data; };
 };
 
 class idAllocError : public idException {
@@ -99,7 +97,7 @@ public:																	\
 	static	idTypeInfo						Type;						\
 	static	idClass							*CreateInstance( void );	\
 	virtual	idTypeInfo						*GetType( void ) const;		\
-	static	idEventFunc<nameofclass>		eventCallbacks[]
+	static	idEventFunc<nameofclass>		eventCallbacks[];
 
 /*
 ================
@@ -145,7 +143,7 @@ public:																	\
 	static	idTypeInfo						Type;						\
 	static	idClass							*CreateInstance( void );	\
 	virtual	idTypeInfo						*GetType( void ) const;		\
-	static	idEventFunc<nameofclass>		eventCallbacks[]
+	static	idEventFunc<nameofclass>		eventCallbacks[];
 
 /*
 ================
@@ -237,7 +235,7 @@ public:
 
 	bool						ProcessEventArgPtr( const idEventDef *ev, intptr_t *data );
 	void						CancelEvents( const idEventDef *ev );
-
+	virtual			// HUMANHEAD nla 
 	void						Event_Remove( void );
 
 	// Static functions
@@ -251,7 +249,15 @@ public:
 	static int					GetTypeNumBits( void ) { return typeNumBits; }
 	static idTypeInfo *			GetType( int num );
 
-private:
+#ifdef _HH_NET_DEBUGGING //HUMANHEAD rww
+	static void					PrintHHNetStats_f( const idCmdArgs &args );
+#endif //HUMANHEAD END
+
+#if !GOLD //HUMANHEAD rww
+	static void					TestSnap_f( const idCmdArgs &args );
+#endif //HUMANHEAD END
+
+protected:	// HUMANHEAD
 	classSpawnFunc_t			CallSpawnFunc( idTypeInfo *cls );
 
 	bool						PostEventArgs( const idEventDef *ev, int time, int numargs, ... );

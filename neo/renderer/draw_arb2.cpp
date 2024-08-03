@@ -26,10 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "renderer/VertexCache.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/tr_local.h"
+#include "tr_local.h"
 
 /*
 =========================================================================================
@@ -658,8 +658,6 @@ R_ARB2_Init
 ==================
 */
 void R_ARB2_Init( void ) {
-	glConfig.allowARB2Path = false;
-
 	common->Printf( "ARB2 renderer: " );
 
 	if ( !glConfig.ARBVertexProgramAvailable || !glConfig.ARBFragmentProgramAvailable ) {
@@ -668,6 +666,4 @@ void R_ARB2_Init( void ) {
 	}
 
 	common->Printf( "Available.\n" );
-
-	glConfig.allowARB2Path = true;
 }

@@ -1,7 +1,6 @@
-#include "sys/platform.h"
-#include "framework/File.h"
 
-#include "idlib/Base64.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 /*
 Copyright (c) 1996 Lars Wirzenius.  All rights reserved.

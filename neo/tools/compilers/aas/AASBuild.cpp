@@ -26,12 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/FileSystem.h"
-#include "framework/Game.h"
-#include "renderer/RenderWorld.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "tools/compilers/aas/AASBuild_local.h"
+#include "AASBuild_local.h"
 
 #define BFL_PATCH		0x1000
 

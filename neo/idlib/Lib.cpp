@@ -26,7 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#if defined( MACOS_X ) || defined(__unix__)
+#include "precompiled.h"
+#pragma hdrstop
+
+#if defined(__unix__)
 #include <signal.h>
 #include <sys/types.h>
 #endif
@@ -34,17 +37,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef _MSC_VER
 #include <unistd.h>
 #endif
-
-#include <SDL_endian.h>
-
-#include "sys/platform.h"
-#include "idlib/math/Vector.h"
-#include "idlib/math/Polynomial.h"
-#include "idlib/Str.h"
-#include "idlib/Dict.h"
-#include "framework/Common.h"
-
-#include "idlib/Lib.h"
 
 /*
 ===============================================================================
@@ -88,8 +80,10 @@ void idLib::Init( void ) {
 	// test idMatX
 	//idMatX::Test();
 
+#if !HUMANHEAD	// HUMANHEAD pdm: Don't bother testing id's unused polynomial code
 	// test idPolynomial
 	idPolynomial::Test();
+#endif
 
 	// initialize the dictionary string pools
 	idDict::Init();
@@ -114,6 +108,18 @@ void idLib::ShutDown( void ) {
 	// shut down the memory manager
 	Mem_Shutdown();
 }
+
+#ifdef _HH_NET_DEBUGGING //HUMANHEAD rww
+/*
+================
+idLib::NetworkEntStats
+================
+*/
+extern void PrintHHNetworkUseStats(const char *typeName, int type);
+void idLib::NetworkEntStats(const char *typeName, int type) {
+	PrintHHNetworkUseStats(typeName, type);
+}
+#endif //HUMANHEAD END
 
 
 /*

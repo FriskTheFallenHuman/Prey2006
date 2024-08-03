@@ -26,15 +26,13 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "precompiled.h"
+#pragma hdrstop
+
 #include <SDL_version.h>
 #include <SDL_mutex.h>
 #include <SDL_thread.h>
 #include <SDL_timer.h>
-
-#include "sys/platform.h"
-#include "framework/Common.h"
-
-#include "sys/sys_public.h"
 
 #if SDL_MAJOR_VERSION < 2
   // SDL1.2 doesn't have SDL_threadID but uses Uint32.

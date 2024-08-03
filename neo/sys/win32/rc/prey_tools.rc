@@ -1,0 +1,131 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "prey_tools_resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+
+#include "afxres.h"
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+#include "Common.rc"
+#include "Radiant.rc"
+#include "AFEditor.rc"
+#include "SoundEditor.rc"
+#include "ParticleEditor.rc"
+#include "DeclEditor.rc"
+#include "ScriptEditor.rc"
+#include "GuiEd.rc"
+#include "Debugger.rc"
+#include "MaterialEditor.rc"
+#include "PropTree.rc"
+#include "afxres.rc"                             // Standard components
+#include "afxprint.rc"                   // printing/print preview resources
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "prey_tools_resource.h\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "#include ""Common.rc""\r\n"
+    "#include ""Radiant.rc""\r\n"
+    "#include ""AFEditor.rc""\r\n"
+    "#include ""SoundEditor.rc""\r\n"
+    "#include ""ParticleEditor.rc""\r\n"
+    "#include ""DeclEditor.rc""\n"
+    "#include ""ScriptEditor.rc""\n"
+    "#include ""GuiEd.rc""\r\n"
+    "#include ""Debugger.rc""\r\n"
+    "#include ""MaterialEditor.rc""\r\n"
+    "#include ""PropTree.rc""\r\n"
+    "#include ""afxres.rc""                             // Standard components\r\n"
+    "#include ""afxprint.rc""                   // printing/print preview resources\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+icon               ICON                    "res\\prey.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", "Human Head Studios"
+            VALUE "FileDescription", "PREY"
+            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "InternalName", "PREY"
+            VALUE "LegalCopyright", "Copyright (C) 2006 Human Head Studios, Inc."
+            VALUE "OriginalFilename", "Prey.EXE"
+            VALUE "ProductName", "PREY"
+            VALUE "ProductVersion", "1, 0, 0, 1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////

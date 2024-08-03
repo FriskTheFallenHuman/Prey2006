@@ -26,9 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "physics/Force.h"
+#include "../Game_local.h"
 
 CLASS_DECLARATION( idClass, idForce )
 END_CLASS

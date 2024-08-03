@@ -26,10 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "Entity.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "Sound.h"
+#include "Game_local.h"
 
 /*
 ===============================================================================

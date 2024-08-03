@@ -25,6 +25,8 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+#include "precompiled.h"
+#include "../sys_local.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -39,15 +41,7 @@ If you have questions concerning this license or the applicable additional terms
 #include <signal.h>
 #include <fcntl.h>
 
-#include "sys/platform.h"
-#include "idlib/containers/StrList.h"
-#include "framework/FileSystem.h"
-#include "framework/KeyInput.h"
-#include "framework/EditField.h"
-#include "framework/Licensee.h"
-#include "sys/sys_local.h"
-
-#include "sys/posix/posix_public.h"
+#include "posix_public.h"
 
 #include <SDL.h> // clipboard
 
@@ -262,7 +256,7 @@ Sys_Init
 */
 void Sys_Init( void ) {
 	if(consoleLog != NULL)
-		common->Printf("Logging console output to %s/dhewm3log.txt\n", Posix_GetSavePath());
+		common->Printf("Logging console output to %s/qconsolelog.txt\n", Posix_GetSavePath());
 
 	Posix_InitConsoleInput();
 	com_pid.SetInteger( getpid() );
@@ -419,14 +413,14 @@ int Sys_GetDriveFreeSpace( const char *path ) {
 static const int   crashSigs[]     = {  SIGILL,   SIGABRT,   SIGFPE,   SIGSEGV };
 static const char* crashSigNames[] = { "SIGILL", "SIGABRT", "SIGFPE", "SIGSEGV" };
 
-#if ( defined(__linux__) && defined(__GLIBC__) ) || defined(__FreeBSD__) || (defined(__APPLE__) && !defined(OSX_TIGER))
+#if ( defined(__linux__) && defined(__GLIBC__) ) || defined(__FreeBSD__)
   #define D3_HAVE_BACKTRACE
   #include <execinfo.h>
 #endif
 
 // unlike Sys_Printf() this doesn't call tty_Hide(); and tty_Show();
-// to minimize interaction with broken dhewm3 state
-// (but unlike regular printf() it'll also write to dhewm3log.txt)
+// to minimize interaction with broken engine state
+// (but unlike regular printf() it'll also write to qconsolelog.txt)
 static void CrashPrintf(const char* msg, ...)
 {
 	va_list argptr;
@@ -568,7 +562,7 @@ static bool disableTTYinput = false;
 static void signalhandlerConsoleStuff(int sig)
 {
 	if(sig == SIGTTIN) {
-		// we get this if dhewm3 was started in foreground, then put to sleep with ctrl-z
+		// we get this if the engine was started in foreground, then put to sleep with ctrl-z
 		// and afterwards set to background..
 		// as it's in background now, disable console input
 		// (if someone uses fg afterwards that's their problem, this is already obscure enough)
@@ -642,7 +636,7 @@ void Posix_InitSignalHandlers( void )
 	installSigHandler(SIGTTIN, 0, signalhandlerConsoleStuff);
 	installSigHandler(SIGTTOU, 0, signalhandlerConsoleStuff);
 
-	// this is also a good place to open dhewm3log.txt for Sys_VPrintf()
+	// this is also a good place to open qconsolelog.txt for Sys_VPrintf()
 
 	const char* savePath = Posix_GetSavePath();
 	size_t savePathLen = strlen(savePath);
@@ -658,18 +652,18 @@ void Posix_InitSignalHandlers( void )
 			return;
 		}
 		char logFileName[PATH_MAX] = {};
-		int fullLogLen = snprintf(logFileName, sizeof(logFileName), "%s/dhewm3log.txt", logPath);
+		int fullLogLen = snprintf(logFileName, sizeof(logFileName), "%s/qconsolelog.txt", logPath);
 		// cast to size_t which is unsigned and would get really big if fullLogLen < 0 (=> error in snprintf())
 		if((size_t)fullLogLen >= sizeof(logFileName)) {
-			printf("WARNING: Couldn't create dhewm3log.txt at '%s' because its length would be '%d' which is > PATH_MAX (%zd) or < 0!\n",
+			printf("WARNING: Couldn't create qconsolelog.txt at '%s' because its length would be '%d' which is > PATH_MAX (%zd) or < 0!\n",
 			       logPath, fullLogLen, (size_t)PATH_MAX);
 			return;
 		}
 		struct stat buf;
 		if(stat(logFileName, &buf) == 0) {
-			// logfile exists, rename to dhewm3log-old.txt
+			// logfile exists, rename to qconsolelog-old.txt
 			char oldLogFileName[PATH_MAX] = {};
-			if((size_t)snprintf(oldLogFileName, sizeof(oldLogFileName), "%s/dhewm3log-old.txt", logPath) < sizeof(logFileName))
+			if((size_t)snprintf(oldLogFileName, sizeof(oldLogFileName), "%s/qconsolelog-old.txt", logPath) < sizeof(logFileName))
 			{
 				rename(logFileName, oldLogFileName);
 			}
@@ -738,7 +732,7 @@ void Posix_InitConsoleInput( void ) {
 		tc.c_cc[VTIME] = 0;
 		if ( tcsetattr( 0, TCSADRAIN, &tc ) == -1 ) {
 			if(disableTTYinput) {
-				// got SIGTTOU => running in the background (started with `./dhewm3 &` or similar)
+				// got SIGTTOU => running in the background (started with `./prey06 &` or similar)
 				// so we shouldn't take any console input
 				Sys_Printf( "Running in background, disabling terminal support.\n" );
 				in_tty.SetBool( false );
@@ -1069,9 +1063,6 @@ char *Sys_ConsoleInput( void ) {
 		}
 		return NULL;
 	} else {
-		// disabled on OSX. works fine from a terminal, but launching from Finder is causing trouble
-		// I'm pretty sure it could be re-enabled if needed, and just handling the Finder failure case right (TTimo)
-#ifndef MACOS_X
 		// no terminal support - read only complete lines
 		int				len;
 		fd_set			fdset;
@@ -1102,7 +1093,6 @@ char *Sys_ConsoleInput( void ) {
 
 		input_ret[ len-1 ] = '\0';		// rip off the \n and terminate
 		return input_ret;
-#endif
 	}
 	return NULL;
 }

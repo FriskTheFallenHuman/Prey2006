@@ -29,9 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SYS_EVENT_H__
 #define __SYS_EVENT_H__
 
-#include "idlib/containers/LinkList.h"
-#include "cm/CollisionModel.h"
-
 // Event are used for scheduling tasks and for linking script commands.
 
 #define D_EVENT_MAXARGS				8			// if changed, enable the CREATE_EVENT_CODE define in Event.cpp to generate switch statement for idClass::ProcessEventArgPtr.
@@ -48,8 +45,13 @@ If you have questions concerning this license or the applicable additional terms
 #define D_EVENT_ENTITY				'e'
 #define	D_EVENT_ENTITY_NULL			'E'			// event can handle NULL entity pointers
 #define D_EVENT_TRACE				't'
+#define D_EVENT_INTPTR				'y'
 
 #define MAX_EVENTS					4096
+
+//HUMANHEAD: aob - needed for networking to send the least amount of bits
+extern const int MAX_EVENTS_NUM_BITS;
+//HUMANHEAD END
 
 class idClass;
 class idTypeInfo;
@@ -84,6 +86,10 @@ public:
 	static int					NumEventCommands( void );
 	static const idEventDef		*GetEventCommand( int eventnum );
 	static const idEventDef		*FindEvent( const char *name );
+
+	//HUMANHEAD: aob
+	static const idEventDef		*FindEvent( int eventId );
+	//HUMANHEAD END
 };
 
 class idSaveGame;
@@ -113,6 +119,10 @@ public:
 	void						Free( void );
 	void						Schedule( idClass *object, const idTypeInfo *cls, int time );
 	byte						*GetData( void );
+
+	// HUMANHEAD pdm
+	static int					NumQueuedEvents( const idClass *obj, const idEventDef *evdef = NULL );
+	// HUMANHEAD END
 
 	static void					CancelEvents( const idClass *obj, const idEventDef *evdef = NULL );
 	static void					ClearEventList( void );

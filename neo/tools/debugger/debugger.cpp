@@ -26,16 +26,16 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "precompiled.h"
+#pragma hdrstop
 
 
 #if defined( ID_ALLOW_TOOLS )
-#include "tools/edit_gui_common.h"
 #include "DebuggerServer.h"
 #include "../../sys/win32/rc/debugger_resource.h"
 #include "DebuggerApp.h"
 #else
 #include "DebuggerServer.h"
-#include "debugger_common.h"
 #endif
 
 #if defined( ID_ALLOW_TOOLS )

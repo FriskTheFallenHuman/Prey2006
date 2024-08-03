@@ -26,15 +26,12 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/math/Interpolate.h"
-#include "renderer/Cinematic.h"
-#include "renderer/tr_local.h"
-#include "ui/Window.h"
-#include "ui/UserInterface.h"
-#include "sound/sound.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/Material.h"
+#include "tr_local.h"
+
+#define _SURFTYPE(x) ( (x) | ( surfaceFlags & ( ~SURF_TYPE_MASK ) ) )
 
 /*
 
@@ -116,6 +113,8 @@ void idMaterial::CommonInit() {
 	suppressInSubview = false;
 	refCount = 0;
 	portalSky = false;
+	subviewClass = SC_MIRROR;
+	directPortalDistance = -1;
 
 	decalInfo.stayTime = 10000;
 	decalInfo.fadeTime = 4000;
@@ -267,23 +266,24 @@ static const infoParm_t	infoParms[] = {
 	{"nosteps",		0,	SURF_NOSTEPS,	0 },		// no footsteps
 
 	// material types for particle, sound, footstep feedback
-	{"metal",		0,  SURFTYPE_METAL,		0 },	// metal
-	{"stone",		0,  SURFTYPE_STONE,		0 },	// stone
-	{"flesh",		0,  SURFTYPE_FLESH,		0 },	// flesh
-	{"wood",		0,  SURFTYPE_WOOD,		0 },	// wood
-	{"cardboard",	0,	SURFTYPE_CARDBOARD,	0 },	// cardboard
-	{"liquid",		0,	SURFTYPE_LIQUID,	0 },	// liquid
-	{"glass",		0,	SURFTYPE_GLASS,		0 },	// glass
-	{"plastic",		0,	SURFTYPE_PLASTIC,	0 },	// plastic
-	{"ricochet",	0,	SURFTYPE_RICOCHET,	0 },	// behaves like metal but causes a ricochet sound
+	{"metal",			0,  SURFTYPE_METAL,		0 },	// metal
+	{"stone",			0,  SURFTYPE_STONE,		0 },	// stone
+	{"flesh",			0,  SURFTYPE_FLESH,		0 },	// flesh
+	{"wood",			0,  SURFTYPE_WOOD,		0 },	// wood
+	{"cardboard",		0,	SURFTYPE_CARDBOARD,	0 },	// cardboard
+	{"liquid",			0,	SURFTYPE_LIQUID,	0 },	// liquid
+	{"glass",			0,	SURFTYPE_GLASS,		0 },	// glass
+	{"plastic",			0,	SURFTYPE_PLASTIC,	0 },	// plastic
+    {"wallwalk",		0,	SURFTYPE_WALLWALK,	0 },	// plastic
+    {"matter_altmetal",	0,	SURFTYPE_ALTMETAL,	0 },	// behaves like metal but causes a ricochet sound
 
-	// unassigned surface types
-	{"surftype10",	0,	SURFTYPE_10,	0 },
-	{"surftype11",	0,	SURFTYPE_11,	0 },
-	{"surftype12",	0,	SURFTYPE_12,	0 },
-	{"surftype13",	0,	SURFTYPE_13,	0 },
-	{"surftype14",	0,	SURFTYPE_14,	0 },
-	{"surftype15",	0,	SURFTYPE_15,	0 },
+    // unassigned surface types
+    {"forcefield",				0,	SURFTYPE_FORCEFIELD,	CONTENTS_FORCEFIELD },
+    {"pipe",					0,	SURFTYPE_PIPE,			0 },
+    {"spirit",					0,	SURFTYPE_SPIRIT,		0 },
+	{"vehicleclip",				0,	0,						CONTENTS_VEHICLECLIP },
+	{"hunterClip",				0,	0,						CONTENTS_HUNTERCLIP },
+    {"forcefield_nobullets",	1,	SURFTYPE_FORCEFIELD,	CONTENTS_FORCEFIELD },
 };
 
 static const int numInfoParms = sizeof(infoParms) / sizeof (infoParms[0]);
@@ -606,6 +606,11 @@ int idMaterial::ParseTerm( idLexer &src ) {
 		pd->registersAreConstant = false;
 		return EXP_REG_GLOBAL7;
 	}
+	if ( !token.Icmp( "distance" ) ) {
+		// return GetExpressionConstant(0);
+		pd->registersAreConstant = false;
+		return EXP_REG_DISTANCE;
+	}
 	if ( !token.Icmp( "fragmentPrograms" ) ) {
 		return GetExpressionConstant( (float) glConfig.ARBFragmentProgramAvailable );
 	}
@@ -748,6 +753,11 @@ void idMaterial::ClearStage( shaderStage_t *ss ) {
 	ss->color.registers[1] =
 	ss->color.registers[2] =
 	ss->color.registers[3] = GetExpressionConstant( 1 );
+	ss->isScopeView = false;
+	ss->isNotScopeView = false;
+	ss->isSpiritWalk = false;
+	ss->isNotSpiritWalk = false;
+	ss->isShuttleView = false;
 }
 
 /*
@@ -774,6 +784,8 @@ int idMaterial::NameToSrcBlendMode( const idStr &name ) {
 		return GLS_SRCBLEND_ONE_MINUS_DST_ALPHA;
 	} else if ( !name.Icmp( "GL_SRC_ALPHA_SATURATE" ) ) {
 		return GLS_SRCBLEND_ALPHA_SATURATE;
+	} else if ( !name.Icmp( "shader" ) ) {
+		return GLS_SRCBLEND_ONE;
 	}
 
 	common->Warning( "unknown blend mode '%s' in material '%s'", name.c_str(), GetName() );
@@ -858,11 +870,17 @@ void idMaterial::ParseBlend( idLexer &src, shaderStage_t *stage ) {
 
 	srcBlend = NameToSrcBlendMode( token );
 
-	MatchToken( src, "," );
-	if ( !src.ReadToken( &token ) ) {
-		return;
+	const bool usingShader = !idStr::Icmp( token, "shader" );
+	if ( usingShader ) {
+		dstBlend = GLS_DSTBLEND_ONE;
+	} else {
+		MatchToken( src, "," );
+
+		if ( !src.ReadToken( &token ) ) {
+			return;
+		}
+		dstBlend = NameToDstBlendMode( token );
 	}
-	dstBlend = NameToDstBlendMode( token );
 
 	stage->drawStateBits = srcBlend | dstBlend;
 }
@@ -1006,6 +1024,10 @@ void idMaterial::ParseFragmentMap( idLexer &src, newShaderStage_t *newStage ) {
 		}
 		if ( !token.Icmp( "nopicmip" ) ) {
 			allowPicmip = false;
+			continue;
+		}
+
+		if ( !token.Icmp( "highres" ) ) {
 			continue;
 		}
 
@@ -1304,6 +1326,8 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 				texGenRegisters[0] = ParseExpression( src );
 				texGenRegisters[1] = ParseExpression( src );
 				texGenRegisters[2] = ParseExpression( src );
+			} else if ( !token.Icmp( "screen" ) ) {
+				ts->texgen = TG_SCREEN;
 			} else {
 				common->Warning( "bad texGen '%s' in material %s", token.c_str(), GetName() );
 				SetMaterialFlag( MF_DEFAULTED );
@@ -1536,6 +1560,91 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 			continue;
 		}
 
+        if ( !token.Icmp( "glowStage" ) ) {
+            continue;
+        }
+
+        if ( !token.Icmp( "specularEXP" ) ) {
+            idStr tmp;
+            src.ParseRestOfLine( tmp ); // 2 float
+            continue;
+        }
+
+        if ( !token.Icmp( "fragmentparm" ) ) {
+            src.SkipRestOfLine();
+            continue;
+        }
+
+        if ( !token.Icmp( "shaderFallback3" ) ) {
+			continue;
+		}
+
+        if ( !token.Icmp( "shaderFallback2" ) ) {
+			continue;
+		}
+
+        if ( !token.Icmp( "shaderFallback1" ) ) {
+			continue;
+		}
+
+        if ( !token.Icmp( "scopeView" ) ) { //k: scope view support
+			ss->isScopeView = true;
+			ss->isNotScopeView = false;
+			continue;
+		}
+
+        if ( !token.Icmp( "notScopeView" ) ) { //k: scope view support
+			ss->isNotScopeView = true;
+			ss->isScopeView = false;
+			continue;
+		}
+
+        if ( !token.Icmp( "highres" ) ) {
+			continue;
+		}
+
+        if ( !token.Icmp( "shaderLevel1" ) ) {
+			continue;
+		}
+
+        if ( !token.Icmp( "shaderLevel2" ) ) {
+			continue;
+		}
+
+        if ( !token.Icmp( "shaderLevel3" ) ) {
+			continue;
+		}
+
+        if ( !token.Icmp( "shaderLevel1" ) ) {
+			continue;
+		}
+
+        if ( !token.Icmp( "shuttleView" ) ) {
+			ss->isShuttleView = true;
+			continue;
+		}
+
+        if ( !token.Icmp( "spiritWalk" ) ) {
+			ss->isSpiritWalk = true;
+			ss->isNotSpiritWalk = false;
+			continue;
+		}
+
+        if ( !token.Icmp( "notSpiritWalk" ) ) {
+			ss->isNotSpiritWalk = true;
+			ss->isSpiritWalk = false;
+			continue;
+		}
+
+        if ( !token.Icmp( "growIn" ) ) { // it is color expression
+			src.SkipRestOfLine();
+			continue;
+		}
+
+        if ( !token.Icmp( "growOut" ) ) { // it is color expression
+			src.SkipRestOfLine();
+			continue;
+		}
 
 		common->Warning( "unknown token '%s' in material '%s'", token.c_str(), GetName() );
 		SetMaterialFlag( MF_DEFAULTED );
@@ -1659,6 +1768,24 @@ void idMaterial::ParseDeform( idLexer &src ) {
 			return;
 		}
 		deformDecl = declManager->FindType( DECL_PARTICLE, token.c_str(), true );
+		return;
+	}
+	if ( !token.Icmp( "corona" ) ) {
+		cullType = CT_TWO_SIDED;
+		src.SkipRestOfLine();
+		SetMaterialFlag( MF_NOSHADOWS );
+		return;
+	}
+	if ( !token.Icmp( "jitter" ) ) {
+		cullType = CT_TWO_SIDED;
+		src.SkipRestOfLine();
+		SetMaterialFlag( MF_NOSHADOWS );
+		return;
+	}
+	if ( !token.Icmp( "beam" ) ) {
+		cullType = CT_TWO_SIDED;
+		src.SkipRestOfLine();
+		SetMaterialFlag( MF_NOSHADOWS );
 		return;
 	}
 	src.Warning( "Bad deform type '%s'", token.c_str() );
@@ -2009,8 +2136,9 @@ void idMaterial::ParseMaterial( idLexer &src ) {
 		}
 		// diffusemap for stage shortcut
 		else if ( !token.Icmp( "diffusemap" ) ) {
-			str = R_ParsePastImageProgram( src );
-			idStr::snPrintf( buffer, sizeof( buffer ), "blend diffusemap\nmap %s\n}\n", str );
+			idStr nstr;
+			src.ReadRestOfLine( nstr );
+			idStr::snPrintf( buffer, sizeof( buffer ), "blend diffusemap\nmap %s\n}\n", nstr.c_str() );
 			newSrc.LoadMemory( buffer, strlen(buffer), "diffusemap" );
 			newSrc.SetFlags( LEXFL_NOFATALERRORS | LEXFL_NOSTRINGCONCAT | LEXFL_NOSTRINGESCAPECHARS | LEXFL_ALLOWPATHNAMES );
 			ParseStage( newSrc, trpDefault );
@@ -2019,8 +2147,9 @@ void idMaterial::ParseMaterial( idLexer &src ) {
 		}
 		// specularmap for stage shortcut
 		else if ( !token.Icmp( "specularmap" ) ) {
-			str = R_ParsePastImageProgram( src );
-			idStr::snPrintf( buffer, sizeof( buffer ), "blend specularmap\nmap %s\n}\n", str );
+			idStr nstr;
+			src.ReadRestOfLine( nstr );
+			idStr::snPrintf( buffer, sizeof( buffer ), "blend specularmap\nmap %s\n}\n", nstr.c_str() );
 			newSrc.LoadMemory( buffer, strlen(buffer), "specularmap" );
 			newSrc.SetFlags( LEXFL_NOFATALERRORS | LEXFL_NOSTRINGCONCAT | LEXFL_NOSTRINGESCAPECHARS | LEXFL_ALLOWPATHNAMES );
 			ParseStage( newSrc, trpDefault );
@@ -2029,8 +2158,9 @@ void idMaterial::ParseMaterial( idLexer &src ) {
 		}
 		// normalmap for stage shortcut
 		else if ( !token.Icmp( "bumpmap" ) ) {
-			str = R_ParsePastImageProgram( src );
-			idStr::snPrintf( buffer, sizeof( buffer ), "blend bumpmap\nmap %s\n}\n", str );
+			idStr nstr;
+			src.ReadRestOfLine( nstr );
+			idStr::snPrintf( buffer, sizeof( buffer ), "blend bumpmap\nmap %s\n}\n", nstr.c_str() );
 			newSrc.LoadMemory( buffer, strlen(buffer), "bumpmap" );
 			newSrc.SetFlags( LEXFL_NOFATALERRORS | LEXFL_NOSTRINGCONCAT | LEXFL_NOSTRINGESCAPECHARS | LEXFL_ALLOWPATHNAMES );
 			ParseStage( newSrc, trpDefault );
@@ -2052,6 +2182,105 @@ void idMaterial::ParseMaterial( idLexer &src ) {
 
 			// noShadows
 			SetMaterialFlag( MF_NOSHADOWS );
+
+			//karin: decal default using alphatest
+			coverage = MC_TRANSLUCENT;
+			continue;
+		}
+		else if ( !token.Icmp( "matter_metal" ) ) {
+			surfaceFlags = _SURFTYPE( SURFTYPE_METAL );
+			continue;
+		} else if ( !token.Icmp( "matter_wood" ) ) {
+			surfaceFlags = _SURFTYPE( SURFTYPE_WOOD );
+			continue;
+		} else if ( !token.Icmp( "matter_cardboard" ) ) {
+			surfaceFlags = _SURFTYPE( SURFTYPE_CARDBOARD );
+			continue;
+		} else if ( !token.Icmp( "matter_tile" ) ) {
+			surfaceFlags = _SURFTYPE( SURFTYPE_TILE );
+			continue;
+		} else if ( !token.Icmp( "matter_stone" ) ) {
+			surfaceFlags = _SURFTYPE( SURFTYPE_STONE );
+			continue;
+		} else if ( !token.Icmp( "matter_flesh" ) ) {
+			surfaceFlags = _SURFTYPE( SURFTYPE_FLESH );
+			continue;
+		} else if ( !token.Icmp( "matter_glass" ) ) {
+			surfaceFlags = _SURFTYPE( SURFTYPE_GLASS );
+			continue;
+		} else if ( !token.Icmp( "matter_pipe" ) ) {
+			surfaceFlags = _SURFTYPE( SURFTYPE_PIPE );
+			continue;
+		} else if ( !token.Icmp( "decal_alphatest_macro" ) ) {
+			// polygonOffset
+			SetMaterialFlag( MF_POLYGONOFFSET );
+			polygonOffset = 1;
+
+			// discrete
+			surfaceFlags |= SURF_DISCRETE;
+			contentFlags &= ~CONTENTS_SOLID;
+
+			// sort decal
+			sort = SS_DECAL;
+
+			// noShadows
+			SetMaterialFlag( MF_NOSHADOWS );
+
+			coverage = MC_TRANSLUCENT;
+			continue;
+		} else if ( !token.Icmp( "skipClip" ) ) {
+			SetMaterialFlag( MF_SKIPCLIP );
+			continue;
+		} else if ( !token.Icmp( "noSeeThru" ) ) {
+			continue;
+		} else if ( !token.Icmp( "seeThru" ) ) {
+			continue;
+		} else if ( !token.Icmp( "overlay_macro" ) ) {
+			continue;
+		} else if ( !token.Icmp( "scorch_macro" ) ) {
+			//karin: same as `DECAL_MACRO` for weapon projectile scorches
+			// polygonOffset
+			SetMaterialFlag( MF_POLYGONOFFSET );
+			polygonOffset = 1;
+
+			// discrete
+			surfaceFlags |= SURF_DISCRETE;
+			contentFlags &= ~CONTENTS_SOLID;
+
+			// sort decal
+			sort = SS_DECAL;
+
+			// noShadows
+			SetMaterialFlag( MF_NOSHADOWS );
+
+			coverage = MC_TRANSLUCENT;
+			continue;
+		} else if ( !token.Icmp( "glass_macro" ) ) {
+			surfaceFlags = _SURFTYPE( SURFTYPE_GLASS );
+			continue;
+		} else if ( !token.Icmp( "skybox_macro" ) ) {
+			surfaceFlags |= SURF_NOFRAGMENT;
+			coverage = MC_OPAQUE;
+			allowOverlays = false;
+			SetMaterialFlag( MF_NOSHADOWS );
+			continue;
+		} else if ( !token.Icmp( "lightWholeMesh" ) ) {
+			SetMaterialFlag( MF_LIGHT_WHOLE_MESH );
+			continue;
+		} else if ( !token.Icmp( "skyboxportal" ) ) {
+			src.SkipRestOfLine();
+			sort = SS_SUBVIEW;
+			subviewClass = SC_PORTAL_SKYBOX;
+			continue;
+		} else if ( !token.Icmp( "directportal" ) ) { // with a parm: e.g. directportal parm5
+			directPortalDistance = ParseExpression( src );
+			sort = SS_SUBVIEW;
+			subviewClass = SC_PORTAL;
+			coverage = MC_OPAQUE;
+			SetMaterialFlag( MF_NOSHADOWS );
+			idToken t;
+			t = "discrete";
+			CheckSurfaceParm( &t );
 			continue;
 		}
 		else if ( token == "{" ) {
@@ -2341,7 +2570,8 @@ static const char *opNames[] = {
 	"OP_TYPE_EQ",
 	"OP_TYPE_NE",
 	"OP_TYPE_AND",
-	"OP_TYPE_OR"
+	"OP_TYPE_OR",
+	"OP_TYPE_FRAGMENTPROGRAMS" // HUMANHEAD CJR:  Added so fragment programs support can be toggled
 };
 
 void idMaterial::Print() const {
@@ -2420,6 +2650,7 @@ void idMaterial::EvaluateRegisters( float *registers, const float shaderParms[MA
 	registers[EXP_REG_PARM9] = shaderParms[9];
 	registers[EXP_REG_PARM10] = shaderParms[10];
 	registers[EXP_REG_PARM11] = shaderParms[11];
+	registers[EXP_REG_DISTANCE] = shaderParms[12];
 	registers[EXP_REG_GLOBAL0] = view->renderView.shaderParms[0];
 	registers[EXP_REG_GLOBAL1] = view->renderView.shaderParms[1];
 	registers[EXP_REG_GLOBAL2] = view->renderView.shaderParms[2];

@@ -2,8 +2,8 @@
 
 
 //#include "stdafx.h"
-#include "tools/edit_gui_common.h"
-
+#include "precompiled.h"
+#pragma hdrstop
 
 #include "proptree.h"
 #include "PropTreeItemFileEdit.h"

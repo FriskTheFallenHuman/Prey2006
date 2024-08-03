@@ -29,8 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __STR_H__
 #define __STR_H__
 
-#include "idlib/CmdArgs.h"
-
 /*
 ===============================================================================
 
@@ -841,7 +839,8 @@ ID_INLINE void idStr::Insert( const char *text, int index ) {
 
 ID_INLINE void idStr::ToLower( void ) {
 	for (int i = 0; data[i]; i++ ) {
-		if ( CharIsUpper( data[i] ) ) {
+		// HUMANHEAD pdm: cast to unsigned for the sake of western european characters, which use the sign bit
+		if ( CharIsUpper( (unsigned char)data[i] ) ) {
 			data[i] += ( 'a' - 'A' );
 		}
 	}
@@ -849,7 +848,8 @@ ID_INLINE void idStr::ToLower( void ) {
 
 ID_INLINE void idStr::ToUpper( void ) {
 	for (int i = 0; data[i]; i++ ) {
-		if ( CharIsLower( data[i] ) ) {
+		// HUMANHEAD pdm: cast to unsigned for the sake of western european characters, which use the sign bit
+		if ( CharIsLower( (unsigned char)data[i] ) ) {
 			data[i] -= ( 'a' - 'A' );
 		}
 	}
@@ -964,7 +964,8 @@ ID_INLINE int idStr::Length( const char *s ) {
 
 ID_INLINE char *idStr::ToLower( char *s ) {
 	for ( int i = 0; s[i]; i++ ) {
-		if ( CharIsUpper( s[i] ) ) {
+		// HUMANHEAD pdm: cast to unsigned for the sake of western european characters, which use the sign bit
+		if ( CharIsUpper( (unsigned char)s[i] ) ) {
 			s[i] += ( 'a' - 'A' );
 		}
 	}
@@ -973,7 +974,8 @@ ID_INLINE char *idStr::ToLower( char *s ) {
 
 ID_INLINE char *idStr::ToUpper( char *s ) {
 	for ( int i = 0; s[i]; i++ ) {
-		if ( CharIsLower( s[i] ) ) {
+		// HUMANHEAD pdm: cast to unsigned for the sake of western european characters, which use the sign bit
+		if ( CharIsLower( (unsigned char)s[i] ) ) {
 			s[i] -= ( 'a' - 'A' );
 		}
 	}
@@ -1075,11 +1077,11 @@ ID_INLINE int idStr::DynamicMemoryUsed() const {
 // *would* have been written into a big enough buffer, even if that's > size
 // unlike idStr::snPrintf() which returns the written bytes in that case
 // and also calls common->Warning() in case of overflows
-int D3_snprintfC99(char *dst, size_t size, const char *format, ...) id_attribute((format(printf,3,4)));
+int D3_snprintfC99( char *dst, size_t size, const char *format, ... ) id_attribute((format(printf,3,4)));
 
 // behaves like C99's vsnprintf() by returning the amount of bytes that
 // *would* have been written into a big enough buffer, even if that's > size
 // unlike idStr::vsnPrintf() which returns -1 in that case
-int D3_vsnprintfC99(char *dst, size_t size, const char *format, va_list ap);
+int D3_vsnprintfC99( char *dst, size_t size, const char *format, va_list ap );
 
 #endif /* !__STR_H__ */

@@ -26,11 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/Session.h"
-#include "renderer/tr_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/Model_local.h"
+#include "tr_local.h"
+#include "Model_local.h"
 
 static const char *MD5_SnapshotName = "_MD5_Snapshot_";
 
@@ -498,6 +498,8 @@ void idRenderModelMD5::LoadModel() {
 	idMD5Joint	*joint;
 	idJointMat *poseMat3;
 
+	this->staticModelInstance = 0;
+
 	if ( !purged ) {
 		PurgeModel();
 	}
@@ -723,6 +725,8 @@ idRenderModel *idRenderModelMD5::InstantiateDynamicModel( const struct renderEnt
 	idMD5Mesh			*mesh;
 	idRenderModelStatic	*staticModel;
 
+	this->staticModelInstance = 0;
+
 	if ( cachedModel && !r_useCachedDynamicModels.GetBool() ) {
 		delete cachedModel;
 		cachedModel = NULL;
@@ -805,6 +809,8 @@ idRenderModel *idRenderModelMD5::InstantiateDynamicModel( const struct renderEnt
 		staticModel->bounds.AddPoint( surf->geometry->bounds[0] );
 		staticModel->bounds.AddPoint( surf->geometry->bounds[1] );
 	}
+
+	this->staticModelInstance = staticModel;
 
 	return staticModel;
 }
@@ -929,6 +935,7 @@ void idRenderModelMD5::PurgeModel() {
 	joints.Clear();
 	defaultPose.Clear();
 	meshes.Clear();
+	staticModelInstance = 0;
 }
 
 /*

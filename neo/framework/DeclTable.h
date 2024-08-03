@@ -29,9 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __DECLTABLE_H__
 #define __DECLTABLE_H__
 
-#include "idlib/containers/List.h"
-#include "framework/DeclManager.h"
-
 /*
 ===============================================================================
 
@@ -48,7 +45,17 @@ public:
 	virtual bool			Parse( const char *text, const int textLength );
 	virtual void			FreeData( void );
 
+	virtual	//HUMANHEAD pdm: made virtual so it can be called from game code
 	float					TableLookup( float index ) const;
+
+	//HUMANHEAD: aob - interfaces to allow integrating tables
+	virtual int				NumElements() const { return values.Num(); }
+	virtual float			Integrate( float frac ) const { (void)frac; return frac; }
+
+protected:
+	virtual float			IntegratePreviousAreas(int numAreas, float inverseNumAreas) const { (void)numAreas; (void)inverseNumAreas; return 0.0f; }
+	virtual float			IntegrateArea( int fromElement, int toElement, float inverseNumAreas ) const { (void)fromElement; (void)toElement; (void)inverseNumAreas; return 0.0f; }
+	//HUMANHEAD END
 
 private:
 	bool					clamp;

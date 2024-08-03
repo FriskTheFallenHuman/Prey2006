@@ -26,11 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/hashing/MD4.h"
-#include "renderer/tr_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/Image.h"
+#include "tr_local.h"
 
 /*
 PROBLEM: compressed textures may break the zero clamp rule!
@@ -1334,7 +1333,7 @@ bool idImage::CheckPrecompressedImage( bool fullLoad ) {
 	}
 
 	// god i love last minute hacks :-)
-	if ( com_machineSpec.GetInteger() >= 1 && imgName.Icmpn( "lights/", 7 ) == 0 ) {
+	if ( com_imageQuality.GetInteger() >= 1 && imgName.Icmpn( "lights/", 7 ) == 0 ) {
 		return false;
 	}
 

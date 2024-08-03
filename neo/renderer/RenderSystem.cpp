@@ -25,18 +25,10 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
-#include "sys/platform.h"
-#include "idlib/containers/List.h"
-#include "framework/EventLoop.h"
-#include "framework/Session.h"
-#include "framework/DemoFile.h"
-#include "renderer/ModelManager.h"
-#include "renderer/Material.h"
-#include "renderer/GuiModel.h"
-#include "renderer/VertexCache.h"
-#include "renderer/RenderWorld_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/tr_local.h"
+#include "tr_local.h"
 
 idRenderSystemLocal	tr;
 idRenderSystem	*renderSystem = &tr;
@@ -140,6 +132,9 @@ static void R_IssueRenderCommands( void ) {
 		// nothing to issue
 		return;
 	}
+
+	backEnd.scopeView = tr.IsScopeView();
+	backEnd.shuttleView = tr.IsShuttleView();
 
 	// r_skipBackEnd allows the entire time of the back end
 	// to be removed from performance measurements, although
@@ -514,62 +509,6 @@ void idRenderSystemLocal::DrawBigStringExt( int x, int y, const char *string, co
 //======================================================================================
 
 /*
-==================
-SetBackEndRenderer
-
-Check for changes in the back end renderSystem, possibly invalidating cached data
-==================
-*/
-void idRenderSystemLocal::SetBackEndRenderer() {
-	if ( !r_renderer.IsModified() ) {
-		return;
-	}
-
-	bool oldVPstate = backEndRendererHasVertexPrograms;
-
-	backEndRenderer = BE_BAD;
-
-	if ( idStr::Icmp( r_renderer.GetString(), "arb2" ) == 0 ) {
-		if ( glConfig.allowARB2Path ) {
-			backEndRenderer = BE_ARB2;
-		}
-	}
-
-	// fallback
-	if ( backEndRenderer == BE_BAD ) {
-		// choose the best
-		if ( glConfig.allowARB2Path ) {
-			backEndRenderer = BE_ARB2;
-		}
-	}
-
-	backEndRendererHasVertexPrograms = false;
-	backEndRendererMaxLight = 1.0;
-
-	switch( backEndRenderer ) {
-	case BE_ARB2:
-		common->Printf( "using ARB2 renderSystem\n" );
-		backEndRendererHasVertexPrograms = true;
-		backEndRendererMaxLight = 999;
-		break;
-	default:
-		common->FatalError( "SetbackEndRenderer: bad back end" );
-	}
-
-	// clear the vertex cache if we are changing between
-	// using vertex programs and not, because specular and
-	// shadows will be different data
-	if ( oldVPstate != backEndRendererHasVertexPrograms ) {
-		vertexCache.PurgeAll();
-		if ( primaryWorld ) {
-			primaryWorld->FreeInteractions();
-		}
-	}
-
-	r_renderer.ClearModified();
-}
-
-/*
 ====================
 BeginFrame
 ====================
@@ -592,9 +531,6 @@ void idRenderSystemLocal::BeginFrame( int windowWidth, int windowHeight ) {
 			r_useScissor.SetBool( origUseScissor );
 		}
 	} // DG end
-
-	// determine which back end we will use
-	SetBackEndRenderer();
 
 	guiModel->Clear();
 

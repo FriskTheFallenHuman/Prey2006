@@ -26,10 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "renderer/tr_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/Model_local.h"
+#include "tr_local.h"
+#include "Model_local.h"
 
 #define LIQUID_MAX_SKIP_FRAMES	5
 #define LIQUID_MAX_TYPES		3

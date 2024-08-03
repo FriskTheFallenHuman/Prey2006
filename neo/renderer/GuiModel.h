@@ -26,11 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "idlib/containers/List.h"
-#include "idlib/geometry/DrawVert.h"
-#include "renderer/Model.h"
-
-class idDemoFile;
+#ifndef __GUIMODEL_H__
+#define __GUIMODEL_H__
 
 typedef struct {
 	const idMaterial	*material;
@@ -72,3 +69,5 @@ private:
 	idList<glIndex_t>		indexes;
 	idList<idDrawVert>	verts;
 };
+
+#endif /* !__GUIMODEL_H__ */

@@ -29,9 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __PHYSICS_BASE_H__
 #define __PHYSICS_BASE_H__
 
-#include "physics/Physics.h"
-#include "Game_local.h"
-
 /*
 ===============================================================================
 
@@ -132,6 +129,11 @@ public:	// common physics interface
 	void					SetPushed( int deltaTime );
 	const idVec3 &			GetPushedLinearVelocity( const int id = 0 ) const;
 	const idVec3 &			GetPushedAngularVelocity( const int id = 0 ) const;
+
+	//HUMANHEAD: aob
+	bool					HasContacts( void ) const;
+	idVec3					GetGroundContactNormal() const;
+	//HUMANHEAD END
 
 	void					SetMaster( idEntity *master, const bool orientated = true );
 

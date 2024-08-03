@@ -29,13 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SAVEGAME_H__
 #define __SAVEGAME_H__
 
-#include "framework/DeclFX.h"
-#include "framework/Game.h"
-#include "renderer/Model.h"
-#include "renderer/RenderSystem.h"
-
-#include "gamesys/Class.h"
-
 /*
 
 Save game related helper classes.
@@ -92,6 +85,12 @@ public:
 	void					WriteTraceModel( const idTraceModel &trace );
 	void					WriteClipModel( const class idClipModel *clipModel );
 	void					WriteSoundCommands( void );
+
+	// HUMANHEAD pdm: additions
+	void					WriteEventDef( const idEventDef *event );
+	void					WriteQuat( const idQuat &vec ); // HUMANHEAD mdl
+	void					WriteStringList( const idList<idStr> &list ); // HUMANHEAD mdl
+	// HUMANHEAD END
 
 	void					WriteBuildNumber( const int value );
 
@@ -153,28 +152,19 @@ public:
 	void					ReadClipModel( idClipModel *&clipModel );
 	void					ReadSoundCommands( void );
 
+	// HUMANHEAD pdm: additions
+	void					ReadEventDef( const idEventDef *&event );
+	void					ReadQuat( idQuat &vec ); // HUMANHEAD mdl
+	void					ReadStringList( idList<idStr> &list ); // HUMANHEAD mdl
+	// HUMANHEAD END
+
 	void					ReadBuildNumber( void );
 
 	//						Used to retrieve the saved game buildNumber from within class Restore methods
 	int						GetBuildNumber( void );
 
-	// DG: added these methods, internalSavegameVersion makes us independent of the global BUILD_NUMBER
-	void					ReadInternalSavegameVersion( void )
-	{
-		ReadInt( internalSavegameVersion );
-	}
-
-	// if it's 0, this is from a GetBuildNumber() < 1305 savegame
-	// otherwise, compare it to idGameLocal::INTERNAL_SAVEGAME_VERSION
-	int						GetInternalSavegameVersion( void ) const
-	{
-		return internalSavegameVersion;
-	}
-	// DG end
-
 private:
 	int						buildNumber;
-	int						internalSavegameVersion; // DG added this
 
 	idFile *				file;
 
@@ -182,5 +172,21 @@ private:
 
 	void					CallRestore_r( const idTypeInfo *cls, idClass *obj );
 };
+
+// HUMANHEAD mdl:  Savefile debugging macros
+
+#ifdef HUMANHEAD_SAVEDEBUG
+
+#define WRITE_SAVEDEBUG_MARKER( savefile, value ) savefile->WriteInt( value )
+#define READ_SAVEDEBUG_MARKER( savefile, value ) { int tmp; savefile->ReadInt( tmp ); assert( tmp == value ); }
+
+#else
+
+#define WRITE_SAVEDEBUG_MARKER( savefile, value )
+#define READ_SAVEDEBUG_MARKER( savefile, value )
+
+#endif
+
+// HUMANHEAD END
 
 #endif /* !__SAVEGAME_H__*/

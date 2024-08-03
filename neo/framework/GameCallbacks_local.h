@@ -32,8 +32,8 @@ If you have questions concerning this license or the applicable additional terms
 // but *not* part of the Game API exported to Game DLLs.
 // Common.h (above idCommon::SetCallback()) has a lengthy explanation of what all this is good for..
 
-#ifndef NEO_FRAMEWORK_GAMECALLBACKS_LOCAL_H_
-#define NEO_FRAMEWORK_GAMECALLBACKS_LOCAL_H_
+#ifndef __GAMECALLBACKS_LOCAL_H__
+#define __GAMECALLBACKS_LOCAL_H__
 
 #include "Common.h"
 
@@ -53,4 +53,4 @@ struct idGameCallbacks {
 extern idGameCallbacks gameCallbacks;
 
 
-#endif /* NEO_FRAMEWORK_GAMECALLBACKS_LOCAL_H_ */
+#endif /* !__GAMECALLBACKS_LOCAL_H__ */

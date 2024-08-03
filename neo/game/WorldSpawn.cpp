@@ -26,13 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/FileSystem.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/SysCvar.h"
-#include "script/Script_Thread.h"
-
-#include "WorldSpawn.h"
+#include "Game_local.h"
 
 /*
 ================
@@ -61,7 +58,13 @@ void idWorldspawn::Spawn( void ) {
 	assert( gameLocal.world == NULL );
 	gameLocal.world = this;
 
-	g_gravity.SetFloat( spawnArgs.GetFloat( "gravity", va( "%f", DEFAULT_GRAVITY ) ) );
+	if ( !gameLocal.isMultiplayer ) { //HUMANHEAD rww
+		g_gravity.SetFloat( spawnArgs.GetFloat( "gravity", va( "%f", DEFAULT_GRAVITY ) ) );
+	}
+
+#if _HH_INLINED_PROC_CLIPMODELS
+	gameLocal.CreateInlinedProcClip( this ); //HUMANHEAD rww
+#endif
 
 	// disable stamina on hell levels
 	if ( spawnArgs.GetBool( "no_stamina" ) ) {
@@ -127,6 +130,7 @@ idWorldspawn::~idWorldspawn
 */
 idWorldspawn::~idWorldspawn() {
 	if ( gameLocal.world == this ) {
+		gameLocal.ClearStaticData(); // HUMANHEAD mdl
 		gameLocal.world = NULL;
 	}
 }

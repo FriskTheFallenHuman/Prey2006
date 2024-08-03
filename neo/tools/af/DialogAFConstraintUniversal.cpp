@@ -26,7 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "tools/edit_gui_common.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 
 #include "../../sys/win32/rc/AFEditor_resource.h"
@@ -205,7 +206,6 @@ DialogAFConstraintUniversal::LoadConstraint
 void DialogAFConstraintUniversal::LoadConstraint( idDeclAF_Constraint *c ) {
 	int i, s1, s2;
 	idAngles angles;
-	idMat3 mat;
 
 	constraint = c;
 
@@ -295,7 +295,6 @@ void DialogAFConstraintUniversal::SaveConstraint( void ) {
 	int s1, s2;
 	CString str;
 	idAngles angles;
-	idMat3 mat;
 
 	if ( !file || !constraint ) {
 		return;

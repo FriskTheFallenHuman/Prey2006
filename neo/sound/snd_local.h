@@ -78,9 +78,7 @@ If you have questions concerning this license or the applicable additional terms
   #define ALC_OUTPUT_LIMITER_SOFT                  0x199A
 #endif
 
-#include "framework/UsercmdGen.h"
 #include "sound/efxlib.h"
-#include "sound/sound.h"
 
 // demo sound commands
 typedef enum {
@@ -465,6 +463,11 @@ public:
 	// used for save games
 	virtual	int			Index( void ) const;
 
+	virtual void		ModifySound( idSoundShader *shader, const s_channelType channel, const hhSoundShaderParmsModifier &parmModifier );
+	virtual soundShaderParms_t* GetSoundParms( idSoundShader *shader, const s_channelType channel );
+	virtual float		CurrentAmplitude( const s_channelType channel ) { (void)channel; return 0.0f; }
+	virtual float		CurrentVoiceAmplitude( const s_channelType channel ) { (void)channel; return 0.0f; }
+
 	//----------------------------------------------
 
 	void				Clear( void );
@@ -582,6 +585,9 @@ public:
 	// background music
 	virtual void			PlayShaderDirectly( const char *name, int channel = -1 );
 
+	virtual void			RegisterLocation( int area, const char *locationName ) { (void)area; (void)locationName; }
+	virtual void			ClearAreaLocations() {}
+
 	// pause and unpause the sound world
 	virtual void			Pause( void );
 	virtual void			UnPause( void );
@@ -603,6 +609,8 @@ public:
 	virtual void			SetSlowmo( bool active );
 	virtual void			SetSlowmoSpeed( float speed );
 	virtual void			SetEnviroSuit( bool active );
+	virtual void			SetSpiritWalkEffect( bool active ) { (void)active; }
+	virtual void			SetVoiceDucker( bool active ) { (void)active; }
 
 	//=======================================
 
@@ -691,6 +699,11 @@ public:
 	// shutdown routine
 	virtual	void			Shutdown( void );
 
+	// call ClearBuffer if there is a chance that the AsyncUpdate won't get called
+	// for 20+ msec, which would cause a stuttering repeat of the current
+	// buffer contents
+	virtual void			ClearBuffer( void ) {}
+
 	// sound is attached to the window, and must be recreated when the window is changed
 	virtual bool			ShutdownHW( void );
 	virtual bool			InitHW( void );
@@ -724,6 +737,41 @@ public:
 	virtual void			PrintMemInfo( MemInfo_t *mi );
 
 	virtual int				IsEFXAvailable( void );
+	virtual const char *	GetDeviceName( int index ) { return NULL; }		// CREATIVE
+	virtual const char *	GetDefaultDeviceName( void ) { return NULL; }	// CREATIVE
+
+	//-------------------------
+
+	//HUMANHEAD rww
+	virtual int					GetSubtitleIndex( const char *soundName );
+	virtual void				SetSubtitleData( int subIndex, int subNum, const char *subText, float subTime, int subChannel );
+	virtual soundSub_t			*GetSubtitle( int subIndex, int subNum );
+	virtual soundSubtitleList_t *GetSubtitleList( int subIndex );
+	//HUMANHEAD END
+
+	//karin: simple show/hide subtitles: FrontEnd: handle GUI in main thread; BackEnd: update sound in async thread(If com_asyncSound != 0)
+private:
+	typedef struct sb_soundSubtitle_s {
+		int subIndex; // subtitle sound index in idList<soundSubtitleList_s>
+		int subNum; // subtitle text index - 1 in soundSubtitleList_s::subList
+		const soundSubtitle_s *subtitle; // subtitle data soundSub_t
+		int endTime; // end time(absolute value in ms), subtitle end if idSoundSystemLocal::GetCurrent44kHzTime() greater than this value
+	} sb_soundSubtitle_t; // backend
+
+	bool SB_ContainsSubtitle( const soundSubtitle_s *subtitle ) const; // backend
+	bool SB_AppendSubtitle( const idSoundChannel *chan ); // backend
+	void SB_SetupSubtitle( void ); // backend, call in idSoundSystemLocal::AsyncUpdate/idSoundSystemLocal::AsyncUpdateWrite
+	void SB_HideSubtitle (void ); // backend, call in idSoundSystemLocal::AsyncUpdate/idSoundSystemLocal::AsyncUpdateWrite
+
+	bool SFB_HandleSubtitle( bool fromBackEnd, const void *data = NULL ); // frontend/backend
+
+	idList<sb_soundSubtitle_t> sb_subtitleQueue; // backend, next or current show, will hide subtitle if NULL
+	bool sfb_subtitleChanged; // frontend/backend, backend tell frontend has changed, and frontend tell backend not changed after sync
+	idList<const soundSubtitle_s *> sf_subtitleQueue; // frontend, show in player HUD GUI, hide subtitle if NULL
+
+public:
+	idList<soundSubtitleList_s> soundSubtitleList; // static
+	void SF_ShowSubtitle( void ); // frontend, call in idSessionLocal::Frame
 
 	//-------------------------
 

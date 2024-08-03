@@ -29,12 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __DICT_H__
 #define __DICT_H__
 
-#include "idlib/containers/StrPool.h"
-#include "idlib/math/Angles.h"
-#include "idlib/math/Matrix.h"
-#include "idlib/Str.h"
-#include "idlib/Parser.h"
-
 /*
 ===============================================================================
 
@@ -92,6 +86,10 @@ public:
 	void				Clear( void );
 						// print the dict
 	void				Print() const;
+
+	//HUMANHEAD rww - detect and print differences between two idDicts, for debugging purposes
+	void				CompareArgs(const idDict &other) const;
+	//HUMANHEAD END
 
 	size_t				Allocated( void ) const;
 	size_t				Size( void ) const { return sizeof( *this ) + Allocated(); }

@@ -29,16 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SESSIONLOCAL_H__
 #define __SESSIONLOCAL_H__
 
-#include "idlib/containers/StrList.h"
-#include "idlib/Dict.h"
-#include "framework/Session.h"
-#include "framework/UsercmdGen.h"
-#include "framework/KeyInput.h"
-#include "framework/DeclEntityDef.h"
-#include "renderer/RenderSystem.h"
-#include "renderer/RenderWorld.h"
-#include "ui/ListGUI.h"
-
 /*
 
 IsConnectedToServer();
@@ -137,6 +127,12 @@ public:
 	virtual int			GetSaveGameVersion( void );
 
 	virtual const char *GetCurrentMapName();
+
+	virtual bool		ShouldAppendLevel( void ) const;
+	virtual const char * GetDeathwalkMapName( void ) const;
+	const char *		GetDeathwalkMapName( const char *mapName ) const;
+	void				ShowSubtitle( const idStrList &strList );
+	void				HideSubtitle( void ) const;
 
 	//=====================================
 
@@ -254,10 +250,10 @@ public:
 	idUserInterface *	guiRestartMenu;
 	idUserInterface *	guiLoading;
 	idUserInterface *	guiIntro;
-	idUserInterface *	guiGameOver;
 	idUserInterface *	guiTest;
-	idUserInterface *	guiTakeNotes;
-
+	idUserInterface	*	guiSubtitles;
+	bool				subtitleTextScaleInited;
+	float 				subtitlesTextScale[3];
 	idUserInterface *	guiMsg;
 	idUserInterface *	guiMsgRestore;				// store the calling GUI for restore
 	idStr				msgFireBack[ 2 ];
@@ -337,9 +333,7 @@ public:
 	void				HandleIntroMenuCommands( const char *menuCommand );
 	void				HandleRestartMenuCommands( const char *menuCommand );
 	void				HandleMsgCommands( const char *menuCommand );
-	void				HandleNoteCommands( const char *menuCommand );
 	void				GetSaveGameList( idStrList &fileList, idList<fileTIME_T> &fileTimes );
-	void				TakeNotes( const char * p, bool extended = false );
 	void				UpdateMPLevelShot( void );
 
 	void				SetSaveGameGuiVars( void );
@@ -371,8 +365,7 @@ private:
 
 	char				cdkey[ CDKEY_BUF_LEN ];
 	cdKeyState_t		cdkey_state;
-	char				xpkey[ CDKEY_BUF_LEN ];
-	cdKeyState_t		xpkey_state;
+
 	int					authEmitTimeout;
 	bool				authWaitBox;
 

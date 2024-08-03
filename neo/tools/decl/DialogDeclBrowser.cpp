@@ -26,7 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "tools/edit_gui_common.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 
 #include "../../sys/win32/rc/DeclEditor_resource.h"
@@ -313,12 +314,6 @@ void DialogDeclBrowser::EditSelected( void ) const {
 			decl = declManager->DeclByIndex( type, index, false );
 			spawnArgs.Set( "model", decl->GetName() );
 			ParticleEditorInit( &spawnArgs );
-			break;
-		}
-		case DECL_PDA: {
-			decl = declManager->DeclByIndex( type, index, false );
-			spawnArgs.Set( "pda", decl->GetName() );
-			PDAEditorInit( &spawnArgs );
 			break;
 		}
 		case DECLTYPE_SCRIPT:

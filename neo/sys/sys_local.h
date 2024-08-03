@@ -29,10 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SYS_LOCAL__
 #define __SYS_LOCAL__
 
-#include "renderer/RenderSystem.h"
-#include "sound/sound.h"
-#include "sys/sys_public.h"
-
 /*
 ==============================================================
 
@@ -53,6 +49,20 @@ public:
 
 	virtual bool			LockMemory( void *ptr, int bytes );
 	virtual bool			UnlockMemory( void *ptr, int bytes );
+
+	//HUMANHEAD rww
+	//logitech lcd keyboard interface functions
+	virtual bool			LGLCD_Init( void ) { return false; }
+	virtual void			LGLCD_Shutdown( void ) {}
+	virtual bool			LGLCD_Valid( void ) { return false; }
+	virtual void			LGLCD_UploadImage( unsigned char *pixels, int w, int h, bool highPriority, bool flipColor ) {}
+	virtual bool			LGLCD_ReadSoftButtons( DWORD *out ) { return false; }
+	virtual void			LGLCD_DrawBegin( void ) {}
+	virtual void			LGLCD_DrawFinish( bool clearBuffer ) {}
+	virtual void			LGLCD_DrawRaw( unsigned char *pixels, int x, int y, int w, int h, int pitch, bool flipColor, bool layered, int rotate ) {}
+	virtual void			LGLCD_DrawText( const char *text, int x, int y, bool layered ) {}
+	virtual void			LGLCD_DrawShape( int shapeType, int x, int y, int sizeX, int sizeY, int parm, bool layered ) {}
+	//HUMANHEAD END
 
 	virtual uintptr_t		DLL_Load( const char *dllName );
 	virtual void *			DLL_GetProcAddress( uintptr_t dllHandle, const char *procName );

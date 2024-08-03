@@ -26,14 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/math/Quat.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/SysCvar.h"
-#include "physics/Force.h"
-#include "Entity.h"
-
-#include "physics/Physics_StaticMulti.h"
+#include "../Game_local.h"
 
 CLASS_DECLARATION( idPhysics, idPhysics_StaticMulti )
 END_CLASS
@@ -355,6 +351,7 @@ idPhysics_StaticMulti::Evaluate
 ================
 */
 bool idPhysics_StaticMulti::Evaluate( int timeStepMSec, int endTimeMSec ) {
+	PROFILE_SCOPE("StaticMulti", PROFMASK_PHYSICS);
 	int i;
 	idVec3 masterOrigin;
 	idMat3 masterAxis;

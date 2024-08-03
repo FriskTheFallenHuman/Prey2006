@@ -25,13 +25,11 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "sys/platform.h"
-#include "framework/FileSystem.h"
-#include "framework/Session.h"
-
-#include "tools/compilers/roqvq/roq.h"
-#include "tools/compilers/roqvq/codec.h"
+#include "roq.h"
+#include "codec.h"
 
 roq		*theRoQ;				// current roq file
 

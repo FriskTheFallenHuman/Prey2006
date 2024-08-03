@@ -26,11 +26,9 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/Lexer.h"
-#include "framework/FileSystem.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "idlib/LangDict.h"
 
 /*
 ============
@@ -120,6 +118,12 @@ idLangDict::Save
 */
 void idLangDict::Save( const char *fileName ) {
 	idFile *outFile = idLib::fileSystem->OpenFileWrite( fileName );
+	// HUMANHEAD pdm
+	if (outFile == NULL) {
+		idLib::common->Warning( "Couldn't open for writing: %s", fileName );
+		return;
+	}
+	// HUMANHEAD END
 	outFile->WriteFloatString( "// string table\n// english\n//\n\n{\n" );
 	for ( int j = 0; j < args.Num(); j++ ) {
 		outFile->WriteFloatString( "\t\"%s\"\t\"", args[j].key.c_str() );
@@ -135,6 +139,9 @@ void idLangDict::Save( const char *fileName ) {
 			} else if ( ch == '\n' || ch == '\r' ) {
 				outFile->Write( &slash, 1 );
 				outFile->Write( &nl, 1 );
+			} else if ( ch == slash ) {
+				outFile->Write( &slash, 1 );
+				outFile->Write( &slash, 1 );
 			} else {
 				outFile->Write( &ch, 1 );
 			}
@@ -192,8 +199,8 @@ const char *idLangDict::AddString( const char *str ) {
 	int id = GetNextId();
 	idLangKeyValue kv;
 	// _D3XP
-	kv.key = va( "#str_%08i", id );
-	// kv.key = va( "#str_%05i", id );
+	//kv.key = va( "#str_%08i", id );
+	kv.key = va( "#str_%05i", id );	// HUMANHEAD pdm: changed back
 	kv.value = str;
 	c = args.Append( kv );
 	assert( kv.key.Cmpn( STRTABLE_ID, STRTABLE_ID_LENGTH ) == 0 );

@@ -26,18 +26,17 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#if defined(__ppc__) && defined(__APPLE__)
+#include "precompiled.h"
+#pragma hdrstop
+
+#if defined(__ppc__)
 #include <vecLib/vecLib.h>
 #endif
 #if defined(__GNUC__) && defined(__SSE2__)
 #include <xmmintrin.h>
 #endif
 
-#include "sys/platform.h"
-#include "framework/Session.h"
-#include "renderer/RenderWorld_local.h"
-
-#include "renderer/tr_local.h"
+#include "tr_local.h"
 
 //====================================================================
 

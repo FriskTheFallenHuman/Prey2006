@@ -26,7 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "ui/UserInterface.h"
+#ifndef __USERINTERFACE_LOCAL_H__
+#define __USERINTERFACE_LOCAL_H__
 
 class idWindow;
 
@@ -77,7 +78,7 @@ public:
 	idDict *					GetStateDict() { return &state; }
 
 	const char *				GetSourceFile( void ) const { return source; }
-	ID_TIME_T						GetTimeStamp( void ) const { return timeStamp; }
+	ID_TIME_T					GetTimeStamp( void ) const { return timeStamp; }
 
 	idWindow *					GetDesktop() const { return desktop; }
 	void						SetBindHandler( idWindow *win ) { bindHandler = win; }
@@ -92,6 +93,9 @@ public:
 	void						RecurseSetKeyBindingNames( idWindow *window );
 	idStr						&GetPendingCmd() { return pendingCmd; };
 	idStr						&GetReturnCmd() { return returnCmd; };
+
+	virtual void				CallStartup( void );
+	//virtual void				Translate( const char *fontname );
 
 private:
 	bool						active;
@@ -138,6 +142,16 @@ public:
 	virtual	idListGUI *			AllocListGUI( void ) const;
 	virtual void				FreeListGUI( idListGUI *listgui );
 
+	// HUMANHEAD pdm: Retrieve usercmd
+	// Placed here simply because it is used for the GUIs, and this is within the engine.
+	// There were places in the game code (debugger) that need the fullscreen mouse coords
+	virtual void				GetMouseState( int *x, int *y, int *button, bool *down ) {}
+	virtual void				SetDebuggerInteractive(bool interactive) {}
+	virtual bool				DebuggerInteractive() { return false; }
+	virtual void				StartWritingDemo( idDemoFile *demo ) {}
+	virtual void				StartReadingDemo( idDemoFile *demo ) {}
+	// HUMANHEAD END
+
 private:
 	idRectangle					screenRect;
 	idDeviceContext				dc;
@@ -146,3 +160,5 @@ private:
 	idList<idUserInterfaceLocal*> demoGuis;
 
 };
+
+#endif /* !__USERINTERFACE_LOCAL_H__ */

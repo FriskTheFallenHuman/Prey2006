@@ -26,14 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/Timer.h"
-#include "framework/FileSystem.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "script/Script_Thread.h"
-#include "Game_local.h"
-
-#include "script/Script_Compiler.h"
+#include "../Game_local.h"
 
 #define FUNCTION_PRIORITY	2
 #define INT_PRIORITY		2
@@ -1213,7 +1209,8 @@ idVarDef *idCompiler::LookupDef( const char *name, const idVarDef *baseobj ) {
 
 				field = LookupDef( name, scope->scope->TypeDef()->def );
 				if ( !field ) {
-					Error( "Unknown value \"%s\"", name );
+					// HUMANHEAD jrm - need to differntiate errors
+					Error( "LookupDef():: Unknown value \"%s\"", name );
 				}
 
 				// type check
@@ -1300,7 +1297,8 @@ idVarDef *idCompiler::ParseValue( void ) {
 		if ( basetype ) {
 			Error( "%s is not a member of %s", name.c_str(), basetype->TypeDef()->Name() );
 		} else {
-			Error( "Unknown value \"%s\"", name.c_str() );
+			// HUMANHEAD jrm - need to differntiate errors
+			Error( "ParseValue():: Unknown value \"%s\"", name.c_str() );
 		}
 	// if namespace, then look up the variable in that namespace
 	} else if ( def->Type() == ev_namespace ) {
@@ -2344,6 +2342,8 @@ void idCompiler::ParseVariableDef( idTypeDef *type, const char *name ) {
 				EmitOpcode( OP_STORE_FTOBOOL, def2, def );
 			} else if ( ( type == &type_float ) && ( def2->TypeDef() == &type_boolean ) ) {
 				EmitOpcode( OP_STORE_BOOLTOF, def2, def );
+			} else if ( ( type == &type_float ) && ( def2->TypeDef()->Type() == type_float.Type() ) ) { //karin: e.g. float fvar = vec3_x;
+				EmitOpcode( OP_STORE_F, def2, def );
 			} else {
 				Error( "bad initialization for '%s'", name );
 			}

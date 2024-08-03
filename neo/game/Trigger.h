@@ -29,9 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GAME_TRIGGER_H__
 #define __GAME_TRIGGER_H__
 
-#include "gamesys/Event.h"
-#include "Entity.h"
-
 extern const idEventDef EV_Enable;
 extern const idEventDef EV_Disable;
 
@@ -63,6 +60,8 @@ public:
 protected:
 	void				CallScript( void ) const;
 
+private:
+	virtual // HUMANHEAD pdm
 	void				Event_Enable( void );
 	void				Event_Disable( void );
 

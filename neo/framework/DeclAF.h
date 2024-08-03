@@ -29,13 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __DECLAF_H__
 #define __DECLAF_H__
 
-#include "idlib/containers/List.h"
-#include "idlib/math/Matrix.h"
-#include "idlib/math/Angles.h"
-#include "idlib/Str.h"
-#include "idlib/Lexer.h"
-#include "framework/DeclManager.h"
-
 /*
 ===============================================================================
 
@@ -168,6 +161,11 @@ public:
 	void					RenameConstraint( const char *oldName, const char *newName );
 	void					DeleteConstraint( const char *name );
 
+	//HUMANHEAD: aob
+	static int				ClipMaskFromString( const char *str );
+	static const char *		ClipMaskToString( const int contents, idStr &str );
+	//HUMANHEAD END
+
 	static int				ContentsFromString( const char *str );
 	static const char *		ContentsToString( const int contents, idStr &str );
 
@@ -198,6 +196,7 @@ public:
 
 private:
 	bool					ParseContents( idLexer &src, int &c ) const;
+	bool					ParseClipMask( idLexer &src, int &c ) const; // HUMANHEAD CJR
 	bool					ParseBody( idLexer &src );
 	bool					ParseFixed( idLexer &src );
 	bool					ParseBallAndSocketJoint( idLexer &src );

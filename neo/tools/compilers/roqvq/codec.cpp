@@ -25,12 +25,10 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "sys/platform.h"
-#include "framework/FileSystem.h"
-#include "framework/Session.h"
-
-#include "tools/compilers/roqvq/codec.h"
+#include "codec.h"
 
 float glimit( const float val ) {
 	if (val<0) return 0;

@@ -29,8 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __COMPRESSOR_H__
 #define __COMPRESSOR_H__
 
-#include "framework/File.h"
-
 /*
 ===============================================================================
 

@@ -26,8 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "tools/edit_gui_common.h"
-
+#include "precompiled.h"
+#pragma hdrstop
 
 #include "../../sys/win32/win_local.h"
 #include "../../sys/win32/rc/common_resource.h"
@@ -112,7 +112,7 @@ void rvOpenFileDialog::UpdateLookIn ( void )
 	item.mask = CBEIF_TEXT | CBEIF_INDENT | CBEIF_IMAGE | CBEIF_SELECTEDIMAGE;
 
 	// Add the top left folder
-	item.pszText = (LPSTR)"base";
+	item.pszText = (LPSTR)BASE_GAMEDIR;
 	SendMessage ( mWndLookin, CBEM_INSERTITEM, 0, (LPARAM)&item );
 
 	// Break the lookin path up into its individual components and add them

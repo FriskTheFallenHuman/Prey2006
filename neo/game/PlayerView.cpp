@@ -26,17 +26,13 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "renderer/RenderWorld.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/SysCvar.h"
-#include "gamesys/SaveGame.h"
-#include "GameBase.h"
-#include "Player.h"
-
-#include "PlayerView.h"
+#include "Game_local.h"
 
 const int IMPULSE_DELAY = 150;
+
 /*
 ==============
 idPlayerView::idPlayerView
@@ -46,15 +42,17 @@ idPlayerView::idPlayerView() {
 	memset( screenBlobs, 0, sizeof( screenBlobs ) );
 	memset( &view, 0, sizeof( view ) );
 	player = NULL;
-	dvMaterial = declManager->FindMaterial( "_scratch" );
-	tunnelMaterial = declManager->FindMaterial( "textures/decals/tunnel" );
-	armorMaterial = declManager->FindMaterial( "armorViewEffect" );
-	berserkMaterial = declManager->FindMaterial( "textures/decals/berserk" );
-	irGogglesMaterial = declManager->FindMaterial( "textures/decals/irblend" );
-	bloodSprayMaterial = declManager->FindMaterial( "textures/decals/bloodspray" );
-	bfgMaterial = declManager->FindMaterial( "textures/decals/bfgvision" );
+	dvMaterial = declManager->FindMaterial( "textures/decals/painview" );
+	scratchMaterial = declManager->FindMaterial( "_scratch" );
+	hurtMaterial = declManager->FindMaterial( "textures/decals/hurtview" );
+//	tunnelMaterial = declManager->FindMaterial( "textures/decals/tunnel" );			// HUMANHEAD pdm: not used
+//	armorMaterial = declManager->FindMaterial( "armorViewEffect" );					// HUMANHEAD pdm: not used
+//	berserkMaterial = declManager->FindMaterial( "textures/decals/berserk" );		// HUMANHEAD pdm: not used
+//	irGogglesMaterial = declManager->FindMaterial( "textures/decals/irblend" );		// HUMANHEAD pdm: not used
+//	bloodSprayMaterial = declManager->FindMaterial( "textures/decals/bloodspray" );	// HUMANHEAD pdm: not used
+//	bfgMaterial = declManager->FindMaterial( "textures/decals/bfgvision" );			// HUMANHEAD pdm: not used
 	lagoMaterial = declManager->FindMaterial( LAGO_MATERIAL, false );
-	bfgVision = false;
+//	bfgVision = false;																// HUMANHEAD pdm: not used
 	dvFinishTime = 0;
 	kickFinishTime = 0;
 	kickAngles.Zero();
@@ -98,14 +96,14 @@ void idPlayerView::Save( idSaveGame *savefile ) const {
 	savefile->WriteMaterial( dvMaterial );
 	savefile->WriteInt( kickFinishTime );
 	savefile->WriteAngles( kickAngles );
-	savefile->WriteBool( bfgVision );
+//	savefile->WriteBool( bfgVision );				// HUMANHEAD pdm: not used
 
-	savefile->WriteMaterial( tunnelMaterial );
-	savefile->WriteMaterial( armorMaterial );
-	savefile->WriteMaterial( berserkMaterial );
-	savefile->WriteMaterial( irGogglesMaterial );
-	savefile->WriteMaterial( bloodSprayMaterial );
-	savefile->WriteMaterial( bfgMaterial );
+//	savefile->WriteMaterial( tunnelMaterial );		// HUMANHEAD pdm: not used
+//	savefile->WriteMaterial( armorMaterial );		// HUMANHEAD pdm: not used
+//	savefile->WriteMaterial( berserkMaterial );		// HUMANHEAD pdm: not used
+//	savefile->WriteMaterial( irGogglesMaterial );	// HUMANHEAD pdm: not used
+//	savefile->WriteMaterial( bloodSprayMaterial );	// HUMANHEAD pdm: not used
+//	savefile->WriteMaterial( bfgMaterial );			// HUMANHEAD pdm: not used
 	savefile->WriteFloat( lastDamageTime );
 
 	savefile->WriteVec4( fadeColor );
@@ -149,14 +147,14 @@ void idPlayerView::Restore( idRestoreGame *savefile ) {
 	savefile->ReadMaterial( dvMaterial );
 	savefile->ReadInt( kickFinishTime );
 	savefile->ReadAngles( kickAngles );
-	savefile->ReadBool( bfgVision );
+//	savefile->ReadBool( bfgVision );				// HUMANHEAD pdm: not used
 
-	savefile->ReadMaterial( tunnelMaterial );
-	savefile->ReadMaterial( armorMaterial );
-	savefile->ReadMaterial( berserkMaterial );
-	savefile->ReadMaterial( irGogglesMaterial );
-	savefile->ReadMaterial( bloodSprayMaterial );
-	savefile->ReadMaterial( bfgMaterial );
+//	savefile->ReadMaterial( tunnelMaterial );		// HUMANHEAD pdm: not used
+//	savefile->ReadMaterial( armorMaterial );		// HUMANHEAD pdm: not used
+//	savefile->ReadMaterial( berserkMaterial );		// HUMANHEAD pdm: not used
+//	savefile->ReadMaterial( irGogglesMaterial );	// HUMANHEAD pdm: not used
+//	savefile->ReadMaterial( bloodSprayMaterial );	// HUMANHEAD pdm: not used
+//	savefile->ReadMaterial( bfgMaterial );			// HUMANHEAD pdm: not used
 	savefile->ReadFloat( lastDamageTime );
 
 	savefile->ReadVec4( fadeColor );
@@ -176,7 +174,7 @@ void idPlayerView::Restore( idRestoreGame *savefile ) {
 idPlayerView::SetPlayerEntity
 ==============
 */
-void idPlayerView::SetPlayerEntity( idPlayer *playerEnt ) {
+void idPlayerView::SetPlayerEntity( hhPlayer *playerEnt ) {
 	player = playerEnt;
 }
 
@@ -196,7 +194,7 @@ void idPlayerView::ClearEffects() {
 	}
 
 	fadeTime = 0;
-	bfgVision = false;
+//	bfgVision = false;		// HUMANHEAD pdm: not used
 }
 
 /*
@@ -310,8 +308,8 @@ If we need a more generic way to add blobs then we can do that
 but having it localized here lets the material be pre-looked up etc.
 ==================
 */
-void idPlayerView::AddBloodSpray( float duration ) {
 /*
+void idPlayerView::AddBloodSpray( float duration ) {
 	if ( duration <= 0 || bloodSprayMaterial == NULL || g_skipViewEffects.GetBool() ) {
 		return;
 	}
@@ -346,8 +344,8 @@ void idPlayerView::AddBloodSpray( float duration ) {
 	blob->t1 = t1;
 	blob->s2 = s2;
 	blob->t2 = t2;
-*/
 }
+*/
 
 /*
 ==================
@@ -368,7 +366,6 @@ void idPlayerView::WeaponFireFeedback( const idDict *weaponDef ) {
 		int	finish = gameLocal.time + g_kickTime.GetFloat() * recoilTime;
 		kickFinishTime = finish;
 	}
-
 }
 
 /*
@@ -386,6 +383,7 @@ void idPlayerView::CalculateShake() {
 	// since CurrentShakeAmplitudeForPosition() returns all the shake sounds
 	// the player can hear, it can go over 1.0 too.
 	//
+	shakeVolume *= player->CalcFov(true) * (1.0f/90.0f);		// HUMANHEAD bjk: reduce shake in zoom
 	shakeAng[0] = gameLocal.random.CRandomFloat() * shakeVolume;
 	shakeAng[1] = gameLocal.random.CRandomFloat() * shakeVolume;
 	shakeAng[2] = gameLocal.random.CRandomFloat() * shakeVolume;
@@ -407,7 +405,7 @@ idPlayerView::AngleOffset
   kickVector, a world space direction that the attack should
 ===================
 */
-idAngles idPlayerView::AngleOffset() const {
+idAngles idPlayerView::AngleOffset(float kickSpring, float kickDamping) {
 	idAngles	ang;
 
 	ang.Zero();
@@ -434,6 +432,7 @@ idPlayerView::SingleView
 ==================
 */
 void idPlayerView::SingleView( idUserInterface *hud, const renderView_t *view ) {
+/*	// HUMANHEAD pdm: Overridden
 
 	// normal rendering
 	if ( !view ) {
@@ -523,7 +522,6 @@ void idPlayerView::SingleView( idUserInterface *hud, const renderView_t *view ) 
 			renderSystem->SetColor4( 1.0f, 1.0f, 1.0f, 1.0f );
 			renderSystem->DrawStretchPic( 0.0f, 0.0f, 640.0f, 480.0f, 0.0f, 0.0f, 1.0f, 1.0f, bfgMaterial );
 		}
-
 	}
 
 	// test a single material drawn over everything
@@ -537,6 +535,7 @@ void idPlayerView::SingleView( idUserInterface *hud, const renderView_t *view ) 
 			renderSystem->DrawStretchPic( 0.0f, 0.0f, 640.0f, 480.0f, 0.0f, 0.0f, 1.0f, 1.0f, mtr );
 		}
 	}
+*/
 }
 
 /*
@@ -544,8 +543,8 @@ void idPlayerView::SingleView( idUserInterface *hud, const renderView_t *view ) 
 idPlayerView::DoubleVision
 ===================
 */
+/*	// HUMANHEAD pdm: not used
 void idPlayerView::DoubleVision( idUserInterface *hud, const renderView_t *view, int offset ) {
-
 	if ( !g_doubleVision.GetBool() ) {
 		SingleView( hud, view );
 		return;
@@ -559,10 +558,12 @@ void idPlayerView::DoubleVision( idUserInterface *hud, const renderView_t *view,
 	shift = fabs( shift );
 
 	// if double vision, render to a texture
+	RENDER_DEMO_VIEWRENDER(view); //HUMANHEAD rww
 	renderSystem->CropRenderSize( 512, 256, true );
 	SingleView( hud, view );
 	renderSystem->CaptureRenderToImage( "_scratch" );
 	renderSystem->UnCrop();
+	RENDER_DEMO_VIEWRENDER_END(); //HUMANHEAD rww
 
 	// carry red tint if in berserk mode
 	idVec4 color(1, 1, 1, 1);
@@ -576,21 +577,25 @@ void idPlayerView::DoubleVision( idUserInterface *hud, const renderView_t *view,
 	renderSystem->SetColor4( color.x, color.y, color.z, 0.5f );
 	renderSystem->DrawStretchPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 1, 1-shift, 0, dvMaterial );
 }
+*/
 
 /*
 ===================
 idPlayerView::BerserkVision
 ===================
 */
+/*	// HUMANHEAD pdm: not used
 void idPlayerView::BerserkVision( idUserInterface *hud, const renderView_t *view ) {
+	RENDER_DEMO_VIEWRENDER(view); //HUMANHEAD rww
 	renderSystem->CropRenderSize( 512, 256, true );
 	SingleView( hud, view );
 	renderSystem->CaptureRenderToImage( "_scratch" );
 	renderSystem->UnCrop();
+	RENDER_DEMO_VIEWRENDER_END(); //HUMANHEAD rww
 	renderSystem->SetColor4( 1.0f, 1.0f, 1.0f, 1.0f );
 	renderSystem->DrawStretchPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 1, 1, 0, dvMaterial );
 }
-
+*/
 
 /*
 =================
@@ -672,8 +677,8 @@ void idPlayerView::ScreenFade() {
 idPlayerView::InfluenceVision
 ===================
 */
+/*	// HUMANHEAD pdm: not used
 void idPlayerView::InfluenceVision( idUserInterface *hud, const renderView_t *view ) {
-
 	float distance = 0.0f;
 	float pct = 1.0f;
 	if ( player->GetInfluenceEntity() ) {
@@ -696,6 +701,7 @@ void idPlayerView::InfluenceVision( idUserInterface *hud, const renderView_t *vi
 		DoubleVision( hud, view, pct * offset );
 	}
 }
+*/
 
 /*
 ===================
@@ -703,6 +709,7 @@ idPlayerView::RenderPlayerView
 ===================
 */
 void idPlayerView::RenderPlayerView( idUserInterface *hud ) {
+/*	// HUMANHEAD pdm: not used
 	const renderView_t *view = player->GetRenderView();
 
 	if ( g_skipViewEffects.GetBool() ) {
@@ -724,4 +731,6 @@ void idPlayerView::RenderPlayerView( idUserInterface *hud ) {
 		renderSystem->SetColor4( 1.0f, 1.0f, 1.0f, 1.0f );
 		renderSystem->DrawStretchPic( 10.0f, 380.0f, 64.0f, 64.0f, 0.0f, 0.0f, 1.0f, 1.0f, lagoMaterial );
 	}
+*/
 }
+

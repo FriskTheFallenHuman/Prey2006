@@ -34,8 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 */
 
-#include "idlib/math/Pluecker.h"
-#include "cm/CollisionModel.h"
+#include "CollisionModel.h"
 
 #define MIN_NODE_SIZE						64.0f
 #define MAX_NODE_POLYGONS					128
@@ -295,6 +294,15 @@ class idCollisionModelManagerLocal : public idCollisionModelManager {
 public:
 	// load collision models from a map file
 	void			LoadMap( const idMapFile *mapFile );
+
+// HUMANHEAD pdm: Support for level appending
+	virtual const char *	ContentsName(const int contents) const { return StringFromContents(contents); }
+#if DEATHWALK_AUTOLOAD
+	virtual void			AppendMap( const idMapFile *mapFile );
+	virtual bool			WillUseAlreadyLoadedCollisionMap(const idMapFile *mapFile);
+#endif
+// HUMANHEAD END
+
 	// frees all the collision models
 	void			FreeMap( void );
 
@@ -345,6 +353,12 @@ public:
 	void			ListModels( void );
 	// write a collision model file for the map entity
 	bool			WriteCollisionModelForMapEntity( const idMapEntity *mapEnt, const char *filename, const bool testTraceModel = true );
+
+	//HUMANHEAD rww
+#if _HH_INLINED_PROC_CLIPMODELS
+	int				GetNumInlinedProcClipModels(void);
+#endif
+	//HUMANHEAD END
 
 private:			// CollisionMap_translate.cpp
 	int				TranslateEdgeThroughEdge( idVec3 &cross, idPluecker &l1, idPluecker &l2, float *fraction );
@@ -426,6 +440,11 @@ private:			// CollisionMap_load.cpp
 	void			FindContainedEdges( cm_model_t *model, cm_polygon_t *p );
 					// loading of proc BSP tree
 	void			ParseProcNodes( idLexer *src );
+	//HUMANHEAD rww
+#if _HH_INLINED_PROC_CLIPMODELS
+	void			CheckProcModelSurfClip(idLexer *src);
+#endif
+	//HUMANHEAD END
 	void			LoadProcBSP( const char *name );
 					// removal of contained polygons
 	int				R_ChoppedAwayByProcBSP( int nodeNum, idFixedWinding *w, const idVec3 &normal, const idVec3 &origin, const float radius );
@@ -522,6 +541,13 @@ private:			// collision map data
 	contactInfo_t *	contacts;
 	int				maxContacts;
 	int				numContacts;
+	//HUMANHEAD rww
+#if _HH_INLINED_PROC_CLIPMODELS
+	idList<const char *>	inlinedProcClipModelMats;
+	int						numInlinedProcClipModels;
+	bool					anyInlinedProcClipMats;
+#endif
+	//HUMANHEAD END
 };
 
 // for debugging

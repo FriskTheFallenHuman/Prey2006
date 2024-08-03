@@ -26,9 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-
-#include "idlib/containers/HashIndex.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 int idHashIndex::INVALID_INDEX[1] = { -1 };
 

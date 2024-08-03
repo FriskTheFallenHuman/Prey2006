@@ -26,14 +26,12 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "ui/Window.h"
-#include "ui/UserInterfaceLocal.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "ui/Winvar.h"
-
-const char *VAR_GUIPREFIX = "gui::";
-static const int VAR_GUIPREFIX_LEN = strlen(VAR_GUIPREFIX);
+#include "Window.h"
+#include "Winvar.h"
+#include "UserInterfaceLocal.h"
 
 idWinVar::idWinVar() {
 	guiDict = NULL;

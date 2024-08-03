@@ -32,9 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 // device context support for gui stuff
 //
 
-#include "renderer/Material.h"
-#include "renderer/RenderSystem.h"
-#include "ui/Rectangle.h"
+#include "Rectangle.h"
 
 const int VIRTUAL_WIDTH = 640;
 const int VIRTUAL_HEIGHT = 480;

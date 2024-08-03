@@ -26,12 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/Lexer.h"
-#include "idlib/Lib.h"
-#include "framework/CVarSystem.h"
-
-#include "idlib/CmdArgs.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 /*
 ============

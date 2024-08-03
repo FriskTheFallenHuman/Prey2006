@@ -29,10 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __DECLMANAGER_H__
 #define __DECLMANAGER_H__
 
-#include "idlib/Lexer.h"
-
-class idFile;
-
 /*
 ===============================================================================
 
@@ -75,15 +71,13 @@ typedef enum {
 	DECL_MODELDEF,
 	DECL_FX,
 	DECL_PARTICLE,
+	DECL_BEAM, // HUMANHEAD CJR
 	DECL_AF,
-	DECL_PDA,
-	DECL_VIDEO,
-	DECL_AUDIO,
-	DECL_EMAIL,
 	DECL_MODELEXPORT,
 	DECL_MAPDEF,
 
 	// new decl types can be added here
+	// HUMANHEAD mdl:  Keep these in sync with the defines in prey_defs.h
 
 	DECL_MAX_TYPES			= 32
 } declType_t;
@@ -113,6 +107,7 @@ public:
 	virtual void			Invalidate( void ) = 0;
 	virtual void			Reload( void ) = 0;
 	virtual void			EnsureNotPurged( void ) = 0;
+	virtual void			MarkPurgable( bool purgable ) = 0;	// HUMANHEAD pdm
 	virtual int				Index( void ) const = 0;
 	virtual int				GetLineNum( void ) const = 0;
 	virtual const char *	GetFileName( void ) const = 0;
@@ -135,6 +130,9 @@ public:
 
 class idDecl {
 public:
+	//HUMANHEAD: aob
+	friend class hhDeclManager;
+	//HUMANHEAD END
 							// The constructor should initialize variables such that
 							// an immediate call to FreeData() does no harm.
 							idDecl( void ) { base = NULL; }
@@ -164,6 +162,10 @@ public:
 							// if a pointer might possible be stale from a previous level,
 							// call this to have it re-parsed
 	void					EnsureNotPurged( void ) { base->EnsureNotPurged(); }
+
+							// HUMANHEAD pdm: Allow purging of this decl after being referenced outside of a map load
+							// Used by demo playback so sound shaders re-cache their samples the next time a level is loaded
+	void					MarkPurgable(bool purgable) { base->MarkPurgable(purgable); }
 
 							// Returns the index in the per-type list.
 	int						Index( void ) const { return base->Index(); }
@@ -250,6 +252,7 @@ ID_INLINE idDecl *idDeclAllocator( void ) {
 class idMaterial;
 class idDeclSkin;
 class idSoundShader;
+class hhDeclBeam; // HUMANHEAD CJR
 
 class idDeclManager {
 public:
@@ -258,6 +261,9 @@ public:
 	virtual void			Init( void ) = 0;
 	virtual void			Shutdown( void ) = 0;
 	virtual void			Reload( bool force ) = 0;
+	//HUMANHEAD rww
+	virtual void			ReloadType( int declType ) = 0;
+	//HUMANHEAD END
 
 	virtual void			BeginLevelLoad() = 0;
 	virtual void			EndLevelLoad() = 0;
@@ -269,7 +275,8 @@ public:
 	virtual void			RegisterDeclFolder( const char *folder, const char *extension, declType_t defaultType ) = 0;
 
 							// Returns a checksum for all loaded decl text.
-	virtual int				GetChecksum( void ) const = 0;
+	//HUMANHEAD rww - from int to unsigned int
+	virtual unsigned int	GetChecksum( void ) const = 0;
 
 							// Returns the number of decl types.
 	virtual int				GetNumDeclTypes( void ) const = 0;
@@ -322,6 +329,18 @@ public:
 	virtual const idMaterial *		MaterialByIndex( int index, bool forceParse = true ) = 0;
 	virtual const idDeclSkin *		SkinByIndex( int index, bool forceParse = true ) = 0;
 	virtual const idSoundShader *	SoundByIndex( int index, bool forceParse = true ) = 0;
+
+	//HUMANHEAD: aob
+	virtual const hhDeclBeam *		FindBeam( const char *name, bool makeDefault = true ) = 0; // HUMANHEAD CJR
+	virtual const hhDeclBeam *		BeamByIndex( int index, bool forceParse = true ) = 0; // HUMANHEAD CJR
+
+	virtual void					ForceLoadAndParseDeclFile( const char* fileName, declType_t defaultType ) = 0; 
+	//HUMANHEAD END
+
+	//HUMANHEAD PCF rww 05/16/06
+	virtual void					SetInsideLevelLoad( bool b ) = 0;
+	virtual bool					GetInsideLevelLoad( void ) = 0;
+	//HUMANHEAD END
 };
 
 extern idDeclManager *		declManager;

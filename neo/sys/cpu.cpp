@@ -26,6 +26,9 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "precompiled.h"
+#pragma hdrstop
+
 #include <float.h>
 
 #include <SDL_cpuinfo.h>
@@ -33,10 +36,7 @@ If you have questions concerning this license or the applicable additional terms
 // MSVC header intrin.h uses strcmp and errors out when not set
 #define IDSTR_NO_REDIRECT
 
-#include "sys/platform.h"
-#include "framework/Common.h"
-
-#include "sys/sys_public.h"
+#include "sys_public.h"
 
 #ifdef NO_CPUID
 #undef NO_CPUID
@@ -201,9 +201,6 @@ int Sys_GetProcessorId( void ) {
 	if (SDL_HasMMX())
 		flags |= CPUID_MMX;
 
-	if (SDL_Has3DNow())
-		flags |= CPUID_3DNOW;
-
 	if (SDL_HasSSE())
 		flags |= CPUID_SSE;
 
@@ -215,9 +212,6 @@ int Sys_GetProcessorId( void ) {
 	if (HasSSE3())
 		flags |= CPUID_SSE3;
 #endif
-
-	if (SDL_HasAltiVec())
-		flags |= CPUID_ALTIVEC;
 
 	return flags;
 }

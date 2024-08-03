@@ -26,13 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/DeclEntityDef.h"
-#include "renderer/ModelManager.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "Fx.h"
+#include "Game_local.h"
 
-#include "BrittleFracture.h"
 
 CLASS_DECLARATION( idEntity, idBrittleFracture )
 	EVENT( EV_Activate, idBrittleFracture::Event_Activate )
@@ -43,6 +41,10 @@ const int SHARD_ALIVE_TIME	= 5000;
 const int SHARD_FADE_START	= 2000;
 
 static const char *brittleFracture_SnapshotName = "_BrittleFracture_Snapshot_";
+
+#if _HH_RENDERDEMO_HACKS //HUMANHEAD rww - demos need unique names per fracture entity
+static int brittleFractureUniqueNum = 0;
+#endif //HUMANHEAD END
 
 /*
 ================
@@ -69,6 +71,11 @@ idBrittleFracture::idBrittleFracture( void ) {
 
 	lastRenderEntityUpdate = -1;
 	changed = false;
+
+	//HUMANHEAD rww
+	cheapShards = 0;
+	cheapShardsTime = 0;
+	//HUMANHEAD END
 
 	fl.networkSync = true;
 }
@@ -154,6 +161,11 @@ void idBrittleFracture::Save( idSaveGame *savefile ) const {
 		savefile->WriteBool( shards[i]->atEdge );
 		savefile->WriteStaticObject( shards[i]->physicsObj );
 	}
+
+	//HUMANHEAD rww
+	savefile->WriteInt(cheapShards);
+	savefile->WriteInt(cheapShardsTime);
+	//HUMANHEAD END
 }
 
 /*
@@ -165,7 +177,18 @@ void idBrittleFracture::Restore( idRestoreGame *savefile ) {
 	int i, j , num;
 
 	renderEntity.hModel = renderModelManager->AllocModel();
+
+#if _HH_RENDERDEMO_HACKS //HUMANHEAD rww - demos need unique names per fracture entity
+	idStr::snPrintf(uniqueFractureName, 64, "%s_%i", brittleFracture_SnapshotName, brittleFractureUniqueNum);
+	brittleFractureUniqueNum++;
+	renderEntity.hModel->InitEmpty( uniqueFractureName );
+#else
 	renderEntity.hModel->InitEmpty( brittleFracture_SnapshotName );
+#endif //HUMANHEAD END
+
+#if _HH_RENDERDEMO_HACKS //HUMANHEAD rww
+	renderEntity.hModel->SetGameUpdatedModel(true);
+#endif //HUMANHEAD END
 	renderEntity.callback = idBrittleFracture::ModelCallback;
 	renderEntity.noShadow = true;
 	renderEntity.noSelfShadow = true;
@@ -241,6 +264,11 @@ void idBrittleFracture::Restore( idRestoreGame *savefile ) {
 			shards[i]->clipModel = shards[i]->physicsObj.GetClipModel();
 		}
 	}
+
+	//HUMANHEAD rww
+	savefile->ReadInt(cheapShards);
+	savefile->ReadInt(cheapShardsTime);
+	//HUMANHEAD END
 }
 
 /*
@@ -275,6 +303,11 @@ void idBrittleFracture::Spawn( void ) {
 	health = spawnArgs.GetInt( "health", "40" );
 	fl.takedamage = true;
 
+	//HUMANHEAD rww
+	cheapShards = spawnArgs.GetInt("cheapShards", "0");
+	cheapShardsTime = 0;
+	//HUMANHEAD END
+
 	// FIXME: set "bleed" so idProjectile calls AddDamageEffect
 	spawnArgs.SetBool( "bleed", 1 );
 
@@ -283,7 +316,18 @@ void idBrittleFracture::Spawn( void ) {
 	FindNeighbours();
 
 	renderEntity.hModel = renderModelManager->AllocModel();
+
+#if _HH_RENDERDEMO_HACKS //HUMANHEAD rww - demos need unique names per fracture entity
+	idStr::snPrintf(uniqueFractureName, 64, "%s_%i", brittleFracture_SnapshotName, brittleFractureUniqueNum);
+	brittleFractureUniqueNum++;
+	renderEntity.hModel->InitEmpty( uniqueFractureName );
+#else
 	renderEntity.hModel->InitEmpty( brittleFracture_SnapshotName );
+#endif //HUMANHEAD END
+
+#if _HH_RENDERDEMO_HACKS //HUMANHEAD rww
+	renderEntity.hModel->SetGameUpdatedModel(true);
+#endif //HUMANHEAD END
 	renderEntity.callback = idBrittleFracture::ModelCallback;
 	renderEntity.noShadow = true;
 	renderEntity.noSelfShadow = true;
@@ -369,7 +413,11 @@ bool idBrittleFracture::UpdateRenderEntity( renderEntity_s *renderEntity, const 
 	}
 
 	// FIXME: re-use model surfaces
+#if _HH_RENDERDEMO_HACKS //HUMANHEAD rww - demos need unique names per fracture entity
+	renderEntity->hModel->InitEmpty( uniqueFractureName );
+#else
 	renderEntity->hModel->InitEmpty( brittleFracture_SnapshotName );
+#endif //HUMANHEAD END
 
 	// allocate triangle surfaces for the fractures and decals
 	tris = renderEntity->hModel->AllocSurfaceTriangles( numTris * 3, material->ShouldCreateBackSides() ? numTris * 6 : numTris * 3 );
@@ -597,10 +645,43 @@ void idBrittleFracture::Think( void ) {
 				continue;
 			}
 
-			shard->physicsObj.Evaluate( endTime - startTime, endTime );
+			//HUMANHEAD rww
+			if (cheapShards && shard->isCheap) { //stupid fake physics
+				const float fakeVelocityFactor = 0.03f;
+				const float fakeVelocityGravityFactor = 0.03f;
+				float factor = (float)(endTime - startTime)/USERCMD_MSEC;
+				idVec3 origin = shard->physicsObj.GetOrigin();
+				idVec3 vel = shard->physicsObj.GetLinearVelocity();
+				idAngles angVel = shard->physicsObj.GetAngularVelocity().ToAngles();
+				idAngles ang = shard->physicsObj.GetAxis().ToAngles();
 
-			if ( !shard->physicsObj.IsAtRest() ) {
-				atRest = false;
+				float f = (2.0f-factor);
+				if (f < 0.1f) {
+					f = 0.1f;
+				}
+				else if (f > 0.99f) {
+					f = 0.99f;
+				}
+
+				origin += (vel*fakeVelocityFactor)*factor;
+				vel += (shard->physicsObj.GetGravity()*fakeVelocityGravityFactor);
+				vel *= f;
+
+				ang += (angVel*0.04f);
+
+				shard->physicsObj.SetOrigin(origin);
+				shard->physicsObj.SetLinearVelocity(vel);
+				shard->physicsObj.SetAxis(ang.ToMat3());
+				if ((gameLocal.time-cheapShardsTime) < 3000) { //don't rest for at least 3 seconds after spawning a cheap shard
+					atRest = false;
+				}
+			}
+			else {
+			//HUMANHEAD END
+				shard->physicsObj.Evaluate( endTime - startTime, endTime );
+				if ( !shard->physicsObj.IsAtRest() ) {
+					atRest = false;
+				}
 			}
 		}
 
@@ -692,6 +773,9 @@ void idBrittleFracture::ProjectDecal( const idVec3 &point, const idVec3 &dir, co
 		ServerSendEvent( EVENT_PROJECT_DECAL, &msg, true, -1 );
 	}
 
+#if HUMANHEAD
+	// Matter system handles the sound
+#else
 	if ( time >= gameLocal.time ) {
 		// try to get the sound from the damage def
 		const idDeclEntityDef *damageDef = NULL;
@@ -709,6 +793,7 @@ void idBrittleFracture::ProjectDecal( const idVec3 &point, const idVec3 &dir, co
 			StartSound( "snd_bullethole", SND_CHANNEL_ANY, 0, false, NULL );
 		}
 	}
+#endif
 
 	a = gameLocal.random.RandomFloat() * idMath::TWO_PI;
 	c = cos( a );
@@ -809,6 +894,14 @@ void idBrittleFracture::DropShard( shard_t *shard, const idVec3 &point, const id
 	dir2 = origin - point;
 	dist = dir2.Normalize();
 	f = dist > maxShatterRadius ? 1.0f : idMath::Sqrt( dist - minShatterRadius ) * ( 1.0f / idMath::Sqrt( maxShatterRadius - minShatterRadius ) );
+
+	//HUMANHEAD rww - randomly create shards with no real physics
+	shard->isCheap = false;
+	if (cheapShards && cheapShards > (rand()%100)) {
+		shard->isCheap = true;
+		cheapShardsTime = gameLocal.time;
+	}
+	//HUMANHEAD END
 
 	// setup the physics
 	shard->physicsObj.SetSelf( this );
@@ -997,10 +1090,14 @@ void idBrittleFracture::Killed( idEntity *inflictor, idEntity *attacker, int dam
 idBrittleFracture::AddDamageEffect
 ================
 */
-void idBrittleFracture::AddDamageEffect( const trace_t &collision, const idVec3 &velocity, const char *damageDefName ) {
+void idBrittleFracture::AddDamageEffect( const trace_t &collision, const idVec3 &velocity, const char *damageDefName, bool broadcast ) { //HUMANHEAD rww - added broadcast
+#ifdef HUMANHEAD		//HUMANHEAD jsh allow decals on fractures that are disabled
+	ProjectDecal( collision.c.point, collision.c.normal, gameLocal.time, damageDefName );
+#else
 	if ( !disableFracture ) {
 		ProjectDecal( collision.c.point, collision.c.normal, gameLocal.time, damageDefName );
 	}
+#endif
 }
 
 /*

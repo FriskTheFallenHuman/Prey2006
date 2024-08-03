@@ -26,10 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/math/Math.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "sound/snd_local.h"
+#include "snd_local.h"
 
 #define mB_to_gain(millibels, property) \
 	_mB_to_gain(millibels,AL_EAXREVERB_MIN_ ## property, AL_EAXREVERB_MAX_ ## property)

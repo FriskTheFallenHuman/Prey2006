@@ -26,10 +26,13 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/geometry/DrawVert.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "idlib/math/Simd_SSE.h"
+#include "Simd_Generic.h"
+#include "Simd_MMX.h"
+#include "Simd_SSE.h"
+
 
 //===============================================================
 //                                                        M
@@ -628,13 +631,6 @@ void VPCALL idSIMD_SSE::Dot( float *dst, const idVec3 &constant, const idPlane *
 #elif defined(_MSC_VER) && defined(_M_IX86)
 
 #include <xmmintrin.h>
-
-#include "idlib/geometry/JointTransform.h"
-#include "idlib/math/Vector.h"
-#include "idlib/math/Matrix.h"
-#include "idlib/math/Quat.h"
-#include "idlib/math/Plane.h"
-#include "renderer/Model.h"
 
 #define SHUFFLEPS( x, y, z, w )		(( (x) & 3 ) << 6 | ( (y) & 3 ) << 4 | ( (z) & 3 ) << 2 | ( (w) & 3 ))
 #define R_SHUFFLEPS( x, y, z, w )	(( (w) & 3 ) << 6 | ( (z) & 3 ) << 4 | ( (y) & 3 ) << 2 | ( (x) & 3 ))

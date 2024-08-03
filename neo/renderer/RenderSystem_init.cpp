@@ -26,34 +26,42 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/LangDict.h"
-#include "framework/Licensee.h"
-#include "framework/Console.h"
-#include "framework/Session.h"
-#include "renderer/VertexCache.h"
-#include "renderer/ModelManager.h"
-#include "renderer/RenderWorld_local.h"
-#include "renderer/GuiModel.h"
-#include "sound/sound.h"
-#include "ui/UserInterface.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/tr_local.h"
-
-#include "framework/GameCallbacks_local.h"
+#include "tr_local.h"
 
 // Vista OpenGL wrapper check
 #ifdef _WIN32
-#include "sys/win32/win_local.h"
+#include "../sys/win32/win_local.h"
 #endif
 
+#include "../framework/miniz/miniz.h"
+
+static unsigned char* compress_for_stbiw(unsigned char* data, int data_len, int* out_len, int quality)
+{
+	uLongf bufSize = compressBound(data_len);
+	// note that buf will be free'd by stb_image_write.h
+	// with STBIW_FREE() (plain free() by default)
+	unsigned char* buf = (unsigned char*)malloc(bufSize);
+	if (buf == NULL)  return NULL;
+	if (compress2(buf, &bufSize, data, data_len, quality) != Z_OK)
+	{
+		free(buf);
+		return NULL;
+	}
+	*out_len = bufSize;
+
+	return buf;
+}
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#define STBIW_ZLIB_COMPRESS compress_for_stbiw
 #include "stb_image_write.h"
 
 // functions that are not called every frame
 
 glconfig_t	glConfig;
-
-const char *r_rendererArgs[] = { "best", "arb2", NULL };
 
 idCVar r_inhibitFragmentProgram( "r_inhibitFragmentProgram", "0", CVAR_RENDERER | CVAR_BOOL, "ignore the fragment program extension" );
 idCVar r_useLightPortalFlow( "r_useLightPortalFlow", "1", CVAR_RENDERER | CVAR_BOOL, "use a more precise area reference determination" );
@@ -94,8 +102,6 @@ idCVar r_swapInterval( "r_swapInterval", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVA
 idCVar r_gamma( "r_gamma", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_FLOAT, "changes gamma tables", 0.5f, 3.0f );
 idCVar r_brightness( "r_brightness", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_FLOAT, "changes gamma tables", 0.5f, 2.0f );
 idCVar r_gammaInShader( "r_gammaInShader", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "Set gamma and brightness in shaders instead using hardware gamma" );
-
-idCVar r_renderer( "r_renderer", "best", CVAR_RENDERER | CVAR_ARCHIVE, "hardware specific renderer path to use", r_rendererArgs, idCmdSystem::ArgCompletion_String<r_rendererArgs> );
 
 idCVar r_jitter( "r_jitter", "0", CVAR_RENDERER | CVAR_BOOL, "randomly subpixel jitter the projection matrix" );
 
@@ -161,7 +167,6 @@ idCVar r_useCombinerDisplayLists( "r_useCombinerDisplayLists", "1", CVAR_RENDERE
 idCVar r_useDepthBoundsTest( "r_useDepthBoundsTest", "1", CVAR_RENDERER | CVAR_BOOL, "use depth bounds test to reduce shadow fill" );
 
 idCVar r_screenFraction( "r_screenFraction", "100", CVAR_RENDERER | CVAR_INTEGER, "for testing fill rate, the resolution of the entire screen can be changed" );
-idCVar r_demonstrateBug( "r_demonstrateBug", "0", CVAR_RENDERER | CVAR_BOOL, "used during development to show IHV's their problems" );
 idCVar r_usePortals( "r_usePortals", "1", CVAR_RENDERER | CVAR_BOOL, " 1 = use portals to perform area culling, otherwise draw everything" );
 idCVar r_singleLight( "r_singleLight", "-1", CVAR_RENDERER | CVAR_INTEGER, "suppress all but one light" );
 idCVar r_singleEntity( "r_singleEntity", "-1", CVAR_RENDERER | CVAR_INTEGER, "suppress all but one entity" );
@@ -311,7 +316,7 @@ enum {
  */
 static void APIENTRY
 DebugCallback( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
-              const GLchar *message, const void *userParam )
+			  const GLchar *message, const void *userParam )
 {
 	const char* sourceStr = "Source: Unknown";
 	const char* typeStr = "Type: Unknown";
@@ -848,10 +853,6 @@ void R_InitOpenGL( void ) {
 	// allocate the vertex array range or vertex objects
 	vertexCache.Init();
 
-	// select which renderSystem we are going to use
-	r_renderer.SetModified();
-	tr.SetBackEndRenderer();
-
 	// allocate the frame data, which may be more if smp is enabled
 	R_InitFrameData();
 
@@ -1234,7 +1235,7 @@ static float R_RenderingFPS( const renderView_t *renderView ) {
 	while( 1 ) {
 		// render
 		renderSystem->BeginFrame( glConfig.vidWidth, glConfig.vidHeight );
-		tr.primaryWorld->RenderScene( renderView );
+		tr.primaryWorld->RenderScene(const_cast<renderView_t *>(renderView));
 		renderSystem->EndFrame( NULL, NULL );
 		qglFinish();
 		count++;
@@ -2023,14 +2024,6 @@ static void GfxInfo_f( const idCmdArgs &args ) {
 	}
 	common->Printf( "Logical Window size: %g x %g\n", glConfig.winWidth, glConfig.winHeight );
 
-	const char *active[2] = { "", " (ACTIVE)" };
-
-	if ( glConfig.allowARB2Path ) {
-		common->Printf( "ARB2 path ENABLED%s\n", active[tr.backEndRenderer == BE_ARB2] );
-	} else {
-		common->Printf( "ARB2 path disabled\n" );
-	}
-
 	if ( r_finish.GetBool() ) {
 		common->Printf( "Forcing glFinish\n" );
 	} else {
@@ -2301,9 +2294,6 @@ void idRenderSystemLocal::Clear( void ) {
 	viewportOffset[1] = 0;
 	tiledViewport[0] = 0;
 	tiledViewport[1] = 0;
-	backEndRenderer = BE_BAD;
-	backEndRendererHasVertexPrograms = false;
-	backEndRendererMaxLight = 1.0f;
 	ambientLightVector.Zero();
 	sortOffset = 0;
 	worlds.Clear();
@@ -2325,6 +2315,9 @@ void idRenderSystemLocal::Clear( void ) {
 	guiModel = NULL;
 	demoGuiModel = NULL;
 	takingScreenshot = false;
+	scopeView = false;
+	shuttleView = false;
+	lastRenderSkybox = -1;
 }
 
 /*
@@ -2369,6 +2362,9 @@ void idRenderSystemLocal::Init( void ) {
 	identitySpace.modelMatrix[0*4+0] = 1.0f;
 	identitySpace.modelMatrix[1*4+1] = 1.0f;
 	identitySpace.modelMatrix[2*4+2] = 1.0f;
+
+	scopeView = false;
+	shuttleView = false;
 
 	origWidth = origHeight = 0; // DG: for resetting width/height in EndFrame()
 }

@@ -29,10 +29,10 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __WINVAR_H__
 #define __WINVAR_H__
 
-#include "framework/File.h"
-#include "ui/Rectangle.h"
+#include "Rectangle.h"
 
-extern const char *VAR_GUIPREFIX;
+static const char *VAR_GUIPREFIX = "gui::";
+static const int VAR_GUIPREFIX_LEN = strlen(VAR_GUIPREFIX);
 
 class idWindow;
 class idWinVar {

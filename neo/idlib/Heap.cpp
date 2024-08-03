@@ -26,10 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/Common.h"
-
-#include "idlib/Heap.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 #ifndef USE_LIBC_MALLOC
 	#define USE_LIBC_MALLOC		0
@@ -53,6 +51,38 @@ If you have questions concerning this license or the applicable additional terms
 #define SMALL_ALIGN( bytes )	( ALIGN_SIZE( (bytes) + SMALL_HEADER_SIZE ) - SMALL_HEADER_SIZE )
 #define MEDIUM_SMALLEST_SIZE	( ALIGN_SIZE( 256 ) + ALIGN_SIZE( MEDIUM_HEADER_SIZE ) )
 
+// HUMANHEAD mdl
+// Define this to turn on the heap checking code.
+#undef _HH_HEAPCHECKER_
+
+#ifdef _HH_HEAPCHECKER_
+
+#if GOLD
+# error "_HH_HEAPCHECKER_ defined when GOLD is 1!"
+#endif
+
+struct Alloc {
+	void *ptr; // From malloc
+	int size;  // Passed into Mem_alloc, before adding padding
+};
+
+static idList<Alloc> allocs;
+
+void CheckAllocs(void) {
+	short *ptr16, *ptr16_end;
+	for (int i = 0; i < allocs.Num(); i++) {
+		ptr16 = (short *) allocs[i].ptr;
+		ptr16_end = (short *) (((int) ptr16) + 8 + allocs[i].size);
+
+		for (int j = 0; j < 4; j++) {
+			assert(ptr16[j] == 0x1337);
+			assert(ptr16_end[j] == 0x7331);
+		}
+	}
+}
+
+#endif // _HH_HEAPCHECKER_
+// HUMANHEAD END
 
 class idHeap {
 
@@ -1067,6 +1097,9 @@ Mem_Alloc
 ==================
 */
 void *Mem_Alloc( const int size ) {
+#ifdef _HH_HEAPCHECKER_ // HUMANHEAD mdl
+	CheckAllocs(); 
+#endif // HUMANHEAD END
 	if ( !size ) {
 		return NULL;
 	}
@@ -1076,9 +1109,30 @@ void *Mem_Alloc( const int size ) {
 #endif
 		return malloc( size );
 	}
+// HUMANHEAD mdl
+#ifdef _HH_HEAPCHECKER_
+	void *mem = mem_heap->Allocate( size + 16);
+	Mem_UpdateAllocStats( mem_heap->Msize( mem ) );
+	short *mem16 = (short *) mem;
+	short *mem16_end = (short *) (((int) mem) + 8 + size);
+	int i;
+	for (i = 0; i < 4; i++) {
+		mem16[i] = 0x1337;
+		mem16_end[i] = 0x7331;
+	}
+
+	Alloc alloc;
+	alloc.ptr = mem;
+	alloc.size = size;
+
+	allocs.Append(alloc);
+
+	return mem16 + 4;
+#else // HUMANHEAD END
 	void *mem = mem_heap->Allocate( size );
 	Mem_UpdateAllocStats( mem_heap->Msize( mem ) );
 	return mem;
+#endif // _HH_HEAPCHECKER_
 }
 
 /*
@@ -1087,6 +1141,9 @@ Mem_Free
 ==================
 */
 void Mem_Free( void *ptr ) {
+#ifdef _HH_HEAPCHECKER_ // HUMANHEAD mdl
+	CheckAllocs();
+#endif // HUMANHEAD END
 	if ( !ptr ) {
 		return;
 	}
@@ -1097,8 +1154,25 @@ void Mem_Free( void *ptr ) {
 		free( ptr );
 		return;
 	}
+
+#ifdef _HH_HEAPCHECKER_ // HUMANHEAD mdl
+	short *ptr16 = ((short *) ptr) - 4;
+	bool found = false;
+	for (int i = 0; i < allocs.Num(); i++) {
+		if ((int) allocs[i].ptr == (int) ptr16) {
+			found = true;
+			allocs.RemoveIndex(i);
+			break;
+		}
+	}
+	assert(found);
+
+	Mem_UpdateFreeStats( mem_heap->Msize( ptr16 ) );
+ 	mem_heap->Free( ptr16 );
+#else // HUMANHEAD END
 	Mem_UpdateFreeStats( mem_heap->Msize( ptr ) );
 	mem_heap->Free( ptr );
+#endif // _HH_HEAPCHECKER_
 }
 
 /*

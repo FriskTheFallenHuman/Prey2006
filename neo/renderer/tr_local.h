@@ -29,15 +29,8 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __TR_LOCAL_H__
 #define __TR_LOCAL_H__
 
-class idScreenRect; // yay for include recursion
-
-#include "renderer/Image.h"
-#include "renderer/Interaction.h"
-#include "renderer/MegaTexture.h"
-#include "renderer/ModelDecal.h"
-#include "renderer/ModelOverlay.h"
-#include "renderer/RenderSystem.h"
-#include "renderer/RenderWorld.h"
+#include "Image.h"
+#include "MegaTexture.h"
 
 class idRenderWorldLocal;
 
@@ -99,6 +92,11 @@ SURFACES
 
 ==============================================================================
 */
+
+#include "ModelDecal.h"
+#include "ModelOverlay.h"
+#include "Interaction.h"
+
 
 // drawSurf_t structures command the back end to render surfaces
 // a given srfTriangles_t may be used with multiple viewEntity_t,
@@ -664,16 +662,14 @@ typedef struct {
 	glstate_t			glState;
 
 	int					c_copyFrameBuffer;
+	
+	bool scopeView;
+	bool shuttleView;
 } backEndState_t;
 
 
 const int MAX_GUI_SURFACES	= 1024;		// default size of the drawSurfs list for guis, will
 										// be automatically expanded as needed
-
-typedef enum {
-	BE_ARB2,
-	BE_BAD
-} backEndName_t;
 
 typedef struct {
 	int		x, y, width, height;	// these are in physical, OpenGL Y-at-bottom pixels
@@ -728,13 +724,30 @@ public:
 	virtual void			UnCrop();
 	virtual bool			UploadImage( const char *imageName, const byte *data, int width, int height );
 
+	virtual void			SetEntireSceneMaterial(idMaterial* material) { (void)material; }; // HUMANHEAD CJR
+	virtual bool			IsScopeView() { return scopeView; };// HUMANHEAD CJR
+	virtual void			SetScopeView( bool view ) { scopeView = view; } // HUMANHEAD CJR
+	virtual bool			IsShuttleView() { return shuttleView; };// HUMANHEAD CJR
+	virtual void			SetShuttleView( bool view ) { shuttleView = view; }
+	virtual bool			SupportsFragmentPrograms( void ) { return false; };// HUMANHEAD CJR
+	virtual int				VideoCardNumber( void ) { return 0; }
+#if _HH_RENDERDEMO_HACKS //HUMANHEAD rww
+	virtual void			LogViewRender( const struct renderView_s *view ) { (void)view; }
+#endif //HUMANHEAD END
+
+	bool scopeView;
+	bool shuttleView;
+	int lastRenderSkybox;
+
+	ID_INLINE bool SkyboxRenderedInFrame() const { return frameCount == lastRenderSkybox; }
+	ID_INLINE void RenderSkyboxInFrame() { lastRenderSkybox = frameCount; }
+
 public:
 	// internal functions
 							idRenderSystemLocal( void );
 							~idRenderSystemLocal( void );
 
 	void					Clear( void );
-	void					SetBackEndRenderer();			// sets tr.backEndRenderer based on cvars
 	void					RenderViewToViewport( const renderView_t *renderView, idScreenRect *viewport );
 
 public:
@@ -753,13 +766,6 @@ public:
 
 	int						viewportOffset[2];	// for doing larger-than-window tiled renderings
 	int						tiledViewport[2];
-
-	// determines which back end to use, and if vertex programs are in use
-	backEndName_t			backEndRenderer;
-	bool					backEndRendererHasVertexPrograms;
-	float					backEndRendererMaxLight;	// 1.0 for standard, unlimited for floats
-														// determines how much overbrighting needs
-														// to be done post-process
 
 	idVec4					ambientLightVector;	// used for "ambient bump mapping"
 
@@ -840,8 +846,6 @@ extern idCVar r_gamma;					// changes gamma tables
 extern idCVar r_brightness;				// changes gamma tables
 extern idCVar r_gammaInShader;			// set gamma+brightness in shader instead of modifying system gamma tables
 
-extern idCVar r_renderer;				// arb2, etc
-
 extern idCVar r_checkBounds;			// compare all surface bounds with precalculated ones
 
 extern idCVar r_useLightPortalFlow;		// 1 = do a more precise area reference determination
@@ -909,7 +913,6 @@ extern idCVar r_skipROQ;
 extern idCVar r_ignoreGLErrors;
 
 extern idCVar r_forceLoadImages;		// draw all images to screen after registration
-extern idCVar r_demonstrateBug;			// used during development to show IHV's their problems
 extern idCVar r_screenFraction;			// for testing fill rate, the resolution of the entire screen can be changed
 
 extern idCVar r_showUnsmoothedTangents;	// highlight geometry rendered with unsmoothed tangents
@@ -1662,5 +1665,9 @@ idScreenRect R_CalcIntersectionScissor( const idRenderLightLocal * lightDef,
 										const viewDef_t * viewDef );
 
 //=============================================
+
+#include "RenderWorld_local.h"
+#include "GuiModel.h"
+#include "VertexCache.h"
 
 #endif /* !__TR_LOCAL_H__ */

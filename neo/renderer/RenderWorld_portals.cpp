@@ -26,12 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/DemoFile.h"
-#include "framework/Session.h"
-#include "renderer/RenderWorld_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/tr_local.h"
+#include "tr_local.h"
 
 /*
 
@@ -608,6 +606,17 @@ void idRenderWorldLocal::AddAreaEntityRefs( int areaNum, const portalStack_t *ps
 
 		// remove decals that are completely faded away
 		R_FreeEntityDefFadedDecals( entity, tr.viewDef->renderView.time );
+
+		//k: if in spirit walk mode, skip all entities of only invisible in spirit, else skip all entities of only visible in spirit.
+		if ( tr.viewDef->renderView.viewSpiritEntities ) {
+			if ( entity->parms.onlyInvisibleInSpirit ) {
+				continue;
+			}
+		} else {
+			if ( entity->parms.onlyVisibleInSpirit ) {
+				continue;
+			}
+		}
 
 		// check for completely suppressing the model
 		if ( !r_skipSuppress.GetBool() ) {

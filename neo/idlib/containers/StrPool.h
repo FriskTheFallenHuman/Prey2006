@@ -29,9 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __STRPOOL_H__
 #define __STRPOOL_H__
 
-#include "idlib/containers/List.h"
-#include "idlib/containers/HashIndex.h"
-
 /*
 ===============================================================================
 
@@ -47,7 +44,14 @@ class idPoolStr : public idStr {
 
 public:
 						idPoolStr() { numUsers = 0; }
-						~idPoolStr() { assert( numUsers == 0 ); }
+// HUMANHEAD nla
+//! NLA - Put back		~idPoolStr() { assert( numUsers == 0 ); }
+						~idPoolStr() { 
+							if ( numUsers != 0 ) { 
+								assert( ! "You need to load and save this map in the editor." );
+							} 
+						}
+// HUMANHEAD END
 
 						// returns total size of allocated memory
 	size_t				Allocated( void ) const { return idStr::Allocated(); }

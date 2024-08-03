@@ -29,15 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __RENDERWORLD_H__
 #define __RENDERWORLD_H__
 
-#include "idlib/geometry/Winding.h"
-#include "idlib/bv/Box.h"
-#include "idlib/bv/Frustum.h"
-#include "framework/DeclParticle.h"
-#include "renderer/Material.h"
-
-class idDemoFile;
-class idRenderModel;
-
 /*
 ===============================================================================
 
@@ -50,7 +41,7 @@ class idRenderModel;
 #define	PROC_FILE_ID				"mapProcFile003"
 
 // shader parms
-const int MAX_GLOBAL_SHADER_PARMS	= 12;
+const int MAX_GLOBAL_SHADER_PARMS	= 13;	// HUMANHEAD pdm: increased from 12 (see also: MAX_ENTITY_SHADER_PARMS)
 
 const int SHADERPARM_RED			= 0;
 const int SHADERPARM_GREEN			= 1;
@@ -61,6 +52,40 @@ const int SHADERPARM_TIMEOFFSET		= 4;
 const int SHADERPARM_DIVERSITY		= 5;	// random between 0.0 and 1.0 for some effects (muzzle flashes, etc)
 const int SHADERPARM_MODE			= 7;	// for selecting which shader passes to enable
 const int SHADERPARM_TIME_OF_DEATH	= 7;	// for the monster skin-burn-away effect enable and time offset
+
+// HUMANHEAD pdm
+const int SHADERPARM_MISC				= 6; // aob
+const int SHADERPARM_ANY_DEFORM			= 9; // Model deformation
+const int SHADERPARM_ANY_DEFORM_PARM1	= 10; // Model deformation parameter1
+const int SHADERPARM_ANY_DEFORM_PARM2	= 11; // Model deformation parameter2
+const int SHADERPARM_DISTANCE			= 12; // CJR -- distance shader parm index
+
+// Always add to the end of the list so the old numbers don't change
+enum {
+	DEFORMTYPE_NONE=0,
+	DEFORMTYPE_SCALE,
+	DEFORMTYPE_VERTEXCOLOR,
+	DEFORMTYPE_SPHERE,
+	DEFORMTYPE_RIPPLE,
+	DEFORMTYPE_PLANTSWAYX,
+	DEFORMTYPE_PLANTSWAYY,
+	DEFORMTYPE_FLATTEN,
+	DEFORMTYPE_VIBRATE,
+	DEFORMTYPE_SQUISH,
+	DEFORMTYPE_TURBULENT,	// 10
+	DEFORMTYPE_RAYS,
+	DEFORMTYPE_ALPHAGLOW,
+	DEFORMTYPE_FATTEN,
+	DEFORMTYPE_RIPPLECENTER,
+	DEFORMTYPE_MELT,
+	DEFORMTYPE_POD,
+	DEFORMTYPE_DEATHEFFECT,
+	DEFORMTYPE_WINDBLAST,
+	DEFORMTYPE_PINCHPOINT,
+	DEFORMTYPE_PORTAL
+	//NOTE: Any added here should also be added to prey_defs.script
+};
+// HUMANHEAD END
 
 // model parms
 const int SHADERPARM_MD5_SKINSCALE	= 8;	// for scaling vertex offsets on md5 models (jack skellington effect)
@@ -85,6 +110,12 @@ const int MAX_RENDERENTITY_GUI		= 3;
 
 typedef bool(*deferredEntityCallback_t)( renderEntity_s *, const renderView_s * );
 
+// HUMANHEAD CJR:  Beam node information
+#define MAX_BEAM_NODES				32
+typedef struct hhBeamNodes_s {
+	idVec3		nodes[MAX_BEAM_NODES];
+} hhBeamNodes_t;
+// END HUMANHEAD
 
 typedef struct renderEntity_s {
 	idRenderModel *			hModel;				// this can only be null if callback is set
@@ -146,6 +177,14 @@ typedef struct renderEntity_s {
 
 	float					modelDepthHack;			// squash depth range so particle effects don't clip into walls
 
+	const hhDeclBeam *		declBeam;			// HUMANHEAD beam information
+	hhBeamNodes_t	*		beamNodes;			// HUMANHEAD beam node array (sized to the number of beams in the system)
+
+	//HUMANHEAD rww - moved other bools up here
+#if _HH_RENDERDEMO_HACKS //HUMANHEAD rww
+	bool					notInRenderDemos;		//if this is true, we will not record this renderentity
+#endif //HUMANHEAD END
+
 	// options to override surface shader flags (replace with material parameters?)
 	bool					noSelfShadow;			// cast shadows onto other objects,but not self
 	bool					noShadow;				// no shadow at all
@@ -154,10 +193,18 @@ typedef struct renderEntity_s {
 													// the level load is completed.  This is a performance hack
 													// for the gigantic outdoor meshes in the monorail map, so
 													// all the lights in the moving monorail don't touch the meshes
+	// HUMANHEAD:
+	bool				onlyVisibleInSpirit;	// True if this entity is only visible when spiritwalking or deathwalking
+	bool				onlyInvisibleInSpirit;	// True if this entity is only invisible when spiritwalking or deathwalking -tmj
+	bool				lowSkippable;			// bjk: True if skippable in low quality
+	float				eyeDistance;			// HUMANHEAD pdm: precalculated distance to eye
+	// HUMANHEAD END
 
 	bool					weaponDepthHack;		// squash depth range so view weapons don't poke into walls
 													// this automatically implies noShadow
-	int						forceUpdate;			// force an update (NOTE: not a bool to keep this struct a multiple of 4 bytes)
+	//HUMANHEAD rww - changed to a bool to fit with our added bools, and moved in with others. considering automatic compiler alignment i don't see a real point to making this an int initially anyway.
+	bool					forceUpdate;			// force an update (NOTE: not a bool to keep this struct a multiple of 4 bytes)
+
 	int						timeGroup;
 	int						xrayIndex;
 } renderEntity_t;
@@ -181,6 +228,7 @@ typedef struct renderLight_s {
 	// updates
 	bool					noShadows;			// (should we replace this with material parameters on the shader?)
 	bool					noSpecular;			// (should we replace this with material parameters on the shader?)
+	bool					lowSkippable;		// HUMANHEAD bjk: True if skippable in low quality
 
 	bool					pointLight;			// otherwise a projection light (should probably invert the sense of this, because points are way more common)
 	bool					parallel;			// lightCenter gives the direction to the light at infinity
@@ -225,7 +273,10 @@ typedef struct renderView_s {
 	idMat3					viewaxis;			// transformation matrix, view looks down the positive X axis
 
 	bool					cramZNear;			// for cinematics, we want to set ZNear much lower
-	bool					forceUpdate;		// for an update
+	bool					forceUpdate;		// for an update 
+
+	bool			viewSpiritEntities; // HUMANHEAD cjr: this renderView can see all onlyVisibleInSpirit entities
+										// tmj: this renderView cannot see onlyInvisibleInSpirit entities
 
 	// time in milliseconds for shader effects and other time dependent rendering issues
 	int						time;
@@ -246,6 +297,7 @@ typedef struct {
 // guiPoint_t is returned by idRenderWorld::GuiTrace()
 typedef struct {
 	float				x, y;			// 0.0 to 1.0 range if trace hit a gui, otherwise -1
+	float				frac;			// fraction of trace before hit
 	int					guiId;			// id of gui ( 0, 1, or 2 ) that the trace happened against
 } guiPoint_t;
 
@@ -261,7 +313,7 @@ typedef struct modelTrace_s {
 } modelTrace_t;
 
 
-static const int NUM_PORTAL_ATTRIBUTES = 3;
+static const int NUM_PORTAL_ATTRIBUTES = 4;		// HUMANHEAD pdm: Bumped from 3
 
 typedef enum {
 	PS_BLOCK_NONE = 0,
@@ -269,6 +321,9 @@ typedef enum {
 	PS_BLOCK_VIEW = 1,
 	PS_BLOCK_LOCATION = 2,		// game map location strings often stop in hallways
 	PS_BLOCK_AIR = 4,			// windows between pressurized and unpresurized areas
+// HUMANHEAD pdm
+	PS_BLOCK_SOUND = 8,			// blocks sound completely, used on game portals
+// HUMANHEAD END
 
 	PS_BLOCK_ALL = (1<<NUM_PORTAL_ATTRIBUTES)-1
 } portalConnection_t;
@@ -335,6 +390,30 @@ public:
 
 	//-------------- Portal Area Information -----------------
 
+// HUMANHEAD pdm: game portal support
+#if GAMEPORTAL_PVS
+	virtual qhandle_t		FindGamePortal(const char *name) = 0;
+	virtual void			RegisterGamePortals(idMapFile *mapFile) = 0;
+	virtual void			DrawGamePortals(int mode, const idMat3 &viewAxis) = 0;
+	virtual bool			IsGamePortal( qhandle_t handle ) = 0;
+	virtual idVec3			GetGamePortalSrc( qhandle_t handle ) = 0;
+	virtual idVec3			GetGamePortalDst( qhandle_t handle ) = 0;
+#endif
+#if GAMEPORTAL_SOUND
+	virtual int				NumSoundPortalsInArea( int areaNum ) = 0;
+	virtual int				NumGamePortalsInArea( int areaNum ) = 0;
+	virtual exitPortal_t	GetSoundPortal( int areaNum, int portalNum ) = 0;
+	virtual void			LevelInitSoundAreas() = 0;
+	virtual void			LevelShutdownSoundAreas() = 0;
+	virtual void			PrecalculateValidSoundAreas(const idVec3 listenerPosition, const int listenerArea) = 0;
+	virtual bool			ValidSoundArea(const int area) = 0;
+	virtual float			DistanceToSoundArea(const int area) = 0;
+	virtual float			MaxSoundAreaExtents(const int area) = 0;
+
+	virtual void			DrawValidSoundAreas(const idVec3 &source, const idMat3 &viewAxis) = 0;
+#endif
+// HUMANHEAD END
+
 	// returns the number of portals
 	virtual int				NumPortals( void ) const = 0;
 
@@ -369,7 +448,7 @@ public:
 	virtual	int				NumPortalsInArea( int areaNum ) = 0;
 
 	// returns one portal from an area
-	virtual exitPortal_t	GetPortal( int areaNum, int portalNum ) = 0;
+	virtual exitPortal_t	GetPortal( int areaNum, int portalNum, bool fromAsync = false ) = 0;
 
 	//-------------- Tracing  -----------------
 
@@ -377,7 +456,7 @@ public:
 	// fraction location of the trace on the gui surface, or -1,-1 if no hit.
 	// This doesn't do any occlusion testing, simply ignoring non-gui surfaces.
 	// start / end are in global world coordinates.
-	virtual guiPoint_t		GuiTrace( qhandle_t entityHandle, const idVec3 start, const idVec3 end ) const = 0;
+	virtual guiPoint_t		GuiTrace( qhandle_t entityHandle, const idVec3 start, const idVec3 end, int interactiveMask ) const = 0;	// HUMANHEAD pdm: added interactiveMask
 
 	// Traces vs the render model, possibly instantiating a dynamic version, and returns true if something was hit
 	virtual bool			ModelTrace( modelTrace_t &trace, qhandle_t entityHandle, const idVec3 &start, const idVec3 &end, const float radius ) const = 0;
@@ -428,6 +507,12 @@ public:
 
 	// Text drawing for debug visualization.
 	virtual void			DrawText( const char *text, const idVec3 &origin, float scale, const idVec4 &color, const idMat3 &viewAxis, const int align = 1, const int lifetime = 0, bool depthTest = false ) = 0;
+
+	//HUMANHEAD rww
+#if _HH_RENDERDEMO_HACKS
+	virtual void			DemoSmokeEvent(const idDeclParticle *smoke, const int systemTimeOffset, const float diversity, const idVec3 &origin, const idMat3 &axis) = 0;
+#endif
+	//HUMANHEAD END
 };
 
 #endif /* !__RENDERWORLD_H__ */

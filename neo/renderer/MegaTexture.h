@@ -29,8 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __MEGATEXTURE_H__
 #define __MEGATEXTURE_H__
 
-#include "renderer/Model.h"
-
 class idTextureTile {
 public:
 	int		x, y;

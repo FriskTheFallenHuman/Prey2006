@@ -26,9 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-
-#include "idlib/geometry/Surface_Polytope.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 #define POLYTOPE_VERTEX_EPSILON		0.1f
 

@@ -26,15 +26,12 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/LangDict.h"
-#include "framework/async/AsyncNetwork.h"
-#include "framework/Licensee.h"
-#include "framework/Game.h"
-#include "framework/Session_local.h"
-#include "sound/sound.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "framework/async/AsyncClient.h"
+#include "AsyncNetwork.h"
+
+#include "../Session_local.h"
 
 const int SETUP_CONNECTION_RESEND_TIME	= 1000;
 const int EMPTY_RESEND_TIME				= 500;
@@ -1072,12 +1069,6 @@ void idAsyncClient::ProcessChallengeResponseMessage( const netadr_t from, const 
 	// ( if the client can restart directly with the right pak order, then we avoid an extra reloadEngine later.. )
 	if ( idStr::Icmp( cvarSystem->GetCVarString( "fs_game_base" ), serverGameBase ) ||
 		idStr::Icmp( cvarSystem->GetCVarString( "fs_game" ), serverGame ) ) {
-		// bug #189 - if the server is running ROE and ROE is not locally installed, refuse to connect or we might crash
-		if ( !fileSystem->HasD3XP() && ( !idStr::Icmp( serverGameBase, "d3xp" ) || !idStr::Icmp( serverGame, "d3xp" ) ) ) {
-			common->Printf( "The server is running Doom3: Resurrection of Evil expansion pack. RoE is not installed on this client. Aborting the connection..\n" );
-			cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "disconnect\n" );
-			return;
-		}
 		common->Printf( "The server is running a different mod (%s-%s). Restarting..\n", serverGameBase, serverGame );
 		cvarSystem->SetCVarString( "fs_game_base", serverGameBase );
 		cvarSystem->SetCVarString( "fs_game", serverGame );

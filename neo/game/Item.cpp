@@ -26,15 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "renderer/RenderSystem.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/SysCvar.h"
-#include "Player.h"
-#include "Fx.h"
-#include "SmokeParticles.h"
-
-#include "Item.h"
+#include "Game_local.h"
 
 /*
 ===============================================================================
@@ -218,24 +213,37 @@ idItem::Think
 ================
 */
 void idItem::Think( void ) {
+	// HUMANHEAD pdm: changed and moved to GetPhysicsToVisualTransform
 	if ( thinkFlags & TH_THINK ) {
 		if ( spin ) {
-			idAngles	ang;
-			idVec3		org;
-
-			ang.pitch = ang.roll = 0.0f;
-			ang.yaw = ( gameLocal.time & 4095 ) * 360.0f / -4096.0f;
-			SetAngles( ang );
-
-			float scale = 0.005f + entityNumber * 0.00001f;
-
-			org = orgOrigin;
-			org.z += 4.0f + cos( ( gameLocal.time + 2000 ) * scale ) * 4.0f;
-			SetOrigin( org );
+			UpdateVisuals();
 		}
 	}
-
 	Present();
+}
+
+/*
+================
+idItem::GetPhysicsToVisualTransform
+ HUMANHEAD pdm: moved here so items can be bound to things
+================
+*/
+bool idItem::GetPhysicsToVisualTransform( idVec3 &origin, idMat3 &axis ) {
+	if ( spin ) {
+		idAngles	ang;
+		idVec3		org;
+
+		ang.pitch = ang.roll = 0.0f;
+		ang.yaw = ( gameLocal.time & 4095 ) * 360.0f / -4096.0f;
+		axis = ang.ToMat3();
+
+		const float scale = 0.0055f;
+		origin = idVec3(0.0f, 0.0f, 1.0f);
+		origin *= (4.0f + idMath::Cos( ( gameLocal.time + entityNumber ) * scale ) * 4.0f);
+
+		return true;
+	}
+	return false;
 }
 
 /*
@@ -298,12 +306,14 @@ void idItem::Spawn( void ) {
 		if ( !ent ) {
 			gameLocal.Error( "Item couldn't find owner '%s'", giveTo.c_str() );
 		}
-		PostEventMS( &EV_Touch, 0, ent, 0 );
+		PostEventMS( &EV_Touch, 0, ent, NULL );
 	}
 
 	if ( spawnArgs.GetBool( "spin" ) || gameLocal.isMultiplayer ) {
-		spin = true;
-		BecomeActive( TH_THINK );
+		if (!IsType(idMoveableItem::Type)) { //HUMANHEAD rww
+			spin = true;
+			BecomeActive( TH_THINK );
+		}
 	}
 
 	//pulse = !spawnArgs.GetBool( "nopulse" );
@@ -390,8 +400,8 @@ bool idItem::Pickup( idPlayer *player ) {
 	bool dropped = spawnArgs.GetBool( "dropped" );
 	bool no_respawn = spawnArgs.GetBool( "no_respawn" );
 
-	if ( gameLocal.isMultiplayer && respawn == 0.0f ) {
-		respawn = 20.0f;
+	if ( gameLocal.isMultiplayer && respawn == 0.0f && !IsType(idMoveableItem::Type) ) { //HUMANHEAD rww - not for moveable items
+		respawn = ITEM_SPAWNRATE_DEFAULT; //HUMANHEAD rww - changed to a define
 	}
 
 	if ( respawn && !dropped && !no_respawn ) {
@@ -411,6 +421,23 @@ bool idItem::Pickup( idPlayer *player ) {
 	BecomeInactive( TH_THINK );
 	return true;
 }
+
+//HUMANHEAD rww
+/*
+================
+idItem::GetNonRespawnSkin
+================
+*/
+const idDeclSkin *idItem::GetNonRespawnSkin(void) const {
+	const char *customSkin = spawnArgs.GetString("skin", "");
+	if (!customSkin || !customSkin[0])
+	{
+		return NULL;
+	}
+
+	return declManager->FindSkin(customSkin);
+}
+//HUMANHEAD END
 
 /*
 ================
@@ -432,6 +459,10 @@ idItem::WriteFromSnapshot
 */
 void idItem::WriteToSnapshot( idBitMsgDelta &msg ) const {
 	msg.WriteBits( IsHidden(), 1 );
+
+	//HUMANHEAD rww
+	msg.WriteBits(renderEntity.customSkin != GetNonRespawnSkin(), 1);
+	//HUMANHEAD END
 }
 
 /*
@@ -445,6 +476,21 @@ void idItem::ReadFromSnapshot( const idBitMsgDelta &msg ) {
 	} else {
 		Show();
 	}
+
+	//HUMANHEAD rww
+	bool usingRespawnSkin = !!msg.ReadBits(1);
+	if (usingRespawnSkin != (renderEntity.customSkin != GetNonRespawnSkin())) {
+		if (usingRespawnSkin) { //apply the skin
+			idStr respawningSkin;
+			if (spawnArgs.GetString("skin_itemRespawning", "", respawningSkin)) {
+				SetSkin(declManager->FindSkin(respawningSkin.c_str()));
+			}
+		}
+		else { //get rid of it
+			SetSkin(GetNonRespawnSkin());
+		}
+	}
+	//HUMANHEAD END
 }
 
 /*
@@ -573,280 +619,34 @@ void idItem::Event_RespawnFx( void ) {
 /*
 ===============================================================================
 
-  idItemPowerup
+  idItemPowerup (HUMANHEAD pdm: removed)
 
 ===============================================================================
 */
 
 /*
-===============
-idItemPowerup
-===============
-*/
-
-CLASS_DECLARATION( idItem, idItemPowerup )
-END_CLASS
-
-/*
-================
-idItemPowerup::idItemPowerup
-================
-*/
-idItemPowerup::idItemPowerup() {
-	time = 0;
-	type = 0;
-}
-
-/*
-================
-idItemPowerup::Save
-================
-*/
-void idItemPowerup::Save( idSaveGame *savefile ) const {
-	savefile->WriteInt( time );
-	savefile->WriteInt( type );
-}
-
-/*
-================
-idItemPowerup::Restore
-================
-*/
-void idItemPowerup::Restore( idRestoreGame *savefile ) {
-	savefile->ReadInt( time );
-	savefile->ReadInt( type );
-}
-
-/*
-================
-idItemPowerup::Spawn
-================
-*/
-void idItemPowerup::Spawn( void ) {
-	time = spawnArgs.GetInt( "time", "30" );
-	type = spawnArgs.GetInt( "type", "0" );
-}
-
-/*
-================
-idItemPowerup::GiveToPlayer
-================
-*/
-bool idItemPowerup::GiveToPlayer( idPlayer *player ) {
-	if ( player->spectating ) {
-		return false;
-	}
-	player->GivePowerUp( type, time * 1000 );
-	return true;
-}
-
-/*
 ===============================================================================
 
-  idObjective
+  idObjective (HUMANHEAD pdm: removed)
 
 ===============================================================================
 */
 
-CLASS_DECLARATION( idItem, idObjective )
-	EVENT( EV_Activate,			idObjective::Event_Trigger )
-	EVENT( EV_HideObjective,	idObjective::Event_HideObjective )
-	EVENT( EV_GetPlayerPos,		idObjective::Event_GetPlayerPos )
-	EVENT( EV_CamShot,			idObjective::Event_CamShot )
-END_CLASS
-
-/*
-================
-idObjective::idObjective
-================
-*/
-idObjective::idObjective() {
-	playerPos.Zero();
-}
-
-/*
-================
-idObjective::Save
-================
-*/
-void idObjective::Save( idSaveGame *savefile ) const {
-	savefile->WriteVec3( playerPos );
-}
-
-/*
-================
-idObjective::Restore
-================
-*/
-void idObjective::Restore( idRestoreGame *savefile ) {
-	savefile->ReadVec3( playerPos );
-	PostEventMS( &EV_CamShot, 250 );
-}
-
-/*
-================
-idObjective::Spawn
-================
-*/
-void idObjective::Spawn( void ) {
-	Hide();
-	PostEventMS( &EV_CamShot, 250 );
-}
-
-/*
-================
-idObjective::Event_Screenshot
-================
-*/
-void idObjective::Event_CamShot( ) {
-	const char *camName;
-	idStr shotName = gameLocal.GetMapName();
-	shotName.StripFileExtension();
-	shotName += "/";
-	shotName += spawnArgs.GetString( "screenshot" );
-	shotName.SetFileExtension( ".tga" );
-	if ( spawnArgs.GetString( "camShot", "", &camName ) ) {
-		idEntity *ent = gameLocal.FindEntity( camName );
-		if ( ent && ent->cameraTarget ) {
-			const renderView_t *view = ent->cameraTarget->GetRenderView();
-			renderView_t fullView = *view;
-			fullView.width = SCREEN_WIDTH;
-			fullView.height = SCREEN_HEIGHT;
-			// draw a view to a texture
-			renderSystem->CropRenderSize( 256, 256, true );
-			gameRenderWorld->RenderScene( &fullView );
-			renderSystem->CaptureRenderToFile( shotName );
-			renderSystem->UnCrop();
-		}
-	}
-}
-
-/*
-================
-idObjective::Event_Trigger
-================
-*/
-void idObjective::Event_Trigger( idEntity *activator ) {
-	idPlayer *player = gameLocal.GetLocalPlayer();
-	if ( player ) {
-
-		//Pickup( player );
-
-		if ( spawnArgs.GetString( "inv_objective", NULL ) ) {
-			if ( player && player->hud ) {
-				idStr shotName = gameLocal.GetMapName();
-				shotName.StripFileExtension();
-				shotName += "/";
-				shotName += spawnArgs.GetString( "screenshot" );
-				shotName.SetFileExtension( ".tga" );
-				player->hud->SetStateString( "screenshot", shotName );
-				player->hud->SetStateString( "objective", "1" );
-				player->hud->SetStateString( "objectivetext", spawnArgs.GetString( "objectivetext" ) );
-				player->hud->SetStateString( "objectivetitle", spawnArgs.GetString( "objectivetitle" ) );
-				player->GiveObjective( spawnArgs.GetString( "objectivetitle" ), spawnArgs.GetString( "objectivetext" ), shotName );
-
-				// a tad slow but keeps from having to update all objectives in all maps with a name ptr
-				for( int i = 0; i < gameLocal.num_entities; i++ ) {
-					if ( gameLocal.entities[ i ] && gameLocal.entities[ i ]->IsType( idObjectiveComplete::Type ) ) {
-						if ( idStr::Icmp( spawnArgs.GetString( "objectivetitle" ), gameLocal.entities[ i ]->spawnArgs.GetString( "objectivetitle" ) ) == 0 ){
-							gameLocal.entities[ i ]->spawnArgs.SetBool( "objEnabled", true );
-							break;
-						}
-					}
-				}
-
-				PostEventMS( &EV_GetPlayerPos, 2000 );
-			}
-		}
-	}
-}
-
-/*
-================
-idObjective::Event_GetPlayerPos
-================
-*/
-void idObjective::Event_GetPlayerPos() {
-	idPlayer *player = gameLocal.GetLocalPlayer();
-	if ( player ) {
-		playerPos = player->GetPhysics()->GetOrigin();
-		PostEventMS( &EV_HideObjective, 100, player );
-	}
-}
-
-/*
-================
-idObjective::Event_HideObjective
-================
-*/
-void idObjective::Event_HideObjective(idEntity *e) {
-	idPlayer *player = gameLocal.GetLocalPlayer();
-	if ( player ) {
-		idVec3 v = player->GetPhysics()->GetOrigin() - playerPos;
-		if ( v.Length() > 64.0f ) {
-			player->HideObjective();
-			PostEventMS( &EV_Remove, 0 );
-		} else {
-			PostEventMS( &EV_HideObjective, 100, player );
-		}
-	}
-}
-
 /*
 ===============================================================================
 
-  idVideoCDItem
+  idVideoCDItem (HUMANHEAD pdm: removed)
 
 ===============================================================================
 */
 
-CLASS_DECLARATION( idItem, idVideoCDItem )
-END_CLASS
-
-/*
-================
-idVideoCDItem::Spawn
-================
-*/
-void idVideoCDItem::Spawn( void ) {
-}
-
-/*
-================
-idVideoCDItem::GiveToPlayer
-================
-*/
-bool idVideoCDItem::GiveToPlayer( idPlayer *player ) {
-	idStr str = spawnArgs.GetString( "video" );
-	if ( player && str.Length() ) {
-		player->GiveVideo( str, &spawnArgs );
-	}
-	return true;
-}
-
 /*
 ===============================================================================
 
-  idPDAItem
+  idPDAItem (HUMANHEAD pdm: removed)
 
 ===============================================================================
 */
-
-CLASS_DECLARATION( idItem, idPDAItem )
-END_CLASS
-
-/*
-================
-idPDAItem::GiveToPlayer
-================
-*/
-bool idPDAItem::GiveToPlayer(idPlayer *player) {
-	const char *str = spawnArgs.GetString( "pda_name" );
-	if ( player ) {
-		player->GivePDA( str, &spawnArgs );
-	}
-	return true;
-}
 
 /*
 ===============================================================================
@@ -856,7 +656,9 @@ bool idPDAItem::GiveToPlayer(idPlayer *player) {
 ===============================================================================
 */
 
-CLASS_DECLARATION( idItem, idMoveableItem )
+//HUMANHEAD pdm: Now inherits from our hhItem
+//CLASS_DECLARATION( idItem, idMoveableItem )
+CLASS_DECLARATION( hhItem, idMoveableItem )
 	EVENT( EV_DropToFloor,	idMoveableItem::Event_DropToFloor )
 	EVENT( EV_Gib,			idMoveableItem::Event_Gib )
 END_CLASS
@@ -962,7 +764,7 @@ void idMoveableItem::Spawn( void ) {
 	physicsObj.SetBouncyness( bouncyness );
 	physicsObj.SetFriction( 0.6f, 0.6f, friction );
 	physicsObj.SetGravity( gameLocal.GetGravity() );
-	physicsObj.SetContents( CONTENTS_RENDERMODEL );
+	physicsObj.SetContents( CONTENTS_SHOOTABLE );
 	physicsObj.SetClipMask( MASK_SOLID | CONTENTS_MOVEABLECLIP );
 	SetPhysics( &physicsObj );
 
@@ -974,6 +776,10 @@ void idMoveableItem::Spawn( void ) {
 		smokeTime = gameLocal.time;
 		BecomeActive( TH_UPDATEPARTICLES );
 	}
+
+	//HUMANHEAD rww
+	fl.takedamage = spawnArgs.GetBool("takedamage");
+	//HUMANHEAD END
 }
 
 /*
@@ -983,12 +789,13 @@ idMoveableItem::Think
 */
 void idMoveableItem::Think( void ) {
 
-	RunPhysics();
-
+	// HUMANHEAD mdl:  Moved this if block up above run physics to fix the trigger not updating on movers
 	if ( thinkFlags & TH_PHYSICS ) {
 		// update trigger position
 		trigger->Link( gameLocal.clip, this, 0, GetPhysics()->GetOrigin(), mat3_identity );
 	}
+
+	RunPhysics();
 
 	if ( thinkFlags & TH_UPDATEPARTICLES ) {
 		if ( !gameLocal.smokeParticles->EmitSmoke( smoke, smokeTime, gameLocal.random.CRandomFloat(), GetPhysics()->GetOrigin(), GetPhysics()->GetAxis() ) ) {
@@ -1002,16 +809,49 @@ void idMoveableItem::Think( void ) {
 
 /*
 ================
+idMoveableItem::SquishedByDoor
+	HUMANHEAD pdm
+================
+*/
+void idMoveableItem::SquishedByDoor(idEntity *door) {
+	Killed(door, door, 0, vec3_origin, 0);
+}
+
+/*
+================
 idMoveableItem::Pickup
 ================
 */
 bool idMoveableItem::Pickup( idPlayer *player ) {
-	bool ret = idItem::Pickup( player );
-	if ( ret ) {
+	// HUMANHEAD pdm: this now inherits from hhItem
+	hhItem::Pickup( player );
+	//HUMANHEAD rww - er, hhItem::Pickup always returns true! i'll just check if it's been hidden instead.
+	if ( IsHidden() ) {
 		trigger->SetContents( 0 );
 	}
-	return ret;
+	return IsHidden();
 }
+
+//HUMANHEAD rww
+/*
+================
+idMoveableItem::Damage
+================
+*/
+void idMoveableItem::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &dir, const char *damageDefName, const float damageScale, const int location ) {
+	hhItem::Damage(inflictor, attacker, dir, damageDefName, damageScale, location);
+}
+
+/*
+================
+idMoveableItem::Killed
+================
+*/
+void idMoveableItem::Killed( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location ) {
+	fl.takedamage = false;
+	PostEventMS(&EV_Remove, 0);
+}
+//HUMANHEAD END
 
 /*
 ================
@@ -1083,6 +923,12 @@ void idMoveableItem::DropItems( idAnimatedEntity  *ent, const char *type, idList
 	// drop all items
 	kv = ent->spawnArgs.MatchPrefix( va( "def_drop%sItem", type ), NULL );
 	while ( kv ) {
+		//HUMANHEAD jsh
+		if ( !kv->GetValue()[0] ) {
+			kv = ent->spawnArgs.MatchPrefix( va( "def_drop%sItem", type ), kv );
+			continue;
+		}
+		//END HUMANHEAD
 
 		c = kv->GetKey().c_str() + kv->GetKey().Length();
 		if ( idStr::Icmp( c - 5, "Joint" ) != 0 && idStr::Icmp( c - 8, "Rotation" ) != 0 ) {
@@ -1185,26 +1031,10 @@ void idMoveableItem::Event_Gib( const char *damageDefName ) {
 /*
 ===============================================================================
 
-  idMoveablePDAItem
+  idMoveablePDAItem (HUMANHEAD pdm: removed)
 
 ===============================================================================
 */
-
-CLASS_DECLARATION( idMoveableItem, idMoveablePDAItem )
-END_CLASS
-
-/*
-================
-idMoveablePDAItem::GiveToPlayer
-================
-*/
-bool idMoveablePDAItem::GiveToPlayer(idPlayer *player) {
-	const char *str = spawnArgs.GetString( "pda_name" );
-	if ( player ) {
-		player->GivePDA( str, &spawnArgs );
-	}
-	return true;
-}
 
 /*
 ===============================================================================
@@ -1252,107 +1082,8 @@ void idItemRemover::Event_Trigger( idEntity *activator ) {
 /*
 ===============================================================================
 
-  idObjectiveComplete
+  idObjectiveComplete (HUMANHEAD pdm: removed)
 
 ===============================================================================
 */
 
-CLASS_DECLARATION( idItemRemover, idObjectiveComplete )
-	EVENT( EV_Activate,			idObjectiveComplete::Event_Trigger )
-	EVENT( EV_HideObjective,	idObjectiveComplete::Event_HideObjective )
-	EVENT( EV_GetPlayerPos,		idObjectiveComplete::Event_GetPlayerPos )
-END_CLASS
-
-/*
-================
-idObjectiveComplete::idObjectiveComplete
-================
-*/
-idObjectiveComplete::idObjectiveComplete() {
-	playerPos.Zero();
-}
-
-/*
-================
-idObjectiveComplete::Save
-================
-*/
-void idObjectiveComplete::Save( idSaveGame *savefile ) const {
-	savefile->WriteVec3( playerPos );
-}
-
-/*
-================
-idObjectiveComplete::Restore
-================
-*/
-void idObjectiveComplete::Restore( idRestoreGame *savefile ) {
-	savefile->ReadVec3( playerPos );
-}
-
-/*
-================
-idObjectiveComplete::Spawn
-================
-*/
-void idObjectiveComplete::Spawn( void ) {
-	spawnArgs.SetBool( "objEnabled", false );
-	Hide();
-}
-
-/*
-================
-idObjectiveComplete::Event_Trigger
-================
-*/
-void idObjectiveComplete::Event_Trigger( idEntity *activator ) {
-	if ( !spawnArgs.GetBool( "objEnabled" ) ) {
-		return;
-	}
-	idPlayer *player = gameLocal.GetLocalPlayer();
-	if ( player ) {
-		RemoveItem( player );
-
-		if ( spawnArgs.GetString( "inv_objective", NULL ) ) {
-			if ( player->hud ) {
-				player->hud->SetStateString( "objective", "2" );
-				player->hud->SetStateString( "objectivetext", spawnArgs.GetString( "objectivetext" ) );
-				player->hud->SetStateString( "objectivetitle", spawnArgs.GetString( "objectivetitle" ) );
-				player->CompleteObjective( spawnArgs.GetString( "objectivetitle" ) );
-				PostEventMS( &EV_GetPlayerPos, 2000 );
-			}
-		}
-	}
-}
-
-/*
-================
-idObjectiveComplete::Event_GetPlayerPos
-================
-*/
-void idObjectiveComplete::Event_GetPlayerPos() {
-	idPlayer *player = gameLocal.GetLocalPlayer();
-	if ( player ) {
-		playerPos = player->GetPhysics()->GetOrigin();
-		PostEventMS( &EV_HideObjective, 100, player );
-	}
-}
-
-/*
-================
-idObjectiveComplete::Event_HideObjective
-================
-*/
-void idObjectiveComplete::Event_HideObjective( idEntity *e ) {
-	idPlayer *player = gameLocal.GetLocalPlayer();
-	if ( player ) {
-		idVec3 v = player->GetPhysics()->GetOrigin();
-		v -= playerPos;
-		if ( v.Length() > 64.0f ) {
-			player->hud->HandleNamedEvent( "closeObjective" );
-			PostEventMS( &EV_Remove, 0 );
-		} else {
-			PostEventMS( &EV_HideObjective, 100, player );
-		}
-	}
-}

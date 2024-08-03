@@ -29,9 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __MODELMANAGER_H__
 #define __MODELMANAGER_H__
 
-#include "framework/Common.h"
-#include "renderer/Model.h"
-
 /*
 ===============================================================================
 

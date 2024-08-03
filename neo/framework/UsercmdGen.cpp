@@ -26,14 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/math/Vector.h"
-#include "idlib/Lib.h"
-#include "framework/CVarSystem.h"
-#include "framework/KeyInput.h"
-#include "framework/async/AsyncNetwork.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "framework/UsercmdGen.h"
+#include "Session_local.h"
 
 /*
 ================
@@ -164,6 +160,8 @@ typedef enum {
 	UB_IMPULSE62,
 	UB_IMPULSE63,
 
+	UB_ATTACK_ALT,
+
 	UB_MAX_BUTTONS
 } usercmdButton_t;
 
@@ -265,6 +263,8 @@ userCmdString_t	userCmdStrings[] = {
 	{ "_impulse62",		UB_IMPULSE62 },
 	{ "_impulse63",		UB_IMPULSE63 },
 
+	{ "_attackalt",		UB_ATTACK_ALT },
+
 	{ NULL,				UB_NONE },
 };
 
@@ -332,6 +332,8 @@ public:
 
 	int				CommandStringUsercmdData( const char *cmdString );
 
+	void			SetGameSensitivityFactor( float factor ) { (void)factor; }
+
 	int				GetNumUserCommands( void );
 
 	const char *	GetUserCommandName( int index );
@@ -342,6 +344,8 @@ public:
 	int				KeyState( int key );
 
 	usercmd_t		GetDirectUsercmd( void );
+
+	void			SetFromUsercmd( usercmd_t *newCmd ) { (void)newCmd; }
 
 private:
 	void			MakeCurrent( void );
@@ -754,6 +758,11 @@ void idUsercmdGenLocal::CmdButtons( void ) {
 	// check the mouse look button
 	if ( ButtonState( UB_MLOOK ) ^ in_freeLook.GetInteger() ) {
 		cmd.buttons |= BUTTON_MLOOK;
+	}
+
+	// check the alt attack button
+	if ( ButtonState( UB_ATTACK_ALT ) ) {
+		cmd.buttons |= BUTTON_ATTACK_ALT;
 	}
 }
 

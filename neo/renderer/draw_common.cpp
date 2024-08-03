@@ -25,11 +25,10 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "sys/platform.h"
-#include "renderer/VertexCache.h"
-
-#include "renderer/tr_local.h"
+#include "tr_local.h"
 
 extern idCVar r_useCarmacksReverse;
 extern idCVar r_useStencilOpSeparate;
@@ -154,96 +153,75 @@ void RB_PrepareStageTexturing( const shaderStage_t *pStage,  const drawSurf_t *s
 	}
 
 	if ( pStage->texture.texgen == TG_GLASSWARP ) {
-		if ( tr.backEndRenderer == BE_ARB2 /*|| tr.backEndRenderer == BE_NV30*/ ) {
-			qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, FPROG_GLASSWARP );
-			qglEnable( GL_FRAGMENT_PROGRAM_ARB );
+		qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, FPROG_GLASSWARP );
+		qglEnable( GL_FRAGMENT_PROGRAM_ARB );
 
-			GL_SelectTexture( 2 );
-			globalImages->scratchImage->Bind();
+		GL_SelectTexture( 2 );
+		globalImages->scratchImage->Bind();
 
-			GL_SelectTexture( 1 );
-			globalImages->scratchImage2->Bind();
+		GL_SelectTexture( 1 );
+		globalImages->scratchImage2->Bind();
 
-			qglEnable( GL_TEXTURE_GEN_S );
-			qglEnable( GL_TEXTURE_GEN_T );
-			qglEnable( GL_TEXTURE_GEN_Q );
+		qglEnable( GL_TEXTURE_GEN_S );
+		qglEnable( GL_TEXTURE_GEN_T );
+		qglEnable( GL_TEXTURE_GEN_Q );
 
-			float	mat[16], plane[4];
-			myGlMultMatrix( surf->space->modelViewMatrix, backEnd.viewDef->projectionMatrix, mat );
+		float	mat[16], plane[4];
+		myGlMultMatrix( surf->space->modelViewMatrix, backEnd.viewDef->projectionMatrix, mat );
 
-			plane[0] = mat[0];
-			plane[1] = mat[4];
-			plane[2] = mat[8];
-			plane[3] = mat[12];
-			qglTexGenfv( GL_S, GL_OBJECT_PLANE, plane );
+		plane[0] = mat[0];
+		plane[1] = mat[4];
+		plane[2] = mat[8];
+		plane[3] = mat[12];
+		qglTexGenfv( GL_S, GL_OBJECT_PLANE, plane );
 
-			plane[0] = mat[1];
-			plane[1] = mat[5];
-			plane[2] = mat[9];
-			plane[3] = mat[13];
-			qglTexGenfv( GL_T, GL_OBJECT_PLANE, plane );
+		plane[0] = mat[1];
+		plane[1] = mat[5];
+		plane[2] = mat[9];
+		plane[3] = mat[13];
+		qglTexGenfv( GL_T, GL_OBJECT_PLANE, plane );
 
-			plane[0] = mat[3];
-			plane[1] = mat[7];
-			plane[2] = mat[11];
-			plane[3] = mat[15];
-			qglTexGenfv( GL_Q, GL_OBJECT_PLANE, plane );
+		plane[0] = mat[3];
+		plane[1] = mat[7];
+		plane[2] = mat[11];
+		plane[3] = mat[15];
+		qglTexGenfv( GL_Q, GL_OBJECT_PLANE, plane );
 
-			GL_SelectTexture( 0 );
-		}
+		GL_SelectTexture( 0 );
 	}
 
 	if ( pStage->texture.texgen == TG_REFLECT_CUBE ) {
-		if ( tr.backEndRenderer == BE_ARB2 ) {
-			// see if there is also a bump map specified
-			const shaderStage_t *bumpStage = surf->material->GetBumpStage();
-			if ( bumpStage ) {
-				// per-pixel reflection mapping with bump mapping
-				GL_SelectTexture( 1 );
-				bumpStage->texture.image->Bind();
-				GL_SelectTexture( 0 );
+		// see if there is also a bump map specified
+		const shaderStage_t *bumpStage = surf->material->GetBumpStage();
+		if ( bumpStage ) {
+			// per-pixel reflection mapping with bump mapping
+			GL_SelectTexture( 1 );
+			bumpStage->texture.image->Bind();
+			GL_SelectTexture( 0 );
 
-				qglNormalPointer( GL_FLOAT, sizeof( idDrawVert ), ac->normal.ToFloatPtr() );
-				qglVertexAttribPointerARB( 10, 3, GL_FLOAT, false, sizeof( idDrawVert ), ac->tangents[1].ToFloatPtr() );
-				qglVertexAttribPointerARB( 9, 3, GL_FLOAT, false, sizeof( idDrawVert ), ac->tangents[0].ToFloatPtr() );
-
-				qglEnableVertexAttribArrayARB( 9 );
-				qglEnableVertexAttribArrayARB( 10 );
-				qglEnableClientState( GL_NORMAL_ARRAY );
-
-				// Program env 5, 6, 7, 8 have been set in RB_SetProgramEnvironmentSpace
-
-				qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, FPROG_BUMPY_ENVIRONMENT );
-				qglEnable( GL_FRAGMENT_PROGRAM_ARB );
-				qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_BUMPY_ENVIRONMENT );
-				qglEnable( GL_VERTEX_PROGRAM_ARB );
-			} else {
-				// per-pixel reflection mapping without a normal map
-				qglNormalPointer( GL_FLOAT, sizeof( idDrawVert ), ac->normal.ToFloatPtr() );
-				qglEnableClientState( GL_NORMAL_ARRAY );
-
-				qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, FPROG_ENVIRONMENT );
-				qglEnable( GL_FRAGMENT_PROGRAM_ARB );
-				qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_ENVIRONMENT );
-				qglEnable( GL_VERTEX_PROGRAM_ARB );
-			}
-		} else {
-			qglEnable( GL_TEXTURE_GEN_S );
-			qglEnable( GL_TEXTURE_GEN_T );
-			qglEnable( GL_TEXTURE_GEN_R );
-			qglTexGenf( GL_S, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP_EXT );
-			qglTexGenf( GL_T, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP_EXT );
-			qglTexGenf( GL_R, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP_EXT );
-			qglEnableClientState( GL_NORMAL_ARRAY );
 			qglNormalPointer( GL_FLOAT, sizeof( idDrawVert ), ac->normal.ToFloatPtr() );
+			qglVertexAttribPointerARB( 10, 3, GL_FLOAT, false, sizeof( idDrawVert ), ac->tangents[1].ToFloatPtr() );
+			qglVertexAttribPointerARB( 9, 3, GL_FLOAT, false, sizeof( idDrawVert ), ac->tangents[0].ToFloatPtr() );
 
-			qglMatrixMode( GL_TEXTURE );
-			float	mat[16];
+			qglEnableVertexAttribArrayARB( 9 );
+			qglEnableVertexAttribArrayARB( 10 );
+			qglEnableClientState( GL_NORMAL_ARRAY );
 
-			R_TransposeGLMatrix( backEnd.viewDef->worldSpace.modelViewMatrix, mat );
+			// Program env 5, 6, 7, 8 have been set in RB_SetProgramEnvironmentSpace
 
-			qglLoadMatrixf( mat );
-			qglMatrixMode( GL_MODELVIEW );
+			qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, FPROG_BUMPY_ENVIRONMENT );
+			qglEnable( GL_FRAGMENT_PROGRAM_ARB );
+			qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_BUMPY_ENVIRONMENT );
+			qglEnable( GL_VERTEX_PROGRAM_ARB );
+		} else {
+			// per-pixel reflection mapping without a normal map
+			qglNormalPointer( GL_FLOAT, sizeof( idDrawVert ), ac->normal.ToFloatPtr() );
+			qglEnableClientState( GL_NORMAL_ARRAY );
+
+			qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, FPROG_ENVIRONMENT );
+			qglEnable( GL_FRAGMENT_PROGRAM_ARB );
+			qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_ENVIRONMENT );
+			qglEnable( GL_VERTEX_PROGRAM_ARB );
 		}
 	}
 }
@@ -276,57 +254,42 @@ void RB_FinishStageTexturing( const shaderStage_t *pStage, const drawSurf_t *sur
 	}
 
 	if ( pStage->texture.texgen == TG_GLASSWARP ) {
-		if ( tr.backEndRenderer == BE_ARB2 /*|| tr.backEndRenderer == BE_NV30*/ ) {
-			GL_SelectTexture( 2 );
-			globalImages->BindNull();
+		GL_SelectTexture( 2 );
+		globalImages->BindNull();
 
-			GL_SelectTexture( 1 );
-			if ( pStage->texture.hasMatrix ) {
-				RB_LoadShaderTextureMatrix( surf->shaderRegisters, &pStage->texture );
-			}
-			qglDisable( GL_TEXTURE_GEN_S );
-			qglDisable( GL_TEXTURE_GEN_T );
-			qglDisable( GL_TEXTURE_GEN_Q );
-			qglDisable( GL_FRAGMENT_PROGRAM_ARB );
-			globalImages->BindNull();
-			GL_SelectTexture( 0 );
+		GL_SelectTexture( 1 );
+		if ( pStage->texture.hasMatrix ) {
+			RB_LoadShaderTextureMatrix( surf->shaderRegisters, &pStage->texture );
 		}
+		qglDisable( GL_TEXTURE_GEN_S );
+		qglDisable( GL_TEXTURE_GEN_T );
+		qglDisable( GL_TEXTURE_GEN_Q );
+		qglDisable( GL_FRAGMENT_PROGRAM_ARB );
+		globalImages->BindNull();
+		GL_SelectTexture( 0 );
+
 	}
 
 	if ( pStage->texture.texgen == TG_REFLECT_CUBE ) {
-		if ( tr.backEndRenderer == BE_ARB2 ) {
-			// see if there is also a bump map specified
-			const shaderStage_t *bumpStage = surf->material->GetBumpStage();
-			if ( bumpStage ) {
-				// per-pixel reflection mapping with bump mapping
-				GL_SelectTexture( 1 );
-				globalImages->BindNull();
-				GL_SelectTexture( 0 );
+		// see if there is also a bump map specified
+		const shaderStage_t *bumpStage = surf->material->GetBumpStage();
+		if ( bumpStage ) {
+			// per-pixel reflection mapping with bump mapping
+			GL_SelectTexture( 1 );
+			globalImages->BindNull();
+			GL_SelectTexture( 0 );
 
-				qglDisableVertexAttribArrayARB( 9 );
-				qglDisableVertexAttribArrayARB( 10 );
-			} else {
-				// per-pixel reflection mapping without bump mapping
-			}
-
-			qglDisableClientState( GL_NORMAL_ARRAY );
-			qglDisable( GL_FRAGMENT_PROGRAM_ARB );
-			qglDisable( GL_VERTEX_PROGRAM_ARB );
-			// Fixme: Hack to get around an apparent bug in ATI drivers.  Should remove as soon as it gets fixed.
-			qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, 0 );
+			qglDisableVertexAttribArrayARB( 9 );
+			qglDisableVertexAttribArrayARB( 10 );
 		} else {
-			qglDisable( GL_TEXTURE_GEN_S );
-			qglDisable( GL_TEXTURE_GEN_T );
-			qglDisable( GL_TEXTURE_GEN_R );
-			qglTexGenf( GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
-			qglTexGenf( GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
-			qglTexGenf( GL_R, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
-			qglDisableClientState( GL_NORMAL_ARRAY );
-
-			qglMatrixMode( GL_TEXTURE );
-			qglLoadIdentity();
-			qglMatrixMode( GL_MODELVIEW );
+			// per-pixel reflection mapping without bump mapping
 		}
+
+		qglDisableClientState( GL_NORMAL_ARRAY );
+		qglDisable( GL_FRAGMENT_PROGRAM_ARB );
+		qglDisable( GL_VERTEX_PROGRAM_ARB );
+		// Fixme: Hack to get around an apparent bug in ATI drivers.  Should remove as soon as it gets fixed.
+		qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, 0 );
 	}
 
 	if ( pStage->texture.hasMatrix ) {
@@ -776,6 +739,32 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 	for ( stage = 0; stage < shader->GetNumStages() ; stage++ ) {
 		pStage = shader->GetStage(stage);
 
+		if ( tr.IsScopeView() ) {
+			if ( pStage->isNotScopeView ) {
+				continue;
+			}
+		} else {
+			if ( pStage->isScopeView ) {
+				continue;
+			}
+		}
+
+		if ( !tr.IsShuttleView() ) {
+			if ( pStage->isShuttleView ) {
+				continue;
+			}
+		}
+
+		if ( backEnd.viewDef->renderView.viewSpiritEntities ) {
+			if ( pStage->isNotSpiritWalk ) {
+				continue;
+			}
+		} else {
+			if ( pStage->isSpiritWalk ) {
+				continue;
+			}
+		}
+
 		// check the enable condition
 		if ( regs[ pStage->conditionRegister ] == 0 ) {
 			continue;
@@ -800,10 +789,7 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 			//
 			//--------------------------
 
-			// completely skip the stage if we don't have the capability
-			if ( tr.backEndRenderer != BE_ARB2 ) {
-				continue;
-			}
+			// completely skip the stage if we have disable it.
 			if ( r_skipNewAmbient.GetBool() ) {
 				continue;
 			}
@@ -1003,7 +989,7 @@ int RB_STD_DrawShaderPasses( drawSurf_t **drawSurfs, int numDrawSurfs ) {
 		isPostProcess = true;
 
 		// only dump if in a 3d view
-		if ( backEnd.viewDef->viewEntitys && tr.backEndRenderer == BE_ARB2 ) {
+		if ( backEnd.viewDef->viewEntitys ) {
 			globalImages->currentRenderImage->CopyFramebuffer( backEnd.viewDef->viewport.x1,
 				backEnd.viewDef->viewport.y1,  backEnd.viewDef->viewport.x2 -  backEnd.viewDef->viewport.x1 + 1,
 				backEnd.viewDef->viewport.y2 -  backEnd.viewDef->viewport.y1 + 1, true );
@@ -1070,7 +1056,7 @@ static void RB_T_Shadow( const drawSurf_t *surf ) {
 	const srfTriangles_t	*tri;
 
 	// set the light position if we are using a vertex program to project the rear surfaces
-	if ( tr.backEndRendererHasVertexPrograms && r_useShadowVertexProgram.GetBool()
+	if ( r_useShadowVertexProgram.GetBool()
 		&& surf->space != backEnd.currentSpace ) {
 		idVec4 localLight;
 
@@ -1752,11 +1738,7 @@ void	RB_STD_DrawView( void ) {
 	RB_STD_FillDepthBuffer( drawSurfs, numDrawSurfs );
 
 	// main light renderer
-	switch( tr.backEndRenderer ) {
-	case BE_ARB2:
-		RB_ARB2_DrawInteractions();
-		break;
-	}
+	RB_ARB2_DrawInteractions();
 
 	// disable stencil shadow test
 	qglStencilFunc( GL_ALWAYS, 128, 255 );

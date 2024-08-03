@@ -26,12 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "Moveable.h"
-#include "Misc.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/SysCvar.h"
-#include "ai/AI.h"
+#include "../Game_local.h"
 
 /***********************************************************************
 
@@ -540,7 +538,7 @@ void idAI::Event_MuzzleFlash( const char *jointname ) {
 	idMat3	axis;
 
 	GetMuzzle( jointname, muzzle, axis );
-	TriggerWeaponEffects( muzzle );
+	TriggerWeaponEffects( muzzle, axis );
 }
 
 /*
@@ -574,10 +572,10 @@ void idAI::Event_CreateMissile( const char *jointname ) {
 idAI::Event_AttackMissile
 =====================
 */
-void idAI::Event_AttackMissile( const char *jointname ) {
+void idAI::Event_AttackMissile( const char *jointname, const idDict *projDef, int boneDir ) {
 	idProjectile *proj;
 
-	proj = LaunchProjectile( jointname, enemy.GetEntity(), true );
+	proj = LaunchProjectile( jointname, enemy.GetEntity(), true, projDef );	//HUMANHEAD mdc - pass projDef on for multiple proj support
 	idThread::ReturnEntity( proj );
 }
 
@@ -595,10 +593,136 @@ void idAI::Event_FireMissileAtTarget( const char *jointname, const char *targetn
 		gameLocal.Warning( "Entity '%s' not found for 'fireMissileAtTarget'", targetname );
 	}
 
-	proj = LaunchProjectile( jointname, aent, false );
+	proj = LaunchProjectile( jointname, aent, false, NULL );
 	idThread::ReturnEntity( proj );
 }
+/* JRMMERGE - OLD LAUNCH PROJECTILE
+// HUMANHEAD JRM - We want to launch projectiles of ANY type!
+void idAI::Event_AttackMissile( const char *jointname, const idDict *projDef, int boneDir ) {
+	idVec3		muzzle;
+	idVec3		dir;
+	idVec3		start;
+	trace_t		tr;
+	idBounds	projBounds;
+	float		distance;
+	const idClipModel *projClip;
+	float		attack_accuracy;
+	float		attack_cone;
+	float		projectile_spread;
+	float		diff;
+	float		angle;
+	float		spin;
+	idAngles	ang;
+	int			num_projectiles;
+	int			i;
+	idMat3		axis;
 
+	// HUMANHEAD JRM - START
+	const idDict *oldProjDef = projectileDef;
+	if(projDef)
+		projectileDef = projDef;
+	// HUMANHEAD JRM - END
+
+	if ( !projectileDef ) {
+		gameLocal.Warning( "%s (%s) doesn't have a projectile specified", name.c_str(), GetEntityDefName() );
+		return;
+	}
+
+	attack_accuracy = spawnArgs.GetFloat( "attack_accuracy", "7" );
+	attack_cone = spawnArgs.GetFloat( "attack_cone", "70" );
+	projectile_spread = spawnArgs.GetFloat( "projectile_spread", "0" );
+	num_projectiles = spawnArgs.GetInt( "num_projectiles", "1" );
+
+	GetMuzzle( jointname, muzzle, axis );
+
+	if ( !projectile ) {
+		CreateProjectile( muzzle, axis[ 0 ] );
+	}
+
+	// make sure the projectile starts inside the monster bounding box
+	const idBounds &ownerBounds = physicsObj.GetAbsBounds();
+	projClip = projectile->GetPhysics()->GetClipModel();
+	projBounds = projClip->GetBounds().Rotate( projClip->GetAxis() );
+	if ( (ownerBounds - projBounds).RayIntersection( muzzle, GetGravViewAxis()[ 0 ], distance ) ) { // HUMANHEAD JRM - VIEWAXIS_TO_GETGRAVVIEWAXIS
+		start = muzzle + distance * GetGravViewAxis()[ 0 ]; // HUMANHEAD JRM - VIEWAXIS_TO_GETGRAVVIEWAXIS
+	} else {
+		start = ownerBounds.GetCenter();
+	}
+	gameLocal.clip.Translation( tr, start, muzzle, projClip, projClip->GetAxis(), MASK_SHOT_RENDERMODEL, this );
+	muzzle = tr.endpos;
+
+	// set aiming direction
+#ifdef HUMANHEAD
+	// nla - Allow us to aim from the center of the body.  Used in the case of the harvester's twisting rockets
+	if ( projectile->spawnArgs.GetBool( "aim_center" ) ) {
+		idVec3 muzzleNew;
+
+		muzzleNew = muzzle - GetOrigin();	// Vector to current muzzle from origin
+		muzzleNew.ProjectOntoPlane( GetAxis()[ 1 ], 1.001f );	// Project this onto the Y center of the monster
+		muzzleNew += GetOrigin();	// Get the new end point of the vector
+
+		GetAimDir( muzzleNew, enemy.GetEntity(), projectileDef, this, dir );
+	}
+	else {
+		GetAimDir( muzzle, enemy.GetEntity(), projectileDef, this, dir );
+	}
+#else
+		GetAimDir( muzzle, enemy.GetEntity(), projectileDef, this, dir );
+#endif
+
+	// HUMANHEAD JRM - need to be able to launch down the bone dir if we choose
+	if(boneDir) {
+		//HH_ASSERT(joint != INVALID_JOINT);
+		//dir.Normalize();
+		//idAngles oldDirAng = dir.ToAngles();
+        dir = axis[0];// * GetGravViewAxis(); // HUMANHEAD JRM - VIEWAXIS_TO_GETGRAVVIEWAXIS
+		//idAngles ang = dir.ToAngles();
+		//ang.pitch = oldDirAng.pitch;
+		//ang.ToVectors(&dir);
+	}
+	// HUMANHEAD END
+
+	// adjust his aim so it's not perfect.  uses sine based movement so the tracers appear less random in their spread.
+	ang = dir.ToAngles();
+	float t = MS2SEC( gameLocal.time + entityNumber * 497 );
+	ang.pitch += idMath::Sin16( t * 5.1 ) * attack_accuracy;
+	ang.yaw	+= idMath::Sin16( t * 6.7 ) * attack_accuracy;
+
+	// clamp the attack direction to be within monster's attack cone so he doesn't do
+	// things like throw the missile backwards if you're behind him
+	diff = idMath::AngleDelta( ang.yaw, current_yaw );
+	if ( diff > attack_cone ) {
+		ang.yaw = current_yaw + attack_cone;
+	} else if ( diff < -attack_cone ) {
+		ang.yaw = current_yaw - attack_cone;
+	}
+	axis = ang.ToMat3();
+
+	float spreadRad = DEG2RAD( projectile_spread );
+	for( i = 0; i < num_projectiles; i++ ) {
+		if(spreadRad > 0.0f) { // HUMANHEAD JRM - a spread of 0 means don't do anything!
+			// spread the projectiles out
+			angle = idMath::Sin( spreadRad * gameLocal.random.RandomFloat() );
+			spin = (float)DEG2RAD( 360.0f ) * gameLocal.random.RandomFloat();
+			dir = axis[ 0 ] + axis[ 2 ] * ( angle * idMath::Sin( spin ) ) - axis[ 1 ] * ( angle * idMath::Cos( spin ) );
+		}
+		dir.Normalize();
+
+		// launch the projectile
+		if ( !projectile ) {
+			CreateProjectile( muzzle, dir );
+		}
+		projectile->Launch( muzzle, dir, vec3_origin );
+		projectile = NULL;
+	}
+
+	TriggerWeaponEffects( muzzle );
+
+	// HUMANHEAD JRM - START
+	projectileDef = oldProjDef;
+	// HUMANHEAD JRM - END
+}
+*/
 /*
 =====================
 idAI::Event_LaunchMissile
@@ -649,7 +773,7 @@ void idAI::Event_LaunchMissile( const idVec3 &org, const idAngles &ang ) {
 	projectile.GetEntity()->Launch( tr.endpos, axis[ 0 ], vec3_origin );
 	projectile = NULL;
 
-	TriggerWeaponEffects( tr.endpos );
+	TriggerWeaponEffects( tr.endpos, axis );
 
 	lastAttackTime = gameLocal.time;
 }
@@ -860,7 +984,11 @@ idAI::Event_SetHealth
 =====================
 */
 void idAI::Event_SetHealth( float newHealth ) {
+#ifdef HUMANHEAD
+	SetHealth(newHealth); // JRM
+#else
 	health = newHealth;
+#endif
 	fl.takedamage = true;
 	if ( health > 0 ) {
 		AI_DEAD = false;
@@ -1566,6 +1694,7 @@ void idAI::Event_CanHitEnemyFromJoint( const char *jointname ) {
 		gameLocal.Error( "Unknown joint '%s' on %s", jointname, GetEntityDefName() );
 	}
 	animator.GetJointTransform( joint, gameLocal.time, muzzle, axis );
+	// JRMMERGE_GRAVAXIS - Do we still need to X by GetGravViewAxis()
 	muzzle = org + ( muzzle + modelOffset ) * viewAxis * physicsObj.GetGravityAxis();
 
 	if ( projectileClipModel == NULL ) {
@@ -1735,6 +1864,8 @@ void idAI::Event_TestAnimMove( const char *animname ) {
 		return;
 	}
 
+	// JRMMERGE_GRAVAXIS - GetGravViewAxis() needed here? Here is old
+	//moveVec = GetAnimator()->TotalMovementDelta( anim ) * GetGravViewAxis();// idAngles( 0.0f, ideal_yaw, 0.0f ).ToMat3() * physicsObj.GetGravityAxis(); // HUMANHEAD JRM - removed the ideal_yaw check and gravity /  REMOVED_GRAV_AXIS_MULT
 	moveVec = animator.TotalMovementDelta( anim ) * idAngles( 0.0f, ideal_yaw, 0.0f ).ToMat3() * physicsObj.GetGravityAxis();
 	idAI::PredictPath( this, aas, physicsObj.GetOrigin(), moveVec, 1000, 1000, ( move.moveType == MOVETYPE_FLY ) ? SE_BLOCKED : ( SE_ENTER_OBSTACLE | SE_BLOCKED | SE_ENTER_LEDGE_AREA ), path );
 
@@ -1825,8 +1956,8 @@ void idAI::Event_Shrivel( float shrivel_time ) {
 		idThread::EndMultiFrameEvent( this, &AI_Shrivel );
 	}
 
-	renderEntity.shaderParms[ SHADERPARM_MD5_SKINSCALE ] = 1.0f - t * 0.5f;
-	UpdateVisuals();
+	// HUMANHEAD pdm: changed to go through our call
+	SetShaderParm(SHADERPARM_MD5_SKINSCALE, 1.0f - t * 0.5f);
 }
 
 /*
@@ -1845,9 +1976,9 @@ idAI::Event_Burn
 =====================
 */
 void idAI::Event_Burn( void ) {
-	renderEntity.shaderParms[ SHADERPARM_TIME_OF_DEATH ] = gameLocal.time * 0.001f;
 	SpawnParticles( "smoke_burnParticleSystem" );
-	UpdateVisuals();
+	// HUMANHEAD pdm: changed to go through our call
+	SetShaderParm(SHADERPARM_TIME_OF_DEATH, MS2SEC(gameLocal.time));
 }
 
 /*
@@ -1857,8 +1988,8 @@ idAI::Event_ClearBurn
 */
 void idAI::Event_ClearBurn( void ) {
 	renderEntity.noShadow = spawnArgs.GetBool( "noshadows" );
-	renderEntity.shaderParms[ SHADERPARM_TIME_OF_DEATH ] = 0.0f;
-	UpdateVisuals();
+	// HUMANHEAD pdm: changed to go through our call
+	SetShaderParm(SHADERPARM_TIME_OF_DEATH, 0.0f);
 }
 
 /*

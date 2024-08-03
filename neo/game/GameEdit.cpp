@@ -26,17 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "gamesys/SysCvar.h"
-#include "physics/Physics_Monster.h"
-#include "ai/AI.h"
-#include "Player.h"
-#include "Light.h"
-#include "WorldSpawn.h"
-#include "Sound.h"
-#include "Misc.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "GameEdit.h"
+#include "Game_local.h"
+
 
 /*
 ===============================================================================
@@ -504,7 +498,8 @@ idEditEntities::EntityIsSelectable
 */
 bool idEditEntities::EntityIsSelectable( idEntity *ent, idVec4 *color, idStr *text ) {
 	for ( int i = 0; i < selectableEntityClasses.Num(); i++ ) {
-		if ( ent->GetType() == selectableEntityClasses[i].typeInfo ) {
+		//HUMANHEAD: aob - changed to inheritance check.  Hopefully no breakage.  :)
+		if ( ent->IsType(*selectableEntityClasses[i].typeInfo) ) {
 			if ( text ) {
 				*text = selectableEntityClasses[i].textKey;
 			}
@@ -611,7 +606,7 @@ void idEditEntities::DisplayEntities( void ) {
 			if ( !static_cast<idAFEntity_Base *>(ent)->IsActiveAF() ) {
 				continue;
 			}
-		} else if ( ent->GetType() == &idSound::Type ) {
+		} else if ( ent->IsType( hhSound::Type ) ) {	// HUMANHEAD pdm: Changed to proper hhSound check
 			if ( ent->fl.selected ) {
 				drawArrows = true;
 			}

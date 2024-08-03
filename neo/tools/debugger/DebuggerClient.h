@@ -28,8 +28,9 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef DEBUGGERCLIENT_H_
 #define DEBUGGERCLIENT_H_
 
+#ifndef DEBUGGERBREAKPOINT_H_
 #include "DebuggerBreakpoint.h"
-#include "idlib/containers/StrList.h"
+#endif
 
 class rvDebuggerCallstack
 {

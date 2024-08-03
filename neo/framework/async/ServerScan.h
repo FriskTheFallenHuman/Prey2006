@@ -29,8 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SERVERSCAN_H__
 #define __SERVERSCAN_H__
 
-#include "ui/UserInterface.h"
-
 /*
 ===============================================================================
 

@@ -26,9 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "tools/compilers/aas/AASBuild_local.h"
+#include "AASBuild_local.h"
 
 #define VERTEX_HASH_BOXSIZE				(1<<6)	// must be power of 2
 #define VERTEX_HASH_SIZE				(VERTEX_HASH_BOXSIZE*VERTEX_HASH_BOXSIZE)

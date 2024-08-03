@@ -26,19 +26,14 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/math/Vector.h"
-#include "idlib/Heap.h"
-#include "framework/Common.h"
-#include <limits.h>
-
-#include "idlib/Str.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 // DG: idDynamicBlockAlloc isn't thread-safe and idStr is used both in the main thread
 //     and the async thread! For some reason this seems to cause lots of problems on
 //     newer Linux distros if dhewm3 is built with GCC9 or newer (see #391).
 //     No idea why it apparently didn't cause that (noticeable) issues before..
-#if 0 // !defined( ID_REDIRECT_NEWDELETE ) && !defined( MACOS_X )
+#if 0
 	#define USE_STRING_DATA_ALLOCATOR
 #endif
 
@@ -774,10 +769,6 @@ static ID_INLINE bool isDirSeparator( int c )
 	}
 #ifdef _WIN32
 	if ( c == '\\' ) {
-		return true;
-	}
-#elif defined(__AROS__)
-	if ( c == ':' ) {
 		return true;
 	}
 #endif
@@ -1785,8 +1776,12 @@ idStr idStr::FormatNumber( int number ) {
 	return string;
 }
 
-idStr idStr::Format( const char* format, ... )
-{
+/*
+=================
+idStr::Format
+=================
+*/
+idStr idStr::Format( const char *format, ... ) {
 	va_list argptr;
 	va_start( argptr, format );
 	idStr ret = VFormat( format, argptr );
@@ -1794,8 +1789,12 @@ idStr idStr::Format( const char* format, ... )
 	return ret;
 }
 
-idStr idStr::VFormat( const char* format, va_list argptr )
-{
+/*
+=================
+idStr::VFormat
+=================
+*/
+idStr idStr::VFormat( const char *format, va_list argptr ) {
 	idStr ret;
 	int len;
 	va_list argptrcopy;
@@ -1811,7 +1810,7 @@ idStr idStr::VFormat( const char* format, va_list argptr )
 	len = D3_vsnprintfC99( buffer, sizeof(buffer), format, argptr );
 
 	ret.EnsureAlloced( len + 1 );
-	if ( len < sizeof(buffer) ) {
+	if ( len < sizeof( buffer ) ) {
 		strcpy( ret.data, buffer );
 		ret.len = len;
 	} else {
@@ -1824,7 +1823,6 @@ idStr idStr::VFormat( const char* format, va_list argptr )
 	va_end( argptrcopy );
 
 	return ret;
-
 }
 
 // behaves like C99's vsnprintf() by returning the amount of bytes that

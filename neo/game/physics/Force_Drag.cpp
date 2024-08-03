@@ -26,12 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/UsercmdGen.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "physics/Physics.h"
-
-#include "physics/Force_Drag.h"
+#include "../Game_local.h"
 
 CLASS_DECLARATION( idForce, idForce_Drag )
 END_CLASS

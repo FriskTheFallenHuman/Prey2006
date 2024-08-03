@@ -29,8 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GAME_ITEM_H__
 #define __GAME_ITEM_H__
 
-#include "physics/Physics_RigidBody.h"
-#include "Entity.h"
+#define ITEM_SPAWNRATE_DEFAULT		20.0f //HUMANHEAD rww (id used 20.0)
 
 /*
 ===============================================================================
@@ -39,6 +38,11 @@ If you have questions concerning this license or the applicable additional terms
 
 ===============================================================================
 */
+
+//HUMANHEAD: aob
+extern const idEventDef EV_RespawnItem;
+extern const idEventDef EV_RespawnFx;
+//HUMANHEAD END
 
 class idItem : public idEntity {
 public:
@@ -50,12 +54,14 @@ public:
 	void					Save( idSaveGame *savefile ) const;
 	void					Restore( idRestoreGame *savefile );
 
+	const idDeclSkin		*GetNonRespawnSkin(void) const; //HUMANHEAD rww
 	void					Spawn( void );
 	void					GetAttributes( idDict &attributes );
 	virtual bool			GiveToPlayer( idPlayer *player );
 	virtual bool			Pickup( idPlayer *player );
 	virtual void			Think( void );
 	virtual void			Present();
+	virtual bool			GetPhysicsToVisualTransform( idVec3 &origin, idMat3 &axis );
 
 	enum {
 		EVENT_PICKUP = idEntity::EVENT_MAXEVENTS,
@@ -71,7 +77,7 @@ public:
 	virtual void			WriteToSnapshot( idBitMsgDelta &msg ) const;
 	virtual void			ReadFromSnapshot( const idBitMsgDelta &msg );
 
-private:
+protected:	// HUMANHEAD
 	idVec3					orgOrigin;
 	bool					spin;
 	bool					pulse;
@@ -97,59 +103,20 @@ private:
 	void					Event_RespawnFx( void );
 };
 
-class idItemPowerup : public idItem {
-public:
-	CLASS_PROTOTYPE( idItemPowerup );
+// idItemPowerup (HUMANHEAD pdm: removed)
 
-							idItemPowerup();
+// idObjective (HUMANHEAD pdm: removed)
 
-	void					Save( idSaveGame *savefile ) const;
-	void					Restore( idRestoreGame *savefile );
+// idVideoCDItem (HUMANHEAD pdm: removed)
 
-	void					Spawn();
-	virtual bool			GiveToPlayer( idPlayer *player );
+// idPDAItem (HUMANHEAD pdm: removed)
 
-private:
-	int						time;
-	int						type;
-};
-
-class idObjective : public idItem {
-public:
-	CLASS_PROTOTYPE( idObjective );
-
-							idObjective();
-
-	void					Save( idSaveGame *savefile ) const;
-	void					Restore( idRestoreGame *savefile );
-
-	void					Spawn();
-
-private:
-	idVec3					playerPos;
-
-	void					Event_Trigger( idEntity *activator );
-	void					Event_HideObjective( idEntity *e );
-	void					Event_GetPlayerPos();
-	void					Event_CamShot();
-};
-
-class idVideoCDItem : public idItem {
-public:
-	CLASS_PROTOTYPE( idVideoCDItem );
-
-	void					Spawn();
-	virtual bool			GiveToPlayer( idPlayer *player );
-};
-
-class idPDAItem : public idItem {
-public:
-	CLASS_PROTOTYPE( idPDAItem );
-
-	virtual bool			GiveToPlayer( idPlayer *player );
-};
-
+// HUMANHEAD pdm: Now inherits from our hhItem
+#include "../prey/prey_items.h"
+class idMoveableItem : public hhItem {
+/*
 class idMoveableItem : public idItem {
+*/
 public:
 	CLASS_PROTOTYPE( idMoveableItem );
 
@@ -162,6 +129,12 @@ public:
 	void					Spawn( void );
 	virtual void			Think( void );
 	virtual bool			Pickup( idPlayer *player );
+
+	//HUMANHEAD
+	virtual void			SquishedByDoor(idEntity *door);
+	virtual	void			Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &dir, const char *damageDefName, const float damageScale, const int location );
+	virtual void			Killed( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location );
+	//HUMANHEAD END
 
 	static void				DropItems( idAnimatedEntity *ent, const char *type, idList<idEntity *> *list );
 	static idEntity	*		DropItem( const char *classname, const idVec3 &origin, const idMat3 &axis, const idVec3 &velocity, int activateDelay, int removeDelay );
@@ -181,12 +154,7 @@ private:
 	void					Event_Gib( const char *damageDefName );
 };
 
-class idMoveablePDAItem : public idMoveableItem {
-public:
-	CLASS_PROTOTYPE( idMoveablePDAItem );
-
-	virtual bool			GiveToPlayer( idPlayer *player );
-};
+// idMoveablePDAItem (HUMANHEAD pdm: removed)
 
 /*
 ===============================================================================
@@ -207,23 +175,6 @@ private:
 	void					Event_Trigger( idEntity *activator );
 };
 
-class idObjectiveComplete : public idItemRemover {
-public:
-	CLASS_PROTOTYPE( idObjectiveComplete );
-
-							idObjectiveComplete();
-
-	void					Save( idSaveGame *savefile ) const;
-	void					Restore( idRestoreGame *savefile );
-
-	void					Spawn();
-
-private:
-	idVec3					playerPos;
-
-	void					Event_Trigger( idEntity *activator );
-	void					Event_HideObjective( idEntity *e );
-	void					Event_GetPlayerPos();
-};
+// idObjectiveComplete (HUMANHEAD pdm: removed)
 
 #endif /* !__GAME_ITEM_H__ */

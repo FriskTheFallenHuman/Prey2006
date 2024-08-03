@@ -28,8 +28,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __CHOICEWINDOW_H
 #define __CHOICEWINDOW_H
 
-#include "idlib/containers/StrList.h"
-#include "ui/Window.h"
+#include "Window.h"
 
 class idUserInterfaceLocal;
 

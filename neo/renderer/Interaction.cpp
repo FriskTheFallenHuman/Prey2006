@@ -26,12 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "renderer/tr_local.h"
-#include "renderer/RenderWorld_local.h"
-#include "renderer/VertexCache.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/Interaction.h"
+#include "tr_local.h"
 
 /*
 ===========================================================================
@@ -1070,6 +1068,17 @@ void idInteraction::AddActiveInteraction( void ) {
 	idRenderModel *model = R_EntityDefDynamicModel( entityDef );
 	if ( model == NULL || model->NumSurfaces() <= 0 ) {
 		return;
+	}
+
+	//k: shadow: if in spirit walk mode, skip all entities of only invisible in spirit, else skip all entities of only visible in spirit.
+	if ( tr.viewDef->renderView.viewSpiritEntities ) {
+		if ( entityDef->parms.onlyInvisibleInSpirit ) {
+			return;
+		}
+	} else {
+		if ( entityDef->parms.onlyVisibleInSpirit ) {
+			return;
+		}
 	}
 
 	// the dynamic model may have changed since we built the surface list

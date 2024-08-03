@@ -28,8 +28,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __BINDWINDOW_H
 #define __BINDWINDOW_H
 
-#include "ui/Window.h"
-
 class idUserInterfaceLocal;
 
 class idBindWindow : public idWindow {

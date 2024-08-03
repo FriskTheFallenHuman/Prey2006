@@ -26,14 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/async/AsyncNetwork.h"
-#include "framework/Session.h"
-#include "renderer/tr_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/Image.h"
-
-#include "framework/GameCallbacks_local.h"
+#include "tr_local.h"
 
 const char *imageFilter[] = {
 	"GL_LINEAR_MIPMAP_NEAREST",

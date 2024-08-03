@@ -29,11 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __MATH_MATRIX_H__
 #define __MATH_MATRIX_H__
 
-#include "idlib/math/Vector.h"
-#ifdef _WIN32
- #include <malloc.h>
-#endif
-
 #ifdef _MSC_VER // DG: I don't care if matrix code has some unused r variable only used for assertions, shut up VS
 #pragma warning( push )
 #pragma warning( disable : 4189 )
@@ -306,8 +301,8 @@ ID_INLINE idMat2 idMat2::Inverse( void ) const {
 	idMat2 invMat;
 
 	invMat = *this;
-	int r id_attribute((unused)) = invMat.InverseSelf();
-	assert( r );
+	//HH rww SDK - removed unnecessary variable initialization
+	invMat.InverseSelf();
 	return invMat;
 }
 
@@ -315,8 +310,8 @@ ID_INLINE idMat2 idMat2::InverseFast( void ) const {
 	idMat2 invMat;
 
 	invMat = *this;
-	int r id_attribute((unused)) = invMat.InverseFastSelf();
-	assert( r );
+	//HH rww SDK - removed unnecessary variable initialization
+	invMat.InverseFastSelf();
 	return invMat;
 }
 
@@ -715,8 +710,8 @@ ID_INLINE idMat3 idMat3::Inverse( void ) const {
 	idMat3 invMat;
 
 	invMat = *this;
-	int r id_attribute((unused)) = invMat.InverseSelf();
-	assert( r );
+	//HH rww SDK - removed unnecessary variable initialization
+	invMat.InverseSelf();
 	return invMat;
 }
 
@@ -724,8 +719,8 @@ ID_INLINE idMat3 idMat3::InverseFast( void ) const {
 	idMat3 invMat;
 
 	invMat = *this;
-	int r id_attribute((unused)) = invMat.InverseFastSelf();
-	assert( r );
+	//HH rww SDK - removed unnecessary variable initialization
+	invMat.InverseFastSelf();
 	return invMat;
 }
 
@@ -786,6 +781,7 @@ public:
 									const float wx, const float wy, const float wz, const float ww );
 					explicit idMat4( const idMat3 &rotation, const idVec3 &translation );
 					explicit idMat4( const float src[ 4 ][ 4 ] );
+					explicit idMat4(const float * m);
 
 	const idVec4 &	operator[]( int index ) const;
 	idVec4 &		operator[]( int index );
@@ -1129,8 +1125,8 @@ ID_INLINE idMat4 idMat4::Inverse( void ) const {
 	idMat4 invMat;
 
 	invMat = *this;
-	int r id_attribute((unused)) = invMat.InverseSelf();
-	assert( r );
+	//HH rww SDK - removed unnecessary variable initialization
+	invMat.InverseSelf();
 	return invMat;
 }
 
@@ -1138,8 +1134,8 @@ ID_INLINE idMat4 idMat4::InverseFast( void ) const {
 	idMat4 invMat;
 
 	invMat = *this;
-	int r id_attribute((unused)) = invMat.InverseFastSelf();
-	assert( r );
+	//HH rww SDK - removed unnecessary variable initialization
+	invMat.InverseFastSelf();
 	return invMat;
 }
 
@@ -1442,8 +1438,8 @@ ID_INLINE idMat5 idMat5::Inverse( void ) const {
 	idMat5 invMat;
 
 	invMat = *this;
-	int r id_attribute((unused)) = invMat.InverseSelf();
-	assert( r );
+	//HH rww SDK - removed unnecessary variable initialization
+	invMat.InverseSelf();
 	return invMat;
 }
 
@@ -1451,8 +1447,8 @@ ID_INLINE idMat5 idMat5::InverseFast( void ) const {
 	idMat5 invMat;
 
 	invMat = *this;
-	int r id_attribute((unused)) = invMat.InverseFastSelf();
-	assert( r );
+	//HH rww SDK - removed unnecessary variable initialization
+	invMat.InverseFastSelf();
 	return invMat;
 }
 
@@ -1776,8 +1772,8 @@ ID_INLINE idMat6 idMat6::Inverse( void ) const {
 	idMat6 invMat;
 
 	invMat = *this;
-	int r id_attribute((unused)) = invMat.InverseSelf();
-	assert( r );
+	//HH rww SDK - removed unnecessary variable initialization
+	invMat.InverseSelf();
 	return invMat;
 }
 
@@ -1785,8 +1781,8 @@ ID_INLINE idMat6 idMat6::InverseFast( void ) const {
 	idMat6 invMat;
 
 	invMat = *this;
-	int r id_attribute((unused)) = invMat.InverseFastSelf();
-	assert( r );
+	//HH rww SDK - removed unnecessary variable initialization
+	invMat.InverseFastSelf();
 	return invMat;
 }
 
@@ -2620,8 +2616,8 @@ ID_INLINE idMatX idMatX::Inverse( void ) const {
 
 	invMat.SetTempSize( numRows, numColumns );
 	memcpy( invMat.mat, mat, numRows * numColumns * sizeof( float ) );
-	int r id_attribute((unused)) = invMat.InverseSelf();
-	assert( r );
+	//HH rww SDK - removed unnecessary variable initialization
+	invMat.InverseSelf();
 	return invMat;
 }
 
@@ -2656,8 +2652,8 @@ ID_INLINE idMatX idMatX::InverseFast( void ) const {
 
 	invMat.SetTempSize( numRows, numColumns );
 	memcpy( invMat.mat, mat, numRows * numColumns * sizeof( float ) );
-	int r id_attribute((unused)) = invMat.InverseFastSelf();
-	assert( r );
+	//HH rww SDK - removed unnecessary variable initialization
+	invMat.InverseFastSelf();
 	return invMat;
 }
 

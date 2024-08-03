@@ -34,9 +34,10 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 */
 
-#include "sys/platform.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "cm/CollisionModel_local.h"
+#include "CollisionModel_local.h"
 
 /*
 ===============================================================================
@@ -323,7 +324,12 @@ int idCollisionModelManagerLocal::RotateEdgeThroughEdge( cm_traceWork_t *tw, con
 			q = - b - sqrtd;
 		}
 		frac1 = q / a;
-		frac2 = c / q;
+		if (q == 0.0f) { //HUMANHEAD rww - CUFPF
+			frac2 = 0.0f;
+		}
+		else {
+			frac2 = c / q;
+		}
 	}
 
 	if ( tw->angle < 0.0f ) {

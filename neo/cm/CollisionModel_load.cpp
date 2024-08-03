@@ -45,13 +45,11 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/Timer.h"
-#include "renderer/Model.h"
-#include "renderer/ModelManager.h"
-#include "renderer/RenderWorld.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "cm/CollisionModel_local.h"
+#include "CollisionModel_local.h"
+
 
 idCollisionModelManagerLocal	collisionModelManagerLocal;
 idCollisionModelManager *		collisionModelManager = &collisionModelManagerLocal;
@@ -104,6 +102,183 @@ void idCollisionModelManagerLocal::ParseProcNodes( idLexer *src ) {
 	src->ExpectTokenString( "}" );
 }
 
+//HUMANHEAD rww
+#if _HH_INLINED_PROC_CLIPMODELS
+typedef struct basicSurf_s {
+	idDrawVert			*verts;
+	int					numVerts;
+	glIndex_t			*indices;
+	int					numIndices;
+	const idMaterial	*mat;
+} basicSurf_t;
+/*
+================
+idCollisionModelManagerLocal::CheckProcModelSurfClip
+================
+*/
+void idCollisionModelManagerLocal::CheckProcModelSurfClip(idLexer *src) {
+	idToken				token;
+	int					i, j;
+	idList<basicSurf_t> basicSurfs;
+	bool				parseOver = false;
+
+	src->ExpectTokenString( "{" );
+
+	// parse the name
+	//unfortunately, this isn't designer-recognizable and tends to bunch things up, so can't be used instead of material name
+	//however, we can expect only _area* models to contain inlined geometry
+	src->ExpectAnyToken( &token );
+	if (token.Cmpn("_area", strlen("_area")) != 0) {
+		parseOver = true;
+	}
+
+	int numSurfaces = src->ParseInt();
+	if ( numSurfaces < 0 ) {
+		src->Error( "idCollisionModelManagerLocal::CheckProcModelSurfClip: bad numSurfaces" );
+	}
+
+	cm_node_t *node;
+	cm_model_t *model = NULL;
+	idBounds totalBounds;
+
+	totalBounds.Zero();
+
+	for ( i = 0 ; i < numSurfaces ; i++ ) {
+		src->ExpectTokenString( "{" );
+
+		src->ExpectAnyToken( &token );
+
+		//check if this material is in the material list
+		if (!parseOver) {
+			for (j = 0; j < inlinedProcClipModelMats.Num(); j++) {
+				if (inlinedProcClipModelMats[j] == token) {
+					break;
+				}
+			}
+		}
+		if (parseOver || j == inlinedProcClipModelMats.Num()) { //just parse over this surf
+			int nV, nI;
+			nV = src->ParseInt();
+			nI = src->ParseInt();
+			for ( j = 0 ; j < nV ; j++ ) {
+				float	vec[8];
+				src->Parse1DMatrix( 8, vec );
+			}
+			for ( j = 0 ; j < nI ; j++ ) {
+				src->ParseInt();
+			}
+			src->ExpectTokenString( "}" );
+			continue;
+		}
+
+		const idMaterial *mat = declManager->FindMaterial( token );
+
+		//we have a surface we want to use
+		if (!model) {
+			model = AllocModel();
+
+			model->name = va("%s%i", PROC_CLIPMODEL_STRING_PRFX, numInlinedProcClipModels);
+			node = AllocNode( model, NODE_BLOCK_SIZE_SMALL );
+			node->planeType = -1;
+			model->node = node;
+
+			model->maxVertices = 0;
+			model->numVertices = 0;
+			model->maxEdges = 0;
+			model->numEdges = 0;
+		}
+
+		int numVerts = src->ParseInt();
+		int numIndices = src->ParseInt();
+
+		model->maxVertices += numVerts;
+		model->maxEdges += numIndices;
+
+		idDrawVert *verts = (idDrawVert *)Mem_Alloc(numVerts*sizeof(idDrawVert));
+		glIndex_t *indices = (glIndex_t *)Mem_Alloc(numIndices*sizeof(glIndex_t));
+
+		//parse the actual verts and tris
+		for ( j = 0 ; j < numVerts ; j++ ) {
+			float	vec[8];
+
+			src->Parse1DMatrix( 8, vec );
+
+			verts[j].xyz[0] = vec[0];
+			verts[j].xyz[1] = vec[1];
+			verts[j].xyz[2] = vec[2];
+			verts[j].st[0] = vec[3];
+			verts[j].st[1] = vec[4];
+			verts[j].normal[0] = vec[5];
+			verts[j].normal[1] = vec[6];
+			verts[j].normal[2] = vec[7];
+		}
+
+		for ( j = 0 ; j < numIndices ; j++ ) {
+			indices[j] = src->ParseInt();
+		}
+		src->ExpectTokenString( "}" );
+
+		//calculate a bounds for the surface
+		idBounds surfBounds;
+		surfBounds.Zero();
+		SIMDProcessor->MinMax(surfBounds[0], surfBounds[1], verts, numVerts);
+		totalBounds.AddBounds(surfBounds);
+
+		basicSurf_t bs;
+		bs.verts = verts;
+		bs.numVerts = numVerts;
+		bs.indices = indices;
+		bs.numIndices = numIndices;
+		bs.mat = mat;
+		basicSurfs.Append(bs);
+	}
+
+	src->ExpectTokenString( "}" );
+
+	if (model) { //we put together a model from the proc surfs
+		idFixedWinding w;
+		idPlane plane;
+
+		assert(basicSurfs.Num() > 0);
+
+		model->vertices = (cm_vertex_t *) Mem_ClearedAlloc( model->maxVertices * sizeof(cm_vertex_t) );
+		model->edges = (cm_edge_t *) Mem_ClearedAlloc( model->maxEdges * sizeof(cm_edge_t) );
+
+		assert(cm_vertexHash && cm_edgeHash); //after all, this should only be called while building models
+		cm_vertexHash->ResizeIndex( model->maxVertices );
+		cm_edgeHash->ResizeIndex( model->maxEdges );
+		ClearHash(totalBounds);
+
+		for (i = 0; i < basicSurfs.Num(); i++) {
+			for ( j = 0; j < basicSurfs[i].numIndices; j += 3 ) {
+				w.Clear();
+				w += basicSurfs[i].verts[ basicSurfs[i].indices[ j + 2 ] ].xyz;
+				w += basicSurfs[i].verts[ basicSurfs[i].indices[ j + 1 ] ].xyz;
+				w += basicSurfs[i].verts[ basicSurfs[i].indices[ j + 0 ] ].xyz;
+				w.GetPlane( plane );
+				plane = -plane;
+				PolygonFromWinding( model, &w, plane, basicSurfs[i].mat, 1 );
+			}
+			//free up the temp proc surf memory now that we're done with it
+			Mem_Free(basicSurfs[i].verts);
+			Mem_Free(basicSurfs[i].indices);
+		}
+
+		// create a BSP tree for the model
+		model->node = CreateAxialBSPTree( model, model->node );
+
+		model->isConvex = false;
+
+		FinishModel( model );
+
+		//add our new clipmodel to the list
+		models[PROC_CLIPMODEL_INDEX_START+numInlinedProcClipModels] = model;
+		numInlinedProcClipModels++;
+	}
+}
+#endif
+//HUMANHEAD END
+
 /*
 ================
 idCollisionModelManagerLocal::LoadProcBSP
@@ -139,7 +314,18 @@ void idCollisionModelManagerLocal::LoadProcBSP( const char *name ) {
 		}
 
 		if ( token == "model" ) {
+			//HUMANHEAD rww - parse model surfs to create clip models
+#if _HH_INLINED_PROC_CLIPMODELS
+			if (inlinedProcClipModelMats.Num() > 0) {
+				CheckProcModelSurfClip(src);
+			}
+			//HUMANHEAD END
+			else {
+				src->SkipBracedSection();
+			}
+#else
 			src->SkipBracedSection();
+#endif
 			continue;
 		}
 
@@ -194,6 +380,13 @@ void idCollisionModelManagerLocal::Clear( void ) {
 	contacts = NULL;
 	maxContacts = 0;
 	numContacts = 0;
+	//HUMANHEAD rww
+#if _HH_INLINED_PROC_CLIPMODELS
+	inlinedProcClipModelMats.Clear();
+	numInlinedProcClipModels = 0;
+	anyInlinedProcClipMats = false;
+#endif
+	//HUMANHEAD END
 }
 
 /*
@@ -777,6 +970,7 @@ void idCollisionModelManagerLocal::SetupTrmModelStructure( void ) {
 	trmBrushes[0]->b->bounds.Clear();
 	trmBrushes[0]->b->checkcount = 0;
 	trmBrushes[0]->b->contents = -1;		// all contents
+	trmBrushes[0]->b->material = trmMaterial; //HUMANHEAD rww
 	trmBrushes[0]->b->numPlanes = 0;
 }
 
@@ -2621,6 +2815,11 @@ void idCollisionModelManagerLocal::ConvertPatch( cm_model_t *model, const idMapP
 	if ( !( material->GetContentFlags() & CONTENTS_REMOVE_UTIL ) ) {
 		return;
 	}
+	//HUMANHEAD PCF rww 05/11/06 - can be used explicitly by surfaces which use alpha coverage but do not want collision anyway
+	if ( material->TestMaterialFlag(MF_SKIPCLIP) ) {
+		return;
+	}
+	//HUMANHEAD END
 
 	// copy the patch
 	cp = new idSurface_Patch( *patch );
@@ -2980,7 +3179,7 @@ cm_model_t *idCollisionModelManagerLocal::LoadRenderModel( const char *fileName 
 
 	// only load ASE and LWO models
 	idStr( fileName ).ExtractFileExtension( extension );
-	if ( ( extension.Icmp( "ase" ) != 0 ) && ( extension.Icmp( "lwo" ) != 0 ) && ( extension.Icmp( "ma" ) != 0 ) ) {
+	if ( ( extension.Icmp( "ase" ) != 0 ) && ( extension.Icmp( "lwo" ) != 0 ) ) {
 		return NULL;
 	}
 
@@ -3288,15 +3487,58 @@ idCollisionModelManagerLocal::BuildModels
 void idCollisionModelManagerLocal::BuildModels( const idMapFile *mapFile ) {
 	int i;
 	const idMapEntity *mapEnt;
+	//HUMANHEAD rww
+#if _HH_INLINED_PROC_CLIPMODELS
+	const char *clipMat;
+	anyInlinedProcClipMats = false;
+	mapEnt = mapFile->GetEntity(0);
+	if (mapEnt) {
+		mapEnt->epairs.GetString("clipStaticMaterials1", "", &clipMat);
+		if (clipMat[0]) {
+			anyInlinedProcClipMats = true;
+		}
+	}
+#endif
+	//HUMANHEAD END
 
 	idTimer timer;
 	timer.Start();
 
 	if ( !LoadCollisionModelFile( mapFile->GetName(), mapFile->GetGeometryCRC() ) ) {
 
+// HUMANHEAD pdm: Support for level appending
+#if DEATHWALK_AUTOLOAD
+		// Keep track of the first model added
+		// (there may already be collision models from the regular map loaded if this is a deathwalk map)
+		int firstModel = idCollisionModelManagerLocal::numModels;
+#endif
+// HUMANHEAD END
+
 		if ( !mapFile->GetNumEntities() ) {
 			return;
 		}
+
+		//HUMANHEAD rww
+#if _HH_INLINED_PROC_CLIPMODELS
+		if (anyInlinedProcClipMats) {
+			assert(numInlinedProcClipModels == 0 && inlinedProcClipModelMats.Num() == 0);
+			numInlinedProcClipModels = 0;
+			mapEnt = mapFile->GetEntity(0);
+			inlinedProcClipModelMats.Clear();
+			if (mapEnt) {
+				for (i = 0; 1; i++) {
+					mapEnt->epairs.GetString(va("clipStaticMaterials%i", i+1), "", &clipMat);
+					if (clipMat[0]) { //a list of materials specifying proc surfaces to be turned into clip
+						inlinedProcClipModelMats.Append(clipMat);
+					}
+					else {
+						break;
+					}
+				}
+			}
+		}
+#endif
+		//HUMANHEAD END
 
 		// load the .proc file bsp for data optimisation
 		LoadProcBSP( mapFile->GetName() );
@@ -3313,6 +3555,13 @@ void idCollisionModelManagerLocal::BuildModels( const idMapFile *mapFile ) {
 			if ( models[ numModels] ) {
 				numModels++;
 			}
+			//HUMANHEAD rww
+#if _HH_INLINED_PROC_CLIPMODELS
+			if (numInlinedProcClipModels && numModels == PROC_CLIPMODEL_INDEX_START) {
+				numModels += numInlinedProcClipModels;
+			}
+#endif
+			//HUMANHEAD END
 		}
 
 		// free the proc bsp which is only used for data optimization
@@ -3320,7 +3569,20 @@ void idCollisionModelManagerLocal::BuildModels( const idMapFile *mapFile ) {
 		procNodes = NULL;
 
 		// write the collision models to a file
+// HUMANHEAD pdm: Support for level appending
+#if DEATHWALK_AUTOLOAD
+		bool bAppending = session->ShouldAppendLevel() && !idStr::Icmp(mapFile->GetName(), session->GetDeathwalkMapName());
+		if (bAppending) {
+			common->Printf("Appending collision data\n");
+			// Rename the world collision model
+			if (models[firstModel]) {
+				models[firstModel]->name = "dw_worldMap";
+			}
+		}
+		WriteCollisionModelsToFile( mapFile->GetName(), firstModel, numModels, mapFile->GetGeometryCRC() );
+#else
 		WriteCollisionModelsToFile( mapFile->GetName(), 0, numModels, mapFile->GetGeometryCRC() );
+#endif
 	}
 
 	timer.Stop();
@@ -3702,3 +3964,28 @@ bool idCollisionModelManagerLocal::TrmFromModel( const char *modelName, idTraceM
 
 	return TrmFromModel( models[ handle ], trm );
 }
+
+// HUMANHEAD pdm: Support for level appending
+#if DEATHWALK_AUTOLOAD
+bool idCollisionModelManagerLocal::WillUseAlreadyLoadedCollisionMap(const idMapFile *mapFile) {
+	// Based on some code from idCollisionModelManagerLocal::LoadMap
+	return (idCollisionModelManagerLocal::loaded &&
+			idCollisionModelManagerLocal::mapName.Icmp( mapFile->GetName() ) == 0 &&
+			mapFile->GetFileTime() == idCollisionModelManagerLocal::mapFileTime);
+}
+void idCollisionModelManagerLocal::AppendMap( const idMapFile *mapFile ) {
+	// build collision models for our appended map
+	if (mapFile) {
+		idCollisionModelManagerLocal::BuildModels( mapFile );
+	}
+}
+#endif
+// HUMANHEAD END
+
+//HUMANHEAD rww
+#if _HH_INLINED_PROC_CLIPMODELS
+int idCollisionModelManagerLocal::GetNumInlinedProcClipModels(void) {
+	return numInlinedProcClipModels;
+}
+#endif
+//HUMANHEAD END

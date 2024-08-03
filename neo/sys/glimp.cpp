@@ -26,12 +26,12 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "precompiled.h"
+#pragma hdrstop
+
 #include <SDL.h>
 
-#include "sys/platform.h"
-#include "framework/Licensee.h"
-
-#include "renderer/tr_local.h"
+#include "../renderer/tr_local.h"
 
 #if defined(_WIN32) && defined(ID_ALLOW_TOOLS)
 #include "sys/win32/win_local.h"
@@ -125,10 +125,10 @@ static void SetSDLIcon()
 	amask = 0xff000000;
 #endif
 
-	#include "doom_icon.h" // contains the struct d3_icon
+	#include "prey_icon.h" // contains the struct prey_icon
 
-	SDL_Surface* icon = SDL_CreateRGBSurfaceFrom((void*)d3_icon.pixel_data, d3_icon.width, d3_icon.height,
-			d3_icon.bytes_per_pixel*8, d3_icon.bytes_per_pixel*d3_icon.width,
+	SDL_Surface* icon = SDL_CreateRGBSurfaceFrom((void*)prey_icon.pixel_data, prey_icon.width, prey_icon.height,
+		prey_icon.bytes_per_pixel*8, prey_icon.bytes_per_pixel* prey_icon.width,
 			rmask, gmask, bmask, amask);
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
@@ -172,7 +172,7 @@ bool GLimp_Init(glimpParms_t parms) {
 
 	/* Doom3 has the nasty habit of modifying the default framebuffer's alpha channel and then
 	 * relying on those modifications in blending operations (using GL_DST_(ONE_MINUS_)ALPHA).
-	 * So far that hasn't been much of a problem, because Windows, macOS, X11 etc
+	 * So far that hasn't been much of a problem, because Windows, X11 etc
 	 * just ignore the alpha chan (unless maybe you explicitly tell a window it should be transparent).
 	 * Unfortunately, Wayland by default *does* use the alpha channel, which often leads to
 	 * rendering bugs (the window is partly transparent or very white in areas with low alpha).
@@ -183,7 +183,7 @@ bool GLimp_Init(glimpParms_t parms) {
 	 * work for Doom3, as it needs a functioning alpha chan for blending operations, see above.
 	 * See also: https://gitlab.freedesktop.org/mesa/mesa/-/issues/5886
 	 *
-	 * So to make sure dhewm3 (finally) works as expected on Wayland, we tell SDL2 to
+	 * So to make sure the engine works as expected on Wayland, we tell SDL2 to
 	 * allow transparency and then fill the alpha-chan ourselves in RB_SwapBuffers()
 	 * (unless the user disables that with r_fillWindowAlphaChan 0) */
   #ifdef SDL_HINT_VIDEO_EGL_ALLOW_TRANSPARENCY
@@ -474,7 +474,7 @@ try_again:
 #if defined(_WIN32) && defined(ID_ALLOW_TOOLS)
 
 #if ! SDL_VERSION_ATLEAST(2, 0, 0)
-	#error "dhewm3 only supports the tools with SDL2, not SDL1!"
+	#error "the game only supports the tools with SDL2, not SDL1!"
 #endif
 
 		// The tools are Win32 specific.  If building the tools
@@ -916,7 +916,7 @@ bool GLimp_SetWindowResizable( bool enableResizable )
 	SDL_SetWindowResizable( window, (SDL_bool)enableResizable );
 	return true;
 #else
-	common->Warning( "dhewm3 must be built with SDL 2.0.5 or newer to change resizability of existing windows!" );
+	common->Warning( "engine must be built with SDL 2.0.5 or newer to change resizability of existing windows!" );
 	return false;
 #endif
 }

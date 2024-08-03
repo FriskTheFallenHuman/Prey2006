@@ -29,10 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __DECLSKIN_H__
 #define __DECLSKIN_H__
 
-#include "idlib/containers/StrList.h"
-#include "framework/DeclManager.h"
-#include "renderer/Material.h"
-
 /*
 ===============================================================================
 
@@ -54,6 +50,7 @@ public:
 	virtual bool			Parse( const char *text, const int textLength );
 	virtual void			FreeData( void );
 
+	virtual //HUMANHEAD: aob - needed so this is added to vtable and callable from DLL
 	const idMaterial *		RemapShaderBySkin( const idMaterial *shader ) const;
 
 							// model associations are just for the preview dialog in the editor

@@ -26,10 +26,12 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "tools/compilers/aas/AASFile_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "tools/compilers/aas/AASCluster.h"
+#include "AASFile_local.h"
+#include "AASCluster.h"
+
 
 /*
 ================

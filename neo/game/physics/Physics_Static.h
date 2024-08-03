@@ -29,8 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __PHYSICS_STATIC_H__
 #define __PHYSICS_STATIC_H__
 
-#include "physics/Physics.h"
-
 /*
 ===============================================================================
 
@@ -147,6 +145,9 @@ public:	// common physics interface
 	void					WriteToSnapshot( idBitMsgDelta &msg ) const;
 	void					ReadFromSnapshot( const idBitMsgDelta &msg );
 
+	//HUMANHEAD rww - sorry, need access for snapshot code (better than making multiple snapshot functions)
+	virtual staticPState_t	*GetPState(void);
+	//HUMANHEAD END
 protected:
 	idEntity *				self;					// entity using this physics object
 	staticPState_t			current;				// physics state

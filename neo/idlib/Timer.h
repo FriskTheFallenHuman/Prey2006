@@ -29,10 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __TIMER_H__
 #define __TIMER_H__
 
-#include "idlib/containers/StrList.h"
-#include "idlib/Lib.h"
-#include "sys/sys_public.h"
-
 /*
 ===============================================================================
 
@@ -56,6 +52,12 @@ public:
 	void			Stop( void );
 	void			Clear( void );
 	unsigned int	Milliseconds( void ) const;
+
+	// HUMANHEAD pdm: Support for profiler
+	bool			IsRunning() const	{ return state == TS_STARTED; }
+	void			SetCT( double ct )	{ (void)ct; }
+
+	// HUMANHEAD END
 
 private:
 	enum			{

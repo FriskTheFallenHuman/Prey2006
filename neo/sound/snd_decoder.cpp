@@ -26,6 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "precompiled.h"
+#pragma hdrstop
 
 #include "SDL_endian.h"
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
@@ -33,13 +35,12 @@ If you have questions concerning this license or the applicable additional terms
 #endif
 #define STB_VORBIS_NO_STDIO
 #define STB_VORBIS_NO_PUSHDATA_API // we're using the pulldata API
-#define STB_VORBIS_HEADER_ONLY
-#include "stb_vorbis.h"
+#include "stb_vorbis.c"
+#undef L // the implementation part of stb_vorbis has these defines, they confuse other code..
+#undef C
+#undef R
 
-#include "sys/platform.h"
-#include "framework/FileSystem.h"
-
-#include "sound/snd_local.h"
+#include "snd_local.h"
 
 /*
 ===================================================================================

@@ -29,8 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __CONSOLE_H__
 #define __CONSOLE_H__
 
-#include "framework/Session.h"
-
 /*
 ===============================================================================
 

@@ -28,7 +28,8 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __FIELDWINDOW_H
 #define __FIELDWINDOW_H
 
-#include "ui/Window.h"
+#include "Window.h"
+
 
 class idFieldWindow : public idWindow {
 public:

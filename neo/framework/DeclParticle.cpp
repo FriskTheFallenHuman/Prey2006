@@ -26,12 +26,16 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/geometry/DrawVert.h"
-#include "framework/File.h"
-#include "renderer/RenderWorld.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "framework/DeclParticle.h"
+#define NEG_NUMBER_TOKEN( token ) \
+	if( !idStr::Cmp( token, "-" ) ) { \
+		if( !src.ReadToken( &token ) ) { \
+			src.Error( "`-` missing number" ); \
+			return; \
+		} \
+	}
 
 struct ParticleParmDesc {
 	const char *name;
@@ -82,7 +86,14 @@ size_t idDeclParticle::Size( void ) const {
 idDeclParticle::GetStageBounds
 =====================
 */
+#ifdef PARTICLE_BOUNDS
+void idDeclParticle::GetStageBounds( idParticleStage *stage, idDrawVert *particleVerts ) {
+#else
 void idDeclParticle::GetStageBounds( idParticleStage *stage ) {
+#endif
+#ifdef PARTICLE_BOUNDS
+	(void)particleVerts;
+#endif // PARTICLE_BOUNDS
 
 	stage->bounds.Clear();
 
@@ -191,7 +202,9 @@ void idDeclParticle::ParseParametric( idLexer &src, idParticleParm *parm ) {
 		return;
 	}
 
-	if ( token.IsNumeric() ) {
+	if ( token.IsNumeric() || !idStr::Cmp( token, "-" ) ) {
+		NEG_NUMBER_TOKEN( token );
+
 		// can have a to + 2nd parm
 		parm->from = parm->to = atof( token );
 		if ( src.ReadToken( &token ) ) {
@@ -200,10 +213,25 @@ void idDeclParticle::ParseParametric( idLexer &src, idParticleParm *parm ) {
 					src.Error( "missing second parameter" );
 					return;
 				}
+
+				NEG_NUMBER_TOKEN( token );
+
 				parm->to = atof( token );
 			} else {
 				src.UnreadToken( &token );
 			}
+		}
+
+		// a to b with c
+		if ( src.ReadToken( &token ) ) {
+			if ( !idStr::Icmp( token, "with" ) ) {
+				NEG_NUMBER_TOKEN( token );
+				src.ReadToken( &token ); // a number
+			} else {
+				src.UnreadToken( &token );
+			}
+		} else {
+			src.UnreadToken( &token );
 		}
 	} else {
 		// table
@@ -409,6 +437,10 @@ idParticleStage *idDeclParticle::ParseParticleStage( idLexer &src ) {
 			stage->gravity = src.ParseFloat();
 			continue;
 		}
+		if ( !token.Icmp( "lowSkippable" ) ) {
+			src.ReadToken( &token );
+			continue;
+		}
 
 		src.Error( "unknown token %s\n", token.c_str() );
 	}
@@ -456,6 +488,16 @@ bool idDeclParticle::Parse( const char *text, const int textLength ) {
 
 		if ( !token.Icmp( "depthHack" ) ) {
 			depthHack = src.ParseFloat();
+			continue;
+		}
+
+		if ( !token.Icmp( "bounds" ) ) {
+			src.ParseFloat();
+			src.ParseFloat();
+			src.ParseFloat();
+			src.ParseFloat();
+			src.ParseFloat();
+			src.ParseFloat();
 			continue;
 		}
 

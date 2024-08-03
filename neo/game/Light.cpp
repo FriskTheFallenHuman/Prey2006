@@ -26,13 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "renderer/ModelManager.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "gamesys/SysCvar.h"
-#include "script/Script_Thread.h"
-
-#include "Light.h"
+#include "Game_local.h"
 
 /*
 ===============================================================================
@@ -126,10 +123,10 @@ void idGameEdit::ParseSpawnArgsToRenderLight( const idDict *args, renderLight_t 
 	idMat3 mat;
 	if ( !args->GetMatrix( "light_rotation", "1 0 0 0 1 0 0 0 1", mat ) ) {
 		if ( !args->GetMatrix( "rotation", "1 0 0 0 1 0 0 0 1", mat ) ) {
-			args->GetFloat( "angle", "0", angles[ 1 ] );
-			angles[ 0 ] = 0;
+	   		args->GetFloat( "angle", "0", angles[ 1 ] );
+   			angles[ 0 ] = 0;
 			angles[ 1 ] = idMath::AngleNormalize360( angles[ 1 ] );
-			angles[ 2 ] = 0;
+	   		angles[ 2 ] = 0;
 			mat = angles.ToMat3();
 		}
 	}
@@ -157,6 +154,7 @@ void idGameEdit::ParseSpawnArgsToRenderLight( const idDict *args, renderLight_t 
 	args->GetFloat( "shaderParm7", "0", renderLight->shaderParms[ SHADERPARM_MODE ] );
 	args->GetBool( "noshadows", "0", renderLight->noShadows );
 	args->GetBool( "nospecular", "0", renderLight->noSpecular );
+	args->GetBool( "lowSkippable", "0", renderLight->lowSkippable );	//HUMANHEAD bjk
 	args->GetBool( "parallel", "0", renderLight->parallel );
 
 	args->GetString( "texture", "lights/squarelight1", &texture );
@@ -310,7 +308,9 @@ idLight::Spawn
 */
 void idLight::Spawn( void ) {
 	bool start_off;
+	/* HUMANHEAD AOB - not needed
 	bool needBroken;
+	HUMANHEAD END*/
 	const char *demonic_shader;
 
 	// do the parsing the same way dmap and the editor do
@@ -380,6 +380,7 @@ void idLight::Spawn( void ) {
 
 		fl.takedamage	= true;
 
+#if !HUMANHEAD // aob - if no broken model is defined don't try and find one
 		// see if we need to create a broken model name
 		needBroken = true;
 		if ( model.Length() && !brokenModel.Length() ) {
@@ -408,6 +409,7 @@ void idLight::Spawn( void ) {
 				brokenModel = "";
 			}
 		}
+#endif
 
 		GetPhysics()->SetContents( spawnArgs.GetBool( "nonsolid" ) ? 0 : CONTENTS_SOLID );
 
@@ -418,6 +420,13 @@ void idLight::Spawn( void ) {
 	PostEventMS( &EV_PostSpawn, 0 );
 
 	UpdateVisuals();
+
+	//HUMANHEAD rww - don't want ambient lights in the snapshot
+	if (renderLight.shader && renderLight.shader->IsAmbientLight()) {
+		fl.networkSync = false;
+		fl.clientEntity = true; //even though it isn't in the client entity array, it can be treated as one, in that it will be active and update on the client without snapshot intervention.
+	}
+	//HUMANHEAD END
 }
 
 /*
@@ -471,16 +480,6 @@ idLight::SetColor
 */
 void idLight::SetColor( float red, float green, float blue ) {
 	baseColor.Set( red, green, blue );
-	SetLightLevel();
-}
-
-/*
-================
-idLight::SetColor
-================
-*/
-void idLight::SetColor( const idVec3 &color ) {
-	baseColor = color;
 	SetLightLevel();
 }
 

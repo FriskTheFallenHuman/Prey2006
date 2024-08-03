@@ -26,12 +26,9 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/math/Vector.h"
-#include "framework/Common.h"
-#include "renderer/ModelManager.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "framework/DeclFX.h"
 
 /*
 =================
@@ -138,6 +135,9 @@ void idDeclFX::ParseSingleFXAction( idLexer &src, idFXSingleAction& FXAction ) {
 	FXAction.particleTrackVelocity = false;
 	FXAction.trackOrigin = false;
 	FXAction.soundStarted = false;
+
+	FXAction.useAxis = AXIS_CURRENT;
+	FXAction.dir = vec3_origin;
 
 	while (1) {
 		if ( !src.ReadToken( &token ) ) {
@@ -401,6 +401,14 @@ void idDeclFX::ParseSingleFXAction( idLexer &src, idFXSingleAction& FXAction ) {
 			continue;
 		}
 
+		if ( !token.Icmp( "useAxis" ) ) {
+			if ( src.ReadTokenOnLine( &token ) ) {
+				ParseUseAxis( token, FXAction );
+			}
+			src.SkipRestOfLine();
+			continue;
+		}
+
 		src.Warning( "FX File: bad token" );
 		continue;
 	}
@@ -473,4 +481,23 @@ idDeclFX::FreeData
 */
 void idDeclFX::FreeData( void ) {
 	events.Clear();
+}
+
+/*
+===================
+idDeclFX::ParseUseAxis
+===================
+*/
+void idDeclFX::ParseUseAxis( idStr &text, idFXSingleAction &action ) const {
+	if ( !idStr::Icmp( text, "current" ) ) {
+		action.useAxis = AXIS_CURRENT;
+	} else if ( !idStr::Icmp( text, "normal" ) ) {
+		action.useAxis = AXIS_NORMAL;
+	} else if ( !idStr::Icmp( text, "bounce" ) ) {
+		action.useAxis = AXIS_BOUNCE;
+	} else if ( !idStr::Icmp( text, "incoming" ) ) {
+		action.useAxis = AXIS_INCOMING;
+	} else if ( !idStr::Icmp( text, "customlocal" ) ) {
+		action.useAxis = AXIS_CUSTOMLOCAL;
+	} else {}; // 1
 }

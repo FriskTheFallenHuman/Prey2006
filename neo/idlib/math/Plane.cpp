@@ -26,10 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/Str.h"
-
-#include "idlib/math/Plane.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 idPlane plane_origin( 0.0f, 0.0f, 0.0f, 0.0f );
 

@@ -29,8 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __EDITFIELD_H__
 #define __EDITFIELD_H__
 
-#include "renderer/Material.h"
-
 /*
 ===============================================================================
 

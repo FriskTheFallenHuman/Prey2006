@@ -25,6 +25,9 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+#include "precompiled.h"
+#include "../posix/posix_public.h"
+#include "../sys_local.h"
 
 #include <errno.h>
 #include <unistd.h>
@@ -33,12 +36,6 @@ If you have questions concerning this license or the applicable additional terms
 #include <fcntl.h>
 
 #include <SDL_main.h>
-
-#include "sys/platform.h"
-#include "framework/Licensee.h"
-#include "framework/FileSystem.h"
-#include "sys/posix/posix_public.h"
-#include "sys/sys_local.h"
 
 #include <locale.h>
 
@@ -61,14 +58,6 @@ If you have questions concerning this license or the applicable additional terms
 #include <windows.h> // GetModuleFileNameA()
 #endif
 
-#ifdef __APPLE__
-#include <mach-o/dyld.h> // _NSGetExecutablePath
-#endif
-
-#ifdef __HAIKU__
-#include <FindDirectory.h>
-#endif
-
 #ifndef PATH_MAX
 // this is mostly for windows. windows has a MAX_PATH = 260 #define, but allows
 // longer paths anyway.. this might not be the maximum allowed length, but is
@@ -89,9 +78,9 @@ static void SetSavePath()
 {
 	const char* s = getenv("XDG_DATA_HOME");
 	if (s)
-		D3_snprintfC99(save_path, sizeof(save_path), "%s/dhewm3", s);
+		D3_snprintfC99(save_path, sizeof(save_path), "%s/prey06", s);
 	else
-		D3_snprintfC99(save_path, sizeof(save_path), "%s/.local/share/dhewm3", getenv("HOME"));
+		D3_snprintfC99(save_path, sizeof(save_path), "%s/.local/share/prey06", getenv("HOME"));
 }
 
 const char* Posix_GetExePath()
@@ -150,24 +139,6 @@ static void SetExecutablePath(char* exePath)
 	if(ret != 0)
 	{
 		// an error occured, clear exe path
-		exePath[0] = '\0';
-	}
-
-#elif defined(__APPLE__)
-
-	uint32_t bufSize = PATH_MAX;
-	if(_NSGetExecutablePath(exePath, &bufSize) != 0)
-	{
-		// WTF, PATH_MAX is not enough to hold the path?
-		// an error occured, clear exe path
-		exePath[0] = '\0';
-	}
-
-	// TODO: realpath() ?
-	// TODO: no idea what this is if the executable is in an app bundle
-#elif defined(__HAIKU__)
-	if (find_path(B_APP_IMAGE_SYMBOL, B_FIND_PATH_IMAGE_PATH, NULL, exePath, PATH_MAX) != B_OK)
-	{
 		exePath[0] = '\0';
 	}
 
@@ -232,9 +203,9 @@ bool Sys_GetPath(sysPath_t type, idStr &path) {
 	case PATH_CONFIG:
 		s = getenv("XDG_CONFIG_HOME");
 		if (s)
-			idStr::snPrintf(buf, sizeof(buf), "%s/dhewm3", s);
+			idStr::snPrintf(buf, sizeof(buf), "%s/prey06", s);
 		else
-			idStr::snPrintf(buf, sizeof(buf), "%s/.config/dhewm3", getenv("HOME"));
+			idStr::snPrintf(buf, sizeof(buf), "%s/.config/prey06", getenv("HOME"));
 
 		path = buf;
 		return true;

@@ -25,20 +25,10 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "sys/platform.h"
-#include "idlib/geometry/JointTransform.h"
-#include "framework/DeclSkin.h"
-#include "framework/DemoFile.h"
-#include "framework/EventLoop.h"
-#include "framework/Session.h"
-#include "renderer/GuiModel.h"
-#include "renderer/ModelManager.h"
-#include "renderer/RenderWorld_local.h"
-#include "ui/UserInterface.h"
-#include "sound/sound.h"
-
-#include "renderer/tr_local.h"
+#include "tr_local.h"
 
 //#define WRITE_GUIS
 
@@ -682,7 +672,7 @@ void	idRenderWorldLocal::ReadRenderEntity() {
 	session->readDemo->ReadBool( ent.noShadow );
 	session->readDemo->ReadBool( ent.noDynamicInteractions );
 	session->readDemo->ReadBool( ent.weaponDepthHack );
-	session->readDemo->ReadInt( ent.forceUpdate );
+	session->readDemo->ReadBool( ent.forceUpdate );
 	ent.callback = NULL;
 	if ( customShader )
 		ent.customShader = declManager->FindMaterial( session->readDemo->ReadHashString() );

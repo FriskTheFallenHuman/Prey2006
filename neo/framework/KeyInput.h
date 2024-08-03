@@ -29,10 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __KEYINPUT_H__
 #define __KEYINPUT_H__
 
-#include "idlib/CmdArgs.h"
-
-class idFile;
-
 /*
 ===============================================================================
 

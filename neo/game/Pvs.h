@@ -29,10 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GAME_PVS_H__
 #define __GAME_PVS_H__
 
-#include "idlib/geometry/Winding.h"
-#include "idlib/math/Vector.h"
-#include "idlib/bv/Bounds.h"
-
 /*
 ===================================================================================
 
@@ -118,6 +114,12 @@ private:
 	void				CreatePVSData( void );
 	void				DestroyPVSData( void );
 	void				CopyPortalPVSToMightSee( void ) const;
+	//HUMANHEAD rww
+						//check if two portals should be seen from each other because of gameportal linking
+	bool				MightSeeLinkedGamePortal(const struct pvsPortal_s *p1, const struct pvsPortal_s *p2) const;
+						//go through all of our portals and modify the mightSees based on gameportal linking
+	void				MightSeeGamePortals(void) const; 
+	//HUMANHEAD END
 	void				FloodFrontPortalPVS_r( struct pvsPortal_s *portal, int areaNum ) const;
 	void				FrontPortalPVS( void ) const;
 	struct pvsStack_s *	FloodPassagePVS_r( struct pvsPortal_s *source, const struct pvsPortal_s *portal, struct pvsStack_s *prevStack ) const;

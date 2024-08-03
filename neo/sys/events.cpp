@@ -26,19 +26,13 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "precompiled.h"
+#pragma hdrstop
+
 #include <SDL.h>
 
-#include "sys/platform.h"
-#include "idlib/containers/List.h"
-#include "idlib/Heap.h"
-#include "framework/Common.h"
-#include "framework/Console.h"
-#include "framework/KeyInput.h"
-#include "framework/Session_local.h"
-#include "renderer/RenderSystem.h"
-#include "renderer/tr_local.h"
-
-#include "sys/sys_public.h"
+#include "../framework/Session_local.h"
+#include "../renderer/tr_local.h"
 
 #if !SDL_VERSION_ATLEAST(2, 0, 0)
 #define SDL_Keycode SDLKey
@@ -592,7 +586,7 @@ static void initConsoleKeyMapping() {
 		// auto-detection (SDL2-only)
 		int keycode = SDL_GetKeyFromScancode( SDL_SCANCODE_GRAVE );
 		if ( keycode > 0 && keycode <= 0xFF ) {
-			// the SDL keycode and dhewm3 keycode should be identical for the mappings,
+			// the SDL keycode and engine keycode should be identical for the mappings,
 			// as it's ISO-8859-1 ("High ASCII") chars
 			for( int i=1; i<numMappings; ++i ) {
 				if ( consoleKeyMappings[i].key == keycode ) {

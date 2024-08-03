@@ -26,13 +26,12 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#if defined( ID_ALLOW_TOOLS )
-#include "tools/edit_gui_common.h"
-#include "DebuggerApp.h"
-#else
-#include "debugger_common.h"
-#endif
+#include "precompiled.h"
+#pragma hdrstop
 
+#if defined( ID_ALLOW_TOOLS )
+#include "DebuggerApp.h"
+#endif
 #include "DebuggerScript.h"
 #include "../../ui/Window.h"
 #include "../../ui/UserInterfaceLocal.h"

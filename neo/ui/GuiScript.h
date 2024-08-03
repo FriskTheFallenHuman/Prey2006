@@ -28,8 +28,8 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GUISCRIPT_H
 #define __GUISCRIPT_H
 
-#include "ui/Window.h"
-#include "ui/Winvar.h"
+#include "Window.h"
+#include "Winvar.h"
 
 struct idGSWinVar {
 	idGSWinVar() {

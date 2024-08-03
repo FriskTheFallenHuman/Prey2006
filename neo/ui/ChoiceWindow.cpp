@@ -26,14 +26,13 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/LangDict.h"
-#include "framework/KeyInput.h"
-#include "ui/DeviceContext.h"
-#include "ui/Window.h"
-#include "ui/UserInterfaceLocal.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "ui/ChoiceWindow.h"
+#include "DeviceContext.h"
+#include "Window.h"
+#include "UserInterfaceLocal.h"
+#include "ChoiceWindow.h"
 
 /*
 ============
@@ -388,7 +387,7 @@ void idChoiceWindow::PostParse() {
 			}
 		}
 	}
-	else if( idStr::Cmp(GetName(), "OS2Primary") == 0 && cvarStr == "r_mode"
+	else if( idStr::Cmp(GetName(), "OVN_ResolutionChoice") == 0 && cvarStr == "r_mode"
 	         && ( idStr::Icmp(GetGui()->GetSourceFile(), "guis/demo_mainmenu.gui") == 0 ||
 		          idStr::Icmp(GetGui()->GetSourceFile(), "guis/mainmenu.gui") == 0 ) )
 	{

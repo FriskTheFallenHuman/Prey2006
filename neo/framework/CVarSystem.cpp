@@ -26,12 +26,9 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/async/AsyncNetwork.h"
-#include "framework/Common.h"
-#include "framework/Session.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "framework/CVarSystem.h"
 
 idCVar * idCVar::staticVars = NULL;
 
@@ -455,6 +452,9 @@ public:
 	virtual void			ClearModifiedFlags( int flags );
 
 	virtual void			ResetFlaggedVariables( int flags );
+// HUMANHEAD pdm: Menu resets don't force ROM & INIT variables
+	virtual void			MenuResetFlaggedVariables( int flags ) {}
+// HUMANHEAD END
 	virtual void			RemoveFlaggedAutoCompletion( int flags );
 	virtual void			WriteFlaggedVariables( int flags, const char *setCmd, idFile *f ) const;
 

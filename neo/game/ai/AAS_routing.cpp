@@ -26,10 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "Game_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "ai/AAS_local.h"
+#include "AAS_local.h"
+#include "../Game_local.h"		// for print and error
 
 #define CACHETYPE_AREA				1
 #define CACHETYPE_PORTAL			2

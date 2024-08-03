@@ -26,45 +26,15 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "gamesys/SysCvar.h"
-#include "Entity.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "physics/Physics_Player.h"
+#include "../Game_local.h"
 
 CLASS_DECLARATION( idPhysics_Actor, idPhysics_Player )
 END_CLASS
 
-// movement parameters
-const float PM_STOPSPEED		= 100.0f;
-const float PM_SWIMSCALE		= 0.5f;
-const float PM_LADDERSPEED		= 100.0f;
-const float PM_STEPSCALE		= 1.0f;
-
-const float PM_ACCELERATE		= 10.0f;
-const float PM_AIRACCELERATE	= 1.0f;
-const float PM_WATERACCELERATE	= 4.0f;
-const float PM_FLYACCELERATE	= 8.0f;
-
-const float PM_FRICTION			= 6.0f;
-const float PM_AIRFRICTION		= 0.0f;
-const float PM_WATERFRICTION	= 1.0f;
-const float PM_FLYFRICTION		= 3.0f;
-const float PM_NOCLIPFRICTION	= 12.0f;
-
-const float MIN_WALK_NORMAL		= 0.7f;		// can't walk on very steep slopes
-const float OVERCLIP			= 1.001f;
-
-// movementFlags
-const int PMF_DUCKED			= 1;		// set when ducking
-const int PMF_JUMPED			= 2;		// set when the player jumped this frame
-const int PMF_STEPPED_UP		= 4;		// set when the player stepped up this frame
-const int PMF_STEPPED_DOWN		= 8;		// set when the player stepped down this frame
-const int PMF_JUMP_HELD			= 16;		// set when jump button is held down
-const int PMF_TIME_LAND			= 32;		// movementTime is time before rejump
-const int PMF_TIME_KNOCKBACK	= 64;		// movementTime is an air-accelerate only time
-const int PMF_TIME_WATERJUMP	= 128;		// movementTime is waterjump
-const int PMF_ALL_TIMES			= (PMF_TIME_WATERJUMP|PMF_TIME_LAND|PMF_TIME_KNOCKBACK);
+// HUMANHEAD: All these movement parms moved into physics_player.h
 
 int c_pmove = 0;
 
@@ -164,16 +134,22 @@ idPhysics_Player::SlideMove
 Returns true if the velocity was clipped in some way
 ==================
 */
-#define	MAX_CLIP_PLANES	5
+#define	MAX_CLIP_PLANES_SM	5 //HUMANHEAD PCF rww 05/12/06 - renamed
 
 bool idPhysics_Player::SlideMove( bool gravity, bool stepUp, bool stepDown, bool push ) {
 	int			i, j, k, pushFlags;
 	int			bumpcount, numbumps, numplanes;
 	float		d, time_left, into, totalMass;
-	idVec3		dir, planes[MAX_CLIP_PLANES];
+	idVec3		dir, planes[MAX_CLIP_PLANES_SM]; //HUMANHEAD PCF rww 05/12/06 - renamed
 	idVec3		end, stepEnd, primal_velocity, endVelocity, endClipVelocity, clipVelocity;
 	trace_t		trace, stepTrace, downTrace;
 	bool		nearGround, stepped, pushed;
+
+	//HUMANHEAD rww
+	if (self->fl.isTractored) {
+		gravity = false;
+	}
+	//HUMANHEAD END
 
 	numbumps = 4;
 
@@ -182,6 +158,11 @@ bool idPhysics_Player::SlideMove( bool gravity, bool stepUp, bool stepDown, bool
 	if ( gravity ) {
 		endVelocity = current.velocity + gravityVector * frametime;
 		current.velocity = ( current.velocity + endVelocity ) * 0.5f;
+
+		assert(!FLOAT_IS_NAN(current.velocity[0])); //HUMANHEAD rww
+		assert(!FLOAT_IS_NAN(current.velocity[1])); //HUMANHEAD rww
+		assert(!FLOAT_IS_NAN(current.velocity[2])); //HUMANHEAD rww
+
 		primal_velocity = endVelocity;
 		if ( groundPlane ) {
 			// slide along the ground plane
@@ -217,6 +198,10 @@ bool idPhysics_Player::SlideMove( bool gravity, bool stepUp, bool stepDown, bool
 
 		time_left -= time_left * trace.fraction;
 		current.origin = trace.endpos;
+
+		assert(!FLOAT_IS_NAN(current.origin[0])); //HUMANHEAD rww
+		assert(!FLOAT_IS_NAN(current.origin[1])); //HUMANHEAD rww
+		assert(!FLOAT_IS_NAN(current.origin[2])); //HUMANHEAD rww
 
 		// if moved the entire distance
 		if ( trace.fraction >= 1.0f ) {
@@ -260,6 +245,11 @@ bool idPhysics_Player::SlideMove( bool gravity, bool stepUp, bool stepDown, bool
 						time_left = 0;
 						current.stepUp -= ( downTrace.endpos - current.origin ) * gravityNormal;
 						current.origin = downTrace.endpos;
+
+						assert(!FLOAT_IS_NAN(current.origin[0])); //HUMANHEAD rww
+						assert(!FLOAT_IS_NAN(current.origin[1])); //HUMANHEAD rww
+						assert(!FLOAT_IS_NAN(current.origin[2])); //HUMANHEAD rww
+
 						current.movementFlags |= PMF_STEPPED_UP;
 						current.velocity *= PM_STEPSCALE;
 						break;
@@ -270,6 +260,11 @@ bool idPhysics_Player::SlideMove( bool gravity, bool stepUp, bool stepDown, bool
 						time_left -= time_left * stepTrace.fraction;
 						current.stepUp -= ( downTrace.endpos - current.origin ) * gravityNormal;
 						current.origin = downTrace.endpos;
+
+						assert(!FLOAT_IS_NAN(current.origin[0])); //HUMANHEAD rww
+						assert(!FLOAT_IS_NAN(current.origin[1])); //HUMANHEAD rww
+						assert(!FLOAT_IS_NAN(current.origin[2])); //HUMANHEAD rww
+
 						current.movementFlags |= PMF_STEPPED_UP;
 						current.velocity *= PM_STEPSCALE;
 						trace = stepTrace;
@@ -293,11 +288,19 @@ bool idPhysics_Player::SlideMove( bool gravity, bool stepUp, bool stepDown, bool
 
 			if ( totalMass > 0.0f ) {
 				// decrease velocity based on the total mass of the objects being pushed ?
-				current.velocity *= 1.0f - idMath::ClampFloat( 0.0f, 1000.0f, totalMass - 20.0f ) * ( 1.0f / 950.0f );
+				// HUMANHEAD pdm: changed so it doesn't make velocity negative when pushing large masses
+				// Actually, made it keep a little velocity even when stopped by heavy objects, so the player
+				// doesn't stutter so much when pushing heavy things.
+				current.velocity *= 1.0f - idMath::ClampFloat( 0.0f, 1000.0f, totalMass - 20.0f ) * ( 1.0f / 1150.0f );
 				pushed = true;
 			}
 
 			current.origin = trace.endpos;
+
+			assert(!FLOAT_IS_NAN(current.origin[0])); //HUMANHEAD rww
+			assert(!FLOAT_IS_NAN(current.origin[1])); //HUMANHEAD rww
+			assert(!FLOAT_IS_NAN(current.origin[2])); //HUMANHEAD rww
+
 			time_left -= time_left * trace.fraction;
 
 			// if moved the entire distance
@@ -311,7 +314,7 @@ bool idPhysics_Player::SlideMove( bool gravity, bool stepUp, bool stepDown, bool
 			self->Collide( trace, current.velocity );
 		}
 
-		if ( numplanes >= MAX_CLIP_PLANES ) {
+		if ( numplanes >= MAX_CLIP_PLANES_SM ) { //HUMANHEAD PCF rww 05/12/06 - renamed
 			// MrElusive: I think we have some relatively high poly LWO models with a lot of slanted tris
 			// where it may hit the max clip planes
 			current.velocity = vec3_origin;
@@ -400,6 +403,11 @@ bool idPhysics_Player::SlideMove( bool gravity, bool stepUp, bool stepDown, bool
 
 			// if we have fixed all interactions, try another move
 			current.velocity = clipVelocity;
+
+			assert(!FLOAT_IS_NAN(current.velocity[0])); //HUMANHEAD rww
+			assert(!FLOAT_IS_NAN(current.velocity[1])); //HUMANHEAD rww
+			assert(!FLOAT_IS_NAN(current.velocity[2])); //HUMANHEAD rww
+
 			endVelocity = endClipVelocity;
 			break;
 		}
@@ -412,6 +420,11 @@ bool idPhysics_Player::SlideMove( bool gravity, bool stepUp, bool stepDown, bool
 		if ( downTrace.fraction > 1e-4f && downTrace.fraction < 1.0f ) {
 			current.stepUp -= ( downTrace.endpos - current.origin ) * gravityNormal;
 			current.origin = downTrace.endpos;
+
+			assert(!FLOAT_IS_NAN(current.origin[0])); //HUMANHEAD rww
+			assert(!FLOAT_IS_NAN(current.origin[1])); //HUMANHEAD rww
+			assert(!FLOAT_IS_NAN(current.origin[2])); //HUMANHEAD rww
+
 			current.movementFlags |= PMF_STEPPED_DOWN;
 			current.velocity *= PM_STEPSCALE;
 		}
@@ -419,6 +432,10 @@ bool idPhysics_Player::SlideMove( bool gravity, bool stepUp, bool stepDown, bool
 
 	if ( gravity ) {
 		current.velocity = endVelocity;
+
+		assert(!FLOAT_IS_NAN(current.velocity[0])); //HUMANHEAD rww
+		assert(!FLOAT_IS_NAN(current.velocity[1])); //HUMANHEAD rww
+		assert(!FLOAT_IS_NAN(current.velocity[2])); //HUMANHEAD rww
 	}
 
 	// come to a dead stop when the velocity orthogonal to the gravity flipped
@@ -426,6 +443,10 @@ bool idPhysics_Player::SlideMove( bool gravity, bool stepUp, bool stepDown, bool
 	endClipVelocity = endVelocity - gravityNormal * endVelocity * gravityNormal;
 	if ( clipVelocity * endClipVelocity < 0.0f ) {
 		current.velocity = gravityNormal * current.velocity * gravityNormal;
+
+		assert(!FLOAT_IS_NAN(current.velocity[0])); //HUMANHEAD rww
+		assert(!FLOAT_IS_NAN(current.velocity[1])); //HUMANHEAD rww
+		assert(!FLOAT_IS_NAN(current.velocity[2])); //HUMANHEAD rww
 	}
 
 	return (bool)( bumpcount == 0 );
@@ -456,6 +477,9 @@ void idPhysics_Player::Friction( void ) {
 			current.velocity.Zero();
 		} else {
 			current.velocity = (current.velocity * gravityNormal) * gravityNormal;
+			assert(!FLOAT_IS_NAN(current.velocity[0])); //HUMANHEAD rww
+			assert(!FLOAT_IS_NAN(current.velocity[1])); //HUMANHEAD rww
+			assert(!FLOAT_IS_NAN(current.velocity[2])); //HUMANHEAD rww
 		}
 		// FIXME: still have z friction underwater?
 		return;
@@ -525,7 +549,7 @@ idPhysics_Player::WaterMove
 void idPhysics_Player::WaterMove( void ) {
 	idVec3	wishvel;
 	float	wishspeed;
-	idVec3	wishdir;
+	//HUMANHEAD: removed wishdir
 	float	scale;
 	float	vel;
 
@@ -576,7 +600,7 @@ idPhysics_Player::FlyMove
 void idPhysics_Player::FlyMove( void ) {
 	idVec3	wishvel;
 	float	wishspeed;
-	idVec3	wishdir;
+	//HUMANHEAD: removed wishdir
 	float	scale;
 
 	// normal slowdown
@@ -606,7 +630,7 @@ idPhysics_Player::AirMove
 */
 void idPhysics_Player::AirMove( void ) {
 	idVec3		wishvel;
-	idVec3		wishdir;
+	//HUMANHEAD: Removed wishdir
 	float		wishspeed;
 	float		scale;
 
@@ -646,7 +670,7 @@ idPhysics_Player::WalkMove
 */
 void idPhysics_Player::WalkMove( void ) {
 	idVec3		wishvel;
-	idVec3		wishdir;
+	//HUMANHEAD: removed wishdir
 	float		wishspeed;
 	float		scale;
 	float		accelerate;
@@ -659,13 +683,15 @@ void idPhysics_Player::WalkMove( void ) {
 		return;
 	}
 
-	if ( idPhysics_Player::CheckJump() ) {
+	//HUMANHEAD
+	if ( CheckJump() ) {
 		// jumped away
 		if ( waterLevel > WATERLEVEL_FEET ) {
 			idPhysics_Player::WaterMove();
 		}
 		else {
-			idPhysics_Player::AirMove();
+			//HUMANHEAD
+			AirMove();
 		}
 		return;
 	}
@@ -775,7 +801,7 @@ idPhysics_Player::NoclipMove
 void idPhysics_Player::NoclipMove( void ) {
 	float		speed, drop, friction, newspeed, stopspeed;
 	float		scale, wishspeed;
-	idVec3		wishdir;
+	//HUMANHEAD: removed wishdir
 
 	// friction
 	speed = current.velocity.Length();
@@ -852,13 +878,17 @@ idPhysics_Player::LadderMove
 ============
 */
 void idPhysics_Player::LadderMove( void ) {
-	idVec3	wishdir, wishvel, right;
+	idVec3	wishvel, right;	// HUMANHEAD: removed wishdir
 	float	wishspeed, scale;
 	float	upscale;
 
 	// stick to the ladder
 	wishvel = -100.0f * ladderNormal;
 	current.velocity = (gravityNormal * current.velocity) * gravityNormal + wishvel;
+
+	assert(!FLOAT_IS_NAN(current.velocity[0])); //HUMANHEAD rww
+	assert(!FLOAT_IS_NAN(current.velocity[1])); //HUMANHEAD rww
+	assert(!FLOAT_IS_NAN(current.velocity[2])); //HUMANHEAD rww
 
 	upscale = (-gravityNormal * viewForward + 0.5f) * 2.5f;
 	if ( upscale > 1.0f ) {
@@ -1086,7 +1116,7 @@ void idPhysics_Player::CheckDuck( void ) {
 			// stand up if possible
 			if ( current.movementFlags & PMF_DUCKED ) {
 				// try to stand up
-				end = current.origin - ( pm_normalheight.GetFloat() - pm_crouchheight.GetFloat() ) * gravityNormal;
+				end = current.origin - ( pm_normalheight.GetFloat() - pm_crouchheight.GetFloat() ) * -clipModel->GetAxis()[2]; // HUMANHEAD CJR:  replaced -gravityNormal with axis[2]
 				gameLocal.clip.Translation( trace, current.origin, end, clipModel, clipModel->GetAxis(), clipMask, self );
 				if ( trace.fraction >= 1.0f ) {
 					current.movementFlags &= ~PMF_DUCKED;
@@ -1179,8 +1209,6 @@ idPhysics_Player::CheckJump
 =============
 */
 bool idPhysics_Player::CheckJump( void ) {
-	idVec3 addVelocity;
-
 	if ( command.upmove < 10 ) {
 		// not holding jump
 		return false;
@@ -1200,11 +1228,26 @@ bool idPhysics_Player::CheckJump( void ) {
 	walking = false;
 	current.movementFlags |= PMF_JUMP_HELD | PMF_JUMPED;
 
-	addVelocity = 2.0f * maxJumpHeight * -gravityVector;
-	addVelocity *= idMath::Sqrt( addVelocity.Normalize() );
-	current.velocity += addVelocity;
+	//HUMANHEAD
+	current.velocity += DetermineJumpVelocity();
+	// HUMANHEAD END
 
 	return true;
+}
+
+/*
+=============
+idPhysics_Player::DetermineJumpVelocity
+	HUMANHEAD
+=============
+*/
+idVec3 idPhysics_Player::DetermineJumpVelocity( void ) {
+	idVec3 addVelocity;
+
+	addVelocity = 2.0f * maxJumpHeight * -gravityVector;
+	addVelocity *= idMath::Sqrt( addVelocity.Normalize() );
+
+	return addVelocity;
 }
 
 /*
@@ -1246,6 +1289,10 @@ bool idPhysics_Player::CheckWaterJump( void ) {
 	current.velocity = 200.0f * viewForward - 350.0f * gravityNormal;
 	current.movementFlags |= PMF_TIME_WATERJUMP;
 	current.movementTime = 2000;
+
+	assert(!FLOAT_IS_NAN(current.velocity[0])); //HUMANHEAD rww
+	assert(!FLOAT_IS_NAN(current.velocity[1])); //HUMANHEAD rww
+	assert(!FLOAT_IS_NAN(current.velocity[2])); //HUMANHEAD rww
 
 	return true;
 }
@@ -1351,10 +1398,9 @@ void idPhysics_Player::MovePlayer( int msec ) {
 	current.velocity -= current.pushVelocity;
 
 	// view vectors
-	viewAngles.ToVectors( &viewForward, NULL, NULL );
-	viewForward *= clipModelAxis;
-	viewRight = gravityNormal.Cross( viewForward );
-	viewRight.Normalize();
+	// HUMANHEAD aob
+	viewAngles.ToVectors( &viewForward, &viewRight, NULL );
+	//HUMANHEAD END
 
 	// fly in spectator mode
 	if ( current.movementType == PM_SPECTATOR ) {
@@ -1365,6 +1411,9 @@ void idPhysics_Player::MovePlayer( int msec ) {
 
 	// special no clip mode
 	if ( current.movementType == PM_NOCLIP ) {
+		//HUMANHEAD: aob - need to clear out contacts
+		ClearContacts();
+		//HUMANHEAD END
 		idPhysics_Player::NoclipMove();
 		idPhysics_Player::DropTimers();
 		return;
@@ -1381,7 +1430,7 @@ void idPhysics_Player::MovePlayer( int msec ) {
 	idPhysics_Player::SetWaterLevel();
 
 	// check for ground
-	idPhysics_Player::CheckGround();
+	CheckGround();//HUMANHEAD
 
 	// check if up against a ladder
 	idPhysics_Player::CheckLadder();
@@ -1411,16 +1460,17 @@ void idPhysics_Player::MovePlayer( int msec ) {
 	}
 	else if ( walking ) {
 		// walking on ground
-		idPhysics_Player::WalkMove();
+		WalkMove();		//HUMANHEAD
 	}
 	else {
 		// airborne
-		idPhysics_Player::AirMove();
+
+		AirMove();		//HUMANHEAD
 	}
 
 	// set watertype, waterlevel and groundentity
 	idPhysics_Player::SetWaterLevel();
-	idPhysics_Player::CheckGround();
+	CheckGround();//HUMANHEAD
 
 	// move the player velocity back into the world frame
 	current.velocity += current.pushVelocity;
@@ -1515,6 +1565,11 @@ idPhysics_Player::idPhysics_Player( void ) {
 	walking = false;
 	groundPlane = false;
 	memset( &groundTrace, 0, sizeof( groundTrace ) );
+
+	// HUMANHEAD
+	wishdir.Zero();
+	// HUMANHEAD end
+
 	groundMaterial = NULL;
 	ladder = false;
 	ladderNormal.Zero();
@@ -1536,6 +1591,10 @@ void idPhysics_Player_SavePState( idSaveGame *savefile, const playerPState_t &st
 	savefile->WriteInt( state.movementType );
 	savefile->WriteInt( state.movementFlags );
 	savefile->WriteInt( state.movementTime );
+	// HUMANHEAD mdl
+	savefile->WriteMat3( state.axis );
+	savefile->WriteMat3( state.localAxis );
+	// HUMANHEAD END
 }
 
 /*
@@ -1552,6 +1611,10 @@ void idPhysics_Player_RestorePState( idRestoreGame *savefile, playerPState_t &st
 	savefile->ReadInt( state.movementType );
 	savefile->ReadInt( state.movementFlags );
 	savefile->ReadInt( state.movementTime );
+	// HUMANHEAD mdl
+	savefile->ReadMat3( state.axis );
+	savefile->ReadMat3( state.localAxis );
+	// HUMANHEAD END
 }
 
 /*
@@ -1589,6 +1652,8 @@ void idPhysics_Player::Save( idSaveGame *savefile ) const {
 
 	savefile->WriteInt( (int)waterLevel );
 	savefile->WriteInt( waterType );
+
+	savefile->WriteVec3( wishdir ); // HUMANHEAD mdl
 }
 
 /*
@@ -1626,6 +1691,8 @@ void idPhysics_Player::Restore( idRestoreGame *savefile ) {
 
 	savefile->ReadInt( (int &)waterLevel );
 	savefile->ReadInt( waterType );
+
+	savefile->ReadVec3( wishdir ); // HUMANHEAD mdl
 
 	/* DG: It can apparently happen that the player saves while the clipModel's axis are
 	 *     modified by idPush::TryRotatePushEntity() -> idPhysics_Player::Rotate() -> idClipModel::Link()
@@ -1739,8 +1806,18 @@ bool idPhysics_Player::Evaluate( int timeStepMSec, int endTimeMSec ) {
 	if ( masterEntity ) {
 		self->GetMasterPosition( masterOrigin, masterAxis );
 		current.origin = masterOrigin + current.localOrigin * masterAxis;
+
+		assert(!FLOAT_IS_NAN(current.origin[0])); //HUMANHEAD rww
+		assert(!FLOAT_IS_NAN(current.origin[1])); //HUMANHEAD rww
+		assert(!FLOAT_IS_NAN(current.origin[2])); //HUMANHEAD rww
+
 		clipModel->Link( gameLocal.clip, self, 0, current.origin, clipModel->GetAxis() );
 		current.velocity = ( current.origin - oldOrigin ) / ( timeStepMSec * 0.001f );
+
+		assert(!FLOAT_IS_NAN(current.velocity[0])); //HUMANHEAD rww
+		assert(!FLOAT_IS_NAN(current.velocity[1])); //HUMANHEAD rww
+		assert(!FLOAT_IS_NAN(current.velocity[2])); //HUMANHEAD rww
+
 		masterDeltaYaw = masterYaw;
 		masterYaw = masterAxis[0].ToYaw();
 		masterDeltaYaw = masterYaw - masterDeltaYaw;
@@ -1858,6 +1935,10 @@ void idPhysics_Player::SetOrigin( const idVec3 &newOrigin, int id ) {
 		current.origin = newOrigin;
 	}
 
+	assert(!FLOAT_IS_NAN(current.origin[0])); //HUMANHEAD rww
+	assert(!FLOAT_IS_NAN(current.origin[1])); //HUMANHEAD rww
+	assert(!FLOAT_IS_NAN(current.origin[2])); //HUMANHEAD rww
+
 	clipModel->Link( gameLocal.clip, self, 0, newOrigin, clipModel->GetAxis() );
 }
 
@@ -1920,6 +2001,10 @@ idPhysics_Player::SetLinearVelocity
 */
 void idPhysics_Player::SetLinearVelocity( const idVec3 &newLinearVelocity, int id ) {
 	current.velocity = newLinearVelocity;
+
+	assert(!FLOAT_IS_NAN(current.velocity[0])); //HUMANHEAD rww
+	assert(!FLOAT_IS_NAN(current.velocity[1])); //HUMANHEAD rww
+	assert(!FLOAT_IS_NAN(current.velocity[2])); //HUMANHEAD rww
 }
 
 /*
@@ -2011,6 +2096,10 @@ idPhysics_Player::WriteToSnapshot
 ================
 */
 void idPhysics_Player::WriteToSnapshot( idBitMsgDelta &msg ) const {
+	//HUMANHEAD rww
+	assert(current.velocity.Length() < PLAYER_VELOCITY_MAX);
+	assert(current.pushVelocity.Length() < PLAYER_VELOCITY_MAX);
+	//HUMANHEAD END
 	msg.WriteFloat( current.origin[0] );
 	msg.WriteFloat( current.origin[1] );
 	msg.WriteFloat( current.origin[2] );
@@ -2038,9 +2127,15 @@ void idPhysics_Player::ReadFromSnapshot( const idBitMsgDelta &msg ) {
 	current.origin[0] = msg.ReadFloat();
 	current.origin[1] = msg.ReadFloat();
 	current.origin[2] = msg.ReadFloat();
+	assert(!FLOAT_IS_NAN(current.origin[0])); //HUMANHEAD rww
+	assert(!FLOAT_IS_NAN(current.origin[1])); //HUMANHEAD rww
+	assert(!FLOAT_IS_NAN(current.origin[2])); //HUMANHEAD rww
 	current.velocity[0] = msg.ReadFloat( PLAYER_VELOCITY_EXPONENT_BITS, PLAYER_VELOCITY_MANTISSA_BITS );
 	current.velocity[1] = msg.ReadFloat( PLAYER_VELOCITY_EXPONENT_BITS, PLAYER_VELOCITY_MANTISSA_BITS );
 	current.velocity[2] = msg.ReadFloat( PLAYER_VELOCITY_EXPONENT_BITS, PLAYER_VELOCITY_MANTISSA_BITS );
+	assert(!FLOAT_IS_NAN(current.velocity[0])); //HUMANHEAD rww
+	assert(!FLOAT_IS_NAN(current.velocity[1])); //HUMANHEAD rww
+	assert(!FLOAT_IS_NAN(current.velocity[2])); //HUMANHEAD rww
 	current.localOrigin[0] = msg.ReadDeltaFloat( current.origin[0] );
 	current.localOrigin[1] = msg.ReadDeltaFloat( current.origin[1] );
 	current.localOrigin[2] = msg.ReadDeltaFloat( current.origin[2] );

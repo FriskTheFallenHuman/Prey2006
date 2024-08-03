@@ -26,14 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "gamesys/SysCvar.h"
-#include "script/Script_Compiler.h"
-#include "script/Script_Thread.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "script/Script_Interpreter.h"
-
-#include "framework/FileSystem.h"
+#include "../Game_local.h"
 
 // HvG: Debugger support
 extern bool updateGameDebugger( idInterpreter *interpreter, idProgram *program, int instructionPointer );
@@ -453,7 +449,18 @@ void idInterpreter::StackTrace( void ) const {
 		if ( !f ) {
 			gameLocal.Printf( "<NO FUNCTION>\n" );
 		} else {
-			gameLocal.Printf( "%12s : %s\n", gameLocal.program.GetFilename( f->filenum ), f->Name() );
+			//HUMANHEAD rww
+			if ( ( callStack[i].s >= 0 ) && ( callStack[i].s < gameLocal.program.NumStatements() ) ) {
+				statement_t &line = gameLocal.program.GetStatement( callStack[i].s );
+				if (f->filenum != line.file) {
+					gameLocal.Printf("stack function does not match instruction location: %s\n", gameLocal.program.GetFilename( line.file ));
+				}
+				gameLocal.Printf( "%12s : %s, line %d\n", gameLocal.program.GetFilename( f->filenum ), f->Name(), line.linenumber );
+			}
+			//HUMANHEAD END
+			else {
+				gameLocal.Printf( "%12s : %s\n", gameLocal.program.GetFilename( f->filenum ), f->Name() );
+			}
 		}
 	}
 }
@@ -746,6 +753,15 @@ void idInterpreter::CallEvent( const function_t *func, int argsize ) {
 			// give a warning in developer mode
 			Warning( "Function '%s' not supported on entity '%s'", evdef->GetName(), eventEntity->name.c_str() );
 		}
+
+		//HUMANHEAD rww - if thread owner is removed, destroy the thread
+		if (!eventEntity && thread && thread->threadOwnerCheck && (!thread->threadOwner.IsValid() || !thread->threadOwner.GetEntity())) {
+			gameLocal.Printf("WARNING: Thread '%s' was still running after threadOwner was removed.\n", thread->GetThreadName());
+			threadDying = true;
+			return;
+		}
+		//HUMANHEAD END
+
 		// always return a safe value when an object doesn't exist
 		switch( evdef->GetReturnType() ) {
 		case D_EVENT_INTEGER :
@@ -877,6 +893,23 @@ void idInterpreter::EndMultiFrameEvent( idEntity *ent, const idEventDef *event )
 	multiFrameEvent = NULL;
 }
 
+
+/*
+================
+idInterpreter::EventInProgress
+================
+// HUMANHEAD nla - Needed to check what the current event is
+*/
+bool idInterpreter::RunningEvent( idEntity *ent, const idEventDef *event ) {
+	if ( eventEntity != ent ) {
+		Error( "idInterpreter::RunningEvent called with wrong entity" );
+	}
+
+	return multiFrameEvent == event;
+};
+// HUMANHEAD END
+
+
 /*
 ================
 idInterpreter::MultiFrameEventInProgress
@@ -937,6 +970,8 @@ void idInterpreter::CallSysEvent( const function_t *func, int argsize ) {
 			*( idEntity ** )&data[ i ] = GetEntity( *source.entityNumberPtr );
 			if ( !*( idEntity ** )&data[ i ] ) {
 				Warning( "Entity not found for event '%s'. Terminating thread.", evdef->GetName() );
+				// HUMANHEAD pdm: Do we want let the thread run here for safety?  That way a missing / removed entity
+				// getting a sys function called on it (eg sys.trigger) won't end the whole thread.  Currently, no change made.
 				threadDying = true;
 				PopParms( argsize );
 				return;
@@ -968,6 +1003,10 @@ void idInterpreter::CallSysEvent( const function_t *func, int argsize ) {
 	popParms = 0;
 }
 
+//HUMANHEAD rww - disabled currently because this happens a lot it seems. sometimes it's ok, sometimes it's not.
+//#define _ASSERT_ON_INTERPRETER_NANS
+//HUMANHEAD END
+
 /*
 ====================
 idInterpreter::Execute
@@ -984,6 +1023,8 @@ bool idInterpreter::Execute( void ) {
 	float		floatVal;
 	idScriptObject *obj;
 	const function_t *func;
+
+	PROFILE_SCOPE("Scripting", PROFMASK_NORMAL);		// HUMANHEAD pdm
 
 	if ( threadDying || !currentFunction ) {
 		return true;
@@ -1101,6 +1142,13 @@ bool idInterpreter::Execute( void ) {
 			var_b = GetVariable( st->b );
 			var_c = GetVariable( st->c );
 			*var_c.floatPtr = *var_a.floatPtr + *var_b.floatPtr;
+			//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+			assert(!FLOAT_IS_INVALID(*var_a.floatPtr));
+			assert(!FLOAT_IS_INVALID(*var_b.floatPtr));
+			assert(!FLOAT_IS_INVALID(*var_c.floatPtr));
+#endif
+			//HUMANHEAD END
 			break;
 
 		case OP_ADD_V:
@@ -1108,6 +1156,19 @@ bool idInterpreter::Execute( void ) {
 			var_b = GetVariable( st->b );
 			var_c = GetVariable( st->c );
 			*var_c.vectorPtr = *var_a.vectorPtr + *var_b.vectorPtr;
+			//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+			assert(!FLOAT_IS_INVALID(var_a.vectorPtr->x));
+			assert(!FLOAT_IS_INVALID(var_a.vectorPtr->y));
+			assert(!FLOAT_IS_INVALID(var_a.vectorPtr->z));
+			assert(!FLOAT_IS_INVALID(var_b.vectorPtr->x));
+			assert(!FLOAT_IS_INVALID(var_b.vectorPtr->y));
+			assert(!FLOAT_IS_INVALID(var_b.vectorPtr->z));
+			assert(!FLOAT_IS_INVALID(var_c.vectorPtr->x));
+			assert(!FLOAT_IS_INVALID(var_c.vectorPtr->y));
+			assert(!FLOAT_IS_INVALID(var_c.vectorPtr->z));
+#endif
+			//HUMANHEAD END
 			break;
 
 		case OP_ADD_S:
@@ -1144,6 +1205,13 @@ bool idInterpreter::Execute( void ) {
 			var_b = GetVariable( st->b );
 			var_c = GetVariable( st->c );
 			*var_c.floatPtr = *var_a.floatPtr - *var_b.floatPtr;
+			//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+			assert(!FLOAT_IS_INVALID(*var_a.floatPtr));
+			assert(!FLOAT_IS_INVALID(*var_b.floatPtr));
+			assert(!FLOAT_IS_INVALID(*var_c.floatPtr));
+#endif
+			//HUMANHEAD END
 			break;
 
 		case OP_SUB_V:
@@ -1151,6 +1219,19 @@ bool idInterpreter::Execute( void ) {
 			var_b = GetVariable( st->b );
 			var_c = GetVariable( st->c );
 			*var_c.vectorPtr = *var_a.vectorPtr - *var_b.vectorPtr;
+			//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+			assert(!FLOAT_IS_INVALID(var_a.vectorPtr->x));
+			assert(!FLOAT_IS_INVALID(var_a.vectorPtr->y));
+			assert(!FLOAT_IS_INVALID(var_a.vectorPtr->z));
+			assert(!FLOAT_IS_INVALID(var_b.vectorPtr->x));
+			assert(!FLOAT_IS_INVALID(var_b.vectorPtr->y));
+			assert(!FLOAT_IS_INVALID(var_b.vectorPtr->z));
+			assert(!FLOAT_IS_INVALID(var_c.vectorPtr->x));
+			assert(!FLOAT_IS_INVALID(var_c.vectorPtr->y));
+			assert(!FLOAT_IS_INVALID(var_c.vectorPtr->z));
+#endif
+			//HUMANHEAD END
 			break;
 
 		case OP_MUL_F:
@@ -1158,6 +1239,13 @@ bool idInterpreter::Execute( void ) {
 			var_b = GetVariable( st->b );
 			var_c = GetVariable( st->c );
 			*var_c.floatPtr = *var_a.floatPtr * *var_b.floatPtr;
+			//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+			assert(!FLOAT_IS_INVALID(*var_a.floatPtr));
+			assert(!FLOAT_IS_INVALID(*var_b.floatPtr));
+			assert(!FLOAT_IS_INVALID(*var_c.floatPtr));
+#endif
+			//HUMANHEAD END
 			break;
 
 		case OP_MUL_V:
@@ -1165,6 +1253,19 @@ bool idInterpreter::Execute( void ) {
 			var_b = GetVariable( st->b );
 			var_c = GetVariable( st->c );
 			*var_c.floatPtr = *var_a.vectorPtr * *var_b.vectorPtr;
+			//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+			assert(!FLOAT_IS_INVALID(var_a.vectorPtr->x));
+			assert(!FLOAT_IS_INVALID(var_a.vectorPtr->y));
+			assert(!FLOAT_IS_INVALID(var_a.vectorPtr->z));
+			assert(!FLOAT_IS_INVALID(var_b.vectorPtr->x));
+			assert(!FLOAT_IS_INVALID(var_b.vectorPtr->y));
+			assert(!FLOAT_IS_INVALID(var_b.vectorPtr->z));
+			assert(!FLOAT_IS_INVALID(var_c.vectorPtr->x));
+			assert(!FLOAT_IS_INVALID(var_c.vectorPtr->y));
+			assert(!FLOAT_IS_INVALID(var_c.vectorPtr->z));
+#endif
+			//HUMANHEAD END
 			break;
 
 		case OP_MUL_FV:
@@ -1315,6 +1416,12 @@ bool idInterpreter::Execute( void ) {
 			var_a = GetVariable( st->a );
 			var_c = GetVariable( st->c );
 			*var_c.floatPtr = ( *var_a.floatPtr == 0.0f );
+			//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+			assert(!FLOAT_IS_INVALID(*var_a.floatPtr));
+			assert(!FLOAT_IS_INVALID(*var_c.floatPtr));
+#endif
+			//HUMANHEAD END
 			break;
 
 		case OP_NOT_V:
@@ -1338,6 +1445,12 @@ bool idInterpreter::Execute( void ) {
 			var_a = GetVariable( st->a );
 			var_c = GetVariable( st->c );
 			*var_c.floatPtr = -*var_a.floatPtr;
+			//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+			assert(!FLOAT_IS_INVALID(*var_a.floatPtr));
+			assert(!FLOAT_IS_INVALID(*var_c.floatPtr));
+#endif
+			//HUMANHEAD END
 			break;
 
 		case OP_NEG_V:
@@ -1416,6 +1529,12 @@ bool idInterpreter::Execute( void ) {
 			var_a = GetVariable( st->a );
 			var_b = GetVariable( st->b );
 			*var_b.floatPtr += *var_a.floatPtr;
+			//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+			assert(!FLOAT_IS_INVALID(*var_a.floatPtr));
+			assert(!FLOAT_IS_INVALID(*var_b.floatPtr));
+#endif
+			//HUMANHEAD END
 			break;
 
 		case OP_UADD_V:
@@ -1428,6 +1547,12 @@ bool idInterpreter::Execute( void ) {
 			var_a = GetVariable( st->a );
 			var_b = GetVariable( st->b );
 			*var_b.floatPtr -= *var_a.floatPtr;
+			//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+			assert(!FLOAT_IS_INVALID(*var_a.floatPtr));
+			assert(!FLOAT_IS_INVALID(*var_b.floatPtr));
+#endif
+			//HUMANHEAD END
 			break;
 
 		case OP_USUB_V:
@@ -1440,6 +1565,12 @@ bool idInterpreter::Execute( void ) {
 			var_a = GetVariable( st->a );
 			var_b = GetVariable( st->b );
 			*var_b.floatPtr *= *var_a.floatPtr;
+			//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+			assert(!FLOAT_IS_INVALID(*var_a.floatPtr));
+			assert(!FLOAT_IS_INVALID(*var_b.floatPtr));
+#endif
+			//HUMANHEAD END
 			break;
 
 		case OP_UMUL_V:
@@ -1458,6 +1589,13 @@ bool idInterpreter::Execute( void ) {
 			} else {
 				*var_b.floatPtr = *var_b.floatPtr / *var_a.floatPtr;
 			}
+
+			//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+			assert(!FLOAT_IS_INVALID(*var_a.floatPtr));
+			assert(!FLOAT_IS_INVALID(*var_b.floatPtr));
+#endif
+			//HUMANHEAD END
 			break;
 
 		case OP_UDIV_V:
@@ -1482,22 +1620,50 @@ bool idInterpreter::Execute( void ) {
 			} else {
 				*var_b.floatPtr = static_cast<int>( *var_b.floatPtr ) % static_cast<int>( *var_a.floatPtr );
 			}
+
+			//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+			assert(!FLOAT_IS_INVALID(*var_a.floatPtr));
+			assert(!FLOAT_IS_INVALID(*var_b.floatPtr));
+#endif
+			//HUMANHEAD END
 			break;
 
 		case OP_UOR_F:
 			var_a = GetVariable( st->a );
 			var_b = GetVariable( st->b );
 			*var_b.floatPtr = static_cast<int>( *var_b.floatPtr ) | static_cast<int>( *var_a.floatPtr );
+
+			//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+			assert(!FLOAT_IS_INVALID(*var_a.floatPtr));
+			assert(!FLOAT_IS_INVALID(*var_b.floatPtr));
+#endif
+			//HUMANHEAD END
 			break;
 
 		case OP_UAND_F:
 			var_a = GetVariable( st->a );
 			var_b = GetVariable( st->b );
 			*var_b.floatPtr = static_cast<int>( *var_b.floatPtr ) & static_cast<int>( *var_a.floatPtr );
+
+			//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+			assert(!FLOAT_IS_INVALID(*var_a.floatPtr));
+			assert(!FLOAT_IS_INVALID(*var_b.floatPtr));
+#endif
+			//HUMANHEAD END
 			break;
 
 		case OP_UINC_F:
 			var_a = GetVariable( st->a );
+
+			//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+			assert(!FLOAT_IS_INVALID(*var_a.floatPtr));
+#endif
+			//HUMANHEAD END
+
 			( *var_a.floatPtr )++;
 			break;
 
@@ -1506,12 +1672,24 @@ bool idInterpreter::Execute( void ) {
 			obj = GetScriptObject( *var_a.entityNumberPtr );
 			if ( obj ) {
 				var.bytePtr = &obj->data[ st->b->value.ptrOffset ];
+
+				//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+				assert(!FLOAT_IS_INVALID(*var.floatPtr));
+#endif
+				//HUMANHEAD END
+
 				( *var.floatPtr )++;
 			}
 			break;
 
 		case OP_UDEC_F:
 			var_a = GetVariable( st->a );
+			//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+			assert(!FLOAT_IS_INVALID(*var_a.floatPtr));
+#endif
+			//HUMANHEAD END
 			( *var_a.floatPtr )--;
 			break;
 
@@ -1520,6 +1698,11 @@ bool idInterpreter::Execute( void ) {
 			obj = GetScriptObject( *var_a.entityNumberPtr );
 			if ( obj ) {
 				var.bytePtr = &obj->data[ st->b->value.ptrOffset ];
+				//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+				assert(!FLOAT_IS_INVALID(*var.floatPtr));
+#endif
+				//HUMANHEAD END
 				( *var.floatPtr )--;
 			}
 			break;
@@ -1527,12 +1710,24 @@ bool idInterpreter::Execute( void ) {
 		case OP_COMP_F:
 			var_a = GetVariable( st->a );
 			var_c = GetVariable( st->c );
+			//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+			assert(!FLOAT_IS_INVALID(*var_a.floatPtr));
+			assert(!FLOAT_IS_INVALID(*var_c.floatPtr));
+#endif
+			//HUMANHEAD END
 			*var_c.floatPtr = ~static_cast<int>( *var_a.floatPtr );
 			break;
 
 		case OP_STORE_F:
 			var_a = GetVariable( st->a );
 			var_b = GetVariable( st->b );
+			//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+			assert(!FLOAT_IS_INVALID(*var_a.floatPtr));
+			assert(!FLOAT_IS_INVALID(*var_b.floatPtr));
+#endif
+			//HUMANHEAD END
 			*var_b.floatPtr = *var_a.floatPtr;
 			break;
 
@@ -1614,6 +1809,13 @@ bool idInterpreter::Execute( void ) {
 			var_b = GetVariable( st->b );
 			if ( var_b.evalPtr && var_b.evalPtr->floatPtr ) {
 				var_a = GetVariable( st->a );
+
+				//HUMANHEAD rww - float debugging
+#ifdef _ASSERT_ON_INTERPRETER_NANS
+				assert(!FLOAT_IS_INVALID(*var_a.floatPtr));
+#endif
+				//HUMANHEAD END
+
 				*var_b.evalPtr->floatPtr = *var_a.floatPtr;
 			}
 			break;

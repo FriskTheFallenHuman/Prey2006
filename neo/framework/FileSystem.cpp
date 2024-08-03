@@ -26,6 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "precompiled.h"
+#pragma hdrstop
+
+#include "Unzip.h"
+
 #ifdef WIN32
 	#include <io.h>	// for _read
 #else
@@ -34,20 +39,9 @@ If you have questions concerning this license or the applicable additional terms
 	#include <unistd.h>
 #endif
 
-#include "sys/platform.h"
-
 #ifdef ID_ENABLE_CURL
 	#include <curl/curl.h>
 #endif
-
-#include "idlib/hashing/MD4.h"
-#include "framework/Licensee.h"
-#include "framework/Unzip.h"
-#include "framework/EventLoop.h"
-#include "framework/DeclEntityDef.h"
-#include "framework/DeclManager.h"
-
-#include "framework/FileSystem.h"
 
 /*
 =============================================================================
@@ -365,15 +359,21 @@ public:
 	virtual idFile *		OpenFileByMode( const char *relativePath, fsMode_t mode );
 	virtual idFile *		OpenExplicitFileRead( const char *OSPath );
 	virtual idFile *		OpenExplicitFileWrite( const char *OSPath );
+	// HUMANHEAD pdm
+							// Opens a file for appending to a full OS path
+	virtual idFile *		OpenExplicitFileAppend( const char *OSPath, bool sync = false ) { return nullptr; };
+	// HUMANHEAD END
 	virtual void			CloseFile( idFile *f );
 	virtual void			BackgroundDownload( backgroundDownload_t *bgl );
 	virtual void			ResetReadCount( void ) { readCount = 0; }
 	virtual void			AddToReadCount( int c ) { readCount += c; }
 	virtual int				GetReadCount( void ) { return readCount; }
+	//HUMANHEAD rww
+							// sets the current read count
+	virtual void			SetReadCount( int count )  { readCount = count; }
+	//HUMANHEAD END
 	virtual void			FindDLL( const char *basename, char dllPath[ MAX_OSPATH ] );
 	virtual void			ClearDirCache( void );
-	virtual bool			HasD3XP( void );
-	virtual bool			RunningD3XP( void );
 	virtual void			CopyFile( const char *fromOSPath, const char *toOSPath );
 	virtual int				ValidateDownloadPakForChecksum( int checksum, char path[ MAX_STRING_CHARS ] );
 	virtual idFile *		MakeTemporaryFile( void );
@@ -430,8 +430,6 @@ private:
 	int						dir_cache_index;
 	int						dir_cache_count;
 
-	int						d3xp;	// 0: didn't check, -1: not installed, 1: installed
-
 private:
 	void					ReplaceSeparators( idStr &path, char sep = PATHSEPERATOR_CHAR );
 	int						HashFileName( const char *fname ) const;
@@ -476,7 +474,7 @@ idCVar	idFileSystemLocal::fs_cdpath( "fs_cdpath", "", CVAR_SYSTEM | CVAR_INIT, "
 idCVar	idFileSystemLocal::fs_devpath( "fs_devpath", "", CVAR_SYSTEM | CVAR_INIT, "" );
 idCVar	idFileSystemLocal::fs_game( "fs_game", "", CVAR_SYSTEM | CVAR_INIT | CVAR_SERVERINFO, "mod path" );
 idCVar  idFileSystemLocal::fs_game_base( "fs_game_base", "", CVAR_SYSTEM | CVAR_INIT | CVAR_SERVERINFO, "alternate mod path, searched after the main fs_game path, before the basedir" );
-#if defined(__AROS__) || defined(WIN32)
+#if defined(WIN32)
 idCVar	idFileSystemLocal::fs_caseSensitiveOS( "fs_caseSensitiveOS", "0", CVAR_SYSTEM | CVAR_BOOL, "" );
 #else
 idCVar	idFileSystemLocal::fs_caseSensitiveOS( "fs_caseSensitiveOS", "1", CVAR_SYSTEM | CVAR_BOOL, "" );
@@ -498,7 +496,6 @@ idFileSystemLocal::idFileSystemLocal( void ) {
 	loadStack = 0;
 	dir_cache_index = 0;
 	dir_cache_count = 0;
-	d3xp = 0;
 	loadedFileFromDir = false;
 	memset( &backgroundThread, 0, sizeof( backgroundThread ) );
 	backgroundThread_exit = false;
@@ -1732,7 +1729,7 @@ idModList *idFileSystemLocal::ListMods( void ) {
 
 		dirs.Remove( "." );
 		dirs.Remove( ".." );
-		dirs.Remove( "base" );
+		dirs.Remove( BASE_GAMEDIR );
 		dirs.Remove( "pb" );
 
 		// see if there are any pk4 files in each directory
@@ -1778,13 +1775,7 @@ idModList *idFileSystemLocal::ListMods( void ) {
 	}
 
 	list->mods.Insert( "" );
-	list->descriptions.Insert( "Doom 3 (base game)" );
-
-	// DG: if installed, add d3xp with useful description, right below the base game
-	if ( HasD3XP() ) {
-		list->mods.Insert( "d3xp", 1 );
-		list->descriptions.Insert( "Resurrection Of Evil (d3xp)", 1 );
-	}
+	list->descriptions.Insert( GAME_NAME );
 
 	assert( list->mods.Num() == list->descriptions.Num() );
 
@@ -3002,7 +2993,7 @@ idFile *idFileSystemLocal::OpenFileReadFlags( const char *relativePath, int sear
 
 	// make sure the doomkey file is only readable by game at initialization
 	// any other time the key should only be accessed in memory using the provided functions
-	if( common->IsInitialized() && ( idStr::Icmp( relativePath, CDKEY_FILE ) == 0 || idStr::Icmp( relativePath, XPKEY_FILE ) == 0 ) ) {
+	if( common->IsInitialized() && ( idStr::Icmp( relativePath, CDKEY_FILE ) == 0 ) ) {
 		return NULL;
 	}
 
@@ -3704,91 +3695,6 @@ void idFileSystemLocal::ClearDirCache( void ) {
 	for( i = 0; i < MAX_CACHED_DIRS; i++ ) {
 		dir_cache[ i ].Clear();
 	}
-}
-
-/*
-===============
-idFileSystemLocal::HasD3XP
-===============
-*/
-bool idFileSystemLocal::HasD3XP( void ) {
-	int			i;
-	idStrList	dirs, pk4s;
-	idStr		gamepath;
-
-	if ( d3xp == -1 ) {
-		return false;
-	} else if ( d3xp == 1 ) {
-		return true;
-	}
-
-#if 0
-	// check for a d3xp directory with a pk4 file
-	// copied over from ListMods - only looks in basepath
-	ListOSFiles( fs_basepath.GetString(), "/", dirs );
-	for ( i = 0; i < dirs.Num(); i++ ) {
-		if ( dirs[i].Icmp( "d3xp" ) == 0 ) {
-			gamepath = BuildOSPath( fs_basepath.GetString(), dirs[ i ], "" );
-			ListOSFiles( gamepath, ".pk4", pk4s );
-			if ( pk4s.Num() ) {
-				d3xp = 1;
-				return true;
-			}
-		}
-	}
-#else
-	// check for d3xp's d3xp/pak000.pk4 in any search path
-	// checking wether the pak is loaded by checksum wouldn't be enough:
-	// we may have a different fs_game right now but still need to reply that it's installed
-	const char	*search[4];
-	idFile		*pakfile;
-	search[0] = fs_savepath.GetString();
-	search[1] = fs_devpath.GetString();
-	search[2] = fs_basepath.GetString();
-	search[3] = fs_cdpath.GetString();
-	for ( i = 0; i < 4; i++ ) {
-		pakfile = OpenExplicitFileRead( BuildOSPath( search[ i ], "d3xp", "pak000.pk4" ) );
-		if ( pakfile ) {
-			CloseFile( pakfile );
-			d3xp = 1;
-			return true;
-		}
-	}
-#endif
-
-	// if we didn't find a pk4 file then the user might have unpacked so look for default.cfg file
-	// that's the old way mostly used during developement. don't think it hurts to leave it there
-	ListOSFiles( fs_basepath.GetString(), "/", dirs );
-	for ( i = 0; i < dirs.Num(); i++ ) {
-		if ( dirs[i].Icmp( "d3xp" ) == 0 ) {
-
-			gamepath = BuildOSPath( fs_configpath.GetString(), dirs[ i ], "default.cfg" );
-			idFile* cfg = OpenExplicitFileRead(gamepath);
-			if(cfg) {
-				CloseFile(cfg);
-				d3xp = 1;
-				return true;
-			}
-		}
-	}
-
-	d3xp = -1;
-	return false;
-}
-
-/*
-===============
-idFileSystemLocal::RunningD3XP
-===============
-*/
-bool idFileSystemLocal::RunningD3XP( void ) {
-	// TODO: mark the checksum of the gold XP and check for it being referenced ( for double mod support )
-	// a simple fs_game check should be enough for now..
-	if ( !idStr::Icmp( fs_game.GetString(), "d3xp" ) ||
-		 !idStr::Icmp( fs_game_base.GetString(), "d3xp" ) ) {
-		return true;
-	}
-	return false;
 }
 
 /*

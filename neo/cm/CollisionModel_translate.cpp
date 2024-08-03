@@ -34,11 +34,10 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/Session.h"
-#include "renderer/RenderWorld.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "cm/CollisionModel_local.h"
+#include "CollisionModel_local.h"
 
 /*
 ===============================================================================
@@ -319,7 +318,12 @@ void idCollisionModelManagerLocal::TranslateTrmEdgeThroughPolygon( cm_traceWork_
 			dist = normal * trmEdge->start;
 			d1 = normal * start - dist;
 			d2 = normal * end - dist;
-			f1 = d1 / ( d1 - d2 );
+			if (d1 == d2) { //HUMANHEAD rww - CUFPF
+				f1 = 0.0f;
+			}
+			else {
+				f1 = d1 / ( d1 - d2 );
+			}
 			//assert( f1 >= 0.0f && f1 <= 1.0f );
 			tw->trace.c.point = start + f1 * ( end - start );
 			// if retrieving contacts
@@ -800,6 +804,7 @@ void idCollisionModelManagerLocal::Translation( trace_t *results, const idVec3 &
 	tw.trace.fraction = 1.0f;
 	tw.trace.c.contents = 0;
 	tw.trace.c.type = CONTACT_NONE;
+	tw.trace.c.id = 0;		// HUMANHEAD pdm: initialize so we don't get bogus values back
 	tw.contents = contentMask;
 	tw.isConvex = true;
 	tw.rotation = false;
@@ -887,8 +892,8 @@ void idCollisionModelManagerLocal::Translation( trace_t *results, const idVec3 &
 		if ( session->rw ) {
 			session->rw->DebugArrow( colorRed, start, end, 1 );
 		}
-		common->Printf( "idCollisionModelManagerLocal::Translation: huge translation from (%.2f %.2f %.2f) to (%.2f %.2f %.2f)\n",
-				start.x, start.y, start.z, end.x, end.y, end.z);
+		common->Printf( "idCollisionModelManagerLocal::Translation: huge translation from (%.2f %.2f %.2f) to (%.2f %.2f %.2f) of entity: %s\n",
+				start.x, start.y, start.z, end.x, end.y, end.z, tw.model->name.c_str() );	// HUMANHEAD
 		return;
 	}
 

@@ -25,11 +25,12 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "sys/platform.h"
-#include "renderer/RenderWorld_local.h"
+#include "tr_local.h"
 
-#include "renderer/tr_local.h"
+
 
 // Compute conservative shadow bounds as the intersection
 // of the object's bounds' shadow volume and the light's bounds.

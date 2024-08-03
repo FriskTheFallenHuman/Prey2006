@@ -29,11 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GAME_IK_H__
 #define __GAME_IK_H__
 
-#include "Entity.h"
-
-class idSaveGame;
-class idRestoreGame;
-
 /*
 ===============================================================================
 
@@ -68,6 +63,9 @@ protected:
 	idAnimator *			animator;			// animator on entity
 	int						modifiedAnim;		// animation modified by the IK
 	idVec3					modelOffset;
+	// HUMANHEAD nla - Fixes IK big with changing normals
+	idVec3					normalPrev;
+	// HUMANHEAD END
 };
 
 
@@ -97,6 +95,9 @@ public:
 	void					EnableLeg( int num );
 	void					DisableLeg( int num );
 
+	void					InvalidateHeights(void) { oldHeightsValid = false; } //HUMANHEAD rww
+
+	virtual bool			IsActivated() { return ( enabledLegs != 0 ) ? true : false; } //HUMANHEAD jsh
 private:
 	static const int		MAX_LEGS		= 8;
 
@@ -139,6 +140,8 @@ private:
 	float					oldWaistHeight;
 	float					oldAnkleHeights[MAX_LEGS];
 	idVec3					waistOffset;
+
+	int						lastFrame; // HUMANHEAD mdl:  Last frame Evaluate() was called
 };
 
 

@@ -26,12 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "script/Script_Program.h"
-#include "Entity.h"
-#include "Game_local.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "Event.h"
+#include "../Game_local.h"
 
 /*
 sys_event.cpp
@@ -41,6 +39,11 @@ Event are used for scheduling tasks and for linking script commands.
 */
 
 #define MAX_EVENTSPERFRAME			4096
+
+//HUMANHEAD: aob - needed for networking to send the least amount of bits
+const int MAX_EVENTS_NUM_BITS		= hhMath::BitsForInteger( MAX_EVENTS );
+//HUMANHEAD END
+
 //#define CREATE_EVENT_CODE
 
 /***********************************************************************
@@ -114,6 +117,10 @@ idEventDef::idEventDef( const char *command, const char *formatspec, char return
 
 		case D_EVENT_TRACE :
 			argsize += sizeof( trace_t ) + MAX_STRING_LEN + sizeof( bool );
+			break;
+
+		case D_EVENT_INTPTR:
+			argsize += sizeof(intptr_t);
 			break;
 
 		default :
@@ -204,6 +211,21 @@ const idEventDef *idEventDef::FindEvent( const char *name ) {
 	return NULL;
 }
 
+/*
+================
+idEventDef::FindEvent
+
+HUMANHEAD: aob
+================
+*/
+const idEventDef *idEventDef::FindEvent( int eventId ) {
+	if( eventId < 0 || eventId >= numEventDefs ) {
+		return NULL;
+	}
+
+	return eventDefList[ eventId ];
+}
+
 /***********************************************************************
 
   idEvent
@@ -267,9 +289,11 @@ idEvent *idEvent::Alloc( const idEventDef *evdef, int numargs, va_list args ) {
 		arg = va_arg( args, idEventArg * );
 		if ( format[ i ] != arg->type ) {
 			// when NULL is passed in for an entity, it gets cast as an integer 0, so don't give an error when it happens
+			/*
 			if ( !( ( ( format[ i ] == D_EVENT_TRACE ) || ( format[ i ] == D_EVENT_ENTITY ) ) && ( arg->type == 'd' ) && ( arg->value == 0 ) ) ) {
 				gameLocal.Error( "idEvent::Alloc : Wrong type passed in for arg # %d on '%s' event.", i, evdef->GetName() );
 			}
+			*/
 		}
 
 		dataPtr = &ev->data[ evdef->GetArgOffset( i ) ];
@@ -314,6 +338,10 @@ idEvent *idEvent::Alloc( const idEventDef *evdef, int numargs, va_list args ) {
 			}
 			break;
 
+		case D_EVENT_INTPTR:
+			*reinterpret_cast<intptr_t *>( dataPtr ) = arg->value;
+			break;
+
 		default :
 			gameLocal.Error( "idEvent::Alloc : Invalid arg format '%s' string for '%s' event.", format, evdef->GetName() );
 			break;
@@ -342,9 +370,11 @@ void idEvent::CopyArgs( const idEventDef *evdef, int numargs, va_list args, intp
 		arg = va_arg( args, idEventArg * );
 		if ( format[ i ] != arg->type ) {
 			// when NULL is passed in for an entity, it gets cast as an integer 0, so don't give an error when it happens
+			/*
 			if ( !( ( ( format[ i ] == D_EVENT_TRACE ) || ( format[ i ] == D_EVENT_ENTITY ) ) && ( arg->type == 'd' ) && ( arg->value == 0 ) ) ) {
 				gameLocal.Error( "idEvent::CopyArgs : Wrong type passed in for arg # %d on '%s' event.", i, evdef->GetName() );
 			}
+			*/
 		}
 
 		data[ i ] = arg->value;
@@ -517,6 +547,10 @@ void idEvent::ServiceEvents( void ) {
 				}
 				break;
 
+			case D_EVENT_INTPTR:
+				args[ i ] = *reinterpret_cast<intptr_t *>( &data[ offset ] );
+				break;
+
 			default:
 				gameLocal.Error( "idEvent::ServiceEvents : Invalid arg format '%s' string for '%s' event.", formatspec, ev->GetName() );
 			}
@@ -527,6 +561,14 @@ void idEvent::ServiceEvents( void ) {
 		event->eventNode.Remove();
 		assert( event->object );
 		event->object->ProcessEventArgPtr( ev, args );
+
+#if 0
+		// event functions may never leave return values on the FPU stack
+		// enable this code to check if any event call left values on the FPU stack
+		if ( !sys->FPU_StackIsEmpty() ) {
+			gameLocal.Error( "idEvent::ServiceEvents %d: %s left a value on the FPU stack\n", num, ev->GetName() );
+		}
+#endif
 
 		// return the event to the free list
 		event->Free();
@@ -594,6 +636,28 @@ void idEvent::Shutdown( void ) {
 	// say it is now shutdown
 	initialized = false;
 }
+
+// HUMANHEAD pdm
+int idEvent::NumQueuedEvents( const idClass *obj, const idEventDef *evdef ) {
+	idEvent *event;
+	idEvent *next;
+	int count=0;
+
+	if ( !initialized ) {
+		return 0;
+	}
+
+	for( event = EventQueue.Next(); event != NULL; event = next ) {
+		next = event->eventNode.Next();
+		if ( event->object == obj ) {
+			if ( !evdef || ( evdef == event->eventdef ) ) {
+				count++;
+			}
+		}
+	}
+	return count;
+}
+// HUMANHEAD END
 
 /*
 ================

@@ -29,10 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GAME_BRITTLEFRACTURE_H__
 #define __GAME_BRITTLEFRACTURE_H__
 
-#include "physics/Physics_RigidBody.h"
-#include "physics/Physics_StaticMulti.h"
-#include "physics/Clip.h"
-#include "Entity.h"
 
 /*
 ===============================================================================
@@ -53,6 +49,9 @@ typedef struct shard_s {
 	int							droppedTime;
 	bool						atEdge;
 	int							islandNum;
+	//HUMANHEAD rww
+	bool						isCheap;
+	//HUMANHEAD END
 } shard_t;
 
 
@@ -73,7 +72,7 @@ public:
 	virtual void				Think( void );
 	virtual void				ApplyImpulse( idEntity *ent, int id, const idVec3 &point, const idVec3 &impulse );
 	virtual void				AddForce( idEntity *ent, int id, const idVec3 &point, const idVec3 &force );
-	virtual void				AddDamageEffect( const trace_t &collision, const idVec3 &velocity, const char *damageDefName );
+	virtual void				AddDamageEffect( const trace_t &collision, const idVec3 &velocity, const char *damageDefName, bool broadcast = false ); //HUMANHEAD rww - added broadcast
 	virtual void				Killed( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location );
 
 	void						ProjectDecal( const idVec3 &point, const idVec3 &dir, const int time, const char *damageDefName );
@@ -103,12 +102,20 @@ private:
 	float						friction;
 	float						bouncyness;
 	idStr						fxFracture;
+	//HUMANHEAD rww
+	int							cheapShards;
+	int							cheapShardsTime;
+	//HUMANHEAD END
 
 	// state
 	idPhysics_StaticMulti		physicsObj;
 	idList<shard_t *>			shards;
 	idBounds					bounds;
 	bool						disableFracture;
+
+#if _HH_RENDERDEMO_HACKS //HUMANHEAD rww - demos need unique names per fracture entity
+	char						uniqueFractureName[64];
+#endif //HUMANHEAD END
 
 	// for rendering
 	mutable int					lastRenderEntityUpdate;

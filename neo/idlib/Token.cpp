@@ -26,10 +26,9 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/math/Math.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "idlib/Token.h"
 
 /*
 ================

@@ -26,14 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/LangDict.h"
-#include "framework/Console.h"
-#include "framework/Game.h"
-#include "renderer/RenderSystem.h"
-#include "sound/sound.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "framework/async/AsyncNetwork.h"
+#include "AsyncNetwork.h"
 
 idAsyncServer		idAsyncNetwork::server;
 idAsyncClient		idAsyncNetwork::client;
@@ -499,12 +495,6 @@ idAsyncNetwork::BuildInvalidKeyMsg
 void idAsyncNetwork::BuildInvalidKeyMsg( idStr &msg, bool valid[ 2 ] ) {
 	if ( !valid[ 0 ] ) {
 		msg += common->GetLanguageDict()->GetString( "#str_07194" );
-	}
-	if ( fileSystem->HasD3XP() && !valid[ 1 ] ) {
-		if ( msg.Length() ) {
-			msg += "\n";
-		}
-		msg += common->GetLanguageDict()->GetString( "#str_07195" );
 	}
 	msg += "\n";
 	msg += common->GetLanguageDict()->GetString( "#str_04304" );

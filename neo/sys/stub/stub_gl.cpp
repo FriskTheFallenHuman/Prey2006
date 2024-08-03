@@ -25,9 +25,10 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
-#include "sys/platform.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/tr_local.h"
+#include "../../renderer/tr_local.h"
 
 #ifdef _MSC_VER
 #pragma warning(push)

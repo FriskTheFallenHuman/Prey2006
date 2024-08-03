@@ -26,10 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "sys/win32/win_local.h"
-
+#include "win_local.h"
 #include <lmerr.h>
 #include <lmcons.h>
 #include <lmwksta.h>

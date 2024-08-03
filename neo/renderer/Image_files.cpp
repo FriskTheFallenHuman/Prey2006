@@ -26,18 +26,18 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "precompiled.h"
+#pragma hdrstop
+
 // DG: replace libjpeg with stb_image.h because it causes fewer headaches
+#define STB_IMAGE_IMPLEMENTATION
 #define STBI_NO_HDR
 #define STBI_NO_LINEAR
 #define STBI_ONLY_JPEG // at least for now, only use it for JPEG
 #define STBI_NO_STDIO  // images are passed as buffers
 #include "stb_image.h"
 
-#include "sys/platform.h"
-
-#include "renderer/tr_local.h"
-
-#include "renderer/Image.h"
+#include "tr_local.h"
 
 /*
 

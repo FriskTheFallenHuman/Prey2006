@@ -26,9 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/tr_local.h"
+#include "tr_local.h"
 
 // tr_stencilShadow.c -- creaton of stencil shadow volumes
 
@@ -1243,7 +1244,7 @@ srfTriangles_t *R_CreateShadowVolume( const idRenderEntityLocal *ent,
 	// trades somewhat more overdraw and no cap optimizations for
 	// a very simple generation process
 	if ( optimize == SG_DYNAMIC && r_useTurboShadow.GetBool() ) {
-		if ( tr.backEndRendererHasVertexPrograms && r_useShadowVertexProgram.GetBool() ) {
+		if ( r_useShadowVertexProgram.GetBool() ) {
 			return R_CreateVertexProgramTurboShadowVolume( ent, tri, light, cullInfo );
 		} else {
 			return R_CreateTurboShadowVolume( ent, tri, light, cullInfo );

@@ -29,13 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __MATH_MATH_H__
 #define __MATH_MATH_H__
 
-#include "sys/platform.h"
-
-#ifdef MACOS_X
-// for FLT_MIN
-#include <float.h>
-#endif
-
 /*
 ===============================================================================
 
@@ -75,6 +68,12 @@ If you have questions concerning this license or the applicable additional terms
 #define FLOAT_IS_IND(x)			((*(const unsigned int *)&x) == 0xffc00000)
 #define	FLOAT_IS_DENORMAL(x)	(((*(const unsigned int *)&x) & 0x7f800000) == 0x00000000 && \
 								 ((*(const unsigned int *)&x) & 0x007fffff) != 0x00000000 )
+//HUMANHEAD rww
+#define	FLOAT_IS_INVALID(x)		(FLOAT_IS_NAN(x) || FLOAT_IS_DENORMAL(x))
+
+#define FLOAT_SET_NAN( x )		(*(unsigned long *)&x) |= 0x7f800000
+
+//HUMANHEAD END
 
 #define IEEE_FLT_MANTISSA_BITS	23
 #define IEEE_FLT_EXPONENT_BITS	8

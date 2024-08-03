@@ -29,9 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __VECTORSET_H__
 #define __VECTORSET_H__
 
-#include "idlib/containers/List.h"
-#include "idlib/containers/HashIndex.h"
-
 /*
 ===============================================================================
 

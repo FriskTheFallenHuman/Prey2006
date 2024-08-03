@@ -29,11 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __MATH_VECTOR_H__
 #define __MATH_VECTOR_H__
 
-#include "idlib/math/Math.h"
-#include "idlib/math/Random.h"
-#include "idlib/math/Simd.h"
-#include "idlib/Heap.h"
-
 /*
 ===============================================================================
 
@@ -318,6 +313,16 @@ ID_INLINE float *idVec2::ToFloatPtr( void ) {
 //
 //===============================================================
 
+// HUMANHEAD pdm: support for 6 bit vector compression, direction masks
+#define INDEX_IN_MASK(mask, index) ( ((mask) & (1<<(index)) ) != 0 )
+#define MASK_NEGX			0x0001
+#define MASK_POSX			0x0002
+#define MASK_NEGY			0x0004
+#define MASK_POSY			0x0008
+#define MASK_NEGZ			0x0010
+#define MASK_POSZ			0x0020
+// HUMANHEAD END
+
 class idVec3 {
 public:
 	float			x;
@@ -379,6 +384,12 @@ public:
 	const float *	ToFloatPtr( void ) const;
 	float *			ToFloatPtr( void );
 	const char *	ToString( int precision = 2 ) const;
+	// HUMANHEAD nla - Returns a Mat3 with Z up instead of down
+	idMat3			hhToMat3( void ) const;		// vector should be normalized
+	int				DirectionMask() const;			// calculate direction bitmask
+					idVec3(int directionMask);	// construct from direction bitmask
+	idVec3			ToNormal() const;
+	// HUMANHEAD END
 
 	void			NormalVectors( idVec3 &left, idVec3 &down ) const;	// vector should be normalized
 	void			OrthogonalBasis( idVec3 &left, idVec3 &up ) const;

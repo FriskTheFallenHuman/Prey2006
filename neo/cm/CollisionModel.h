@@ -29,14 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __COLLISIONMODELMANAGER_H__
 #define __COLLISIONMODELMANAGER_H__
 
-#include "idlib/geometry/TraceModel.h"
-#include "idlib/math/Vector.h"
-#include "idlib/math/Matrix.h"
-#include "idlib/bv/Bounds.h"
-#include "idlib/MapFile.h"
-
-class idMaterial;
-
 /*
 ===============================================================================
 
@@ -92,12 +84,29 @@ typedef int cmHandle_t;
 #define CM_BOX_EPSILON		1.0f			// should always be larger than clip epsilon
 #define CM_MAX_TRACE_DIST	4096.0f			// maximum distance a trace model may be traced, point traces are unlimited
 
+//HUMANHEAD rww
+#if _HH_INLINED_PROC_CLIPMODELS
+#define PROC_CLIPMODEL_INDEX_START		1
+#define PROC_CLIPMODEL_STRING_PRFX		"inlined_proc_clip_"
+#endif
+//HUMANHEAD END
+
 class idCollisionModelManager {
 public:
 	virtual					~idCollisionModelManager( void ) {}
 
 	// Loads collision models from a map file.
 	virtual void			LoadMap( const idMapFile *mapFile ) = 0;
+
+// HUMANHEAD pdm: Support for level appending
+	virtual const char *	ContentsName(const int contents) const = 0;
+	const char *	StringFromContents( const int contents ) const;
+#if DEATHWALK_AUTOLOAD
+	virtual void			AppendMap( const idMapFile *mapFile ) = 0;
+	virtual bool			WillUseAlreadyLoadedCollisionMap( const idMapFile *mapFile) = 0;
+#endif
+// HUMANHEAD END
+
 	// Frees all the collision models.
 	virtual void			FreeMap( void ) = 0;
 
@@ -149,6 +158,12 @@ public:
 	virtual void			ListModels( void ) = 0;
 	// Writes a collision model file for the given map entity.
 	virtual bool			WriteCollisionModelForMapEntity( const idMapEntity *mapEnt, const char *filename, const bool testTraceModel = true ) = 0;
+
+	//HUMANHEAD rww
+#if _HH_INLINED_PROC_CLIPMODELS
+	virtual int				GetNumInlinedProcClipModels(void) = 0;
+#endif
+	//HUMANHEAD END
 };
 
 extern idCollisionModelManager *		collisionModelManager;

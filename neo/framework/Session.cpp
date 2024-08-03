@@ -26,24 +26,16 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/hashing/CRC32.h"
-#include "idlib/LangDict.h"
-#include "framework/async/AsyncNetwork.h"
-#include "framework/Console.h"
-#include "framework/Game.h"
-#include "framework/EventLoop.h"
-#include "renderer/ModelManager.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "framework/Session_local.h"
+#include "Session_local.h"
+#include "../ui/Window.h"
+#include "../ui/UserInterfaceLocal.h"
+#include "../sound/snd_local.h"
 
-#if defined(__AROS__)
-#define CDKEY_FILEPATH CDKEY_FILE
-#define XPKEY_FILEPATH XPKEY_FILE
-#else
 #define CDKEY_FILEPATH "../" BASE_GAMEDIR "/" CDKEY_FILE
 #define XPKEY_FILEPATH "../" BASE_GAMEDIR "/" XPKEY_FILE
-#endif
 
 idCVar	idSessionLocal::com_showAngles( "com_showAngles", "0", CVAR_SYSTEM | CVAR_BOOL, "" );
 idCVar	idSessionLocal::com_minTics( "com_minTics", "1", CVAR_SYSTEM, "" );
@@ -57,9 +49,9 @@ idCVar	idSessionLocal::com_aviDemoHeight( "com_aviDemoHeight", "256", CVAR_SYSTE
 idCVar	idSessionLocal::com_aviDemoTics( "com_aviDemoTics", "2", CVAR_SYSTEM | CVAR_INTEGER, "", 1, 60 );
 idCVar	idSessionLocal::com_wipeSeconds( "com_wipeSeconds", "1", CVAR_SYSTEM, "" );
 idCVar	idSessionLocal::com_guid( "com_guid", "", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_ROM, "" );
-
+static idCVar g_levelloadmusic( "g_levelloadmusic", "1", CVAR_GAME | CVAR_ARCHIVE | CVAR_BOOL, "play music during level loads" );
 idCVar	idSessionLocal::com_numQuicksaves( "com_numQuicksaves", "4", CVAR_SYSTEM|CVAR_ARCHIVE|CVAR_INTEGER,
-                                           "number of quicksaves to keep before overwriting the oldest", 1, 99 );
+										   "number of quicksaves to keep before overwriting the oldest", 1, 99 );
 
 idSessionLocal		sessLocal;
 idSession			*session = &sessLocal;
@@ -379,12 +371,18 @@ idSessionLocal::idSessionLocal
 */
 idSessionLocal::idSessionLocal() {
 	guiInGame = guiMainMenu = guiIntro \
-		= guiRestartMenu = guiLoading = guiGameOver = guiActive \
-		= guiTest = guiMsg = guiMsgRestore = guiTakeNotes = NULL;
+		= guiRestartMenu = guiLoading = guiActive \
+		= guiTest = guiMsg = guiMsgRestore = NULL;
 
 	menuSoundWorld = NULL;
 
 	demoversion=false;
+
+	guiSubtitles = NULL;
+	subtitleTextScaleInited = false;
+	for ( int m = 0; m < sizeof( subtitlesTextScale ) / sizeof( subtitlesTextScale[0] ); m++ ) {
+		subtitlesTextScale[m] = 0.0f;
+	}
 
 	Clear();
 }
@@ -794,6 +792,15 @@ static void Session_ExitCmdDemo_f( const idCmdArgs &args ) {
 	fileSystem->CloseFile( sessLocal.cmdDemoFile );
 	common->Printf( "Command demo exited at logIndex %i\n", sessLocal.logIndex );
 	sessLocal.cmdDemoFile = NULL;
+}
+
+/*
+================
+Session_ExitMenu_f
+================
+*/
+static void Session_ExitMenu_f( const idCmdArgs &args ) {
+	sessLocal.ExitMenu();
 }
 #endif
 
@@ -1206,6 +1213,10 @@ void idSessionLocal::StartNewGame( const char *mapName, bool devmap ) {
 	mapSpawnData.serverInfo = *cvarSystem->MoveCVarsToDict( CVAR_SERVERINFO );
 	mapSpawnData.serverInfo.Set( "si_gameType", "singleplayer" );
 
+	const char *deathwalkmap = GetDeathwalkMapName( mapName );
+	mapSpawnData.serverInfo.Set( "deathwalkmap", deathwalkmap );
+	mapSpawnData.serverInfo.SetBool( "shouldappendlevel", deathwalkmap && deathwalkmap[0] );
+
 	// set the devmap key so any play testing items will be given at
 	// spawn time to set approximately the right weapons and ammo
 	if(devmap) {
@@ -1216,6 +1227,8 @@ void idSessionLocal::StartNewGame( const char *mapName, bool devmap ) {
 	mapSpawnData.syncedCVars = *cvarSystem->MoveCVarsToDict( CVAR_NETWORKSYNC );
 
 	MoveToNewMap( mapName );
+
+	cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "exitMenu" );
 #endif
 }
 
@@ -1470,12 +1483,22 @@ void idSessionLocal::LoadLoadingGui( const char *mapName ) {
 	char guiMap[ MAX_STRING_CHARS ];
 	idStr::Copynz( guiMap, va( "guis/map/%s.gui", stripped.c_str() ), MAX_STRING_CHARS );
 	// give the gamecode a chance to override
-	game->GetMapLoadingGUI( guiMap );
+	//game->GetMapLoadingGUI( guiMap );
 
 	if ( uiManager->CheckGui( guiMap ) ) {
 		guiLoading = uiManager->FindGui( guiMap, true, false, true );
 	} else {
 		guiLoading = uiManager->FindGui( "guis/map/loading.gui", true, false, true );
+		// bg image
+		guiLoading->SetStateString( "image", idStr( "guis/assets/loading/" ) + stripped + ".tga" );
+		// title
+		const idDecl *mapDecl = declManager->FindType( DECL_MAPDEF, mapName, false );
+		const idDeclEntityDef *mapDef = static_cast<const idDeclEntityDef *>( mapDecl );
+		guiLoading->SetStateString( "friendlyname", mapDef ? 
+			//mapSpawnData.serverInfo.GetBool( "devmap" ) ? mapDef->dict.GetString( "devname" )
+			cvarSystem->GetCVarBool( "developer" ) ? mapDef->dict.GetString( "devname" )
+			: ( common->GetLanguageDict()->GetString( mapDef->dict.GetString( "name" ) ) )
+				: stripped.c_str() );
 	}
 	guiLoading->SetStateFloat( "map_loading", 0.0f );
 }
@@ -1489,9 +1512,9 @@ int idSessionLocal::GetBytesNeededForMapLoad( const char *mapName ) {
 	const idDecl *mapDecl = declManager->FindType( DECL_MAPDEF, mapName, false );
 	const idDeclEntityDef *mapDef = static_cast<const idDeclEntityDef *>( mapDecl );
 	if ( mapDef ) {
-		return mapDef->dict.GetInt( va("size%d", Max( 0, com_machineSpec.GetInteger() ) ) );
+		return mapDef->dict.GetInt( va("size%d", Max( 0, com_imageQuality.GetInteger() ) ) );
 	} else {
-		if ( com_machineSpec.GetInteger() < 2 ) {
+		if ( com_imageQuality.GetInteger() < 2 ) {
 			return 200 * 1024 * 1024;
 		} else {
 			return 400 * 1024 * 1024;
@@ -1511,7 +1534,7 @@ void idSessionLocal::SetBytesNeededForMapLoad( const char *mapName, int bytesNee
 	if ( com_updateLoadSize.GetBool() && mapDef ) {
 		// we assume that if com_updateLoadSize is true then the file is writable
 
-		mapDef->dict.SetInt( va("size%d", com_machineSpec.GetInteger()), bytesNeeded );
+		mapDef->dict.SetInt( va("size%d", com_imageQuality.GetInteger()), bytesNeeded );
 
 		idStr declText = "\nmapDef ";
 		declText += mapDef->GetName();
@@ -1596,6 +1619,20 @@ void idSessionLocal::ExecuteMapChange( bool noFadeWipe ) {
 		renderSystem->BeginLevelLoad();
 		soundSystem->BeginLevelLoad();
 	}
+
+	if ( g_levelloadmusic.GetBool() ) {
+		soundSystem->SetMute( false );
+		soundSystem->SetPlayingSoundWorld( menuSoundWorld );
+		const idDecl *mapDecl = declManager->FindType( DECL_MAPDEF, mapString.c_str(), false );
+		if ( mapDecl ) {
+			const idDeclEntityDef *mapDef = static_cast<const idDeclEntityDef *>( mapDecl );
+			const char *loadMusic = mapDef->dict.GetString( "snd_loadmusic" );
+			if ( loadMusic && loadMusic[0] ) {
+				menuSoundWorld->PlayShaderDirectly( loadMusic, 2 );
+			}
+		}
+	}
+	subtitleTextScaleInited = false; // reload subtitles's text scale
 
 	uiManager->BeginLevelLoad();
 	uiManager->Reload( true );
@@ -1786,73 +1823,6 @@ void SaveGame_f( const idCmdArgs &args ) {
 
 /*
 ===============
-TakeViewNotes_f
-===============
-*/
-void TakeViewNotes_f( const idCmdArgs &args ) {
-	const char *p = ( args.Argc() > 1 ) ? args.Argv( 1 ) : "";
-	sessLocal.TakeNotes( p );
-}
-
-/*
-===============
-TakeViewNotes2_f
-===============
-*/
-void TakeViewNotes2_f( const idCmdArgs &args ) {
-	const char *p = ( args.Argc() > 1 ) ? args.Argv( 1 ) : "";
-	sessLocal.TakeNotes( p, true );
-}
-
-/*
-===============
-idSessionLocal::TakeNotes
-===============
-*/
-void idSessionLocal::TakeNotes( const char *p, bool extended ) {
-	if ( !mapSpawned ) {
-		common->Printf( "No map loaded!\n" );
-		return;
-	}
-
-	if ( extended ) {
-		guiTakeNotes = uiManager->FindGui( "guis/takeNotes2.gui", true, false, true );
-
-#if 0
-		const char *people[] = {
-			"Nobody", "Adam", "Brandon", "David", "PHook", "Jay", "Jake",
-				"PatJ", "Brett", "Ted", "Darin", "Brian", "Sean"
-		};
-#else
-		const char *people[] = {
-			"Tim", "Kenneth", "Robert",
-			"Matt", "Mal", "Jerry", "Steve", "Pat",
-			"Xian", "Ed", "Fred", "James", "Eric", "Andy", "Seneca", "Patrick", "Kevin",
-			"MrElusive", "Jim", "Brian", "John", "Adrian", "Nobody"
-		};
-#endif
-		const int numPeople = sizeof( people ) / sizeof( people[0] );
-
-		idListGUI * guiList_people = uiManager->AllocListGUI();
-		guiList_people->Config( guiTakeNotes, "person" );
-		for ( int i = 0; i < numPeople; i++ ) {
-			guiList_people->Push( people[i] );
-		}
-		uiManager->FreeListGUI( guiList_people );
-
-	} else {
-		guiTakeNotes = uiManager->FindGui( "guis/takeNotes.gui", true, false, true );
-	}
-
-	SetGUI( guiTakeNotes, NULL );
-	guiActive->SetStateString( "note", "" );
-	guiActive->SetStateString( "notefile", p );
-	guiActive->SetStateBool( "extended", extended );
-	guiActive->Activate( true, com_frameTime );
-}
-
-/*
-===============
 Session_Hitch_f
 ===============
 */
@@ -2036,7 +2006,7 @@ bool idSessionLocal::SaveGame( const char *saveName, bool autosave, const char* 
 		idStr sshot = mapSpawnData.serverInfo.GetString( "si_map" );
 		sshot.StripPath();
 		sshot.StripFileExtension();
-		fileDesc->Printf( "\"guis/assets/autosave/%s\"\n", sshot.c_str() );
+		fileDesc->Printf( "\"guis/assets/loading/%s\"\n", sshot.c_str() );
 	} else {
 		fileDesc->Printf( "\"\"\n" );
 	}
@@ -2144,6 +2114,10 @@ bool idSessionLocal::LoadGame( const char *saveName ) {
 		mapSpawnData.serverInfo.Set( "si_gameType", "singleplayer" );
 
 		mapSpawnData.serverInfo.Set( "si_map", saveMap );
+
+		const char *deathwalkmap = GetDeathwalkMapName( saveMap );
+		mapSpawnData.serverInfo.Set( "deathwalkmap", deathwalkmap );
+		mapSpawnData.serverInfo.SetBool( "shouldappendlevel", deathwalkmap && deathwalkmap[0] );
 
 		mapSpawnData.syncedCVars.Clear();
 		mapSpawnData.syncedCVars = *cvarSystem->MoveCVarsToDict( CVAR_NETWORKSYNC );
@@ -2516,8 +2490,11 @@ void idSessionLocal::Draw() {
 		}
 
 		// draw the menus full screen
-		if ( guiActive == guiTakeNotes && !com_skipGameDraw.GetBool() ) {
+		if ( !com_skipGameDraw.GetBool() ) {
 			game->Draw( GetLocalClientNum() );
+			if ( guiSubtitles ) {
+				guiSubtitles->Redraw( com_frameTime );
+			}
 		}
 
 		guiActive->Redraw( com_frameTime );
@@ -2531,6 +2508,9 @@ void idSessionLocal::Draw() {
 			// draw the game view
 			int	start = Sys_Milliseconds();
 			gameDraw = game->Draw( GetLocalClientNum() );
+			if ( guiSubtitles ) {
+				guiSubtitles->Redraw( com_frameTime );
+			}
 			int end = Sys_Milliseconds();
 			time_gameDraw += ( end - start );	// note time used for com_speeds
 		}
@@ -2739,9 +2719,6 @@ void idSessionLocal::Frame() {
 			if ( cdkey_state == CDKEY_CHECKING ) {
 				cdkey_state = CDKEY_OK;
 			}
-			if ( xpkey_state == CDKEY_CHECKING ) {
-				xpkey_state = CDKEY_OK;
-			}
 			// maintain this empty as it's set by auth denials
 			authMsg.Empty();
 			authEmitTimeout = 0;
@@ -2839,6 +2816,9 @@ void idSessionLocal::Frame() {
 
 	int	gameTicsToRun = latchedTicNumber - lastGameTic;
 	int i;
+
+	soundSystemLocal.SF_ShowSubtitle();
+
 	for ( i = 0 ; i < gameTicsToRun ; i++ ) {
 		RunGameTic();
 		if ( !mapSpawned ) {
@@ -2939,10 +2919,19 @@ void idSessionLocal::RunGameTic() {
 			// won't get the map testing items
 			mapSpawnData.serverInfo.Delete( "devmap" );
 
+			const char* deathwalkmap = GetDeathwalkMapName( args.Argv( 1 ) );
+			mapSpawnData.serverInfo.Set( "deathwalkmap", deathwalkmap );
+			mapSpawnData.serverInfo.SetBool( "shouldappendlevel", deathwalkmap && deathwalkmap[0] );
+
 			// go to the next map
 			MoveToNewMap( args.Argv(1) );
 		} else if ( !idStr::Icmp( args.Argv(0), "devmap" ) ) {
 			mapSpawnData.serverInfo.Set( "devmap", "1" );
+
+			const char *deathwalkmap = GetDeathwalkMapName( args.Argv( 1 ) );
+			mapSpawnData.serverInfo.Set( "deathwalkmap", deathwalkmap );
+			mapSpawnData.serverInfo.SetBool( "shouldappendlevel", deathwalkmap && deathwalkmap[0] );
+
 			MoveToNewMap( args.Argv(1) );
 		} else if ( !idStr::Icmp( args.Argv(0), "died" ) ) {
 			// restart on the same map
@@ -2997,10 +2986,8 @@ void idSessionLocal::Init() {
 #ifndef	ID_DEDICATED
 	cmdSystem->AddCommand( "saveGame", SaveGame_f, CMD_FL_SYSTEM|CMD_FL_CHEAT, "saves a game" );
 	cmdSystem->AddCommand( "loadGame", LoadGame_f, CMD_FL_SYSTEM|CMD_FL_CHEAT, "loads a game", idCmdSystem::ArgCompletion_SaveGame );
+	cmdSystem->AddCommand( "exitMenu", Session_ExitMenu_f, CMD_FL_SYSTEM, "exit menu" );
 #endif
-
-	cmdSystem->AddCommand( "takeViewNotes", TakeViewNotes_f, CMD_FL_SYSTEM, "take notes about the current map from the current view" );
-	cmdSystem->AddCommand( "takeViewNotes2", TakeViewNotes2_f, CMD_FL_SYSTEM, "extended take view notes" );
 
 	cmdSystem->AddCommand( "rescanSI", Session_RescanSI_f, CMD_FL_SYSTEM, "internal - rescan serverinfo cvars and tell game" );
 
@@ -3026,9 +3013,27 @@ void idSessionLocal::Init() {
 	guiMainMenu_MapList->Config( guiMainMenu, "mapList" );
 	idAsyncNetwork::client.serverList.GUIConfig( guiMainMenu, "serverList" );
 	guiRestartMenu = uiManager->FindGui( "guis/restart.gui", true, false, true );
-	guiGameOver = uiManager->FindGui( "guis/gameover.gui", true, false, true );
+	guiSubtitles = uiManager->FindGui( "guis/subtitles.gui", true, false, true );
+	if ( guiSubtitles ) {
+		idWindow *desktop = ( (idUserInterfaceLocal *)guiSubtitles )->GetDesktop();
+		if ( desktop ) {
+#define SUBTITLE_GET_TEXT_SCALE(name, index) \
+			{                              \
+				drawWin_t *dw = desktop->FindChildByName( name ); \
+				if ( dw && dw->win ) \
+				{ \
+					idWinVar *winvar = dw->win->GetWinVarByName( "textScale" ); \
+					if ( winvar ) \
+						subtitlesTextScale[index] = winvar->x(); \
+				} \
+			}
+			SUBTITLE_GET_TEXT_SCALE( "subtitles1", 0 )
+			SUBTITLE_GET_TEXT_SCALE( "subtitles2", 1 )
+			SUBTITLE_GET_TEXT_SCALE( "subtitles3", 2 )
+#undef SUBTITLE_GET_TEXT_SCALE
+		}
+	}
 	guiMsg = uiManager->FindGui( "guis/msg.gui", true, false, true );
-	guiTakeNotes = uiManager->FindGui( "guis/takeNotes.gui", true, false, true );
 	guiIntro = uiManager->FindGui( "guis/intro.gui", true, false, true );
 
 	whiteMaterial = declManager->FindMaterial( "_white" );
@@ -3116,25 +3121,6 @@ void idSessionLocal::ReadCDKey( void ) {
 		fileSystem->CloseFile( f );
 		idStr::Copynz( cdkey, buffer, CDKEY_BUF_LEN );
 	}
-
-	xpkey_state = CDKEY_UNKNOWN;
-
-	filename = XPKEY_FILEPATH;
-	f = fileSystem->OpenExplicitFileRead( fileSystem->RelativePathToOSPath( filename, "fs_configpath" ) );
-
-	// try the install path, which is where the cd installer and steam put it
-	if ( !f )
-		f = fileSystem->OpenExplicitFileRead( fileSystem->RelativePathToOSPath( filename, "fs_basepath" ) );
-
-	if ( !f ) {
-		common->Printf( "Couldn't read %s.\n", filename.c_str() );
-		xpkey[ 0 ] = '\0';
-	} else {
-		memset( buffer, 0, sizeof(buffer) );
-		f->Read( buffer, CDKEY_BUF_LEN - 1 );
-		fileSystem->CloseFile( f );
-		idStr::Copynz( xpkey, buffer, CDKEY_BUF_LEN );
-	}
 }
 
 /*
@@ -3159,15 +3145,6 @@ void idSessionLocal::WriteCDKey( void ) {
 	}
 	f->Printf( "%s%s", cdkey, CDKEY_TEXT );
 	fileSystem->CloseFile( f );
-
-	filename = XPKEY_FILEPATH;
-	f = fileSystem->OpenFileWrite( filename, "fs_configpath" );
-	if ( !f ) {
-		common->Printf( "Couldn't write %s.\n", filename.c_str() );
-		return;
-	}
-	f->Printf( "%s%s", xpkey, CDKEY_TEXT );
-	fileSystem->CloseFile( f );
 }
 
 /*
@@ -3183,12 +3160,7 @@ void idSessionLocal::ClearCDKey( bool valid[ 2 ] ) {
 		// if a key was in checking and not explicitely asked for clearing, put it back to ok
 		cdkey_state = CDKEY_OK;
 	}
-	if ( !valid[ 1 ] ) {
-		memset( xpkey, 0, CDKEY_BUF_LEN );
-		xpkey_state = CDKEY_UNKNOWN;
-	} else if ( xpkey_state == CDKEY_CHECKING ) {
-		xpkey_state = CDKEY_OK;
-	}
+
 	WriteCDKey( );
 }
 
@@ -3198,11 +3170,8 @@ idSessionLocal::GetCDKey
 ================
 */
 const char *idSessionLocal::GetCDKey( bool xp ) {
-	if ( !xp ) {
+	if ( cdkey_state == CDKEY_OK || cdkey_state == CDKEY_CHECKING ) {
 		return cdkey;
-	}
-	if ( xpkey_state == CDKEY_OK || xpkey_state == CDKEY_CHECKING ) {
-		return xpkey;
 	}
 	return NULL;
 }
@@ -3219,7 +3188,7 @@ we toggled some key state to CDKEY_CHECKING. send a standalone auth packet to va
 void idSessionLocal::EmitGameAuth( void ) {
 	// make sure the auth reply is empty, we use it to indicate an auth reply
 	authMsg.Empty();
-	if ( idAsyncNetwork::client.SendAuthCheck( cdkey_state == CDKEY_CHECKING ? cdkey : NULL, xpkey_state == CDKEY_CHECKING ? xpkey : NULL ) ) {
+	if ( idAsyncNetwork::client.SendAuthCheck( cdkey_state == CDKEY_CHECKING ? cdkey : NULL, NULL ) ) {
 		authEmitTimeout = Sys_Milliseconds() + CDKEY_AUTH_TIMEOUT;
 		common->DPrintf( "authing with the master..\n" );
 	} else {
@@ -3227,9 +3196,6 @@ void idSessionLocal::EmitGameAuth( void ) {
 		common->DPrintf( "sendAuthCheck failed\n" );
 		if ( cdkey_state == CDKEY_CHECKING ) {
 			cdkey_state = CDKEY_OK;
-		}
-		if ( xpkey_state == CDKEY_CHECKING ) {
-			xpkey_state = CDKEY_OK;
 		}
 	}
 }
@@ -3245,7 +3211,7 @@ bool idSessionLocal::CheckKey( const char *key, bool netConnect, bool offline_va
 	char lkey[ 2 ][ CDKEY_BUF_LEN ];
 	char l_chk[ 2 ][ 3 ];
 	char s_chk[ 3 ];
-	int imax,i_key;
+	int i_key;
 	unsigned int checksum, chk8;
 	bool edited_key[ 2 ];
 
@@ -3257,19 +3223,9 @@ bool idSessionLocal::CheckKey( const char *key, bool netConnect, bool offline_va
 	idStr::ToUpper( lkey[0] );
 	idStr::Copynz( l_chk[0], key + CDKEY_BUF_LEN + 2, 3 );
 	idStr::ToUpper( l_chk[0] );
-	edited_key[ 1 ] = ( key[ CDKEY_BUF_LEN + 2 + 3 ] == '1' );
-	idStr::Copynz( lkey[1], key + CDKEY_BUF_LEN + 7, CDKEY_BUF_LEN );
-	idStr::ToUpper( lkey[1] );
-	idStr::Copynz( l_chk[1], key + CDKEY_BUF_LEN * 2 + 7, 3 );
-	idStr::ToUpper( l_chk[1] );
 
-	if ( fileSystem->HasD3XP() ) {
-		imax = 2;
-	} else {
-		imax = 1;
-	}
 	offline_valid[ 0 ] = offline_valid[ 1 ] = true;
-	for( i_key = 0; i_key < imax; i_key++ ) {
+	for( i_key = 0; i_key < 1; i_key++ ) {
 		// check that the characters are from the valid set
 		int i;
 		for ( i = 0; i < CDKEY_BUF_LEN - 1; i++ ) {
@@ -3301,12 +3257,6 @@ bool idSessionLocal::CheckKey( const char *key, bool netConnect, bool offline_va
 	// set the keys, don't send a game auth if we are net connecting
 	idStr::Copynz( cdkey, lkey[0], CDKEY_BUF_LEN );
 	netConnect ? cdkey_state = CDKEY_OK : cdkey_state = CDKEY_CHECKING;
-	if ( fileSystem->HasD3XP() ) {
-		idStr::Copynz( xpkey, lkey[1], CDKEY_BUF_LEN );
-		netConnect ? xpkey_state = CDKEY_OK : xpkey_state = CDKEY_CHECKING;
-	} else {
-		xpkey_state = CDKEY_NA;
-	}
 	if ( !netConnect ) {
 		EmitGameAuth();
 	}
@@ -3343,34 +3293,16 @@ bool idSessionLocal::CDKeysAreValid( bool strict ) {
 			emitAuth = true;
 		}
 	}
-	if ( xpkey_state == CDKEY_UNKNOWN ) {
-		if ( fileSystem->HasD3XP() ) {
-			if ( strlen( xpkey ) != CDKEY_BUF_LEN -1 ) {
-				xpkey_state = CDKEY_INVALID;
-			} else {
-				for ( i = 0; i < CDKEY_BUF_LEN-1; i++ ) {
-					if ( !strchr( CDKEY_DIGITS, xpkey[i] ) ) {
-						xpkey_state = CDKEY_INVALID;
-					}
-				}
-			}
-			if ( xpkey_state == CDKEY_UNKNOWN ) {
-				xpkey_state = CDKEY_CHECKING;
-				emitAuth = true;
-			}
-		} else {
-			xpkey_state = CDKEY_NA;
-		}
-	}
+
 	if ( emitAuth ) {
 		EmitGameAuth();
 	}
 	// make sure to keep the mainmenu gui up to date in case we made state changes
 	SetCDKeyGuiVars();
 	if ( strict ) {
-		return cdkey_state == CDKEY_OK && ( xpkey_state == CDKEY_OK || xpkey_state == CDKEY_NA );
+		return cdkey_state == CDKEY_OK;
 	} else {
-		return ( cdkey_state == CDKEY_OK || cdkey_state == CDKEY_CHECKING ) && ( xpkey_state == CDKEY_OK || xpkey_state == CDKEY_CHECKING || xpkey_state == CDKEY_NA );
+		return ( cdkey_state == CDKEY_OK || cdkey_state == CDKEY_CHECKING );
 	}
 }
 
@@ -3401,16 +3333,10 @@ void idSessionLocal::CDKeysAuthReply( bool valid, const char *auth_msg ) {
 		if ( cdkey_state == CDKEY_CHECKING ) {
 			cdkey_state = CDKEY_INVALID;
 		}
-		if ( xpkey_state == CDKEY_CHECKING ) {
-			xpkey_state = CDKEY_INVALID;
-		}
 	} else {
 		common->DPrintf( "client is authed in\n" );
 		if ( cdkey_state == CDKEY_CHECKING ) {
 			cdkey_state = CDKEY_OK;
-		}
-		if ( xpkey_state == CDKEY_CHECKING ) {
-			xpkey_state = CDKEY_OK;
 		}
 	}
 	authEmitTimeout = 0;
@@ -3442,4 +3368,124 @@ idSessionLocal::GetAuthMsg
 */
 const char *idSessionLocal::GetAuthMsg( void ) {
 	return authMsg.c_str();
+}
+
+/*
+===============
+idSessionLocal::ShouldAppendLevel
+===============
+*/
+bool idSessionLocal::ShouldAppendLevel( void ) const {
+	return mapSpawnData.serverInfo.GetBool( "shouldappendlevel" );
+}
+
+/*
+===============
+idSessionLocal::GetDeathwalkMapName
+===============
+*/
+const char * idSessionLocal::GetDeathwalkMapName( void ) const {
+	idStr mapName = mapSpawnData.serverInfo.GetString( "si_map" );
+	return GetDeathwalkMapName( mapName );
+}
+
+/*
+===============
+idSessionLocal::GetDeathwalkMapName
+===============
+*/
+const char * idSessionLocal::GetDeathwalkMapName( const char *mapName ) const {
+	const idDecl *mapDecl = declManager->FindType( DECL_MAPDEF, mapName, false );
+#if 0
+	if ( !mapDecl ) {
+		mapDecl = declManager->FindType( DECL_MAPDEF, "defaultMap", false );
+	}
+#else
+	if ( !mapDecl ) {
+		return "";
+	}
+#endif
+	const idDeclEntityDef *mapDef = static_cast<const idDeclEntityDef *>( mapDecl );
+	if ( !mapDef ) {
+		return "";
+	}
+	const char *dwMap = mapDef->dict.GetString( "deathwalkmap" );
+	if ( !dwMap || !dwMap[0] ) {
+		return "";
+	}
+	if ( !idStr::Icmp( dwMap, "none" ) ) {
+		return "";
+	}
+
+	return dwMap;
+}
+
+/*
+===============
+idSessionLocal::ShowSubtitle
+===============
+*/
+void idSessionLocal::ShowSubtitle( const idStrList &strList ) {
+	int num;
+	int i;
+	int index;
+	char text[32];
+
+	if ( !guiSubtitles ) {
+		return;
+	}
+
+	// setup subtitles's text scale
+	if(!subtitleTextScaleInited )
+	{
+		idWindow *desktop = ( (idUserInterfaceLocal *)guiSubtitles )->GetDesktop();
+		if( desktop ) {
+#define SUBTITLE_SET_TEXT_SCALE(name, index) \
+			{                              \
+				float f = subtitlesTextScale[index]; \
+				if( f > 0.0f ) \
+				{ \
+					sprintf( text, /*sizeof(text), */"%f", f ); \
+					desktop->SetChildWinVarVal( name, "textScale", text ); \
+				} \
+			}
+			SUBTITLE_SET_TEXT_SCALE( "subtitles1", 0 )
+			SUBTITLE_SET_TEXT_SCALE( "subtitles2", 1 )
+			SUBTITLE_SET_TEXT_SCALE( "subtitles3", 2 )
+#undef SUBTITLE_SET_TEXT_SCALE
+		}
+		subtitleTextScaleInited = true;
+	}
+
+	num = strList.Num();
+	for ( i = 0; i < 3; i++ ) {
+		index = num - 1 - i;
+		if ( index >= 0 ) {
+			sprintf( text, /*sizeof(text), */"subtitleText%d", 3 - i );
+			guiSubtitles->SetStateString( text, strList[index].c_str() );
+			sprintf( text, /*sizeof(text), */"subtitleAlpha%d", 3 - i );
+			guiSubtitles->SetStateFloat( text, 1 );
+		} else {
+			sprintf( text, /*sizeof(text), */"subtitleAlpha%d", 3 - i );
+			guiSubtitles->SetStateFloat(text, 0);
+		}
+	}
+	guiSubtitles->StateChanged( game->GetTimeGroupTime( 1 ) );
+}
+
+/*
+===============
+idSessionLocal::HideSubtitle
+===============
+*/
+void idSessionLocal::HideSubtitle( void ) const {
+	if ( !guiSubtitles ) {
+		return;
+	}
+
+	guiSubtitles->SetStateFloat( "subtitleAlpha1", 0 );
+	guiSubtitles->SetStateFloat( "subtitleAlpha2", 0 );
+	guiSubtitles->SetStateFloat( "subtitleAlpha3", 0 );
+	/*guiSubtitles->SetStateFloat( "subtitleAlpha4", 0 );
+	guiSubtitles->SetStateFloat( "subtitleAlpha5", 0 );*/
 }

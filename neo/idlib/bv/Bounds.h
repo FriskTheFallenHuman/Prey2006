@@ -29,10 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __BV_BOUNDS_H__
 #define __BV_BOUNDS_H__
 
-#include "idlib/math/Vector.h"
-#include "idlib/math/Rotation.h"
-#include "idlib/bv/Sphere.h"
-
 /*
 ===============================================================================
 
@@ -71,6 +67,7 @@ public:
 	float			GetRadius( const idVec3 &center ) const;		// returns the radius relative to the given center
 	float			GetVolume( void ) const;						// returns the volume of the bounds
 	bool			IsCleared( void ) const;						// returns true if bounds are inside out
+	float			GetMaxExtent( void ) const;						// Return max distance of any axis of bounds
 
 	bool			AddPoint( const idVec3 &v );					// add the point, returns true if the bounds expanded
 	bool			AddBounds( const idBounds &a );					// add the bounds, returns true if the bounds expanded

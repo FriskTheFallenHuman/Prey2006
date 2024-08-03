@@ -26,11 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/Lib.h"
-#include "framework/Common.h"
-
-#include "idlib/Parser.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 //#define DEBUG_EVAL
 #define MAX_DEFINEPARMS				128
@@ -685,7 +682,7 @@ static bool my_localtime(const time_t* t, struct tm* ts)
 		*ts = *tmp;
 		return true;
 	}
-#else // localtime_r() assumed available, use it (all Unix-likes incl. macOS support it, AROS as well)
+#else // localtime_r() assumed available, use it (all Unix-likes incl.)
 	if(localtime_r(t, ts) != NULL)
 		return true;
 #endif
@@ -3102,6 +3099,7 @@ int idParser::LoadMemory(const char *ptr, int length, const char *name ) {
 		idParser::definehash = (define_t **) Mem_ClearedAlloc( DEFINEHASHSIZE * sizeof(define_t *) );
 		idParser::AddGlobalDefinesToSource();
 	}
+
 	return true;
 }
 

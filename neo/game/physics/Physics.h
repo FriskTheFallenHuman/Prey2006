@@ -29,12 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __PHYSICS_H__
 #define __PHYSICS_H__
 
-#include "idlib/BitMsg.h"
-
-#include "gamesys/Class.h"
-#include "physics/Clip.h"
-#include "GameBase.h"
-
 /*
 ===============================================================================
 
@@ -184,6 +178,10 @@ public:	// common physics interface
 								// networking
 	virtual void				WriteToSnapshot( idBitMsgDelta &msg ) const = 0;
 	virtual void				ReadFromSnapshot( const idBitMsgDelta &msg ) = 0;
+
+	//HUMANHEAD: aob - need declarations so we can call these with GetPhysics()
+	virtual void				ActivateContactEntities( void ) {}
+	//HUMANHEAD END
 };
 
 #endif /* !__PHYSICS_H__ */

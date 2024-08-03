@@ -26,27 +26,30 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/containers/HashTable.h"
-#include "framework/UsercmdGen.h"
-#include "framework/KeyInput.h"
-#include "ui/DeviceContext.h"
-#include "ui/UserInterfaceLocal.h"
-#include "ui/EditWindow.h"
-#include "ui/ChoiceWindow.h"
-#include "ui/SliderWindow.h"
-#include "ui/BindWindow.h"
-#include "ui/ListWindow.h"
-#include "ui/RenderWindow.h"
-#include "ui/MarkerWindow.h"
-#include "ui/FieldWindow.h"
-#include "ui/GameSSDWindow.h"
-#include "ui/GameBearShootWindow.h"
-#include "ui/GameBustOutWindow.h"
-//  gui editor is more integrated into the window now
-#include "tools/guied/GEWindowWrapper.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "ui/Window.h"
+#include "DeviceContext.h"
+#include "Window.h"
+#include "UserInterfaceLocal.h"
+#include "EditWindow.h"
+#include "ChoiceWindow.h"
+#include "SliderWindow.h"
+#include "BindWindow.h"
+#include "ListWindow.h"
+#include "RenderWindow.h"
+#include "MarkerWindow.h"
+#include "FieldWindow.h"
+#include "TabWindow.h"
+#include "TabContainerWindow.h"
+
+#ifdef ID_ALLOW_TOOLS
+//
+//  gui editor is more integrated into the window now
+#include "../tools/guied/GEWindowWrapper.h"
+#endif
+
+idCVar g_subtitles("g_subtitles", "0", CVAR_GAME | CVAR_ARCHIVE | CVAR_BOOL, "Display subtitles");
 
 bool idWindow::registerIsTemporary[MAX_EXPRESSION_REGISTERS];		// statics to assist during parsing
 //float idWindow::shaderRegisters[MAX_EXPRESSION_REGISTERS];
@@ -85,7 +88,21 @@ const idRegEntry idWindow::RegisterVars[] = {
 	{ "lightOrigin", idRegister::VEC4 },
 	{ "lightColor", idRegister::VEC4 },
 	{ "viewOffset", idRegister::VEC4 },
-	{ "hideCursor", idRegister::BOOL}
+	{ "hideCursor", idRegister::BOOL},
+	{ "margins", idRegister::VEC4 },
+	{ "cornerSize", idRegister::VEC2 },
+	{ "edgeSize", idRegister::VEC2 },
+	{ "hoverMatColor", idRegister::VEC4 },
+	{ "focusColor", idRegister::VEC4 },
+	{ "seperatorLines", idRegister::VEC4 },
+	{ "activeColor", idRegister::VEC4 },
+	{ "seperatorMargin", idRegister::INT },
+	{ "activeTab", idRegister::INT },
+	{ "sepColor", idRegister::VEC4 },
+	{ "hoverBorderColor", idRegister::VEC4 },
+	{ "tabMargins", idRegister::VEC2 },
+	{ "trailOffset", idRegister::FLOAT },
+	{ "splineIn", idRegister::INT }
 };
 
 const int idWindow::NumRegisterVars = sizeof(RegisterVars) / sizeof(idRegEntry);
@@ -101,7 +118,11 @@ const char *idWindow::ScriptNames[] = {
 	"onTrigger",
 	"onActionRelease",
 	"onEnter",
-	"onEnterRelease"
+	"onEnterRelease",
+	"onTabActivate",
+	"onStartup",
+	"onMaxChars",
+	"onSliderChange",
 };
 
 /*
@@ -1273,11 +1294,15 @@ void idWindow::Redraw(float x, float y) {
 	}
 
 	if ( r_skipGuiShaders.GetInteger() < 5 ) {
-		Draw(time, x, y);
+		if ( foreColor.w() > 0.0 || backColor.w() > 0.0 ) {
+			Draw(time, x, y);
+		}
 	}
 
 	if ( gui_debug.GetInteger() ) {
-		DebugDraw(time, x, y);
+		if ( foreColor.w() > 0.0 || backColor.w() > 0.0 ) {
+			DebugDraw(time, x, y);
+		}
 	}
 
 	int c = drawWindows.Num();
@@ -1850,6 +1875,48 @@ idWinVar *idWindow::GetWinVarByName(const char *_name, bool fixup, drawWin_t** o
 	if (idStr::Icmp(_name, "hidecursor") == 0) {
 		retVar = &hideCursor;
 	}
+	if (idStr::Icmp(_name, "margins") == 0) {
+		retVar = &margins;
+	}
+	if (idStr::Icmp(_name, "cornerSize") == 0) {
+		retVar = &cornerSize;
+	}
+	if (idStr::Icmp(_name, "edgeSize") == 0) {
+		retVar = &edgeSize;
+	}
+	if (idStr::Icmp(_name, "hoverMatColor") == 0) {
+		retVar = &hoverMatColor;
+	}
+	if (idStr::Icmp(_name, "focusColor") == 0) {
+		retVar = &focusColor;
+	}
+	if (idStr::Icmp(_name, "seperatorLines") == 0) {
+		retVar = &seperatorLines;
+	}
+	if (idStr::Icmp(_name, "activeColor") == 0) {
+		retVar = &activeColor;
+	}
+	if (idStr::Icmp(_name, "seperatorMargin") == 0) {
+		retVar = &seperatorMargin;
+	}
+	if (idStr::Icmp(_name, "activeTab") == 0) {
+		retVar = &activeTab;
+	}
+	if (idStr::Icmp(_name, "sepColor") == 0) {
+		retVar = &sepColor;
+	}
+	if (idStr::Icmp(_name, "hoverBorderColor") == 0) {
+		retVar = &hoverBorderColor;
+	}
+	if (idStr::Icmp(_name, "tabMargins") == 0) {
+		retVar = &tabMargins;
+	}
+	if (idStr::Icmp(_name, "trailOffset") == 0) {
+		retVar = &trailOffset;
+	}
+	if (idStr::Icmp(_name, "splineIn") == 0) {
+		retVar = &splineIn;
+	}
 
 	idStr key = _name;
 	bool guiVar = (key.Find(VAR_GUIPREFIX) >= 0);
@@ -2003,14 +2070,31 @@ bool idWindow::ParseInternalVar(const char *_name, idParser *src) {
 		return true;
 	}
 	if (idStr::Icmp(_name, "shear") == 0) {
-		shear.x = src->ParseFloat();
+		idToken tok2;
+		src->ReadToken( &tok2 );
+		if ( !idStr::Icmp( tok2, "(" ) ) {
+			src->SkipUntilString( ")" ); //k: TODO a gui var
+			shear.x = 0;
+		} else if( !idStr::Icmp( tok2, "-" ) ) {
+			shear.x = - src->ParseFloat();
+		} else {
+			shear.x = tok2.GetFloatValue();
+		}
 		idToken tok;
 		src->ReadToken( &tok );
 		if ( tok.Icmp( "," ) ) {
 			src->Error( "Expected comma in shear definiation" );
 			return false;
 		}
-		shear.y = src->ParseFloat();
+		src->ReadToken( &tok2 );
+		if ( !idStr::Icmp( tok2, "(" ) ) {
+			src->SkipUntilString( ")" ); //k: TODO a gui var
+			shear.y = 0;
+		} else if ( !idStr::Icmp( tok2, "-" ) ) {
+			shear.y = - src->ParseFloat();
+		} else {
+			shear.y = tok2.GetFloatValue();
+		}
 		return true;
 	}
 	if (idStr::Icmp(_name, "wantenter") == 0) {
@@ -2196,7 +2280,10 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 		// track what was parsed so we can maintain it for the guieditor
 		src->SetMarker ( );
 
-		if ( token == "windowDef" || token == "animationDef" ) {
+
+		if ( token == "windowDef" || token == "animationDef" ||
+			 token == "superWindowDef" || token == "buttonDef" ||
+			 token == "creditDef" || token == "splineDef" /* || token == "tabContainerDef" || token == "tabDef" //k: TODO: tab */ )  {
 			if (token == "animationDef") {
 				visible = false;
 				rect = idRectangle(0,0,0,0);
@@ -2318,8 +2405,8 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 			dwt.win = win;
 			drawWindows.Append(dwt);
 		}
-		else if ( token == "gameSSDDef" ) {
-			idGameSSDWindow *win = new idGameSSDWindow(dc, gui);
+		else if ( token == "tabContainerDef" ) {
+			hhTabContainerWindow *win = new hhTabContainerWindow(dc, gui);
 			SaveExpressionParseState();
 			win->Parse(src, rebuild);
 			RestoreExpressionParseState();
@@ -2329,19 +2416,8 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 			dwt.win = win;
 			drawWindows.Append(dwt);
 		}
-		else if ( token == "gameBearShootDef" ) {
-			idGameBearShootWindow *win = new idGameBearShootWindow(dc, gui);
-			SaveExpressionParseState();
-			win->Parse(src, rebuild);
-			RestoreExpressionParseState();
-			AddChild(win);
-			win->SetParent(this);
-			dwt.simp = NULL;
-			dwt.win = win;
-			drawWindows.Append(dwt);
-		}
-		else if ( token == "gameBustOutDef" ) {
-			idGameBustOutWindow *win = new idGameBustOutWindow(dc, gui);
+		else if (token == "tabDef") {
+			hhTabWindow *win = new hhTabWindow(dc, gui);
 			SaveExpressionParseState();
 			win->Parse(src, rebuild);
 			RestoreExpressionParseState();
@@ -3974,6 +4050,9 @@ bool idWindow::Interactive() {
 	if ( scripts[ ON_ACTION ] ) {
 		return true;
 	}
+	if ( scripts[ ON_ACTIONRELEASE ] ) {
+		return true;
+	}
 	int c = children.Num();
 	for (int i = 0; i < c; i++) {
 		if (children[i]->Interactive()) {
@@ -4261,4 +4340,18 @@ bool idWindow::UpdateFromDictionary ( idDict& dict ) {
 	PostParse();
 
 	return true;
+}
+
+/*
+================
+idWindow::SetVisible
+================
+*/
+void idWindow::SetVisible( bool on ) {
+	visible = on;
+	for( int i = 0; i < drawWindows.Num(); i++ ) {
+		if ( drawWindows[i].win ) {
+			drawWindows[i].win->SetVisible( on );
+		}
+	}
 }

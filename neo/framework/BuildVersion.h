@@ -25,4 +25,7 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
+#pragma once
+
 const int BUILD_NUMBER = 1305;

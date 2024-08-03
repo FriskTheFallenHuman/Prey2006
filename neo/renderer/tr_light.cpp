@@ -26,14 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/math/Interpolate.h"
-#include "framework/Game.h"
-#include "renderer/VertexCache.h"
-#include "renderer/RenderWorld_local.h"
-#include "ui/Window.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "renderer/tr_local.h"
+#include "tr_local.h"
+#include "Model_local.h"
 
 static const float CHECK_BOUNDS_EPSILON = 1.0f;
 
@@ -44,6 +41,15 @@ VERTEX CACHE GENERATORS
 
 ===========================================================================================
 */
+
+static ID_INLINE float R_CalcViewAndEntityDistance( const viewDef_t *viewDef, const renderEntity_t *entity ) {
+	//idVec3 origin = idVec3(space->modelMatrix[12], space->modelMatrix[13], space->modelMatrix[14]);
+	return ( viewDef->renderView.vieworg - entity->origin ).LengthFast();
+}
+
+static ID_INLINE float R_CalcViewAndLightDistance( const viewDef_t *viewDef, const renderLight_t *light ) {
+	return ( viewDef->renderView.vieworg - light->origin ).LengthFast();
+}
 
 /*
 ==================
@@ -76,60 +82,12 @@ Returns false if the cache couldn't be allocated, in which case the surface shou
 ==================
 */
 bool R_CreateLightingCache( const idRenderEntityLocal *ent, const idRenderLightLocal *light, srfTriangles_t *tri ) {
-	idVec3		localLightOrigin;
-
 	// fogs and blends don't need light vectors
 	if ( light->lightShader->IsFogLight() || light->lightShader->IsBlendLight() ) {
 		return true;
 	}
 
 	// not needed if we have vertex programs
-	if ( tr.backEndRendererHasVertexPrograms ) {
-		return true;
-	}
-
-	R_GlobalPointToLocal( ent->modelMatrix, light->globalLightOrigin, localLightOrigin );
-
-	int	size = tri->ambientSurface->numVerts * sizeof( lightingCache_t );
-	lightingCache_t *cache = (lightingCache_t *)_alloca16( size );
-
-#if 1
-
-	SIMDProcessor->CreateTextureSpaceLightVectors( &cache[0].localLightVector, localLightOrigin,
-												tri->ambientSurface->verts, tri->ambientSurface->numVerts, tri->indexes, tri->numIndexes );
-
-#else
-
-	bool *used = (bool *)_alloca16( tri->ambientSurface->numVerts * sizeof( used[0] ) );
-	memset( used, 0, tri->ambientSurface->numVerts * sizeof( used[0] ) );
-
-	// because the interaction may be a very small subset of the full surface,
-	// it makes sense to only deal with the verts used
-	for ( int j = 0; j < tri->numIndexes; j++ ) {
-		int i = tri->indexes[j];
-		if ( used[i] ) {
-			continue;
-		}
-		used[i] = true;
-
-		idVec3 lightDir;
-		const idDrawVert *v;
-
-		v = &tri->ambientSurface->verts[i];
-
-		lightDir = localLightOrigin - v->xyz;
-
-		cache[i].localLightVector[0] = lightDir * v->tangents[0];
-		cache[i].localLightVector[1] = lightDir * v->tangents[1];
-		cache[i].localLightVector[2] = lightDir * v->normal;
-	}
-
-#endif
-
-	vertexCache.Alloc( cache, size, &tri->lightingCache );
-	if ( !tri->lightingCache ) {
-		return false;
-	}
 	return true;
 }
 
@@ -620,11 +578,6 @@ void idRenderWorldLocal::CreateLightDefInteractions( idRenderLightLocal *ldef ) 
 				}
 			}
 
-			//
-			// create a new interaction, but don't do any work other than bbox to frustum culling
-			//
-			idInteraction *inter = idInteraction::AllocAndLink( edef, ldef );
-
 			// do a check of the entity reference bounds against the light frustum,
 			// trying to avoid creating a viewEntity if it hasn't been already
 			float	modelMatrix[16];
@@ -638,9 +591,13 @@ void idRenderWorldLocal::CreateLightDefInteractions( idRenderLightLocal *ldef ) 
 			}
 
 			if ( R_CullLocalBox( edef->referenceBounds, m, 6, ldef->frustum ) ) {
-				inter->MakeEmpty();
 				continue;
 			}
+
+			//
+			// create a new interaction, but don't do any work other than bbox to frustum culling
+			//
+			idInteraction* inter = idInteraction::AllocAndLink( edef, ldef );
 
 			// we will do a more precise per-surface check when we are checking the entity
 
@@ -690,16 +647,8 @@ void R_LinkLightSurf( const drawSurf_t **link, const srfTriangles_t *tri, const 
 			// FIXME: share with the ambient surface?
 			float *regs = (float *)R_FrameAlloc( shader->GetNumRegisters() * sizeof( float ) );
 			drawSurf->shaderRegisters = regs;
+			space->entityDef->parms.shaderParms[SHADERPARM_DISTANCE] = R_CalcViewAndEntityDistance( tr.viewDef, &space->entityDef->parms );
 			shader->EvaluateRegisters( regs, space->entityDef->parms.shaderParms, tr.viewDef, space->entityDef->parms.referenceSound );
-		}
-
-		// calculate the specular coordinates if we aren't using vertex programs
-		if ( !tr.backEndRendererHasVertexPrograms && !r_skipSpecular.GetBool() ) {
-			R_SpecularTexGen( drawSurf, light->globalLightOrigin, tr.viewDef->renderView.vieworg );
-			// if we failed to allocate space for the specular calculations, drop the surface
-			if ( !drawSurf->dynamicTexCoords ) {
-				return;
-			}
 		}
 	}
 
@@ -910,6 +859,7 @@ void R_AddLightSurfaces( void ) {
 		// evaluate the light shader registers
 		float *lightRegs =(float *)R_FrameAlloc( lightShader->GetNumRegisters() * sizeof( float ) );
 		vLight->shaderRegisters = lightRegs;
+		light->parms.shaderParms[SHADERPARM_DISTANCE] = R_CalcViewAndLightDistance( tr.viewDef, &light->parms );
 		lightShader->EvaluateRegisters( lightRegs, light->parms.shaderParms, tr.viewDef, light->parms.referenceSound );
 
 		// if this is a purely additive light and no stage in the light shader evaluates
@@ -1264,6 +1214,8 @@ void R_AddDrawSurf( const srfTriangles_t *tri, const viewEntity_t *space, const 
 			tr.viewDef->floatTime = game->GetTimeGroupTime( space->entityDef->parms.timeGroup ) * 0.001;
 			tr.viewDef->renderView.time = game->GetTimeGroupTime( space->entityDef->parms.timeGroup );
 		}
+
+		((float *)shaderParms)[SHADERPARM_DISTANCE] = R_CalcViewAndEntityDistance( tr.viewDef, renderEntity );
 
 		shader->EvaluateRegisters( regs, shaderParms, tr.viewDef, renderEntity->referenceSound );
 

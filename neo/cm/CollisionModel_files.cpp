@@ -34,12 +34,10 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/FileSystem.h"
-#include "renderer/Material.h"
-#include "renderer/RenderWorld.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "cm/CollisionModel_local.h"
+#include "CollisionModel_local.h"
 
 #define CM_FILE_EXT			"cm"
 #define CM_FILEID			"CM"
@@ -495,6 +493,15 @@ bool idCollisionModelManagerLocal::ParseCollisionModel( idLexer *src ) {
 	// parse the file
 	src->ExpectTokenType( TT_STRING, 0, &token );
 	model->name = token;
+	//HUMANHEAD rww
+#if _HH_INLINED_PROC_CLIPMODELS
+	if (anyInlinedProcClipMats) {
+		if (token.Cmpn(PROC_CLIPMODEL_STRING_PRFX, strlen(PROC_CLIPMODEL_STRING_PRFX)) == 0) {
+			numInlinedProcClipModels++;
+		}
+	}
+#endif
+	//HUMANHEAD END
 	src->ExpectTokenString( "{" );
 	while ( !src->CheckTokenString( "}" ) ) {
 

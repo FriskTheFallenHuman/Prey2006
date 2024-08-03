@@ -29,7 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __LIST_H__
 #define __LIST_H__
 
-#include "sys/platform.h"
 /*
 ===============================================================================
 
@@ -132,7 +131,7 @@ public:
 	void			Swap( idList<type> &other );						// swap the contents of the lists
 	void			DeleteContents( bool clear );						// delete the contents of the list
 
-#if __cplusplus >= 201103L
+#if __cplusplus >= 201103L || defined(_MSVC_LANG) && _MSVC_LANG >= 201103L
 	// begin and end allow using C++11 for(ElemType& e : myIdlist) { ... }
 	type* begin() {
 		return list;
@@ -151,7 +150,7 @@ public:
 	}
 #endif
 
-private:
+protected:	// HUMANHEAD
 	int				num;
 	int				size;
 	int				granularity;

@@ -1,0 +1,14 @@
+{
+	"name": "prey06",
+	"version": "0.0.1",
+	"dependencies": [
+		"curl",
+		"openal-soft",
+		"sdl2",
+		{
+			"name": "libbacktrace",
+			"platform": "!windows"
+		},
+		"stb"
+	]
+}

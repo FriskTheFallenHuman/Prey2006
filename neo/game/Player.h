@@ -29,18 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GAME_PLAYER_H__
 #define __GAME_PLAYER_H__
 
-#include "idlib/math/Interpolate.h"
-
-#include "physics/Physics_Player.h"
-#include "Item.h"
-#include "Actor.h"
-#include "Weapon.h"
-#include "Projectile.h"
-#include "PlayerIcon.h"
-#include "GameEdit.h"
-
-class idAI;
-
 /*
 ===============================================================================
 
@@ -61,10 +49,12 @@ extern const idEventDef EV_SpectatorTouch;
 const float THIRD_PERSON_FOCUS_DISTANCE	= 512.0f;
 const int	LAND_DEFLECT_TIME = 150;
 const int	LAND_RETURN_TIME = 300;
-const int	FOCUS_TIME = 300;
-const int	FOCUS_GUI_TIME = 500;
+const int	FOCUS_TIME = 200;		//HUMANHEAD bjk
+const int	FOCUS_GUI_TIME = 300;	//HUMANHEAD bjk
 
 const int MAX_WEAPONS = 16;
+
+#define MP_PLAYERNOSHADOW_DEFAULT	true //HUMANEHAD rww - subject to (frequent) change
 
 const int DEAD_HEARTRATE = 0;			// fall to as you die
 const int LOWHEALTH_HEARTRATE_ADJ = 20; //
@@ -78,40 +68,25 @@ const int DEATH_VOLUME = 15;			// volume at death
 
 const int SAVING_THROW_TIME = 5000;		// maximum one "saving throw" every five seconds
 
-extern const int ASYNC_PLAYER_INV_AMMO_BITS;
-extern const int ASYNC_PLAYER_INV_CLIP_BITS;
+const int ASYNC_PLAYER_INV_AMMO_BITS = idMath::BitsForInteger( 999 );	// 9 bits to cover the range [0, 999]
+const int ASYNC_PLAYER_INV_CLIP_BITS = -7;								// -7 bits to cover the range [-1, 60]
 
 struct idItemInfo {
 	idStr name;
 	idStr icon;
+// HUMANHEAD
+	int		time;
+	int		slotZeroTime;
+	float	matcolorAlpha;
+	bool	bDoubleWide;
+// HUMANHEAD END
 };
 
-struct idObjectiveInfo {
-	idStr title;
-	idStr text;
-	idStr screenshot;
-};
+// struct idObjectiveInfo (HUMANHEAD pdm: removed)
 
 struct idLevelTriggerInfo {
 	idStr levelName;
 	idStr triggerName;
-};
-
-// powerups - the "type" in item .def must match
-enum {
-	BERSERK = 0,
-	INVISIBILITY,
-	MEGAHEALTH,
-	ADRENALINE,
-	MAX_POWERUPS
-};
-
-// powerup modifiers
-enum {
-	SPEED = 0,
-	PROJECTILE_DAMAGE,
-	MELEE_DAMAGE,
-	MELEE_DISTANCE
 };
 
 // influence levels
@@ -126,39 +101,16 @@ class idInventory {
 public:
 	int						maxHealth;
 	int						weapons;
-	int						powerups;
-	int						armor;
-	int						maxarmor;
 	int						ammo[ AMMO_NUMTYPES ];
 	int						clip[ MAX_WEAPONS ];
-	int						powerupEndTime[ MAX_POWERUPS ];
 
 	// mp
 	int						ammoPredictTime;
 
-	int						deplete_armor;
-	float					deplete_rate;
-	int						deplete_ammount;
-	int						nextArmorDepleteTime;
-
-	int						pdasViewed[4]; // 128 bit flags for indicating if a pda has been viewed
-
-	int						selPDA;
-	int						selEMail;
-	int						selVideo;
-	int						selAudio;
-	bool					pdaOpened;
-	bool					turkeyScore;
 	idList<idDict *>		items;
-	idStrList				pdas;
-	idStrList				pdaSecurity;
-	idStrList				videos;
-	idStrList				emails;
 
 	bool					ammoPulse;
 	bool					weaponPulse;
-	bool					armorPulse;
-	int						lastGiveTime;
 
 	idList<idLevelTriggerInfo> levelTriggers;
 
@@ -169,37 +121,41 @@ public:
 	void					Save( idSaveGame *savefile ) const;					// archives object for save game file
 	void					Restore( idRestoreGame *savefile );					// unarchives object from save game file
 
+	virtual				// HUMANHEAD nla
 	void					Clear( void );
-	void					GivePowerUp( idPlayer *player, int powerup, int msec );
-	void					ClearPowerUps( void );
+	virtual				// HUMANHEAD nla
 	void					GetPersistantData( idDict &dict );
+	virtual				// HUMANHEAD nla
 	void					RestoreInventory( idPlayer *owner, const idDict &dict );
+	virtual				// HUMANHEAD nla
 	bool					Give( idPlayer *owner, const idDict &spawnArgs, const char *statname, const char *value, int *idealWeapon, bool updateHud );
 	void					Drop( const idDict &spawnArgs, const char *weapon_classname, int weapon_index );
 	ammo_t					AmmoIndexForAmmoClass( const char *ammo_classname ) const;
 	int						MaxAmmoForAmmoClass( idPlayer *owner, const char *ammo_classname ) const;
 	int						WeaponIndexForAmmoClass( const idDict & spawnArgs, const char *ammo_classname ) const;
 	ammo_t					AmmoIndexForWeaponClass( const char *weapon_classname, int *ammoRequired );
+	ammo_t					AltAmmoIndexForWeaponClass( const char *weapon_classname, int *ammoRequired );	//HUMANHEAD bjk
 	const char *			AmmoPickupNameForIndex( ammo_t ammonum ) const;
 	void					AddPickupName( const char *name, const char *icon );
 
+	virtual				// HUMANHEAD
 	int						HasAmmo( ammo_t type, int amount );
+	virtual				// HUMANHEAD
 	bool					UseAmmo( ammo_t type, int amount );
+	virtual				// HUMANHEAD CJR
 	int						HasAmmo( const char *weapon_classname );			// looks up the ammo information for the weapon class first
 
-	void					UpdateArmor( void );
-
-	int						nextItemPickup;
-	int						nextItemNum;
-	int						onePickupTime;
 	idList<idItemInfo>		pickupItemNames;
-	idList<idObjectiveInfo>	objectiveNames;
 };
 
 typedef struct {
 	int		time;
 	idVec3	dir;		// scaled larger for running
 } loggedAccel_t;
+
+// HUMANHEAD nla - Has to be here.  Must be after idInventory so can subclass, but before idPlayer so we can instantiate
+#include "../Prey/game_inventory.h"
+// HUMANHEAD END
 
 typedef struct {
 	int		areaNum;
@@ -214,12 +170,34 @@ public:
 		EVENT_ABORT_TELEPORTER,
 		EVENT_POWERUP,
 		EVENT_SPECTATE,
+		EVENT_MENUEVENT, //HUMANHEAD rww
+		EVENT_HITNOTIFICATION, //HUMANHEAD rww
+		EVENT_PORTALLED, //HUMANHEAD rww
+		EVENT_REPORTATTACK, //HUMANHEAD rww
 		EVENT_MAXEVENTS
 	};
 
+	//HUMANHEAD rww - for EVENT_MENUEVENT
+	enum {
+		MENU_NET_EVENT_HEALTHPULSE,
+		MENU_NET_EVENT_MAXHEALTHPULSE,
+		MENU_NET_EVENT_SPIRITPULSE,
+		MENU_NET_EVENT_AMMOPULSE,
+		MENU_NET_EVENT_WEAPONPULSE,
+		MENU_NET_EVENT_INVPICKUP,
+		MENU_NET_EVENT_NUM
+	};
+	//HUMANHEAD END
+
 	usercmd_t				usercmd;
 
+	// HUANHEAD: Changed to our version
+#ifdef HUMANHEAD
+	class hhPlayerView		playerView;			// handles damage kicks and effects
+#else
 	class idPlayerView		playerView;			// handles damage kicks and effects
+#endif
+	// HUMANHEAD END
 
 	bool					noclip;
 	bool					godmode;
@@ -256,37 +234,29 @@ public:
 	idScriptBool			AI_TELEPORT;
 	idScriptBool			AI_TURN_LEFT;
 	idScriptBool			AI_TURN_RIGHT;
+	idScriptBool			AI_REALLYFALL; //HUMANHEAD rww
 
 	// inventory
-	idInventory				inventory;
+	hhInventory				inventory;			// HUMANHEAD - Changed to our version
 
-	idEntityPtr<idWeapon>	weapon;
+	idEntityPtr<hhWeapon>	weapon;				// HUMANHEAD - Changed to our version
 	idUserInterface *		hud;				// MP: is NULL if not local player
-	idUserInterface *		objectiveSystem;
-	bool					objectiveSystemOpen;
 
-	int						weapon_soulcube;
-	int						weapon_pda;
 	int						weapon_fists;
 
-	int						heartRate;
-	idInterpolate<float>	heartInfo;
-	int						lastHeartAdjust;
-	int						lastHeartBeat;
 	int						lastDmgTime;
 	int						deathClearContentsTime;
 	bool					doingDeathSkin;
-	int						lastArmorPulse;		// lastDmgTime if we had armor at time of hit
 	float					stamina;
 	float					healthPool;			// amount of health to give over time
 	int						nextHealthPulse;
 	bool					healthPulse;
+	bool					spiritPulse;		// HUMANHEAD pdm
 	bool					healthTake;
 	int						nextHealthTake;
 
 
 	bool					hiddenWeapon;		// if the weapon is hidden ( in noWeapons maps )
-	idEntityPtr<idProjectile> soulCubeProjectile;
 
 	// mp stuff
 	static idVec3			colorBarTable[ 5 ];
@@ -327,13 +297,21 @@ public:
 
 	idDragEntity			dragEntity;
 
+	idEntityPtr<idEntity>	MPLastSpawnSpot;	//HUMANHEAD rww - does NOT need to be saved/restored, mp-only
+
 public:
 	CLASS_PROTOTYPE( idPlayer );
 
 							idPlayer();
 	virtual					~idPlayer();
 
+
+#if GAMEPAD_SUPPORT	// VENOM BEGIN
+	int						GetCurrentRumble(void) {return iCurrentRumble;}
+#endif // VENOM END
+
 	void					Spawn( void );
+	virtual				// HUMANHEAD
 	void					Think( void );
 
 	// save games
@@ -343,24 +321,29 @@ public:
 	virtual void			Hide( void );
 	virtual void			Show( void );
 
+	virtual				// HUMANHEAD
 	void					Init( void );
 	void					PrepareForRestart( void );
 	virtual void			Restart( void );
+	virtual				// HUMANHEAD
 	void					LinkScriptVariables( void );
+	virtual				// HUMANHEAD
 	void					SetupWeaponEntity( void );
-	void					SelectInitialSpawnPoint( idVec3 &origin, idAngles &angles );
+	void					SelectInitialSpawnPoint( idVec3 &origin, idAngles &angles, idMat3 *axis = 0 ); //HUMANHEAD rww - added axis
 	void					SpawnFromSpawnSpot( void );
+	virtual				// HUMANHEAD
 	void					SpawnToPoint( const idVec3	&spawn_origin, const idAngles &spawn_angles );
 	void					SetClipModel( void );	// spectator mode uses a different bbox size
 
 	void					SavePersistantInfo( void );
-	void					RestorePersistantInfo( void );
+	virtual void			RestorePersistantInfo( void );
 	void					SetLevelTrigger( const char *levelName, const char *triggerName );
 
 	bool					UserInfoChanged( bool canModify );
 	idDict *				GetUserInfo( void );
 	bool					BalanceTDM( void );
 
+	virtual				// HUMANHEAD
 	void					CacheWeapons( void );
 
 	void					EnterCinematic( void );
@@ -368,10 +351,12 @@ public:
 	bool					HandleESC( void );
 	bool					SkipCinematic( void );
 
+	virtual				// HUMANHEAD
 	void					UpdateConditions( void );
 	void					SetViewAngles( const idAngles &angles );
 
 							// delta view angles to allow movers to rotate the view of the player
+	virtual //HUMANHEAD
 	void					UpdateDeltaViewAngles( const idAngles &angles );
 
 	virtual bool			Collide( const trace_t &collision, const idVec3 &velocity );
@@ -386,53 +371,55 @@ public:
 							// use exitEntityNum to specify a teleport with private camera view and delayed exit
 	virtual void			Teleport( const idVec3 &origin, const idAngles &angles, idEntity *destination );
 
+	virtual				// HUMANHEAD
 	void					Kill( bool delayRespawn, bool nodamage );
 	virtual void			Killed( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location );
 	void					StartFxOnBone(const char *fx, const char *bone);
 
 	renderView_t *			GetRenderView( void );
+	virtual				//HUMANHEAD
 	void					CalculateRenderView( void );	// called every tic by player code
 	void					CalculateFirstPersonView( void );
 
+	virtual				// HUMANHEAD
 	void					DrawHUD( idUserInterface *hud );
 
 	void					WeaponFireFeedback( const idDict *weaponDef );
 
 	float					DefaultFov( void ) const;
+	virtual				// HUMANHEAD
 	float					CalcFov( bool honorZoom );
 	void					CalculateViewWeaponPos( idVec3 &origin, idMat3 &axis );
 	idVec3					GetEyePosition( void ) const;
-	void					GetViewPos( idVec3 &origin, idMat3 &axis ) const;
+	virtual				// HUMANHEAD
+	void					GetViewPos( idVec3 &origin, idMat3 &axis );	// HUMANHEAD
+	virtual				// HUMANHEAD
 	void					OffsetThirdPersonView( float angle, float range, float height, bool clip );
 
+	virtual				// HUMANHEAD
 	bool					Give( const char *statname, const char *value );
+	virtual				// HUMANHEAD
 	bool					GiveItem( idItem *item );
 	void					GiveItem( const char *name );
 	void					GiveHealthPool( float amt );
 
+	virtual				// HUMANHEAD
 	bool					GiveInventoryItem( idDict *item );
 	void					RemoveInventoryItem( idDict *item );
 	bool					GiveInventoryItem( const char *name );
 	void					RemoveInventoryItem( const char *name );
 	idDict *				FindInventoryItem( const char *name );
 
-	void					GivePDA( const char *pdaName, idDict *item );
-	void					GiveVideo( const char *videoName, idDict *item );
-	void					GiveEmail( const char *emailName );
-	void					GiveSecurity( const char *security );
-	void					GiveObjective( const char *title, const char *text, const char *screenshot );
-	void					CompleteObjective( const char *title );
-
-	bool					GivePowerUp( int powerup, int time );
-	void					ClearPowerUps( void );
-	bool					PowerUpActive( int powerup ) const;
-	float					PowerUpModifier( int type );
-
 	int						SlotForWeapon( const char *weaponName );
+	virtual				// HUMANHEAD
 	void					Reload( void );
+	virtual				// HUMANHEAD
 	void					NextWeapon( void );
+	virtual				// HUMANHEAD
 	void					NextBestWeapon( void );
+	virtual				// HUMANHEAD
 	void					PrevWeapon( void );
+	virtual				// HUMANHEAD
 	void					SelectWeapon( int num, bool force );
 	void					DropWeapon( bool died ) ;
 	void					StealWeapon( idPlayer *player );
@@ -447,48 +434,44 @@ public:
 	bool					CanShowWeaponViewmodel( void ) const;
 
 	void					AddAIKill( void );
-	void					SetSoulCubeProjectile( idProjectile *projectile );
-
-	void					AdjustHeartRate( int target, float timeInSecs, float delay, bool force );
-	void					SetCurrentHeartRate( void );
-	int						GetBaseHeartRate( void );
-	void					UpdateAir( void );
 
 	virtual bool			HandleSingleGuiCommand( idEntity *entityGui, idLexer *src );
 	bool					GuiActive( void ) { return focusGUIent != NULL; }
 
+	virtual				// HUMANHEAD
 	void					PerformImpulse( int impulse );
 	void					Spectate( bool spectate );
-	void					TogglePDA( void );
 	void					ToggleScoreboard( void );
 	void					RouteGuiMouse( idUserInterface *gui );
-	void					UpdateHud( void );
-	const idDeclPDA *		GetPDA( void ) const;
-	const idDeclVideo *		GetVideo( int index );
-	void					SetInfluenceFov( float fov );
-	void					SetInfluenceView( const char *mtr, const char *skinname, float radius, idEntity *ent );
-	void					SetInfluenceLevel( int level );
+	virtual				// HUMANHEAD
+	void					UpdateHud( idUserInterface *_hud );
 	int						GetInfluenceLevel( void ) { return influenceActive; };
-	void					SetPrivateCameraView( idCamera *camView );
+	void					SetPrivateCameraView( idCamera *camView, bool noHide = false );
 	idCamera *				GetPrivateCameraView( void ) const { return privateCameraView; }
 	void					StartFxFov( float duration  );
+	virtual				// HUMANHEAD
 	void					UpdateHudWeapon( bool flashWeapon = true );
+	virtual				// HUMANHEAD
 	void					UpdateHudStats( idUserInterface *hud );
+	virtual				// HUMANHEAD
 	void					UpdateHudAmmo( idUserInterface *hud );
-	void					Event_StopAudioLog( void );
-	void					StartAudioLog( void );
-	void					StopAudioLog( void );
-	void					ShowTip( const char *title, const char *tip, bool autoHide );
+	void					ShowTip( const char *keyMaterial, const char *tip, const char *key, const char *topMaterial, bool keywide, int xOffset=0, int yOffset=0 );
 	void					HideTip( void );
 	bool					IsTipVisible( void ) { return tipUp; };
-	void					ShowObjective( const char *obj );
-	void					HideObjective( void );
-
 	virtual void			ClientPredictionThink( void );
 	virtual void			WriteToSnapshot( idBitMsgDelta &msg ) const;
 	virtual void			ReadFromSnapshot( const idBitMsgDelta &msg );
-	void					WritePlayerStateToSnapshot( idBitMsgDelta &msg ) const;
-	void					ReadPlayerStateFromSnapshot( const idBitMsgDelta &msg );
+	//HUMANHEAD rww - made virtual
+	virtual void			WritePlayerStateToSnapshot( idBitMsgDelta &msg ) const;
+	virtual void			ReadPlayerStateFromSnapshot( const idBitMsgDelta &msg );
+	//HUMANHEAD END
+
+	//HUMANHEAD
+	virtual bool			DoThirdPersonDeath(void);					// HUMANHEAD rww
+	virtual	bool			IsDead() const { return (health <= 0); }	// HUMANHEAD cjr:  Deathwalk
+	virtual idVec4			GetTeamColor();								// HUMANHEAD pdm
+	bool					InDialogDamageMode() const { return bDialogDamageMode;	}
+	//HUMANHEAD END
 
 	virtual bool			ServerReceiveEvent( int event, int time, const idBitMsg &msg );
 
@@ -512,6 +495,11 @@ public:
 	void					SetLeader( bool lead );
 	bool					IsLeader( void );
 
+	//HUMANHEAD rww
+	void					SetPlayerModel( bool preserveChannels );
+	void					SetSkin( const idDeclSkin *skin );
+	const char				*GetModelPortraitName(bool bThumb = false);
+	//HUMANHEAD END
 	void					UpdateSkinSetup( bool restart );
 
 	bool					OnLadder( void ) const;
@@ -524,12 +512,21 @@ public:
 	bool					SelfSmooth( void );
 	void					SetSelfSmooth( bool b );
 
-private:
+	idUserInterface *		ActiveGui( void ); //HUMANHEAD rww - made public
+	void					ClearFocus( void ); //HUMANHEAD rww - made public
+
+	//HUMANHEAD PCF rww 09/15/06 - female mp sounds
+	bool					IsFemale(void);
+	//HUMANHEAD END
+protected:				// HUMANHEAD nla - need to be protected for access by hhPlayer
 	jointHandle_t			hipJoint;
 	jointHandle_t			chestJoint;
 	jointHandle_t			headJoint;
 
-	idPhysics_Player		physicsObj;			// player physics
+	// HUMANHEAD - Changed to our version
+	//idPhysics_Player		physicsObj;			// player physics
+	hhPhysics_Player		physicsObj;			// player physics
+	// HUMANHEAD END
 
 	idList<aasLocation_t>	aasLocation;		// for AI tracking the player
 
@@ -557,7 +554,6 @@ private:
 	bool					showWeaponViewModel;
 
 	const idDeclSkin *		skin;
-	const idDeclSkin *		powerUpSkin;
 	idStr					baseSkinName;
 
 	int						numProjectilesFired;	// number of projectiles fired
@@ -593,22 +589,18 @@ private:
 	// if there is a focusGUIent, the attack button will be changed into mouse clicks
 	idEntity *				focusGUIent;
 	idUserInterface *		focusUI;				// focusGUIent->renderEntity.gui, gui2, or gui3
-	idAI *					focusCharacter;
-	int						talkCursor;				// show the state of the focusCharacter (0 == can't talk/dead, 1 == ready to talk, 2 == busy talking)
 	int						focusTime;
-	idAFEntity_Vehicle *	focusVehicle;
 	idUserInterface *		cursor;
 
 	// full screen guis track mouse movements directly
 	int						oldMouseX;
 	int						oldMouseY;
 
-	idStr					pdaAudio;
-	idStr					pdaVideo;
-	idStr					pdaVideoWave;
+#if GAMEPAD_SUPPORT	// VENOM BEGIN
+	int						iCurrentRumble;
+#endif // VENOM END
 
 	bool					tipUp;
-	bool					objectiveUp;
 
 	int						lastDamageDef;
 	idVec3					lastDamageDir;
@@ -627,53 +619,66 @@ private:
 	unsigned int			lastSnapshotSequence;	// track state hitches on clients
 	bool					weaponCatchup;			// raise up the weapon silently ( state catchups )
 	int						MPAim;					// player num in aim
+// HUMANHEAD pdm
 	int						lastMPAim;
 	int						lastMPAimTime;			// last time the aim changed
 	int						MPAimFadeTime;			// for GUI fade
 	bool					MPAimHighlight;
+	bool					bDialogDamageMode;		// Disallow health from dropping below 1
+	bool					bDialogWeaponMode;		// lock weapon during dialog
+// HUMANHEAD END
 	bool					isTelefragged;			// proper obituaries
 
 	idPlayerIcon			playerIcon;
 
+	hhPlayerTeamIcon		playerTeamIcon; //HUMANHEAD rww
+
 	bool					selfSmooth;
+
+	bool					bBufferNextSnapAngles; //HUMANHEAD rww
 
 	void					LookAtKiller( idEntity *inflictor, idEntity *attacker );
 
 	void					StopFiring( void );
+	virtual				// HUMANHEAD
 	void					FireWeapon( void );
+	virtual				// HUMANHEAD
 	void					Weapon_Combat( void );
-	void					Weapon_NPC( void );
+	virtual				// HUMANHEAD
 	void					Weapon_GUI( void );
+	virtual				// HUMANHEAD
 	void					UpdateWeapon( void );
 	void					UpdateSpectating( void );
 	void					SpectateFreeFly( bool force );	// ignore the timeout to force when followed spec is no longer valid
 	void					SpectateCycle( void );
+	virtual				// HUMANHEAD
 	idAngles				GunTurningOffset( void );
+	virtual				// HUMANHEAD
 	idVec3					GunAcceleratingOffset( void );
 
 	void					UseObjects( void );
+	virtual				// HUMANHEAD
 	void					CrashLand( const idVec3 &oldOrigin, const idVec3 &oldVelocity );
+	virtual				// HUMANHEAD
 	void					BobCycle( const idVec3 &pushVelocity );
+	virtual				// HUMANHEAD
 	void					UpdateViewAngles( void );
+	virtual				// HUMANHEAD
 	void					EvaluateControls( void );
 	void					AdjustSpeed( void );
+	virtual				// HUMANHEAD
 	void					AdjustBodyAngles( void );
 	void					InitAASLocation( void );
 	void					SetAASLocation( void );
+	virtual				// HUMANHEAD
 	void					Move( void );
-	void					UpdatePowerUps( void );
 	void					UpdateDeathSkin( bool state_hitch );
-	void					ClearPowerup( int i );
 	void					SetSpectateOrigin( void );
 
-	void					ClearFocus( void );
+	virtual				// HUMANHEAD
 	void					UpdateFocus( void );
+	virtual				// HUMANHEAD
 	void					UpdateLocation( void );
-	idUserInterface *		ActiveGui( void );
-	void					UpdatePDAInfo( bool updatePDASel );
-	int						AddGuiPDAData( const declType_t dataType, const char *listName, const idDeclPDA *src, idUserInterface *gui );
-	void					ExtractEmailInfo( const idStr &email, const char *scan, idStr &out );
-	void					UpdateObjectiveInfo( void );
 
 	void					UseVehicle( void );
 
@@ -687,14 +692,10 @@ private:
 	void					Event_GetPreviousWeapon( void );
 	void					Event_SelectWeapon( const char *weaponName );
 	void					Event_GetWeaponEntity( void );
-	void					Event_OpenPDA( void );
-	void					Event_PDAAvailable( void );
-	void					Event_InPDA( void );
 	void					Event_ExitTeleporter( void );
 	void					Event_HideTip( void );
 	void					Event_LevelTrigger( void );
 	void					Event_Gibbed( void );
-	void					Event_GetIdealWeapon( void );
 };
 
 ID_INLINE bool idPlayer::IsReady( void ) {
@@ -730,3 +731,4 @@ ID_INLINE void idPlayer::SetSelfSmooth( bool b ) {
 }
 
 #endif /* !__GAME_PLAYER_H__ */
+

@@ -29,12 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __RENDERWORLDLOCAL_H__
 #define __RENDERWORLDLOCAL_H__
 
-#include "idlib/geometry/Winding.h"
-#include "renderer/RenderWorld.h"
-#include "renderer/tr_local.h"
-
-class idRenderLightLocal;
-
 // assume any lightDef or entityDef index above this is an internal error
 const int LUDICROUS_INDEX	= 10000;
 
@@ -112,7 +106,7 @@ public:
 	virtual int				PointInArea( const idVec3 &point ) const;
 	virtual int				BoundsInAreas( const idBounds &bounds, int *areas, int maxAreas ) const;
 	virtual	int				NumPortalsInArea( int areaNum );
-	virtual exitPortal_t	GetPortal( int areaNum, int portalNum );
+	virtual exitPortal_t	GetPortal( int areaNum, int portalNum, bool fromAsync = false );
 
 	virtual	guiPoint_t		GuiTrace( qhandle_t entityHandle, const idVec3 start, const idVec3 end ) const;
 	virtual bool			ModelTrace( modelTrace_t &trace, qhandle_t entityHandle, const idVec3 &start, const idVec3 &end, const float radius ) const;
@@ -137,6 +131,29 @@ public:
 
 	virtual void			DrawText( const char *text, const idVec3 &origin, float scale, const idVec4 &color, const idMat3 &viewAxis, const int align = 1, const int lifetime = 0, bool depthTest = false );
 
+// HUMANHEAD pdm: game portal support
+#if GAMEPORTAL_PVS
+	virtual qhandle_t		FindGamePortal( const char *name ) { return 0; };
+	virtual void			RegisterGamePortals( idMapFile *mapFile ) {};
+	virtual void			DrawGamePortals( int mode, const idMat3 &viewAxis ) {};
+	virtual bool			IsGamePortal( qhandle_t handle ) { return false; };
+	virtual idVec3			GetGamePortalSrc( qhandle_t handle ) { return vec3_zero; };
+	virtual idVec3			GetGamePortalDst( qhandle_t handle ) { return vec3_zero; };
+#endif
+#if GAMEPORTAL_SOUND
+	virtual int				NumSoundPortalsInArea( int areaNum ) { return 0; };
+	virtual int				NumGamePortalsInArea( int areaNum ) { return 0; };
+	virtual exitPortal_t	GetSoundPortal( int areaNum, int portalNum ) { exitPortal_t	ret; return ret; };
+	virtual void			LevelInitSoundAreas() {}
+	virtual void			LevelShutdownSoundAreas() {}
+	virtual void			PrecalculateValidSoundAreas(const idVec3 listenerPosition, const int listenerArea) {}
+	virtual bool			ValidSoundArea(const int area) { return false; }
+	virtual float			DistanceToSoundArea(const int area) { return 0.0f; }
+	virtual float			MaxSoundAreaExtents(const int area) { return 0.0f; }
+
+	virtual void			DrawValidSoundAreas(const idVec3 &source, const idMat3 &viewAxis) {}
+#endif
+// HUMANHEAD END
 	//-----------------------
 
 	idStr					mapName;				// ie: maps/tim_dm2.proc, written to demoFile
@@ -262,6 +279,18 @@ public:
 	//-------------------------------
 	// tr_light.c
 	void					CreateLightDefInteractions( idRenderLightLocal *ldef );
+
+#if _HH_RENDERDEMO_HACKS
+	virtual void			DemoSmokeEvent(const idDeclParticle *smoke, const int systemTimeOffset, const float diversity, const idVec3 &origin, const idMat3 &axis ) { (void)smoke; (void)systemTimeOffset; (void) diversity; (void)origin; (void)axis; }
+	virtual guiPoint_t		GuiTrace( qhandle_t entityHandle, const idVec3 start, const idVec3 end, int interactiveMask ) const {
+		(void)interactiveMask;
+		return GuiTrace( entityHandle, start, end );
+	}
+#endif
+
+#if DEATHWALK_AUTOLOAD
+	int numAppendPortalAreas;
+#endif
 };
 
 #endif /* !__RENDERWORLDLOCAL_H__ */

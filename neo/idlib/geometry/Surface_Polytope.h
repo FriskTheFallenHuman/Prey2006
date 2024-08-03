@@ -29,8 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SURFACE_POLYTOPE_H__
 #define __SURFACE_POLYTOPE_H__
 
-#include "idlib/geometry/Surface.h"
-
 /*
 ===============================================================================
 

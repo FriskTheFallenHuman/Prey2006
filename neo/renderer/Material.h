@@ -29,10 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __MATERIAL_H__
 #define __MATERIAL_H__
 
-#include "idlib/containers/List.h"
-#include "idlib/Lexer.h"
-#include "framework/DeclManager.h"
-
 /*
 ===============================================================================
 
@@ -45,6 +41,13 @@ class idImage;
 class idCinematic;
 class idUserInterface;
 class idMegaTexture;
+
+// HUMANHEAD tmj: type of subview that this surface represents
+typedef enum {
+	SC_MIRROR,
+	SC_PORTAL,
+	SC_PORTAL_SKYBOX,
+} subviewClass_t;
 
 // moved from image.h for default parm
 typedef enum {
@@ -79,6 +82,9 @@ typedef enum {
 	DFRM_EXPAND,
 	DFRM_MOVE,
 	DFRM_EYEBALL,
+	DFRM_BEAM,		// HUMANHEAD
+	DFRM_CORONA,	// HUMANHEAD
+	DFRM_JITTER,	// HUMANHEAD: Jitter the model
 	DFRM_PARTICLE,
 	DFRM_PARTICLE2,
 	DFRM_TURB
@@ -90,6 +96,8 @@ typedef enum {
 	DI_CUBE_RENDER,
 	DI_MIRROR_RENDER,
 	DI_XRAY_RENDER,
+	DI_PORTAL_RENDER, // HUMANHEAD
+	DI_SKYBOX_RENDER, // HUMANHEAD tmj
 	DI_REMOTE_RENDER
 } dynamicidImage_t;
 
@@ -109,7 +117,8 @@ typedef enum {
 	OP_TYPE_NE,
 	OP_TYPE_AND,
 	OP_TYPE_OR,
-	OP_TYPE_SOUND
+	OP_TYPE_SOUND,
+	OP_TYPE_FRAGMENTPROGRAMS // HUMANHEAD CJR:  Added so fragment programs support can be toggled
 } expOpType_t;
 
 typedef enum {
@@ -136,6 +145,8 @@ typedef enum {
 	EXP_REG_GLOBAL5,
 	EXP_REG_GLOBAL6,
 	EXP_REG_GLOBAL7,
+
+	EXP_REG_DISTANCE, // HUMANHEAD: CJR
 
 	EXP_REG_NUM_PREDEFINED
 } expRegister_t;
@@ -178,7 +189,8 @@ typedef enum {
 	SL_AMBIENT,						// execute after lighting
 	SL_BUMP,
 	SL_DIFFUSE,
-	SL_SPECULAR
+	SL_SPECULAR,
+	SL_SHADER
 } stageLighting_t;
 
 // cross-blended terrain textures need to modulate the color by
@@ -190,12 +202,15 @@ typedef enum {
 } stageVertexColor_t;
 
 static const int	MAX_FRAGMENT_IMAGES = 8;
-static const int	MAX_VERTEX_PARMS = 4;
+static const int	MAX_VERTEX_PARMS = 8;
+static const int	MAX_FRAGMENT_PARMS = 8;
 
 typedef struct {
 	int					vertexProgram;
 	int					numVertexParms;
 	int					vertexParms[MAX_VERTEX_PARMS][4];	// evaluated register indexes
+	int					numFragmentParms;
+	int					fragmentParms[MAX_FRAGMENT_PARMS][4];	// evaluated register indexes
 
 	int					fragmentProgram;
 	int					numFragmentProgramImages;
@@ -203,6 +218,13 @@ typedef struct {
 
 	idMegaTexture		*megaTexture;		// handles all the binding and parameter setting
 } newShaderStage_t;
+
+//HUMANHEAD bjk: specular exponent
+typedef struct {
+	float				exponent;
+	float				brightness;
+} specData_t;
+//HUMANHEAD END
 
 typedef struct {
 	int					conditionRegister;	// if registers[conditionRegister] == 0, skip stage
@@ -217,7 +239,16 @@ typedef struct {
 											// if the surface is alpha tested
 	float				privatePolygonOffset;	// a per-stage polygon offset
 
+	bool				isGlow; // HUMANHEAD CJR:  Glow overlay
+	bool				isScopeView; // HUMANHEAD CJR:  Scope view
+	bool				isShuttleView;	// HUMANHEAD pdm: shuttle view
+	bool				isNotScopeView; // HUMANHEAD CJR:  Does not show up in scope view
+	bool				isSpiritWalk; // HUMANHEAD CJR: Spiritwalk view
+	bool				isNotSpiritWalk; // HUMANHEAD CJR:  Does not show up in spirit view
+
 	newShaderStage_t	*newStage;			// vertex / fragment program based stage
+
+	specData_t			specular;	//HUMANHEAD bjk: specular exponent
 } shaderStage_t;
 
 typedef enum {
@@ -259,7 +290,7 @@ const int MAX_SHADER_STAGES			= 256;
 
 const int MAX_TEXGEN_REGISTERS		= 4;
 
-const int MAX_ENTITY_SHADER_PARMS	= 12;
+const int MAX_ENTITY_SHADER_PARMS	= 13;	// HUMANHEAD pdm: increased from 12
 
 // material flags
 typedef enum {
@@ -269,7 +300,12 @@ typedef enum {
 	MF_FORCESHADOWS				= BIT(3),
 	MF_NOSELFSHADOW				= BIT(4),
 	MF_NOPORTALFOG				= BIT(5),	// this fog volume won't ever consider a portal fogged out
-	MF_EDITOR_VISIBLE			= BIT(6)	// in use (visible) per editor
+	MF_EDITOR_VISIBLE			= BIT(6),	// in use (visible) per editor
+	MF_USESDISTANCE				= BIT(7),	// HUMANHEAD pdm: distance optimization
+	MF_LIGHT_WHOLE_MESH			= BIT(8),	// HUMANHEAD bjk: dont cull tris with light bounds
+	//HUMANHEAD PCF rww 05/11/06 - can be used explicitly by surfaces which use alpha coverage but do not want collision anyway
+	MF_SKIPCLIP					= BIT(9)
+	//HUMANHEAD END
 } materialFlags_t;
 
 // contents flags, NOTE: make sure to keep the defines in doom_defs.script up to date with these!
@@ -291,9 +327,25 @@ typedef enum {
 	CONTENTS_AAS_OBSTACLE		= BIT(14),	// used to compile an obstacle into AAS that can be enabled/disabled
 	CONTENTS_FLASHLIGHT_TRIGGER	= BIT(15),	// used for triggers that are activated by the flashlight
 
+	// HUMANHEAD CJR: Content flags.  Note that for simplicity of merging, id's areaportal and nocsg flags were left as is
+	CONTENTS_FORCEFIELD			= BIT(16),	// forcefield matter, only passable in spirit mode
+	CONTENTS_SPIRITBRIDGE		= BIT(17),	// cjr - Collidable only by spiritwalking players
+	// END HUMANHEAD
+
 	// contents used by utils
-	CONTENTS_AREAPORTAL			= BIT(20),	// portal separating renderer areas
-	CONTENTS_NOCSG				= BIT(21),	// don't cut this brush with CSG operations in the editor
+	CONTENTS_AREAPORTAL			= BIT(18),	// portal separating renderer areas
+	CONTENTS_NOCSG				= BIT(19),	// don't cut this brush with CSG operations in the editor
+
+	// HUMANHEAD CJR: Content flags.  Note that for simplicity of merging, id's areaportal and nocsg flags were left as is
+	CONTENTS_BLOCK_RADIUSDAMAGE = BIT(20),	// aob - used by objects like forcefields and chaff
+	CONTENTS_SHOOTABLE			= BIT(21),	// pdm - bullets collide with but not player or monsters
+	CONTENTS_DEATHVOLUME		= BIT(22),	// AOB: used by death zones so the player can do a simple contents check
+	CONTENTS_VEHICLECLIP		= BIT(23),	// PDM: used to clip off vehicle movement
+	CONTENTS_OWNER_TO_OWNER		= BIT(24),	// bjk: used to disable owner to owner rejection for collision
+	CONTENTS_GAME_PORTAL		= BIT(25),  // cjr: used for clipping against game portals (glow portals, etc)
+	CONTENTS_SHOOTABLEBYARROW	= BIT(26),	// pdm: solid to spirit arrows specifically as opposed to other projectiles
+	CONTENTS_HUNTERCLIP			= BIT(27),	// pdm: solid to hunters, but not hunters in vehicles
+	// HUMANHEAD END
 
 	CONTENTS_REMOVE_UTIL		= ~(CONTENTS_AREAPORTAL|CONTENTS_NOCSG)
 } contentsFlags_t;
@@ -302,6 +354,7 @@ typedef enum {
 const int NUM_SURFACE_BITS		= 4;
 const int MAX_SURFACE_TYPES		= 1 << NUM_SURFACE_BITS;
 
+#ifdef HUMANHEAD
 typedef enum {
 	SURFTYPE_NONE,					// default type
 	SURFTYPE_METAL,
@@ -311,15 +364,38 @@ typedef enum {
 	SURFTYPE_CARDBOARD,
 	SURFTYPE_LIQUID,
 	SURFTYPE_GLASS,
+	SURFTYPE_TILE,
 	SURFTYPE_PLASTIC,
-	SURFTYPE_RICOCHET,
-	SURFTYPE_10,
-	SURFTYPE_11,
-	SURFTYPE_12,
-	SURFTYPE_13,
-	SURFTYPE_14,
-	SURFTYPE_15
+	SURFTYPE_WALLWALK,
+	SURFTYPE_ALTMETAL,
+	SURFTYPE_FORCEFIELD,
+	SURFTYPE_PIPE,
+	SURFTYPE_SPIRIT,
+	SURFTYPE_CHAFF,
+	NUM_SURFACE_TYPES
+	// NOTE: Bits all used, no more matter types
 } surfTypes_t;
+#else
+typedef enum {
+	SURFTYPE_NONE,					// default type
+	SURFTYPE_METAL,
+	SURFTYPE_STONE,
+	SURFTYPE_FLESH,
+	SURFTYPE_WOOD,
+	SURFTYPE_CARDBOARD,
+	SURFTYPE_LIQUID,
+	SURFTYPE_GLASS,
+	SURFTYPE_TILE,
+	SURFTYPE_PLASTIC,
+	SURFTYPE_WALLWALK,
+	SURFTYPE_ALTMETAL,
+	SURFTYPE_FORCEFIELD,
+	SURFTYPE_PIPE,
+	SURFTYPE_SPIRIT,
+	SURFTYPE_CHAFF,
+	NUM_SURFACE_TYPES
+} surfTypes_t;
+#endif
 
 // surface flags
 typedef enum {
@@ -337,7 +413,7 @@ typedef enum {
 	SURF_NOSTEPS				= BIT(9),	// no footstep sounds
 	SURF_DISCRETE				= BIT(10),	// not clipped or merged by utilities
 	SURF_NOFRAGMENT				= BIT(11),	// dmap won't cut surface at each bsp boundary
-	SURF_NULLNORMAL				= BIT(12)	// renderbump will draw this surface as 0x80 0x80 0x80, which
+	SURF_NULLNORMAL				= BIT(12),	// renderbump will draw this surface as 0x80 0x80 0x80, which
 											// won't collect light from any angle
 } surfaceFlags_t;
 
@@ -374,6 +450,9 @@ public:
 						// get the first bump map stage, or NULL if not present.
 						// used for bumpy-specular
 	const shaderStage_t *GetBumpStage( void ) const;
+
+						// HUMANHEAD tmj: returns how the subview should be rendered (i.e. mirror/portal/skybox)
+	subviewClass_t		GetSubviewClass( void) const { return subviewClass; }
 
 						// returns true if the material will draw anything at all.  Triggers, portals,
 						// etc, will not have anything to draw.  A not drawn surface can still castShadow,
@@ -591,6 +670,8 @@ public:
 	bool				IsPortalSky() const						{ return portalSky; };
 	void				AddReference();
 
+	int					GetDirectPortalDistance() const { return directPortalDistance; } // HUMANHEAD CJR:  direct render portal distance cull
+
 private:
 	// parse the entire material
 	void				CommonInit();
@@ -599,6 +680,7 @@ private:
 	void				ParseSort( idLexer &src );
 	void				ParseBlend( idLexer &src, shaderStage_t *stage );
 	void				ParseVertexParm( idLexer &src, newShaderStage_t *newStage );
+	void				ParseFragmentParm( idLexer &src, newShaderStage_t *newStage );
 	void				ParseFragmentMap( idLexer &src, newShaderStage_t *newStage );
 	void				ParseStage( idLexer &src, const textureRepeat_t trpDefault = TR_REPEAT );
 	void				ParseDeform( idLexer &src );
@@ -621,6 +703,7 @@ private:
 	void				CheckForConstantRegisters();
 
 private:
+	subviewClass_t		subviewClass;		// HUMANHEAD tmj: Type of subview this surface points to
 	idStr				desc;				// description
 	idStr				renderBump;			// renderbump command options, without the "renderbump" at the start
 
@@ -633,6 +716,8 @@ private:
 	bool				noFog;				// surface does not create fog interactions
 
 	int					spectrum;			// for invisible writing, used for both lights and surfaces
+	
+	int					directPortalDistance; // HUMANHEAD:  Distance at which direct render portals are drawn
 
 	float				polygonOffset;
 

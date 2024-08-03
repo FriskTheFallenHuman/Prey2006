@@ -111,4 +111,19 @@ private:
 	bool				showWaveform;
 };
 
+// HUMANHEAD pdm: profiler
+class hhProfilerGraph : public idCinematic {
+public:
+	
+						hhProfilerGraph() {}
+						~hhProfilerGraph() {}
+
+	bool				InitFromFile( const char *qpath, bool looping );
+	cinData_t			ImageForTime( int milliseconds );
+	int					AnimationLength();
+
+private:
+};
+// HUMANHEAD END
+
 #endif /* !__CINEMATIC_H__ */

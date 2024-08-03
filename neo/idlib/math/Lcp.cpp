@@ -26,9 +26,8 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-
-#include "idlib/math/Lcp.h"
+#include "precompiled.h"
+#pragma hdrstop
 
 static idCVar lcp_showFailures( "lcp_showFailures", "0", CVAR_SYSTEM | CVAR_BOOL, "show LCP solver failures" );
 

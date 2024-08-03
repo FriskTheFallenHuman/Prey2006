@@ -29,11 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SOUND__
 #define __SOUND__
 
-#include "idlib/math/Vector.h"
-#include "framework/DeclManager.h"
-#include "framework/DemoFile.h"
-#include "renderer/Cinematic.h"
-
 /*
 ===============================================================================
 
@@ -60,6 +55,26 @@ static const int	SSF_PLAY_ONCE =			BIT(6);	// never restart if already playing o
 static const int	SSF_UNCLAMPED =			BIT(7);	// don't clamp calculated volumes at 1.0
 static const int	SSF_NO_FLICKER =		BIT(8);	// always return 1.0 for volume queries
 static const int	SSF_NO_DUPS =			BIT(9);	// try not to play the same sound twice in a row
+static const int	SSF_VOICEAMPLITUDE =	BIT(10);// HUMANHEAD pdm: include in findamplitude queries
+static const int	SSF_OMNI_WHEN_CLOSE =	BIT(11);// HUMANHEAD pdm: make omni when within the mindistance
+static const int	SSF_NOREVERB =			BIT(12);// HUMANHEAD pdm: reverb exclusion
+// HUMANHEAD pdm: Sound through gameportals support
+#if GAMEPORTAL_SOUND
+static const int	SSF_NOPORTALFLOW =		BIT(13);// don't allow sounds to flow through game portals
+#endif
+
+//HUMANHEAD rww - subtitle functionality
+typedef struct soundSubtitle_s {
+	idStr			subText;
+	float			subTime;
+	int				subChannel;
+} soundSub_t;
+
+typedef struct soundSubtitleList_s {
+	idStr				soundName;
+	idList<soundSub_t>	subList;
+} soundSubtitleList_t;
+//HUMANHEAD END
 
 // these options can be overriden from sound shader defaults on a per-emitter and per-channel basis
 typedef struct {
@@ -69,14 +84,84 @@ typedef struct {
 	float					shakes;
 	int						soundShaderFlags;		// SSF_* bit flags
 	int						soundClass;				// for global fading of sounds
+	int						subIndex;				//HUMANHEAD rww - indices into the subtitle table
+	int						profanityIndex;			// HUMANHEAD pdm
+	float					profanityDelay;			// HUMANHEAD pdm
+	float					profanityDuration;		// HUMANHEAD pdm
 } soundShaderParms_t;
 
+//HUMANHEAD: aob
+class hhSoundShaderParmsModifier {
+public:
+	hhSoundShaderParmsModifier() { 
+		memset( &parms, 0, sizeof(soundShaderParms_t) );
+		minDistanceIsSet = false;
+		maxDistanceIsSet = false;
+		volumeIsSet = false;			
+		shakesIsSet = false;
+		soundShaderFlagsIsSet = false;
+	}
+									
+
+	void				ModifyParms( soundShaderParms_t& parmsToModify ) const {
+		if( MinDistanceIsSet() ) {
+			parmsToModify.minDistance = parms.minDistance;
+		}
+
+		if( MaxDistanceIsSet() ) {
+			parmsToModify.maxDistance = parms.maxDistance;
+		}
+
+		if( VolumeIsSet() ) {
+			parmsToModify.volume = parms.volume;
+		}
+
+		if( ShakesIsSet() ) {
+			parmsToModify.shakes = parms.shakes;
+		}
+
+		if( SoundShaderFlagsIsSet() ) {
+			parmsToModify.soundShaderFlags = parms.soundShaderFlags;
+		}
+	}
+																		
+
+	void				SetMinDistance( const float minDistance ) { parms.minDistance = minDistance; minDistanceIsSet = true; }
+	void				SetMaxDistance( const float maxDistance ) { parms.maxDistance = maxDistance; maxDistanceIsSet = true; }
+	void				SetVolume( const float volume ) { parms.volume = volume; volumeIsSet = true; }
+	void				SetShakes( const float shakes ) { parms.shakes = shakes; shakesIsSet = true; }
+	void				SetSoundShaderFlags( const int soundShaderFlags ) { parms.soundShaderFlags = soundShaderFlags; soundShaderFlagsIsSet = true; }
+
+	bool				MinDistanceIsSet() const { return minDistanceIsSet; }
+	bool				MaxDistanceIsSet() const { return maxDistanceIsSet; }
+	bool				VolumeIsSet() const { return volumeIsSet; }
+	bool				ShakesIsSet() const { return shakesIsSet; }
+	bool				SoundShaderFlagsIsSet() const { return soundShaderFlagsIsSet; }
+			
+protected:
+	soundShaderParms_t	parms;
+	bool				minDistanceIsSet;
+	bool				maxDistanceIsSet;
+	bool				volumeIsSet;			
+	bool				shakesIsSet;
+	bool				soundShaderFlagsIsSet;
+
+};
+//HUMANHEAD END
 
 const int		SOUND_MAX_LIST_WAVS		= 32;
 
+// HUMANHEAD pdm: sound classes
+const int		SOUNDCLASS_NORMAL		= 0;
+const int		SOUNDCLASS_VOICEDUCKER	= 1;
+const int		SOUNDCLASS_SPIRITWALK	= 2;
+const int		SOUNDCLASS_VOICE		= 3;
+const int		SOUNDCLASS_MUSIC		= 4;
+// HUMANHEAD END
+
 // sound classes are used to fade most sounds down inside cinematics, leaving dialog
 // flagged with a non-zero class full volume
-const int		SOUND_MAX_CLASSES		= 4;
+const int		SOUND_MAX_CLASSES		= 5;
 
 // it is somewhat tempting to make this a virtual class to hide the private
 // details here, but that doesn't fit easily with the decl manager at the moment.
@@ -98,6 +183,10 @@ public:
 	// this is currently defined as meters, which sucks, IMHO.
 	virtual float			GetMinDistance() const;		// FIXME: replace this with a GetSoundShaderParms()
 	virtual float			GetMaxDistance() const;
+
+	//HUMANHEAD: aob
+	virtual float			GetVolume() const { return parms.volume; }
+	//HUMANHEAD END
 
 	// returns NULL if an AltSound isn't defined in the shader.
 	// we use this for pairing a specific broken light sound with a normal light sound
@@ -174,6 +263,13 @@ public:
 	// to is in Db (sigh), over is in seconds
 	virtual void			FadeSound( const s_channelType channel, float to, float over ) = 0;
 
+	//HUMANHEAD: aob
+	virtual void			ModifySound( idSoundShader *shader, const s_channelType channel, const hhSoundShaderParmsModifier& parmModifier ) = 0;
+	virtual soundShaderParms_t* GetSoundParms( idSoundShader *shader, const s_channelType channel ) = 0;
+	virtual float			CurrentAmplitude( const s_channelType channel ) = 0;
+	virtual float			CurrentVoiceAmplitude( const s_channelType channel ) = 0;
+	//HUMANHEAD END
+
 	// returns true if there are any sounds playing from this emitter.  There is some conservative
 	// slop at the end to remove inconsistent race conditions with the sound thread updates.
 	// FIXME: network game: on a dedicated server, this will always be false
@@ -229,6 +325,16 @@ public:
 	// background music
 	virtual	void			PlayShaderDirectly( const char *name, int channel = -1 ) = 0;
 
+	//HUMANHEAD
+	virtual void			StopShaderDirectly() {}
+	virtual float			GetLocalRefSoundVolume() { return 0.0f; }
+	virtual void			SetLocalRefSoundVolume( float volume ) {}
+	virtual void			FadeLocalRefSound( float to, float over ) {}
+	virtual bool			LocalRefSoundIsPlaying() { return false; }
+	virtual void			RegisterLocation( int area, const char *locationName ) = 0;
+	virtual void			ClearAreaLocations() = 0;
+	//HUMANHEAD END
+
 	// dumps the current state and begins archiving commands
 	virtual void			StartWritingDemo( idDemoFile *demo ) = 0;
 	virtual void			StopWritingDemo() = 0;
@@ -260,6 +366,8 @@ public:
 	virtual void			SetSlowmo( bool active ) = 0;
 	virtual void			SetSlowmoSpeed( float speed ) = 0;
 	virtual void			SetEnviroSuit( bool active ) = 0;
+	virtual void			SetSpiritWalkEffect( bool active ) = 0;	// HUMANHEAD pdm
+	virtual void			SetVoiceDucker( bool active ) = 0;		// HUMANHEAD pdm
 };
 
 
@@ -294,6 +402,11 @@ public:
 
 	// shutdown routine
 	virtual	void			Shutdown( void ) = 0;
+
+	// call ClearBuffer if there is a chance that the AsyncUpdate won't get called
+	// for 20+ msec, which would cause a stuttering repeat of the current
+	// buffer contents
+	virtual void			ClearBuffer( void ) = 0;
 
 	// sound is attached to the window, and must be recreated when the window is changed
 	virtual bool			InitHW( void ) = 0;
@@ -343,6 +456,15 @@ public:
 
 	// is EFX support present - -1: disabled at compile time, 0: no suitable hardware, 1: ok
 	virtual int				IsEFXAvailable( void ) = 0;
+	virtual const char *	GetDeviceName( int index ) = 0;		// CREATIVE
+	virtual const char *	GetDefaultDeviceName( void ) = 0;	// CREATIVE
+
+	//HUMANHEAD rww
+	virtual int					GetSubtitleIndex(const char *soundName) = 0;
+	virtual void				SetSubtitleData(int subIndex, int subNum, const char *subText, float subTime, int subChannel) = 0;
+	virtual soundSub_t			*GetSubtitle(int subIndex, int subNum) = 0;
+	virtual soundSubtitleList_t *GetSubtitleList(int subIndex) = 0;
+	//HUMANHEAD END
 };
 
 extern idSoundSystem	*soundSystem;

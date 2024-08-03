@@ -29,9 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __MODEL_LOCAL_H__
 #define __MODEL_LOCAL_H__
 
-#include "idlib/geometry/JointTransform.h"
-#include "renderer/Model.h"
-
 /*
 ===============================================================================
 
@@ -53,6 +50,9 @@ public:
 	virtual void				PurgeModel();
 	virtual void				Reset() {};
 	virtual void				LoadModel();
+#ifdef HUMANHEAD		//HUMANHEAD mdc: added to support purging of ppm modelfiles (for use in reloadModels)
+	virtual void				PurgePrecompressed() {}
+#endif
 	virtual bool				IsLoaded() const;
 	virtual void				SetLevelLoadReferenced( bool referenced );
 	virtual bool				IsLevelLoadReferenced();
@@ -88,22 +88,36 @@ public:
 	virtual void				WriteToDemoFile( class idDemoFile *f );
 	virtual float				DepthHack() const;
 
+	// HUMANHEAD pdm: Game access to liquid models
+	virtual void				IntersectBounds( const idBounds &bounds, float displacement ) { Bounds( NULL ).IntersectsBounds( bounds ); };
+	// HUMANHEAD END
+
 	void						MakeDefaultModel();
 
 	bool						LoadASE( const char *fileName );
 	bool						LoadLWO( const char *fileName );
 	bool						LoadFLT( const char *fileName );
-	bool						LoadMA( const char *filename );
+	// HUMANHEAD mdc - added support for precomputed models
+	bool						LoadPPM( const char *fileName ) {}
+	bool						WritePPM( const char *fileName ) {}
+	void						DeletePPM( const char *fileName ) {}
+	// HUMANHEAD END
 
 	bool						ConvertASEToModelSurfaces( const struct aseModel_s *ase );
 	bool						ConvertLWOToModelSurfaces( const struct st_lwObject *lwo );
-	bool						ConvertMAToModelSurfaces (const struct maModel_s *ma );
 
 	struct aseModel_s *			ConvertLWOToASE( const struct st_lwObject *obj, const char *fileName );
 
 	bool						DeleteSurfaceWithId( int id );
 	void						DeleteSurfacesWithNegativeId( void );
 	bool						FindSurfaceWithId( int id, int &surfaceNum );
+
+#if _HH_RENDERDEMO_HACKS //HUMANHEAD rww
+	bool						IsGameUpdatedModel(void) { return bIsGUM; }
+	void						SetGameUpdatedModel(bool gum) { bIsGUM = gum; }
+	idList<modelSurface_t>		&GetSurfaces(void) { return surfaces; }
+	void						SetBounds(idBounds &newBounds) { bounds = newBounds; };
+#endif //HUMANHEAD END
 
 public:
 	idList<modelSurface_t>		surfaces;
@@ -124,10 +138,24 @@ protected:
 	bool						levelLoadReferenced;	// for determining if it needs to be freed
 	ID_TIME_T						timeStamp;
 
+	// HUMANHEAD pdm
+	idRenderModel *				HH_InstantiateDynamicModel( const struct renderEntity_s *ent, const struct viewDef_s *view, idRenderModel *cachedModel ) {}
+	void						HH_UpdateSurface( const struct viewDef_s *view, const struct renderEntity_s *ent, modelSurface_t *surf, const int surfaceIndex) {}
+	// HUMANHEAD END
+
 	static idCVar				r_mergeModelSurfaces;	// combine model surfaces with the same material
 	static idCVar				r_slopVertex;			// merge xyz coordinates this far apart
 	static idCVar				r_slopTexCoord;			// merge texture coordinates this far apart
 	static idCVar				r_slopNormal;			// merge normals that dot less than this
+
+	// HUMANHEAD mdc - added for precomputed model support
+	static idCVar				model_usePrebuiltModels;
+	static idCVar				model_writePrebuiltModels;
+	// HUMANHEAD END
+
+#if _HH_RENDERDEMO_HACKS //HUMANHEAD rww
+	bool						bIsGUM;
+#endif //HUMANHEAD END
 };
 
 /*
@@ -156,19 +184,36 @@ public:
 private:
 	idList<idVec2>				texCoords;			// texture coordinates
 	int							numWeights;			// number of weights
+#if NEW_MESH_TRANSFORM
+	jointWeight_t *				weights;			// joint weights
+	idVec4 *					baseVectors;		// base vertex, normal and tangents
+	idVec4 *					scaledBaseVectors;	// joint weights
+#else
 	idVec4 *					scaledWeights;		// joint weights
 	int *						weightIndex;		// pairs of: joint offset + bool true if next weight is for next vertex
+#endif
 	const idMaterial *			shader;				// material applied to mesh
 	int							numTris;			// number of triangles
 	struct deformInfo_s *		deformInfo;			// used to create srfTriangles_t from base frames and new vertexes
 	int							surfaceNum;			// number of the static surface created for this mesh
-
+#if !NEW_MESH_TRANSFORM
 	void						TransformVerts( idDrawVert *verts, const idJointMat *joints );
 	void						TransformScaledVerts( idDrawVert *verts, const idJointMat *joints, float scale );
+#endif
+
+#if NEW_MESH_TRANSFORM
+	void						TransformVertsNew( idDrawVert *verts, int numVerts, idBounds &bounds, const idJointMat *joints ) const {}
+	void						TransformVertsAndTangents( idDrawVert *verts, int numVerts, idBounds &bounds, const idJointMat *joints ) const {}
+	void						TransformVertsAndTangentsFast( idDrawVert *verts, int numVerts, idBounds &bounds, const idJointMat *joints ) const {}
+#endif
 };
 
 class idRenderModelMD5 : public idRenderModelStatic {
 public:
+#if NEW_MESH_TRANSFORM
+								idRenderModelMD5( void );
+	virtual						~idRenderModelMD5( void );
+#endif
 	virtual void				InitFromFile( const char *fileName );
 	virtual dynamicModel_t		IsDynamicModel() const;
 	virtual idBounds			Bounds( const struct renderEntity_s *ent ) const;
@@ -185,16 +230,25 @@ public:
 	virtual const char *		GetJointName( jointHandle_t handle ) const;
 	virtual const idJointQuat *	GetDefaultPose( void ) const;
 	virtual int					NearestJoint( int surfaceNum, int a, int b, int c ) const;
+	idRenderModelStatic *		DynamicModelSnapshot( void ) { return staticModelInstance; }
+	void						ClearDynamicModelSnapshot( void ) { staticModelInstance = NULL; }
 
 private:
 	idList<idMD5Joint>			joints;
 	idList<idJointQuat>			defaultPose;
 	idList<idMD5Mesh>			meshes;
 
+#if NEW_MESH_TRANSFORM
+	// added the transforms from skin-space to local joint-space, for each joint, added instantiateAllSurfaces flag for MD5 to MD5R conversion
+	idJointMat *				skinSpaceToLocalMats;			// transforms from "skinning space" to local joint space
+#endif
+
 	void						CalculateBounds( const idJointMat *joints );
 	void						GetFrameBounds( const renderEntity_t *ent, idBounds &bounds ) const;
 	void						DrawJoints( const renderEntity_t *ent, const struct viewDef_s *view ) const;
 	void						ParseJoint( idLexer &parser, idMD5Joint *joint, idJointQuat *defaultPose );
+
+	idRenderModelStatic *		staticModelInstance;
 };
 
 /*
@@ -245,6 +299,7 @@ public:
 	virtual idBounds			Bounds( const struct renderEntity_s *ent ) const;
 
 	virtual void				Reset();
+	virtual // HUMANHEAD pdm
 	void						IntersectBounds( const idBounds &bounds, float displacement );
 
 private:
@@ -387,5 +442,31 @@ public:
 	virtual	idRenderModel *	InstantiateDynamicModel( const struct renderEntity_s *ent, const struct viewDef_s *view, idRenderModel *cachedModel );
 	virtual	idBounds		Bounds( const struct renderEntity_s *ent ) const;
 };
+
+
+// HUMANHEAD: Beams
+class hhRenderModelBeam : public idRenderModelStatic {
+public:
+	void				InitFromFile( const char *fileName );
+	void				LoadModel();
+
+	dynamicModel_t		IsDynamicModel() const;
+	virtual idRenderModel*	InstantiateDynamicModel( const struct renderEntity_s *ent, const struct viewDef_s *view, idRenderModel *cachedModel );
+	virtual idBounds	Bounds( const struct renderEntity_s *ent ) const;
+
+private:
+	void				UpdateSurface( const struct renderEntity_s *ent, const int index, const hhBeamNodes_t *beam, modelSurface_t *surf );
+	void				UpdateQuadSurface( const struct renderEntity_s *ent, const int index, int quadIndex, const hhBeamNodes_t *beam, modelSurface_t *surf );
+
+	struct deformInfo_s	*deformInfo;	// used to create srfTriangles_t from base frames and new vertexes						
+	idList<idDrawVert>	verts;
+
+	// endpoint quads
+	struct deformInfo_s *quadDeformInfo[2];
+	idList<idDrawVert>	quadVerts[2];
+
+	const hhDeclBeam	*declBeam;
+};
+// END HUMANHEAD
 
 #endif /* !__MODEL_LOCAL_H__ */

@@ -26,10 +26,9 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/KeyInput.h"
-
-#include "sys/sys_local.h"
+#include "precompiled.h"
+#pragma hdrstop
+#include "sys_local.h"
 
 const char * sysLanguageNames[] = {
 	"english", "spanish", "italian", "german", "french", "russian",

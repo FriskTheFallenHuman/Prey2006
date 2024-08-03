@@ -29,7 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __UNZIP_H__
 #define __UNZIP_H__
 
-#include "framework/minizip/unzip.h"
+#include "minizip/unzip.h"
 
 // everything that was here is now in unzip.h (most of it was there originally anyway,
 // the three custom functions added by id Software were added there)

@@ -29,13 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SESSION_H__
 #define __SESSION_H__
 
-struct sysEvent_t;
-struct backgroundDownload_t;
-class idDemoFile;
-class idRenderWorld;
-class idSoundWorld;
-class idUserInterface;
-
 /*
 ===============================================================================
 
@@ -155,6 +148,9 @@ public:
 	virtual const char *GetCurrentMapName( void ) = 0;
 
 	virtual int		GetSaveGameVersion( void ) = 0;
+
+	virtual bool ShouldAppendLevel( void ) const = 0;
+	virtual const char * GetDeathwalkMapName( void ) const = 0;
 
 	// The render world and sound world used for this session.
 	idRenderWorld *	rw;

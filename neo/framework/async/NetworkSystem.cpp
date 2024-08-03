@@ -26,10 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "framework/async/AsyncNetwork.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "framework/async/NetworkSystem.h"
+#include "NetworkSystem.h"
 
 idNetworkSystem		networkSystemLocal;
 idNetworkSystem *	networkSystem = &networkSystemLocal;

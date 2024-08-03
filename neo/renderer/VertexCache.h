@@ -26,8 +26,9 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "framework/CVarSystem.h"
-#include "renderer/qgl.h"
+#ifndef __VERTEXCACHE_H__
+#define __VERTEXCACHE_H__
+
 
 // vertex cache calls should only be made by the front end
 
@@ -144,3 +145,5 @@ private:
 };
 
 extern	idVertexCache	vertexCache;
+
+#endif /* !__VERTEXCACHE_H__ */

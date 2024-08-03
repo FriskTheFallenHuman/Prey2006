@@ -29,11 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __IMAGE_H__
 #define __IMAGE_H__
 
-#include "idlib/containers/List.h"
-#include "framework/FileSystem.h"
-#include "renderer/Material.h"
-#include "renderer/qgl.h"
-
 /*
 ====================================================================
 

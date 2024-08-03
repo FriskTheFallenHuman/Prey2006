@@ -26,18 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-//#pragma optimize( "", off )
-
-
-// #ifdef WIN32 // DG: this caused trouble, especially with SDL2
-#if 0
-#include <windows.h>
-#include <GL/gl.h>
-#endif
-
-#include "tools/compilers/dmap/dmap.h"
+#include "dmap.h"
 
 /*
 

@@ -62,7 +62,7 @@ public:
 	const char **			GetArgs( int *argc );
 
 private:
-	static const int		MAX_COMMAND_ARGS = 64;
+	static const int		MAX_COMMAND_ARGS = 256; // HUMANHEAD mdl:  increased max command args by 4x for build process
 	static const int		MAX_COMMAND_STRING = 2 * MAX_STRING_CHARS;
 
 	int						argc;								// number of arguments

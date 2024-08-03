@@ -26,33 +26,13 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+#include "precompiled.h"
+#pragma hdrstop
+
 #include <SDL.h>
 
-#include "sys/platform.h"
-#include "idlib/containers/HashTable.h"
-#include "idlib/LangDict.h"
-#include "idlib/MapFile.h"
-#include "cm/CollisionModel.h"
-#include "framework/async/AsyncNetwork.h"
-#include "framework/async/NetworkSystem.h"
-#include "framework/BuildVersion.h"
-#include "framework/Licensee.h"
-#include "framework/Console.h"
-#include "framework/Session.h"
-#include "framework/Game.h"
-#include "framework/KeyInput.h"
-#include "framework/EventLoop.h"
-#include "renderer/Image.h"
-#include "renderer/Model.h"
-#include "renderer/ModelManager.h"
-#include "renderer/RenderSystem.h"
-#include "tools/compilers/compiler_public.h"
-#include "tools/compilers/aas/AASFileManager.h"
-#include "tools/edit_public.h"
+#include "../renderer/Image.h"
 
-#include "framework/Common.h"
-
-#include "GameCallbacks_local.h"
 #include "Session_local.h" // DG: For FT_IsDemo/isDemo() hack
 
 #define	MAX_PRINT_MSG_SIZE	4096
@@ -78,7 +58,7 @@ struct version_s {
 
 idCVar com_version( "si_version", version.string, CVAR_SYSTEM|CVAR_ROM|CVAR_SERVERINFO, "engine version" );
 idCVar com_skipRenderer( "com_skipRenderer", "0", CVAR_BOOL|CVAR_SYSTEM, "skip the renderer completely" );
-idCVar com_machineSpec( "com_machineSpec", "-1", CVAR_INTEGER | CVAR_ARCHIVE | CVAR_SYSTEM, "hardware classification, -1 = not detected, 0 = low quality, 1 = medium quality, 2 = high quality, 3 = ultra quality" );
+idCVar com_imageQuality( "com_imageQuality", "0", CVAR_INTEGER | CVAR_ARCHIVE | CVAR_SYSTEM, "hardware classification, -1 = not detected, 0 = low quality, 1 = medium quality, 2 = high quality, 3 = ultra quality" );
 idCVar com_purgeAll( "com_purgeAll", "0", CVAR_BOOL | CVAR_ARCHIVE | CVAR_SYSTEM, "purge everything between level loads" );
 idCVar com_memoryMarker( "com_memoryMarker", "-1", CVAR_INTEGER | CVAR_SYSTEM | CVAR_INIT, "used as a marker for memory stats" );
 idCVar com_preciseTic( "com_preciseTic", "1", CVAR_BOOL|CVAR_SYSTEM, "run one game tick every async thread update" );
@@ -167,6 +147,17 @@ public:
 
 	virtual int					ButtonState( int key );
 	virtual int					KeyState( int key );
+
+	virtual void				FixupKeyTranslations( const char *src, char *dst, int lengthAllocated) { (void) src; (void)dst; (void)lengthAllocated; }
+	virtual void				MaterialKeyForBinding (const char *binding, char *keyMaterial, char *key, bool &isBound ) {
+		(void)binding; (void)keyMaterial; (void)key;
+		isBound = false;
+	}
+	virtual void				SetGameSensitivityFactor( float factor ) { (void) factor; }
+
+	virtual void				APrintf( const char *fmt, ... ) {}	// Another print interface for animation module
+	virtual double				GetAsyncTime() { return 0; };						// Method for safely retrieving async profile info
+	virtual bool				CanUseOpenAL( void ) { return true; }
 
 	// DG: hack to allow adding callbacks and exporting additional functions without breaking the game ABI
 	//     see Common.h for longer explanation...
@@ -1274,15 +1265,6 @@ Com_EditScripts_f
 static void Com_EditScripts_f( const idCmdArgs &args ) {
 	ScriptEditorInit( NULL );
 }
-
-/*
-==================
-Com_EditPDAs_f
-==================
-*/
-static void Com_EditPDAs_f( const idCmdArgs &args ) {
-	PDAEditorInit( NULL );
-}
 #endif // ID_ALLOW_TOOLS
 
 /*
@@ -1402,14 +1384,10 @@ void Com_SetMachineSpec_f( const idCmdArgs &args ) {
 Com_ExecMachineSpecs_f
 =================
 */
-#ifdef MACOS_X
-void OSX_GetVideoCard( int& outVendorId, int& outDeviceId );
-bool OSX_GetCPUIdentification( int& cpuId, bool& oldArchitecture );
-#endif
 void Com_ExecMachineSpec_f( const idCmdArgs &args ) {
 	// DG: add an optional "nores" argument for "don't change the resolution" (r_mode)
 	bool nores = args.Argc() > 1 && idStr::Icmp( args.Argv(1), "nores" ) == 0;
-	if ( com_machineSpec.GetInteger() == 3 ) { // ultra
+	if ( com_imageQuality.GetInteger() == 3 ) { // ultra
 		//cvarSystem->SetCVarInteger( "image_anisotropy", 1, CVAR_ARCHIVE ); DG: redundant, set again below
 		cvarSystem->SetCVarInteger( "image_lodbias", 0, CVAR_ARCHIVE );
 		cvarSystem->SetCVarInteger( "image_forceDownSize", 0, CVAR_ARCHIVE );
@@ -1431,7 +1409,7 @@ void Com_ExecMachineSpec_f( const idCmdArgs &args ) {
 			cvarSystem->SetCVarInteger( "r_mode", 5, CVAR_ARCHIVE );
 		cvarSystem->SetCVarInteger( "image_useNormalCompression", 0, CVAR_ARCHIVE );
 		cvarSystem->SetCVarInteger( "r_multiSamples", 0, CVAR_ARCHIVE );
-	} else if ( com_machineSpec.GetInteger() == 2 ) { // high
+	} else if ( com_imageQuality.GetInteger() == 2 ) { // high
 		cvarSystem->SetCVarString( "image_filter", "GL_LINEAR_MIPMAP_LINEAR", CVAR_ARCHIVE );
 		//cvarSystem->SetCVarInteger( "image_anisotropy", 1, CVAR_ARCHIVE ); DG: redundant, set again below
 		cvarSystem->SetCVarInteger( "image_lodbias", 0, CVAR_ARCHIVE );
@@ -1453,7 +1431,7 @@ void Com_ExecMachineSpec_f( const idCmdArgs &args ) {
 		if ( !nores ) // DG: added optional "nores" argument
 			cvarSystem->SetCVarInteger( "", 4, CVAR_ARCHIVE );
 		cvarSystem->SetCVarInteger( "r_multiSamples", 0, CVAR_ARCHIVE );
-	} else if ( com_machineSpec.GetInteger() == 1 ) { // medium
+	} else if ( com_imageQuality.GetInteger() == 1 ) { // medium
 		cvarSystem->SetCVarString( "image_filter", "GL_LINEAR_MIPMAP_LINEAR", CVAR_ARCHIVE );
 		cvarSystem->SetCVarInteger( "image_anisotropy", 1, CVAR_ARCHIVE );
 		cvarSystem->SetCVarInteger( "image_lodbias", 0, CVAR_ARCHIVE );
@@ -1502,20 +1480,6 @@ void Com_ExecMachineSpec_f( const idCmdArgs &args ) {
 	cvarSystem->SetCVarBool( "g_projectileLights", true, CVAR_ARCHIVE );
 	cvarSystem->SetCVarBool( "g_doubleVision", true, CVAR_ARCHIVE );
 	cvarSystem->SetCVarBool( "g_muzzleFlash", true, CVAR_ARCHIVE );
-
-#if MACOS_X
-	// On low settings, G4 systems & 64MB FX5200/NV34 Systems should default shadows off
-	bool oldArch;
-	int vendorId, deviceId, cpuId;
-	OSX_GetVideoCard( vendorId, deviceId );
-	OSX_GetCPUIdentification( cpuId, oldArch );
-	bool isFX5200 = vendorId == 0x10DE && ( deviceId & 0x0FF0 ) == 0x0320;
-	if ( oldArch && ( com_machineSpec.GetInteger() == 0 ) ) {
-		cvarSystem->SetCVarBool( "r_shadows", false, CVAR_ARCHIVE );
-	} else {
-		cvarSystem->SetCVarBool( "r_shadows", true, CVAR_ARCHIVE );
-	}
-#endif
 }
 
 /*
@@ -2327,7 +2291,6 @@ void idCommonLocal::InitCommands( void ) {
 	cmdSystem->AddCommand( "editParticles", Com_EditParticles_f, CMD_FL_TOOL, "launches the in-game Particle Editor" );
 	cmdSystem->AddCommand( "editScripts", Com_EditScripts_f, CMD_FL_TOOL, "launches the in-game Script Editor" );
 	cmdSystem->AddCommand( "editGUIs", Com_EditGUIs_f, CMD_FL_TOOL, "launches the GUI Editor" );
-	cmdSystem->AddCommand( "editPDAs", Com_EditPDAs_f, CMD_FL_TOOL, "launches the in-game PDA Editor" );
 	cmdSystem->AddCommand( "debugger", Com_ScriptDebugger_f, CMD_FL_TOOL, "launches the Script Debugger" );
 
 	//BSM Nerve: Add support for the material editor
@@ -2620,20 +2583,6 @@ void idCommonLocal::LoadGameDLLbyName( const char *dll, idStr& s ) {
 			s.AppendPath(dll);
 			gameDLL = sys->DLL_Load(s);
 		}
-	#elif defined(MACOS_X)
-		// then the binary dir in the bundle on osx
-		if (!gameDLL && Sys_GetPath(PATH_EXE, s)) {
-			s.StripFilename();
-			s.AppendPath(dll);
-			gameDLL = sys->DLL_Load(s);
-		}
-
-		// if not found in the bundle's directory, try in the bundle itself
-		if (!gameDLL && Sys_GetPath(PATH_EXE, s)) {
-			s.AppendPath("Contents/MacOS/base");
-			s.AppendPath(dll);
-			gameDLL = sys->DLL_Load(s);
-		}
 	#else
 		// then the install folder on *nix
 		if (!gameDLL) {
@@ -2774,16 +2723,16 @@ void idCommonLocal::SetMachineSpec( void ) {
 
 	if ( sysRam >= 1024 ) {
 		Printf( "This system qualifies for Ultra quality!\n" );
-		com_machineSpec.SetInteger( 3 );
+		com_imageQuality.SetInteger( 3 );
 	} else if ( sysRam >= 512 ) {
 		Printf( "This system qualifies for High quality!\n" );
-		com_machineSpec.SetInteger( 2 );
+		com_imageQuality.SetInteger( 2 );
 	} else if ( sysRam >= 384 ) {
 		Printf( "This system qualifies for Medium quality.\n" );
-		com_machineSpec.SetInteger( 1 );
+		com_imageQuality.SetInteger( 1 );
 	} else {
 		Printf( "This system qualifies for Low quality.\n" );
-		com_machineSpec.SetInteger( 0 );
+		com_imageQuality.SetInteger( 0 );
 	}
 }
 
@@ -2885,11 +2834,11 @@ static bool checkForHelp(int argc, char **argv)
 
 #if D3_SIZEOFPTR == 4
   #if UINTPTR_MAX != 0xFFFFFFFFUL
-    #error "CMake assumes that we're building for a 32bit architecture, but UINTPTR_MAX doesn't match!"
+	#error "CMake assumes that we're building for a 32bit architecture, but UINTPTR_MAX doesn't match!"
   #endif
 #elif D3_SIZEOFPTR == 8
   #if UINTPTR_MAX != 18446744073709551615ULL
-    #error "CMake assumes that we're building for a 64bit architecture, but UINTPTR_MAX doesn't match!"
+	#error "CMake assumes that we're building for a 64bit architecture, but UINTPTR_MAX doesn't match!"
   #endif
 #else
   // Hello future person with a 128bit(?) CPU, I hope the future doesn't suck too much and that you don't still use CMake.
@@ -2909,7 +2858,7 @@ void idCommonLocal::Init( int argc, char **argv ) {
 	// in case UINTPTR_MAX isn't defined (or wrong), do a runtime check at startup
 	if ( D3_SIZEOFPTR != sizeof(void*) ) {
 		Sys_Error( "Something went wrong in your build: CMake assumed that sizeof(void*) == %d but in reality it's %d!\n",
-		           (int)D3_SIZEOFPTR, (int)sizeof(void*) );
+				   (int)D3_SIZEOFPTR, (int)sizeof(void*) );
 	}
 
 	if(checkForHelp(argc, argv))

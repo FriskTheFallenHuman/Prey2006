@@ -29,8 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __MATH_QUAT_H__
 #define __MATH_QUAT_H__
 
-#include "idlib/math/Vector.h"
-
 /*
 ===============================================================================
 

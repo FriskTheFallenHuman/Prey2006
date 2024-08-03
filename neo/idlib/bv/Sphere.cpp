@@ -26,9 +26,9 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "idlib/bv/Sphere.h"
 
 idSphere sphere_zero( vec3_zero, 0.0f );
 

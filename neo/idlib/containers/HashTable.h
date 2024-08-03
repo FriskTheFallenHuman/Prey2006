@@ -29,9 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __HASHTABLE_H__
 #define __HASHTABLE_H__
 
-#include "idlib/math/Math.h"
-#include "idlib/Str.h"
-
 /*
 ===============================================================================
 
@@ -63,7 +60,7 @@ public:
 					// the entire contents can be itterated over, but note that the
 					// exact index for a given element may change when new elements are added
 	int				Num( void ) const;
-	Type *			GetIndex( int index ) const;
+	Type *			GetIndex( int index, const idStr **key = NULL ) const; //HUMANHEAD mdl:  Added ability to retrieve key for saving hashtables.
 
 	int				GetSpread( void ) const;
 
@@ -248,7 +245,7 @@ exact index for a given element may change when new elements are added
 ================
 */
 template< class Type >
-ID_INLINE Type *idHashTable<Type>::GetIndex( int index ) const {
+ID_INLINE Type *idHashTable<Type>::GetIndex( int index, const idStr **key ) const {
 	hashnode_s	*node;
 	int			count;
 	int			i;
@@ -262,12 +259,22 @@ ID_INLINE Type *idHashTable<Type>::GetIndex( int index ) const {
 	for( i = 0; i < tablesize; i++ ) {
 		for( node = heads[ i ]; node != NULL; node = node->next ) {
 			if ( count == index ) {
+				//HUMANHEAD mdl
+				if ( key ) {
+					*key = &node->key;
+				}
+				//HUMANHEAD END
 				return &node->value;
 			}
 			count++;
 		}
 	}
 
+	//HUMANHEAD mdl
+	if ( key ) {
+		*key = NULL;
+	}
+	//HUMANHEAD END
 	return NULL;
 }
 

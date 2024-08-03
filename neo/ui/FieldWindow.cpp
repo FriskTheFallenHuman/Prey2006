@@ -26,12 +26,14 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "ui/DeviceContext.h"
-#include "ui/Window.h"
-#include "ui/UserInterfaceLocal.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "ui/FieldWindow.h"
+#include "DeviceContext.h"
+#include "Window.h"
+#include "UserInterfaceLocal.h"
+#include "FieldWindow.h"
+
 
 void idFieldWindow::CommonInit() {
 	cursorPos = 0;

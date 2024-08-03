@@ -28,8 +28,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __GAME_SSD_WINDOW_H__
 #define __GAME_SSD_WINDOW_H__
 
-#include "ui/Window.h"
-
 class idGameSSDWindow;
 
 class SSDCrossHair {

@@ -1,5 +1,5 @@
-#ifndef __DOOM3_CONFIG_H__
-#define __DOOM3_CONFIG_H__
+#ifndef _CONFIG_H__
+#define _CONFIG_H__
 
 #define BUILD_OS				"@os@"
 #define BUILD_CPU				"@cpu@"
