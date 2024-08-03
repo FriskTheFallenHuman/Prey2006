@@ -274,16 +274,16 @@ static const infoParm_t	infoParms[] = {
 	{"liquid",			0,	SURFTYPE_LIQUID,	0 },	// liquid
 	{"glass",			0,	SURFTYPE_GLASS,		0 },	// glass
 	{"plastic",			0,	SURFTYPE_PLASTIC,	0 },	// plastic
-    {"wallwalk",		0,	SURFTYPE_WALLWALK,	0 },	// plastic
-    {"matter_altmetal",	0,	SURFTYPE_ALTMETAL,	0 },	// behaves like metal but causes a ricochet sound
+	{"wallwalk",		0,	SURFTYPE_WALLWALK,	0 },	// plastic
+	{"matter_altmetal",	0,	SURFTYPE_ALTMETAL,	0 },	// behaves like metal but causes a ricochet sound
 
-    // unassigned surface types
-    {"forcefield",				0,	SURFTYPE_FORCEFIELD,	CONTENTS_FORCEFIELD },
-    {"pipe",					0,	SURFTYPE_PIPE,			0 },
-    {"spirit",					0,	SURFTYPE_SPIRIT,		0 },
+	// unassigned surface types
+	{"forcefield",				0,	SURFTYPE_FORCEFIELD,	CONTENTS_FORCEFIELD },
+	{"pipe",					0,	SURFTYPE_PIPE,			0 },
+	{"spirit",					0,	SURFTYPE_SPIRIT,		0 },
 	{"vehicleclip",				0,	0,						CONTENTS_VEHICLECLIP },
 	{"hunterClip",				0,	0,						CONTENTS_HUNTERCLIP },
-    {"forcefield_nobullets",	1,	SURFTYPE_FORCEFIELD,	CONTENTS_FORCEFIELD },
+	{"forcefield_nobullets",	1,	SURFTYPE_FORCEFIELD,	CONTENTS_FORCEFIELD },
 };
 
 static const int numInfoParms = sizeof(infoParms) / sizeof (infoParms[0]);
@@ -1560,88 +1560,88 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 			continue;
 		}
 
-        if ( !token.Icmp( "glowStage" ) ) {
-            continue;
-        }
-
-        if ( !token.Icmp( "specularEXP" ) ) {
-            idStr tmp;
-            src.ParseRestOfLine( tmp ); // 2 float
-            continue;
-        }
-
-        if ( !token.Icmp( "fragmentparm" ) ) {
-            src.SkipRestOfLine();
-            continue;
-        }
-
-        if ( !token.Icmp( "shaderFallback3" ) ) {
+		if ( !token.Icmp( "glowStage" ) ) {
 			continue;
 		}
 
-        if ( !token.Icmp( "shaderFallback2" ) ) {
+		if ( !token.Icmp( "specularEXP" ) ) {
+			idStr tmp;
+			src.ParseRestOfLine( tmp ); // 2 float
 			continue;
 		}
 
-        if ( !token.Icmp( "shaderFallback1" ) ) {
+		if ( !token.Icmp( "fragmentparm" ) ) {
+			src.SkipRestOfLine();
 			continue;
 		}
 
-        if ( !token.Icmp( "scopeView" ) ) { //k: scope view support
+		if ( !token.Icmp( "shaderFallback3" ) ) {
+			continue;
+		}
+
+		if ( !token.Icmp( "shaderFallback2" ) ) {
+			continue;
+		}
+
+		if ( !token.Icmp( "shaderFallback1" ) ) {
+			continue;
+		}
+
+		if ( !token.Icmp( "scopeView" ) ) { //k: scope view support
 			ss->isScopeView = true;
 			ss->isNotScopeView = false;
 			continue;
 		}
 
-        if ( !token.Icmp( "notScopeView" ) ) { //k: scope view support
+		if ( !token.Icmp( "notScopeView" ) ) { //k: scope view support
 			ss->isNotScopeView = true;
 			ss->isScopeView = false;
 			continue;
 		}
 
-        if ( !token.Icmp( "highres" ) ) {
+		if ( !token.Icmp( "highres" ) ) {
 			continue;
 		}
 
-        if ( !token.Icmp( "shaderLevel1" ) ) {
+		if ( !token.Icmp( "shaderLevel1" ) ) {
 			continue;
 		}
 
-        if ( !token.Icmp( "shaderLevel2" ) ) {
+		if ( !token.Icmp( "shaderLevel2" ) ) {
 			continue;
 		}
 
-        if ( !token.Icmp( "shaderLevel3" ) ) {
+		if ( !token.Icmp( "shaderLevel3" ) ) {
 			continue;
 		}
 
-        if ( !token.Icmp( "shaderLevel1" ) ) {
+		if ( !token.Icmp( "shaderLevel1" ) ) {
 			continue;
 		}
 
-        if ( !token.Icmp( "shuttleView" ) ) {
+		if ( !token.Icmp( "shuttleView" ) ) {
 			ss->isShuttleView = true;
 			continue;
 		}
 
-        if ( !token.Icmp( "spiritWalk" ) ) {
+		if ( !token.Icmp( "spiritWalk" ) ) {
 			ss->isSpiritWalk = true;
 			ss->isNotSpiritWalk = false;
 			continue;
 		}
 
-        if ( !token.Icmp( "notSpiritWalk" ) ) {
+		if ( !token.Icmp( "notSpiritWalk" ) ) {
 			ss->isNotSpiritWalk = true;
 			ss->isSpiritWalk = false;
 			continue;
 		}
 
-        if ( !token.Icmp( "growIn" ) ) { // it is color expression
+		if ( !token.Icmp( "growIn" ) ) { // it is color expression
 			src.SkipRestOfLine();
 			continue;
 		}
 
-        if ( !token.Icmp( "growOut" ) ) { // it is color expression
+		if ( !token.Icmp( "growOut" ) ) { // it is color expression
 			src.SkipRestOfLine();
 			continue;
 		}
@@ -2136,10 +2136,9 @@ void idMaterial::ParseMaterial( idLexer &src ) {
 		}
 		// diffusemap for stage shortcut
 		else if ( !token.Icmp( "diffusemap" ) ) {
-			idStr nstr;
-			src.ReadRestOfLine( nstr );
-			idStr::snPrintf( buffer, sizeof( buffer ), "blend diffusemap\nmap %s\n}\n", nstr.c_str() );
-			newSrc.LoadMemory( buffer, strlen(buffer), "diffusemap" );
+			str = R_ParsePastImageProgram( src );
+			idStr::snPrintf( buffer, sizeof( buffer ), "blend diffusemap\nmap %s\n}\n", str );
+			newSrc.LoadMemory( buffer, strlen( buffer ), "diffusemap" );
 			newSrc.SetFlags( LEXFL_NOFATALERRORS | LEXFL_NOSTRINGCONCAT | LEXFL_NOSTRINGESCAPECHARS | LEXFL_ALLOWPATHNAMES );
 			ParseStage( newSrc, trpDefault );
 			newSrc.FreeSource();
@@ -2147,10 +2146,9 @@ void idMaterial::ParseMaterial( idLexer &src ) {
 		}
 		// specularmap for stage shortcut
 		else if ( !token.Icmp( "specularmap" ) ) {
-			idStr nstr;
-			src.ReadRestOfLine( nstr );
-			idStr::snPrintf( buffer, sizeof( buffer ), "blend specularmap\nmap %s\n}\n", nstr.c_str() );
-			newSrc.LoadMemory( buffer, strlen(buffer), "specularmap" );
+			str = R_ParsePastImageProgram( src );
+			idStr::snPrintf( buffer, sizeof( buffer ), "blend specularmap\nmap %s\n}\n", str );
+			newSrc.LoadMemory( buffer, strlen( buffer ), "specularmap" );
 			newSrc.SetFlags( LEXFL_NOFATALERRORS | LEXFL_NOSTRINGCONCAT | LEXFL_NOSTRINGESCAPECHARS | LEXFL_ALLOWPATHNAMES );
 			ParseStage( newSrc, trpDefault );
 			newSrc.FreeSource();
@@ -2158,10 +2156,9 @@ void idMaterial::ParseMaterial( idLexer &src ) {
 		}
 		// normalmap for stage shortcut
 		else if ( !token.Icmp( "bumpmap" ) ) {
-			idStr nstr;
-			src.ReadRestOfLine( nstr );
-			idStr::snPrintf( buffer, sizeof( buffer ), "blend bumpmap\nmap %s\n}\n", nstr.c_str() );
-			newSrc.LoadMemory( buffer, strlen(buffer), "bumpmap" );
+			str = R_ParsePastImageProgram( src );
+			idStr::snPrintf( buffer, sizeof( buffer ), "blend bumpmap\nmap %s\n}\n", str );
+			newSrc.LoadMemory( buffer, strlen( buffer ), "bumpmap" );
 			newSrc.SetFlags( LEXFL_NOFATALERRORS | LEXFL_NOSTRINGCONCAT | LEXFL_NOSTRINGESCAPECHARS | LEXFL_ALLOWPATHNAMES );
 			ParseStage( newSrc, trpDefault );
 			newSrc.FreeSource();
