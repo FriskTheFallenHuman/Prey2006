@@ -42,7 +42,7 @@ QEGlobals_t g_qeglobals;
  */
 void WINAPI QE_CheckOpenGLForErrors(void) {
 	CString strMsg;
-	int		i = qglGetError();
+	int		i = glGetError();
 	if (i != GL_NO_ERROR) {
 		if (i == GL_OUT_OF_MEMORY) {
 			//

@@ -253,27 +253,27 @@ void CNewTexWnd::OnPaint() {
 	int nOld = g_qeglobals.d_texturewin.m_nTotalHeight;
 
 	//hdcTexture = GetDC();
-	if (!qwglMakeCurrent(dc.GetSafeHdc(), win32.hGLRC)) {
+	if (!wglMakeCurrent(dc.GetSafeHdc(), win32.hGLRC)) {
 		common->Printf("ERROR: wglMakeCurrent failed..\n ");
 	}
 	else {
 		const char	*name;
-		qglClearColor
+		glClearColor
 		(
 			g_qeglobals.d_savedinfo.colors[COLOR_TEXTUREBACK][0],
 			g_qeglobals.d_savedinfo.colors[COLOR_TEXTUREBACK][1],
 			g_qeglobals.d_savedinfo.colors[COLOR_TEXTUREBACK][2],
 			0
 		);
-		qglViewport(0, 0, rectClient.Width(), rectClient.Height());
-		qglScissor(0, 0, rectClient.Width(), rectClient.Height());
-		qglMatrixMode(GL_PROJECTION);
-		qglLoadIdentity();
-		qglClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		qglDisable(GL_DEPTH_TEST);
-		qglDisable(GL_BLEND);
-		qglOrtho(0, rectClient.Width(), origin.y - rectClient.Height(), origin.y, -100, 100);
-		qglPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glViewport(0, 0, rectClient.Width(), rectClient.Height());
+		glScissor(0, 0, rectClient.Width(), rectClient.Height());
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_BLEND);
+		glOrtho(0, rectClient.Width(), origin.y - rectClient.Height(), origin.y, -100, 100);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		// init stuff
 		current.x = 8;
@@ -292,53 +292,53 @@ void CNewTexWnd::OnPaint() {
 			// Is this texture visible?
 			if ((draw.y - height - FONT_HEIGHT < origin.y) && (draw.y > origin.y - rectClient.Height())) {
 				// if in use, draw a background
-				qglLineWidth(1);
-				qglColor3f(1, 1, 1);
+				glLineWidth(1);
+				glColor3f(1, 1, 1);
 				globalImages->BindNull();
-				qglBegin(GL_LINE_LOOP);
-				qglVertex2f(draw.x - 1, draw.y + 1 - FONT_HEIGHT);
-				qglVertex2f(draw.x - 1, draw.y - height - 1 - FONT_HEIGHT);
-				qglVertex2f(draw.x + 1 + width, draw.y - height - 1 - FONT_HEIGHT);
-				qglVertex2f(draw.x + 1 + width, draw.y + 1 - FONT_HEIGHT);
-				qglEnd();
+				glBegin(GL_LINE_LOOP);
+				glVertex2f(draw.x - 1, draw.y + 1 - FONT_HEIGHT);
+				glVertex2f(draw.x - 1, draw.y - height - 1 - FONT_HEIGHT);
+				glVertex2f(draw.x + 1 + width, draw.y - height - 1 - FONT_HEIGHT);
+				glVertex2f(draw.x + 1 + width, draw.y + 1 - FONT_HEIGHT);
+				glEnd();
 
 				// Draw the texture
 				float	fScale = (g_PrefsDlg.m_bHiColorTextures == TRUE) ? ((float)g_PrefsDlg.m_nTextureScale / 100) : 1.0;
 
 				mat->GetEditorImage()->Bind();
 				QE_CheckOpenGLForErrors();
-				qglColor3f(1, 1, 1);
-				qglBegin(GL_QUADS);
-				qglTexCoord2f(0, 0);
-				qglVertex2f(draw.x, draw.y - FONT_HEIGHT);
-				qglTexCoord2f(1, 0);
-				qglVertex2f(draw.x + width, draw.y - FONT_HEIGHT);
-				qglTexCoord2f(1, 1);
-				qglVertex2f(draw.x + width, draw.y - FONT_HEIGHT - height);
-				qglTexCoord2f(0, 1);
-				qglVertex2f(draw.x, draw.y - FONT_HEIGHT - height);
-				qglEnd();
+				glColor3f(1, 1, 1);
+				glBegin(GL_QUADS);
+				glTexCoord2f(0, 0);
+				glVertex2f(draw.x, draw.y - FONT_HEIGHT);
+				glTexCoord2f(1, 0);
+				glVertex2f(draw.x + width, draw.y - FONT_HEIGHT);
+				glTexCoord2f(1, 1);
+				glVertex2f(draw.x + width, draw.y - FONT_HEIGHT - height);
+				glTexCoord2f(0, 1);
+				glVertex2f(draw.x, draw.y - FONT_HEIGHT - height);
+				glEnd();
 
 				// draw the selection border
 				if ( !idStr::Icmp(g_qeglobals.d_texturewin.texdef.name, mat->GetName()) ) {
-					qglLineWidth(3);
-					qglColor3f(1, 0, 0);
+					glLineWidth(3);
+					glColor3f(1, 0, 0);
 					globalImages->BindNull();
 
-					qglBegin(GL_LINE_LOOP);
-					qglVertex2f(draw.x - 4, draw.y - FONT_HEIGHT + 4);
-					qglVertex2f(draw.x - 4, draw.y - FONT_HEIGHT - height - 4);
-					qglVertex2f(draw.x + 4 + width, draw.y - FONT_HEIGHT - height - 4);
-					qglVertex2f(draw.x + 4 + width, draw.y - FONT_HEIGHT + 4);
-					qglEnd();
+					glBegin(GL_LINE_LOOP);
+					glVertex2f(draw.x - 4, draw.y - FONT_HEIGHT + 4);
+					glVertex2f(draw.x - 4, draw.y - FONT_HEIGHT - height - 4);
+					glVertex2f(draw.x + 4 + width, draw.y - FONT_HEIGHT - height - 4);
+					glVertex2f(draw.x + 4 + width, draw.y - FONT_HEIGHT + 4);
+					glEnd();
 
-					qglLineWidth(1);
+					glLineWidth(1);
 				}
 
 				// draw the texture name
 				globalImages->BindNull();
-				qglColor3f(1, 1, 1);
-				qglRasterPos2f(draw.x, draw.y - FONT_HEIGHT + 2);
+				glColor3f(1, 1, 1);
+				glRasterPos2f(draw.x, draw.y - FONT_HEIGHT + 2);
 
 				// don't draw the directory name
 				for (name = mat->GetName(); *name && *name != '/' && *name != '\\'; name++) {
@@ -351,8 +351,8 @@ void CNewTexWnd::OnPaint() {
 				else {
 					name++;
 				}
-				qglCallLists(strlen(name), GL_UNSIGNED_BYTE, name);
-				//qglCallLists(va("%s -- %d, %d" strlen(name), GL_UNSIGNED_BYTE, name);
+				glCallLists(strlen(name), GL_UNSIGNED_BYTE, name);
+				//glCallLists(va("%s -- %d, %d" strlen(name), GL_UNSIGNED_BYTE, name);
 			}
 		}
 
@@ -360,8 +360,8 @@ void CNewTexWnd::OnPaint() {
 
 		// reset the current texture
 		globalImages->BindNull();
-		qglFinish();
-		qwglSwapBuffers(dc.GetSafeHdc());
+		glFinish();
+		SwapBuffers(dc.GetSafeHdc());
 		TRACE("Texture Paint\n");
 	}
 

@@ -1088,7 +1088,6 @@ idRenderModel *R_EntityDefDynamicModel( idRenderEntityLocal *def ) {
 
 		// instantiate the snapshot of the dynamic model, possibly reusing memory from the cached snapshot
 		def->cachedDynamicModel = model->InstantiateDynamicModel( &def->parms, tr.viewDef, def->cachedDynamicModel );
-
 		if ( def->cachedDynamicModel ) {
 
 			// add any overlays to the snapshot of the dynamic model

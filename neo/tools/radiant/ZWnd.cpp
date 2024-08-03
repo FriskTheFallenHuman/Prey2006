@@ -142,7 +142,7 @@ void CZWnd::OnPaint()
 	CPaintDC dc(this); // device context for painting
   //if (!wglMakeCurrent(m_dcZ, m_hglrcZ))
   //if (!qwglMakeCurrent(dc.m_hDC, m_hglrcZ))
-  if (!qwglMakeCurrent(dc.m_hDC, win32.hGLRC))
+  if (!wglMakeCurrent(dc.m_hDC, win32.hGLRC))
   {
 	common->Printf("ERROR: wglMakeCurrent failed..\n ");
 	common->Printf("Please restart " EDITOR_WINDOWTEXT " if the Z view is not working\n");
@@ -153,7 +153,7 @@ void CZWnd::OnPaint()
 
 	Z_Draw ();
 	  //qwglSwapBuffers(m_dcZ);
-	  qwglSwapBuffers(dc.m_hDC);
+	  SwapBuffers(dc.m_hDC);
 	TRACE("Z Paint\n");
   }
 }

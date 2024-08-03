@@ -251,7 +251,7 @@ void Error(char *error, ...) {
 
 	err = GetLastError();
 
-	int i = qglGetError();
+	int i = glGetError();
 
 	va_start(argptr, error);
 	vsprintf(text, error, argptr);

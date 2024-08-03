@@ -2209,11 +2209,11 @@ void DrawPatchMesh( patchMesh_t *pm,bool bPoints,int *list,bool bShade = false )
 	// patches use two display lists, one for camera one for xy
 	if ( *list <= 0 ) {
 		if ( *list <= 0 ) {
-			*list = qglGenLists(1);
+			*list = glGenLists(1);
 		}
 
 		if ( *list > 0 ) {
-			qglNewList(*list, GL_COMPILE_AND_EXECUTE);
+			glNewList(*list, GL_COMPILE_AND_EXECUTE);
 		}
 
 		//FIXME: finish consolidating all the patch crap
@@ -2238,14 +2238,14 @@ void DrawPatchMesh( patchMesh_t *pm,bool bPoints,int *list,bool bShade = false )
 		/*
 					for (i = 0; i < width; i++) {
 						for (j = 0; j < height; j++) {
-							qglBegin(GL_POINTS);
+							glBegin(GL_POINTS);
 							int index = j * width + i;
-							qglVertex3fv((*cp)[index].xyz);
-							qglEnd();
+							glVertex3fv((*cp)[index].xyz);
+							glEnd();
 							char msg[64];
 							sprintf(msg, "(%0.3f, %0.3f, %0.3f)(%0.3f, %0.3f)", (*cp)[index].xyz.x, (*cp)[index].xyz.y, (*cp)[index].xyz.z, (*cp)[index].st.x, (*cp)[index].st.y);
-							qglRasterPos3f((*cp)[index].xyz.x + 1, (*cp)[index].xyz.y + 1, (*cp)[index].xyz.z + 1);
-							qglCallLists (strlen(msg), GL_UNSIGNED_BYTE, msg);
+							glRasterPos3f((*cp)[index].xyz.x + 1, (*cp)[index].xyz.y + 1, (*cp)[index].xyz.z + 1);
+							glCallLists (strlen(msg), GL_UNSIGNED_BYTE, msg);
 						}
 					}
 			*/
@@ -2264,19 +2264,19 @@ void DrawPatchMesh( patchMesh_t *pm,bool bPoints,int *list,bool bShade = false )
 		}
 		//		surf->ClipInPlace( idPlane( 1, 0, 0, 0 ), 0.1f, true );
 
-		qglBegin(GL_TRIANGLES);
+		glBegin(GL_TRIANGLES);
 		for ( i = 0; i < surf->GetNumIndexes(); i += 3 ) {
 			n = surf->GetIndexes()[i + 0];
-			qglTexCoord2fv((*surf)[n].st.ToFloatPtr());
-			qglVertex3fv((*surf)[n].xyz.ToFloatPtr());
+			glTexCoord2fv((*surf)[n].st.ToFloatPtr());
+			glVertex3fv((*surf)[n].xyz.ToFloatPtr());
 			n = surf->GetIndexes()[i + 1];
-			qglTexCoord2fv((*surf)[n].st.ToFloatPtr());
-			qglVertex3fv((*surf)[n].xyz.ToFloatPtr());
+			glTexCoord2fv((*surf)[n].st.ToFloatPtr());
+			glVertex3fv((*surf)[n].xyz.ToFloatPtr());
 			n = surf->GetIndexes()[i + 2];
-			qglTexCoord2fv((*surf)[n].st.ToFloatPtr());
-			qglVertex3fv((*surf)[n].xyz.ToFloatPtr());
+			glTexCoord2fv((*surf)[n].st.ToFloatPtr());
+			glVertex3fv((*surf)[n].xyz.ToFloatPtr());
 		}
-		qglEnd();
+		glEnd();
 
 		if ( front ) {
 			delete front;
@@ -2286,7 +2286,7 @@ void DrawPatchMesh( patchMesh_t *pm,bool bPoints,int *list,bool bShade = false )
 		}
 #else
 		for ( i = 0 ; i < width - 1; i++ ) {
-			qglBegin(GL_QUAD_STRIP);
+			glBegin(GL_QUAD_STRIP);
 			for ( j = 0 ; j < height; j++ ) {
 				// v1-v2-v3-v4 makes a quad
 				int		v1, v2;
@@ -2295,45 +2295,45 @@ void DrawPatchMesh( patchMesh_t *pm,bool bPoints,int *list,bool bShade = false )
 				v2 = v1 + 1;
 				if ( bShade ) {
 					f = ShadeForNormal((*cp)[v2].normal);
-					qglColor3f(f, f, f);
+					glColor3f(f, f, f);
 				}
-				qglTexCoord2fv((*cp)[v2].st.ToFloatPtr());
-				qglVertex3fv((*cp)[v2].xyz.ToFloatPtr());
+				glTexCoord2fv((*cp)[v2].st.ToFloatPtr());
+				glVertex3fv((*cp)[v2].xyz.ToFloatPtr());
 				if ( bShade ) {
 					f = ShadeForNormal((*cp)[v1].normal);
-					qglColor3f(f, f, f);
+					glColor3f(f, f, f);
 				}
-				qglTexCoord2fv((*cp)[v1].st.ToFloatPtr());
-				qglVertex3fv((*cp)[v1].xyz.ToFloatPtr());
+				glTexCoord2fv((*cp)[v1].st.ToFloatPtr());
+				glVertex3fv((*cp)[v1].xyz.ToFloatPtr());
 			}
-			qglEnd();
+			glEnd();
 		}
 #endif
 
 		if ( list == &pm->nListSelected ) {
 			globalImages->BindNull();
-			qglPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			qglColor3f(1.0f, 1.0f, 1.0f);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glColor3f(1.0f, 1.0f, 1.0f);
 			for ( i = 0 ; i < width - 1; i++ ) {
-				qglBegin(GL_QUAD_STRIP);
+				glBegin(GL_QUAD_STRIP);
 				for ( j = 0 ; j < height; j++ ) {
 					int	v1, v2;
 					v1 = j * width + i;
 					v2 = v1 + 1;
-					qglVertex3fv((*cp)[v2].xyz.ToFloatPtr());
-					qglVertex3fv((*cp)[v1].xyz.ToFloatPtr());
+					glVertex3fv((*cp)[v2].xyz.ToFloatPtr());
+					glVertex3fv((*cp)[v1].xyz.ToFloatPtr());
 				}
-				qglEnd();
+				glEnd();
 			}
 		}
 
 		delete cp;
 
 		if ( *list > 0 ) {
-			qglEndList();
+			glEndList();
 		}
 	} else {
-		qglCallList(*list);
+		glCallList(*list);
 	}
 
 	idVec3	*pSelectedPoints[256];
@@ -2345,91 +2345,91 @@ void DrawPatchMesh( patchMesh_t *pm,bool bPoints,int *list,bool bShade = false )
 
 		// bending or inserting
 		if ( g_bPatchBendMode || g_bPatchInsertMode ) {
-			qglPointSize(6);
+			glPointSize(6);
 			if ( g_bPatchAxisOnRow ) {
-				qglColor3f(1, 0, 1);
-				qglBegin(GL_POINTS);
+				glColor3f(1, 0, 1);
+				glBegin(GL_POINTS);
 				for ( i = 0; i < pm->width; i++ ) {
-					qglVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(i, g_nPatchAxisIndex).xyz));
+					glVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(i, g_nPatchAxisIndex).xyz));
 				}
-				qglEnd();
+				glEnd();
 
 				// could do all of this in one loop but it was pretty messy
 				if ( g_bPatchInsertMode ) {
-					qglColor3f(0, 0, 1);
-					qglBegin(GL_POINTS);
+					glColor3f(0, 0, 1);
+					glBegin(GL_POINTS);
 					for ( i = 0; i < pm->width; i++ ) {
-						qglVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(i, g_nPatchAxisIndex).xyz));
-						qglVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(i, g_nPatchAxisIndex + 1).xyz));
+						glVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(i, g_nPatchAxisIndex).xyz));
+						glVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(i, g_nPatchAxisIndex + 1).xyz));
 					}
-					qglEnd();
+					glEnd();
 				} else {
 					if ( g_nPatchBendState == BEND_SELECT_EDGE || g_nPatchBendState == BEND_BENDIT || g_nPatchBendState == BEND_SELECT_ORIGIN ) {
-						qglColor3f(0, 0, 1);
-						qglBegin(GL_POINTS);
+						glColor3f(0, 0, 1);
+						glBegin(GL_POINTS);
 						if ( g_nPatchBendState == BEND_SELECT_ORIGIN ) {
-							qglVertex3fv(g_vBendOrigin.ToFloatPtr());
+							glVertex3fv(g_vBendOrigin.ToFloatPtr());
 						} else {
 							for ( i = 0; i < pm->width; i++ ) {
 								if ( g_bPatchLowerEdge ) {
 									for ( j = 0; j < g_nPatchAxisIndex; j++ ) {
-										qglVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(i, j).xyz));
+										glVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(i, j).xyz));
 									}
 								} else {
 									for ( j = pm->height - 1; j > g_nPatchAxisIndex; j-- ) {
-										qglVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(i, j).xyz));
+										glVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(i, j).xyz));
 									}
 								}
 							}
 						}
-						qglEnd();
+						glEnd();
 					}
 				}
 			} else {
-				qglColor3f(1, 0, 1);
-				qglBegin(GL_POINTS);
+				glColor3f(1, 0, 1);
+				glBegin(GL_POINTS);
 				for ( i = 0; i < pm->height; i++ ) {
-					qglVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(g_nPatchAxisIndex, i).xyz));
+					glVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(g_nPatchAxisIndex, i).xyz));
 				}
-				qglEnd();
+				glEnd();
 
 				// could do all of this in one loop but it was pretty messy
 				if ( g_bPatchInsertMode ) {
-					qglColor3f(0, 0, 1);
-					qglBegin(GL_POINTS);
+					glColor3f(0, 0, 1);
+					glBegin(GL_POINTS);
 					for ( i = 0; i < pm->height; i++ ) {
-						qglVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(g_nPatchAxisIndex, i).xyz));
-						qglVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(g_nPatchAxisIndex + 1, i).xyz));
+						glVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(g_nPatchAxisIndex, i).xyz));
+						glVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(g_nPatchAxisIndex + 1, i).xyz));
 					}
-					qglEnd();
+					glEnd();
 				} else {
 					if ( g_nPatchBendState == BEND_SELECT_EDGE || g_nPatchBendState == BEND_BENDIT || g_nPatchBendState == BEND_SELECT_ORIGIN ) {
-						qglColor3f(0, 0, 1);
-						qglBegin(GL_POINTS);
+						glColor3f(0, 0, 1);
+						glBegin(GL_POINTS);
 						for ( i = 0; i < pm->height; i++ ) {
 							if ( g_nPatchBendState == BEND_SELECT_ORIGIN ) {
-								qglVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(g_nBendOriginIndex, i).xyz));
+								glVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(g_nBendOriginIndex, i).xyz));
 							} else {
 								if ( g_bPatchLowerEdge ) {
 									for ( j = 0; j < g_nPatchAxisIndex; j++ ) {
-										qglVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(j, i).xyz));
+										glVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(j, i).xyz));
 									}
 								} else {
 									for ( j = pm->width - 1; j > g_nPatchAxisIndex; j-- ) {
-										qglVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(j, i).xyz));
+										glVertex3fv(reinterpret_cast< float(*)>(&pm->ctrl(j, i).xyz));
 									}
 								}
 							}
 						}
-						qglEnd();
+						glEnd();
 					}
 				}
 			}
 		} else {
-			qglPointSize(6);
+			glPointSize(6);
 			for ( i = 0 ; i < pm->width ; i++ ) {
 				for ( j = 0 ; j < pm->height ; j++ ) {
-					qglBegin(GL_POINTS);
+					glBegin(GL_POINTS);
 					// FIXME: need to not do loop lookups inside here
 					int	n	= PointValueInMoveList(pm->ctrl(i, j).xyz);
 					if ( n >= 0 ) {
@@ -2437,39 +2437,39 @@ void DrawPatchMesh( patchMesh_t *pm,bool bPoints,int *list,bool bShade = false )
 					}
 
 					if ( i & 0x01 || j & 0x01 ) {
-						qglColor3f(1, 0, 1);
+						glColor3f(1, 0, 1);
 					} else {
-						qglColor3f(0, 1, 0);
+						glColor3f(0, 1, 0);
 					}
-					qglVertex3fv(pm->ctrl(i, j).xyz.ToFloatPtr());
-					qglEnd();
+					glVertex3fv(pm->ctrl(i, j).xyz.ToFloatPtr());
+					glEnd();
 				}
 			}
 		}
 
 		if ( nIndex > 0 ) {
-			qglBegin(GL_POINTS);
-			qglColor3f(0, 0, 1);
+			glBegin(GL_POINTS);
+			glColor3f(0, 0, 1);
 			while ( nIndex-- > 0 ) {
-				qglVertex3fv((*pSelectedPoints[nIndex]).ToFloatPtr());
+				glVertex3fv((*pSelectedPoints[nIndex]).ToFloatPtr());
 			}
-			qglEnd();
+			glEnd();
 		}
 	}
 	if ( bOverlay ) {
-		qglPointSize(6);
-		qglColor3f(0.5, 0.5, 0.5);
+		glPointSize(6);
+		glColor3f(0.5, 0.5, 0.5);
 		for ( i = 0 ; i < pm->width ; i++ ) {
-			qglBegin(GL_POINTS);
+			glBegin(GL_POINTS);
 			for ( j = 0 ; j < pm->height ; j++ ) {
 				if ( i & 0x01 || j & 0x01 ) {
-					qglColor3f(0.5, 0, 0.5);
+					glColor3f(0.5, 0, 0.5);
 				} else {
-					qglColor3f(0, 0.5, 0);
+					glColor3f(0, 0.5, 0);
 				}
-				qglVertex3fv(pm->ctrl(i, j).xyz.ToFloatPtr());
+				glVertex3fv(pm->ctrl(i, j).xyz.ToFloatPtr());
 			}
-			qglEnd();
+			glEnd();
 		}
 	}
 }
@@ -2480,20 +2480,20 @@ Patch_DrawXY
 ==================
 */
 void Patch_DrawXY( patchMesh_t *pm ) {
-	qglPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	if ( pm->bSelected ) {
-		qglColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].ToFloatPtr());
-		//qglDisable (GL_LINE_STIPPLE);
-		//qglLineWidth (1);
+		glColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].ToFloatPtr());
+		//glDisable (GL_LINE_STIPPLE);
+		//glLineWidth (1);
 	} else {
-		qglColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_BRUSHES].ToFloatPtr());
+		glColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_BRUSHES].ToFloatPtr());
 	}
 
 	DrawPatchMesh(pm, pm->bSelected, &pm->nListID);
-	qglPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	if ( pm->bSelected ) {
-		//qglLineWidth (2);
-		//qglEnable (GL_LINE_STIPPLE);
+		//glLineWidth (2);
+		//glEnable (GL_LINE_STIPPLE);
 	}
 }
 
@@ -2507,64 +2507,64 @@ void Patch_DrawCam( patchMesh_t *pm,bool selected ) {
 	int nDrawMode = g_pParentWnd->GetCamera()->Camera().draw_mode;
 
 	if ( !selected ) {
-		qglColor3f(1, 1, 1);
+		glColor3f(1, 1, 1);
 	}
 
 	if ( g_bPatchWireFrame || nDrawMode == cd_wire ) {
-		qglDisable(GL_CULL_FACE);
-		qglPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glDisable(GL_CULL_FACE);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		globalImages->BindNull();
 		DrawPatchMesh(pm, pm->bSelected, &pm->nListIDCam, true);
-		qglEnable(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE);
 	} else {
-		qglEnable(GL_CULL_FACE);
-		qglCullFace(GL_FRONT);
-		qglPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		if ( nDrawMode == cd_texture || nDrawMode == cd_light ) {
 			pm->d_texture->GetEditorImage()->Bind();
 		}
 
 		if ( !selected && pm->d_texture->GetEditorAlpha() != 1.0f ) {
-			qglEnable(GL_BLEND);
-			qglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 
 		DrawPatchMesh(pm, pm->bSelected, &pm->nListIDCam, true);
 
 		if ( !selected && pm->d_texture->GetEditorAlpha() != 1.0f ) {
-			qglDisable(GL_BLEND);
+			glDisable(GL_BLEND);
 		}
 
 		globalImages->BindNull();
 
 		if ( !selected ) {
-			qglCullFace(GL_BACK);
-			qglPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			qglDisable(GL_BLEND);
+			glCullFace(GL_BACK);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glDisable(GL_BLEND);
 		} else {
-			qglEnable(GL_BLEND);
-			qglColor4f(g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][0], g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][1], g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][2], 0.25);
-			qglDisable(GL_CULL_FACE);
+			glEnable(GL_BLEND);
+			glColor4f(g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][0], g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][1], g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][2], 0.25);
+			glDisable(GL_CULL_FACE);
 		}
 		DrawPatchMesh(pm, pm->bSelected, (selected) ? &pm->nListSelected : &pm->nListIDCam, !selected);
-		qglEnable(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE);
 	}
 
 #if 0 // this paints normal indicators on the ctrl points
-		//--qglDisable (GL_DEPTH_TEST);
-	qglColor3f (1,1,1);
+		//--glDisable (GL_DEPTH_TEST);
+	glColor3f (1,1,1);
 	for (int i = 0; i < pm->width; i++) {
 		for (int j = 0; j < pm->height; j++) {
 			idVec3 temp;
-			qglBegin (GL_LINES);
-			qglVertex3fv (pm->ctrl(i,j).xyz);
+			glBegin (GL_LINES);
+			glVertex3fv (pm->ctrl(i,j).xyz);
 			VectorMA (pm->ctrl(i,j).xyz, 8, pm->ctrl(i,j].normal, temp);
-			qglVertex3fv (temp);
-			qglEnd ();
+			glVertex3fv (temp);
+			glEnd ();
 		}
 	}
-	//--qglEnable (GL_DEPTH_TEST);
+	//--glEnable (GL_DEPTH_TEST);
 #endif
 
 }

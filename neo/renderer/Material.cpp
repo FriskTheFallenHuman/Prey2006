@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "tr_local.h"
 
-#define _SURFTYPE(x) ( (x) | ( surfaceFlags & ( ~SURF_TYPE_MASK ) ) )
+#define _SURFTYPE(x) ( ( x ) | ( surfaceFlags & ( ~SURF_TYPE_MASK ) ) )
 
 /*
 

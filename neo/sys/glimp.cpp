@@ -490,7 +490,7 @@ try_again:
 			win32.hWnd = sdlinfo.info.win.window;
 			win32.hDC = sdlinfo.info.win.hdc;
 			// NOTE: hInstance is set in main()
-			win32.hGLRC = qwglGetCurrentContext();
+			win32.hGLRC = wglGetCurrentContext();
 
 			int pfIdx = GetPixelFormat(win32.hDC);
 			PIXELFORMATDESCRIPTOR src = {};
@@ -869,15 +869,9 @@ void GLimp_DeactivateContext() {
 
 /*
 ===================
-GLimp_ExtensionPointer
+GLimp_GrabInput
 ===================
 */
-GLExtension_t GLimp_ExtensionPointer(const char *name) {
-	assert(SDL_WasInit(SDL_INIT_VIDEO));
-
-	return (GLExtension_t)SDL_GL_GetProcAddress(name);
-}
-
 void GLimp_GrabInput(int flags) {
 	if (!window) {
 		common->Warning("GLimp_GrabInput called without window");

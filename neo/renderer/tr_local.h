@@ -1375,7 +1375,7 @@ typedef enum {
 	PP_COLOR_MODULATE,
 	PP_COLOR_ADD,
 
-	PP_LIGHT_FALLOFF_TQ = 20	// only for NV programs
+	PP_GAMMA_BRIGHTNESS = 20	// DG: for gamma in shader: { r_brightness, r_brightness, r_brightness, 1/r_gamma }
 } programParameter_t;
 
 

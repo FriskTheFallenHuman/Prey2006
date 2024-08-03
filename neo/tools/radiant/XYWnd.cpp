@@ -754,8 +754,8 @@ int CXYWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	s_hdcXY = ::GetDC(GetSafeHwnd());
 	QEW_SetupPixelFormat(s_hdcXY, false);
 
-	qglPolygonStipple((unsigned char *)s_stipple);
-	qglLineStipple(3, 0xaaaa);
+	glPolygonStipple((unsigned char *)s_stipple);
+	glLineStipple(3, 0xaaaa);
 	return 0;
 }
 
@@ -1471,8 +1471,8 @@ void CXYWnd::SetPointMode(bool b) {
 void CXYWnd::OnPaint() {
 	CPaintDC	dc(this);					// device context for painting
 	bool		bPaint = true;
-	if (!qwglMakeCurrent(dc.m_hDC, win32.hGLRC)) {
-		common->Printf("ERROR: wglMakeCurrent failed.. Error:%i\n", qglGetError());
+	if (!wglMakeCurrent(dc.m_hDC, win32.hGLRC)) {
+		common->Printf("ERROR: wglMakeCurrent failed.. Error:%i\n", glGetError());
 		common->Printf("Please restart Q3Radiant if the Map view is not working\n");
 		bPaint = false;
 	}
@@ -1483,81 +1483,81 @@ void CXYWnd::OnPaint() {
 		QE_CheckOpenGLForErrors();
 
 		if (m_nViewType != XY) {
-			qglPushMatrix();
+			glPushMatrix();
 			if (m_nViewType == YZ) {
-				qglRotatef(-90, 0, 1, 0);	// put Z going up
+				glRotatef(-90, 0, 1, 0);	// put Z going up
 			}
 
-			qglRotatef(-90, 1, 0, 0);		// put Z going up
+			glRotatef(-90, 1, 0, 0);		// put Z going up
 		}
 
 		if ( g_bCrossHairs ) {
-			qglColor4f( 0.2f, 0.9f, 0.2f, 0.8f );
-			qglBegin(GL_LINES);
+			glColor4f( 0.2f, 0.9f, 0.2f, 0.8f );
+			glBegin(GL_LINES);
 			if (m_nViewType == XY) {
-				qglVertex2f(-16384, tdp[1]);
-				qglVertex2f(16384, tdp[1]);
-				qglVertex2f(tdp[0], -16384);
-				qglVertex2f(tdp[0], 16384);
+				glVertex2f(-16384, tdp[1]);
+				glVertex2f(16384, tdp[1]);
+				glVertex2f(tdp[0], -16384);
+				glVertex2f(tdp[0], 16384);
 			}
 			else if (m_nViewType == YZ) {
-				qglVertex3f(tdp[0], -16384, tdp[2]);
-				qglVertex3f(tdp[0], 16384, tdp[2]);
-				qglVertex3f(tdp[0], tdp[1], -16384);
-				qglVertex3f(tdp[0], tdp[1], 16384);
+				glVertex3f(tdp[0], -16384, tdp[2]);
+				glVertex3f(tdp[0], 16384, tdp[2]);
+				glVertex3f(tdp[0], tdp[1], -16384);
+				glVertex3f(tdp[0], tdp[1], 16384);
 			}
 			else {
-				qglVertex3f(-16384, tdp[1], tdp[2]);
-				qglVertex3f(16384, tdp[1], tdp[2]);
-				qglVertex3f(tdp[0], tdp[1], -16384);
-				qglVertex3f(tdp[0], tdp[1], 16384);
+				glVertex3f(-16384, tdp[1], tdp[2]);
+				glVertex3f(16384, tdp[1], tdp[2]);
+				glVertex3f(tdp[0], tdp[1], -16384);
+				glVertex3f(tdp[0], tdp[1], 16384);
 			}
 
-			qglEnd();
+			glEnd();
 		}
 
 		if (ClipMode()) {
-			qglPointSize(4);
-			qglColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_CLIPPER].ToFloatPtr());
-			qglBegin(GL_POINTS);
+			glPointSize(4);
+			glColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_CLIPPER].ToFloatPtr());
+			glBegin(GL_POINTS);
 			if (g_Clip1.Set()) {
-				qglVertex3fv(g_Clip1);
+				glVertex3fv(g_Clip1);
 			}
 
 			if (g_Clip2.Set()) {
-				qglVertex3fv(g_Clip2);
+				glVertex3fv(g_Clip2);
 			}
 
 			if (g_Clip3.Set()) {
-				qglVertex3fv(g_Clip3);
+				glVertex3fv(g_Clip3);
 			}
 
-			qglEnd();
-			qglPointSize(1);
+			glEnd();
+			glPointSize(1);
 
 			CString strMsg;
 			if (g_Clip1.Set()) {
-				qglRasterPos3f(g_Clip1.m_ptClip[0] + 2, g_Clip1.m_ptClip[1] + 2, g_Clip1.m_ptClip[2] + 2);
+				glRasterPos3f(g_Clip1.m_ptClip[0] + 2, g_Clip1.m_ptClip[1] + 2, g_Clip1.m_ptClip[2] + 2);
 				strMsg = "1";
 
 				// strMsg.Format("1 (%f, %f, %f)", g_Clip1[0], g_Clip1[1], g_Clip1[2]);
-				qglCallLists(strMsg.GetLength(), GL_UNSIGNED_BYTE, strMsg);
+				glCallLists(strMsg.GetLength(), GL_UNSIGNED_BYTE, strMsg);
 			}
 
 			if (g_Clip2.Set()) {
-				qglRasterPos3f(g_Clip2.m_ptClip[0] + 2, g_Clip2.m_ptClip[1] + 2, g_Clip2.m_ptClip[2] + 2);
+				glRasterPos3f(g_Clip2.m_ptClip[0] + 2, g_Clip2.m_ptClip[1] + 2, g_Clip2.m_ptClip[2] + 2);
 				strMsg = "2";
 
 				// strMsg.Format("2 (%f, %f, %f)", g_Clip2[0], g_Clip2[1], g_Clip2[2]);
-				qglCallLists(strMsg.GetLength(), GL_UNSIGNED_BYTE, strMsg);
+				glCallLists(strMsg.GetLength(), GL_UNSIGNED_BYTE, strMsg);
 			}
 
 			if (g_Clip3.Set()) {
-				qglRasterPos3f(g_Clip3.m_ptClip[0] + 2, g_Clip3.m_ptClip[1] + 2, g_Clip3.m_ptClip[2] + 2);
+				glRasterPos3f(g_Clip3.m_ptClip[0] + 2, g_Clip3.m_ptClip[1] + 2, g_Clip3.m_ptClip[2] + 2);
 				strMsg = "3";
 
 				// strMsg.Format("3 (%f, %f, %f)", g_Clip3[0], g_Clip3[1], g_Clip3[2]);
-				qglCallLists(strMsg.GetLength(), GL_UNSIGNED_BYTE, strMsg);
+				glCallLists(strMsg.GetLength(), GL_UNSIGNED_BYTE, strMsg);
 			}
 
 			if (g_Clip1.Set() && g_Clip2.Set() && selected_brushes.next != &selected_brushes) {
@@ -1566,7 +1566,7 @@ void CXYWnd::OnPaint() {
 				brush_t *pBrush;
 				brush_t *pList = ((m_nViewType == XZ) ? !g_bSwitch : g_bSwitch) ? &g_brBackSplits : &g_brFrontSplits;
 				for (pBrush = pList->next; pBrush != NULL && pBrush != pList; pBrush = pBrush->next) {
-					qglColor3f(1, 1, 0);
+					glColor3f(1, 1, 0);
 
 					face_t	*face;
 					int		order;
@@ -1577,48 +1577,48 @@ void CXYWnd::OnPaint() {
 						}
 
 						// draw the polygon
-						qglBegin(GL_LINE_LOOP);
+						glBegin(GL_LINE_LOOP);
 						for (int i = 0; i < w->GetNumPoints(); i++) {
-							qglVertex3fv( (*w)[i].ToFloatPtr() );
+							glVertex3fv( (*w)[i].ToFloatPtr() );
 						}
 
-						qglEnd();
+						glEnd();
 					}
 				}
 			}
 		}
 
 		if (PathMode()) {
-			qglPointSize(4);
-			qglColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_CLIPPER].ToFloatPtr());
-			qglBegin(GL_POINTS);
+			glPointSize(4);
+			glColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_CLIPPER].ToFloatPtr());
+			glBegin(GL_POINTS);
 
 			int n;
 			for ( n = 0; n < g_nPathCount; n++) {
-				qglVertex3fv(g_PathPoints[n]);
+				glVertex3fv(g_PathPoints[n]);
 			}
 
-			qglEnd();
-			qglPointSize(1);
+			glEnd();
+			glPointSize(1);
 
 			CString strMsg;
 			for (n = 0; n < g_nPathCount; n++) {
-				qglRasterPos3f
+				glRasterPos3f
 				(
 					g_PathPoints[n].m_ptClip[0] + 2,
 					g_PathPoints[n].m_ptClip[1] + 2,
 					g_PathPoints[n].m_ptClip[2] + 2
 				);
 				strMsg.Format("%i", n + 1);
-				qglCallLists(strMsg.GetLength(), GL_UNSIGNED_BYTE, strMsg);
+				glCallLists(strMsg.GetLength(), GL_UNSIGNED_BYTE, strMsg);
 			}
 		}
 
 		if (m_nViewType != XY) {
-			qglPopMatrix();
+			glPopMatrix();
 		}
 
-		qwglSwapBuffers(dc.m_hDC);
+		SwapBuffers(dc.m_hDC);
 		TRACE("XY Paint\n");
 	}
 }
@@ -2779,7 +2779,7 @@ void CXYWnd::XY_DrawGrid() {
 	ye = startPos * ceil(ye / startPos);
 
 	// draw major blocks
-	qglColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR].ToFloatPtr());
+	glColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR].ToFloatPtr());
 
 	int stepSize = 64 * 0.1 / m_fScale;
 	if (stepSize < 64) {
@@ -2794,19 +2794,19 @@ void CXYWnd::XY_DrawGrid() {
 	}
 
 	if (g_qeglobals.d_showgrid) {
-		qglBegin(GL_LINES);
+		glBegin(GL_LINES);
 
 		for (x = xb; x <= xe; x += stepSize) {
-			qglVertex2f(x, yb);
-			qglVertex2f(x, ye);
+			glVertex2f(x, yb);
+			glVertex2f(x, ye);
 		}
 
 		for (y = yb; y <= ye; y += stepSize) {
-			qglVertex2f(xb, y);
-			qglVertex2f(xe, y);
+			glVertex2f(xb, y);
+			glVertex2f(xe, y);
 		}
 
-		qglEnd();
+		glEnd();
 	}
 
 	// draw minor blocks
@@ -2815,16 +2815,16 @@ void CXYWnd::XY_DrawGrid() {
 		g_qeglobals.d_gridsize * m_fScale >= 4 &&
 		!g_qeglobals.d_savedinfo.colors[COLOR_GRIDMINOR].Compare( g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK] ) ) {
 
-		qglColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_GRIDMINOR].ToFloatPtr());
+		glColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_GRIDMINOR].ToFloatPtr());
 
-		qglBegin(GL_LINES);
+		glBegin(GL_LINES);
 		for (x = xb; x < xe; x += g_qeglobals.d_gridsize) {
 			if (!((int)x & (startPos - 1))) {
 				continue;
 			}
 
-			qglVertex2f(x, yb);
-			qglVertex2f(x, ye);
+			glVertex2f(x, yb);
+			glVertex2f(x, ye);
 		}
 
 		for (y = yb; y < ye; y += g_qeglobals.d_gridsize) {
@@ -2832,11 +2832,11 @@ void CXYWnd::XY_DrawGrid() {
 				continue;
 			}
 
-			qglVertex2f(xb, y);
-			qglVertex2f(xe, y);
+			glVertex2f(xb, y);
+			glVertex2f(xe, y);
 		}
 
-		qglEnd();
+		glEnd();
 	}
 
 
@@ -2848,18 +2848,18 @@ void CXYWnd::XY_DrawGrid() {
 		{
 			if (g_pParentWnd->GetZWnd()->m_pZClip->IsEnabled())
 			{
-				qglColor3f(ZCLIP_COLOUR);
-				qglLineWidth(2);
-				qglBegin (GL_LINES);
+				glColor3f(ZCLIP_COLOUR);
+				glLineWidth(2);
+				glBegin (GL_LINES);
 
-				qglVertex2f (xb, g_pParentWnd->GetZWnd()->m_pZClip->GetTop());
-				qglVertex2f (xe, g_pParentWnd->GetZWnd()->m_pZClip->GetTop());
+				glVertex2f (xb, g_pParentWnd->GetZWnd()->m_pZClip->GetTop());
+				glVertex2f (xe, g_pParentWnd->GetZWnd()->m_pZClip->GetTop());
 
-				qglVertex2f (xb, g_pParentWnd->GetZWnd()->m_pZClip->GetBottom());
-				qglVertex2f (xe, g_pParentWnd->GetZWnd()->m_pZClip->GetBottom());
+				glVertex2f (xb, g_pParentWnd->GetZWnd()->m_pZClip->GetBottom());
+				glVertex2f (xe, g_pParentWnd->GetZWnd()->m_pZClip->GetBottom());
 
-				qglEnd ();
-				qglLineWidth(1);
+				glEnd ();
+				glLineWidth(1);
 			}
 		}
 	}
@@ -2870,25 +2870,25 @@ void CXYWnd::XY_DrawGrid() {
 	// draw coordinate text if needed
 	if (g_qeglobals.d_savedinfo.show_coordinates) {
 		// glColor4f(0, 0, 0, 0);
-		qglColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_GRIDTEXT].ToFloatPtr());
+		glColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_GRIDTEXT].ToFloatPtr());
 
 		for (x = xb; x < xe; x += stepSize) {
-			qglRasterPos2f(x, m_vOrigin[nDim2] + h - 10 / m_fScale);
+			glRasterPos2f(x, m_vOrigin[nDim2] + h - 10 / m_fScale);
 			sprintf(text, "%i", (int)x);
-			qglCallLists(strlen(text), GL_UNSIGNED_BYTE, text);
+			glCallLists(strlen(text), GL_UNSIGNED_BYTE, text);
 		}
 
 		for (y = yb; y < ye; y += stepSize) {
-			qglRasterPos2f(m_vOrigin[nDim1] - w + 1, y);
+			glRasterPos2f(m_vOrigin[nDim1] - w + 1, y);
 			sprintf(text, "%i", (int)y);
-			qglCallLists(strlen(text), GL_UNSIGNED_BYTE, text);
+			glCallLists(strlen(text), GL_UNSIGNED_BYTE, text);
 		}
 
 		if (Active()) {
-			qglColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME].ToFloatPtr());
+			glColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_VIEWNAME].ToFloatPtr());
 		}
 
-		qglRasterPos2f(m_vOrigin[nDim1] - w + 35 / m_fScale, m_vOrigin[nDim2] + h - 20 / m_fScale);
+		glRasterPos2f(m_vOrigin[nDim1] - w + 35 / m_fScale, m_vOrigin[nDim2] + h - 20 / m_fScale);
 
 		char	cView[20];
 		if (m_nViewType == XY) {
@@ -2901,12 +2901,12 @@ void CXYWnd::XY_DrawGrid() {
 			strcpy(cView, "YZ Side");
 		}
 
-		qglCallLists(strlen(cView), GL_UNSIGNED_BYTE, cView);
+		glCallLists(strlen(cView), GL_UNSIGNED_BYTE, cView);
 	}
 
 	/*
-	 * if (true) { qglColor3f(g_qeglobals.d_savedinfo.colors[COLOR_GRIDMINOR]);
-	 * qglBegin (GL_LINES); qglVertex2f (x, yb); qglVertex2f (x, ye); qglEnd(); }
+	 * if (true) { glColor3f(g_qeglobals.d_savedinfo.colors[COLOR_GRIDMINOR]);
+	 * glBegin (GL_LINES); glVertex2f (x, yb); glVertex2f (x, ye); glEnd(); }
 	 */
 }
 
@@ -2955,53 +2955,53 @@ void CXYWnd::XY_DrawBlockGrid() {
 	ye = 1024 * ceil(ye / 1024);
 
 	// draw major blocks
-	qglColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_GRIDBLOCK].ToFloatPtr());
-	qglLineWidth(0.5);
+	glColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_GRIDBLOCK].ToFloatPtr());
+	glLineWidth(0.5);
 
-	qglBegin(GL_LINES);
+	glBegin(GL_LINES);
 
 	for (x = xb; x <= xe; x += 1024) {
-		qglVertex2f(x, yb);
-		qglVertex2f(x, ye);
+		glVertex2f(x, yb);
+		glVertex2f(x, ye);
 	}
 
 	for (y = yb; y <= ye; y += 1024) {
-		qglVertex2f(xb, y);
-		qglVertex2f(xe, y);
+		glVertex2f(xb, y);
+		glVertex2f(xe, y);
 	}
 
-	qglEnd();
-	qglLineWidth(0.25);
+	glEnd();
+	glLineWidth(0.25);
 
 	// draw coordinate text if needed
 	for (x = xb; x < xe; x += 1024) {
 		for (y = yb; y < ye; y += 1024) {
-			qglRasterPos2f(x + 512, y + 512);
+			glRasterPos2f(x + 512, y + 512);
 			sprintf(text, "%i,%i", (int)floor(x / 1024), (int)floor(y / 1024));
-			qglCallLists(strlen(text), GL_UNSIGNED_BYTE, text);
+			glCallLists(strlen(text), GL_UNSIGNED_BYTE, text);
 		}
 	}
 
-	qglColor4f(0, 0, 0, 0);
+	glColor4f(0, 0, 0, 0);
 }
 
 void GLColoredBoxWithLabel(float x, float y, float size, idVec4 color, const char *text, idVec4 textColor, float xofs, float yofs, float lineSize) {
 	globalImages->BindNull();
-	qglPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	qglDisable(GL_CULL_FACE);
-	qglDisable(GL_BLEND);
-	qglColor4f(color[0], color[1], color[2], color[3]);
-	qglBegin(GL_QUADS);
-	qglVertex3f(x - size, y - size, 0);
-	qglVertex3f(x + size, y - size, 0);
-	qglVertex3f(x + size, y + size, 0);
-	qglVertex3f(x - size, y + size, 0);
-	qglEnd();
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
+	glColor4f(color[0], color[1], color[2], color[3]);
+	glBegin(GL_QUADS);
+	glVertex3f(x - size, y - size, 0);
+	glVertex3f(x + size, y - size, 0);
+	glVertex3f(x + size, y + size, 0);
+	glVertex3f(x - size, y + size, 0);
+	glEnd();
 
-	qglColor4f(textColor[0], textColor[1], textColor[2], textColor[3]);
-	qglLineWidth(lineSize);
-	qglRasterPos2f(x + xofs, y + yofs);
-	qglCallLists(strlen(text), GL_UNSIGNED_BYTE, text);
+	glColor4f(textColor[0], textColor[1], textColor[2], textColor[3]);
+	glLineWidth(lineSize);
+	glRasterPos2f(x + xofs, y + yofs);
+	glCallLists(strlen(text), GL_UNSIGNED_BYTE, text);
 }
 
 /*
@@ -3024,25 +3024,25 @@ void CXYWnd::DrawRotateIcon() {
 		y = g_vRotateOrigin[2];
 	}
 
-	qglEnable(GL_BLEND);
+	glEnable(GL_BLEND);
 	globalImages->BindNull();
-	qglPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	qglDisable(GL_CULL_FACE);
-	qglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	qglColor4f( 0.8f, 0.1f, 0.9f, 0.25f );
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glDisable(GL_CULL_FACE);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glColor4f( 0.8f, 0.1f, 0.9f, 0.25f );
 
-	qglBegin(GL_QUADS);
-	qglVertex3f(x - 4, y - 4, 0);
-	qglVertex3f(x + 4, y - 4, 0);
-	qglVertex3f(x + 4, y + 4, 0);
-	qglVertex3f(x - 4, y + 4, 0);
-	qglEnd();
-	qglDisable(GL_BLEND);
+	glBegin(GL_QUADS);
+	glVertex3f(x - 4, y - 4, 0);
+	glVertex3f(x + 4, y - 4, 0);
+	glVertex3f(x + 4, y + 4, 0);
+	glVertex3f(x - 4, y + 4, 0);
+	glEnd();
+	glDisable(GL_BLEND);
 
-	qglColor4f( 1.0f, 0.2f, 1.0f, 1.0f );
-	qglBegin(GL_POINTS);
-	qglVertex3f(x, y, 0);
-	qglEnd();
+	glColor4f( 1.0f, 0.2f, 1.0f, 1.0f );
+	glBegin(GL_POINTS);
+	glVertex3f(x, y, 0);
+	glEnd();
 
 
 	int w = m_nWidth / 2 / m_fScale;
@@ -3061,8 +3061,8 @@ void CXYWnd::DrawRotateIcon() {
 	if (g_qeglobals.flatRotation) {
 		str += g_qeglobals.flatRotation == 2 ? " Flat [center] " : " Flat [ rot origin ] ";
 	}
-	qglRasterPos2f(x, y);
-	qglCallLists(str.Length(), GL_UNSIGNED_BYTE, str.c_str());
+	glRasterPos2f(x, y);
+	glCallLists(str.Length(), GL_UNSIGNED_BYTE, str.c_str());
 }
 
 /*
@@ -3090,28 +3090,28 @@ void CXYWnd::DrawCameraIcon() {
 
 	float scale = 1.0/m_fScale;	//jhefty - keep the camera icon proportionally the same size
 
-	qglColor3f(0.0, 0.0, 1.0);
-	qglBegin(GL_LINE_STRIP);
-	qglVertex3f(x - 16*scale, y, 0);
-	qglVertex3f(x, y + 8*scale, 0);
-	qglVertex3f(x + 16*scale, y, 0);
-	qglVertex3f(x, y - 8*scale, 0);
-	qglVertex3f(x - 16*scale, y, 0);
-	qglVertex3f(x + 16*scale, y, 0);
-	qglEnd();
+	glColor3f(0.0, 0.0, 1.0);
+	glBegin(GL_LINE_STRIP);
+	glVertex3f(x - 16*scale, y, 0);
+	glVertex3f(x, y + 8*scale, 0);
+	glVertex3f(x + 16*scale, y, 0);
+	glVertex3f(x, y - 8*scale, 0);
+	glVertex3f(x - 16*scale, y, 0);
+	glVertex3f(x + 16*scale, y, 0);
+	glEnd();
 
-	qglBegin(GL_LINE_STRIP);
-	qglVertex3f(x + (48 * cos( a + idMath::PI * 0.25f )*scale), y + (48 * sin( a + idMath::PI * 0.25f )*scale), 0);
-	qglVertex3f(x, y, 0);
-	qglVertex3f(x + (48 * cos( a - idMath::PI * 0.25f )*scale), y + (48 * sin( a - idMath::PI * 0.25f )*scale), 0);
-	qglEnd();
+	glBegin(GL_LINE_STRIP);
+	glVertex3f(x + (48 * cos( a + idMath::PI * 0.25f )*scale), y + (48 * sin( a + idMath::PI * 0.25f )*scale), 0);
+	glVertex3f(x, y, 0);
+	glVertex3f(x + (48 * cos( a - idMath::PI * 0.25f )*scale), y + (48 * sin( a - idMath::PI * 0.25f )*scale), 0);
+	glEnd();
 
 #if 0
 
 	char	text[128];
-	qglRasterPos2f(x + 64, y + 64);
+	glRasterPos2f(x + 64, y + 64);
 	sprintf(text, "%f", g_pParentWnd->GetCamera()->Camera().angles[YAW]);
-	qglCallLists(strlen(text), GL_UNSIGNED_BYTE, text);
+	glCallLists(strlen(text), GL_UNSIGNED_BYTE, text);
 #endif
 }
 
@@ -3123,35 +3123,35 @@ void CXYWnd::DrawZIcon(void) {
 	if (m_nViewType == XY) {
 		float	x = z.origin[0];
 		float	y = z.origin[1];
-		qglEnable(GL_BLEND);
+		glEnable(GL_BLEND);
 		globalImages->BindNull();
-		qglPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		qglDisable(GL_CULL_FACE);
-		qglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		qglColor4f(0.0, 0.0, 1.0, 0.25);
-		qglBegin(GL_QUADS);
-		qglVertex3f(x - 8, y - 8, 0);
-		qglVertex3f(x + 8, y - 8, 0);
-		qglVertex3f(x + 8, y + 8, 0);
-		qglVertex3f(x - 8, y + 8, 0);
-		qglEnd();
-		qglDisable(GL_BLEND);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glDisable(GL_CULL_FACE);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glColor4f(0.0, 0.0, 1.0, 0.25);
+		glBegin(GL_QUADS);
+		glVertex3f(x - 8, y - 8, 0);
+		glVertex3f(x + 8, y - 8, 0);
+		glVertex3f(x + 8, y + 8, 0);
+		glVertex3f(x - 8, y + 8, 0);
+		glEnd();
+		glDisable(GL_BLEND);
 
-		qglColor4f(0.0, 0.0, 1.0, 1);
+		glColor4f(0.0, 0.0, 1.0, 1);
 
-		qglBegin(GL_LINE_LOOP);
-		qglVertex3f(x - 8, y - 8, 0);
-		qglVertex3f(x + 8, y - 8, 0);
-		qglVertex3f(x + 8, y + 8, 0);
-		qglVertex3f(x - 8, y + 8, 0);
-		qglEnd();
+		glBegin(GL_LINE_LOOP);
+		glVertex3f(x - 8, y - 8, 0);
+		glVertex3f(x + 8, y - 8, 0);
+		glVertex3f(x + 8, y + 8, 0);
+		glVertex3f(x - 8, y + 8, 0);
+		glEnd();
 
-		qglBegin(GL_LINE_STRIP);
-		qglVertex3f(x - 4, y + 4, 0);
-		qglVertex3f(x + 4, y + 4, 0);
-		qglVertex3f(x - 4, y - 4, 0);
-		qglVertex3f(x + 4, y - 4, 0);
-		qglEnd();
+		glBegin(GL_LINE_STRIP);
+		glVertex3f(x - 4, y + 4, 0);
+		glVertex3f(x + 4, y + 4, 0);
+		glVertex3f(x - 4, y - 4, 0);
+		glVertex3f(x + 4, y - 4, 0);
+		glEnd();
 	}
 }
 
@@ -3374,11 +3374,11 @@ void DrawPathLines(void) {
 			s1[1] = dir[0] * 8 + dir[1] * 8;
 			s2[1] = -dir[0] * 8 + dir[1] * 8;
 
-			qglColor3f(se->eclass->color[0], se->eclass->color[1], se->eclass->color[2]);
+			glColor3f(se->eclass->color[0], se->eclass->color[1], se->eclass->color[2]);
 
-			qglBegin(GL_LINES);
-			qglVertex3fv(mid.ToFloatPtr());
-			qglVertex3fv(mid1.ToFloatPtr());
+			glBegin(GL_LINES);
+			glVertex3fv(mid.ToFloatPtr());
+			glVertex3fv(mid1.ToFloatPtr());
 
 			arrows = (int)(len / 256) + 1;
 
@@ -3387,13 +3387,13 @@ void DrawPathLines(void) {
 
 				mid1 = mid + (f * dir);
 
-				qglVertex3fv(mid1.ToFloatPtr());
-				qglVertex3f(mid1[0] + s1[0], mid1[1] + s1[1], mid1[2]);
-				qglVertex3fv(mid1.ToFloatPtr());
-				qglVertex3f(mid1[0] + s2[0], mid1[1] + s2[1], mid1[2]);
+				glVertex3fv(mid1.ToFloatPtr());
+				glVertex3f(mid1[0] + s1[0], mid1[1] + s1[1], mid1[2]);
+				glVertex3fv(mid1.ToFloatPtr());
+				glVertex3f(mid1[0] + s2[0], mid1[1] + s2[1], mid1[2]);
 			}
 
-			qglEnd();
+			glEnd();
 		}
 	}
 
@@ -3409,7 +3409,7 @@ void CXYWnd::PaintSizeInfo(int nDim1, int nDim2, idVec3 vMinBounds, idVec3 vMaxB
 	idVec3	vSize;
 	VectorSubtract(vMaxBounds, vMinBounds, vSize);
 
-	qglColor3f
+	glColor3f
 	(
 		g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][0] * .65,
 		g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][1] * .65,
@@ -3417,109 +3417,109 @@ void CXYWnd::PaintSizeInfo(int nDim1, int nDim2, idVec3 vMinBounds, idVec3 vMaxB
 	);
 
 	if (m_nViewType == XY) {
-		qglBegin(GL_LINES);
+		glBegin(GL_LINES);
 
-		qglVertex3f(vMinBounds[nDim1], vMinBounds[nDim2] - 6.0f / m_fScale, 0.0f);
-		qglVertex3f(vMinBounds[nDim1], vMinBounds[nDim2] - 10.0f / m_fScale, 0.0f);
+		glVertex3f(vMinBounds[nDim1], vMinBounds[nDim2] - 6.0f / m_fScale, 0.0f);
+		glVertex3f(vMinBounds[nDim1], vMinBounds[nDim2] - 10.0f / m_fScale, 0.0f);
 
-		qglVertex3f(vMinBounds[nDim1], vMinBounds[nDim2] - 10.0f / m_fScale, 0.0f);
-		qglVertex3f(vMaxBounds[nDim1], vMinBounds[nDim2] - 10.0f / m_fScale, 0.0f);
+		glVertex3f(vMinBounds[nDim1], vMinBounds[nDim2] - 10.0f / m_fScale, 0.0f);
+		glVertex3f(vMaxBounds[nDim1], vMinBounds[nDim2] - 10.0f / m_fScale, 0.0f);
 
-		qglVertex3f(vMaxBounds[nDim1], vMinBounds[nDim2] - 6.0f / m_fScale, 0.0f);
-		qglVertex3f(vMaxBounds[nDim1], vMinBounds[nDim2] - 10.0f / m_fScale, 0.0f);
+		glVertex3f(vMaxBounds[nDim1], vMinBounds[nDim2] - 6.0f / m_fScale, 0.0f);
+		glVertex3f(vMaxBounds[nDim1], vMinBounds[nDim2] - 10.0f / m_fScale, 0.0f);
 
-		qglVertex3f(vMaxBounds[nDim1] + 6.0f / m_fScale, vMinBounds[nDim2], 0.0f);
-		qglVertex3f(vMaxBounds[nDim1] + 10.0f / m_fScale, vMinBounds[nDim2], 0.0f);
+		glVertex3f(vMaxBounds[nDim1] + 6.0f / m_fScale, vMinBounds[nDim2], 0.0f);
+		glVertex3f(vMaxBounds[nDim1] + 10.0f / m_fScale, vMinBounds[nDim2], 0.0f);
 
-		qglVertex3f(vMaxBounds[nDim1] + 10.0f / m_fScale, vMinBounds[nDim2], 0.0f);
-		qglVertex3f(vMaxBounds[nDim1] + 10.0f / m_fScale, vMaxBounds[nDim2], 0.0f);
+		glVertex3f(vMaxBounds[nDim1] + 10.0f / m_fScale, vMinBounds[nDim2], 0.0f);
+		glVertex3f(vMaxBounds[nDim1] + 10.0f / m_fScale, vMaxBounds[nDim2], 0.0f);
 
-		qglVertex3f(vMaxBounds[nDim1] + 6.0f / m_fScale, vMaxBounds[nDim2], 0.0f);
-		qglVertex3f(vMaxBounds[nDim1] + 10.0f / m_fScale, vMaxBounds[nDim2], 0.0f);
+		glVertex3f(vMaxBounds[nDim1] + 6.0f / m_fScale, vMaxBounds[nDim2], 0.0f);
+		glVertex3f(vMaxBounds[nDim1] + 10.0f / m_fScale, vMaxBounds[nDim2], 0.0f);
 
-		qglEnd();
+		glEnd();
 
-		qglRasterPos3f(Betwixt(vMinBounds[nDim1], vMaxBounds[nDim1]), vMinBounds[nDim2] - 20.0 / m_fScale, 0.0f);
+		glRasterPos3f(Betwixt(vMinBounds[nDim1], vMaxBounds[nDim1]), vMinBounds[nDim2] - 20.0 / m_fScale, 0.0f);
 		g_strDim.Format(g_pDimStrings[nDim1], vSize[nDim1]);
-		qglCallLists(g_strDim.GetLength(), GL_UNSIGNED_BYTE, g_strDim);
+		glCallLists(g_strDim.GetLength(), GL_UNSIGNED_BYTE, g_strDim);
 
-		qglRasterPos3f(vMaxBounds[nDim1] + 16.0 / m_fScale, Betwixt(vMinBounds[nDim2], vMaxBounds[nDim2]), 0.0f);
+		glRasterPos3f(vMaxBounds[nDim1] + 16.0 / m_fScale, Betwixt(vMinBounds[nDim2], vMaxBounds[nDim2]), 0.0f);
 		g_strDim.Format(g_pDimStrings[nDim2], vSize[nDim2]);
-		qglCallLists(g_strDim.GetLength(), GL_UNSIGNED_BYTE, g_strDim);
+		glCallLists(g_strDim.GetLength(), GL_UNSIGNED_BYTE, g_strDim);
 
-		qglRasterPos3f(vMinBounds[nDim1] + 4, vMaxBounds[nDim2] + 8 / m_fScale, 0.0f);
+		glRasterPos3f(vMinBounds[nDim1] + 4, vMaxBounds[nDim2] + 8 / m_fScale, 0.0f);
 		g_strDim.Format(g_pOrgStrings[0], vMinBounds[nDim1], vMaxBounds[nDim2]);
-		qglCallLists(g_strDim.GetLength(), GL_UNSIGNED_BYTE, g_strDim);
+		glCallLists(g_strDim.GetLength(), GL_UNSIGNED_BYTE, g_strDim);
 	}
 	else if (m_nViewType == XZ) {
-		qglBegin(GL_LINES);
+		glBegin(GL_LINES);
 
-		qglVertex3f(vMinBounds[nDim1], 0, vMinBounds[nDim2] - 6.0f / m_fScale);
-		qglVertex3f(vMinBounds[nDim1], 0, vMinBounds[nDim2] - 10.0f / m_fScale);
+		glVertex3f(vMinBounds[nDim1], 0, vMinBounds[nDim2] - 6.0f / m_fScale);
+		glVertex3f(vMinBounds[nDim1], 0, vMinBounds[nDim2] - 10.0f / m_fScale);
 
-		qglVertex3f(vMinBounds[nDim1], 0, vMinBounds[nDim2] - 10.0f / m_fScale);
-		qglVertex3f(vMaxBounds[nDim1], 0, vMinBounds[nDim2] - 10.0f / m_fScale);
+		glVertex3f(vMinBounds[nDim1], 0, vMinBounds[nDim2] - 10.0f / m_fScale);
+		glVertex3f(vMaxBounds[nDim1], 0, vMinBounds[nDim2] - 10.0f / m_fScale);
 
-		qglVertex3f(vMaxBounds[nDim1], 0, vMinBounds[nDim2] - 6.0f / m_fScale);
-		qglVertex3f(vMaxBounds[nDim1], 0, vMinBounds[nDim2] - 10.0f / m_fScale);
+		glVertex3f(vMaxBounds[nDim1], 0, vMinBounds[nDim2] - 6.0f / m_fScale);
+		glVertex3f(vMaxBounds[nDim1], 0, vMinBounds[nDim2] - 10.0f / m_fScale);
 
-		qglVertex3f(vMaxBounds[nDim1] + 6.0f / m_fScale, 0, vMinBounds[nDim2]);
-		qglVertex3f(vMaxBounds[nDim1] + 10.0f / m_fScale, 0, vMinBounds[nDim2]);
+		glVertex3f(vMaxBounds[nDim1] + 6.0f / m_fScale, 0, vMinBounds[nDim2]);
+		glVertex3f(vMaxBounds[nDim1] + 10.0f / m_fScale, 0, vMinBounds[nDim2]);
 
-		qglVertex3f(vMaxBounds[nDim1] + 10.0f / m_fScale, 0, vMinBounds[nDim2]);
-		qglVertex3f(vMaxBounds[nDim1] + 10.0f / m_fScale, 0, vMaxBounds[nDim2]);
+		glVertex3f(vMaxBounds[nDim1] + 10.0f / m_fScale, 0, vMinBounds[nDim2]);
+		glVertex3f(vMaxBounds[nDim1] + 10.0f / m_fScale, 0, vMaxBounds[nDim2]);
 
-		qglVertex3f(vMaxBounds[nDim1] + 6.0f / m_fScale, 0, vMaxBounds[nDim2]);
-		qglVertex3f(vMaxBounds[nDim1] + 10.0f / m_fScale, 0, vMaxBounds[nDim2]);
+		glVertex3f(vMaxBounds[nDim1] + 6.0f / m_fScale, 0, vMaxBounds[nDim2]);
+		glVertex3f(vMaxBounds[nDim1] + 10.0f / m_fScale, 0, vMaxBounds[nDim2]);
 
-		qglEnd();
+		glEnd();
 
-		qglRasterPos3f(Betwixt(vMinBounds[nDim1], vMaxBounds[nDim1]), 0, vMinBounds[nDim2] - 20.0 / m_fScale);
+		glRasterPos3f(Betwixt(vMinBounds[nDim1], vMaxBounds[nDim1]), 0, vMinBounds[nDim2] - 20.0 / m_fScale);
 		g_strDim.Format(g_pDimStrings[nDim1], vSize[nDim1]);
-		qglCallLists(g_strDim.GetLength(), GL_UNSIGNED_BYTE, g_strDim);
+		glCallLists(g_strDim.GetLength(), GL_UNSIGNED_BYTE, g_strDim);
 
-		qglRasterPos3f(vMaxBounds[nDim1] + 16.0 / m_fScale, 0, Betwixt(vMinBounds[nDim2], vMaxBounds[nDim2]));
+		glRasterPos3f(vMaxBounds[nDim1] + 16.0 / m_fScale, 0, Betwixt(vMinBounds[nDim2], vMaxBounds[nDim2]));
 		g_strDim.Format(g_pDimStrings[nDim2], vSize[nDim2]);
-		qglCallLists(g_strDim.GetLength(), GL_UNSIGNED_BYTE, g_strDim);
+		glCallLists(g_strDim.GetLength(), GL_UNSIGNED_BYTE, g_strDim);
 
-		qglRasterPos3f(vMinBounds[nDim1] + 4, 0, vMaxBounds[nDim2] + 8 / m_fScale);
+		glRasterPos3f(vMinBounds[nDim1] + 4, 0, vMaxBounds[nDim2] + 8 / m_fScale);
 		g_strDim.Format(g_pOrgStrings[1], vMinBounds[nDim1], vMaxBounds[nDim2]);
-		qglCallLists(g_strDim.GetLength(), GL_UNSIGNED_BYTE, g_strDim);
+		glCallLists(g_strDim.GetLength(), GL_UNSIGNED_BYTE, g_strDim);
 	}
 	else {
-		qglBegin(GL_LINES);
+		glBegin(GL_LINES);
 
-		qglVertex3f(0, vMinBounds[nDim1], vMinBounds[nDim2] - 6.0f / m_fScale);
-		qglVertex3f(0, vMinBounds[nDim1], vMinBounds[nDim2] - 10.0f / m_fScale);
+		glVertex3f(0, vMinBounds[nDim1], vMinBounds[nDim2] - 6.0f / m_fScale);
+		glVertex3f(0, vMinBounds[nDim1], vMinBounds[nDim2] - 10.0f / m_fScale);
 
-		qglVertex3f(0, vMinBounds[nDim1], vMinBounds[nDim2] - 10.0f / m_fScale);
-		qglVertex3f(0, vMaxBounds[nDim1], vMinBounds[nDim2] - 10.0f / m_fScale);
+		glVertex3f(0, vMinBounds[nDim1], vMinBounds[nDim2] - 10.0f / m_fScale);
+		glVertex3f(0, vMaxBounds[nDim1], vMinBounds[nDim2] - 10.0f / m_fScale);
 
-		qglVertex3f(0, vMaxBounds[nDim1], vMinBounds[nDim2] - 6.0f / m_fScale);
-		qglVertex3f(0, vMaxBounds[nDim1], vMinBounds[nDim2] - 10.0f / m_fScale);
+		glVertex3f(0, vMaxBounds[nDim1], vMinBounds[nDim2] - 6.0f / m_fScale);
+		glVertex3f(0, vMaxBounds[nDim1], vMinBounds[nDim2] - 10.0f / m_fScale);
 
-		qglVertex3f(0, vMaxBounds[nDim1] + 6.0f / m_fScale, vMinBounds[nDim2]);
-		qglVertex3f(0, vMaxBounds[nDim1] + 10.0f / m_fScale, vMinBounds[nDim2]);
+		glVertex3f(0, vMaxBounds[nDim1] + 6.0f / m_fScale, vMinBounds[nDim2]);
+		glVertex3f(0, vMaxBounds[nDim1] + 10.0f / m_fScale, vMinBounds[nDim2]);
 
-		qglVertex3f(0, vMaxBounds[nDim1] + 10.0f / m_fScale, vMinBounds[nDim2]);
-		qglVertex3f(0, vMaxBounds[nDim1] + 10.0f / m_fScale, vMaxBounds[nDim2]);
+		glVertex3f(0, vMaxBounds[nDim1] + 10.0f / m_fScale, vMinBounds[nDim2]);
+		glVertex3f(0, vMaxBounds[nDim1] + 10.0f / m_fScale, vMaxBounds[nDim2]);
 
-		qglVertex3f(0, vMaxBounds[nDim1] + 6.0f / m_fScale, vMaxBounds[nDim2]);
-		qglVertex3f(0, vMaxBounds[nDim1] + 10.0f / m_fScale, vMaxBounds[nDim2]);
+		glVertex3f(0, vMaxBounds[nDim1] + 6.0f / m_fScale, vMaxBounds[nDim2]);
+		glVertex3f(0, vMaxBounds[nDim1] + 10.0f / m_fScale, vMaxBounds[nDim2]);
 
-		qglEnd();
+		glEnd();
 
-		qglRasterPos3f(0, Betwixt(vMinBounds[nDim1], vMaxBounds[nDim1]), vMinBounds[nDim2] - 20.0 / m_fScale);
+		glRasterPos3f(0, Betwixt(vMinBounds[nDim1], vMaxBounds[nDim1]), vMinBounds[nDim2] - 20.0 / m_fScale);
 		g_strDim.Format(g_pDimStrings[nDim1], vSize[nDim1]);
-		qglCallLists(g_strDim.GetLength(), GL_UNSIGNED_BYTE, g_strDim);
+		glCallLists(g_strDim.GetLength(), GL_UNSIGNED_BYTE, g_strDim);
 
-		qglRasterPos3f(0, vMaxBounds[nDim1] + 16.0 / m_fScale, Betwixt(vMinBounds[nDim2], vMaxBounds[nDim2]));
+		glRasterPos3f(0, vMaxBounds[nDim1] + 16.0 / m_fScale, Betwixt(vMinBounds[nDim2], vMaxBounds[nDim2]));
 		g_strDim.Format(g_pDimStrings[nDim2], vSize[nDim2]);
-		qglCallLists(g_strDim.GetLength(), GL_UNSIGNED_BYTE, g_strDim);
+		glCallLists(g_strDim.GetLength(), GL_UNSIGNED_BYTE, g_strDim);
 
-		qglRasterPos3f(0, vMinBounds[nDim1] + 4.0, vMaxBounds[nDim2] + 8 / m_fScale);
+		glRasterPos3f(0, vMinBounds[nDim1] + 4.0, vMaxBounds[nDim2] + 8 / m_fScale);
 		g_strDim.Format(g_pOrgStrings[2], vMinBounds[nDim1], vMaxBounds[nDim2]);
-		qglCallLists(g_strDim.GetLength(), GL_UNSIGNED_BYTE, g_strDim);
+		glCallLists(g_strDim.GetLength(), GL_UNSIGNED_BYTE, g_strDim);
 	}
 }
 
@@ -3548,9 +3548,9 @@ void CXYWnd::XY_Draw() {
 	m_bDirty = false;
 
 	GL_State( GLS_DEFAULT );
-	qglViewport(0, 0, m_nWidth, m_nHeight);
-	qglScissor(0, 0, m_nWidth, m_nHeight);
-	qglClearColor
+	glViewport(0, 0, m_nWidth, m_nHeight);
+	glScissor(0, 0, m_nWidth, m_nHeight);
+	glClearColor
 	(
 		g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][0],
 		g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][1],
@@ -3558,13 +3558,13 @@ void CXYWnd::XY_Draw() {
 		0
 	);
 
-	qglDisable(GL_DEPTH_TEST);
-	qglDisable(GL_CULL_FACE);
-	qglClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// set up viewpoint
-	qglMatrixMode(GL_PROJECTION);
-	qglLoadIdentity();
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
 
 	w = m_nWidth / 2 / m_fScale;
 	h = m_nHeight / 2 / m_fScale;
@@ -3580,25 +3580,25 @@ void CXYWnd::XY_Draw() {
 	viewBounds[0].z = -99999;
 	viewBounds[1].z = 99999;
 
-	qglOrtho(mins[0], maxs[0], mins[1], maxs[1], MIN_WORLD_COORD, MAX_WORLD_COORD);
+	glOrtho(mins[0], maxs[0], mins[1], maxs[1], MIN_WORLD_COORD, MAX_WORLD_COORD);
 
 	// draw stuff
 	globalImages->BindNull();
 	// now draw the grid
-	qglLineWidth(0.25);
+	glLineWidth(0.25);
 	XY_DrawGrid();
-	qglLineWidth(0.5);
+	glLineWidth(0.5);
 
 	drawn = culled = 0;
 
 	if (m_nViewType != XY) {
-		qglPushMatrix();
+		glPushMatrix();
 		if (m_nViewType == YZ) {
-			qglRotatef(-90, 0, 1, 0);	// put Z going up
+			glRotatef(-90, 0, 1, 0);	// put Z going up
 		}
 
 		// else
-		qglRotatef(-90, 1, 0, 0);		// put Z going up
+		glRotatef(-90, 1, 0, 0);		// put Z going up
 	}
 
 	e = world_entity;
@@ -3617,10 +3617,10 @@ void CXYWnd::XY_Draw() {
 		drawn++;
 
 		if (brush->owner != e && brush->owner) {
-			qglColor3fv(brush->owner->eclass->color.ToFloatPtr());
+			glColor3fv(brush->owner->eclass->color.ToFloatPtr());
 		}
 		else {
-			qglColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_BRUSHES].ToFloatPtr());
+			glColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_BRUSHES].ToFloatPtr());
 		}
 
 		Brush_DrawXY( brush, m_nViewType );
@@ -3630,11 +3630,11 @@ void CXYWnd::XY_Draw() {
 
 	// draw pointfile
 	if (g_qeglobals.d_pointfile_display_list) {
-		qglCallList(g_qeglobals.d_pointfile_display_list);
+		glCallList(g_qeglobals.d_pointfile_display_list);
 	}
 
 	if (!(m_nViewType == XY)) {
-		qglPopMatrix();
+		glPopMatrix();
 	}
 
 	// draw block grid
@@ -3644,17 +3644,17 @@ void CXYWnd::XY_Draw() {
 
 	// now draw selected brushes
 	if (m_nViewType != XY) {
-		qglPushMatrix();
+		glPushMatrix();
 		if (m_nViewType == YZ) {
-			qglRotatef(-90, 0, 1, 0);	// put Z going up
+			glRotatef(-90, 0, 1, 0);	// put Z going up
 		}
 
 		// else
-		qglRotatef(-90, 1, 0, 0);		// put Z going up
+		glRotatef(-90, 1, 0, 0);		// put Z going up
 	}
 
-	qglPushMatrix();
-	qglTranslatef
+	glPushMatrix();
+	glTranslatef
 	(
 		g_qeglobals.d_select_translate[0],
 		g_qeglobals.d_select_translate[1],
@@ -3662,21 +3662,21 @@ void CXYWnd::XY_Draw() {
 	);
 
 	if (RotateMode()) {
-		qglColor3f( 0.8f, 0.1f, 0.9f );
+		glColor3f( 0.8f, 0.1f, 0.9f );
 	}
 	else if (ScaleMode()) {
-		qglColor3f( 0.1f, 0.8f, 0.1f );
+		glColor3f( 0.1f, 0.8f, 0.1f );
 	}
 	else {
-		qglColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].ToFloatPtr());
+		glColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].ToFloatPtr());
 	}
 
 	if (g_PrefsDlg.m_bNoStipple == FALSE) {
-		qglEnable(GL_LINE_STIPPLE);
-		qglLineStipple(3, 0xaaaa);
+		glEnable(GL_LINE_STIPPLE);
+		glLineStipple(3, 0xaaaa);
 	}
 
-	qglLineWidth(1);
+	glLineWidth(1);
 
 	idVec3	vMinBounds;
 	idVec3	vMaxBounds;
@@ -3709,10 +3709,10 @@ void CXYWnd::XY_Draw() {
 	}
 
 	if (g_PrefsDlg.m_bNoStipple == FALSE) {
-		qglDisable(GL_LINE_STIPPLE);
+		glDisable(GL_LINE_STIPPLE);
 	}
 
-	qglLineWidth(0.5);
+	glLineWidth(0.5);
 
 	if (!bFixedSize && !RotateMode() && !ScaleMode() && drawn - nSaveDrawn > 0 && g_PrefsDlg.m_bSizePaint) {
 		PaintSizeInfo(nDim1, nDim2, vMinBounds, vMaxBounds);
@@ -3720,30 +3720,30 @@ void CXYWnd::XY_Draw() {
 
 	// edge / vertex flags
 	if (g_qeglobals.d_select_mode == sel_vertex) {
-		qglPointSize(4);
-		qglColor3f(0, 1, 0);
-		qglBegin(GL_POINTS);
+		glPointSize(4);
+		glColor3f(0, 1, 0);
+		glBegin(GL_POINTS);
 		for (i = 0; i < g_qeglobals.d_numpoints; i++) {
-			qglVertex3fv(g_qeglobals.d_points[i].ToFloatPtr());
+			glVertex3fv(g_qeglobals.d_points[i].ToFloatPtr());
 		}
 
-		qglEnd();
-		qglPointSize(1);
+		glEnd();
+		glPointSize(1);
 	}
 	else if (g_qeglobals.d_select_mode == sel_edge) {
 		float	*v1, *v2;
 
-		qglPointSize(4);
-		qglColor3f(0, 0, 1);
-		qglBegin(GL_POINTS);
+		glPointSize(4);
+		glColor3f(0, 0, 1);
+		glBegin(GL_POINTS);
 		for (i = 0; i < g_qeglobals.d_numedges; i++) {
 			v1 = g_qeglobals.d_points[g_qeglobals.d_edges[i].p1].ToFloatPtr();
 			v2 = g_qeglobals.d_points[g_qeglobals.d_edges[i].p2].ToFloatPtr();
-			qglVertex3f((v1[0] + v2[0]) * 0.5, (v1[1] + v2[1]) * 0.5, (v1[2] + v2[2]) * 0.5);
+			glVertex3f((v1[0] + v2[0]) * 0.5, (v1[1] + v2[1]) * 0.5, (v1[2] + v2[2]) * 0.5);
 		}
 
-		qglEnd();
-		qglPointSize(1);
+		glEnd();
+		glPointSize(1);
 	}
 
 	g_splineList->draw (static_cast<bool>(g_qeglobals.d_select_mode == sel_editpoint || g_qeglobals.d_select_mode == sel_addpoint));
@@ -3751,30 +3751,30 @@ void CXYWnd::XY_Draw() {
 	if (g_pParentWnd->GetNurbMode() && g_pParentWnd->GetNurb()->GetNumValues()) {
 		int maxage = g_pParentWnd->GetNurb()->GetNumValues();
 		int time = 0;
-		qglColor3f(0, 0, 1);
-		qglPointSize(1);
-		qglBegin(GL_POINTS);
+		glColor3f(0, 0, 1);
+		glPointSize(1);
+		glBegin(GL_POINTS);
 		g_pParentWnd->GetNurb()->SetOrder(3);
 		for (i = 0; i < 100; i++) {
 			idVec2 v = g_pParentWnd->GetNurb()->GetCurrentValue(time);
-			qglVertex3f(v.x, v.y, 0.0f);
+			glVertex3f(v.x, v.y, 0.0f);
 			time += 10;
 		}
-		qglEnd();
-		qglPointSize(4);
-		qglColor3f(0, 0, 1);
-		qglBegin(GL_POINTS);
+		glEnd();
+		glPointSize(4);
+		glColor3f(0, 0, 1);
+		glBegin(GL_POINTS);
 		for (i = 0; i < maxage; i++) {
 			idVec2 v = g_pParentWnd->GetNurb()->GetValue(i);
-			qglVertex3f(v.x, v.y, 0.0f);
+			glVertex3f(v.x, v.y, 0.0f);
 		}
-		qglEnd();
-		qglPointSize(1);
+		glEnd();
+		glPointSize(1);
 	}
 
-	qglPopMatrix();
+	glPopMatrix();
 
-	qglTranslatef
+	glTranslatef
 	(
 		-g_qeglobals.d_select_translate[0],
 		-g_qeglobals.d_select_translate[1],
@@ -3782,26 +3782,26 @@ void CXYWnd::XY_Draw() {
 	);
 
 	if (!(m_nViewType == XY)) {
-		qglPopMatrix();
+		glPopMatrix();
 	}
 
 	// area selection hack
 	if (g_qeglobals.d_select_mode == sel_area) {
-		qglEnable(GL_BLEND);
-		qglPolygonMode ( GL_FRONT_AND_BACK , GL_FILL );
-		qglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		qglColor4f(0.0, 0.0, 1.0, 0.25);
-		qglRectf
+		glEnable(GL_BLEND);
+		glPolygonMode ( GL_FRONT_AND_BACK , GL_FILL );
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glColor4f(0.0, 0.0, 1.0, 0.25);
+		glRectf
 		(
 			g_qeglobals.d_vAreaTL[nDim1],
 			g_qeglobals.d_vAreaTL[nDim2],
 			g_qeglobals.d_vAreaBR[nDim1],
 			g_qeglobals.d_vAreaBR[nDim2]
 		);
-		qglDisable(GL_BLEND);
-		qglPolygonMode ( GL_FRONT_AND_BACK , GL_LINE );
-		qglColor3f(1.0f, 1.0f, 1.0f);
-		qglRectf
+		glDisable(GL_BLEND);
+		glPolygonMode ( GL_FRONT_AND_BACK , GL_LINE );
+		glColor3f(1.0f, 1.0f, 1.0f);
+		glRectf
 		(
 			g_qeglobals.d_vAreaTL[nDim1],
 			g_qeglobals.d_vAreaTL[nDim2],
@@ -3823,7 +3823,7 @@ void CXYWnd::XY_Draw() {
 	if( m_precisionCrosshairMode != PRECISION_CROSSHAIR_NONE )
 		DrawPrecisionCrosshair();
 
-	qglFlush();
+	glFlush();
 
 	// QE_CheckOpenGLForErrors();
 }
@@ -4526,38 +4526,38 @@ void CXYWnd::DrawPrecisionCrosshair( void )
 		crossMidColor[ 3 ] = 0.0f; // intersection-color is 100% transparent (alpha = 0.0f)
 
 	/// Set up OpenGL states (for drawing smooth-shaded plain-colored lines)
-	qglEnable( GL_BLEND );
-	qglDisable( GL_TEXTURE_2D );
-	qglShadeModel( GL_SMOOTH );
-	qglBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glEnable( GL_BLEND );
+	glDisable( GL_TEXTURE_2D );
+	glShadeModel( GL_SMOOTH );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
 	/// Draw a fullscreen-sized crosshair over the cursor
-	qglBegin( GL_LINES );
+	glBegin( GL_LINES );
 	{
 		/// Draw the horizontal precision line (in two pieces)
-		qglColor4fv( crossEndColor.ToFloatPtr() );
-		qglVertex2f( m_mcLeft, y );
-		qglColor4fv( crossMidColor.ToFloatPtr() );
-		qglVertex2f( x, y );
-		qglColor4fv( crossMidColor.ToFloatPtr() );
-		qglVertex2f( x, y );
-		qglColor4fv( crossEndColor.ToFloatPtr() );
-		qglVertex2f( m_mcRight, y );
+		glColor4fv( crossEndColor.ToFloatPtr() );
+		glVertex2f( m_mcLeft, y );
+		glColor4fv( crossMidColor.ToFloatPtr() );
+		glVertex2f( x, y );
+		glColor4fv( crossMidColor.ToFloatPtr() );
+		glVertex2f( x, y );
+		glColor4fv( crossEndColor.ToFloatPtr() );
+		glVertex2f( m_mcRight, y );
 
 		/// Draw the vertical precision line (in two pieces)
-		qglColor4fv( crossEndColor.ToFloatPtr() );
-		qglVertex2f( x, m_mcTop );
-		qglColor4fv( crossMidColor.ToFloatPtr() );
-		qglVertex2f( x, y );
-		qglColor4fv( crossMidColor.ToFloatPtr() );
-		qglVertex2f( x, y );
-		qglColor4fv( crossEndColor.ToFloatPtr() );
-		qglVertex2f( x, m_mcBottom );
+		glColor4fv( crossEndColor.ToFloatPtr() );
+		glVertex2f( x, m_mcTop );
+		glColor4fv( crossMidColor.ToFloatPtr() );
+		glVertex2f( x, y );
+		glColor4fv( crossMidColor.ToFloatPtr() );
+		glVertex2f( x, y );
+		glColor4fv( crossEndColor.ToFloatPtr() );
+		glVertex2f( x, m_mcBottom );
 	}
-	qglEnd(); // GL_LINES
+	glEnd(); // GL_LINES
 
 	// Radiant was in opaque, flat-shaded mode by default; restore this to prevent possible slowdown
-	qglShadeModel( GL_FLAT );
-	qglDisable( GL_BLEND );
+	glShadeModel( GL_FLAT );
+	glDisable( GL_BLEND );
 #endif
 }

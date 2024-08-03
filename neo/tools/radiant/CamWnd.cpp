@@ -200,7 +200,7 @@ brush_t *g_pSplitList = NULL;
 void CCamWnd::OnPaint() {
 	CPaintDC	dc(this);	// device context for painting
 
-	if (!qwglMakeCurrent(dc.m_hDC, win32.hGLRC)) {
+	if (!wglMakeCurrent(dc.m_hDC, win32.hGLRC)) {
 		common->Printf("ERROR: wglMakeCurrent failed..\n ");
 		common->Printf("Please restart " EDITOR_WINDOWTEXT " if the camera view is not working\n");
 	}
@@ -215,7 +215,7 @@ void CCamWnd::OnPaint() {
 
 		Cam_Draw();
 		QE_CheckOpenGLForErrors();
-		qwglSwapBuffers(dc.m_hDC);
+		SwapBuffers(dc.m_hDC);
 	}
 }
 
@@ -356,28 +356,28 @@ int CCamWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 
 	HFONT hOldFont = (HFONT)SelectObject(hDC, hfont);
 
-	//qwglMakeCurrent (hDC, win32.hGLRC);
-	if( qwglMakeCurrent ( hDC, win32.hGLRC ) == FALSE ) {
+	//wglMakeCurrent (hDC, win32.hGLRC);
+	if( wglMakeCurrent ( hDC, win32.hGLRC ) == FALSE ) {
 		common->Warning("wglMakeCurrent failed: %d", ::GetLastError());
 		if ( r_multiSamples.GetInteger() > 0 ) {
 			common->Warning("\n!!! Try setting r_multiSamples 0 when using the editor !!!\n");
 		}
 	}
 
-	if ((g_qeglobals.d_font_list = qglGenLists(256)) == 0) {
+	if ((g_qeglobals.d_font_list = glGenLists(256)) == 0) {
 		common->Warning( "couldn't create font dlists" );
 	}
 
 	// create the bitmap display lists we're making images of glyphs 0 thru 255
-	if ( !qwglUseFontBitmaps(hDC, 0, 255, g_qeglobals.d_font_list) ) {
+	if ( !wglUseFontBitmaps(hDC, 0, 255, g_qeglobals.d_font_list) ) {
 		common->Warning( "wglUseFontBitmaps failed (%d).  Trying again.", GetLastError() );
 
 		// FIXME: This is really wacky, sometimes the first call fails, but calling it again makes it work
 		//		This probably indicates there's something wrong somewhere else in the code, but I'm not sure what
-		if ( !qwglUseFontBitmaps(hDC, 0, 255, g_qeglobals.d_font_list) ) {
+		if ( !wglUseFontBitmaps(hDC, 0, 255, g_qeglobals.d_font_list) ) {
 			common->Warning( "wglUseFontBitmaps failed again (%d).  Trying outlines.", GetLastError() );
 
-			if (!qwglUseFontOutlines(hDC, 0, 255, g_qeglobals.d_font_list, 0.0f, 0.1f, WGL_FONT_LINES, NULL)) {
+			if (!wglUseFontOutlines(hDC, 0, 255, g_qeglobals.d_font_list, 0.0f, 0.1f, WGL_FONT_LINES, NULL)) {
 				common->Warning( "wglUseFontOutlines also failed (%d), no coordinate text will be visible.", GetLastError() );
 			}
 		}
@@ -387,13 +387,13 @@ int CCamWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	ReleaseDC(pDC);
 
 	// indicate start of glyph display lists
-	qglListBase(g_qeglobals.d_font_list);
+	glListBase(g_qeglobals.d_font_list);
 
 	// report OpenGL information
-	common->Printf("GL_VENDOR: %s\n", qglGetString(GL_VENDOR));
-	common->Printf("GL_RENDERER: %s\n", qglGetString(GL_RENDERER));
-	common->Printf("GL_VERSION: %s\n", qglGetString(GL_VERSION));
-	common->Printf("GL_EXTENSIONS: %s\n", qglGetString(GL_EXTENSIONS));
+	common->Printf("GL_VENDOR: %s\n", glGetString(GL_VENDOR));
+	common->Printf("GL_RENDERER: %s\n", glGetString(GL_RENDERER));
+	common->Printf("GL_VERSION: %s\n", glGetString(GL_VERSION));
+	common->Printf("GL_EXTENSIONS: %s\n", glGetString(GL_EXTENSIONS));
 
 	return 0;
 }
@@ -458,7 +458,7 @@ void CCamWnd::Cam_BuildMatrix() {
 	m_Camera.right[0] = m_Camera.forward[1];
 	m_Camera.right[1] = -m_Camera.forward[0];
 
-	qglGetFloatv(GL_PROJECTION_MATRIX, &matrix[0][0]);
+	glGetFloatv(GL_PROJECTION_MATRIX, &matrix[0][0]);
 
 	for (i = 0; i < 3; i++) {
 		m_Camera.vright[i] = matrix[i][0];
@@ -808,11 +808,11 @@ void CCamWnd::DrawLightRadius(brush_t *pBrush) {
 	int nRadius = Brush_LightRadius(pBrush);
 	if (nRadius > 0) {
 		Brush_SetLightColor(pBrush);
-		qglEnable(GL_BLEND);
-		qglPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		qglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		qglDisable(GL_BLEND);
-		qglPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glEnable(GL_BLEND);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glDisable(GL_BLEND);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 }
 #endif
@@ -825,42 +825,42 @@ void setGLMode(int mode) {
 	switch (mode)
 	{
 		case cd_wire:
-			qglPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			globalImages->BindNull();
-			qglDisable(GL_BLEND);
-			qglDisable(GL_DEPTH_TEST);
-			qglColor3f( 1.0f, 1.0f, 1.0f );
+			glDisable(GL_BLEND);
+			glDisable(GL_DEPTH_TEST);
+			glColor3f( 1.0f, 1.0f, 1.0f );
 			break;
 
 		case cd_solid:
-			qglCullFace(GL_FRONT);
-			qglEnable(GL_CULL_FACE);
-			qglShadeModel(GL_FLAT);
-			qglPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glCullFace(GL_FRONT);
+			glEnable(GL_CULL_FACE);
+			glShadeModel(GL_FLAT);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			globalImages->BindNull();
-			qglDisable(GL_BLEND);
-			qglEnable(GL_DEPTH_TEST);
-			qglDepthFunc(GL_LEQUAL);
+			glDisable(GL_BLEND);
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(GL_LEQUAL);
 			break;
 
 		case cd_texture:
-			qglCullFace(GL_FRONT);
-			qglEnable(GL_CULL_FACE);
-			qglShadeModel(GL_FLAT);
-			qglPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			qglDisable(GL_BLEND);
-			qglEnable(GL_DEPTH_TEST);
-			qglDepthFunc(GL_LEQUAL);
+			glCullFace(GL_FRONT);
+			glEnable(GL_CULL_FACE);
+			glShadeModel(GL_FLAT);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glDisable(GL_BLEND);
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(GL_LEQUAL);
 			break;
 
 		case cd_blend:
-			qglCullFace(GL_FRONT);
-			qglEnable(GL_CULL_FACE);
-			qglShadeModel(GL_FLAT);
-			qglPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			qglDisable(GL_DEPTH_TEST);
-			qglEnable(GL_BLEND);
-			qglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glCullFace(GL_FRONT);
+			glEnable(GL_CULL_FACE);
+			glShadeModel(GL_FLAT);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glDisable(GL_DEPTH_TEST);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			break;
 	}
 }
@@ -884,12 +884,12 @@ void DrawAxial(face_t *selFace) {
 		VectorMA (points[3], 4, selFace->plane, points[2]);
 		glLabeledPoint(idVec4(1, 0, 0, 1), points[1], 3, "Anchor");
 		glLabeledPoint(idVec4(1, 1, 0, 1), points[2], 3, "Dest");
-		qglBegin (GL_LINE_STRIP);
-		qglVertex3fv( points[0].ToFloatPtr() );
-		qglVertex3fv( points[1].ToFloatPtr() );
-		qglVertex3fv( points[2].ToFloatPtr() );
-		qglVertex3fv( points[3].ToFloatPtr() );
-		qglEnd();
+		glBegin (GL_LINE_STRIP);
+		glVertex3fv( points[0].ToFloatPtr() );
+		glVertex3fv( points[1].ToFloatPtr() );
+		glVertex3fv( points[2].ToFloatPtr() );
+		glVertex3fv( points[3].ToFloatPtr() );
+		glEnd();
 	}
 }
 
@@ -904,7 +904,7 @@ void CCamWnd::SetProjectionMatrix() {
 	float yfov = 2 * atan((float)m_Camera.height / m_Camera.width) * idMath::M_RAD2DEG;
 #if 0
 	float screenaspect = (float)m_Camera.width / m_Camera.height;
-	qglLoadIdentity();
+	glLoadIdentity();
 	gluPerspective(yfov, screenaspect, 2, 8192);
 #else
 	float	xmin, xmax, ymin, ymax;
@@ -947,7 +947,7 @@ void CCamWnd::SetProjectionMatrix() {
 	projectionMatrix[11] = -1;
 	projectionMatrix[15] = 0;
 
-	qglLoadMatrixf( projectionMatrix );
+	glLoadMatrixf( projectionMatrix );
 #endif
 }
 
@@ -971,24 +971,24 @@ void CCamWnd::Cam_Draw() {
 		Cam_Render();
 	}
 
-	qglViewport(0, 0, m_Camera.width, m_Camera.height);
-	qglScissor(0, 0, m_Camera.width, m_Camera.height);
-	qglClearColor(g_qeglobals.d_savedinfo.colors[COLOR_CAMERABACK][0], g_qeglobals.d_savedinfo.colors[COLOR_CAMERABACK][1], g_qeglobals.d_savedinfo.colors[COLOR_CAMERABACK][2], 0);
+	glViewport(0, 0, m_Camera.width, m_Camera.height);
+	glScissor(0, 0, m_Camera.width, m_Camera.height);
+	glClearColor(g_qeglobals.d_savedinfo.colors[COLOR_CAMERABACK][0], g_qeglobals.d_savedinfo.colors[COLOR_CAMERABACK][1], g_qeglobals.d_savedinfo.colors[COLOR_CAMERABACK][2], 0);
 
 	if (!renderMode) {
-		qglClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	qglDisable(GL_LIGHTING);
-	qglMatrixMode(GL_PROJECTION);
+	glDisable(GL_LIGHTING);
+	glMatrixMode(GL_PROJECTION);
 
 	SetProjectionMatrix();
 
-	qglRotatef(-90, 1, 0, 0);	// put Z going up
-	qglRotatef(90, 0, 0, 1);	// put Z going up
-	qglRotatef(m_Camera.angles[0], 0, 1, 0);
-	qglRotatef(-m_Camera.angles[1], 0, 0, 1);
-	qglTranslatef(-m_Camera.origin[0], -m_Camera.origin[1], -m_Camera.origin[2]);
+	glRotatef(-90, 1, 0, 0);	// put Z going up
+	glRotatef(90, 0, 0, 1);	// put Z going up
+	glRotatef(m_Camera.angles[0], 0, 1, 0);
+	glRotatef(-m_Camera.angles[1], 0, 0, 1);
+	glTranslatef(-m_Camera.origin[0], -m_Camera.origin[1], -m_Camera.origin[2]);
 
 	Cam_BuildMatrix();
 
@@ -1013,10 +1013,10 @@ void CCamWnd::Cam_Draw() {
 	}
 
 
-	//qglDepthMask ( 1 ); // Ok, write now
-	qglMatrixMode(GL_PROJECTION);
+	//glDepthMask ( 1 ); // Ok, write now
+	glMatrixMode(GL_PROJECTION);
 
-	qglTranslatef(g_qeglobals.d_select_translate[0],g_qeglobals.d_select_translate[1],g_qeglobals.d_select_translate[2]);
+	glTranslatef(g_qeglobals.d_select_translate[0],g_qeglobals.d_select_translate[1],g_qeglobals.d_select_translate[2]);
 
 	brush_t *pList = (g_bClipMode && g_pSplitList) ? g_pSplitList : &selected_brushes;
 
@@ -1034,20 +1034,20 @@ void CCamWnd::Cam_Draw() {
 	// blend on top
 
 	setGLMode(m_Camera.draw_mode);
-	qglDisable(GL_LIGHTING);
-	qglColor4f( g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][0],g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][1],g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][2], 0.25f );
-	qglEnable(GL_BLEND);
-	qglPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	qglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_LIGHTING);
+	glColor4f( g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][0],g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][1],g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][2], 0.25f );
+	glEnable(GL_BLEND);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	globalImages->BindNull();
 	for (brush = pList->next; brush != pList; brush = brush->next) {
 		if (brush->pPatch || brush->modelHandle > 0) {
 			Brush_Draw(brush, true);
 
 			// DHM - Nerve:: patch display lists/models mess with the state
-			qglEnable(GL_BLEND);
-			qglPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			qglColor4f( g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][0],g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][1],g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][2], 0.25f );
+			glEnable(GL_BLEND);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glColor4f( g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][0],g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][1],g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][2], 0.25f );
 			globalImages->BindNull();
 			continue;
 		}
@@ -1072,19 +1072,19 @@ void CCamWnd::Cam_Draw() {
 	}
 
 	// non-zbuffered outline
-	qglDisable(GL_BLEND);
-	qglDisable(GL_DEPTH_TEST);
-	qglPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glDisable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	if (renderMode) {
-		qglColor3f(1, 0, 0);
+		glColor3f(1, 0, 0);
 		for (i = 0; i < nCount; i++) {
 			face_t	*selFace = reinterpret_cast < face_t * > (g_ptrSelectedFaces.GetAt(i));
 			Face_Draw(selFace);
 		}
 	}
 
-	qglColor3f(1, 1, 1);
+	glColor3f(1, 1, 1);
 	for (brush = pList->next; brush != pList; brush = brush->next) {
 		if (brush->pPatch || brush->modelHandle > 0) {
 			continue;
@@ -1096,30 +1096,30 @@ void CCamWnd::Cam_Draw() {
 	}
 	// edge / vertex flags
 	if (g_qeglobals.d_select_mode == sel_vertex) {
-		qglPointSize(4);
-		qglColor3f(0, 1, 0);
-		qglBegin(GL_POINTS);
+		glPointSize(4);
+		glColor3f(0, 1, 0);
+		glBegin(GL_POINTS);
 		for (i = 0; i < g_qeglobals.d_numpoints; i++) {
-			qglVertex3fv( g_qeglobals.d_points[i].ToFloatPtr() );
+			glVertex3fv( g_qeglobals.d_points[i].ToFloatPtr() );
 		}
 
-		qglEnd();
-		qglPointSize(1);
+		glEnd();
+		glPointSize(1);
 	}
 	else if (g_qeglobals.d_select_mode == sel_edge) {
 		float	*v1, *v2;
 
-		qglPointSize(4);
-		qglColor3f(0, 0, 1);
-		qglBegin(GL_POINTS);
+		glPointSize(4);
+		glColor3f(0, 0, 1);
+		glBegin(GL_POINTS);
 		for (i = 0; i < g_qeglobals.d_numedges; i++) {
 			v1 = g_qeglobals.d_points[g_qeglobals.d_edges[i].p1].ToFloatPtr();
 			v2 = g_qeglobals.d_points[g_qeglobals.d_edges[i].p2].ToFloatPtr();
-			qglVertex3f( (v1[0] + v2[0]) * 0.5f, (v1[1] + v2[1]) * 0.5f, (v1[2] + v2[2]) * 0.5f );
+			glVertex3f( (v1[0] + v2[0]) * 0.5f, (v1[1] + v2[1]) * 0.5f, (v1[2] + v2[2]) * 0.5f );
 		}
 
-		qglEnd();
-		qglPointSize(1);
+		glEnd();
+		glPointSize(1);
 	}
 
 	g_splineList->draw (static_cast<bool>(g_qeglobals.d_select_mode == sel_addpoint || g_qeglobals.d_select_mode == sel_editpoint));
@@ -1129,7 +1129,7 @@ void CCamWnd::Cam_Draw() {
 	}
 
 	// draw pointfile
-	qglEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
 
 	DrawPathLines();
 
@@ -1143,7 +1143,7 @@ void CCamWnd::Cam_Draw() {
 	//
 	globalImages->BindNull();
 
-	qglFinish();
+	glFinish();
 	QE_CheckOpenGLForErrors();
 
 	if (!renderMode) {
@@ -2002,18 +2002,18 @@ extern void glBox(idVec4 &color, idVec3 &point, float size);
 
 void CCamWnd::DrawEntityData() {
 
-	qglMatrixMode( GL_MODELVIEW );
-	qglLoadIdentity();
-	qglMatrixMode( GL_PROJECTION );
-	qglLoadIdentity();
+	glMatrixMode( GL_MODELVIEW );
+	glLoadIdentity();
+	glMatrixMode( GL_PROJECTION );
+	glLoadIdentity();
 
 	SetProjectionMatrix();
 
-	qglRotatef(-90, 1, 0, 0);	// put Z going up
-	qglRotatef(90, 0, 0, 1);	// put Z going up
-	qglRotatef(m_Camera.angles[0], 0, 1, 0);
-	qglRotatef(-m_Camera.angles[1], 0, 0, 1);
-	qglTranslatef(-m_Camera.origin[0], -m_Camera.origin[1], -m_Camera.origin[2]);
+	glRotatef(-90, 1, 0, 0);	// put Z going up
+	glRotatef(90, 0, 0, 1);	// put Z going up
+	glRotatef(m_Camera.angles[0], 0, 1, 0);
+	glRotatef(-m_Camera.angles[1], 0, 0, 1);
+	glTranslatef(-m_Camera.origin[0], -m_Camera.origin[1], -m_Camera.origin[2]);
 
 	Cam_BuildMatrix();
 
@@ -2021,12 +2021,12 @@ void CCamWnd::DrawEntityData() {
 		return;
 	}
 
-	qglDisable(GL_BLEND);
-	qglDisable(GL_DEPTH_TEST);
-	qglPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glDisable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	globalImages->BindNull();
 	idVec3 color(0, 1, 0);
-	qglColor3fv( color.ToFloatPtr() );
+	glColor3fv( color.ToFloatPtr() );
 
 	brush_t *brushList = &active_brushes;
 	int pass = 0;
@@ -2050,7 +2050,7 @@ void CCamWnd::DrawEntityData() {
 		color.x = 1;
 		color.y = 0;
 		pass++;
-		qglColor3fv( color.ToFloatPtr() );
+		glColor3fv( color.ToFloatPtr() );
 	}
 
 }
@@ -2075,19 +2075,19 @@ void CCamWnd::Cam_Render() {
 
 	// DG: from SteelStorm2
 	// Jmarshal23 recommended to disable this to fix lighting render in the Cam window
-	/* if (!qwglMakeCurrent(dc.m_hDC, win32.hGLRC)) {
+	/* if (!wglMakeCurrent(dc.m_hDC, win32.hGLRC)) {
 		common->Printf("ERROR: wglMakeCurrent failed..\n ");
 		common->Printf("Please restart " EDITOR_WINDOWTEXT " if the camera view is not working\n");
 		return;
 	} */
 
 	// save the editor state
-	//qglPushAttrib( GL_ALL_ATTRIB_BITS );
-	qglClearColor( 0.1f, 0.1f, 0.1f, 0.0f );
-	qglScissor( 0, 0, m_Camera.width, m_Camera.height );
-	qglClear( GL_COLOR_BUFFER_BIT );
+	//glPushAttrib( GL_ALL_ATTRIB_BITS );
+	glClearColor( 0.1f, 0.1f, 0.1f, 0.0f );
+	glScissor( 0, 0, m_Camera.width, m_Camera.height );
+	glClear( GL_COLOR_BUFFER_BIT );
 
-	//	qwglSwapBuffers(dc.m_hDC);
+	//	wglSwapBuffers(dc.m_hDC);
 
 	// create the model, using explicit normals
 	if ( rebuildMode && worldDirty ) {
@@ -2120,13 +2120,13 @@ void CCamWnd::Cam_Render() {
 	renderSystem->EndFrame( &frontEnd, &backEnd );
 //common->Printf( "front:%i back:%i\n", frontEnd, backEnd );
 
-	//qglPopAttrib();
+	//glPopAttrib();
 	//DrawEntityData();
 
-	//qwglSwapBuffers(dc.m_hDC);
+	//wglSwapBuffers(dc.m_hDC);
 	// get back to the editor state
-	qglMatrixMode( GL_MODELVIEW );
-	qglLoadIdentity();
+	glMatrixMode( GL_MODELVIEW );
+	glLoadIdentity();
 	Cam_BuildMatrix();
 }
 

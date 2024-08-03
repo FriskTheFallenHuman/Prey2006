@@ -143,7 +143,7 @@ public:
 #if GAMEPORTAL_SOUND
 	virtual int				NumSoundPortalsInArea( int areaNum ) { return 0; };
 	virtual int				NumGamePortalsInArea( int areaNum ) { return 0; };
-	virtual exitPortal_t	GetSoundPortal( int areaNum, int portalNum ) { exitPortal_t	ret; return ret; };
+	virtual exitPortal_t	GetSoundPortal( int areaNum, int portalNum ) { exitPortal_t	ret = {}; return ret; };
 	virtual void			LevelInitSoundAreas() {}
 	virtual void			LevelShutdownSoundAreas() {}
 	virtual void			PrecalculateValidSoundAreas(const idVec3 listenerPosition, const int listenerArea) {}

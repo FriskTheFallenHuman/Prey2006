@@ -84,6 +84,10 @@ find_package( SDL2 REQUIRED )
 include_directories( ${SDL2_INCLUDE_DIR} )
 list( APPEND sys_thirdparty_libs SDL2::SDL2 )
 
+find_package( GLEW REQUIRED )
+include_directories( ${GLEW_INCLUDE_DIRS} )
+list( APPEND sys_thirdparty_libs GLEW::GLEW )
+
 # Curl
 find_package( CURL QUIET )
 if( CURL_FOUND )
@@ -1158,7 +1162,7 @@ if( DEDICATED )
 	set_target_properties( ${DEDICATED_BINARY} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER} )
 	set_target_properties( ${DEDICATED_BINARY} PROPERTIES FOLDER "exes" )
 	
-	list( REMOVE_ITEM sys_thirdparty_libs ${OPENAL_LIBRARY} )
+	list( REMOVE_ITEM sys_thirdparty_libs ${OPENAL_LIBRARY} GLEW::GLEW )
 
 	target_link_libraries( ${DEDICATED_BINARY}
 		idlib

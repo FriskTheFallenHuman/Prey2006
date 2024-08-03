@@ -46,13 +46,13 @@ may touch, including the editor.
 void RB_SetDefaultGLState( void ) {
 	int		i;
 
-	qglClearDepth( 1.0f );
-	qglColor4f (1,1,1,1);
+	glClearDepth( 1.0f );
+	glColor4f (1,1,1,1);
 
 	// the vertex array is always enabled
-	qglEnableClientState( GL_VERTEX_ARRAY );
-	qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
-	qglDisableClientState( GL_COLOR_ARRAY );
+	glEnableClientState( GL_VERTEX_ARRAY );
+	glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+	glDisableClientState( GL_COLOR_ARRAY );
 
 	//
 	// make sure our GL state vector is set correctly
@@ -60,43 +60,43 @@ void RB_SetDefaultGLState( void ) {
 	memset( &backEnd.glState, 0, sizeof( backEnd.glState ) );
 	backEnd.glState.forceGlState = true;
 
-	qglColorMask( 1, 1, 1, 1 );
+	glColorMask( 1, 1, 1, 1 );
 
-	qglEnable( GL_DEPTH_TEST );
-	qglEnable( GL_BLEND );
-	qglEnable( GL_SCISSOR_TEST );
-	qglEnable( GL_CULL_FACE );
-	qglDisable( GL_LIGHTING );
-	qglDisable( GL_LINE_STIPPLE );
-	qglDisable( GL_STENCIL_TEST );
+	glEnable( GL_DEPTH_TEST );
+	glEnable( GL_BLEND );
+	glEnable( GL_SCISSOR_TEST );
+	glEnable( GL_CULL_FACE );
+	glDisable( GL_LIGHTING );
+	glDisable( GL_LINE_STIPPLE );
+	glDisable( GL_STENCIL_TEST );
 
-	qglPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-	qglDepthMask( GL_TRUE );
-	qglDepthFunc( GL_ALWAYS );
+	glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
+	glDepthMask( GL_TRUE );
+	glDepthFunc( GL_ALWAYS );
 
-	qglCullFace( GL_FRONT_AND_BACK );
-	qglShadeModel( GL_SMOOTH );
+	glCullFace( GL_FRONT_AND_BACK );
+	glShadeModel( GL_SMOOTH );
 
 	if ( r_useScissor.GetBool() ) {
-		qglScissor( 0, 0, glConfig.vidWidth, glConfig.vidHeight );
+		glScissor( 0, 0, glConfig.vidWidth, glConfig.vidHeight );
 	}
 
 	for ( i = glConfig.maxTextureUnits - 1 ; i >= 0 ; i-- ) {
 		GL_SelectTexture( i );
 
 		// object linear texgen is our default
-		qglTexGenf( GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
-		qglTexGenf( GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
-		qglTexGenf( GL_R, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
-		qglTexGenf( GL_Q, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
+		glTexGenf( GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
+		glTexGenf( GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
+		glTexGenf( GL_R, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
+		glTexGenf( GL_Q, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR );
 
 		GL_TexEnv( GL_MODULATE );
-		qglDisable( GL_TEXTURE_2D );
+		glDisable( GL_TEXTURE_2D );
 		if ( glConfig.texture3DAvailable ) {
-			qglDisable( GL_TEXTURE_3D );
+			glDisable( GL_TEXTURE_3D );
 		}
 		if ( glConfig.cubeMapAvailable ) {
-			qglDisable( GL_TEXTURE_CUBE_MAP_EXT );
+			glDisable( GL_TEXTURE_CUBE_MAP_EXT );
 		}
 	}
 }
@@ -123,8 +123,8 @@ void GL_SelectTexture( int unit ) {
 		return;
 	}
 
-	qglActiveTextureARB( GL_TEXTURE0_ARB + unit );
-	qglClientActiveTextureARB( GL_TEXTURE0_ARB + unit );
+	glActiveTextureARB( GL_TEXTURE0_ARB + unit );
+	glClientActiveTextureARB( GL_TEXTURE0_ARB + unit );
 
 	backEnd.glState.currenttmu = unit;
 }
@@ -144,23 +144,23 @@ void GL_Cull( int cullType ) {
 	}
 
 	if ( cullType == CT_TWO_SIDED ) {
-		qglDisable( GL_CULL_FACE );
+		glDisable( GL_CULL_FACE );
 	} else  {
 		if ( backEnd.glState.faceCulling == CT_TWO_SIDED ) {
-			qglEnable( GL_CULL_FACE );
+			glEnable( GL_CULL_FACE );
 		}
 
 		if ( cullType == CT_BACK_SIDED ) {
 			if ( backEnd.viewDef->isMirror ) {
-				qglCullFace( GL_FRONT );
+				glCullFace( GL_FRONT );
 			} else {
-				qglCullFace( GL_BACK );
+				glCullFace( GL_BACK );
 			}
 		} else {
 			if ( backEnd.viewDef->isMirror ) {
-				qglCullFace( GL_BACK );
+				glCullFace( GL_BACK );
 			} else {
-				qglCullFace( GL_FRONT );
+				glCullFace( GL_FRONT );
 			}
 		}
 	}
@@ -189,7 +189,7 @@ void GL_TexEnv( int env ) {
 	case GL_REPLACE:
 	case GL_DECAL:
 	case GL_ADD:
-		qglTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, env );
+		glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, env );
 		break;
 	default:
 		common->Error( "GL_TexEnv: invalid env '%d' passed\n", env );
@@ -236,11 +236,11 @@ void GL_State( int stateBits ) {
 	//
 	if ( diff & ( GLS_DEPTHFUNC_EQUAL | GLS_DEPTHFUNC_LESS | GLS_DEPTHFUNC_ALWAYS ) ) {
 		if ( stateBits & GLS_DEPTHFUNC_EQUAL ) {
-			qglDepthFunc( GL_EQUAL );
+			glDepthFunc( GL_EQUAL );
 		} else if ( stateBits & GLS_DEPTHFUNC_ALWAYS ) {
-			qglDepthFunc( GL_ALWAYS );
+			glDepthFunc( GL_ALWAYS );
 		} else {
-			qglDepthFunc( GL_LEQUAL );
+			glDepthFunc( GL_LEQUAL );
 		}
 	}
 
@@ -316,7 +316,7 @@ void GL_State( int stateBits ) {
 			break;
 		}
 
-		qglBlendFunc( srcFactor, dstFactor );
+		glBlendFunc( srcFactor, dstFactor );
 	}
 
 	//
@@ -324,9 +324,9 @@ void GL_State( int stateBits ) {
 	//
 	if ( diff & GLS_DEPTHMASK ) {
 		if ( stateBits & GLS_DEPTHMASK ) {
-			qglDepthMask( GL_FALSE );
+			glDepthMask( GL_FALSE );
 		} else {
-			qglDepthMask( GL_TRUE );
+			glDepthMask( GL_TRUE );
 		}
 	}
 
@@ -339,7 +339,7 @@ void GL_State( int stateBits ) {
 		g = ( stateBits & GLS_GREENMASK ) ? 0 : 1;
 		b = ( stateBits & GLS_BLUEMASK ) ? 0 : 1;
 		a = ( stateBits & GLS_ALPHAMASK ) ? 0 : 1;
-		qglColorMask( r, g, b, a );
+		glColorMask( r, g, b, a );
 	}
 
 	//
@@ -347,9 +347,9 @@ void GL_State( int stateBits ) {
 	//
 	if ( diff & GLS_POLYMODE_LINE ) {
 		if ( stateBits & GLS_POLYMODE_LINE ) {
-			qglPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+			glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 		} else {
-			qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+			glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 		}
 	}
 
@@ -359,19 +359,19 @@ void GL_State( int stateBits ) {
 	if ( diff & GLS_ATEST_BITS ) {
 		switch ( stateBits & GLS_ATEST_BITS ) {
 		case 0:
-			qglDisable( GL_ALPHA_TEST );
+			glDisable( GL_ALPHA_TEST );
 			break;
 		case GLS_ATEST_EQ_255:
-			qglEnable( GL_ALPHA_TEST );
-			qglAlphaFunc( GL_EQUAL, 1 );
+			glEnable( GL_ALPHA_TEST );
+			glAlphaFunc( GL_EQUAL, 1 );
 			break;
 		case GLS_ATEST_LT_128:
-			qglEnable( GL_ALPHA_TEST );
-			qglAlphaFunc( GL_LESS, 0.5 );
+			glEnable( GL_ALPHA_TEST );
+			glAlphaFunc( GL_LESS, 0.5 );
 			break;
 		case GLS_ATEST_GE_128:
-			qglEnable( GL_ALPHA_TEST );
-			qglAlphaFunc( GL_GEQUAL, 0.5 );
+			glEnable( GL_ALPHA_TEST );
+			glAlphaFunc( GL_GEQUAL, 0.5 );
 			break;
 		default:
 			assert( 0 );
@@ -402,15 +402,15 @@ This is not used by the normal game paths, just by some tools
 */
 void RB_SetGL2D( void ) {
 	// set 2D virtual screen size
-	qglViewport( 0, 0, glConfig.vidWidth, glConfig.vidHeight );
+	glViewport( 0, 0, glConfig.vidWidth, glConfig.vidHeight );
 	if ( r_useScissor.GetBool() ) {
-		qglScissor( 0, 0, glConfig.vidWidth, glConfig.vidHeight );
+		glScissor( 0, 0, glConfig.vidWidth, glConfig.vidHeight );
 	}
-	qglMatrixMode( GL_PROJECTION );
-	qglLoadIdentity();
-	qglOrtho( 0, 640, 480, 0, 0, 1 );		// always assume 640x480 virtual coordinates
-	qglMatrixMode( GL_MODELVIEW );
-	qglLoadIdentity();
+	glMatrixMode( GL_PROJECTION );
+	glLoadIdentity();
+	glOrtho( 0, 640, 480, 0, 0, 1 );		// always assume 640x480 virtual coordinates
+	glMatrixMode( GL_MODELVIEW );
+	glLoadIdentity();
 
 	GL_State( GLS_DEPTHFUNC_ALWAYS |
 			  GLS_SRCBLEND_SRC_ALPHA |
@@ -418,8 +418,8 @@ void RB_SetGL2D( void ) {
 
 	GL_Cull( CT_TWO_SIDED );
 
-	qglDisable( GL_DEPTH_TEST );
-	qglDisable( GL_STENCIL_TEST );
+	glDisable( GL_DEPTH_TEST );
+	glDisable( GL_STENCIL_TEST );
 }
 
 
@@ -439,7 +439,7 @@ static void	RB_SetBuffer( const void *data ) {
 
 	backEnd.frameCount = cmd->frameCount;
 
-	qglDrawBuffer( cmd->buffer );
+	glDrawBuffer( cmd->buffer );
 
 	// clear screen for debugging
 	// automatically enable this with several other debug tools
@@ -447,15 +447,15 @@ static void	RB_SetBuffer( const void *data ) {
 	if ( r_clear.GetFloat() || idStr::Length( r_clear.GetString() ) != 1 || r_lockSurfaces.GetBool() || r_singleArea.GetBool() || r_showOverDraw.GetBool() ) {
 		float c[3];
 		if ( sscanf( r_clear.GetString(), "%f %f %f", &c[0], &c[1], &c[2] ) == 3 ) {
-			qglClearColor( c[0], c[1], c[2], 1 );
+			glClearColor( c[0], c[1], c[2], 1 );
 		} else if ( r_clear.GetInteger() == 2 ) {
-			qglClearColor( 0.0f, 0.0f,  0.0f, 1.0f );
+			glClearColor( 0.0f, 0.0f,  0.0f, 1.0f );
 		} else if ( r_showOverDraw.GetBool() ) {
-			qglClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
+			glClearColor( 1.0f, 1.0f, 1.0f, 1.0f );
 		} else {
-			qglClearColor( 0.4f, 0.0f, 0.25f, 1.0f );
+			glClearColor( 0.4f, 0.0f, 0.25f, 1.0f );
 		}
-		qglClear( GL_COLOR_BUFFER_BIT );
+		glClear( GL_COLOR_BUFFER_BIT );
 	}
 }
 
@@ -475,10 +475,10 @@ void RB_ShowImages( void ) {
 
 	RB_SetGL2D();
 
-	//qglClearColor( 0.2, 0.2, 0.2, 1 );
-	//qglClear( GL_COLOR_BUFFER_BIT );
+	//glClearColor( 0.2, 0.2, 0.2, 1 );
+	//glClear( GL_COLOR_BUFFER_BIT );
 
-	qglFinish();
+	glFinish();
 
 	start = Sys_Milliseconds();
 
@@ -501,19 +501,19 @@ void RB_ShowImages( void ) {
 		}
 
 		image->Bind();
-		qglBegin (GL_QUADS);
-		qglTexCoord2f( 0, 0 );
-		qglVertex2f( x, y );
-		qglTexCoord2f( 1, 0 );
-		qglVertex2f( x + w, y );
-		qglTexCoord2f( 1, 1 );
-		qglVertex2f( x + w, y + h );
-		qglTexCoord2f( 0, 1 );
-		qglVertex2f( x, y + h );
-		qglEnd();
+		glBegin (GL_QUADS);
+		glTexCoord2f( 0, 0 );
+		glVertex2f( x, y );
+		glTexCoord2f( 1, 0 );
+		glVertex2f( x + w, y );
+		glTexCoord2f( 1, 1 );
+		glVertex2f( x + w, y + h );
+		glTexCoord2f( 0, 1 );
+		glVertex2f( x, y + h );
+		glEnd();
 	}
 
-	qglFinish();
+	glFinish();
 
 	end = Sys_Milliseconds();
 	common->Printf( "%i msec to draw all images\n", end - start );
@@ -538,69 +538,69 @@ const void	RB_SwapBuffers( const void *data ) {
 		// make sure the whole alpha chan of the (default) framebuffer is opaque.
 		// at least Wayland needs this, see also the big comment in GLimp_Init()
 
-		bool blendEnabled = qglIsEnabled( GL_BLEND );
+		bool blendEnabled = glIsEnabled( GL_BLEND );
 		if ( !blendEnabled )
-			qglEnable( GL_BLEND );
+			glEnable( GL_BLEND );
 
 		// TODO: GL_DEPTH_TEST ? (should be disabled, if it needs changing at all)
 
-		bool scissorEnabled = qglIsEnabled( GL_SCISSOR_TEST );
+		bool scissorEnabled = glIsEnabled( GL_SCISSOR_TEST );
 		if( scissorEnabled )
-			qglDisable( GL_SCISSOR_TEST );
+			glDisable( GL_SCISSOR_TEST );
 
-		bool tex2Denabled = qglIsEnabled( GL_TEXTURE_2D );
+		bool tex2Denabled = glIsEnabled( GL_TEXTURE_2D );
 		if( tex2Denabled )
-			qglDisable( GL_TEXTURE_2D );
+			glDisable( GL_TEXTURE_2D );
 
-		qglDisable( GL_VERTEX_PROGRAM_ARB );
-		qglDisable( GL_FRAGMENT_PROGRAM_ARB );
+		glDisable( GL_VERTEX_PROGRAM_ARB );
+		glDisable( GL_FRAGMENT_PROGRAM_ARB );
 
-		qglBlendEquation( GL_FUNC_ADD );
+		glBlendEquation( GL_FUNC_ADD );
 
-		qglBlendFunc( GL_ONE, GL_ONE );
+		glBlendFunc( GL_ONE, GL_ONE );
 
 		// setup transform matrices so we can easily/reliably draw a fullscreen quad
-		qglMatrixMode( GL_MODELVIEW );
-		qglPushMatrix();
-		qglLoadIdentity();
+		glMatrixMode( GL_MODELVIEW );
+		glPushMatrix();
+		glLoadIdentity();
 
-		qglMatrixMode( GL_PROJECTION );
-		qglPushMatrix();
-		qglLoadIdentity();
-		qglOrtho( 0, 1, 0, 1, -1, 1 );
+		glMatrixMode( GL_PROJECTION );
+		glPushMatrix();
+		glLoadIdentity();
+		glOrtho( 0, 1, 0, 1, -1, 1 );
 
 		// draw screen-sized quad with color (0.0, 0.0, 0.0, 1.0)
 		const float x=0, y=0, w=1, h=1;
-		qglColor4f( 0.0f, 0.0f, 0.0f, 1.0f );
+		glColor4f( 0.0f, 0.0f, 0.0f, 1.0f );
 		// debug values:
 		//const float x = 0.1, y = 0.1, w = 0.8, h = 0.8;
-		//qglColor4f( 0.0f, 0.0f, 0.5f, 1.0f );
+		//glColor4f( 0.0f, 0.0f, 0.5f, 1.0f );
 
-		qglBegin( GL_QUADS );
-			qglVertex2f( x,   y   ); // ( 0,0 );
-			qglVertex2f( x,   y+h ); // ( 0,1 );
-			qglVertex2f( x+w, y+h ); // ( 1,1 );
-			qglVertex2f( x+w, y   ); // ( 1,0 );
-		qglEnd();
+		glBegin( GL_QUADS );
+			glVertex2f( x,   y   ); // ( 0,0 );
+			glVertex2f( x,   y+h ); // ( 0,1 );
+			glVertex2f( x+w, y+h ); // ( 1,1 );
+			glVertex2f( x+w, y   ); // ( 1,0 );
+		glEnd();
 
 		// restore previous transform matrix states
-		qglPopMatrix(); // for projection
-		qglMatrixMode( GL_MODELVIEW );
-		qglPopMatrix(); // for modelview
+		glPopMatrix(); // for projection
+		glMatrixMode( GL_MODELVIEW );
+		glPopMatrix(); // for modelview
 
 		// restore default or previous states
-		qglBlendEquation( GL_FUNC_ADD );
+		glBlendEquation( GL_FUNC_ADD );
 		if ( !blendEnabled )
-			qglDisable( GL_BLEND );
+			glDisable( GL_BLEND );
 		if( tex2Denabled )
-			qglEnable( GL_TEXTURE_2D );
+			glEnable( GL_TEXTURE_2D );
 		if( scissorEnabled )
-			qglEnable( GL_SCISSOR_TEST );
+			glEnable( GL_SCISSOR_TEST );
 	}
 
 	// force a gl sync if requested
 	if ( r_finish.GetBool() ) {
-		qglFinish();
+		glFinish();
 	}
 
 	// don't flip if drawing to front buffer
@@ -687,7 +687,7 @@ void RB_ExecuteBackEndCommands( const emptyCommand_t *cmds ) {
 	}
 
 	// go back to the default texture so the editor doesn't mess up a bound image
-	qglBindTexture( GL_TEXTURE_2D, 0 );
+	glBindTexture( GL_TEXTURE_2D, 0 );
 	backEnd.glState.tmu[0].current2DMap = -1;
 
 	// stop rendering on this thread

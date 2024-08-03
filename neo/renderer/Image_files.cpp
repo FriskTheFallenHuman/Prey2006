@@ -973,10 +973,10 @@ bool R_LoadCubeImages( const char *imgName, cubeFiles_t extensions, byte *pics[6
 			// convert from "camera" images to native cube map images
 			switch( i ) {
 			case 0:	// forward
-				R_RotatePic( pics[i], width);
+				R_RotatePic( pics[i], width );
 				break;
 			case 1:	// back
-				R_RotatePic( pics[i], width);
+				R_RotatePic( pics[i], width );
 				R_HorizontalFlip( pics[i], width, height );
 				R_VerticalFlip( pics[i], width, height );
 				break;
@@ -987,10 +987,10 @@ bool R_LoadCubeImages( const char *imgName, cubeFiles_t extensions, byte *pics[6
 				R_HorizontalFlip( pics[i], width, height );
 				break;
 			case 4:	// up
-				R_RotatePic( pics[i], width);
+				R_RotatePic( pics[i], width );
 				break;
 			case 5: // down
-				R_RotatePic( pics[i], width);
+				R_RotatePic( pics[i], width );
 				break;
 			}
 		}

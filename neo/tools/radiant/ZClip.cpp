@@ -136,7 +136,7 @@ void CZClip::Paint(void)
 	float	x, y;
 	int	xCam = z.width/4;	// hmmm, a rather unpleasant and obscure global name, but it was already called that so...
 
-	qglColor3f (ZCLIP_COLOUR);//1.0, 0.0, 1.0);
+	glColor3f (ZCLIP_COLOUR);//1.0, 0.0, 1.0);
 
 	// draw TOP marker...
 	//
@@ -144,53 +144,53 @@ void CZClip::Paint(void)
 	y = m_iZClipTop;
 
 	if (m_bEnabled)
-		qglBegin(GL_QUADS);
+		glBegin(GL_QUADS);
 	else
-		qglBegin(GL_LINE_LOOP);
+		glBegin(GL_LINE_LOOP);
 
-	qglVertex3f (x-xCam,y,0);
-	qglVertex3f (x-xCam,y+ZCLIP_BAR_THICKNESS,0);
-	qglVertex3f (x+xCam,y+ZCLIP_BAR_THICKNESS,0);
-	qglVertex3f (x+xCam,y,0);
-	qglEnd ();
+	glVertex3f (x-xCam,y,0);
+	glVertex3f (x-xCam,y+ZCLIP_BAR_THICKNESS,0);
+	glVertex3f (x+xCam,y+ZCLIP_BAR_THICKNESS,0);
+	glVertex3f (x+xCam,y,0);
+	glEnd ();
 
-	qglColor3f (ZCLIP_COLOUR_DIM);//0.8, 0.0, 0.8);
+	glColor3f (ZCLIP_COLOUR_DIM);//0.8, 0.0, 0.8);
 
 	if (m_bEnabled)
-		qglBegin(GL_TRIANGLES);
+		glBegin(GL_TRIANGLES);
 	else
-		qglBegin(GL_LINE_LOOP);
-	qglVertex3f (x,(y+ZCLIP_BAR_THICKNESS),0);
-	qglVertex3f (x-xCam,(y+ZCLIP_BAR_THICKNESS)+(ZCLIP_ARROWHEIGHT/2),0);
-	qglVertex3f (x+xCam,(y+ZCLIP_BAR_THICKNESS)+(ZCLIP_ARROWHEIGHT/2),0);
-	qglEnd ();
+		glBegin(GL_LINE_LOOP);
+	glVertex3f (x,(y+ZCLIP_BAR_THICKNESS),0);
+	glVertex3f (x-xCam,(y+ZCLIP_BAR_THICKNESS)+(ZCLIP_ARROWHEIGHT/2),0);
+	glVertex3f (x+xCam,(y+ZCLIP_BAR_THICKNESS)+(ZCLIP_ARROWHEIGHT/2),0);
+	glEnd ();
 
 	// draw bottom marker...
 	//
-	qglColor3f (ZCLIP_COLOUR);//1.0, 0.0, 1.0);
+	glColor3f (ZCLIP_COLOUR);//1.0, 0.0, 1.0);
 	x = 0;
 	y = m_iZClipBottom;
 
 	if (m_bEnabled)
-		qglBegin(GL_QUADS);
+		glBegin(GL_QUADS);
 	else
-		qglBegin(GL_LINE_LOOP);
-	qglVertex3f (x-xCam,y,0);
-	qglVertex3f (x-xCam,y-ZCLIP_BAR_THICKNESS,0);
-	qglVertex3f (x+xCam,y-ZCLIP_BAR_THICKNESS,0);
-	qglVertex3f (x+xCam,y,0);
-	qglEnd ();
+		glBegin(GL_LINE_LOOP);
+	glVertex3f (x-xCam,y,0);
+	glVertex3f (x-xCam,y-ZCLIP_BAR_THICKNESS,0);
+	glVertex3f (x+xCam,y-ZCLIP_BAR_THICKNESS,0);
+	glVertex3f (x+xCam,y,0);
+	glEnd ();
 
-	qglColor3f (ZCLIP_COLOUR_DIM);//0.8, 0.0, 0.8);
+	glColor3f (ZCLIP_COLOUR_DIM);//0.8, 0.0, 0.8);
 
 	if (m_bEnabled)
-		qglBegin(GL_TRIANGLES);
+		glBegin(GL_TRIANGLES);
 	else
-		qglBegin(GL_LINE_LOOP);
-	qglVertex3f (x,(y-ZCLIP_BAR_THICKNESS),0);
-	qglVertex3f (x-xCam,(y-ZCLIP_BAR_THICKNESS)-(ZCLIP_ARROWHEIGHT/2),0);
-	qglVertex3f (x+xCam,(y-ZCLIP_BAR_THICKNESS)-(ZCLIP_ARROWHEIGHT/2),0);
-	qglEnd ();
+		glBegin(GL_LINE_LOOP);
+	glVertex3f (x,(y-ZCLIP_BAR_THICKNESS),0);
+	glVertex3f (x-xCam,(y-ZCLIP_BAR_THICKNESS)-(ZCLIP_ARROWHEIGHT/2),0);
+	glVertex3f (x+xCam,(y-ZCLIP_BAR_THICKNESS)-(ZCLIP_ARROWHEIGHT/2),0);
+	glEnd ();
 }
 
 

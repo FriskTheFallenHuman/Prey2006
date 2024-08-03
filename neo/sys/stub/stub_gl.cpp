@@ -45,7 +45,7 @@ void APIENTRY glBegin(GLenum mode){};
 void APIENTRY glBindTexture(GLenum target, GLuint texture){};
 void APIENTRY glBitmap(GLsizei width, GLsizei height, GLfloat xorig, GLfloat yorig, GLfloat xmove, GLfloat ymove, const GLubyte *bitmap){};
 void APIENTRY glBlendFunc(GLenum sfactor, GLenum dfactor){};
-void APIENTRY glBlendEquation(GLenum mode){};
+//void APIENTRY glBlendEquation(GLenum mode){};
 void APIENTRY glCallList(GLuint list){};
 void APIENTRY glCallLists(GLsizei n, GLenum type, const GLvoid *lists){};
 void APIENTRY glClear(GLbitfield mask){};
@@ -386,8 +386,57 @@ void APIENTRY glVertex4sv(const GLshort *v){};
 void APIENTRY glVertexPointer(GLint size, GLenum type, GLsizei stride, const GLvoid *pointer){};
 void APIENTRY glViewport(GLint x, GLint y, GLsizei width, GLsizei height){};
 
-static void StubFunction( void ) {};
-GLExtension_t GLimp_ExtensionPointer( const char *a) { return StubFunction; };
+GLenum glewInit() { return GLEW_OK; }
+GLboolean glewIsSupported(const char* name) { return GL_FALSE; }
+const GLubyte* glewGetErrorString(GLenum error) {
+	return reinterpret_cast<const GLubyte*>("No error");
+}
+
+typedef void (*PFNGLBINDPROGRAMARBPROC)(GLenum target, GLuint program);
+typedef void (*PFNGLACTIVETEXTUREARBPROC)(GLenum texture);
+typedef void (*PFNGLCOLORTABLEEXTPROC)(GLenum target, GLenum internalFormat, GLsizei width, GLenum format, GLenum type, const GLvoid* data);
+typedef void (*PFNGLTEXIMAGE3DPROC)(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid* data);
+typedef void (*PFNGLCOMPRESSEDTEXIMAGE2DARBPROC)(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid* data);
+typedef void (*PFNGLGETCOMPRESSEDTEXIMAGEARBPROC)(GLenum target, GLint level, GLvoid* img);
+typedef void (*PFNGLPROGRAMLOCALPARAMETER4FVARBPROC)(GLenum target, GLuint index, const GLfloat* params);
+typedef void (*PFNGLBINDBUFFERARBPROC)(GLenum target, GLuint buffer);
+typedef void (*PFNGLBUFFERDATAARBPROC)(GLenum target, GLsizeiptr size, const GLvoid* data, GLenum usage);
+typedef void (*PFNGLBUFFERSUBDATAARBPROC)(GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid* data);
+typedef void (*PFNGLGENBUFFERSARBPROC)(GLsizei n, GLuint* buffers);
+typedef void (*PFNGLDISABLEVERTEXATTRIBARRAYARBPROC)(GLuint index);
+typedef void (*PFNGLDISABLEVERTEXATTRIBARRAYARBPROC)(GLuint index);
+typedef void (*PFNGLPROGRAMENVPARAMETER4FVARBPROC)(GLenum target, GLuint index, const GLfloat* params);
+typedef void (*PFNGLPROGRAMSTRINGARBPROC)(GLenum target, GLenum format, GLsizei len, const GLvoid* string);
+typedef void (*PFNGLVERTEXATTRIB1DARBPROC)(GLuint index, GLdouble x);
+typedef void (*PFNGLVERTEXATTRIBPOINTERARBPROC)(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* pointer);
+typedef void (*PFNGLBLENDEQUATIONPROC)(GLenum mode);
+typedef void (*PFNGLCLIENTACTIVETEXTUREARBPROC)(GLenum texture);
+typedef void (*PFNGLSTENCILOPSEPARATEPROC)(GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass);
+typedef void (*PFNGLDEPTHBOUNDSEXTPROC)(GLclampd zmin, GLclampd zmax);
+typedef void (*PFNGLDEBUGMESSAGECALLBACKARBPROC)(GLDEBUGPROCARB callback, const void *userParam);
+
+PFNGLBINDPROGRAMARBPROC glBindProgramARB = NULL;
+PFNGLACTIVETEXTUREARBPROC __glewActiveTextureARB = NULL;
+PFNGLCOLORTABLEEXTPROC __glewColorTableEXT = NULL;
+PFNGLTEXIMAGE3DPROC __glewTexImage3D = NULL;
+PFNGLCOMPRESSEDTEXIMAGE2DARBPROC __glewCompressedTexImage2DARB = NULL;
+PFNGLGETCOMPRESSEDTEXIMAGEARBPROC __glewGetCompressedTexImageARB = NULL;
+PFNGLPROGRAMLOCALPARAMETER4FVARBPROC __glewProgramLocalParameter4fvARB = NULL;
+PFNGLBINDBUFFERARBPROC __glewBindBufferARB = NULL;
+PFNGLBUFFERDATAARBPROC __glewBufferDataARB = NULL;
+PFNGLBUFFERSUBDATAARBPROC __glewBufferSubDataARB = NULL;
+PFNGLGENBUFFERSARBPROC __glewGenBuffersARB = NULL;
+PFNGLDISABLEVERTEXATTRIBARRAYARBPROC __glewDisableVertexAttribArrayARB = NULL;
+PFNGLDISABLEVERTEXATTRIBARRAYARBPROC __glewEnableVertexAttribArrayARB = NULL;
+PFNGLPROGRAMENVPARAMETER4FVARBPROC __glewProgramEnvParameter4fvARB = NULL;
+PFNGLPROGRAMSTRINGARBPROC __glewProgramStringARB = NULL;
+PFNGLVERTEXATTRIB1DARBPROC __glewVertexAttrib1dARB = NULL;
+PFNGLVERTEXATTRIBPOINTERARBPROC __glewVertexAttribPointerARB = NULL;
+PFNGLBLENDEQUATIONPROC __glewBlendEquation = NULL;
+PFNGLCLIENTACTIVETEXTUREARBPROC __glewClientActiveTextureARB = NULL;
+PFNGLSTENCILOPSEPARATEPROC __glewStencilOpSeparate = NULL;
+PFNGLDEPTHBOUNDSEXTPROC __glewDepthBoundsEXT = NULL;
+PFNGLDEBUGMESSAGECALLBACKARBPROC __glewDebugMessageCallbackARB = NULL;
 
 bool GLimp_Init(glimpParms_t a) {return true;};
 void GLimp_SetGamma(unsigned short*a, unsigned short*b, unsigned short*c) {};

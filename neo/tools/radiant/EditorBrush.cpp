@@ -63,7 +63,7 @@ void DrawRenderModel( idRenderModel *model, idVec3 &origin, idMat3 &axis, bool c
 			material->GetEditorImage()->Bind();
 		}
 
-		qglBegin( GL_TRIANGLES );
+		glBegin( GL_TRIANGLES );
 
 		const srfTriangles_t	*tri = surf->geometry;
 		for ( int j = 0; j < tri->numIndexes; j += 3 ) {
@@ -72,12 +72,12 @@ void DrawRenderModel( idRenderModel *model, idVec3 &origin, idMat3 &axis, bool c
 				idVec3	v;
 
 				v = tri->verts[index].xyz * axis + origin;
-				qglTexCoord2f( tri->verts[index].st.x, tri->verts[index].st.y );
-				qglVertex3fv( v.ToFloatPtr() );
+				glTexCoord2f( tri->verts[index].st.x, tri->verts[index].st.y );
+				glVertex3fv( v.ToFloatPtr() );
 			}
 		}
 
-		qglEnd();
+		glEnd();
 	}
 }
 
@@ -609,34 +609,34 @@ void DrawBrushEntityName(brush_t *b) {
 
 			idVec3 mid = (b->mins + b->maxs) / 2.0f;
 
-			qglBegin(GL_LINE_STRIP);
-			qglVertex3fv(mid.ToFloatPtr());
+			glBegin(GL_LINE_STRIP);
+			glVertex3fv(mid.ToFloatPtr());
 			mid[0] += c * 8;
 			mid[1] += s * 8;
 			mid[2] += s * 8;
-			qglVertex3fv(mid.ToFloatPtr());
+			glVertex3fv(mid.ToFloatPtr());
 			mid[0] -= c * 4;
 			mid[1] -= s * 4;
 			mid[2] -= s * 4;
 			mid[0] -= s * 4;
 			mid[1] += c * 4;
 			mid[2] += c * 4;
-			qglVertex3fv(mid.ToFloatPtr());
+			glVertex3fv(mid.ToFloatPtr());
 			mid[0] += c * 4;
 			mid[1] += s * 4;
 			mid[2] += s * 4;
 			mid[0] += s * 4;
 			mid[1] -= c * 4;
 			mid[2] -= c * 4;
-			qglVertex3fv(mid.ToFloatPtr());
+			glVertex3fv(mid.ToFloatPtr());
 			mid[0] -= c * 4;
 			mid[1] -= s * 4;
 			mid[2] -= s * 4;
 			mid[0] += s * 4;
 			mid[1] -= c * 4;
 			mid[2] -= c * 4;
-			qglVertex3fv(mid.ToFloatPtr());
-			qglEnd();
+			glVertex3fv(mid.ToFloatPtr());
+			glEnd();
 		}
 	}
 
@@ -670,8 +670,8 @@ void DrawBrushEntityName(brush_t *b) {
 				origin.z += halfHeight;
 				break;
 			}
-			qglRasterPos3fv( origin.ToFloatPtr() );
-			qglCallLists(nameLen, GL_UNSIGNED_BYTE, name);
+			glRasterPos3fv( origin.ToFloatPtr() );
+			glCallLists(nameLen, GL_UNSIGNED_BYTE, name);
 		}
 	}
 }
@@ -3568,17 +3568,17 @@ void Brush_DrawFacingAngle( brush_t *b, entity_t *e, bool particle ) {
 	VectorMA(tip1, -dist, ( particle ) ? forward : up, tip1);
 	VectorMA(tip1, 2 * dist, ( particle ) ? forward : up, tip2);
 	globalImages->BindNull();
-	qglColor4f(1, 1, 1, 1);
-	qglLineWidth(2);
-	qglBegin(GL_LINES);
-	qglVertex3fv(start.ToFloatPtr());
-	qglVertex3fv(endpoint.ToFloatPtr());
-	qglVertex3fv(endpoint.ToFloatPtr());
-	qglVertex3fv(tip1.ToFloatPtr());
-	qglVertex3fv(endpoint.ToFloatPtr());
-	qglVertex3fv(tip2.ToFloatPtr());
-	qglEnd();
-	qglLineWidth(0.5f);
+	glColor4f(1, 1, 1, 1);
+	glLineWidth(2);
+	glBegin(GL_LINES);
+	glVertex3fv(start.ToFloatPtr());
+	glVertex3fv(endpoint.ToFloatPtr());
+	glVertex3fv(endpoint.ToFloatPtr());
+	glVertex3fv(tip1.ToFloatPtr());
+	glVertex3fv(endpoint.ToFloatPtr());
+	glVertex3fv(tip2.ToFloatPtr());
+	glEnd();
+	glLineWidth(0.5f);
 }
 
 /*
@@ -3612,13 +3612,13 @@ void DrawProjectedLight(brush_t *b, bool bSelected, bool texture) {
 
 	tri = R_PolytopeSurface(6, planes, NULL);
 
-	qglColor3f(1, 0, 1);
+	glColor3f(1, 0, 1);
 	for (i = 0; i < tri->numIndexes; i += 3) {
-		qglBegin(GL_LINE_LOOP);
-		qglVertex3fv(tri->verts[tri->indexes[i]].xyz.ToFloatPtr());
-		qglVertex3fv(tri->verts[tri->indexes[i + 1]].xyz.ToFloatPtr());
-		qglVertex3fv(tri->verts[tri->indexes[i + 2]].xyz.ToFloatPtr());
-		qglEnd();
+		glBegin(GL_LINE_LOOP);
+		glVertex3fv(tri->verts[tri->indexes[i]].xyz.ToFloatPtr());
+		glVertex3fv(tri->verts[tri->indexes[i + 1]].xyz.ToFloatPtr());
+		glVertex3fv(tri->verts[tri->indexes[i + 2]].xyz.ToFloatPtr());
+		glEnd();
 	}
 
 	R_FreeStaticTriSurf(tri);
@@ -3638,58 +3638,58 @@ void DrawProjectedLight(brush_t *b, bool bSelected, bool texture) {
 	idVec3 *origin = (b->trackLightOrigin) ? &b->owner->lightOrigin : &b->owner->origin;
 	if (b->pointLight) {
 		if ( b->lightCenter[0] || b->lightCenter[1] || b->lightCenter[2] ) {
-			qglPointSize(8);
-			qglColor3f( 1.0f, 0.4f, 0.8f );
-			qglBegin(GL_POINTS);
+			glPointSize(8);
+			glColor3f( 1.0f, 0.4f, 0.8f );
+			glBegin(GL_POINTS);
 			tv = b->lightCenter;
 			if (transform) {
 				tv -= *origin;
 				tv *= mat;
 				tv += *origin;
 			}
-			qglVertex3fv(tv.ToFloatPtr());
-			qglEnd();
-			qglPointSize(1);
+			glVertex3fv(tv.ToFloatPtr());
+			glEnd();
+			glPointSize(1);
 		}
 		return;
 	}
 
 	// projected light
-	qglPointSize(8);
-	qglColor3f( 1.0f, 0.4f, 0.8f );
-	qglBegin(GL_POINTS);
+	glPointSize(8);
+	glColor3f( 1.0f, 0.4f, 0.8f );
+	glBegin(GL_POINTS);
 	tv = b->lightRight;
 	if (transform) {
 		tv -= *origin;
 		tv *= mat;
 		tv += *origin;
 	}
-	qglVertex3fv(tv.ToFloatPtr());
+	glVertex3fv(tv.ToFloatPtr());
 	tv = b->lightTarget;
 	if (transform) {
 		tv -= *origin;
 		tv *= mat;
 		tv += *origin;
 	}
-	qglVertex3fv(tv.ToFloatPtr());
+	glVertex3fv(tv.ToFloatPtr());
 	tv = b->lightUp;
 	if (transform) {
 		tv -= *origin;
 		tv *= mat;
 		tv += *origin;
 	}
-	qglVertex3fv(tv.ToFloatPtr());
-	qglEnd();
+	glVertex3fv(tv.ToFloatPtr());
+	glEnd();
 
 	if (b->startEnd) {
-		qglColor3f( 0.4f, 1.0f, 0.8f );
-		qglBegin(GL_POINTS);
-		qglVertex3fv(b->lightStart.ToFloatPtr());
-		qglVertex3fv(b->lightEnd.ToFloatPtr());
-		qglEnd();
+		glColor3f( 0.4f, 1.0f, 0.8f );
+		glBegin(GL_POINTS);
+		glVertex3fv(b->lightStart.ToFloatPtr());
+		glVertex3fv(b->lightEnd.ToFloatPtr());
+		glEnd();
 	}
 
-	qglPointSize(1);
+	glPointSize(1);
 }
 
 /*
@@ -3704,8 +3704,8 @@ void GLCircle(float x, float y, float z, float r)
 	float ig = 3 - 2 * r;
 	float idgr = -6;
 	float idgd = 4 * r - 10;
-	qglPointSize(0.5f);
-	qglBegin(GL_POINTS);
+	glPointSize(0.5f);
+	glBegin(GL_POINTS);
 	while (ix <= iy) {
 		if (ig < 0) {
 			ig += idgd;
@@ -3717,16 +3717,16 @@ void GLCircle(float x, float y, float z, float r)
 		}
 		idgr -= 4;
 		ix++;
-		qglVertex3f(x + ix, y + iy, z);
-		qglVertex3f(x - ix, y + iy, z);
-		qglVertex3f(x + ix, y - iy, z);
-		qglVertex3f(x - ix, y - iy, z);
-		qglVertex3f(x + iy, y + ix, z);
-		qglVertex3f(x - iy, y + ix, z);
-		qglVertex3f(x + iy, y - ix, z);
-		qglVertex3f(x - iy, y - ix, z);
+		glVertex3f(x + ix, y + iy, z);
+		glVertex3f(x - ix, y + iy, z);
+		glVertex3f(x + ix, y - iy, z);
+		glVertex3f(x - ix, y - iy, z);
+		glVertex3f(x + iy, y + ix, z);
+		glVertex3f(x - iy, y + ix, z);
+		glVertex3f(x + iy, y - ix, z);
+		glVertex3f(x - iy, y - ix, z);
 	}
-	qglEnd();
+	glEnd();
 }
 
 /*
@@ -3744,18 +3744,18 @@ void GLSphere(float r, int lats, int longs) {
 		float z1 = sin(lat1);
 		float zr1 = cos(lat1);
     
-		qglBegin(GL_QUAD_STRIP);
+		glBegin(GL_QUAD_STRIP);
 		for(j = 0; j <= longs; j++) {
 			float lng = 2 * idMath::PI * (float) (j - 1) / longs;
 			float x = idMath::Cos(lng);
 			float y = idMath::Sin(lng);
     
-			qglNormal3f(x * zr0, y * zr0, z0);
-			qglVertex3f(x * zr0, y * zr0, z0);
-			qglNormal3f(x * zr1, y * zr1, z1);
-			qglVertex3f(x * zr1, y * zr1, z1);
+			glNormal3f(x * zr0, y * zr0, z0);
+			glVertex3f(x * zr0, y * zr0, z0);
+			glNormal3f(x * zr1, y * zr1, z1);
+			glVertex3f(x * zr1, y * zr1, z1);
 			}
-			qglEnd();
+			glEnd();
        }
  }
 /*
@@ -3797,43 +3797,43 @@ void DrawSpeaker(brush_t *b, bool bSelected, bool twoD) {
 
 	if (twoD) {
 		if (bSelected) {
-			qglColor4f(g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].x, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].y, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].z, .5);
+			glColor4f(g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].x, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].y, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].z, .5);
 		} else {
-			qglColor4f(b->owner->eclass->color.x, b->owner->eclass->color.y, b->owner->eclass->color.z, .5);
+			glColor4f(b->owner->eclass->color.x, b->owner->eclass->color.y, b->owner->eclass->color.z, .5);
 		}
-		qglPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
+		glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
 		GLCircle(b->owner->origin.x, b->owner->origin.y, b->owner->origin.z, min);
 		if (bSelected) {
-			qglColor4f(g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].x, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].y, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].z, 1);
+			glColor4f(g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].x, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].y, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].z, 1);
 		} else {
-			qglColor4f(b->owner->eclass->color.x, b->owner->eclass->color.y, b->owner->eclass->color.z, 1);
+			glColor4f(b->owner->eclass->color.x, b->owner->eclass->color.y, b->owner->eclass->color.z, 1);
 		}
 		GLCircle(b->owner->origin.x, b->owner->origin.y, b->owner->origin.z, max);
 	} else {
-		qglPushMatrix();
-		qglTranslatef(b->owner->origin.x, b->owner->origin.y, b->owner->origin.z );
-		qglColor3f( 0.4f, 0.4f, 0.4f );
-		qglPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
+		glPushMatrix();
+		glTranslatef(b->owner->origin.x, b->owner->origin.y, b->owner->origin.z );
+		glColor3f( 0.4f, 0.4f, 0.4f );
+		glPolygonMode (GL_FRONT_AND_BACK, GL_LINE);
 
-		qglColor3f( 0.8f, 0.8f, 0.8f );
+		glColor3f( 0.8f, 0.8f, 0.8f );
 		GLSphere(max, 8, 8);
-		qglEnable(GL_BLEND);
-		qglPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		qglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		globalImages->BindNull();
 		if (bSelected) {
-			qglColor4f( g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].x, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].y, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].z, 0.35f );
+			glColor4f( g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].x, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].y, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].z, 0.35f );
 		} else {
-			qglColor4f( b->owner->eclass->color.x, b->owner->eclass->color.y, b->owner->eclass->color.z, 0.35f );
+			glColor4f( b->owner->eclass->color.x, b->owner->eclass->color.y, b->owner->eclass->color.z, 0.35f );
 		}
 		GLSphere(min, 8, 8);
 		if (bSelected) {
-			qglColor4f( g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].x, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].y, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].z, 0.1f );
+			glColor4f( g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].x, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].y, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].z, 0.1f );
 		} else {
-			qglColor4f( b->owner->eclass->color.x, b->owner->eclass->color.y, b->owner->eclass->color.z, 0.1f );
+			glColor4f( b->owner->eclass->color.x, b->owner->eclass->color.y, b->owner->eclass->color.z, 0.1f );
 		}
 		GLSphere(max, 8, 8);
-		qglPopMatrix();
+		glPopMatrix();
 	}
 
 
@@ -3863,7 +3863,7 @@ void DrawLight(brush_t *b, bool bSelected) {
 		}
 	}
 
-	qglColor3f(vTriColor[0], vTriColor[1], vTriColor[2]);
+	glColor3f(vTriColor[0], vTriColor[1], vTriColor[2]);
 
 	idVec3	vCorners[4];
 	float	fMid = b->mins[2] + (b->maxs[2] - b->mins[2]) / 2;
@@ -3897,37 +3897,37 @@ void DrawLight(brush_t *b, bool bSelected) {
 	VectorCopy(vTriColor, vSave);
 
 	globalImages->BindNull();
-	qglBegin(GL_TRIANGLE_FAN);
-	qglVertex3fv(vTop.ToFloatPtr());
+	glBegin(GL_TRIANGLE_FAN);
+	glVertex3fv(vTop.ToFloatPtr());
 	int i;
 	for (i = 0; i <= 3; i++) {
 		vTriColor[0] *= 0.95f;
 		vTriColor[1] *= 0.95f;
 		vTriColor[2] *= 0.95f;
-		qglColor3f(vTriColor[0], vTriColor[1], vTriColor[2]);
-		qglVertex3fv(vCorners[i].ToFloatPtr());
+		glColor3f(vTriColor[0], vTriColor[1], vTriColor[2]);
+		glVertex3fv(vCorners[i].ToFloatPtr());
 	}
 
-	qglVertex3fv(vCorners[0].ToFloatPtr());
-	qglEnd();
+	glVertex3fv(vCorners[0].ToFloatPtr());
+	glEnd();
 
 	VectorCopy(vSave, vTriColor);
 	vTriColor[0] *= 0.95f;
 	vTriColor[1] *= 0.95f;
 	vTriColor[2] *= 0.95f;
 
-	qglBegin(GL_TRIANGLE_FAN);
-	qglVertex3fv(vBottom.ToFloatPtr());
-	qglVertex3fv(vCorners[0].ToFloatPtr());
+	glBegin(GL_TRIANGLE_FAN);
+	glVertex3fv(vBottom.ToFloatPtr());
+	glVertex3fv(vCorners[0].ToFloatPtr());
 	for (i = 3; i >= 0; i--) {
 		vTriColor[0] *= 0.95f;
 		vTriColor[1] *= 0.95f;
 		vTriColor[2] *= 0.95f;
-		qglColor3f(vTriColor[0], vTriColor[1], vTriColor[2]);
-		qglVertex3fv(vCorners[i].ToFloatPtr());
+		glColor3f(vTriColor[0], vTriColor[1], vTriColor[2]);
+		glVertex3fv(vCorners[i].ToFloatPtr());
 	}
 
-	qglEnd();
+	glEnd();
 
 	DrawProjectedLight(b, bSelected, true);
 }
@@ -3951,13 +3951,13 @@ void Control_Draw(brush_t *b) {
 			continue;	// freed face
 		}
 
-		qglColor4f(1, 1, .5, 1);
-		qglBegin(GL_POLYGON);
+		glColor4f(1, 1, .5, 1);
+		glBegin(GL_POLYGON);
 		for (i = 0; i < w->GetNumPoints(); i++) {
-			qglVertex3fv( (*w)[i].ToFloatPtr() );
+			glVertex3fv( (*w)[i].ToFloatPtr() );
 		}
 
-		qglEnd();
+		glEnd();
 	}
 }
 
@@ -3972,10 +3972,10 @@ void Brush_DrawModel( brush_t *b, bool camera, bool bSelected ) {
 	int nDrawMode = g_pParentWnd->GetCamera()->Camera().draw_mode;
 
 	if ( camera && g_PrefsDlg.m_nEntityShowState != ENTITY_WIREFRAME && nDrawMode != cd_wire ) {
-		qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	}
 	else {
-		qglPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 	}
 
 	idRenderModel *model = b->modelHandle;
@@ -4037,25 +4037,25 @@ void Brush_DrawModel( brush_t *b, bool camera, bool bSelected ) {
 		Entity_GetRotationMatrixAngles( b->owner, axis, angles );
 
 		idVec4	colorSave;
-		qglGetFloatv(GL_CURRENT_COLOR, colorSave.ToFloatPtr());
+		glGetFloatv(GL_CURRENT_COLOR, colorSave.ToFloatPtr());
 
 		if ( bSelected ) {
-			qglColor3fv( g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].ToFloatPtr() );
+			glColor3fv( g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].ToFloatPtr() );
 		}
 
 		DrawRenderModel( model, b->owner->origin, axis, camera );
 
-		qglColor4fv( colorSave.ToFloatPtr() );
+		glColor4fv( colorSave.ToFloatPtr() );
 
 		if ( bSelected && camera )
 		{
 			//draw selection tints
 			/*
 			if ( camera && g_PrefsDlg.m_nEntityShowState != ENTITY_WIREFRAME ) {
-				qglPolygonMode ( GL_FRONT_AND_BACK , GL_FILL );
-				qglColor3fv ( g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].ToFloatPtr () );
-				qglEnable ( GL_BLEND );
-				qglBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+				glPolygonMode ( GL_FRONT_AND_BACK , GL_FILL );
+				glColor3fv ( g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].ToFloatPtr () );
+				glEnable ( GL_BLEND );
+				glBlendFunc ( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 				DrawRenderModel( model, b->owner->origin, axis, camera );
 			}
 			*/
@@ -4063,13 +4063,13 @@ void Brush_DrawModel( brush_t *b, bool camera, bool bSelected ) {
 			//draw white triangle outlines
 			globalImages->BindNull();
 
-			qglPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-			qglDisable( GL_BLEND );
-			qglDisable( GL_DEPTH_TEST );
-			qglColor3f( 1.0f, 1.0f, 1.0f );
-			qglPolygonOffset( 1.0f, 3.0f );
+			glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+			glDisable( GL_BLEND );
+			glDisable( GL_DEPTH_TEST );
+			glColor3f( 1.0f, 1.0f, 1.0f );
+			glPolygonOffset( 1.0f, 3.0f );
 			DrawRenderModel( model, b->owner->origin, axis, false );
-			qglEnable( GL_DEPTH_TEST );
+			glEnable( GL_DEPTH_TEST );
 		}
 
 		if ( model2 ) {
@@ -4079,7 +4079,7 @@ void Brush_DrawModel( brush_t *b, bool camera, bool bSelected ) {
 	}
 
 	if ( bSelected && camera ) {
-		qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+		glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 	}
 	else if ( camera ) {
 		globalImages->BindNull();
@@ -4097,11 +4097,11 @@ void Brush_DrawModel( brush_t *b, bool camera, bool bSelected ) {
 			// if (b->alphaBrush && !(face->texdef.flags & SURF_ALPHA)) continue;
 			// draw the polygon
 			//
-			qglBegin(GL_LINE_LOOP);
+			glBegin(GL_LINE_LOOP);
 			for (int i = 0; i < w->GetNumPoints(); i++) {
-				qglVertex3fv( (*w)[i].ToFloatPtr() );
+				glVertex3fv( (*w)[i].ToFloatPtr() );
 			}
-			qglEnd();
+			glEnd();
 		}
 	}
 }
@@ -4126,8 +4126,8 @@ void GLTransformedVertex(float x, float y, float z, idMat3 mat, idVec3 origin, i
 	} else {
 		color.z = max;
 	}
-	qglColor3f(color.x, color.y, color.z);
-	qglVertex3f(v.x, v.y, v.z);
+	glColor3f(color.x, color.y, color.z);
+	glVertex3f(v.x, v.y, v.z);
 
 }
 
@@ -4137,8 +4137,8 @@ GLTransformedCircle
 ================
 */
 void GLTransformedCircle(int type, idVec3 origin, float r, idMat3 mat, float pointSize, idVec3 color, float maxDist) {
-	qglPointSize(pointSize);
-	qglBegin(GL_POINTS);
+	glPointSize(pointSize);
+	glBegin(GL_POINTS);
 	for (int i = 0; i < 360; i++) {
 		float cx = origin.x;
 		float cy = origin.y;
@@ -4161,7 +4161,7 @@ void GLTransformedCircle(int type, idVec3 origin, float r, idMat3 mat, float poi
 		}
 		GLTransformedVertex(cx, cy, cz, mat, origin, color, maxDist);
 	}
-	qglEnd();
+	glEnd();
 }
 
 /*
@@ -4251,16 +4251,16 @@ Brush_DrawModelInfo
 void Brush_DrawModelInfo(brush_t *b, bool selected) {
 	if (b->modelHandle > 0) {
 		GLfloat color[4];
-		qglGetFloatv(GL_CURRENT_COLOR, &color[0]);
+		glGetFloatv(GL_CURRENT_COLOR, &color[0]);
 		if (selected) {
-			qglColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].ToFloatPtr());
+			glColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].ToFloatPtr());
 		}
 		else {
-			qglColor3fv(b->owner->eclass->color.ToFloatPtr());
+			glColor3fv(b->owner->eclass->color.ToFloatPtr());
 		}
 
 		Brush_DrawModel(b, true, selected);
-		qglColor4fv(color);
+		glColor4fv(color);
 
 		if ( selected ) {
 			Brush_DrawAxis(b);
@@ -4280,9 +4280,9 @@ void Brush_DrawEmitter(brush_t *b, bool bSelected, bool cam) {
 	}
 
 	if (bSelected) {
-		qglColor4f(g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].x, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].y, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].z, .5);
+		glColor4f(g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].x, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].y, g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].z, .5);
 	} else {
-		qglColor4f(b->owner->eclass->color.x, b->owner->eclass->color.y, b->owner->eclass->color.z, .5);
+		glColor4f(b->owner->eclass->color.x, b->owner->eclass->color.y, b->owner->eclass->color.z, .5);
 	}
 
 	if ( cam ) {
@@ -4314,26 +4314,26 @@ void Brush_DrawEnv( brush_t *b, bool cameraView, bool bSelected ) {
 
 	if ( model ) {
 		if ( cameraView && g_PrefsDlg.m_nEntityShowState != ENTITY_WIREFRAME ) {
-			qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+			glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 		}
 		else {
-			qglPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+			glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 		}
 
 		idVec4	colorSave;
-		qglGetFloatv(GL_CURRENT_COLOR, colorSave.ToFloatPtr());
+		glGetFloatv(GL_CURRENT_COLOR, colorSave.ToFloatPtr());
 
 		if ( bSelected ) {
-			qglColor3fv( g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].ToFloatPtr() );
+			glColor3fv( g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].ToFloatPtr() );
 		} else {
-			qglColor3f( 1.f, 1.f, 1.f );
+			glColor3f( 1.f, 1.f, 1.f );
 		}
 		DrawRenderModel( model, origin, axis, true );
 		globalImages->BindNull();
 		delete model;
 		model = NULL;
 
-		qglColor4fv( colorSave.ToFloatPtr() );
+		glColor4fv( colorSave.ToFloatPtr() );
 	}
 }
 
@@ -4377,33 +4377,33 @@ void Brush_DrawCombatNode( brush_t *b, bool cameraView, bool bSelected ) {
 		pt2 = org + leftDir * cone_dist;
 		pt3 = org + rightDir * cone_dist;
 		pt4 = org + rightDir * min_dist;
-		qglColor4fv(color.ToFloatPtr());
-		qglBegin(GL_LINE_STRIP);
-		qglVertex3fv( pt1.ToFloatPtr());
-		qglVertex3fv( pt2.ToFloatPtr());
-		qglVertex3fv( pt3.ToFloatPtr());
-		qglVertex3fv( pt4.ToFloatPtr());
-		qglVertex3fv( pt1.ToFloatPtr());
-		qglEnd();
+		glColor4fv(color.ToFloatPtr());
+		glBegin(GL_LINE_STRIP);
+		glVertex3fv( pt1.ToFloatPtr());
+		glVertex3fv( pt2.ToFloatPtr());
+		glVertex3fv( pt3.ToFloatPtr());
+		glVertex3fv( pt4.ToFloatPtr());
+		glVertex3fv( pt1.ToFloatPtr());
+		glEnd();
 
-		qglColor4fv(colorGreen.ToFloatPtr());
-		qglBegin(GL_LINE_STRIP);
-		qglVertex3fv( entorg.ToFloatPtr());
+		glColor4fv(colorGreen.ToFloatPtr());
+		glBegin(GL_LINE_STRIP);
+		glVertex3fv( entorg.ToFloatPtr());
 		pt = (pt1 + pt4) * 0.5f;
-		qglVertex3fv( pt.ToFloatPtr());
+		glVertex3fv( pt.ToFloatPtr());
 		pt = (pt2 + pt3) * 0.5f;
-		qglVertex3fv( pt.ToFloatPtr());
+		glVertex3fv( pt.ToFloatPtr());
 		idVec3 tip = pt;
 		idVec3 dir = ((pt1 + pt2) * 0.5f) - tip;
 		dir.Normalize();
 		pt = tip + dir * 15.0f;
-		qglVertex3fv( pt.ToFloatPtr());
-		qglVertex3fv( tip.ToFloatPtr());
+		glVertex3fv( pt.ToFloatPtr());
+		glVertex3fv( tip.ToFloatPtr());
 		dir = ((pt4 + pt3) * 0.5f) - tip;
 		dir.Normalize();
 		pt = tip + dir * 15.0f;
-		qglVertex3fv( pt.ToFloatPtr());
-		qglEnd();
+		glVertex3fv( pt.ToFloatPtr());
+		glEnd();
 	}
 
 }
@@ -4462,15 +4462,15 @@ void Brush_Draw(brush_t *b, bool bSelected) {
 
 
 	if (!(b->owner && (b->owner->eclass->nShowFlags & ECLASS_WORLDSPAWN))) {
-		qglColor4f( 1.0f, 0.0f, 0.0f, 0.8f );
-		qglPointSize(4);
-		qglBegin(GL_POINTS);
-		qglVertex3fv(b->owner->origin.ToFloatPtr());
-		qglEnd();
+		glColor4f( 1.0f, 0.0f, 0.0f, 0.8f );
+		glPointSize(4);
+		glBegin(GL_POINTS);
+		glVertex3fv(b->owner->origin.ToFloatPtr());
+		glEnd();
 	}
 
 	if ( b->owner->eclass->entityModel ) {
-		qglColor3fv( b->owner->eclass->color.ToFloatPtr() );
+		glColor3fv( b->owner->eclass->color.ToFloatPtr() );
 		Brush_DrawModel( b, true, bSelected );
 		return;
 	}
@@ -4515,27 +4515,27 @@ void Brush_Draw(brush_t *b, bool bSelected) {
 		}
 
 		if (model) {
-			qglEnable(GL_BLEND);
-			qglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-			qglColor4f( face->d_color.x, face->d_color.y, face->d_color.z, 0.1f );
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glColor4f( face->d_color.x, face->d_color.y, face->d_color.z, 0.1f );
 		} else {
-			qglColor4f( face->d_color.x, face->d_color.y, face->d_color.z, face->d_texture->GetEditorAlpha() );
+			glColor4f( face->d_color.x, face->d_color.y, face->d_color.z, face->d_texture->GetEditorAlpha() );
 		}
 
-		qglBegin(GL_POLYGON);
+		glBegin(GL_POLYGON);
 
 		for (i = 0; i < w->GetNumPoints(); i++) {
 			if ( !b->forceWireFrame && ( nDrawMode == cd_texture || nDrawMode == cd_light ) ) {
-				qglTexCoord2fv( &(*w)[i][3] );
+				glTexCoord2fv( &(*w)[i][3] );
 			}
 
-			qglVertex3fv( (*w)[i].ToFloatPtr() );
+			glVertex3fv( (*w)[i].ToFloatPtr() );
 		}
 
-		qglEnd();
+		glEnd();
 
 		if (model) {
-			qglDisable(GL_BLEND);
+			glDisable(GL_BLEND);
 		}
 	}
 
@@ -4554,12 +4554,12 @@ void Face_Draw(face_t *f) {
 		return;
 	}
 
-	qglBegin(GL_POLYGON);
+	glBegin(GL_POLYGON);
 	for (i = 0; i < f->face_winding->GetNumPoints(); i++) {
-		qglVertex3fv( (*f->face_winding)[i].ToFloatPtr() );
+		glVertex3fv( (*f->face_winding)[i].ToFloatPtr() );
 	}
 
-	qglEnd();
+	glEnd();
 }
 
 
@@ -4607,7 +4607,7 @@ void Brush_DrawCurve( brush_t *b, bool bSelected, bool cam ) {
 
 	int maxage = b->owner->curve->GetNumValues();
 	int i;
-	qglColor3f( 0.0f, 0.0f, 1.0f );
+	glColor3f( 0.0f, 0.0f, 1.0f );
 	for ( i = 0; i < maxage; i++) {
 
 		if ( bSelected && g_qeglobals.d_select_mode == sel_editpoint ) {
@@ -4618,10 +4618,10 @@ void Brush_DrawCurve( brush_t *b, bool bSelected, bool cam ) {
 					glBox(colorBlue, v, 8.0f );
 				}
 			} else {
-				qglPointSize( 4.0f );
-				qglBegin( GL_POINTS );
-				qglVertex3f( v.x, v.y, v.z );
-				qglEnd();
+				glPointSize( 4.0f );
+				glBegin( GL_POINTS );
+				glVertex3f( v.x, v.y, v.z );
+				glEnd();
 
 				if ( PointInMoveList( b->owner->curve->GetValueAddress( i ) ) >= 0 ) {
 					glBox(colorBlue, v, 4.0f );
@@ -4634,55 +4634,55 @@ void Brush_DrawCurve( brush_t *b, bool bSelected, bool cam ) {
 			if ( ss ) {
 				idMaterial *mat = declManager->FindMaterial( "_default" );
 				mat->GetEditorImage()->Bind();
-				qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-				qglBegin( GL_TRIANGLES );
+				glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+				glBegin( GL_TRIANGLES );
 				const int *indexes = ss->GetIndexes();
 				const idDrawVert *verts = ss->GetVertices();
 				for ( j = 0; j < ss->GetNumIndexes(); j += 3 ) {
 					for ( k = 0; k < 3; k++ ) {
 						int	index = indexes[ j + 2 - k ];
 						float f = ShadeForNormal( verts[index].normal  );
-						qglColor3f( f, f, f );
-						qglTexCoord2fv( verts[index].st.ToFloatPtr() );
-						qglVertex3fv( verts[index].xyz.ToFloatPtr() );
+						glColor3f( f, f, f );
+						glTexCoord2fv( verts[index].st.ToFloatPtr() );
+						glVertex3fv( verts[index].xyz.ToFloatPtr() );
 					}
 				}
-				qglEnd();
+				glEnd();
 				delete ss;
 			}
 		} else {
 */
-/*			qglPointSize( 1.0f );
-			qglBegin( GL_POINTS );
+/*			glPointSize( 1.0f );
+			glBegin( GL_POINTS );
 			if ( i + 1  < maxage ) {
 				int start = b->owner->curve->GetTime( i );
 				int end = b->owner->curve->GetTime( i + 1 );
 				int inc = (end - start) / POINTS_PER_KNOT;
 				for ( int j = 0; j < POINTS_PER_KNOT; j++ ) {
 					idVec3 v = b->owner->curve->GetCurrentValue( start );
-					qglVertex3f( v.x, v.y, v.z );
+					glVertex3f( v.x, v.y, v.z );
 					start += inc;
 				}
 			}*/
 				// DHM - _D3XP : Makes it easier to see curve
-		qglBegin( GL_LINE_STRIP );
+		glBegin( GL_LINE_STRIP );
 		if ( i + 1  < maxage ) {
 			int start = b->owner->curve->GetTime( i );
 			int end = b->owner->curve->GetTime( i + 1 );
 			int inc = (end - start) / POINTS_PER_KNOT;
 			for ( int j = 0; j <= POINTS_PER_KNOT; j++ ) {
 				idVec3 v = b->owner->curve->GetCurrentValue( start );
-				qglVertex3f( v.x, v.y, v.z );
+				glVertex3f( v.x, v.y, v.z );
 				start += inc;
 			}
 			}
-			qglEnd();
+			glEnd();
 /*
 		}
 */
 
 	}
-	qglPointSize(1);
+	glPointSize(1);
 }
 
 /*
@@ -4701,19 +4701,19 @@ void Brush_DrawXY(brush_t *b, int nViewType, bool bSelected, bool ignoreViewType
 	}
 
 	idVec4	colorSave;
-	qglGetFloatv(GL_CURRENT_COLOR, colorSave.ToFloatPtr());
+	glGetFloatv(GL_CURRENT_COLOR, colorSave.ToFloatPtr());
 
 	if (!(b->owner && (b->owner->eclass->nShowFlags & ECLASS_WORLDSPAWN))) {
-		qglColor4f( 1.0f, 0.0f, 0.0f, 0.8f );
-		qglPointSize(4);
-		qglBegin(GL_POINTS);
-		qglVertex3fv(b->owner->origin.ToFloatPtr());
-		qglEnd();
+		glColor4f( 1.0f, 0.0f, 0.0f, 0.8f );
+		glPointSize(4);
+		glBegin(GL_POINTS);
+		glVertex3fv(b->owner->origin.ToFloatPtr());
+		glEnd();
 	}
 
 	Brush_DrawCurve( b, bSelected, false );
 
-	qglColor4fv(colorSave.ToFloatPtr());
+	glColor4fv(colorSave.ToFloatPtr());
 
 
 	if (b->pPatch) {
@@ -4755,23 +4755,23 @@ void Brush_DrawXY(brush_t *b, int nViewType, bool bSelected, bool ignoreViewType
 			VectorCopy(vTop, vBottom);
 			vBottom[2] = b->mins[2];
 
-			qglPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			qglBegin(GL_TRIANGLE_FAN);
-			qglVertex3fv(vTop.ToFloatPtr());
-			qglVertex3fv(vCorners[0].ToFloatPtr());
-			qglVertex3fv(vCorners[1].ToFloatPtr());
-			qglVertex3fv(vCorners[2].ToFloatPtr());
-			qglVertex3fv(vCorners[3].ToFloatPtr());
-			qglVertex3fv(vCorners[0].ToFloatPtr());
-			qglEnd();
-			qglBegin(GL_TRIANGLE_FAN);
-			qglVertex3fv(vBottom.ToFloatPtr());
-			qglVertex3fv(vCorners[0].ToFloatPtr());
-			qglVertex3fv(vCorners[3].ToFloatPtr());
-			qglVertex3fv(vCorners[2].ToFloatPtr());
-			qglVertex3fv(vCorners[1].ToFloatPtr());
-			qglVertex3fv(vCorners[0].ToFloatPtr());
-			qglEnd();
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glBegin(GL_TRIANGLE_FAN);
+			glVertex3fv(vTop.ToFloatPtr());
+			glVertex3fv(vCorners[0].ToFloatPtr());
+			glVertex3fv(vCorners[1].ToFloatPtr());
+			glVertex3fv(vCorners[2].ToFloatPtr());
+			glVertex3fv(vCorners[3].ToFloatPtr());
+			glVertex3fv(vCorners[0].ToFloatPtr());
+			glEnd();
+			glBegin(GL_TRIANGLE_FAN);
+			glVertex3fv(vBottom.ToFloatPtr());
+			glVertex3fv(vCorners[0].ToFloatPtr());
+			glVertex3fv(vCorners[3].ToFloatPtr());
+			glVertex3fv(vCorners[2].ToFloatPtr());
+			glVertex3fv(vCorners[1].ToFloatPtr());
+			glVertex3fv(vCorners[0].ToFloatPtr());
+			glEnd();
 			DrawBrushEntityName(b);
 			DrawProjectedLight(b, bSelected, false);
 			return;
@@ -4786,18 +4786,18 @@ void Brush_DrawXY(brush_t *b, int nViewType, bool bSelected, bool ignoreViewType
 		if (b->owner->eclass->entityModel) {
 			Brush_DrawModel( b, false, bSelected );
 			DrawBrushEntityName(b);
-			qglColor4fv(colorSave.ToFloatPtr());
+			glColor4fv(colorSave.ToFloatPtr());
 			return;
 		}
 
 	}
 
-	qglColor4fv(colorSave.ToFloatPtr());
+	glColor4fv(colorSave.ToFloatPtr());
 
 	if (b->modelHandle > 0) {
 		Brush_DrawEmitter( b, bSelected, false );
 		Brush_DrawModel(b, false, bSelected);
-		qglColor4fv(colorSave.ToFloatPtr());
+		glColor4fv(colorSave.ToFloatPtr());
 		return;
 	}
 
@@ -4830,11 +4830,11 @@ void Brush_DrawXY(brush_t *b, int nViewType, bool bSelected, bool ignoreViewType
 		// if (b->alphaBrush && !(face->texdef.flags & SURF_ALPHA)) continue;
 		// draw the polygon
 		//
-		qglBegin(GL_LINE_LOOP);
+		glBegin(GL_LINE_LOOP);
 		for (i = 0; i < w->GetNumPoints(); i++) {
-			qglVertex3fv( (*w)[i].ToFloatPtr() );
+			glVertex3fv( (*w)[i].ToFloatPtr() );
 		}
-		qglEnd();
+		glEnd();
 /*
 		for (i = 0; i < 3; i++) {
 			glLabeledPoint(idVec4(1, 0, 0, 1), face->planepts[i], 3, va("%i", i));
