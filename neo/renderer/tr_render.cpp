@@ -827,13 +827,18 @@ void RB_CreateSingleDrawInteractions( const drawSurf_t *surf, void (*DrawInterac
 					if ( inter.specularImage ) {
 						RB_SubmittInteraction( &inter, DrawInteraction );
 					}
-					R_SetDrawInteraction( surfaceStage, surfaceRegs, &inter.specularImage,
+
+					if ( !vLight->lightDef->parms.noSpecular )
+					{
+						R_SetDrawInteraction( surfaceStage, surfaceRegs, &inter.specularImage,
 											inter.specularMatrix, inter.specularColor.ToFloatPtr() );
-					inter.specularColor[0] *= lightColor[0];
-					inter.specularColor[1] *= lightColor[1];
-					inter.specularColor[2] *= lightColor[2];
-					inter.specularColor[3] *= lightColor[3];
-					inter.vertexColor = surfaceStage->vertexColor;
+
+						inter.specularColor[0] *= lightColor[0];
+						inter.specularColor[1] *= lightColor[1];
+						inter.specularColor[2] *= lightColor[2];
+						inter.specularColor[3] *= lightColor[3];
+						inter.vertexColor = surfaceStage->vertexColor;
+					}
 					break;
 				}
 			}
