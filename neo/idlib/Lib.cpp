@@ -87,6 +87,8 @@ void idLib::Init( void ) {
 
 	// initialize the dictionary string pools
 	idDict::Init();
+
+	IDCT_Init();
 }
 
 /*

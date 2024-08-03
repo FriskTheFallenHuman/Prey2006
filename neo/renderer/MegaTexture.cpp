@@ -78,6 +78,7 @@ static void R_EmptyLevelImage( idImage *image ) {
 		TF_DEFAULT, false, TR_REPEAT, TD_HIGH_QUALITY );
 }
 
+idImageGeneratorFunctorGlobal emptyLevelImageFunctor(R_EmptyLevelImage);
 
 /*
 ====================
@@ -136,7 +137,7 @@ bool idMegaTexture::InitFromMegaFile( const char *fileBase ) {
 			fillColor.color[i] = colors[numLevels+1][i];
 		}
 
-		levels[numLevels].image = globalImages->ImageFromFunction( str, R_EmptyLevelImage );
+		levels[numLevels].image = globalImages->ImageFromFunction( str, &emptyLevelImageFunctor );
 		numLevels++;
 
 		if ( width <= TILE_PER_LEVEL && height <= TILE_PER_LEVEL ) {

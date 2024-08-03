@@ -198,6 +198,7 @@ template<class T> ID_INLINE T	Min( T x, T y ) { return ( x < y ) ? x : y; }
 // bounding volumes
 #include "bv/Sphere.h"
 #include "bv/Bounds.h"
+#include "bv/Bounds2D.h"
 #include "bv/Box.h"
 #include "bv/Frustum.h"
 
@@ -253,5 +254,15 @@ template<class T> ID_INLINE T	Min( T x, T y ) { return ( x < y ) ? x : y; }
 #include "BitMsg.h"
 #include "MapFile.h"
 #include "Timer.h"
+
+// Image Decoders
+#include "containers/Sort.h"
+#include "decoders/BareDCTDecoder.h"
+#include "decoders/ColorSpace.h"
+#include "decoders/DXTDecoder.h"
+#include "encoders/DXTEncoder.h"
+
+#include "images/Filter.h"
+#include "images/MipMap.h"
 
 #endif	/* !__LIB_H__ */

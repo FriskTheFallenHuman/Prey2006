@@ -237,4 +237,21 @@ typedef int						qhandle_t;
 #define MIN_WORLD_COORD			( -128 * 1024 )
 #define MAX_WORLD_SIZE			( MAX_WORLD_COORD - MIN_WORLD_COORD )
 
+#define MAX_TYPE( x )			( ( ( ( 1 << ( ( sizeof( x ) - 1 ) * 8 - 1 ) ) - 1 ) << 8 ) | 255 )
+#define MIN_TYPE( x )			( - MAX_TYPE( x ) - 1 )
+#define MAX_UNSIGNED_TYPE( x )	( ( ( ( 1U << ( ( sizeof( x ) - 1 ) * 8 ) ) - 1 ) << 8 ) | 255U )
+#define MIN_UNSIGNED_TYPE( x )	0
+
+#ifndef BIT
+#define BIT( num )				BITT< num >::VALUE
+#endif
+
+template< unsigned int B >
+class BITT {
+public:
+	typedef enum bitValue_e {
+		VALUE = 1 << B,
+	} bitValue_t;
+};
+
 #endif

@@ -1563,7 +1563,7 @@ void	idImage::ActuallyLoadImage( bool checkForPrecompressed, bool fromBackEnd ) 
 
 	// this is the ONLY place generatorFunction will ever be called
 	if ( generatorFunction ) {
-		generatorFunction( this );
+		(*generatorFunction)(this);
 		return;
 	}
 

@@ -146,6 +146,48 @@ typedef enum {
 
 #define	MAX_IMAGE_NAME	256
 
+
+class idImageGeneratorFunctorBase {
+public:
+	virtual ~idImageGeneratorFunctorBase(void) { }
+	virtual void	operator()(class idImage* image) const = 0;
+};
+
+template <class T> class idImageGeneratorFunctor : public idImageGeneratorFunctorBase {
+public:
+	typedef void(T::* func_t)(class idImage* image);
+
+	void			Init(T* generatorClass, func_t imageGenerator) {
+		this->generatorClass = generatorClass;
+		this->imageGenerator = imageGenerator;
+	}
+
+	virtual void	operator()(class idImage* image) const {
+		(*generatorClass.*imageGenerator)(image);
+	}
+
+private:
+	T* generatorClass;
+	func_t			imageGenerator;
+};
+
+class idImageGeneratorFunctorGlobal : public idImageGeneratorFunctorBase {
+public:
+	typedef void(*func_t)(class idImage* image);
+
+	idImageGeneratorFunctorGlobal(func_t imageGenerator) {
+		this->imageGenerator = imageGenerator;
+	}
+
+	virtual void	operator()(class idImage* image) const {
+		imageGenerator(image);
+	}
+
+protected:
+	func_t			imageGenerator;
+};
+
+
 class idImage {
 public:
 				idImage();
@@ -230,7 +272,7 @@ public:
 
 	// parameters that define this image
 	idStr				imgName;				// game path, including extension (except for cube maps), may be an image program
-	void				(*generatorFunction)( idImage *image );	// NULL for files
+	const idImageGeneratorFunctorBase* generatorFunction;	// NULL for files
 	bool				allowDownSize;			// this also doubles as a don't-partially-load flag
 	textureFilter_t		filter;
 	textureRepeat_t		repeat;
@@ -318,7 +360,7 @@ public:
 
 	// The callback will be issued immediately, and later if images are reloaded or vid_restart
 	// The callback function should call one of the idImage::Generate* functions to fill in the data
-	idImage *			ImageFromFunction( const char *name, void (*generatorFunction)( idImage *image ));
+	idImage *			ImageFromFunction( const char *name, const idImageGeneratorFunctorBase* generatorFunction);
 
 	// called once a frame to allow any background loads that have been completed
 	// to turn into textures.

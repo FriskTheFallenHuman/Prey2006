@@ -106,6 +106,11 @@ public:
 	void			AxisProjection( const idVec3 &dir, float &min, float &max ) const;
 	void			AxisProjection( const idVec3 &origin, const idMat3 &axis, const idVec3 &dir, float &min, float &max ) const;
 
+	const idVec3& GetMins(void) const;
+	idVec3& GetMins(void);
+	const idVec3& GetMaxs(void) const;
+	idVec3& GetMaxs(void);
+
 private:
 	idVec3			b[2];
 };
@@ -405,6 +410,22 @@ ID_INLINE void idBounds::AxisProjection( const idVec3 &origin, const idMat3 &axi
 
 	min = d1 - d2;
 	max = d1 + d2;
+}
+
+ID_INLINE const idVec3& idBounds::GetMins(void) const {
+	return b[0];
+}
+
+ID_INLINE idVec3& idBounds::GetMins(void) {
+	return b[0];
+}
+
+ID_INLINE const idVec3& idBounds::GetMaxs(void) const {
+	return b[1];
+}
+
+ID_INLINE idVec3& idBounds::GetMaxs(void) {
+	return b[1];
 }
 
 #endif /* !__BV_BOUNDS_H__ */

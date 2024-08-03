@@ -45,6 +45,9 @@ If you have questions concerning this license or the applicable additional terms
 #undef FLT_EPSILON
 #endif
 
+#define C_FLOAT_TO_INT( x )		(int)(x)
+
+
 #define DEG2RAD(a)				( (a) * idMath::M_DEG2RAD )
 #define RAD2DEG(a)				( (a) * idMath::M_RAD2DEG )
 
@@ -185,6 +188,7 @@ public:
 	static int					FtoiFast( float f );		// fast float to int conversion but uses current FPU round mode (default round nearest)
 	static unsigned int			Ftol( float f );			// float to int conversion
 	static unsigned int			FtolFast( float );			// fast float to int conversion but uses current FPU round mode (default round nearest)
+	static byte					Ftob(float f);			// float to byte conversion, the result is clamped to the range [0-255]
 
 	static signed char			ClampChar( int i );
 	static signed short			ClampShort( int i );
@@ -927,5 +931,25 @@ ID_INLINE int idMath::FloatHash( const float *array, const int numFloats ) {
 	}
 	return hash;
 }
+
+ID_INLINE byte CLAMP_BYTE(int x) {
+	return ((x) < 0 ? (0) : ((x) > 255 ? 255 : (byte)(x)));
+}
+
+// The hardware converts a byte to a float by division with 255 and in the
+// vertex programs we convert the floating-point value in the range [0, 1]
+// to the range [-1, 1] by multiplying with 2 and subtracting 1.
+#define VERTEX_BYTE_TO_FLOAT( x )		( (x) * ( 2.0f / 255.0f ) - 1.0f )
+#define VERTEX_FLOAT_TO_BYTE( x )		idMath::Ftob( ( (x) + 1.0f ) * ( 255.0f / 2.0f ) + 0.5f )
+
+// The hardware converts a byte to a float by division with 255 and in the
+// fragment programs we convert the floating-point value in the range [0, 1]
+// to the range [-1, 1] by multiplying with 2 and subtracting 1.
+// This is the conventional OpenGL mapping which specifies an exact
+// representation for -1 and +1 but not 0. The DirectX 10 mapping is
+// in the comments which specifies a non-linear mapping with an exact
+// representation of -1, 0 and +1 but -1 is represented twice.
+#define NORMALMAP_BYTE_TO_FLOAT( x )	VERTEX_BYTE_TO_FLOAT( x )	//( (x) - 128.0f ) * ( 1.0f / 127.0f )
+#define NORMALMAP_FLOAT_TO_BYTE( x )	VERTEX_FLOAT_TO_BYTE( x )	//idMath::Ftob( 128.0f + 127.0f * (x) + 0.5f )
 
 #endif /* !__MATH_MATH_H__ */

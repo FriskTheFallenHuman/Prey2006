@@ -1022,7 +1022,7 @@ void idImage::Reload( bool checkPrecompressed, bool force ) {
 	// always regenerate functional images
 	if ( generatorFunction ) {
 		common->DPrintf( "regenerating %s.\n", imgName.c_str() );
-		generatorFunction( this );
+		(*generatorFunction)( this );
 		return;
 	}
 
@@ -1446,7 +1446,7 @@ with a callback which must work at any time, allowing the OpenGL
 system to be completely regenerated if needed.
 ==================
 */
-idImage *idImageManager::ImageFromFunction( const char *_name, void (*generatorFunction)( idImage *image ) ) {
+idImage *idImageManager::ImageFromFunction( const char *_name, const idImageGeneratorFunctorBase* generatorFunction) {
 	idStr name;
 	idImage	*image;
 	int	hash;
@@ -1945,6 +1945,26 @@ void idImageManager::BindNull() {
 	tmu->textureType = TT_DISABLED;
 }
 
+idImageGeneratorFunctorGlobal rampImageFunctor(R_RampImage);
+idImageGeneratorFunctorGlobal specularTableImageFunctor(R_SpecularTableImage);
+idImageGeneratorFunctorGlobal specular2DTableImageFunctor(R_Specular2DTableImage);
+//idImageGeneratorFunctorGlobal alphaRampImageFunctor(R_AlphaRampImage);
+idImageGeneratorFunctorGlobal defaultImageFunctor(R_DefaultImage);
+idImageGeneratorFunctorGlobal whiteImageFunctor(R_WhiteImage);
+idImageGeneratorFunctorGlobal blackImageFunctor(R_BlackImage);
+idImageGeneratorFunctorGlobal borderClampImageFunctor(R_BorderClampImage);
+idImageGeneratorFunctorGlobal RGBA8ImageFunctor(R_RGBA8Image);
+//idImageGeneratorFunctorGlobal RGB8ImageFunctor(R_RGB8Image);
+idImageGeneratorFunctorGlobal alphaNotchImageFunctor(R_AlphaNotchImage);
+idImageGeneratorFunctorGlobal flatNormalImageFunctor(R_FlatNormalImage);
+idImageGeneratorFunctorGlobal makeNormalizeVectorCubeMapFunctor(makeNormalizeVectorCubeMap);
+idImageGeneratorFunctorGlobal createNoFalloffImageFunctor(R_CreateNoFalloffImage);
+idImageGeneratorFunctorGlobal fogImageFunctor(R_FogImage);
+idImageGeneratorFunctorGlobal fogEnterImageFunctor(R_FogEnterImage);
+idImageGeneratorFunctorGlobal quadraticImageFunctor(R_QuadraticImage);
+idImageGeneratorFunctorGlobal ambientNormalMapImageFunctor(R_AmbientNormalImage);
+
+
 /*
 ===============
 Init
@@ -1963,32 +1983,32 @@ void idImageManager::Init() {
 	// set default texture filter modes
 	ChangeTextureFilter();
 
-	// create built in images
-	defaultImage = ImageFromFunction( "_default", R_DefaultImage );
-	whiteImage = ImageFromFunction( "_white", R_WhiteImage );
-	blackImage = ImageFromFunction( "_black", R_BlackImage );
-	borderClampImage = ImageFromFunction( "_borderClamp", R_BorderClampImage );
-	flatNormalMap = ImageFromFunction( "_flat", R_FlatNormalImage );
-	ambientNormalMap = ImageFromFunction( "_ambient", R_AmbientNormalImage );
-	specularTableImage = ImageFromFunction( "_specularTable", R_SpecularTableImage );
-	specular2DTableImage = ImageFromFunction( "_specular2DTable", R_Specular2DTableImage );
-	rampImage = ImageFromFunction( "_ramp", R_RampImage );
-	alphaRampImage = ImageFromFunction( "_alphaRamp", R_RampImage );
-	alphaNotchImage = ImageFromFunction( "_alphaNotch", R_AlphaNotchImage );
-	fogImage = ImageFromFunction( "_fog", R_FogImage );
-	fogEnterImage = ImageFromFunction( "_fogEnter", R_FogEnterImage );
-	normalCubeMapImage = ImageFromFunction( "_normalCubeMap", makeNormalizeVectorCubeMap );
-	noFalloffImage = ImageFromFunction( "_noFalloff", R_CreateNoFalloffImage );
-	ImageFromFunction( "_quadratic", R_QuadraticImage );
+	// create built-in images
+	defaultImage = ImageFromFunction("_default", &defaultImageFunctor);
+	whiteImage = ImageFromFunction("_white", &whiteImageFunctor);
+	blackImage = ImageFromFunction("_black", &blackImageFunctor);
+	borderClampImage = ImageFromFunction("_borderClamp", &borderClampImageFunctor);
+	flatNormalMap = ImageFromFunction("_flat", &flatNormalImageFunctor);
+	ambientNormalMap = ImageFromFunction("_ambient", &ambientNormalMapImageFunctor); 
+	specularTableImage = ImageFromFunction("_specularTable", &specularTableImageFunctor);
+	specular2DTableImage = ImageFromFunction("_specular2DTable", &specular2DTableImageFunctor);
+	rampImage = ImageFromFunction("_ramp", &rampImageFunctor);
+	//alphaRampImage = ImageFromFunction("_alphaRamp", &alphaRampImageFunctor);
+	alphaNotchImage = ImageFromFunction("_alphaNotch", &alphaNotchImageFunctor);
+	fogImage = ImageFromFunction("_fog", &fogImageFunctor);
+	fogEnterImage = ImageFromFunction("_fogEnter", &fogEnterImageFunctor);
+	normalCubeMapImage = ImageFromFunction("_normalCubeMap", &makeNormalizeVectorCubeMapFunctor);
+	noFalloffImage = ImageFromFunction("_noFalloff", &createNoFalloffImageFunctor);
+	ImageFromFunction("_quadratic", &quadraticImageFunctor);
 
 	// cinematicImage is used for cinematic drawing
-	// scratchImage is used for screen wipes/doublevision etc..
-	cinematicImage = ImageFromFunction("_cinematic", R_RGBA8Image );
-	scratchImage = ImageFromFunction("_scratch", R_RGBA8Image );
-	scratchImage2 = ImageFromFunction("_scratch2", R_RGBA8Image );
-	accumImage = ImageFromFunction("_accum", R_RGBA8Image );
-	scratchCubeMapImage = ImageFromFunction("_scratchCubeMap", makeNormalizeVectorCubeMap );
-	currentRenderImage = ImageFromFunction("_currentRender", R_RGBA8Image );
+	// scratchImage is used for screen wipes/doublevision etc.
+	cinematicImage = ImageFromFunction("_cinematic", &RGBA8ImageFunctor);
+	scratchImage = ImageFromFunction("_scratch", &RGBA8ImageFunctor);
+	scratchImage2 = ImageFromFunction("_scratch2", &RGBA8ImageFunctor);
+	accumImage = ImageFromFunction("_accum", &RGBA8ImageFunctor);
+	scratchCubeMapImage = ImageFromFunction("_scratchCubeMap", &makeNormalizeVectorCubeMapFunctor);
+	currentRenderImage = ImageFromFunction("_currentRender", &RGBA8ImageFunctor);
 
 	cmdSystem->AddCommand( "reloadImages", R_ReloadImages_f, CMD_FL_RENDERER, "reloads images" );
 	cmdSystem->AddCommand( "listImages", R_ListImages_f, CMD_FL_RENDERER, "lists images" );
