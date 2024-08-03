@@ -42,44 +42,6 @@ idInteraction implementation
 // FIXME: use private allocator for srfCullInfo_t
 
 /*
-================
-R_CalcInteractionFacing
-
-Determines which triangles of the surface are facing towards the light origin.
-
-The facing array should be allocated with one extra index than
-the number of surface triangles, which will be used to handle dangling
-edge silhouettes.
-================
-*/
-void R_CalcInteractionFacing( const idRenderEntityLocal *ent, const srfTriangles_t *tri, const idRenderLightLocal *light, srfCullInfo_t &cullInfo ) {
-	idVec3 localLightOrigin;
-
-	if ( cullInfo.facing != NULL ) {
-		return;
-	}
-
-	R_GlobalPointToLocal( ent->modelMatrix, light->globalLightOrigin, localLightOrigin );
-
-	int numFaces = tri->numIndexes / 3;
-
-	if ( !tri->facePlanes || !tri->facePlanesCalculated ) {
-		R_DeriveFacePlanes( const_cast<srfTriangles_t *>(tri) );
-	}
-
-	cullInfo.facing = (byte *) R_StaticAlloc( ( numFaces + 1 ) * sizeof( cullInfo.facing[0] ) );
-
-	// calculate back face culling
-	float *planeSide = (float *) _alloca16( numFaces * sizeof( float ) );
-
-	// exact geometric cull against face
-	SIMDProcessor->Dot( planeSide, localLightOrigin, tri->facePlanes, numFaces );
-	SIMDProcessor->CmpGE( cullInfo.facing, planeSide, 0.0f, numFaces );
-
-	cullInfo.facing[ numFaces ] = 1;	// for dangling edges to reference
-}
-
-/*
 =====================
 R_CalcInteractionCullBits
 
@@ -270,169 +232,6 @@ static bool	R_ClipTriangleToLight( const idVec3 &a, const idVec3 &b, const idVec
 }
 
 /*
-====================
-R_CreateLightTris
-
-The resulting surface will be a subset of the original triangles,
-it will never clip triangles, but it may cull on a per-triangle basis.
-====================
-*/
-static srfTriangles_t *R_CreateLightTris( const idRenderEntityLocal *ent,
-									 const srfTriangles_t *tri, const idRenderLightLocal *light,
-									 const idMaterial *shader, srfCullInfo_t &cullInfo ) {
-	int			i;
-	int			numIndexes;
-	glIndex_t	*indexes;
-	srfTriangles_t	*newTri;
-	int			c_backfaced;
-	int			c_distance;
-	idBounds	bounds;
-	bool		includeBackFaces;
-	int			faceNum;
-
-	tr.pc.c_createLightTris++;
-	c_backfaced = 0;
-	c_distance = 0;
-
-	numIndexes = 0;
-	indexes = NULL;
-
-	// it is debatable if non-shadowing lights should light back faces. we aren't at the moment
-	if ( r_lightAllBackFaces.GetBool() || light->lightShader->LightEffectsBackSides()
-			|| shader->ReceivesLightingOnBackSides()
-				|| ent->parms.noSelfShadow || ent->parms.noShadow  ) {
-		includeBackFaces = true;
-	} else {
-		includeBackFaces = false;
-	}
-
-	// allocate a new surface for the lit triangles
-	newTri = R_AllocStaticTriSurf();
-
-	// save a reference to the original surface
-	newTri->ambientSurface = const_cast<srfTriangles_t *>(tri);
-
-	// the light surface references the verts of the ambient surface
-	newTri->numVerts = tri->numVerts;
-	R_ReferenceStaticTriSurfVerts( newTri, tri );
-
-	// calculate cull information
-	if ( !includeBackFaces ) {
-		R_CalcInteractionFacing( ent, tri, light, cullInfo );
-	}
-	R_CalcInteractionCullBits( ent, tri, light, cullInfo );
-
-	// if the surface is completely inside the light frustum
-	if ( cullInfo.cullBits == LIGHT_CULL_ALL_FRONT ) {
-
-		// if we aren't self shadowing, let back facing triangles get
-		// through so the smooth shaded bump maps light all the way around
-		if ( includeBackFaces ) {
-
-			// the whole surface is lit so the light surface just references the indexes of the ambient surface
-			R_ReferenceStaticTriSurfIndexes( newTri, tri );
-			numIndexes = tri->numIndexes;
-			bounds = tri->bounds;
-
-		} else {
-
-			// the light tris indexes are going to be a subset of the original indexes so we generally
-			// allocate too much memory here but we decrease the memory block when the number of indexes is known
-			R_AllocStaticTriSurfIndexes( newTri, tri->numIndexes );
-
-			// back face cull the individual triangles
-			indexes = newTri->indexes;
-			const byte *facing = cullInfo.facing;
-			for ( faceNum = i = 0; i < tri->numIndexes; i += 3, faceNum++ ) {
-				if ( !facing[ faceNum ] ) {
-					c_backfaced++;
-					continue;
-				}
-				indexes[numIndexes+0] = tri->indexes[i+0];
-				indexes[numIndexes+1] = tri->indexes[i+1];
-				indexes[numIndexes+2] = tri->indexes[i+2];
-				numIndexes += 3;
-			}
-
-			// get bounds for the surface
-			SIMDProcessor->MinMax( bounds[0], bounds[1], tri->verts, indexes, numIndexes );
-
-			// decrease the size of the memory block to the size of the number of used indexes
-			R_ResizeStaticTriSurfIndexes( newTri, numIndexes );
-		}
-
-	} else {
-
-		// the light tris indexes are going to be a subset of the original indexes so we generally
-		// allocate too much memory here but we decrease the memory block when the number of indexes is known
-		R_AllocStaticTriSurfIndexes( newTri, tri->numIndexes );
-
-		// cull individual triangles
-		indexes = newTri->indexes;
-		const byte *facing = cullInfo.facing;
-		const byte *cullBits = cullInfo.cullBits;
-		for ( faceNum = i = 0; i < tri->numIndexes; i += 3, faceNum++ ) {
-			int i1, i2, i3;
-
-			// if we aren't self shadowing, let back facing triangles get
-			// through so the smooth shaded bump maps light all the way around
-			if ( !includeBackFaces ) {
-				// back face cull
-				if ( !facing[ faceNum ] ) {
-					c_backfaced++;
-					continue;
-				}
-			}
-
-			i1 = tri->indexes[i+0];
-			i2 = tri->indexes[i+1];
-			i3 = tri->indexes[i+2];
-
-			// fast cull outside the frustum
-			// if all three points are off one plane side, it definately isn't visible
-			if ( cullBits[i1] & cullBits[i2] & cullBits[i3] ) {
-				c_distance++;
-				continue;
-			}
-
-			if ( r_usePreciseTriangleInteractions.GetBool() ) {
-				// do a precise clipped cull if none of the points is completely inside the frustum
-				// note that we do not actually use the clipped triangle, which would have Z fighting issues.
-				if ( cullBits[i1] && cullBits[i2] && cullBits[i3] ) {
-					int cull = cullBits[i1] | cullBits[i2] | cullBits[i3];
-					if ( !R_ClipTriangleToLight( tri->verts[i1].xyz, tri->verts[i2].xyz, tri->verts[i3].xyz, cull, cullInfo.localClipPlanes ) ) {
-						continue;
-					}
-				}
-			}
-
-			// add to the list
-			indexes[numIndexes+0] = i1;
-			indexes[numIndexes+1] = i2;
-			indexes[numIndexes+2] = i3;
-			numIndexes += 3;
-		}
-
-		// get bounds for the surface
-		SIMDProcessor->MinMax( bounds[0], bounds[1], tri->verts, indexes, numIndexes );
-
-		// decrease the size of the memory block to the size of the number of used indexes
-		R_ResizeStaticTriSurfIndexes( newTri, numIndexes );
-	}
-
-	if ( !numIndexes ) {
-		R_ReallyFreeStaticTriSurf( newTri );
-		return NULL;
-	}
-
-	newTri->numIndexes = numIndexes;
-
-	newTri->bounds = bounds;
-
-	return newTri;
-}
-
-/*
 ===============
 idInteraction::idInteraction
 ===============
@@ -522,12 +321,6 @@ void idInteraction::FreeSurfaces( void ) {
 		for ( int i = 0 ; i < this->numSurfaces ; i++ ) {
 			surfaceInteraction_t *sint = &this->surfaces[i];
 
-			if ( sint->lightTris ) {
-				if ( sint->lightTris != LIGHT_TRIS_DEFERRED ) {
-					R_FreeStaticTriSurf( sint->lightTris );
-				}
-				sint->lightTris = NULL;
-			}
 			if ( sint->shadowTris ) {
 				// if it doesn't have an entityDef, it is part of a prelight
 				// model, not a generated interaction
@@ -671,7 +464,6 @@ int idInteraction::MemoryUsed( void ) {
 	for ( int i = 0 ; i < numSurfaces ; i++ ) {
 		surfaceInteraction_t *inter = &surfaces[i];
 
-		total += R_TriSurfMemory( inter->lightTris );
 		total += R_TriSurfMemory( inter->shadowTris );
 	}
 
@@ -895,12 +687,6 @@ void idInteraction::CreateInteraction( const idRenderModel *model ) {
 
 		// generate a lighted surface and add it
 		if ( shader->ReceivesLighting() ) {
-			if ( tri->ambientViewCount == tr.viewCount ) {
-				sint->lightTris = R_CreateLightTris( entityDef, tri, lightDef, shader, sint->cullInfo );
-			} else {
-				// this will be calculated when sint->ambientTris is actually in view
-				sint->lightTris = LIGHT_TRIS_DEFERRED;
-			}
 			interactionGenerated = true;
 		}
 
@@ -926,9 +712,7 @@ void idInteraction::CreateInteraction( const idRenderModel *model ) {
 		}
 
 		// free the cull information when it's no longer needed
-		if ( sint->lightTris != LIGHT_TRIS_DEFERRED ) {
-			R_FreeInteractionCullInfo( sint->cullInfo );
-		}
+		R_FreeInteractionCullInfo( sint->cullInfo );
 	}
 
 	// if none of the surfaces generated anything, don't even bother checking?
@@ -1111,12 +895,9 @@ void idInteraction::AddActiveInteraction( void ) {
 
 			// make sure we have created this interaction, which may have been deferred
 			// on a previous use that only needed the shadow
-			if ( sint->lightTris == LIGHT_TRIS_DEFERRED ) {
-				sint->lightTris = R_CreateLightTris( vEntity->entityDef, sint->ambientTris, vLight->lightDef, sint->shader, sint->cullInfo );
-				R_FreeInteractionCullInfo( sint->cullInfo );
-			}
+			R_FreeInteractionCullInfo( sint->cullInfo );
 
-			srfTriangles_t *lightTris = sint->lightTris;
+			srfTriangles_t *lightTris = sint->ambientTris;
 
 			if ( lightTris ) {
 
@@ -1298,10 +1079,10 @@ void R_ShowInteractionMemory_f( const idCmdArgs &args ) {
 			for ( int j = 0; j < inter->numSurfaces; j++ ) {
 				surfaceInteraction_t *srf = &inter->surfaces[j];
 
-				if ( srf->lightTris && srf->lightTris != LIGHT_TRIS_DEFERRED ) {
+				if ( srf->ambientTris ) {
 					lightTris++;
-					lightTriVerts += srf->lightTris->numVerts;
-					lightTriIndexes += srf->lightTris->numIndexes;
+					lightTriVerts += srf->ambientTris->numVerts;
+					lightTriIndexes += srf->ambientTris->numIndexes;
 				}
 				if ( srf->shadowTris ) {
 					shadowTris++;

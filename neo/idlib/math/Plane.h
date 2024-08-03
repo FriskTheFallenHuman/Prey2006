@@ -71,8 +71,9 @@ class idMat3;
 class idPlane {
 public:
 					idPlane( void );
-					idPlane( float a, float b, float c, float d );
-					idPlane( const idVec3 &normal, const float dist );
+					explicit idPlane( float a, float b, float c, float d );
+					explicit idPlane( const idVec3 &normal, const float dist );
+					explicit idPlane( const idVec3 &v0, const idVec3 &v1, const idVec3 &v2, bool fixDegenerate = false );
 
 	float			operator[]( int index ) const;
 	float &			operator[]( int index );
@@ -149,6 +150,10 @@ ID_INLINE idPlane::idPlane( const idVec3 &normal, const float dist ) {
 	this->b = normal.y;
 	this->c = normal.z;
 	this->d = -dist;
+}
+
+ID_INLINE idPlane::idPlane( const idVec3 &v0, const idVec3 &v1, const idVec3 &v2, bool fixDegenerate ) {
+	FromPoints( v0, v1, v2, fixDegenerate );
 }
 
 ID_INLINE float idPlane::operator[]( int index ) const {
