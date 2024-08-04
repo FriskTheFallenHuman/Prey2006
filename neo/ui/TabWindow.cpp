@@ -39,13 +39,6 @@ void hhTabWindow::CommonInit()
 	active = false;
 }
 
-hhTabWindow::hhTabWindow(idDeviceContext *d, idUserInterfaceLocal *g) : idWindow(d, g)
-{
-	dc = d;
-	gui = g;
-	CommonInit();
-}
-
 hhTabWindow::hhTabWindow(idUserInterfaceLocal *g) : idWindow(g)
 {
 	gui = g;

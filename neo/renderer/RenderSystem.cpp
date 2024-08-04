@@ -308,6 +308,15 @@ void idRenderSystemLocal::SetColor4( float r, float g, float b, float a ) {
 
 /*
 =============
+GetColor
+=============
+*/
+idVec4 idRenderSystemLocal::GetColor( void ) const {
+	return guiModel->GetColor();
+}
+
+/*
+=============
 DrawStretchPic
 =============
 */
@@ -338,6 +347,16 @@ x/y/w/h are in the 0,0 to 640,480 range
 void idRenderSystemLocal::DrawStretchTri( idVec2 p1, idVec2 p2, idVec2 p3, idVec2 t1, idVec2 t2, idVec2 t3, const idMaterial *material ) {
 	tr.guiModel->DrawStretchTri( p1, p2, p3, t1, t2, t3, material );
 }
+
+/*
+=============
+idRenderSystemLocal::AllocTris
+=============
+*/
+idDrawVert* idRenderSystemLocal::AllocTris( int numVerts, const glIndex_t* indexes, int numIndexes, const idMaterial *material ) {
+	return guiModel->AllocTris( numVerts, indexes, numIndexes, material, 0 );
+}
+
 
 /*
 =============

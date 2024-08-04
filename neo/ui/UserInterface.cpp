@@ -40,6 +40,17 @@ extern idCVar r_scaleMenusTo43; // DG: for the "scale menus to 4:3" hack
 idUserInterfaceManagerLocal	uiManagerLocal;
 idUserInterfaceManager *	uiManager = &uiManagerLocal;
 
+// These used to be in every window, but they all pointed at the same one in idUserInterfaceManagerLocal.
+// Made a global so it can be switched out dynamically to test optimized versions.
+idDeviceContext *dc;
+
+idCVar g_useNewGuiCode(	"g_useNewGuiCode",	"1", CVAR_GAME | CVAR_INTEGER, "use optimized device context code, 2 = toggle on/off every frame" );
+
+extern idCVar sys_lang;
+
+
+
+
 /*
 ===============================================================================
 
@@ -50,13 +61,33 @@ idUserInterfaceManager *	uiManager = &uiManagerLocal;
 
 void idUserInterfaceManagerLocal::Init() {
 	screenRect = idRectangle(0, 0, 640, 480);
-	dc.Init();
+	dcOld.Init();
+	dcOptimized.Init();
+
+	SetDrawingDC();
+
 }
 
 void idUserInterfaceManagerLocal::Shutdown() {
 	guis.DeleteContents( true );
 	demoGuis.DeleteContents( true );
-	dc.Shutdown();
+	dcOld.Shutdown();
+	dcOptimized.Shutdown();
+}
+
+void idUserInterfaceManagerLocal::SetDrawingDC() {
+	static int toggle;
+
+	// to make it more obvious that there is a difference between the old and
+	// new paths, toggle between them every frame if g_useNewGuiCode is set to 2
+	toggle++;
+
+	if ( g_useNewGuiCode.GetInteger() == 1 ||
+		( g_useNewGuiCode.GetInteger() == 2 && ( toggle & 1 ) ) ) {
+		dc = &dcOptimized;
+	} else {
+		dc = &dcOld;
+	}
 }
 
 void idUserInterfaceManagerLocal::Touch( const char *name ) {
@@ -77,19 +108,13 @@ void idUserInterfaceManagerLocal::WritePrecacheCommands( idFile *f ) {
 }
 
 void idUserInterfaceManagerLocal::SetSize( float width, float height ) {
-	dc.SetSize( width, height );
+	dc->SetSize( width, height );
 }
 
 void idUserInterfaceManagerLocal::BeginLevelLoad() {
-	int c = guis.Num();
-	for ( int i = 0; i < c; i++ ) {
+	for ( int i = 0; i < guis.Num(); i++ ) {
 		if ( (guis[ i ]->GetDesktop()->GetFlags() & WIN_MENUGUI) == 0 ) {
 			guis[ i ]->ClearRefs();
-			/*
-			delete guis[ i ];
-			guis.RemoveIndex( i );
-			i--; c--;
-			*/
 		}
 	}
 }
@@ -116,6 +141,9 @@ void idUserInterfaceManagerLocal::EndLevelLoad() {
 			}
 		}
 	}
+
+	dcOld.Init();
+	dcOptimized.Init();
 }
 
 void idUserInterfaceManagerLocal::Reload( bool all ) {
@@ -186,9 +214,18 @@ idUserInterface *idUserInterfaceManagerLocal::FindGui( const char *qpath, bool a
 	int c = guis.Num();
 
 	for ( int i = 0; i < c; i++ ) {
-		if ( !idStr::Icmp( guis[i]->GetSourceFile(), qpath ) ) {
+		idUserInterfaceLocal *gui = guis[i];
+		if ( gui == NULL ) {
+			continue;
+		}
+
+		if ( !idStr::Icmp( gui->GetSourceFile(), qpath ) ) {
 			if ( !forceNOTUnique && ( needUnique || guis[i]->IsInteractive() ) ) {
 				break;
+			}
+			// Reload the gui if it's been cleared
+			if ( guis[i]->GetRefs() == 0 ) {
+				guis[i]->InitFromFile( guis[i]->GetSourceFile() );
 			}
 			guis[i]->AddRef();
 			return guis[i];
@@ -282,7 +319,22 @@ bool idUserInterfaceLocal::InitFromFile( const char *qpath, bool rebuild, bool c
 		desktop = new idWindow( this );
 	}
 
-	source = qpath;
+	// First try loading the localized version
+	// Then fall back to the english version
+	for ( int i = 0; i < 2; i++ ) {
+		source = qpath;
+		idStr trySource = qpath;
+		trySource.ToLower();
+		trySource.BackSlashesToSlashes();
+		if ( i == 0 ) {
+			trySource.Replace( "guis/", va( "guis/%s/", sys_lang.GetString() ) );
+		}
+		fileSystem->ReadFile( trySource, NULL, &timeStamp);
+		if ( timeStamp != FILE_NOT_FOUND_TIMESTAMP ) {
+			source = trySource;
+			break;
+		}
+	}
 	state.Set( "text", "Test Text!" );
 
 	idParser src( LEXFL_NOFATALERRORS | LEXFL_NOSTRINGCONCAT | LEXFL_ALLOWMULTICHARLITERALS | LEXFL_ALLOWBACKSLASHSTRINGCONCAT );
@@ -296,7 +348,6 @@ bool idUserInterfaceLocal::InitFromFile( const char *qpath, bool rebuild, bool c
 		idToken token;
 		while( src.ReadToken( &token ) ) {
 			if ( idStr::Icmp( token, "windowDef" ) == 0 ) {
-				desktop->SetDC( &uiManagerLocal.dc );
 				if ( desktop->Parse( &src, rebuild ) ) {
 					desktop->SetFlag( WIN_DESKTOP );
 					desktop->FixupParms();
@@ -304,10 +355,8 @@ bool idUserInterfaceLocal::InitFromFile( const char *qpath, bool rebuild, bool c
 				continue;
 			}
 		}
-
-		state.Set( "name", qpath );
+		state.Set( "name", qpath );	// don't use localized name
 	} else {
-		desktop->SetDC( &uiManagerLocal.dc );
 		desktop->SetFlag( WIN_DESKTOP );
 		desktop->name = "Desktop";
 		desktop->text = va( "Invalid GUI: %s", qpath );
@@ -320,15 +369,11 @@ bool idUserInterfaceLocal::InitFromFile( const char *qpath, bool rebuild, bool c
 		loading = false;
 		return false;
 	}
-
 	interactive = desktop->Interactive();
-
 	if ( uiManagerLocal.guis.Find( this ) == NULL ) {
 		uiManagerLocal.guis.Append( this );
 	}
-
 	loading = false;
-
 	return true;
 }
 
@@ -413,23 +458,23 @@ void idUserInterfaceLocal::HandleNamedEvent ( const char* eventName ) {
 	desktop->RunNamedEvent( eventName );
 }
 
-void idUserInterfaceLocal::Redraw( int _time ) {
+void idUserInterfaceLocal::Redraw( int _time, bool hud ) {
 	if ( r_skipGuiShaders.GetInteger() > 5 ) {
 		return;
 	}
 	if ( !loading && desktop ) {
 		time = _time;
-		uiManagerLocal.dc.PushClipRect( uiManagerLocal.screenRect );
-		desktop->Redraw( 0, 0 );
-		uiManagerLocal.dc.PopClipRect();
+		dc->PushClipRect( uiManagerLocal.screenRect );
+		desktop->Redraw( 0, 0, hud );
+		dc->PopClipRect();
 	}
 }
 
 void idUserInterfaceLocal::DrawCursor() {
 	if ( !desktop || desktop->GetFlags() & WIN_MENUGUI ) {
-		uiManagerLocal.dc.DrawCursor(&cursorX, &cursorY, 32.0f );
+		dc->DrawCursor(&cursorX, &cursorY, 32.0f );
 	} else {
-		uiManagerLocal.dc.DrawCursor(&cursorX, &cursorY, 64.0f );
+		dc->DrawCursor(&cursorX, &cursorY, 56.0f );
 	}
 }
 
@@ -530,7 +575,6 @@ void idUserInterfaceLocal::ReadFromDemoFile( class idDemoFile *f ) {
 		f->Log("creating new gui\n");
 		desktop = new idWindow(this);
 		desktop->SetFlag( WIN_DESKTOP );
-		desktop->SetDC( &uiManagerLocal.dc );
 		desktop->ReadFromDemoFile(f);
 	} else {
 		f->Log("re-using gui\n");

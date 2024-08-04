@@ -34,7 +34,6 @@ If you have questions concerning this license or the applicable additional terms
 class idFieldWindow : public idWindow {
 public:
 	idFieldWindow(idUserInterfaceLocal *gui);
-	idFieldWindow(idDeviceContext *d, idUserInterfaceLocal *gui);
 	virtual ~idFieldWindow();
 
 	virtual void Draw(int time, float x, float y);

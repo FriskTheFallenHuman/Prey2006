@@ -31,11 +31,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "Window.h"
 
 class idUserInterfaceLocal;
-
 class idChoiceWindow : public idWindow {
 public:
 						idChoiceWindow(idUserInterfaceLocal *gui);
-						idChoiceWindow(idDeviceContext *d, idUserInterfaceLocal *gui);
 	virtual				~idChoiceWindow();
 
 	virtual const char	*HandleEvent(const sysEvent_t *event, bool *updateVisuals);

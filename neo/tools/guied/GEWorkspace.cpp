@@ -319,7 +319,7 @@ void rvGEWorkspace::Render ( HDC hdc )
 	renderSystem->BeginFrame(mWindowWidth, mWindowHeight );
 
 	// Draw the gui
-	mInterface->Redraw ( 0 ); // eventLoop->Milliseconds() );
+	mInterface->Redraw ( 0, false ); // eventLoop->Milliseconds() );
 
 	// We are done using the renderSystem now
 	renderSystem->EndFrame( &front, &back );
@@ -1477,7 +1477,7 @@ Create a new window
 */
 idWindow* rvGEWorkspace::NewWindow ( idDict* state, rvGEWindowWrapper::EWindowType type )
 {
-	idWindow*			window = new idWindow ( mInterface->GetDesktop()->GetDC(), mInterface );
+	idWindow*			window = new idWindow ( mInterface );
 	rvGEWindowWrapper*	wrapper;
 	int					count;
 	idStr				baseName;
@@ -1485,23 +1485,23 @@ idWindow* rvGEWorkspace::NewWindow ( idDict* state, rvGEWindowWrapper::EWindowTy
 	switch ( type )
 	{
 		case rvGEWindowWrapper::WT_NORMAL:
-			window = new idWindow ( mInterface->GetDesktop()->GetDC(), mInterface );
+			window = new idWindow ( mInterface );
 			break;
 
 		case rvGEWindowWrapper::WT_BIND:
-			window = new idBindWindow ( mInterface->GetDesktop()->GetDC(), mInterface );
+			window = new idBindWindow ( mInterface );
 			break;
 
 		case rvGEWindowWrapper::WT_RENDER:
-			window = new idRenderWindow ( mInterface->GetDesktop()->GetDC(), mInterface );
+			window = new idRenderWindow ( mInterface );
 			break;
 
 		case rvGEWindowWrapper::WT_CHOICE:
-			window = new idChoiceWindow ( mInterface->GetDesktop()->GetDC(), mInterface );
+			window = new idChoiceWindow ( mInterface );
 			break;
 
 		case rvGEWindowWrapper::WT_EDIT:
-			window = new idEditWindow ( mInterface->GetDesktop()->GetDC(), mInterface );
+			window = new idEditWindow ( mInterface );
 			break;
 
 		default:

@@ -39,7 +39,6 @@ typedef struct {
 class idMarkerWindow : public idWindow {
 public:
 	idMarkerWindow(idUserInterfaceLocal *gui);
-	idMarkerWindow(idDeviceContext *d, idUserInterfaceLocal *gui);
 	virtual ~idMarkerWindow();
 	virtual size_t Allocated(){return idWindow::Allocated();};
 

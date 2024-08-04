@@ -87,6 +87,9 @@ public:
 
 	// closes the file and frees all allocated memory
 	virtual void		ResetTime(int time);
+
+	// gets the time the cinematic started
+	virtual int			GetStartTime( void );
 };
 
 /*

@@ -29,11 +29,9 @@ If you have questions concerning this license or the applicable additional terms
 #define __BINDWINDOW_H
 
 class idUserInterfaceLocal;
-
 class idBindWindow : public idWindow {
 public:
 	idBindWindow(idUserInterfaceLocal *gui);
-	idBindWindow(idDeviceContext *d, idUserInterfaceLocal *gui);
 	virtual ~idBindWindow();
 
 	virtual const char *HandleEvent(const sysEvent_t *event, bool *updateVisuals);

@@ -42,12 +42,6 @@ void idFieldWindow::CommonInit() {
 	showCursor = false;
 }
 
-idFieldWindow::idFieldWindow(idDeviceContext *d, idUserInterfaceLocal *g) : idWindow(d, g) {
-	dc = d;
-	gui = g;
-	CommonInit();
-}
-
 idFieldWindow::idFieldWindow(idUserInterfaceLocal *g) : idWindow(g) {
 	gui = g;
 	CommonInit();

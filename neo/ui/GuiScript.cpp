@@ -158,6 +158,10 @@ void Script_ResetTime(idWindow *window, idList<idGSWinVar> *src) {
 		win = window->GetGui()->GetDesktop()->FindChildByName(*parm);
 		parm = dynamic_cast<idWinStr*>((*src)[1].var);
 	}
+	if ( parm == NULL ) {
+		return;
+	}
+
 	if (win && win->win) {
 		win->win->ResetTime(atoi(*parm));
 		win->win->EvalRegs(-1, true);
@@ -628,7 +632,11 @@ void idGuiScript::FixupParms(idWindow *win) {
 			delete str;
 		}
 		//
-
+	} else if (handler == &Script_LocalSound) {
+		idWinStr * str = dynamic_cast<idWinStr*>(parms[0].var);
+		if ( str ) {
+			declManager->FindSound( str->c_str() );
+		}
 	} else {
 		int c = parms.Num();
 		for (int i = 0; i < c; i++) {

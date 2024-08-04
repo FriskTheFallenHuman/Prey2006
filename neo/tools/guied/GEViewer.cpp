@@ -532,7 +532,7 @@ void rvGEViewer::Render	( HDC dc )
 		renderSystem->BeginFrame(mWindowWidth, mWindowHeight );
 
 		// Draw the gui
-		mInterface->Redraw ( mTime );
+		mInterface->Redraw ( mTime, false );
 
 		// We are done using the renderSystem now
 		renderSystem->EndFrame( &frontEnd, &backEnd );

@@ -16,7 +16,6 @@ class hhTabContainerWindow : public idWindow
 {
 	public:
 		hhTabContainerWindow(idUserInterfaceLocal *gui);
-		hhTabContainerWindow(idDeviceContext *d, idUserInterfaceLocal *gui);
 
 		virtual const char	*HandleEvent(const sysEvent_t *event, bool *updateVisuals);
 		virtual void		PostParse();

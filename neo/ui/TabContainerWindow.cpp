@@ -54,13 +54,6 @@ void hhTabContainerWindow::CommonInit()
 	offsets.y = 0;
 }
 
-hhTabContainerWindow::hhTabContainerWindow(idDeviceContext *d, idUserInterfaceLocal *g) : idWindow(d, g)
-{
-	dc = d;
-	gui = g;
-	CommonInit();
-}
-
 hhTabContainerWindow::hhTabContainerWindow(idUserInterfaceLocal *g) : idWindow(g)
 {
 	gui = g;

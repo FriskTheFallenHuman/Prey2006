@@ -8,7 +8,6 @@ class hhTabWindow : public idWindow
 {
 public:
 	hhTabWindow(idUserInterfaceLocal *gui);
-	hhTabWindow(idDeviceContext *d, idUserInterfaceLocal *gui);
 
 	virtual const char	*HandleEvent(const sysEvent_t *event, bool *updateVisuals);
 	virtual void		PostParse();

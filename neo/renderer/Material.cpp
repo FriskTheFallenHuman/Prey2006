@@ -2812,6 +2812,20 @@ void idMaterial::ResetCinematicTime( int time ) const {
 
 /*
 =============
+idMaterial::GetCinematicStartTime
+=============
+*/
+int idMaterial::GetCinematicStartTime() const {
+	for( int i = 0; i < numStages; i++ ) {
+		if ( stages[i].texture.cinematic ) {
+			return stages[i].texture.cinematic->GetStartTime();
+		}
+	}
+	return -1;
+}
+
+/*
+=============
 idMaterial::ConstantRegisters
 =============
 */

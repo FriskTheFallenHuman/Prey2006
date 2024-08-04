@@ -53,14 +53,8 @@ void idListWindow::CommonInit() {
 	top = 0;
 	sizeBias = 0;
 	horizontal = false;
-	scroller = new idSliderWindow(dc, gui);
+	scroller = new idSliderWindow(gui);
 	multipleSel = false;
-}
-
-idListWindow::idListWindow(idDeviceContext *d, idUserInterfaceLocal *g) : idWindow(d, g) {
-	dc = d;
-	gui = g;
-	CommonInit();
 }
 
 idListWindow::idListWindow(idUserInterfaceLocal *g) : idWindow(g) {

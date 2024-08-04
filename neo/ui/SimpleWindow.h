@@ -64,7 +64,6 @@ protected:
 	void			DrawBorderAndCaption(const idRectangle &drawRect);
 
 	idUserInterfaceLocal *gui;
-	idDeviceContext *dc;
 	int				flags;
 	idRectangle		drawRect;			// overall rect
 	idRectangle		clientRect;			// client area

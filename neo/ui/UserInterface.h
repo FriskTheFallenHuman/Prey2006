@@ -71,7 +71,7 @@ public:
 	virtual void				HandleNamedEvent( const char *eventName ) = 0;
 
 								// repaints the ui
-	virtual void				Redraw( int time ) = 0;
+	virtual void				Redraw( int time, bool hud = false ) = 0;
 
 								// repaints the cursor
 	virtual void				DrawCursor() = 0;
@@ -130,6 +130,10 @@ public:
 	virtual void				Shutdown() = 0;
 	virtual void				Touch( const char *name ) = 0;
 	virtual void				WritePrecacheCommands( idFile *f ) = 0;
+
+								// use either the optimized or legacy implementation for
+								// testing, based on the g_useNewGuiCode cvar
+	virtual void				SetDrawingDC() = 0;
 
 								// Sets the size for 640x480 adjustment.
 	virtual void				SetSize( float width, float height ) = 0;

@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 
 typedef struct {
 	const idMaterial	*material;
-	float				color[4];
+	idVec4				color;
 	int					firstVert;
 	int					numVerts;
 	int					firstIndex;
@@ -50,8 +50,14 @@ public:
 	void	EmitToCurrentView( float modelMatrix[16], bool depthHack );
 	void	EmitFullScreen();
 
+	// the returned pointer will be in write-combined memory, so only make contiguous
+	// 32 bit writes and never read from it.
+	idDrawVert * AllocTris( int numVerts, const glIndex_t *indexes, int numIndexes, const idMaterial *material, 
+							const uint64_t glState );
+
 	// these calls are forwarded from the renderer
 	void	SetColor( float r, float g, float b, float a );
+	idVec4	GetColor( void ) const;
 	void	DrawStretchPic( const idDrawVert *verts, const glIndex_t *indexes, int vertCount, int indexCount, const idMaterial *hShader,
 									bool clip = true, float min_x = 0.0f, float min_y = 0.0f, float max_x = 640.0f, float max_y = 480.0f );
 	void	DrawStretchPic( float x, float y, float w, float h,

@@ -68,12 +68,6 @@ void idChoiceWindow::CommonInit() {
 	choices.Clear();
 }
 
-idChoiceWindow::idChoiceWindow(idDeviceContext *d, idUserInterfaceLocal *g) : idWindow(d, g) {
-	dc = d;
-	gui = g;
-	CommonInit();
-}
-
 idChoiceWindow::idChoiceWindow(idUserInterfaceLocal *g) : idWindow(g) {
 	gui = g;
 	CommonInit();

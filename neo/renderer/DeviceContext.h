@@ -55,9 +55,9 @@ public:
 	int					DrawText(const char *text, float textScale, int textAlign, idVec4 color, idRectangle rectDraw, bool wrap, int cursor = -1, bool calcOnly = false, idList<int> *breaks = NULL, int limit = 0 );
 	void				DrawMaterialRect( float x, float y, float w, float h, float size, const idMaterial *mat, const idVec4 &color);
 	void				DrawStretchPic(float x, float y, float w, float h, float s0, float t0, float s1, float t1, const idMaterial *mat);
-
 	void				DrawMaterialRotated(float x, float y, float w, float h, const idMaterial *mat, const idVec4 &color, float scalex = 1.0, float scaley = 1.0, float angle = 0.0f);
 	void				DrawStretchPicRotated(float x, float y, float w, float h, float s0, float t0, float s1, float t1, const idMaterial *mat, float angle = 0.0f);
+	void				DrawWinding( idWinding & w, const idMaterial * mat );
 
 	int					CharWidth( const char c, float scale );
 	int					TextWidth(const char *text, float scale, int limit);
@@ -70,23 +70,22 @@ public:
 
 	idRegion			*GetTextRegion(const char *text, float textScale, idRectangle rectDraw, float xStart, float yStart);
 
-	void				SetSize(float width, float height);
+	void				SetSize( float width, float height );
+	void				SetOffset( float x, float y );
 
 	const idMaterial	*GetScrollBarImage(int index);
 
 	void				DrawCursor(float *x, float *y, float size);
 	void				SetCursor(int n);
 
-	void				AdjustCoords(float *x, float *y, float *w, float *h);
-	void				AdjustCursorCoords(float *x, float *y, float *w, float *h); // DG: added for "render menus as 4:3" hack
-	bool				ClippedCoords(float *x, float *y, float *w, float *h);
-	bool				ClippedCoords(float *x, float *y, float *w, float *h, float *s1, float *t1, float *s2, float *t2);
+	// clipping rects
+	virtual void		AdjustCoords( float *x, float *y, float *w, float *h );
+	virtual void		AdjustCursorCoords( float *x, float *y, float *w, float *h ); // DG: added for "render menus as 4:3" hack
+	virtual bool		ClippedCoords(float *x, float *y, float *w, float *h, float *s1, float *t1, float *s2, float *t2);
+	virtual void		PushClipRect(idRectangle r);
+	virtual void		PopClipRect();
+	virtual void		EnableClipping(bool b);
 
-	void				PushClipRect(float x, float y, float w, float h);
-	void				PushClipRect(idRectangle r);
-	void				PopClipRect();
-
-	void				EnableClipping(bool b) { enableClipping = b; };
 	void				SetFont( int num );
 
 	void				SetOverStrike(bool b) { overStrikeMode = b; }
@@ -134,9 +133,9 @@ public:
 	static idVec4 colorBlack;
 	static idVec4 colorNone;
 
-private:
-	int					DrawText(float x, float y, float scale, idVec4 color, const char *text, float adjust, int limit, int style, int cursor = -1);
-	void				PaintChar(float x,float y,float width,float height,float scale,float	s,float	t,float	s2,float t2,const idMaterial *hShader);
+protected:
+	virtual int			DrawText( float x, float y, float scale, idVec4 color, const char *text, float adjust, int limit, int style, int cursor = -1);
+	void				PaintChar( float x, float y, float width, float height, float scale, float s, float t, float s2, float t2, const idMaterial *hShader );
 	void				SetFontByScale( float scale );
 	void				Clear( void );
 
@@ -148,9 +147,8 @@ private:
 	idStr				fontName;
 	float				xScale;
 	float				yScale;
-
-	float				vidHeight;
-	float				vidWidth;
+	float				xOffset;
+	float				yOffset;
 
 	int					cursor;
 
@@ -164,14 +162,27 @@ private:
 	bool				overStrikeMode;
 
 	idMat3				mat;
+	bool				matIsIdentity;
 	idVec3				origin;
 	bool				initialized;
-
-	bool				mbcs;
 
 	// DG: this is used for the "make sure menus are rendered as 4:3" hack
 	idVec2				fixScaleForMenu;
 	idVec2				fixOffsetForMenu;
+};
+
+class idDeviceContextOptimized : public idDeviceContext {
+
+	virtual bool		ClippedCoords( float *x, float *y, float *w, float *h, float *s1, float *t1, float *s2, float *t2 );
+	virtual void		PushClipRect( idRectangle r );
+	virtual void		PopClipRect();
+	virtual void		EnableClipping( bool b );
+	virtual int			DrawText( float x, float y, float scale, idVec4 color, const char *text, float adjust, int limit, int style, int cursor = -1);
+
+	float				clipX1;
+	float				clipX2;
+	float				clipY1;
+	float				clipY2;
 };
 
 #endif /* !__DEVICECONTEXT_H__ */

@@ -34,7 +34,6 @@ class idUserInterfaceLocal;
 class idSliderWindow : public idWindow {
 public:
 						idSliderWindow(idUserInterfaceLocal *gui);
-						idSliderWindow(idDeviceContext *d, idUserInterfaceLocal *gui);
 	virtual				~idSliderWindow();
 
 	void				InitWithDefaults(const char *_name, const idRectangle &rect, const idVec4 &foreColor, const idVec4 &matColor, const char *_background, const char *thumbShader, bool _vertical, bool _scrollbar);

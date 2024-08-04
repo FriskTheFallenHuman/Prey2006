@@ -154,7 +154,12 @@ public:
 	virtual void Init(const char *_name, idWindow *win) {
 		idWinVar::Init(_name, win);
 		if (guiDict) {
-			data = guiDict->GetString(GetName());
+			const char * name = GetName();
+			if ( name[0] == 0 ) {
+				data = "";
+			} else {
+				data = guiDict->GetString( name );
+			}
 		}
 	}
 	int	operator==(	const idStr &other ) const {
