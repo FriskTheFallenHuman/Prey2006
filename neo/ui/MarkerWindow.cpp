@@ -32,7 +32,6 @@ If you have questions concerning this license or the applicable additional terms
 // included for image uploading for player stat graph
 #include "../renderer/Image.h"
 
-#include "DeviceContext.h"
 #include "Window.h"
 #include "UserInterfaceLocal.h"
 #include "MarkerWindow.h"

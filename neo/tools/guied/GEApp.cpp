@@ -32,7 +32,6 @@ If you have questions concerning this license or the applicable additional terms
 #include <io.h>
 
 #include "../../sys/win32/rc/guied_resource.h"
-#include "../../ui/DeviceContext.h"
 
 #include "GEApp.h"
 #include "GEOptionsDlg.h"

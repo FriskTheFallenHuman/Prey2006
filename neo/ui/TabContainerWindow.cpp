@@ -1,9 +1,36 @@
+/*
+===========================================================================
+
+Doom 3 GPL Source Code
+Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company.
+
+This file is part of the Doom 3 GPL Source Code ("Doom 3 Source Code").
+
+Doom 3 Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Doom 3 Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+
+===========================================================================
+*/
+
 #include "precompiled.h"
 #pragma hdrstop
 
-#include "../../ui/DeviceContext.h"
-#include "../../ui/Window.h"
-#include "../../ui/UserInterfaceLocal.h"
+#include "Window.h"
+#include "UserInterfaceLocal.h"
 #include "TabContainerWindow.h"
 #include "TabWindow.h"
 
@@ -96,7 +123,7 @@ void hhTabContainerWindow::PostParse()
 	idWindow::PostParse();
 	idList<hhTabWindow *> list;
 
-    tabs.Clear();
+	tabs.Clear();
 	for(int i = 0; i < children.Num(); i++)
 	{
 		idWindow *child = children[i];
@@ -112,10 +139,10 @@ void hhTabContainerWindow::PostParse()
 	}
 
 	const float lineHeight = GetTabHeight();
-    const float lineWidth = GetTabWidth();
+	const float lineWidth = GetTabWidth();
 	for(int i = 0; i < list.Num(); i++)
 	{
-        hhTabWindow *tab = list[i];
+		hhTabWindow *tab = list[i];
 		hhTabRect r;
 		if (vertical) {
 			r.x = 0;
@@ -138,10 +165,10 @@ void hhTabContainerWindow::PostParse()
 	}
 
 	currentTab = activeTab;
-    for(int i = 0; i < tabs.Num(); i++)
-    {
+	for(int i = 0; i < tabs.Num(); i++)
+	{
 		tabs[i].tab->SetActive(i == activeTab);
-    }
+	}
 }
 
 void hhTabContainerWindow::Draw(int time, float x, float y)
@@ -156,10 +183,10 @@ void hhTabContainerWindow::Draw(int time, float x, float y)
 		const hhTabRect &item = tabs[i];
 		const hhTabWindow *tab = item.tab;
 
-        rect.x = textRect.x + item.x;
-        rect.y = textRect.y + item.y;
-        rect.w = item.w;
-        rect.h = item.h;
+		rect.x = textRect.x + item.x;
+		rect.y = textRect.y + item.y;
+		rect.w = item.w;
+		rect.h = item.h;
 
 		if(i == currentTab)
 		{
@@ -197,13 +224,13 @@ void hhTabContainerWindow::Activate(bool activate, idStr &act)
 void hhTabContainerWindow::UpdateTab()
 {
 	const float lineHeight = GetTabHeight();
-    const float lineWidth = GetTabWidth();
+	const float lineWidth = GetTabWidth();
 
-    for(int i = 0; i < tabs.Num(); i++)
-    {
+	for(int i = 0; i < tabs.Num(); i++)
+	{
 		hhTabRect &r = tabs[i];
 		r.tab->SetActive(currentTab == i);
-        r.tab->SetOffsets(tabMargins.x(), tabMargins.y());
+		r.tab->SetOffsets(tabMargins.x(), tabMargins.y());
 		if (vertical) {
 			r.x = 0;
 			r.y = i * lineHeight;
@@ -215,7 +242,7 @@ void hhTabContainerWindow::UpdateTab()
 			r.w = lineWidth;
 			r.h = lineHeight;
 		}
-    }
+	}
 }
 
 void hhTabContainerWindow::StateChanged(bool redraw)
@@ -226,7 +253,7 @@ void hhTabContainerWindow::StateChanged(bool redraw)
 void hhTabContainerWindow::SetActiveTab(int index)
 {
 /*    for(int i = 0; i < tabs.Num(); i++)
-        tabs[i].tab->SetActive(false);*/
+		tabs[i].tab->SetActive(false);*/
 	if(currentTab >= 0 && currentTab < tabs.Num())
 	{
 		tabs[currentTab].tab->SetActive(false);
@@ -243,7 +270,7 @@ void hhTabContainerWindow::SetActiveTab(int index)
 void hhTabContainerWindow::SetOffsets(float x, float y)
 {
 	const float lineHeight = GetTabHeight();
-    const float lineWidth = GetTabWidth();
+	const float lineWidth = GetTabWidth();
 	offsets.x = x;
 	offsets.y = y;
 
@@ -275,8 +302,8 @@ float hhTabContainerWindow::GetTabHeight()
 
 float hhTabContainerWindow::GetTabWidth()
 {
-    if(vertical)
-        return Max(tabHeight, tabMargins.x());
-    else
-        return (rect.w() - tabMargins.x() - offsets.x) / (float)tabs.Num();
+	if(vertical)
+		return Max(tabHeight, tabMargins.x());
+	else
+		return (rect.w() - tabMargins.x() - offsets.x) / (float)tabs.Num();
 }

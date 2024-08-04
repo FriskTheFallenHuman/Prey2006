@@ -29,9 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "precompiled.h"
 #pragma hdrstop
 
-#include "DeviceContext.h"
-#include "../renderer/tr_local.h"
-
 idVec4 idDeviceContext::colorPurple;
 idVec4 idDeviceContext::colorOrange;
 idVec4 idDeviceContext::colorYellow;

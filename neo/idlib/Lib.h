@@ -204,6 +204,7 @@ template<class T> ID_INLINE T	Min( T x, T y ) { return ( x < y ) ? x : y; }
 // geometry
 #include "geometry/DrawVert.h"
 #include "geometry/JointTransform.h"
+#include "geometry/Rectangle.h"
 #include "geometry/Winding.h"
 #include "geometry/Winding2D.h"
 #include "geometry/Surface.h"
