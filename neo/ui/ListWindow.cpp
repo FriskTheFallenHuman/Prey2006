@@ -31,7 +31,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "../framework/Session_local.h"
 
-#include "DeviceContext.h"
 #include "Window.h"
 #include "UserInterfaceLocal.h"
 #include "SliderWindow.h"

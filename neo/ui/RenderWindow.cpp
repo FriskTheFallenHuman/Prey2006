@@ -29,7 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "precompiled.h"
 #pragma hdrstop
 
-#include "DeviceContext.h"
 #include "Window.h"
 #include "UserInterfaceLocal.h"
 #include "RenderWindow.h"

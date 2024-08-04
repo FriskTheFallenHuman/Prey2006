@@ -33,7 +33,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "../../sys/win32/win_local.h"
 #include <io.h>
 
-#include "../../ui/DeviceContext.h"
 #include "../../sys/win32/rc/guied_resource.h"
 
 #include "GEApp.h"

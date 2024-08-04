@@ -29,8 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __WINDOW_H__
 #define __WINDOW_H__
 
-#include "Rectangle.h"
-#include "DeviceContext.h"
 #include "RegExp.h"
 #include "Winvar.h"
 #include "GuiScript.h"

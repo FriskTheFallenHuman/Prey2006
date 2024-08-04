@@ -364,6 +364,7 @@ endif()
 
 set(src_renderer
 	renderer/Cinematic.cpp
+	renderer/DeviceContext.cpp
 	renderer/GuiModel.cpp
 	renderer/Image_files.cpp
 	renderer/Image_init.cpp
@@ -547,12 +548,8 @@ add_globbed_headers(src_snd "sound")
 set(src_ui
 	ui/BindWindow.cpp
 	ui/ChoiceWindow.cpp
-	ui/DeviceContext.cpp
 	ui/EditWindow.cpp
 	ui/FieldWindow.cpp
-	ui/GameBearShootWindow.cpp
-	ui/GameBustOutWindow.cpp
-	ui/GameSSDWindow.cpp
 	ui/GuiScript.cpp
 	ui/ListGUI.cpp
 	ui/ListWindow.cpp

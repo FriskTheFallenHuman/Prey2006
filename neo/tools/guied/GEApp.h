@@ -31,7 +31,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "../../sys/win32/win_local.h"
 
-#include "../../ui/Rectangle.h"
 #include "../../ui/Window.h"
 #include "../../ui/UserInterfaceLocal.h"
 
