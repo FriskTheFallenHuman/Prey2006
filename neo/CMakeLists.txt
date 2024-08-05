@@ -423,8 +423,10 @@ set(src_framework
 	framework/CmdSystem.cpp
 	framework/Common.cpp
 	framework/Common_demos.cpp
+	framework/Common_frame.cpp
 	framework/Common_load.cpp
 	framework/Common_localized.cpp
+	framework/Common_printf.cpp
 	framework/Compressor.cpp
 	framework/Console.cpp
 	framework/ConsoleHistory.cpp
