@@ -29,6 +29,8 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __COMMON_LOCAL_H__
 #define __COMMON_LOCAL_H__
 
+#include <SDL.h>
+
 typedef enum {
 	ERP_NONE,
 	ERP_FATAL,						// exit the entire game with a popup window
@@ -57,6 +59,7 @@ public:
 	virtual bool				IsInitialized( void ) const;
 	virtual void				Frame( void );
 	virtual void				GUIFrame( bool execCmd, bool network );
+	virtual void				Async( void );
 	virtual void				StartupVariable( const char *match, bool once );
 	virtual void				InitTool( const toolFlag_t tool, const idDict *dict );
 	virtual void				ActivateTool( bool active );
@@ -75,10 +78,6 @@ public:
 	virtual void				Error( const char *fmt, ... ) id_attribute((format(printf,2,3)));
 	virtual void				FatalError( const char *fmt, ... ) id_attribute((format(printf,2,3)));
 	virtual const idLangDict *	GetLanguageDict( void );
-
-	virtual float				Get_com_engineHz_latched( void );
-	virtual int64_t				Get_com_engineHz_numerator( void );
-	virtual int64_t				Get_com_engineHz_denominator( void );
 
 	virtual const char *		KeysFromBinding( const char *bind );
 	virtual const char *		BindingFromKey( const char *key );
@@ -125,8 +124,6 @@ public:
 
 	void						SetMachineSpec( void );
 
-	bool						IsShuttingDown( void ) { return com_shuttingDown; }
-
 private:
 	void						InitCommands( void );
 	void						InitRenderSystem( void );
@@ -138,6 +135,7 @@ private:
 	void						CheckToolMode( void );
 	void						WriteConfiguration( void );
 	void						DumpWarnings( void );
+	void						SingleAsyncTic( void );
 	void						LoadGameDLL( void );
 	void						LoadGameDLLbyName( const char *dll, idStr& s );
 	void						UnloadGameDLL( void );
@@ -147,7 +145,6 @@ private:
 	bool						com_fullyInitialized;
 	bool						com_refreshOnPrint;		// update the screen every print for dmap
 	int							com_errorEntered;		// 0, ERP_DROP, etc
-	bool						com_shuttingDown;
 
 	char						errorMessage[MAX_PRINT_MSG_SIZE];
 
@@ -167,8 +164,7 @@ private:
 	idCompressor *				config_compressor;
 #endif
 
-	int							gameFrame;			// Frame number of the local game
-	double						gameTimeResidual;	// left over msec from the last game frame
+	SDL_TimerID					async_timer;
 };
 
 extern idCommonLocal commonLocal;
