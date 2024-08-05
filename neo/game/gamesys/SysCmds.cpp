@@ -156,6 +156,24 @@ void Cmd_ReloadScript_f( const idCmdArgs &args ) {
 
 /*
 ===================
+Cmd_ReloadScript2_f
+===================
+*/
+CONSOLE_COMMAND( reloadScript2, "Doesn't thow an error...  Use this when switching game modes", 0 ) {
+	// shutdown the map because entities may point to script objects
+	gameLocal.MapShutdown();
+
+	// recompile the scripts
+	gameLocal.program.Startup( SCRIPT_DEFAULT );
+
+	if ( fileSystem->ReadFile( "prey.script", NULL) > 0 ) {
+		gameLocal.program.CompileFile( "prey_main.script" );
+		gameLocal.program.FinishCompilation();
+	}
+}
+
+/*
+===================
 Cmd_Script_f
 ===================
 */

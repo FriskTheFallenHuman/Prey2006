@@ -131,7 +131,7 @@ protected:
 	void						SetTextLocal( const char *text, const int length );
 
 private:
-	idDecl *					self;
+	idDecl *					self = nullptr;
 
 	idStr						name;					// name of the decl
 	char *						textSource;				// decl text definition

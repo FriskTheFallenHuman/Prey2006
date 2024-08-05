@@ -61,6 +61,8 @@ private:
 	idStr					valueString;			// value
 	idStr					descriptionString;		// description
 
+	virtual const char *	InternalGetResetString( void ) const;
+
 	virtual void			InternalSetString( const char *newValue );
 	virtual void			InternalServerSetString( const char *newValue );
 	virtual void			InternalSetBool( const bool newValue );
@@ -366,6 +368,15 @@ void idInternalCVar::Reset( void ) {
 
 /*
 ============
+idInternalCVar::InternalGetResetString
+============
+*/
+const char *idInternalCVar::InternalGetResetString( void ) const {
+	return resetString;
+}
+
+/*
+============
 idInternalCVar::InternalSetString
 ============
 */
@@ -485,6 +496,7 @@ private:
 	static void				ListByFlags( const idCmdArgs &args, cvarFlags_t flags );
 	static void				List_f( const idCmdArgs &args );
 	static void				Restart_f( const idCmdArgs &args );
+	static void				CvarAdd_f( const idCmdArgs &args );
 };
 
 idCVarSystemLocal			localCVarSystem;
@@ -584,6 +596,7 @@ void idCVarSystemLocal::Init( void ) {
 	cmdSystem->AddCommand( "reset", Reset_f, CMD_FL_SYSTEM, "resets a cvar" );
 	cmdSystem->AddCommand( "listCvars", List_f, CMD_FL_SYSTEM, "lists cvars" );
 	cmdSystem->AddCommand( "cvar_restart", Restart_f, CMD_FL_SYSTEM, "restart the cvar system" );
+	cmdSystem->AddCommand( "cvarAdd", CvarAdd_f, CMD_FL_SYSTEM, "adds a value to a numeric cvar" );
 
 	initialized = true;
 }
@@ -1053,6 +1066,26 @@ void idCVarSystemLocal::Reset_f( const idCmdArgs &args ) {
 	}
 
 	cvar->Reset();
+}
+
+/*
+============
+idCVarSystemLocal::CvarAdd_f
+============
+*/
+void idCVarSystemLocal::CvarAdd_f( const idCmdArgs &args ) {
+	if ( args.Argc() != 3 ) {
+		common->Printf ("usage: cvarAdd <variable> <value>\n");
+	}
+
+	idInternalCVar *cvar = localCVarSystem.FindInternal( args.Argv( 1 ) );
+	if ( !cvar ) {
+		return;
+	}
+
+	const float newValue = cvar->GetFloat() + atof( args.Argv( 2 ) );
+	cvar->SetFloat( newValue );
+	common->Printf( "%s = %f\n", cvar->GetName(), newValue );
 }
 
 /*

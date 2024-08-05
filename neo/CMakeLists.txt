@@ -422,6 +422,9 @@ set(src_framework
 	framework/CVarSystem.cpp
 	framework/CmdSystem.cpp
 	framework/Common.cpp
+	framework/Common_demos.cpp
+	framework/Common_load.cpp
+	framework/Common_localized.cpp
 	framework/Compressor.cpp
 	framework/Console.cpp
 	framework/ConsoleHistory.cpp
@@ -625,6 +628,7 @@ set(src_idlib
 	idlib/precompiled.cpp
 	idlib/MapFile.cpp
 	idlib/CmdArgs.cpp
+	idlib/CommandLink.cpp
 	idlib/Token.cpp
 	idlib/Base64.cpp
 	idlib/Timer.cpp

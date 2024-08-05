@@ -53,6 +53,7 @@ const char *idCmdArgs::Args(  int start, int end, bool escapeArgs ) const {
 	static char cmd_args[MAX_COMMAND_STRING];
 	int		i;
 
+	assert( argc < MAX_COMMAND_ARGS );
 	if ( end < 0 ) {
 		end = argc - 1;
 	} else if ( end >= argc ) {
@@ -175,6 +176,9 @@ idCmdArgs::AppendArg
 ============
 */
 void idCmdArgs::AppendArg( const char *text ) {
+	if ( argc >= MAX_COMMAND_ARGS ) {
+		return;
+	}
 	if ( !argc ) {
 		argc = 1;
 		argv[ 0 ] = tokenized;
@@ -191,7 +195,7 @@ void idCmdArgs::AppendArg( const char *text ) {
 idCmdArgs::GetArgs
 ============
 */
-const char **idCmdArgs::GetArgs( int *_argc ) {
+const char * const * idCmdArgs::GetArgs( int *_argc ) {
 	*_argc = argc;
 	return (const char **)&argv[0];
 }

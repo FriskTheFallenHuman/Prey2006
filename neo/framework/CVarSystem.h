@@ -138,6 +138,7 @@ public:
 	void					SetModified( void ) { internalVar->flags |= CVAR_MODIFIED; }
 	void					ClearModified( void ) { internalVar->flags &= ~CVAR_MODIFIED; }
 
+	const char *			GetDefaultString() const { return internalVar->InternalGetResetString(); }
 	const char *			GetString( void ) const { return internalVar->value; }
 	bool					GetBool( void ) const { return ( internalVar->integerValue != 0 ); }
 	int						GetInteger( void ) const { return internalVar->integerValue; }
@@ -174,6 +175,8 @@ private:
 	virtual void			InternalSetBool( const bool newValue ) {}
 	virtual void			InternalSetInteger( const int newValue ) {}
 	virtual void			InternalSetFloat( const float newValue ) {}
+
+	virtual const char *	InternalGetResetString() const { return value; }
 
 	static idCVar *			staticVars;
 };

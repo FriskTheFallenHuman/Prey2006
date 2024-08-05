@@ -59,7 +59,7 @@ public:
 
 	void					AppendArg( const char *text );
 	void					Clear( void ) { argc = 0; }
-	const char **			GetArgs( int *argc );
+	const char * const *	GetArgs( int *argc );
 
 private:
 	static const int		MAX_COMMAND_ARGS = 256; // HUMANHEAD mdl:  increased max command args by 4x for build process

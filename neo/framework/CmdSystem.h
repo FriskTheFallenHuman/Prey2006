@@ -68,6 +68,74 @@ typedef void (*cmdFunction_t)( const idCmdArgs &args );
 // argument completion function
 typedef void (*argCompletion_t)( const idCmdArgs &args, void(*callback)( const char *s ) );
 
+/*
+================================================
+idCommandLink is a convenient way to get a function registered as a 
+ConsoleCommand without having to add an explicit call to idCmdSystem->AddCommand() in a startup 
+function somewhere. Simply declare a static variable with the parameters and it will get 
+executed before main(). For example:
+
+static idCommandLink sys_dumpMemory( "sys_dumpMemory", Sys_DumpMemory_f, "Walks the heap and reports stats" );
+================================================
+*/
+
+class idCommandLink {
+public:
+	idCommandLink( const char *cmdName, cmdFunction_t function,
+		const char *description, argCompletion_t argCompletion = NULL );
+	idCommandLink *	next;
+	const char *	cmdName_;
+	cmdFunction_t	function_;
+	const char *	description_;
+	argCompletion_t argCompletion_;
+};
+
+// The command system will create commands for all the static definitions
+// when it initializes.
+idCommandLink *CommandLinks( idCommandLink *cl = NULL );
+
+/*
+================================================
+The CONSOLE_COMMAND macro is an even easier way to create a console command by
+automatically generating the idCommandLink variable, and it also allows all the
+command code to be stripped from a build with a single define.  For example:
+
+CONSOLE_COMMAND( Sys_DumpMemory, "Walks the heap and reports stats" ) {
+	// do stuff
+}
+
+NOTE: All CONSOLE_COMMANDs will be stripped with the shipping build unless it's
+created using the CONSOLE_COMMAND_SHIP macro.
+================================================
+*/
+
+#if defined ( ID_RETAIL ) && !defined( ID_RETAIL_INTERNAL )
+#define CONSOLE_COMMAND_SHIP			CONSOLE_COMMAND_COMPILE
+#define CONSOLE_COMMAND					CONSOLE_COMMAND_NO_COMPILE
+// We need to disable this warning to get commands that were made friends
+// of classes to compile as inline.
+// warning C4211: nonstandard extension used : redefined extern to static
+#pragma warning( disable : 4211 )
+// warning C4505: 'xxx' : unreferenced local function has been removed
+#pragma warning( disable : 4505 )
+#else
+#define CONSOLE_COMMAND_SHIP			CONSOLE_COMMAND_COMPILE
+#define CONSOLE_COMMAND					CONSOLE_COMMAND_COMPILE
+#endif
+
+// Turn console commands into static inline code, which will cause them to be
+// removed from the build.
+#define CONSOLE_COMMAND_NO_COMPILE( name, comment, completion ) \
+	static inline void name ## _f( const idCmdArgs &args )
+
+// lint incorrectly gives this for all console commands: Issue 1568: (Warning -- Variable 'TestAtomicString_v' accesses variable 'atomicStringManager' before the latter is initialized through calls: 'TestAtomicString_f() => idAtomicString::FreeDynamic()')
+// I can't figure out how to disable this just around CONSOLE_COMMAND, so it must stay disabled everywhere,
+// which is a shame.
+//lint -e1568
+#define CONSOLE_COMMAND_COMPILE( name, comment, completion ) \
+	void name ## _f( const idCmdArgs &args ); \
+	idCommandLink name ## _v( #name, name ## _f, comment, completion  ); \
+	void name ## _f( const idCmdArgs &args )
 
 class idCmdSystem {
 public:
@@ -86,6 +154,9 @@ public:
 						// Command and argument completion using callback for each valid string.
 	virtual void		CommandCompletion( void(*callback)( const char *s ) ) = 0;
 	virtual void		ArgCompletion( const char *cmdString, void(*callback)( const char *s ) ) = 0;
+
+	virtual void		ExecuteCommandText( const char * text ) = 0;
+	virtual void		AppendCommandText( const char * text ) = 0;
 
 						// Adds command text to the command buffer, does not add a final \n
 	virtual void		BufferCommandText( cmdExecution_t exec, const char *text ) = 0;
