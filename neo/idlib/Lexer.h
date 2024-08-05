@@ -203,6 +203,8 @@ public:
 	const char *	ParseBracedSectionExact ( idStr &out, int tabs = -1 );
 					// parse the rest of the line
 	const char *	ParseRestOfLine( idStr &out );
+					// pulls the entire line, including the \n at the end
+	const char *	ParseCompleteLine( idStr &out );
 					// retrieves the white space characters before the last read token
 	int				GetLastWhiteSpace( idStr &whiteSpace ) const;
 					// returns start index into text buffer of last white space

@@ -424,7 +424,9 @@ set(src_framework
 	framework/Common.cpp
 	framework/Compressor.cpp
 	framework/Console.cpp
+	framework/ConsoleHistory.cpp
 	framework/DemoFile.cpp
+	framework/DebugGraph.cpp
 	framework/DeclAF.cpp
 	framework/DeclEntityDef.cpp
 	framework/DeclFX.cpp
@@ -653,13 +655,13 @@ set(src_game
 	game/Player.cpp
 	game/PlayerIcon.cpp
 	game/PlayerView.cpp
-	game/projectile.cpp
+	game/Projectile.cpp
 	game/Pvs.cpp
 	game/SecurityCamera.cpp
 	game/SmokeParticles.cpp
 	game/Sound.cpp
 	game/Target.cpp
-	game/trigger.cpp
+	game/Trigger.cpp
 	game/Weapon.cpp
 	game/WorldSpawn.cpp
 	game/ai/AAS.cpp
@@ -673,7 +675,6 @@ set(src_game
 	game/anim/Anim_Blend.cpp
 	game/anim/Anim_Testmodel.cpp
 	game/gamesys/Class.cpp
-	game/gamesys/DebugGraph.cpp
 	game/gamesys/Event.cpp
 	game/gamesys/SaveGame.cpp
 	game/gamesys/SysCmds.cpp

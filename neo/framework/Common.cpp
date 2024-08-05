@@ -31,6 +31,8 @@ If you have questions concerning this license or the applicable additional terms
 
 #include <SDL.h>
 
+#include "ConsoleHistory.h"
+
 #include "../renderer/Image.h"
 
 #include "Session_local.h" // DG: For FT_IsDemo/isDemo() hack
@@ -2352,7 +2354,7 @@ void idCommonLocal::PrintLoadingMessage( const char *msg ) {
 	renderSystem->BeginFrame( renderSystem->GetScreenWidth(), renderSystem->GetScreenHeight() );
 	renderSystem->DrawStretchPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 1, 1, declManager->FindMaterial( "splashScreen" ) );
 	int len = strlen( msg );
-	renderSystem->DrawSmallStringExt( ( 640 - len * SMALLCHAR_WIDTH ) / 2, 410, msg, idVec4( 0.0f, 0.81f, 0.94f, 1.0f ), true, declManager->FindMaterial( "textures/bigchars" ) );
+	renderSystem->DrawSmallStringExt( ( 640 - len * SMALLCHAR_WIDTH ) / 2, 410, msg, idVec4( 0.0f, 0.81f, 0.94f, 1.0f ), true );
 	renderSystem->EndFrame( NULL, NULL );
 }
 
@@ -2996,8 +2998,8 @@ void idCommonLocal::Init( int argc, char **argv ) {
 
 		ClearCommandLine();
 
-		// load the persistent console history
-		console->LoadHistory();
+		// load the console history file
+		consoleHistory.LoadHistoryFile();
 
 		com_fullyInitialized = true;
 	}
@@ -3026,9 +3028,6 @@ void idCommonLocal::Shutdown( void ) {
 
 	idAsyncNetwork::server.Kill();
 	idAsyncNetwork::client.Shutdown();
-
-	// save persistent console history
-	console->SaveHistory();
 
 	// game specific shut down
 	ShutdownGame( false );
@@ -3109,9 +3108,6 @@ void idCommonLocal::InitGame( void ) {
 	InitLanguageDict();
 
 	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04344" ) );
-
-	// load the font, etc
-	console->LoadGraphics();
 
 	// init journalling, etc
 	eventLoop->Init();

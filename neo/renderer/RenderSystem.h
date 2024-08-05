@@ -223,10 +223,11 @@ public:
 	virtual void			GetGLSettings( int& width, int& height ) = 0;
 	virtual void			PrintMemInfo( MemInfo_t *mi ) = 0;
 
-	virtual void			DrawSmallChar( int x, int y, int ch, const idMaterial *material ) = 0;
-	virtual void			DrawSmallStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor, const idMaterial *material ) = 0;
-	virtual void			DrawBigChar( int x, int y, int ch, const idMaterial *material ) = 0;
-	virtual void			DrawBigStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor, const idMaterial *material ) = 0;
+	virtual void			DrawFilled( const idVec4 & color, float x, float y, float w, float h ) = 0;
+	virtual void			DrawSmallChar( int x, int y, int ch ) = 0;
+	virtual void			DrawSmallStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor ) = 0;
+	virtual void			DrawBigChar( int x, int y, int ch ) = 0;
+	virtual void			DrawBigStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor ) = 0;
 
 	virtual void			SetEntireSceneMaterial( idMaterial *material ) = 0; // HUMANHEAD CJR
 	virtual bool			IsScopeView() = 0;// HUMANHEAD CJR

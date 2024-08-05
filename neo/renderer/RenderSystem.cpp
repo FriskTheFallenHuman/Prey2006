@@ -317,6 +317,16 @@ idVec4 idRenderSystemLocal::GetColor( void ) const {
 
 /*
 =============
+idRenderSystemLocal::DrawFilled
+=============
+*/
+void idRenderSystemLocal::DrawFilled( const idVec4 & color, float x, float y, float w, float h ) {
+	SetColor( color );
+	DrawStretchPic( x, y, w, h, 0.0f, 0.0f, 1.0f, 1.0f, whiteMaterial );
+}
+
+/*
+=============
 DrawStretchPic
 =============
 */
@@ -384,7 +394,7 @@ idRenderSystemLocal::DrawSmallChar
 small chars are drawn at native screen resolution
 =====================
 */
-void idRenderSystemLocal::DrawSmallChar( int x, int y, int ch, const idMaterial *material ) {
+void idRenderSystemLocal::DrawSmallChar( int x, int y, int ch ) {
 	int row, col;
 	float frow, fcol;
 	float size;
@@ -407,14 +417,14 @@ void idRenderSystemLocal::DrawSmallChar( int x, int y, int ch, const idMaterial 
 	size = 0.0625f;
 
 	DrawStretchPic( x, y, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT,
-					   fcol, frow,
-					   fcol + size, frow + size,
-					   material );
+					   fcol, frow, 
+					   fcol + size, frow + size, 
+					   charSetMaterial );
 }
 
 /*
 ==================
-idRenderSystemLocal::DrawSmallString[Color]
+idRenderSystemLocal::DrawSmallStringExt
 
 Draws a multi-colored string with a drop shadow, optionally forcing
 to a fixed color.
@@ -422,7 +432,7 @@ to a fixed color.
 Coordinates are at 640 by 480 virtual resolution
 ==================
 */
-void idRenderSystemLocal::DrawSmallStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor, const idMaterial *material ) {
+void idRenderSystemLocal::DrawSmallStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor ) {
 	idVec4		color;
 	const unsigned char	*s;
 	int			xx;
@@ -445,7 +455,7 @@ void idRenderSystemLocal::DrawSmallStringExt( int x, int y, const char *string, 
 			s += 2;
 			continue;
 		}
-		DrawSmallChar( xx, y, *s, material );
+		DrawSmallChar( xx, y, *s );
 		xx += SMALLCHAR_WIDTH;
 		s++;
 	}
@@ -457,7 +467,7 @@ void idRenderSystemLocal::DrawSmallStringExt( int x, int y, const char *string, 
 idRenderSystemLocal::DrawBigChar
 =====================
 */
-void idRenderSystemLocal::DrawBigChar( int x, int y, int ch, const idMaterial *material ) {
+void idRenderSystemLocal::DrawBigChar( int x, int y, int ch ) {
 	int row, col;
 	float frow, fcol;
 	float size;
@@ -480,14 +490,14 @@ void idRenderSystemLocal::DrawBigChar( int x, int y, int ch, const idMaterial *m
 	size = 0.0625f;
 
 	DrawStretchPic( x, y, BIGCHAR_WIDTH, BIGCHAR_HEIGHT,
-					   fcol, frow,
-					   fcol + size, frow + size,
-					   material );
+					   fcol, frow, 
+					   fcol + size, frow + size, 
+					   charSetMaterial );
 }
 
 /*
 ==================
-idRenderSystemLocal::DrawBigString[Color]
+idRenderSystemLocal::DrawBigStringExt
 
 Draws a multi-colored string with a drop shadow, optionally forcing
 to a fixed color.
@@ -495,7 +505,7 @@ to a fixed color.
 Coordinates are at 640 by 480 virtual resolution
 ==================
 */
-void idRenderSystemLocal::DrawBigStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor, const idMaterial *material ) {
+void idRenderSystemLocal::DrawBigStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor ) {
 	idVec4		color;
 	const char	*s;
 	int			xx;
@@ -518,7 +528,7 @@ void idRenderSystemLocal::DrawBigStringExt( int x, int y, const char *string, co
 			s += 2;
 			continue;
 		}
-		DrawBigChar( xx, y, *s, material );
+		DrawBigChar( xx, y, *s );
 		xx += BIGCHAR_WIDTH;
 		s++;
 	}

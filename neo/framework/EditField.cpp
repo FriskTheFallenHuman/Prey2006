@@ -529,7 +529,7 @@ void idEditField::SetBuffer( const char *buf ) {
 idEditField::Draw
 ===============
 */
-void idEditField::Draw( int x, int y, int width, bool showCursor, const idMaterial *shader ) {
+void idEditField::Draw( int x, int y, int width, bool showCursor ) {
 	int		len;
 	int		drawLen;
 	int		prestep;
@@ -576,7 +576,7 @@ void idEditField::Draw( int x, int y, int width, bool showCursor, const idMateri
 	str[ drawLen ] = 0;
 
 	// draw it
-	renderSystem->DrawSmallStringExt( x, y, str, colorWhite, false, shader );
+	renderSystem->DrawSmallStringExt( x, y, str, colorWhite, false );
 
 	// draw the cursor
 	if ( !showCursor ) {
@@ -601,5 +601,5 @@ void idEditField::Draw( int x, int y, int width, bool showCursor, const idMateri
 		}
 	}
 
-	renderSystem->DrawSmallChar( x + ( cursor - prestep ) * size, y, cursorChar, shader );
+	renderSystem->DrawSmallChar( x + ( cursor - prestep ) * size, y, cursorChar );
 }

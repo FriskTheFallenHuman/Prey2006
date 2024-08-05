@@ -717,10 +717,11 @@ public:
 	virtual void			GetGLSettings( int& width, int& height );
 	virtual void			PrintMemInfo( MemInfo_t *mi );
 
-	virtual void			DrawSmallChar( int x, int y, int ch, const idMaterial *material );
-	virtual void			DrawSmallStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor, const idMaterial *material );
-	virtual void			DrawBigChar( int x, int y, int ch, const idMaterial *material );
-	virtual void			DrawBigStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor, const idMaterial *material );
+	virtual void			DrawFilled( const idVec4 & color, float x, float y, float w, float h );
+	virtual void			DrawSmallChar( int x, int y, int ch );
+	virtual void			DrawSmallStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor );
+	virtual void			DrawBigChar( int x, int y, int ch );
+	virtual void			DrawBigStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor );
 	virtual void			WriteDemoPics();
 	virtual void			DrawDemoPics();
 	virtual void			BeginFrame( int windowWidth, int windowHeight );
@@ -786,6 +787,10 @@ public:
 	viewDef_t *				primaryView;
 	// many console commands need to know which world they should operate on
 
+	const idMaterial *		whiteMaterial;
+	const idMaterial *		charSetMaterial;
+	const idMaterial *		defaultPointLight;
+	const idMaterial *		defaultProjectedLight;
 	const idMaterial *		defaultMaterial;
 	idImage *				testImage;
 	idCinematic *			testVideo;
