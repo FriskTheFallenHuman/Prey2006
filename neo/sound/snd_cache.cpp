@@ -460,19 +460,23 @@ void idSoundSample::Load( void ) {
 		return;
 	}
 
+	/*
 	if ( info.wBitsPerSample != 16 ) {
 		common->Warning( "idSoundSample: %s is %dbits, expected 16bits using default", name.c_str(), info.wBitsPerSample );
 		fh.Close();
 		MakeDefault();
 		return;
 	}
+	*/
 
+	/*
 	if ( info.nSamplesPerSec != 44100 && info.nSamplesPerSec != 22050 && info.nSamplesPerSec != 11025 ) {
 		common->Warning( "idSoundCache: %s is %dHz, expected 11025, 22050 or 44100 Hz. Using default", name.c_str(), info.nSamplesPerSec );
 		fh.Close();
 		MakeDefault();
 		return;
 	}
+	*/
 
 	objectInfo = info;
 	objectSize = fh.GetOutputSize();
