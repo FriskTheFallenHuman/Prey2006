@@ -60,7 +60,6 @@ idCVar idWindow::gui_edit( "gui_edit", "0", CVAR_GUI | CVAR_BOOL, "" );
 idCVar hud_titlesafe( "hud_titlesafe", "0.0", CVAR_GUI | CVAR_FLOAT, "fraction of the screen to leave around hud for titlesafe area" );
 
 extern idCVar r_skipGuiShaders;		// 1 = don't render any gui elements on surfaces
-extern idCVar r_scaleMenusTo43;
 
 //  made RegisterVars a member of idWindow
 const idRegEntry idWindow::RegisterVars[] = {
@@ -1231,19 +1230,6 @@ void idWindow::Redraw(float x, float y, bool hud) {
 		return;
 	}
 
-	// DG: allow scaling menus to 4:3
-	bool fixupFor43 = false;
-	if ( flags & WIN_DESKTOP ) {
-		// only scale desktop windows (will automatically scale its sub-windows)
-		// that EITHER have the scaleto43 flag set OR are fullscreen menus and r_scaleMenusTo43 is 1
-		if( (flags & WIN_SCALETO43) ||
-			((flags & WIN_MENUGUI) && r_scaleMenusTo43.GetBool()) )
-		{
-			fixupFor43 = true;
-			dc->SetMenuScaleFix(true);
-		}
-	}
-
 	if ( flags & WIN_SHOWTIME ) {
 		dc->DrawText(va(" %0.1f seconds\n%s", (float)(time - timeLine) / 1000, gui->State().GetString("name")), 0.35f, 0, dc->colorWhite, idRectangle(100, 0, 80, 80), false);
 	}
@@ -1256,9 +1242,6 @@ void idWindow::Redraw(float x, float y, bool hud) {
 	}
 
 	if (!visible) {
-		if (fixupFor43) { // DG: gotta reset that before returning this function
-			dc->SetMenuScaleFix(false);
-		}
 		return;
 	}
 
@@ -1335,10 +1318,6 @@ void idWindow::Redraw(float x, float y, bool hud) {
 		dc->DrawText(str, 0.25, 0, dc->colorWhite, idRectangle(0, 0, 100, 20), false);
 		dc->DrawText(gui->GetSourceFile(), 0.25, 0, dc->colorWhite, idRectangle(0, 20, 300, 20), false);
 		dc->EnableClipping(true);
-	}
-
-	if (fixupFor43) { // DG: gotta reset that before returning this function
-		dc->SetMenuScaleFix(false);
 	}
 
 	drawRect.Offset(-x, -y);
@@ -2005,15 +1984,6 @@ bool idWindow::ParseInternalVar(const char *_name, idParser *src) {
 		}
 		return true;
 	}
-	// DG: added this window flag for Windows that should be scaled to 4:3
-	//     (with "empty" bars left/right or above/below)
-	if (idStr::Icmp(_name, "scaleto43") == 0) {
-		if ( src->ParseBool() ) {
-			flags |= WIN_SCALETO43;
-		}
-		return true;
-	}
-	// DG end
 	if (idStr::Icmp(_name, "forceaspectwidth") == 0) {
 		forceAspectWidth = src->ParseFloat();
 		return true;

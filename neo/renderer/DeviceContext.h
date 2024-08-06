@@ -79,8 +79,6 @@ public:
 	void				SetCursor(int n);
 
 	// clipping rects
-	virtual void		AdjustCoords( float *x, float *y, float *w, float *h );
-	virtual void		AdjustCursorCoords( float *x, float *y, float *w, float *h ); // DG: added for "render menus as 4:3" hack
 	virtual bool		ClippedCoords(float *x, float *y, float *w, float *h, float *s1, float *t1, float *s2, float *t2);
 	virtual void		PushClipRect(idRectangle r);
 	virtual void		PopClipRect();
@@ -93,12 +91,6 @@ public:
 	bool				GetOverStrike() { return overStrikeMode; }
 
 	void				DrawEditCursor(float x, float y, float scale);
-
-	// DG: this is used for the "make sure menus are rendered as 4:3" hack
-	void				SetMenuScaleFix(bool enable);
-	bool				IsMenuScaleFixActive() const {
-		return fixOffsetForMenu.x != 0.0f || fixOffsetForMenu.y != 0.0f;
-	}
 
 	enum {
 		CURSOR_ARROW,
@@ -165,10 +157,6 @@ protected:
 	bool				matIsIdentity;
 	idVec3				origin;
 	bool				initialized;
-
-	// DG: this is used for the "make sure menus are rendered as 4:3" hack
-	idVec2				fixScaleForMenu;
-	idVec2				fixOffsetForMenu;
 };
 
 class idDeviceContextOptimized : public idDeviceContext {
