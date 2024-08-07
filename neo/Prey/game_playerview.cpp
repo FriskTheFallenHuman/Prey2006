@@ -37,7 +37,6 @@ const int IMPULSE_DELAY = 150;
 hhPlayerView::hhPlayerView() {
 	// HUMANHEAD pdm: we don't use the tunnel vision or armor
 	bLetterBox = false;
-	letterboxMaterial = declManager->FindMaterial( "_black" );
 	dirDmgLeftMaterial = declManager->FindMaterial( "textures/interface/directionalDamageLeft" );
 	dirDmgFrontMaterial = declManager->FindMaterial( "textures/interface/directionalDamageFront" );
 	spiritMaterial = NULL;
@@ -66,7 +65,6 @@ void hhPlayerView::Save(idSaveGame *savefile) const {
 	savefile->WriteInt( voFinishTime );
 	savefile->WriteInt( voTotalTime );
 	savefile->WriteInt( voRequiresScratchBuffer );
-	savefile->WriteMaterial( letterboxMaterial );
 	savefile->WriteMaterial( dirDmgLeftMaterial );
 	savefile->WriteMaterial( dirDmgFrontMaterial );
 	savefile->WriteMaterial( spiritMaterial );
@@ -90,7 +88,6 @@ void hhPlayerView::Restore( idRestoreGame *savefile ) {
 	savefile->ReadInt( voFinishTime );
 	savefile->ReadInt( voTotalTime );
 	savefile->ReadInt( voRequiresScratchBuffer );
-	savefile->ReadMaterial( letterboxMaterial );
 	savefile->ReadMaterial( dirDmgLeftMaterial );
 	savefile->ReadMaterial( dirDmgFrontMaterial );
 	savefile->ReadMaterial( spiritMaterial );
@@ -561,7 +558,7 @@ void hhPlayerView::SingleView( idUserInterface *hud, const renderView_t *view ) 
 		//HUMANHEAD: aob
 		if( viewOverlayMaterial ) {		
 			renderSystem->SetColor4( viewOverlayColor[0], viewOverlayColor[1], viewOverlayColor[2], viewOverlayColor[3] );
-			renderSystem->DrawStretchPic(0, 0, 640, 480, 0, 1, 1, 0, viewOverlayMaterial);
+			renderSystem->DrawStretchPic(0, 0, renderSystem->GetVirtualWidth(), renderSystem->GetVirtualHeight(), 0, 1, 1, 0, viewOverlayMaterial);
 		}
 		//HUMANHEAD END
 
@@ -571,7 +568,7 @@ void hhPlayerView::SingleView( idUserInterface *hud, const renderView_t *view ) 
 				hurtValue = player->health;
 
 			renderSystem->SetColor4( hurtValue/25.0f, 1, 1, 1 );
-			renderSystem->DrawStretchPic(0, 0, 640, 480, 0, 1, 1, 0, hurtMaterial);
+			renderSystem->DrawStretchPic(0, 0, renderSystem->GetVirtualWidth(), renderSystem->GetVirtualHeight(), 0, 1, 1, 0, hurtMaterial);
 		}
 	}
 
@@ -588,7 +585,7 @@ void hhPlayerView::SingleView( idUserInterface *hud, const renderView_t *view ) 
 			g_testPostProcess.SetString( "" );
 		} else {
 			renderSystem->SetColor4( 1.0f, 1.0f, 1.0f, 1.0f );
-			renderSystem->DrawStretchPic( 0.0f, 0.0f, 640.0f, 480.0f, 0.0f, 0.0f, 1.0f, 1.0f, mtr );
+			renderSystem->DrawStretchPic( 0.0f, 0.0f, (float)renderSystem->GetVirtualWidth(), (float)renderSystem->GetVirtualHeight(), 0.0f, 0.0f, 1.0f, 1.0f, mtr );
 		}
 	}
 }
@@ -651,7 +648,7 @@ void hhPlayerView::MotionBlurVision(idUserInterface *hud, const renderView_t *vi
 
 		#define CLIP(a) ((a)<0?0:(a)>1?1:(a))
 		renderSystem->SetColor4( 1,1,1, index==0 ? 1.0f : 0.2f );
-		renderSystem->DrawStretchPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT,
+		renderSystem->DrawStretchPic( 0, 0, renderSystem->GetVirtualWidth(), renderSystem->GetVirtualHeight(),
 			CLIP(xshift), CLIP(1+yshift), CLIP(1+xshift), CLIP(yshift), scratchMaterial ); // clipped
 	}
 }
@@ -676,7 +673,7 @@ void hhPlayerView::SpiritVision( idUserInterface *hud, const renderView_t *view 
 	}
 
 	renderSystem->SetColor4( 1, 1, 1, 1 );
-	renderSystem->DrawStretchPic(0, 0, 640, 480, 0, 1, 1, 0, spiritMaterial );
+	renderSystem->DrawStretchPic(0, 0, renderSystem->GetVirtualWidth(), renderSystem->GetVirtualHeight(), 0, 1, 1, 0, spiritMaterial );
 
 	voTotalTime = oldTime;
 	viewOverlayMaterial = oldMaterial;
@@ -688,9 +685,8 @@ void hhPlayerView::SpiritVision( idUserInterface *hud, const renderView_t *view 
 //------------------------------------------------------
 void hhPlayerView::ApplyLetterBox(const renderView_t *view) {
 	if (bLetterBox) {
-		renderSystem->SetColor4( 1.0f, 1.0f, 1.0f, 1.0f );
-		renderSystem->DrawStretchPic(0, 0, 640, LETTERBOX_HEIGHT_TOP, 0, 0, 1, 1, letterboxMaterial);
-		renderSystem->DrawStretchPic(0, 480-LETTERBOX_HEIGHT_BOTTOM, 640, LETTERBOX_HEIGHT_BOTTOM, 0, 0, 1, 1, letterboxMaterial);
+		renderSystem->DrawFilled( idVec4( 0.0f, 0.0f, 0.0f, 1.0f ), 0, 0, renderSystem->GetVirtualWidth(), LETTERBOX_HEIGHT_TOP + 25 );
+		renderSystem->DrawFilled( idVec4(0.0f, 0.0f, 0.0f, 1.0f), 0, ( renderSystem->GetVirtualHeight() - LETTERBOX_HEIGHT_BOTTOM ) - 25, renderSystem->GetVirtualWidth(), LETTERBOX_HEIGHT_BOTTOM + 25 );
 	}
 }
 

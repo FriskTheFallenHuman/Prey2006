@@ -49,7 +49,6 @@ protected:
 	int					voFinishTime;			// HUMANHEAD cjr: Used to set the time that the view overlay stays on
 	int					voTotalTime;			// HUMANHEAD cjr: Used to set the time that the view overlay stays on
 	int					voRequiresScratchBuffer;// HUMANHEAD cjr: requires the screen rendered to the scratch buffer
-	const idMaterial	*letterboxMaterial;		// HUMANHEAD pdm
 	const idMaterial	*dirDmgLeftMaterial;	// HUMANHEAD pdm
 	const idMaterial	*dirDmgFrontMaterial;	// HUMANHEAD pdm
 	const idMaterial	*spiritMaterial;		// HUMANHEAD cjr

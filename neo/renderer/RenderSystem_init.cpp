@@ -2426,3 +2426,23 @@ idRenderSystemLocal::GetScreenHeight
 int idRenderSystemLocal::GetScreenHeight( void ) const {
 	return glConfig.vidHeight;
 }
+
+/*
+========================
+idRenderSystemLocal::GetVirtualWidth
+========================
+*/
+int idRenderSystemLocal::GetVirtualWidth() const
+{
+	return glConfig.vidWidth;
+}
+
+/*
+========================
+idRenderSystemLocal::GetVirtualHeight
+========================
+*/
+int idRenderSystemLocal::GetVirtualHeight() const
+{
+	return glConfig.vidHeight;
+}

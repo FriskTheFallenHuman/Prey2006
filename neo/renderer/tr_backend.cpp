@@ -408,7 +408,7 @@ void RB_SetGL2D( void ) {
 	}
 	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
-	glOrtho( 0, 640, 480, 0, 0, 1 );		// always assume 640x480 virtual coordinates
+	glOrtho( 0, renderSystem->GetVirtualWidth(), renderSystem->GetVirtualHeight(), 0, 0, 1 );		// let the render system asume the virtual coordinates
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();
 

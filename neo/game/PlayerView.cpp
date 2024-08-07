@@ -484,7 +484,7 @@ void idPlayerView::SingleView( idUserInterface *hud, const renderView_t *view ) 
 
 		if ( armorPulse > 0.0f && armorPulse < 1.0f ) {
 			renderSystem->SetColor4( 1, 1, 1, 1.0 - armorPulse );
-			renderSystem->DrawStretchPic( 0, 0, 640, 480, 0, 0, 1, 1, armorMaterial );
+			renderSystem->DrawStretchPic( 0, 0, renderSystem->GetVirtualWidth(), renderSystem->GetVirtualHeight(), 0, 0, 1, 1, armorMaterial );
 		}
 
 
@@ -505,7 +505,7 @@ void idPlayerView::SingleView( idUserInterface *hud, const renderView_t *view ) 
 
 		if ( alpha < 1.0f  ) {
 			renderSystem->SetColor4( ( player->health <= 0.0f ) ? MS2SEC( gameLocal.time ) : lastDamageTime, 1.0f, 1.0f, ( player->health <= 0.0f ) ? 0.0f : alpha );
-			renderSystem->DrawStretchPic( 0.0f, 0.0f, 640.0f, 480.0f, 0.0f, 0.0f, 1.0f, 1.0f, tunnelMaterial );
+			renderSystem->DrawStretchPic( 0.0f, 0.0f, (float)renderSystem->GetVirtualWidth(), (float)renderSystem->GetVirtualHeight(), 0.0f, 0.0f, 1.0f, 1.0f, tunnelMaterial );
 		}
 
 		if ( player->PowerUpActive(BERSERK) ) {
@@ -514,13 +514,13 @@ void idPlayerView::SingleView( idUserInterface *hud, const renderView_t *view ) 
 				// start fading if within 10 seconds of going away
 				alpha = (berserkTime < 10000) ? (float)berserkTime / 10000 : 1.0f;
 				renderSystem->SetColor4( 1.0f, 1.0f, 1.0f, alpha );
-				renderSystem->DrawStretchPic( 0.0f, 0.0f, 640.0f, 480.0f, 0.0f, 0.0f, 1.0f, 1.0f, berserkMaterial );
+				renderSystem->DrawStretchPic( 0.0f, 0.0f, (float)renderSystem->GetVirtualWidth(), (float)renderSystem->GetVirtualHeight(), 0.0f, 0.0f, 1.0f, 1.0f, berserkMaterial );
 			}
 		}
 
 		if ( bfgVision ) {
 			renderSystem->SetColor4( 1.0f, 1.0f, 1.0f, 1.0f );
-			renderSystem->DrawStretchPic( 0.0f, 0.0f, 640.0f, 480.0f, 0.0f, 0.0f, 1.0f, 1.0f, bfgMaterial );
+			renderSystem->DrawStretchPic( 0.0f, 0.0f, (float)renderSystem->GetVirtualWidth(), (float)renderSystem->GetVirtualHeight(), 0.0f, 0.0f, 1.0f, 1.0f, bfgMaterial );
 		}
 	}
 
@@ -532,7 +532,7 @@ void idPlayerView::SingleView( idUserInterface *hud, const renderView_t *view ) 
 			g_testPostProcess.SetString( "" );
 		} else {
 			renderSystem->SetColor4( 1.0f, 1.0f, 1.0f, 1.0f );
-			renderSystem->DrawStretchPic( 0.0f, 0.0f, 640.0f, 480.0f, 0.0f, 0.0f, 1.0f, 1.0f, mtr );
+			renderSystem->DrawStretchPic( 0.0f, 0.0f, (float)renderSystem->GetVirtualWidth(), (float)renderSystem->GetVirtualHeight(), 0.0f, 0.0f, 1.0f, 1.0f, mtr );
 		}
 	}
 */
@@ -573,9 +573,9 @@ void idPlayerView::DoubleVision( idUserInterface *hud, const renderView_t *view,
 	}
 
 	renderSystem->SetColor4( color.x, color.y, color.z, 1.0f );
-	renderSystem->DrawStretchPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, shift, 1, 1, 0, dvMaterial );
+	renderSystem->DrawStretchPic( 0, 0, (float)renderSystem->GetVirtualWidth(), (float)renderSystem->GetVirtualHeight(), shift, 1, 1, 0, dvMaterial );
 	renderSystem->SetColor4( color.x, color.y, color.z, 0.5f );
-	renderSystem->DrawStretchPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 1, 1-shift, 0, dvMaterial );
+	renderSystem->DrawStretchPic( 0, 0, (float)renderSystem->GetVirtualWidth(), (float)renderSystem->GetVirtualHeight(), 0, 1, 1-shift, 0, dvMaterial );
 }
 */
 
@@ -593,7 +593,7 @@ void idPlayerView::BerserkVision( idUserInterface *hud, const renderView_t *view
 	renderSystem->UnCrop();
 	RENDER_DEMO_VIEWRENDER_END(); //HUMANHEAD rww
 	renderSystem->SetColor4( 1.0f, 1.0f, 1.0f, 1.0f );
-	renderSystem->DrawStretchPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 1, 1, 0, dvMaterial );
+	renderSystem->DrawStretchPic( 0, 0, (float)renderSystem->GetVirtualWidth(), (float)renderSystem->GetVirtualHeight(), 0, 1, 1, 0, dvMaterial );
 }
 */
 
@@ -668,7 +668,7 @@ void idPlayerView::ScreenFade() {
 
 	if ( fadeColor[ 3 ] != 0.0f ) {
 		renderSystem->SetColor4( fadeColor[ 0 ], fadeColor[ 1 ], fadeColor[ 2 ], fadeColor[ 3 ] );
-		renderSystem->DrawStretchPic( 0, 0, 640, 480, 0, 0, 1, 1, declManager->FindMaterial( "_white" ) );
+		renderSystem->DrawStretchPic( 0, 0, renderSystem->GetVirtualWidth(), renderSystem->GetVirtualHeight(), 0, 0, 1, 1, declManager->FindMaterial( "_white" ) );
 	}
 }
 
@@ -692,7 +692,7 @@ void idPlayerView::InfluenceVision( idUserInterface *hud, const renderView_t *vi
 		SingleView( hud, view );
 		renderSystem->CaptureRenderToImage( "_currentRender" );
 		renderSystem->SetColor4( 1.0f, 1.0f, 1.0f, pct );
-		renderSystem->DrawStretchPic( 0.0f, 0.0f, 640.0f, 480.0f, 0.0f, 0.0f, 1.0f, 1.0f, player->GetInfluenceMaterial() );
+		renderSystem->DrawStretchPic( 0.0f, 0.0f, (float)renderSystem->GetVirtualWidth(), (float)renderSystem->GetVirtualHeight(), 0.0f, 0.0f, 1.0f, 1.0f, player->GetInfluenceMaterial() );
 	} else if ( player->GetInfluenceEntity() == NULL ) {
 		SingleView( hud, view );
 		return;

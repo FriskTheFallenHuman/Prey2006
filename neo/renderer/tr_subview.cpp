@@ -313,8 +313,8 @@ static void R_RemoteRender( drawSurf_t *surf, textureStage_t *stage ) {
 
 	parms->renderView.x = 0;
 	parms->renderView.y = 0;
-	parms->renderView.width = SCREEN_WIDTH;
-	parms->renderView.height = SCREEN_HEIGHT;
+	parms->renderView.width = renderSystem->GetVirtualWidth();
+	parms->renderView.height = renderSystem->GetVirtualHeight();
 
 	tr.RenderViewToViewport( &parms->renderView, &parms->viewport );
 
@@ -362,8 +362,8 @@ void R_MirrorRender( drawSurf_t *surf, textureStage_t *stage, idScreenRect sciss
 
 	parms->renderView.x = 0;
 	parms->renderView.y = 0;
-	parms->renderView.width = SCREEN_WIDTH;
-	parms->renderView.height = SCREEN_HEIGHT;
+	parms->renderView.width = renderSystem->GetVirtualWidth();
+	parms->renderView.height = renderSystem->GetVirtualHeight();
 
 	tr.RenderViewToViewport( &parms->renderView, &parms->viewport );
 
@@ -412,8 +412,8 @@ void R_XrayRender( drawSurf_t *surf, textureStage_t *stage, idScreenRect scissor
 
 	parms->renderView.x = 0;
 	parms->renderView.y = 0;
-	parms->renderView.width = SCREEN_WIDTH;
-	parms->renderView.height = SCREEN_HEIGHT;
+	parms->renderView.width = renderSystem->GetVirtualWidth();
+	parms->renderView.height = renderSystem->GetVirtualHeight();
 
 	tr.RenderViewToViewport( &parms->renderView, &parms->viewport );
 

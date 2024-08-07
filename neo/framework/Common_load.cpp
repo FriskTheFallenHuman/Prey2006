@@ -48,7 +48,7 @@ void idSessionLocal::StartWipe( const char *_wipeMaterial, bool hold ) {
 	console->Close();
 
 	// render the current screen into a texture for the wipe model
-	renderSystem->CropRenderSize( 640, 480, true );
+	renderSystem->CropRenderSize( renderSystem->GetVirtualWidth(), renderSystem->GetVirtualHeight(), true );
 
 	Draw();
 

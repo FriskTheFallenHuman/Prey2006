@@ -29,7 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "precompiled.h"
 #pragma hdrstop
 
-#include "../renderer/GuiModel.h"
+#include "GuiModel.h"
 
 idVec4 idDeviceContext::colorPurple;
 idVec4 idDeviceContext::colorOrange;
@@ -270,7 +270,7 @@ void idDeviceContext::DrawWinding( idWinding & w, const idMaterial * mat ) {
 	w.ClipInPlace( p );
 
 	p.Normal().Set( -1.0f, 0.0f, 0.0f );
-	p.SetDist( -SCREEN_WIDTH );
+	p.SetDist( -VIRTUAL_WIDTH );
 	w.ClipInPlace( p );
 
 	p.Normal().Set( 0.0f, 1.0f, 0.0f );
@@ -278,7 +278,7 @@ void idDeviceContext::DrawWinding( idWinding & w, const idMaterial * mat ) {
 	w.ClipInPlace( p );
 
 	p.Normal().Set( 0.0f, -1.0f, 0.0f );
-	p.SetDist( -SCREEN_HEIGHT );
+	p.SetDist( -VIRTUAL_HEIGHT );
 	w.ClipInPlace( p );
 
 	if ( w.GetNumPoints() < 3 ) {

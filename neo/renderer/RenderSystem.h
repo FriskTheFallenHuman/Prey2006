@@ -194,6 +194,9 @@ public:
 	//      *not* the logical window size (in case of HighDPI that's not the same!)
 	virtual int				GetScreenHeight( void ) const = 0;
 
+	virtual int				GetVirtualWidth( void ) const = 0;
+	virtual int				GetVirtualHeight( void ) const = 0;
+
 	// allocate a renderWorld to be used for drawing
 	virtual idRenderWorld *	AllocRenderWorld( void ) = 0;
 	virtual	void			FreeRenderWorld( idRenderWorld * rw ) = 0;

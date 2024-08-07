@@ -270,9 +270,8 @@ void idGuiModel::EmitFullScreen( void ) {
 
 	viewDef->floatTime = tr.frameShaderTime;
 
-	// glOrtho( 0, 640, 480, 0, 0, 1 );		// always assume 640x480 virtual coordinates
-	viewDef->projectionMatrix[0] = 2.0f / 640.0f;
-	viewDef->projectionMatrix[5] = -2.0f / 480.0f;
+	viewDef->projectionMatrix[0] = 2.0f / (float)renderSystem->GetVirtualWidth();
+	viewDef->projectionMatrix[5] = -2.0f / (float)renderSystem->GetVirtualHeight();
 	viewDef->projectionMatrix[10] = -2.0f / 1.0f;
 	viewDef->projectionMatrix[12] = -1.0f;
 	viewDef->projectionMatrix[13] = 1.0f;
@@ -494,13 +493,13 @@ void idGuiModel::DrawStretchPic( float x, float y, float w, float h, float s1, f
 		h += y;
 		y = 0;
 	}
-	if ( x + w > 640 ) {
-		s2 -= ( s2 - s1 ) * ( x + w - 640 ) / w;
-		w = 640 - x;
+	if ( x + w > renderSystem->GetVirtualWidth() ) {
+		s2 -= ( s2 - s1 ) * ( x + w - renderSystem->GetVirtualWidth() ) / w;
+		w = renderSystem->GetVirtualWidth() - x;
 	}
-	if ( y + h > 480 ) {
-		t2 -= ( t2 - t1 ) * ( y + h - 480 ) / h;
-		h = 480 - y;
+	if ( y + h > renderSystem->GetVirtualHeight() ) {
+		t2 -= ( t2 - t1 ) * ( y + h - renderSystem->GetVirtualHeight() ) / h;
+		h = renderSystem->GetVirtualHeight() - y;
 	}
 
 	if ( w <= 0 || h <= 0 ) {
@@ -570,7 +569,7 @@ void idGuiModel::DrawStretchPic( float x, float y, float w, float h, float s1, f
 	verts[3].tangents[1][1] = 1;
 	verts[3].tangents[1][2] = 0;
 
-	DrawStretchPic( &verts[0], &indexes[0], 4, 6, hShader, false, 0.0f, 0.0f, 640.0f, 480.0f );
+	DrawStretchPic( &verts[0], &indexes[0], 4, 6, hShader, false, 0.0f, 0.0f, (float)renderSystem->GetVirtualWidth(), (float)renderSystem->GetVirtualHeight() );
 }
 
 /*

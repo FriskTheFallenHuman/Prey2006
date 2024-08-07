@@ -147,18 +147,18 @@ void R_RenderGuiSurf( idUserInterface *gui, drawSurf_t *drawSurf ) {
 	float	guiModelMatrix[16];
 	float	modelMatrix[16];
 
-	guiModelMatrix[0] = axis[0][0] / 640.0;
-	guiModelMatrix[4] = axis[1][0] / 480.0;
+	guiModelMatrix[0] = axis[0][0] / (float)renderSystem->GetVirtualWidth();
+	guiModelMatrix[4] = axis[1][0] / (float)renderSystem->GetVirtualHeight();
 	guiModelMatrix[8] = axis[2][0];
 	guiModelMatrix[12] = origin[0];
 
-	guiModelMatrix[1] = axis[0][1] / 640.0;
-	guiModelMatrix[5] = axis[1][1] / 480.0;
+	guiModelMatrix[1] = axis[0][1] / (float)renderSystem->GetVirtualWidth();
+	guiModelMatrix[5] = axis[1][1] / (float)renderSystem->GetVirtualHeight();
 	guiModelMatrix[9] = axis[2][1];
 	guiModelMatrix[13] = origin[1];
 
-	guiModelMatrix[2] = axis[0][2] / 640.0;
-	guiModelMatrix[6] = axis[1][2] / 480.0;
+	guiModelMatrix[2] = axis[0][2] / (float)renderSystem->GetVirtualWidth();
+	guiModelMatrix[6] = axis[1][2] / (float)renderSystem->GetVirtualHeight();
 	guiModelMatrix[10] = axis[2][2];
 	guiModelMatrix[14] = origin[2];
 

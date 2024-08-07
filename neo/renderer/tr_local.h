@@ -699,6 +699,8 @@ public:
 	virtual bool			IsFullScreen( void ) const;
 	virtual int				GetScreenWidth( void ) const;
 	virtual int				GetScreenHeight( void ) const;
+	virtual int				GetVirtualWidth( void ) const;
+	virtual int				GetVirtualHeight( void ) const;
 	virtual idRenderWorld *	AllocRenderWorld( void );
 	virtual void			FreeRenderWorld( idRenderWorld *rw );
 	virtual void			BeginLevelLoad( void );
