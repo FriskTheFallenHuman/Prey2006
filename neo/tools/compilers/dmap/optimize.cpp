@@ -215,91 +215,6 @@ static optVertex_t *FindOptVertex( idDrawVert *v, optimizeGroup_t *opt ) {
 	return vert;
 }
 
-/*
-================
-DrawAllEdges
-================
-*/
-static	void DrawAllEdges( void ) {
-	int		i;
-
-	if ( !dmapGlobals.drawflag ) {
-		return;
-	}
-
-	Draw_ClearWindow();
-
-	qglBegin( GL_LINES );
-	for ( i = 0 ; i < numOptEdges ; i++ ) {
-		if ( optEdges[i].v1 == NULL ) {
-			continue;
-		}
-		qglColor3f( 1, 0, 0 );
-		qglVertex3fv( optEdges[i].v1->pv.ToFloatPtr() );
-		qglColor3f( 0, 0, 0 );
-		qglVertex3fv( optEdges[i].v2->pv.ToFloatPtr() );
-	}
-	qglEnd();
-	qglFlush();
-
-//	GLimp_SwapBuffers();
-}
-
-/*
-================
-DrawVerts
-================
-*/
-static void DrawVerts( optIsland_t *island ) {
-	optVertex_t	*vert;
-
-	if ( !dmapGlobals.drawflag ) {
-		return;
-	}
-
-	qglEnable( GL_BLEND );
-	qglBlendFunc( GL_ONE, GL_ONE );
-	qglColor3f( 0.3f, 0.3f, 0.3f );
-	qglPointSize( 3 );
-	qglBegin( GL_POINTS );
-	for ( vert = island->verts ; vert ; vert = vert->islandLink ) {
-		qglVertex3fv( vert->pv.ToFloatPtr() );
-	}
-	qglEnd();
-	qglDisable( GL_BLEND );
-	qglFlush();
-}
-
-/*
-================
-DrawEdges
-================
-*/
-static	void DrawEdges( optIsland_t *island ) {
-	optEdge_t	*edge;
-
-	if ( !dmapGlobals.drawflag ) {
-		return;
-	}
-
-	Draw_ClearWindow();
-
-	qglBegin( GL_LINES );
-	for ( edge = island->edges ; edge ; edge = edge->islandLink ) {
-		if ( edge->v1 == NULL ) {
-			continue;
-		}
-		qglColor3f( 1, 0, 0 );
-		qglVertex3fv( edge->v1->pv.ToFloatPtr() );
-		qglColor3f( 0, 0, 0 );
-		qglVertex3fv( edge->v2->pv.ToFloatPtr() );
-	}
-	qglEnd();
-	qglFlush();
-
-//	GLimp_SwapBuffers();
-}
-
 //=================================================================
 
 /*
@@ -468,14 +383,6 @@ static	bool TryAddNewEdge( optVertex_t *v1, optVertex_t *v2, optIsland_t *island
 		}
 	}
 
-	if ( dmapGlobals.drawflag ) {
-		qglBegin( GL_LINES );
-		qglColor3f( 0, ( 128 + orandom.RandomInt( 127 ) )/ 255.0, 0 );
-		qglVertex3fv( v1->pv.ToFloatPtr() );
-		qglVertex3fv( v2->pv.ToFloatPtr() );
-		qglEnd();
-		qglFlush();
-	}
 	// add it
 	e = AllocEdge();
 
@@ -527,8 +434,6 @@ static	void AddInteriorEdges( optIsland_t *island ) {
 	int				numLengths;
 	int				i;
 
-	DrawVerts( island );
-
 	// count the verts
 	c_verts = 0;
 	for ( vert = island->verts ; vert ; vert = vert->islandLink ) {
@@ -571,10 +476,8 @@ static	void AddInteriorEdges( optIsland_t *island ) {
 		}
 	}
 
-	if ( dmapGlobals.verbose ) {
-		common->Printf( "%6i tested segments\n", numLengths );
-		common->Printf( "%6i added interior edges\n", c_addedEdges );
-	}
+	common->VerbosePrintf( "%6i tested segments\n", numLengths );
+	common->VerbosePrintf( "%6i added interior edges\n", c_addedEdges );
 
 	Mem_Free( lengths );
 }
@@ -630,7 +533,7 @@ static	void RemoveIfColinear( optVertex_t *ov, optIsland_t *island ) {
 	if ( !e2 ) {
 		// this may still happen legally when a tiny triangle is
 		// the only thing in a group
-		common->Printf( "WARNING: vertex with only one edge\n" );
+		common->VerbosePrintf( "WARNING: vertex with only one edge\n" );
 		return;
 	}
 
@@ -673,21 +576,6 @@ static	void RemoveIfColinear( optVertex_t *ov, optIsland_t *island ) {
 
 	if ( off > COLINEAR_EPSILON ) {
 		return;
-	}
-
-	if ( dmapGlobals.drawflag ) {
-		qglBegin( GL_LINES );
-		qglColor3f( 1, 1, 0 );
-		qglVertex3fv( v1->pv.ToFloatPtr() );
-		qglVertex3fv( v2->pv.ToFloatPtr() );
-		qglEnd();
-		qglFlush();
-		qglBegin( GL_LINES );
-		qglColor3f( 0, 1, 1 );
-		qglVertex3fv( v2->pv.ToFloatPtr() );
-		qglVertex3fv( v3->pv.ToFloatPtr() );
-		qglEnd();
-		qglFlush();
 	}
 
 	// replace the two edges with a single edge
@@ -748,9 +636,7 @@ static	void CombineColinearEdges( optIsland_t *island ) {
 	for ( e = island->edges ; e ; e = e->islandLink ) {
 		c_edges++;
 	}
-	if ( dmapGlobals.verbose ) {
-		common->Printf( "%6i original exterior edges\n", c_edges );
-	}
+	common->VerbosePrintf( "%6i original exterior edges\n", c_edges );
 
 	for ( ov = island->verts ; ov ; ov = ov->islandLink ) {
 		RemoveIfColinear( ov, island );
@@ -760,9 +646,7 @@ static	void CombineColinearEdges( optIsland_t *island ) {
 	for ( e = island->edges ; e ; e = e->islandLink ) {
 		c_edges++;
 	}
-	if ( dmapGlobals.verbose ) {
-		common->Printf( "%6i optimized exterior edges\n", c_edges );
-	}
+	common->VerbosePrintf( "%6i optimized exterior edges\n", c_edges );
 }
 
 
@@ -897,7 +781,7 @@ static void LinkTriToEdge( optTri_t *optTri, optEdge_t *edge ) {
 		|| ( edge->v1 == optTri->v[1] && edge->v2 == optTri->v[2] )
 		|| ( edge->v1 == optTri->v[2] && edge->v2 == optTri->v[0] ) ) {
 		if ( edge->backTri ) {
-			common->Printf( "Warning: LinkTriToEdge: already in use\n" );
+			common->VerbosePrintf( "Warning: LinkTriToEdge: already in use\n" );
 			return;
 		}
 		edge->backTri = optTri;
@@ -907,7 +791,7 @@ static void LinkTriToEdge( optTri_t *optTri, optEdge_t *edge ) {
 		|| ( edge->v1 == optTri->v[2] && edge->v2 == optTri->v[1] )
 		|| ( edge->v1 == optTri->v[0] && edge->v2 == optTri->v[2] ) ) {
 		if ( edge->frontTri ) {
-			common->Printf( "Warning: LinkTriToEdge: already in use\n" );
+			common->VerbosePrintf( "Warning: LinkTriToEdge: already in use\n" );
 			return;
 		}
 		edge->frontTri = optTri;
@@ -950,24 +834,6 @@ static void CreateOptTri( optVertex_t *first, optEdge_t *e1, optEdge_t *e2, optI
 		return;
 	}
 
-//DrawEdges( island );
-
-		// identify the third edge
-	if ( dmapGlobals.drawflag ) {
-		qglColor3f(1,1,0);
-		qglBegin( GL_LINES );
-		qglVertex3fv( e1->v1->pv.ToFloatPtr() );
-		qglVertex3fv( e1->v2->pv.ToFloatPtr() );
-		qglEnd();
-		qglFlush();
-		qglColor3f(0,1,1);
-		qglBegin( GL_LINES );
-		qglVertex3fv( e2->v1->pv.ToFloatPtr() );
-		qglVertex3fv( e2->v2->pv.ToFloatPtr() );
-		qglEnd();
-		qglFlush();
-	}
-
 	for ( opposite = second->edges ; opposite ; ) {
 		if ( opposite != e1 && ( opposite->v1 == third || opposite->v2 == third ) ) {
 			break;
@@ -983,17 +849,8 @@ static void CreateOptTri( optVertex_t *first, optEdge_t *e1, optEdge_t *e2, optI
 	}
 
 	if ( !opposite ) {
-		common->Printf( "Warning: BuildOptTriangles: couldn't locate opposite\n" );
+		common->VerbosePrintf( "Warning: BuildOptTriangles: couldn't locate opposite\n" );
 		return;
-	}
-
-	if ( dmapGlobals.drawflag ) {
-		qglColor3f(1,0,1);
-		qglBegin( GL_LINES );
-		qglVertex3fv( opposite->v1->pv.ToFloatPtr() );
-		qglVertex3fv( opposite->v2->pv.ToFloatPtr() );
-		qglEnd();
-		qglFlush();
 	}
 
 	// create new triangle
@@ -1004,15 +861,6 @@ static void CreateOptTri( optVertex_t *first, optEdge_t *e1, optEdge_t *e2, optI
 	optTri->midpoint = ( optTri->v[0]->pv + optTri->v[1]->pv + optTri->v[2]->pv ) * ( 1.0f / 3.0f );
 	optTri->next = island->tris;
 	island->tris = optTri;
-
-	if ( dmapGlobals.drawflag ) {
-		qglColor3f( 1, 1, 1 );
-		qglPointSize( 4 );
-		qglBegin( GL_POINTS );
-		qglVertex3fv( optTri->midpoint.ToFloatPtr() );
-		qglEnd();
-		qglFlush();
-	}
 
 	// find the midpoint, and scan through all the original triangles to
 	// see if it is inside any of them
@@ -1025,25 +873,6 @@ static void CreateOptTri( optVertex_t *first, optEdge_t *e1, optEdge_t *e2, optI
 		optTri->filled = true;
 	} else {
 		optTri->filled = false;
-	}
-	if ( dmapGlobals.drawflag ) {
-		if ( optTri->filled ) {
-			qglColor3f( ( 128 + orandom.RandomInt( 127 ) )/ 255.0, 0, 0 );
-		} else {
-			qglColor3f( 0, ( 128 + orandom.RandomInt( 127 ) ) / 255.0, 0 );
-		}
-		qglBegin( GL_TRIANGLES );
-		qglVertex3fv( optTri->v[0]->pv.ToFloatPtr() );
-		qglVertex3fv( optTri->v[1]->pv.ToFloatPtr() );
-		qglVertex3fv( optTri->v[2]->pv.ToFloatPtr() );
-		qglEnd();
-		qglColor3f( 1, 1, 1 );
-		qglBegin( GL_LINE_LOOP );
-		qglVertex3fv( optTri->v[0]->pv.ToFloatPtr() );
-		qglVertex3fv( optTri->v[1]->pv.ToFloatPtr() );
-		qglVertex3fv( optTri->v[2]->pv.ToFloatPtr() );
-		qglEnd();
-		qglFlush();
 	}
 
 	// link the triangle to it's edges
@@ -1106,23 +935,6 @@ static void BuildOptTriangles( optIsland_t *island ) {
 			continue;
 		}
 
-#if 0
-if ( dmapGlobals.drawflag && ov == (optVertex_t *)0x1845a60 ) {
-for ( e1 = ov->edges ; e1 ; e1 = e1Next ) {
-	qglBegin( GL_LINES );
-	qglColor3f( 0,1,0 );
-	qglVertex3fv( e1->v1->pv.ToFloatPtr() );
-	qglVertex3fv( e1->v2->pv.ToFloatPtr() );
-	qglEnd();
-	qglFlush();
-	if ( e1->v1 == ov ) {
-		e1Next = e1->v1link;
-	} else if ( e1->v2 == ov ) {
-		e1Next = e1->v2link;
-	}
-}
-}
-#endif
 		for ( e1 = ov->edges ; e1 ; e1 = e1Next ) {
 			if ( e1->v1 == ov ) {
 				second = e1->v2;
@@ -1237,7 +1049,7 @@ static	void	RegenerateTriangles( optIsland_t *island ) {
 		if ( plane.Normal() * dmapGlobals.mapPlanes[ island->group->planeNum ].Normal() <= 0 ) {
 			// this can happen reasonably when a triangle is nearly degenerate in
 			// optimization planar space, and winds up being degenerate in 3D space
-			common->Printf( "WARNING: backwards triangle generated!\n" );
+			common->VerbosePrintf( "WARNING: backwards triangle generated!\n" );
 			// discard it
 			FreeTri( tri );
 			continue;
@@ -1250,9 +1062,7 @@ static	void	RegenerateTriangles( optIsland_t *island ) {
 
 	FreeOptTriangles( island );
 
-	if ( dmapGlobals.verbose ) {
-		common->Printf( "%6i tris out\n", c_out );
-	}
+	common->VerbosePrintf( "%6i tris out\n", c_out );
 }
 
 //===========================================================================
@@ -1298,10 +1108,8 @@ static	void RemoveInteriorEdges( optIsland_t *island ) {
 		c_exteriorEdges++;
 	}
 
-	if ( dmapGlobals.verbose ) {
-		common->Printf( "%6i original interior edges\n", c_interiorEdges );
-		common->Printf( "%6i original exterior edges\n", c_exteriorEdges );
-	}
+	common->VerbosePrintf( "%6i original interior edges\n", c_interiorEdges );
+	common->VerbosePrintf( "%6i original exterior edges\n", c_exteriorEdges );
 }
 
 //==================================================================================
@@ -1343,33 +1151,6 @@ void AddEdgeIfNotAlready( optVertex_t *v1, optVertex_t *v2 ) {
 	LinkEdge( e );
 }
 
-
-
-/*
-=================
-DrawOriginalEdges
-=================
-*/
-static void DrawOriginalEdges( int numOriginalEdges, originalEdges_t *originalEdges ) {
-	int		i;
-
-	if ( !dmapGlobals.drawflag ) {
-		return;
-	}
-	Draw_ClearWindow();
-
-	qglBegin( GL_LINES );
-	for ( i = 0 ; i < numOriginalEdges ; i++ ) {
-		qglColor3f( 1, 0, 0 );
-		qglVertex3fv( originalEdges[i].v1->pv.ToFloatPtr() );
-		qglColor3f( 0, 0, 0 );
-		qglVertex3fv( originalEdges[i].v2->pv.ToFloatPtr() );
-	}
-	qglEnd();
-	qglFlush();
-}
-
-
 typedef struct edgeCrossing_s {
 	struct edgeCrossing_s	*next;
 	optVertex_t		*ov;
@@ -1389,7 +1170,7 @@ static void AddOriginalTriangle( optVertex_t *v[3] ) {
 	// if this triangle is backwards (possible with epsilon issues)
 	// ignore it completely
 	if ( !IsTriangleValid( v[0], v[1], v[2] ) ) {
-		common->Printf( "WARNING: backwards triangle in input!\n" );
+		common->VerbosePrintf( "WARNING: backwards triangle in input!\n" );
 		return;
 	}
 
@@ -1432,10 +1213,8 @@ static	void AddOriginalEdges( optimizeGroup_t *opt ) {
 	optVertex_t		*v[3];
 	int				numTris;
 
-	if ( dmapGlobals.verbose ) {
-		common->Printf( "----\n" );
-		common->Printf( "%6i original tris\n", CountTriList( opt->triList ) );
-	}
+	common->VerbosePrintf( "----\n" );
+	common->VerbosePrintf( "%6i original tris\n", CountTriList( opt->triList ) );
 
 	optBounds.Clear();
 
@@ -1482,16 +1261,6 @@ void SplitOriginalEdgesAtCrossings( optimizeGroup_t *opt ) {
 	crossings = (edgeCrossing_t **)Mem_ClearedAlloc( numOriginalEdges * sizeof( *crossings ) );
 
 	for ( i = 0 ; i < numOriginalEdges ; i++ ) {
-		if ( dmapGlobals.drawflag ) {
-			DrawOriginalEdges( numOriginalEdges, originalEdges );
-			qglBegin( GL_LINES );
-			qglColor3f( 0, 1, 0 );
-			qglVertex3fv( originalEdges[i].v1->pv.ToFloatPtr() );
-			qglColor3f( 0, 0, 1 );
-			qglVertex3fv( originalEdges[i].v2->pv.ToFloatPtr() );
-			qglEnd();
-			qglFlush();
-		}
 		for ( j = i+1 ; j < numOriginalEdges ; j++ ) {
 			optVertex_t	*v1, *v2, *v3, *v4;
 			optVertex_t	*newVert;
@@ -1635,12 +1404,10 @@ common->Printf( "lines %i (%i to %i) and %i (%i to %i) intersect at old point %i
 		}
 	}
 
-	if ( dmapGlobals.verbose ) {
-		common->Printf( "%6i original edges\n", numOriginalEdges );
-		common->Printf( "%6i edges after splits\n", numOptEdges );
-		common->Printf( "%6i original vertexes\n", numOriginalVerts );
-		common->Printf( "%6i vertexes after splits\n", numOptVerts );
-	}
+	common->VerbosePrintf( "%6i original edges\n", numOriginalEdges );
+	common->VerbosePrintf( "%6i edges after splits\n", numOptEdges );
+	common->VerbosePrintf( "%6i original vertexes\n", numOriginalVerts );
+	common->VerbosePrintf( "%6i vertexes after splits\n", numOptVerts );
 }
 
 //=================================================================
@@ -1687,10 +1454,8 @@ static void CullUnusedVerts( optIsland_t *island ) {
 		}
 	}
 
-	if ( dmapGlobals.verbose ) {
-		common->Printf( "%6i verts kept\n", c_keep );
-		common->Printf( "%6i verts freed\n", c_free );
-	}
+	common->VerbosePrintf( "%6i verts kept\n", c_keep );
+	common->VerbosePrintf( "%6i verts freed\n", c_free );
 }
 
 
@@ -1710,7 +1475,6 @@ static void OptimizeIsland( optIsland_t *island ) {
 	// add space-filling fake edges so we have a complete
 	// triangulation of a convex hull before optimization
 	AddInteriorEdges( island );
-	DrawEdges( island );
 
 	// determine all the possible triangles, and decide if
 	// the are filled or empty
@@ -1719,19 +1483,16 @@ static void OptimizeIsland( optIsland_t *island ) {
 	// remove interior vertexes that have filled triangles
 	// between all their edges
 	RemoveInteriorEdges( island );
-	DrawEdges( island );
 
 	ValidateEdgeCounts( island );
 
 	// remove vertexes that only have two colinear edges
 	CombineColinearEdges( island );
 	CullUnusedVerts( island );
-	DrawEdges( island );
 
 	// add new internal edges between the remaining exterior edges
 	// to give us a full triangulation again
 	AddInteriorEdges( island );
-	DrawEdges( island );
 
 	// determine all the possible triangles, and decide if
 	// the are filled or empty
@@ -1783,50 +1544,9 @@ static void AddVertexToIsland_r( optVertex_t *vert, optIsland_t *island ) {
 }
 #endif
 
-/*
-====================
-SeparateIslands
-
-While the algorithm should theoretically handle any collection
-of triangles, there are speed and stability benefits to making
-it work on as small a list as possible, so separate disconnected
-collections of edges and process separately.
-
-FIXME: we need to separate the source triangles before
-doing this, because PointInSourceTris() can give a bad answer if
-the source list has triangles not used in the optimization
-====================
-*/
-#if 0
-static void SeparateIslands( optimizeGroup_t *opt ) {
-	int		i;
-	optIsland_t	island;
-	int		numIslands;
-
-	DrawAllEdges();
-
-	numIslands = 0;
-	for ( i = 0 ; i < numOptVerts ; i++ ) {
-		if ( optVerts[i].addedToIsland ) {
-			continue;
-		}
-		numIslands++;
-		memset( &island, 0, sizeof( island ) );
-		island.group = opt;
-		AddVertexToIsland_r( &optVerts[i], &island );
-		OptimizeIsland( &island );
-	}
-	if ( dmapGlobals.verbose ) {
-		common->Printf( "%6i islands\n", numIslands );
-	}
-}
-#endif
-
 static void DontSeparateIslands( optimizeGroup_t *opt ) {
 	int		i;
 	optIsland_t	island;
-
-	DrawAllEdges();
 
 	memset( &island, 0, sizeof( island ) );
 	island.group = opt;
@@ -1971,10 +1691,10 @@ void	OptimizeGroupList( optimizeGroup_t *groupList ) {
 
 	SetGroupTriPlaneNums( groupList );
 
-	common->Printf( "----- OptimizeAreaGroups Results -----\n" );
-	common->Printf( "%6i tris in\n", c_in );
-	common->Printf( "%6i tris after edge removal optimization\n", c_edge );
-	common->Printf( "%6i tris after final t junction fixing\n", c_tjunc2 );
+	common->VerbosePrintf( "----- OptimizeAreaGroups Results -----\n" );
+	common->VerbosePrintf( "%6i tris in\n", c_in );
+	common->VerbosePrintf( "%6i tris after edge removal optimization\n", c_edge );
+	common->VerbosePrintf( "%6i tris after final t junction fixing\n", c_tjunc2 );
 }
 
 
@@ -1986,7 +1706,7 @@ OptimizeEntity
 void	OptimizeEntity( uEntity_t *e ) {
 	int		i;
 
-	common->Printf( "----- OptimizeEntity -----\n" );
+	common->VerbosePrintf( "----- OptimizeEntity -----\n" );
 	for ( i = 0 ; i < e->numAreas ; i++ ) {
 		OptimizeGroupList( e->areas[i].groups );
 	}

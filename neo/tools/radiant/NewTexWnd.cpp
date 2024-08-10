@@ -130,7 +130,7 @@ int CNewTexWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 		return -1;
 	}
 
-	ShowScrollBar(SB_VERT, g_PrefsDlg.m_bTextureScrollbar);
+	ShowScrollBar(SB_VERT, true);
 	m_bNeedRange = true;
 
 	hdcTexture = GetDC();
@@ -165,7 +165,7 @@ void CNewTexWnd::OnParentNotify(UINT message, LPARAM lParam) {
  =======================================================================================================================
  */
 void CNewTexWnd::UpdatePrefs() {
-	ShowScrollBar(SB_VERT, g_PrefsDlg.m_bTextureScrollbar);
+	ShowScrollBar(SB_VERT, true);
 	m_bNeedRange = true;
 	Invalidate();
 	UpdateWindow();
@@ -305,6 +305,7 @@ void CNewTexWnd::OnPaint() {
 				// Draw the texture
 				float	fScale = (g_PrefsDlg.m_bHiColorTextures == TRUE) ? ((float)g_PrefsDlg.m_nTextureScale / 100) : 1.0;
 
+				GL_SelectTexture( 0 );
 				mat->GetEditorImage()->Bind();
 				QE_CheckOpenGLForErrors();
 				qglColor3f(1, 1, 1);
@@ -365,7 +366,7 @@ void CNewTexWnd::OnPaint() {
 		TRACE("Texture Paint\n");
 	}
 
-	if (g_PrefsDlg.m_bTextureScrollbar && (m_bNeedRange || g_qeglobals.d_texturewin.m_nTotalHeight != nOld)) {
+	if (m_bNeedRange || g_qeglobals.d_texturewin.m_nTotalHeight != nOld) {
 		m_bNeedRange = false;
 		SetScrollRange(SB_VERT, 0, g_qeglobals.d_texturewin.m_nTotalHeight, TRUE);
 	}
@@ -543,8 +544,6 @@ void CNewTexWnd::OnRButtonUp(UINT nFlags, CPoint point) {
 	CWnd::OnRButtonUp(nFlags, point);
 }
 
-extern float	fDiff(float f1, float f2);
-
 /*
  =======================================================================================================================
  =======================================================================================================================
@@ -563,7 +562,7 @@ void CNewTexWnd::OnMouseMove(UINT nFlags, CPoint point) {
 				long	*px = &point.x;
 				long	*px2 = &cursor.x;
 
-				if (fDiff(point.y, cursor.y) > fDiff(point.x, cursor.x)) {
+				if (idMath::Diff(point.y, cursor.y) > idMath::Diff(point.x, cursor.x)) {
 					px = &point.y;
 					px2 = &cursor.y;
 				}
@@ -601,9 +600,7 @@ void CNewTexWnd::OnMouseMove(UINT nFlags, CPoint point) {
 				CPoint screen = cursor;
 				ClientToScreen(&screen);
 				SetCursorPos(screen.x, screen.y);
-				if (g_PrefsDlg.m_bTextureScrollbar) {
-					SetScrollPos(SB_VERT, abs(origin.y));
-				}
+				SetScrollPos(SB_VERT, abs(origin.y));
 
 				InvalidateRect(NULL, false);
 				UpdateWindow();
@@ -618,10 +615,6 @@ void CNewTexWnd::OnMouseMove(UINT nFlags, CPoint point) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void CNewTexWnd::LoadMaterials() {
-}
-
-
 void Texture_SetTexture(texdef_t *texdef, brushprimit_texdef_t	*brushprimit_texdef, bool bFitScale, bool bSetSelection) {
 
 	if (texdef->name[0] == '(') {
@@ -635,9 +628,7 @@ void Texture_SetTexture(texdef_t *texdef, brushprimit_texdef_t	*brushprimit_texd
 	// store the texture coordinates for new brush primitive mode be sure that all the
 	// callers are using the default 2x2 texture
 	//
-	if (g_qeglobals.m_bBrushPrimitMode) {
-		g_qeglobals.d_texturewin.brushprimit_texdef = *brushprimit_texdef;
-	}
+	g_qeglobals.d_texturewin.brushprimit_texdef = *brushprimit_texdef;
 
 	g_dlgFind.updateTextures(texdef->name);
 
@@ -652,25 +643,17 @@ void Texture_SetTexture(texdef_t *texdef, brushprimit_texdef_t	*brushprimit_texd
 	}
 
 	g_qeglobals.d_texturewin.texdef = *texdef;
+
 	// store the texture coordinates for new brush primitive mode be sure that all the
 	// callers are using the default 2x2 texture
 	//
-	if (g_qeglobals.m_bBrushPrimitMode) {
-		g_qeglobals.d_texturewin.brushprimit_texdef = *brushprimit_texdef;
-	}
-
+	g_qeglobals.d_texturewin.brushprimit_texdef = *brushprimit_texdef;
 
 	Sys_UpdateWindows(W_TEXTURE);
-
-
 }
 
 const idMaterial *Texture_LoadLight(const char *name) {
 	return declManager->FindMaterial(name);
-}
-
-
-void Texture_ClearInuse(void) {
 }
 
 void Texture_ShowAll(void) {
@@ -710,7 +693,7 @@ const idMaterial *Texture_ForName(const char *name) {
 void Texture_ShowInuse(void) {
 	Texture_HideAll();
 
-	brush_t *b;
+	idEditorBrush *b;
 	for (b = active_brushes.next; b != NULL && b != &active_brushes; b = b->next) {
 		if (b->pPatch) {
 			Texture_ForName(b->pPatch->d_texture->GetName());
@@ -736,12 +719,7 @@ void Texture_ShowInuse(void) {
 	g_Inspectors->SetWindowText("Textures (in use)");
 }
 
-void Texture_Cleanup(CStringList *pList) {
-}
-
-int				texture_mode = GL_LINEAR_MIPMAP_LINEAR;
 bool texture_showinuse = true;
-
 
 /*
  =======================================================================================================================
@@ -800,7 +778,6 @@ void Texture_SetMode(int iMenu) {
 	CheckMenuItem(hMenu, iMenu, MF_BYCOMMAND | MF_CHECKED);
 
 	g_qeglobals.d_savedinfo.iTexMenu = iMenu;
-	texture_mode = iMode;
 
 	if (!texturing && iMenu == ID_TEXTURES_WIREFRAME) {
 		g_pParentWnd->GetCamera()->Camera().draw_mode = cd_wire;

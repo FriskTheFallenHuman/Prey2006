@@ -79,14 +79,6 @@ BOOL            LoadMruInIni   (LPMRUMENU lpMruMenu,LPSTR lpszSection,LPSTR lpsz
 #ifdef WIN32
 BOOL            SaveMruInReg   (LPMRUMENU lpMruMenu,LPSTR lpszKey);
 BOOL            LoadMruInReg   (LPMRUMENU lpMruMenu,LPSTR lpszKey);
-
-typedef enum
-{
-WIN32S,
-WINNT,
-WIN95ORGREATHER
-} WIN32KIND;
-WIN32KIND GetWin32Kind();
 #endif
 
 

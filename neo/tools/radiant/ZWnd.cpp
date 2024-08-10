@@ -66,6 +66,8 @@ BEGIN_MESSAGE_MAP(CZWnd, CWnd)
 	ON_WM_GETMINMAXINFO()
 	ON_WM_MOUSEMOVE()
 	ON_WM_SIZE()
+	ON_WM_SIZING()
+	ON_WM_MOVING()
 	ON_WM_NCCALCSIZE()
 	ON_WM_KILLFOCUS()
 	ON_WM_SETFOCUS()
@@ -73,6 +75,7 @@ BEGIN_MESSAGE_MAP(CZWnd, CWnd)
 	ON_WM_LBUTTONUP()
 	ON_WM_MBUTTONUP()
 	ON_WM_RBUTTONUP()
+	ON_WM_MOUSEWHEEL()
 	ON_WM_KEYUP()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -96,6 +99,8 @@ int CZWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void CZWnd::OnDestroy()
 {
+	SaveDialogPlacement(this, "radiant_zwindow");
+
 	if (m_pZClip)
 	{
 		delete m_pZClip;
@@ -110,13 +115,23 @@ void CZWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
   g_pParentWnd->HandleKey(nChar, nRepCnt, nFlags);
 }
 
+void CZWnd::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
+{
+  g_pParentWnd->HandleKey(nChar, nRepCnt, nFlags, false);
+}
+
 void CZWnd::OnLButtonDown(UINT nFlags, CPoint point)
 {
   SetFocus();
   SetCapture();
   CRect rctZ;
   GetClientRect(rctZ);
-	Z_MouseDown (point.x, rctZ.Height() - 1 - point.y , nFlags);
+
+  if ( g_pParentWnd->GetTopWindow() != this ) {
+	BringWindowToTop();
+  }
+
+   Z_MouseDown (point.x, rctZ.Height() - 1 - point.y , nFlags);
 }
 
 void CZWnd::OnMButtonDown(UINT nFlags, CPoint point)
@@ -125,6 +140,11 @@ void CZWnd::OnMButtonDown(UINT nFlags, CPoint point)
   SetCapture();
   CRect rctZ;
   GetClientRect(rctZ);
+
+  if ( g_pParentWnd->GetTopWindow() != this ) {
+	BringWindowToTop();
+  }
+
 	Z_MouseDown (point.x, rctZ.Height() - 1 - point.y , nFlags);
 }
 
@@ -134,6 +154,11 @@ void CZWnd::OnRButtonDown(UINT nFlags, CPoint point)
   SetCapture();
   CRect rctZ;
   GetClientRect(rctZ);
+
+  if ( g_pParentWnd->GetTopWindow() != this ) {
+	BringWindowToTop();
+  }
+
 	Z_MouseDown (point.x, rctZ.Height() - 1 - point.y , nFlags);
 }
 
@@ -189,6 +214,18 @@ void CZWnd::OnSize(UINT nType, int cx, int cy)
   Invalidate();
 }
 
+void CZWnd::OnSizing( UINT nSide, LPRECT lpRect ) {
+	if ( TryDocking( GetSafeHwnd(), nSide, lpRect, 0 ) ) {
+		return;
+	}
+}
+
+void CZWnd::OnMoving( UINT nSide, LPRECT lpRect ) {
+	if ( TryDocking( GetSafeHwnd(), nSide, lpRect, 0 ) ) {
+		return;
+	}
+}
+
 void CZWnd::OnNcCalcSize(BOOL bCalcValidRects, NCCALCSIZE_PARAMS FAR* lpncsp)
 {
 	CWnd::OnNcCalcSize(bCalcValidRects, lpncsp);
@@ -238,6 +275,15 @@ void CZWnd::OnRButtonUp(UINT nFlags, CPoint point)
 	ReleaseCapture ();
 }
 
+BOOL CZWnd::OnMouseWheel( UINT nFlags, short zDelta, CPoint pt ) {
+	if ( zDelta > 0 ) {
+		g_pParentWnd->OnViewZzoomin();
+	} else {
+		g_pParentWnd->OnViewZzoomout();
+	}
+
+	return TRUE;
+}
 
 BOOL CZWnd::PreCreateWindow(CREATESTRUCT& cs)
 {
@@ -260,11 +306,7 @@ BOOL CZWnd::PreCreateWindow(CREATESTRUCT& cs)
   if (cs.style != QE3_CHILDSTYLE)
 	cs.style = QE3_SPLITTER_STYLE;
 
+  cs.dwExStyle = WS_EX_TOOLWINDOW;
+
 	return CWnd::PreCreateWindow(cs);
-}
-
-
-void CZWnd::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
-{
-  g_pParentWnd->HandleKey(nChar, nRepCnt, nFlags, false);
 }

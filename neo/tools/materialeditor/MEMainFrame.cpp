@@ -279,6 +279,13 @@ int MEMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 		return -1;      // fail to create
 	}
 
+	// Load the icon
+	HICON hIcon = AfxGetApp()->LoadIconA( IDI_MATERIALED );
+	if ( hIcon ) {
+		SetIcon( hIcon, TRUE );
+		SetIcon( hIcon, FALSE );
+	}
+
 	//Load the window placement from the options
 	options.GetWindowPlacement ( "mainframe", m_hWnd );
 

@@ -78,7 +78,7 @@ void CPatchDensityDlg::OnOK()
 
   if (nWidth >= 0 && nWidth <= 6 && nHeight >= 0 && nHeight <= 6)
   {
-	  Patch_GenericMesh(g_nXLat[nWidth], g_nXLat[nHeight], g_pParentWnd->ActiveXY()->GetViewType());
+	  Patch_GenericMesh(g_nXLat[nWidth], g_nXLat[nHeight], (int)g_pParentWnd->ActiveXY()->GetViewType());
 	Sys_UpdateWindows(W_ALL);
   }
 

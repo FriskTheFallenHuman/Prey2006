@@ -96,6 +96,8 @@ public:
 
 	virtual void				CallStartup( void );
 	//virtual void				Translate( const char *fontname );
+	
+	virtual idRectangle			GetScreenRect( void ) { return desktop->drawRect; }
 
 private:
 	bool						active;

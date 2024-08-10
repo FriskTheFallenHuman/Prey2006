@@ -878,7 +878,7 @@ void CDialogTextures::OnDblclkTreeTextures(NMHDR *pNMHDR, LRESULT *pResult) {
 			if (!m_treeTextures.ItemHasChildren(item)) {
 				idStr shaderName = m_treeTextures.GetItemText(item);
 				Select_SetKeyVal("s_shader", shaderName);
-				entity_t *ent = selected_brushes.next->owner;
+				idEditorEntity *ent = selected_brushes.next->owner;
 				if (ent) {
 					g_Inspectors->UpdateEntitySel(ent->eclass);
 					MessageBeep(MB_OK);

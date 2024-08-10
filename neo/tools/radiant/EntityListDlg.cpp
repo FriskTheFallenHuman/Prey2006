@@ -86,7 +86,7 @@ void CEntityListDlg::OnSelect()
 {
 	int index = listEntities.GetCurSel();
 	if (index != LB_ERR) {
-		entity_t *ent = reinterpret_cast<entity_t*>(listEntities.GetItemDataPtr(index));
+		idEditorEntity *ent = reinterpret_cast<idEditorEntity*>(listEntities.GetItemDataPtr(index));
 		if (ent) {
 			Select_Deselect();
 			Select_Brush (ent->brushes.onext);
@@ -97,7 +97,7 @@ void CEntityListDlg::OnSelect()
 
 void CEntityListDlg::UpdateList() {
 	listEntities.ResetContent();
-	for (entity_t* pEntity=entities.next ; pEntity != &entities ; pEntity=pEntity->next) {
+	for (idEditorEntity* pEntity=entities.next ; pEntity != &entities ; pEntity=pEntity->next) {
 		int index = listEntities.AddString(pEntity->epairs.GetString("name"));
 		if (index != LB_ERR) {
 			listEntities.SetItemDataPtr(index, (void*)pEntity);
@@ -141,7 +141,7 @@ void CEntityListDlg::OnLbnSelchangeListEntities()
 	int index = listEntities.GetCurSel();
 	if (index != LB_ERR) {
 		m_lstEntity.DeleteAllItems();
-		entity_t* pEntity = reinterpret_cast<entity_t*>(listEntities.GetItemDataPtr(index));
+		idEditorEntity* pEntity = reinterpret_cast<idEditorEntity*>(listEntities.GetItemDataPtr(index));
 		if (pEntity) {
 			int count = pEntity->epairs.GetNumKeyVals();
 			for (int i = 0; i < count; i++) {

@@ -27,7 +27,7 @@ If you have questions concerning this license or the applicable additional terms
 */
 #pragma once
 
-#include "../../sys/win32/rc/MaterialEditor_resource.h"
+#include "../../sys/win32/rc/resource.h"
 
 /**
 * Structure used to store the user defined search parameters.

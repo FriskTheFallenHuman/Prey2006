@@ -31,30 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "dmap.h"
 
-int			c_faceLeafs;
-
-
-extern	int	c_nodes;
-
 void RemovePortalFromNode( uPortal_t *portal, node_t *l );
-
-node_t *NodeForPoint( node_t *node, idVec3 origin ) {
-	float	d;
-
-	while( node->planenum != PLANENUM_LEAF ) {
-		idPlane &plane = dmapGlobals.mapPlanes[node->planenum];
-		d = plane.Distance( origin );
-		if ( d >= 0 ) {
-			node = node->children[0];
-		} else {
-			node = node->children[1];
-		}
-	}
-
-	return node;
-}
-
-
 
 /*
 =============
@@ -103,7 +80,6 @@ void FreeTree_r (node_t *node)
 	FreeBrushList (node->brushlist);
 
 	// free the node
-	c_nodes--;
 	Mem_Free (node);
 }
 
@@ -124,8 +100,7 @@ void FreeTree( tree_t *tree ) {
 
 //===============================================================
 
-void PrintTree_r (node_t *node, int depth)
-{
+static void PrintTree_r( node_t* node, int depth ) {
 	int			i;
 	uBrush_t	*bb;
 
@@ -156,7 +131,7 @@ void PrintTree_r (node_t *node, int depth)
 AllocBspFace
 ================
 */
-bspface_t	*AllocBspFace( void ) {
+static bspface_t	*AllocBspFace( void ) {
 	bspface_t	*f;
 
 	f = (bspface_t *)Mem_Alloc(sizeof(*f));
@@ -170,7 +145,7 @@ bspface_t	*AllocBspFace( void ) {
 FreeBspFace
 ================
 */
-void	FreeBspFace( bspface_t *f ) {
+static void	FreeBspFace( bspface_t *f ) {
 	if ( f->w ) {
 		delete f->w;
 	}
@@ -283,7 +258,7 @@ int SelectSplitPlaneNum( node_t *node, bspface_t *list ) {
 BuildFaceTree_r
 ================
 */
-void	BuildFaceTree_r( node_t *node, bspface_t *list ) {
+static void	BuildFaceTree_r( node_t *node, bspface_t *list, int& faceLeafs ) {
 	bspface_t	*split;
 	bspface_t	*next;
 	int			side;
@@ -297,7 +272,7 @@ void	BuildFaceTree_r( node_t *node, bspface_t *list ) {
 	// if we don't have any more faces, this is a node
 	if ( splitPlaneNum == -1 ) {
 		node->planenum = PLANENUM_LEAF;
-		c_faceLeafs++;
+		faceLeafs++;
 		return;
 	}
 
@@ -360,7 +335,7 @@ void	BuildFaceTree_r( node_t *node, bspface_t *list ) {
 	}
 
 	for ( i = 0 ; i < 2 ; i++ ) {
-		BuildFaceTree_r ( node->children[i], childLists[i]);
+		BuildFaceTree_r ( node->children[i], childLists[i], faceLeafs );
 	}
 }
 
@@ -381,7 +356,7 @@ tree_t *FaceBSP( bspface_t *list ) {
 
 	start = Sys_Milliseconds();
 
-	common->Printf( "--- FaceBSP ---\n" );
+	common->VerbosePrintf( "--- FaceBSP ---\n" );
 
 	tree = AllocTree ();
 
@@ -393,19 +368,19 @@ tree_t *FaceBSP( bspface_t *list ) {
 			tree->bounds.AddPoint( (*face->w)[i].ToVec3() );
 		}
 	}
-	common->Printf( "%5i faces\n", count );
+	common->VerbosePrintf( "%5i faces\n", count );
 
 	tree->headnode = AllocNode();
 	tree->headnode->bounds = tree->bounds;
-	c_faceLeafs = 0;
+	int faceLeafs = 0;
 
-	BuildFaceTree_r ( tree->headnode, list );
+	BuildFaceTree_r ( tree->headnode, list, faceLeafs );
 
-	common->Printf( "%5i leafs\n", c_faceLeafs );
+	common->VerbosePrintf( "%5i leafs\n", faceLeafs );
 
 	end = Sys_Milliseconds();
 
-	common->Printf( "%5.1f seconds faceBsp\n", ( end - start ) / 1000.0 );
+	common->VerbosePrintf( "%5.1f seconds faceBsp\n", ( end - start ) / 1000.0 );
 
 	return tree;
 }

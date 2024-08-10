@@ -38,14 +38,14 @@ CPtrArray	g_SelectedFaceBrushes;
 CPtrArray	&g_ptrSelectedFaces = g_SelectedFaces;
 CPtrArray	&g_ptrSelectedFaceBrushes = g_SelectedFaceBrushes;
 
-extern void Brush_Resize(brush_t *b, idVec3 vMin, idVec3 vMax);
+extern void Brush_Resize(idEditorBrush *b, idVec3 vMin, idVec3 vMax);
 
 /*
  =======================================================================================================================
  =======================================================================================================================
  */
 qertrace_t Test_Ray(const idVec3 &origin, const idVec3 &dir, int flags) {
-	brush_t		*brush;
+	idEditorBrush		*brush;
 	face_t		*face;
 	float		dist;
 	qertrace_t	t;
@@ -66,7 +66,7 @@ qertrace_t Test_Ray(const idVec3 &origin, const idVec3 &dir, int flags) {
 
 	if (flags & SF_CYCLE) {
 		CPtrArray	array;
-		brush_t		*pToSelect = (selected_brushes.next != &selected_brushes) ? selected_brushes.next : NULL;
+		idEditorBrush		*pToSelect = (selected_brushes.next != &selected_brushes) ? selected_brushes.next : NULL;
 		Select_Deselect();
 
 		// go through active brushes and accumulate all "hit" brushes
@@ -100,20 +100,20 @@ qertrace_t Test_Ray(const idVec3 &origin, const idVec3 &dir, int flags) {
 		if (nSize > 0) {
 			bool	bFound = false;
 			for (int i = 0; i < nSize; i++) {
-				brush_t *b = reinterpret_cast < brush_t * > (array.GetAt(i));
+				idEditorBrush *b = reinterpret_cast < idEditorBrush * > (array.GetAt(i));
 
 				// did we hit the last one selected yet ?
 				if (b == pToSelect) {
 					// yes we want to select the next one in the list
 					int n = (i > 0) ? i - 1 : nSize - 1;
-					pToSelect = reinterpret_cast < brush_t * > (array.GetAt(n));
+					pToSelect = reinterpret_cast < idEditorBrush * > (array.GetAt(n));
 					bFound = true;
 					break;
 				}
 			}
 
 			if (!bFound) {
-				pToSelect = reinterpret_cast < brush_t * > (array.GetAt(0));
+				pToSelect = reinterpret_cast < idEditorBrush * > (array.GetAt(0));
 			}
 		}
 
@@ -197,18 +197,18 @@ qertrace_t Test_Ray(const idVec3 &origin, const idVec3 &dir, int flags) {
 	return t;
 }
 
-extern void	AddSelectablePoint(brush_t *b, idVec3 v, int type, bool priority);
-extern void	ClearSelectablePoints(brush_t *b);
-extern idVec3 Brush_TransformedPoint(brush_t *b, const idVec3 &in);
+extern void	AddSelectablePoint(idEditorBrush *b, idVec3 v, int type, bool priority);
+extern void	ClearSelectablePoints(idEditorBrush *b);
+extern idVec3 idEditorBrushransformedPoint(idEditorBrush *b, const idVec3 &in);
 
 /*
  =======================================================================================================================
 	Select_Brush
  =======================================================================================================================
  */
-void Select_Brush(brush_t *brush, bool bComplete, bool bStatus) {
-	brush_t		*b;
-	entity_t	*e;
+void Select_Brush(idEditorBrush *brush, bool bComplete, bool bStatus) {
+	idEditorBrush		*b;
+	idEditorEntity	*e;
 
 	g_ptrSelectedFaces.RemoveAll();
 	g_ptrSelectedFaceBrushes.RemoveAll();
@@ -252,7 +252,7 @@ singleselect:
 		if (e->eclass) {
 			g_Inspectors->UpdateEntitySel(brush->owner->eclass);
 			if ( radiant_entityMode.GetBool() && e->eclass->nShowFlags & (ECLASS_LIGHT | ECLASS_SPEAKER) ) {
-				const char *p = ValueForKey(e, "s_shader");
+				const char *p = e->ValueForKey("s_shader");
 				if (p && *p) {
 					g_Inspectors->mediaDlg.SelectCurrentItem(true, p, CDialogTextures::SOUNDS);
 				}
@@ -262,16 +262,16 @@ singleselect:
 				if (brush->pointLight) {
 					// add center drag point if not at the origin
 					if (brush->lightCenter[0] || brush->lightCenter[1] || brush->lightCenter[2]) {
-						AddSelectablePoint(brush, Brush_TransformedPoint(brush, brush->lightCenter), LIGHT_CENTER, false);
+						AddSelectablePoint(brush, idEditorBrushransformedPoint(brush, brush->lightCenter), LIGHT_CENTER, false);
 					}
 				}
 				else {
-					AddSelectablePoint(brush, Brush_TransformedPoint(brush, brush->lightTarget), LIGHT_TARGET, true);
-					AddSelectablePoint(brush, Brush_TransformedPoint(brush, brush->lightUp), LIGHT_UP, false);
-					AddSelectablePoint(brush, Brush_TransformedPoint(brush, brush->lightRight), LIGHT_RIGHT, false);
+					AddSelectablePoint(brush, idEditorBrushransformedPoint(brush, brush->lightTarget), LIGHT_TARGET, true);
+					AddSelectablePoint(brush, idEditorBrushransformedPoint(brush, brush->lightUp), LIGHT_UP, false);
+					AddSelectablePoint(brush, idEditorBrushransformedPoint(brush, brush->lightRight), LIGHT_RIGHT, false);
 					if (brush->startEnd) {
-						AddSelectablePoint(brush, Brush_TransformedPoint(brush, brush->lightStart), LIGHT_START, false);
-						AddSelectablePoint(brush, Brush_TransformedPoint(brush, brush->lightEnd), LIGHT_END, false);
+						AddSelectablePoint(brush, idEditorBrushransformedPoint(brush, brush->lightStart), LIGHT_START, false);
+						AddSelectablePoint(brush, idEditorBrushransformedPoint(brush, brush->lightEnd), LIGHT_END, false);
 					}
 				}
 				UpdateLightInspector();
@@ -375,7 +375,7 @@ void Select_Ray(idVec3 origin, idVec3 dir, int flags) {
 		UpdatePatchInspector();
 		UpdateSurfaceDialog();
 
-		entity_t	*e = t.brush->owner;
+		idEditorEntity	*e = t.brush->owner;
 		if (e->eclass->nShowFlags & ECLASS_LIGHT && !t.brush->entityModel) {
 			if (t.brush->pointLight) {
 			}
@@ -396,7 +396,7 @@ void Select_Ray(idVec3 origin, idVec3 dir, int flags) {
  =======================================================================================================================
  */
 void Select_Delete(void) {
-	brush_t *brush;
+	idEditorBrush *brush;
 
 	g_ptrSelectedFaces.RemoveAll();
 	g_ptrSelectedFaceBrushes.RemoveAll();
@@ -425,14 +425,13 @@ void Select_Delete(void) {
  =======================================================================================================================
  */
 void Select_Deselect(bool bDeselectFaces) {
-	brush_t *b;
+	idEditorBrush *b;
 
 	ClearSelectablePoints(NULL);
 	Patch_Deselect();
 
 	g_pParentWnd->ActiveXY()->UndoClear();
 
-	g_qeglobals.d_workcount++;
 	g_qeglobals.d_select_count = 0;
 	g_qeglobals.d_num_move_points = 0;
 	b = selected_brushes.next;
@@ -461,7 +460,7 @@ void Select_Deselect(bool bDeselectFaces) {
 	// grab top / bottom height for new brushes
 	if (b->mins[2] < b->maxs[2]) {
 		g_qeglobals.d_new_brush_bottom = b->mins;
-		g_qeglobals.d_new_brush_top = b->maxs;
+		g_qeglobals.d_new_idEditorBrushop = b->maxs;
 	}
 
 	selected_brushes.next->prev = &active_brushes;
@@ -481,11 +480,11 @@ void Select_Deselect(bool bDeselectFaces) {
  =======================================================================================================================
  */
 void Select_Move(idVec3 delta, bool bSnap) {
-	brush_t		*b;
+	idEditorBrush		*b;
 
 	// actually move the selected brushes
 	bool		updateOrigin = true;
-	entity_t	*lastOwner = selected_brushes.next->owner;
+	idEditorEntity	*lastOwner = selected_brushes.next->owner;
 
 	for (b = selected_brushes.next; b != &selected_brushes; b = b->next) {
 		Brush_Move(b, delta, bSnap, updateOrigin);
@@ -537,14 +536,14 @@ void Select_Clone(void) {
  =======================================================================================================================
  */
 void WINAPI Select_SetTexture(texdef_t *texdef,brushprimit_texdef_t	*brushprimit_texdef,bool bFitScale,void *pPlugTexdef,bool update) {
-	brush_t *b;
+	idEditorBrush *b;
 	int		nCount = g_ptrSelectedFaces.GetSize();
 	if (nCount > 0) {
 		Undo_Start("set face textures");
 		ASSERT(g_ptrSelectedFaces.GetSize() == g_ptrSelectedFaceBrushes.GetSize());
 		for (int i = 0; i < nCount; i++) {
 			face_t	*selFace = reinterpret_cast < face_t * > (g_ptrSelectedFaces.GetAt(i));
-			brush_t *selBrush = reinterpret_cast < brush_t * > (g_ptrSelectedFaceBrushes.GetAt(i));
+			idEditorBrush *selBrush = reinterpret_cast < idEditorBrush * > (g_ptrSelectedFaceBrushes.GetAt(i));
 			Undo_AddBrush(selBrush);
 			SetFaceTexdef(selBrush,selFace,texdef,brushprimit_texdef,bFitScale);
 			Brush_Build(selBrush, bFitScale);
@@ -562,7 +561,7 @@ void WINAPI Select_SetTexture(texdef_t *texdef,brushprimit_texdef_t	*brushprimit
 				Undo_EndBrush(b);
 			} else if (b->owner->eclass->nShowFlags & ECLASS_LIGHT) {
 				if ( idStr::Cmpn(texdef->name, "lights/", strlen("lights/")) == 0 ) {
-					SetKeyValue(b->owner, "texture", texdef->name);
+					b->owner->SetKeyValue("texture", texdef->name);
 					g_Inspectors->UpdateEntitySel(b->owner->eclass);
 					UpdateLightInspector();
 					Brush_Build(b);
@@ -588,7 +587,7 @@ void WINAPI Select_SetTexture(texdef_t *texdef,brushprimit_texdef_t	*brushprimit
  =======================================================================================================================
  */
 void Select_GetBounds(idVec3 &mins, idVec3 &maxs) {
-	brush_t *b;
+	idEditorBrush *b;
 	int		i;
 
 	for (i = 0; i < 3; i++) {
@@ -656,7 +655,7 @@ int		select_flipAxis;
 float	select_orgDeg;
 
 void Select_InitializeRotation() {
-	for (brush_t *b = selected_brushes.next; b != &selected_brushes; b = b->next) {
+	for (idEditorBrush *b = selected_brushes.next; b != &selected_brushes; b = b->next) {
 		for (face_t *f = b->brush_faces; f; f = f->next) {
 			for (int i = 0; i < 3; i++) {
 				f->orgplanepts[i] = f->planepts[i];
@@ -671,7 +670,7 @@ void Select_FinalizeRotation() {
 }
 
 bool Select_OnlyModelsSelected() {
-	for (brush_t *b = selected_brushes.next; b != &selected_brushes; b = b->next) {
+	for (idEditorBrush *b = selected_brushes.next; b != &selected_brushes; b = b->next) {
 		if (!b->modelHandle) {
 			return false;
 		}
@@ -679,7 +678,7 @@ bool Select_OnlyModelsSelected() {
 	return true;
 }
 
-bool OkForRotationKey(brush_t *b) {
+bool OkForRotationKey(idEditorBrush *b) {
 	if (b->owner->eclass->nShowFlags & ECLASS_WORLDSPAWN) {
 		return false;
 	}
@@ -746,16 +745,16 @@ void VectorRotate3Origin( const idVec3 &vIn, const idVec3 &vRotation, const idVe
  =======================================================================================================================
  =======================================================================================================================
  */
-extern void Brush_Rotate(brush_t *b, idMat3 matrix, idVec3 origin, bool bBuild);
+extern void Brush_Rotate(idEditorBrush *b, idMat3 matrix, idVec3 origin, bool bBuild);
 
 void Select_ApplyMatrix(bool bSnap, bool rotateOrigins) {
-	brush_t *b;
+	idEditorBrush *b;
 	face_t	*f;
 	int		i;
 	idVec3	temp;
 	idStr str;
 	char	text[128];
-	entity_t *lastOwner = NULL;
+	idEditorEntity *lastOwner = NULL;
 
 	for (b = selected_brushes.next; b != &selected_brushes; b = b->next) {
 
@@ -765,11 +764,11 @@ void Select_ApplyMatrix(bool bSnap, bool rotateOrigins) {
 				if (rotateOrigins) {
 					b->owner->rotation *= select_matrix;
 					b->owner->origin *= select_rotation;
-					SetKeyVec3(b->owner, "origin", b->owner->origin);
+					b->owner->SetKeyVec3("origin", b->owner->origin);
 					if (b->trackLightOrigin) {
 						b->owner->lightRotation *= select_matrix;
 						b->owner->lightOrigin *= select_rotation;
-						SetKeyVec3(b->owner, "light_origin", b->owner->lightOrigin);
+						b->owner->SetKeyVec3("light_origin", b->owner->lightOrigin);
 					}
 				} else {
 
@@ -820,7 +819,7 @@ void Select_ApplyMatrix(bool bSnap, bool rotateOrigins) {
 				b->owner->origin += select_origin;
 				sprintf(text, "%i %i %i", (int)b->owner->origin[0], (int)b->owner->origin[1], (int)b->owner->origin[2]);
 
-				SetKeyValue(b->owner, "origin", text);
+				b->owner->SetKeyValue("origin", text);
 			}
 
 
@@ -829,17 +828,17 @@ void Select_ApplyMatrix(bool bSnap, bool rotateOrigins) {
 				sprintf(str, "%g %g %g %g %g %g %g %g %g",b->owner->rotation[0][0],b->owner->rotation[0][1],b->owner->rotation[0][2],
 						b->owner->rotation[1][0],b->owner->rotation[1][1],b->owner->rotation[1][2],b->owner->rotation[2][0],
 						b->owner->rotation[2][1],b->owner->rotation[2][2]);
-				SetKeyValue(b->owner, "rotation", str);
+				b->owner->SetKeyValue("rotation", str);
 			}
 
 			if (b->trackLightOrigin) {
 				sprintf(str, "%g %g %g %g %g %g %g %g %g",b->owner->lightRotation[0][0],b->owner->lightRotation[0][1],b->owner->lightRotation[0][2],
 						b->owner->lightRotation[1][0],b->owner->lightRotation[1][1],b->owner->lightRotation[1][2],b->owner->lightRotation[2][0],
 						b->owner->lightRotation[2][1],b->owner->lightRotation[2][2]);
-				SetKeyValue(b->owner, "light_rotation", str);
+				b->owner->SetKeyValue("light_rotation", str);
 			}
-			DeleteKey(b->owner, "angle");
-			DeleteKey(b->owner, "angles");
+			b->owner->DeleteKey("angle");
+			b->owner->DeleteKey("angles");
 		}
 
 		if (doBrush) {
@@ -893,46 +892,10 @@ void Select_ApplyMatrix(bool bSnap, bool rotateOrigins) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void RotateFaceTexture(face_t *f, int nAxis, float fDeg) {
-	idVec3	p1, p2, p3, rota;
-	p1[0] = p1[1] = p1[2] = 0;
-	VectorCopy(p1, p2);
-	VectorCopy(p1, p3);
-	VectorCopy(p1, rota);
-	ComputeAbsolute(f, p1, p2, p3);
-
-	rota[nAxis] = fDeg;
-	VectorRotate3Origin(p1, rota, select_origin, p1);
-	VectorRotate3Origin(p2, rota, select_origin, p2);
-	VectorRotate3Origin(p3, rota, select_origin, p3);
-
-	idPlane		normal2;
-	idVec3		vNormal;
-	vNormal[0] = f->plane[0];
-	vNormal[1] = f->plane[1];
-	vNormal[2] = f->plane[2];
-	VectorRotate3(vNormal, rota, vNormal);
-	normal2[0] = vNormal[0];
-	normal2[1] = vNormal[1];
-	normal2[2] = vNormal[2];
-	AbsoluteToLocal(normal2, f, p1, p2, p3);
-}
-
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
 void RotateTextures(int nAxis, float fDeg, idVec3 vOrigin) {
-	for (brush_t * b = selected_brushes.next; b != &selected_brushes; b = b->next) {
+	for (idEditorBrush * b = selected_brushes.next; b != &selected_brushes; b = b->next) {
 		for (face_t * f = b->brush_faces; f; f = f->next) {
-			if (g_qeglobals.m_bBrushPrimitMode) {
-				RotateFaceTexture_BrushPrimit(f, nAxis, fDeg, vOrigin);
-			}
-			else {
-				RotateFaceTexture(f, nAxis, fDeg);
-			}
-
-			// ++timo removed that call .. works fine .. ??????? Brush_Build(b, false);
+			RotateFaceTexture_BrushPrimit(f, nAxis, fDeg, vOrigin);
 		}
 
 		Brush_Build(b, false);
@@ -944,7 +907,7 @@ void RotateTextures(int nAxis, float fDeg, idVec3 vOrigin) {
  =======================================================================================================================
  */
 void Select_ApplyMatrix_BrushPrimit() {
-	for (brush_t * b = selected_brushes.next; b != &selected_brushes; b = b->next) {
+	for (idEditorBrush * b = selected_brushes.next; b != &selected_brushes; b = b->next) {
 		for (face_t * f = b->brush_faces; f; f = f->next) {
 			ApplyMatrix_BrushPrimit(f, select_matrix, select_origin);
 		}
@@ -1034,156 +997,11 @@ void Back(idVec3 &dir, idVec3 &p) {
 	}
 }
 
-//
-// =======================================================================================================================
-//    using scale[0] and scale[1]
-// =======================================================================================================================
-//
-void ComputeScale(idVec3 &rex, idVec3 &rey, idVec3 &p, face_t *f) {
-	float	px = DotProduct(rex, p);
-	float	py = DotProduct(rey, p);
-	px *= f->texdef.scale[0];
-	py *= f->texdef.scale[1];
-
-	idVec3	aux;
-	VectorCopy(rex, aux);
-	VectorScale(aux, px, aux);
-	VectorCopy(aux, p);
-	VectorCopy(rey, aux);
-	VectorScale(aux, py, aux);
-	VectorAdd(p, aux, p);
-}
-
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
-void ComputeAbsolute(face_t *f, idVec3 &p1, idVec3 &p2, idVec3 &p3) {
-	idVec3	ex, ey, ez; // local axis base
-
-#ifdef _DEBUG
-	if (g_qeglobals.m_bBrushPrimitMode) {
-		common->Printf("Warning : illegal call of ComputeAbsolute in brush primitive mode\n");
-	}
-#endif
-	// compute first local axis base
-	TextureAxisFromPlane( f->plane, ex, ey );
-	ez = ex.Cross( ey );
-
-	idVec3	aux;
-	VectorCopy(ex, aux);
-	VectorScale(aux, -f->texdef.shift[0], aux);
-	VectorCopy(aux, p1);
-	VectorCopy(ey, aux);
-	VectorScale(aux, -f->texdef.shift[1], aux);
-	VectorAdd(p1, aux, p1);
-	VectorCopy(p1, p2);
-	VectorAdd(p2, ex, p2);
-	VectorCopy(p1, p3);
-	VectorAdd(p3, ey, p3);
-	VectorCopy(ez, aux);
-	VectorScale(aux, -f->texdef.rotate, aux);
-	VectorRotate3(p1, aux, p1);
-	VectorRotate3(p2, aux, p2);
-	VectorRotate3(p3, aux, p3);
-
-	// computing rotated local axis base
-	idVec3	rex, rey;
-	VectorCopy(ex, rex);
-	VectorRotate3(rex, aux, rex);
-	VectorCopy(ey, rey);
-	VectorRotate3(rey, aux, rey);
-
-	ComputeScale(rex, rey, p1, f);
-	ComputeScale(rex, rey, p2, f);
-	ComputeScale(rex, rey, p3, f);
-
-	// project on normal plane along ez assumes plane normal is normalized
-	ProjectOnPlane(f->plane.Normal(), -f->plane[3], ez, p1);
-	ProjectOnPlane(f->plane.Normal(), -f->plane[3], ez, p2);
-	ProjectOnPlane(f->plane.Normal(), -f->plane[3], ez, p3);
-};
-
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
-void AbsoluteToLocal( const idPlane &normal2, face_t *f, idVec3 &p1, idVec3 &p2, idVec3 &p3) {
-	idVec3	ex, ey, ez;
-
-#ifdef _DEBUG
-	if (g_qeglobals.m_bBrushPrimitMode) {
-		common->Printf("Warning : illegal call of AbsoluteToLocal in brush primitive mode\n");
-	}
-#endif
-	// computing new local axis base
-	TextureAxisFromPlane( normal2, ex, ey );
-	ez = ex.Cross( ey );
-
-	// projecting back on (ex,ey)
-	Back(ez, p1);
-	Back(ez, p2);
-	Back(ez, p3);
-
-	idVec3	aux;
-
-	// rotation
-	VectorCopy(p2, aux);
-	VectorSubtract(aux, p1, aux);
-
-	float	x = DotProduct(aux, ex);
-	float	y = DotProduct(aux, ey);
-	f->texdef.rotate = RAD2DEG( atan2(y, x) );
-
-	idVec3	rex, rey;
-
-	// computing rotated local axis base
-	VectorCopy(ez, aux);
-	VectorScale(aux, f->texdef.rotate, aux);
-	VectorCopy(ex, rex);
-	VectorRotate3(rex, aux, rex);
-	VectorCopy(ey, rey);
-	VectorRotate3(rey, aux, rey);
-
-	// scale
-	VectorCopy(p2, aux);
-	VectorSubtract(aux, p1, aux);
-	f->texdef.scale[0] = DotProduct(aux, rex);
-	VectorCopy(p3, aux);
-	VectorSubtract(aux, p1, aux);
-	f->texdef.scale[1] = DotProduct(aux, rey);
-
-	// shift only using p1
-	x = DotProduct(rex, p1);
-	y = DotProduct(rey, p1);
-	x /= f->texdef.scale[0];
-	y /= f->texdef.scale[1];
-
-	VectorCopy(rex, p1);
-	VectorScale(p1, x, p1);
-	VectorCopy(rey, aux);
-	VectorScale(aux, y, aux);
-	VectorAdd(p1, aux, p1);
-	VectorCopy(ez, aux);
-	VectorScale(aux, -f->texdef.rotate, aux);
-	VectorRotate3(p1, aux, p1);
-	f->texdef.shift[0] = -DotProduct(p1, ex);
-	f->texdef.shift[1] = -DotProduct(p1, ey);
-
-	// stored rot is good considering local axis base change it if necessary
-	f->texdef.rotate = -f->texdef.rotate;
-
-	Clamp(f->texdef.shift[0], f->d_texture->GetEditorImage()->uploadWidth);
-	Clamp(f->texdef.shift[1], f->d_texture->GetEditorImage()->uploadHeight);
-	Clamp(f->texdef.rotate, 360);
-}
-
 /*
  =======================================================================================================================
  =======================================================================================================================
  */
 void Select_FlipAxis(int axis) {
-
 	Select_GetMid( select_origin );
 
 	for ( int i = 0; i < 3; i++) {
@@ -1201,27 +1019,13 @@ void Select_FlipAxis(int axis) {
 
 	// texture locking
 	if (g_PrefsDlg.m_bRotateLock) {
-		//
-		// axis flipping inverts space orientation, we have to use a general texture
-		// locking algorithm instead of the RotateFaceTexture
-		//
-		if (g_qeglobals.m_bBrushPrimitMode) {
-			Select_ApplyMatrix_BrushPrimit();
-		}
-		else {
-			//
-			// there's never been flip locking for non BP mode, this would be tricky to write
-			// and there's not much interest for it with the coming of BP format what could be
-			// done is converting regular to BP, locking, then back to regular :)
-			// Sys_FPrintf(SYS_WRN, "WARNING: regular texturing doesn't have texture lock on
-			// flipping operations\n");
-			//
-		}
+		Select_ApplyMatrix_BrushPrimit();
 	}
 
 	// geometric transformation
 	Select_ApplyMatrix(true, false);
-	Sys_UpdateWindows(W_ALL);}
+	Sys_UpdateWindows(W_ALL);
+}
 
 /*
  =======================================================================================================================
@@ -1229,7 +1033,7 @@ void Select_FlipAxis(int axis) {
  */
 void Select_Scale(float x, float y, float z) {
 	Select_GetMid(select_origin);
-	for (brush_t * b = selected_brushes.next; b != &selected_brushes; b = b->next) {
+	for (idEditorBrush * b = selected_brushes.next; b != &selected_brushes; b = b->next) {
 		for (face_t * f = b->brush_faces; f; f = f->next) {
 			for (int i = 0; i < 3; i++) {
 				f->planepts[i][0] -= select_origin[0];
@@ -1278,7 +1082,7 @@ void Select_Scale(float x, float y, float z) {
  =======================================================================================================================
  */
 void Select_CompleteTall(void) {
-	brush_t *b, *next;
+	idEditorBrush *b, *next;
 
 	// int i;
 	idVec3	mins, maxs;
@@ -1293,8 +1097,8 @@ void Select_CompleteTall(void) {
 	VectorCopy(selected_brushes.next->maxs, maxs);
 	Select_Delete();
 
-	int nDim1 = (g_pParentWnd->ActiveXY()->GetViewType() == YZ) ? 1 : 0;
-	int nDim2 = (g_pParentWnd->ActiveXY()->GetViewType() == XY) ? 1 : 2;
+	int nDim1 = (g_pParentWnd->ActiveXY()->GetViewType() == ViewType::YZ) ? 1 : 0;
+	int nDim2 = (g_pParentWnd->ActiveXY()->GetViewType() == ViewType::XY) ? 1 : 2;
 
 	for (b = active_brushes.next; b != &active_brushes; b = next) {
 		next = b->next;
@@ -1324,7 +1128,7 @@ void Select_CompleteTall(void) {
  =======================================================================================================================
  */
 void Select_PartialTall(void) {
-	brush_t *b, *next;
+	idEditorBrush *b, *next;
 
 	// int i;
 	idVec3	mins, maxs;
@@ -1339,8 +1143,8 @@ void Select_PartialTall(void) {
 	VectorCopy(selected_brushes.next->maxs, maxs);
 	Select_Delete();
 
-	int nDim1 = (g_pParentWnd->ActiveXY()->GetViewType() == YZ) ? 1 : 0;
-	int nDim2 = (g_pParentWnd->ActiveXY()->GetViewType() == XY) ? 1 : 2;
+	int nDim1 = (g_pParentWnd->ActiveXY()->GetViewType() == ViewType::YZ) ? 1 : 0;
+	int nDim2 = (g_pParentWnd->ActiveXY()->GetViewType() == ViewType::XY) ? 1 : 2;
 
 	for (b = active_brushes.next; b != &active_brushes; b = next) {
 		next = b->next;
@@ -1383,7 +1187,7 @@ void Select_PartialTall(void) {
  =======================================================================================================================
  */
 void Select_Touching(void) {
-	brush_t *b, *next;
+	idEditorBrush *b, *next;
 	int		i;
 	idVec3	mins, maxs;
 
@@ -1423,7 +1227,7 @@ void Select_Touching(void) {
  =======================================================================================================================
  */
 void Select_Inside(void) {
-	brush_t *b, *next;
+	idEditorBrush *b, *next;
 	int		i;
 	idVec3	mins, maxs;
 
@@ -1466,8 +1270,8 @@ void Select_Inside(void) {
  */
 void Select_Ungroup() {
 	int			numselectedgroups;
-	entity_t	*e;
-	brush_t		*b, *sb;
+	idEditorEntity	*e;
+	idEditorBrush		*b, *sb;
 
 	numselectedgroups = 0;
 	for (sb = selected_brushes.next; sb != &selected_brushes; sb = sb->next) {
@@ -1484,7 +1288,7 @@ void Select_Ungroup() {
 			b->owner = world_entity;
 		}
 
-		Entity_Free(e);
+		delete e;
 		numselectedgroups++;
 	}
 
@@ -1502,7 +1306,7 @@ void Select_Ungroup() {
  =======================================================================================================================
  */
 void Select_ShiftTexture(float x, float y, bool autoAdjust) {
-	brush_t *b;
+	idEditorBrush *b;
 	face_t	*f;
 
 	int		nFaceCount = g_ptrSelectedFaces.GetSize();
@@ -1516,14 +1320,8 @@ void Select_ShiftTexture(float x, float y, bool autoAdjust) {
 	Undo_Start("Select shift textures");
 	for (b = selected_brushes.next; b != &selected_brushes; b = b->next) {
 		for (f = b->brush_faces; f; f = f->next) {
-			if (g_qeglobals.m_bBrushPrimitMode) {
-				// use face normal to compute a true translation
-				Select_ShiftTexture_BrushPrimit(f, x, y, autoAdjust);
-			}
-			else {
-				f->texdef.shift[0] += x;
-				f->texdef.shift[1] += y;
-			}
+			// use face normal to compute a true translation
+			Select_ShiftTexture_BrushPrimit(f, x, y, autoAdjust);
 		}
 
 		Brush_Build(b);
@@ -1536,18 +1334,13 @@ void Select_ShiftTexture(float x, float y, bool autoAdjust) {
 	if (nFaceCount > 0) {
 		for (int i = 0; i < nFaceCount; i++) {
 			face_t	*selFace = reinterpret_cast < face_t * > (g_ptrSelectedFaces.GetAt(i));
-			brush_t *selBrush = reinterpret_cast < brush_t * > (g_ptrSelectedFaceBrushes.GetAt(i));
-			if (g_qeglobals.m_bBrushPrimitMode) {
-				//
-				// use face normal to compute a true translation Select_ShiftTexture_BrushPrimit(
-				// selected_face, x, y ); use camera view to compute texture shift
-				//
-				Select_ShiftTexture_BrushPrimit(selFace, x, y, autoAdjust);
-			}
-			else {
-				selFace->texdef.shift[0] += x;
-				selFace->texdef.shift[1] += y;
-			}
+			idEditorBrush *selBrush = reinterpret_cast < idEditorBrush * > (g_ptrSelectedFaceBrushes.GetAt(i));
+
+			//
+			// use face normal to compute a true translation Select_ShiftTexture_BrushPrimit(
+			// selected_face, x, y ); use camera view to compute texture shift
+			//
+			Select_ShiftTexture_BrushPrimit(selFace, x, y, autoAdjust);
 
 			Brush_Build(selBrush);
 		}
@@ -1565,7 +1358,7 @@ extern void Face_ScaleTexture_BrushPrimit(face_t *face, float sS, float sT);
  =======================================================================================================================
  */
 void Select_ScaleTexture(float x, float y, bool update, bool absolute) {
-	brush_t *b;
+	idEditorBrush *b;
 	face_t	*f;
 
 	int		nFaceCount = g_ptrSelectedFaces.GetSize();
@@ -1577,7 +1370,7 @@ void Select_ScaleTexture(float x, float y, bool update, bool absolute) {
 	Undo_Start("Select_SetExplicitScale_BrushPrimit");
 	for (b = selected_brushes.next; b != &selected_brushes; b = b->next) {
 		for (f = b->brush_faces; f; f = f->next) {
-			if (g_qeglobals.m_bBrushPrimitMode && f->face_winding) {
+			if (f->face_winding) {
 				if (absolute) {
 					Face_SetExplicitScale_BrushPrimit(f, x, y);
 				} else {
@@ -1599,17 +1392,12 @@ void Select_ScaleTexture(float x, float y, bool update, bool absolute) {
 	if (nFaceCount > 0) {
 		for (int i = 0; i < nFaceCount; i++) {
 			face_t	*selFace = reinterpret_cast < face_t * > (g_ptrSelectedFaces.GetAt(i));
-			brush_t *selBrush = reinterpret_cast < brush_t * > (g_ptrSelectedFaceBrushes.GetAt(i));
-			if (g_qeglobals.m_bBrushPrimitMode) {
-				if (absolute) {
-					Face_SetExplicitScale_BrushPrimit(selFace, x, y);
-				} else {
-					Face_ScaleTexture_BrushPrimit(selFace, x, y);
-				}
-			}
-			else {
-				selFace->texdef.scale[0] += x;
-				selFace->texdef.scale[1] += y;
+			idEditorBrush *selBrush = reinterpret_cast < idEditorBrush * > (g_ptrSelectedFaceBrushes.GetAt(i));
+
+			if (absolute) {
+				Face_SetExplicitScale_BrushPrimit(selFace, x, y);
+			} else {
+				Face_ScaleTexture_BrushPrimit(selFace, x, y);
 			}
 
 			Brush_Build(selBrush);
@@ -1629,7 +1417,7 @@ extern void Face_RotateTexture_BrushPrimit(face_t *face, float amount, idVec3 or
  =======================================================================================================================
  */
 void Select_RotateTexture(float amt, bool absolute) {
-	brush_t *b;
+	idEditorBrush *b;
 	face_t	*f;
 
 	int		nFaceCount = g_ptrSelectedFaces.GetSize();
@@ -1641,13 +1429,7 @@ void Select_RotateTexture(float amt, bool absolute) {
 	Undo_Start("Select_RotateTexture_BrushPrimit");
 	for (b = selected_brushes.next; b != &selected_brushes; b = b->next) {
 		for (f = b->brush_faces; f; f = f->next) {
-			if (g_qeglobals.m_bBrushPrimitMode) {
-				Face_RotateTexture_BrushPrimit(f, amt, b->owner->origin);
-			}
-			else {
-				f->texdef.rotate += amt;
-				f->texdef.rotate = static_cast<int>(f->texdef.rotate) % 360;
-			}
+			Face_RotateTexture_BrushPrimit(f, amt, b->owner->origin);
 		}
 
 		Brush_Build(b);
@@ -1660,17 +1442,12 @@ void Select_RotateTexture(float amt, bool absolute) {
 	if (nFaceCount > 0) {
 		for (int i = 0; i < nFaceCount; i++) {
 			face_t	*selFace = reinterpret_cast < face_t * > (g_ptrSelectedFaces.GetAt(i));
-			brush_t *selBrush = reinterpret_cast < brush_t * > (g_ptrSelectedFaceBrushes.GetAt(i));
-			if (g_qeglobals.m_bBrushPrimitMode) {
-				idVec3 org;
-				org.Zero();
-				//Face_RotateTexture_BrushPrimit(selFace, amt, selBrush->owner->origin);
-				Face_RotateTexture_BrushPrimit(selFace, amt, org);
-			}
-			else {
-				selFace->texdef.rotate += amt;
-				selFace->texdef.rotate = static_cast<int>(selFace->texdef.rotate) % 360;
-			}
+			idEditorBrush *selBrush = reinterpret_cast < idEditorBrush * > (g_ptrSelectedFaceBrushes.GetAt(i));
+
+			idVec3 org;
+			org.Zero();
+			//Face_RotateTexture_BrushPrimit(selFace, amt, selBrush->owner->origin);
+			Face_RotateTexture_BrushPrimit(selFace, amt, org);
 
 			Brush_Build(selBrush);
 		}
@@ -1685,12 +1462,12 @@ void Select_RotateTexture(float amt, bool absolute) {
  =======================================================================================================================
  */
 void FindReplaceTextures(const char *pFind, const char *pReplace, bool bSelected, bool bForce) {
-	brush_t *pList = (bSelected) ? &selected_brushes : &active_brushes;
+	idEditorBrush *pList = (bSelected) ? &selected_brushes : &active_brushes;
 	if (!bSelected) {
 		Select_Deselect();
 	}
 
-	for (brush_t * pBrush = pList->next; pBrush != pList; pBrush = pBrush->next) {
+	for (idEditorBrush * pBrush = pList->next; pBrush != pList; pBrush = pBrush->next) {
 		if (pBrush->pPatch) {
 			Patch_FindReplaceTexture(pBrush, pFind, pReplace, bForce);
 		}
@@ -1715,8 +1492,8 @@ void FindReplaceTextures(const char *pFind, const char *pReplace, bool bSelected
  =======================================================================================================================
  */
 void Select_AllOfType() {
-	brush_t		*b, *next;
-	entity_t	*e;
+	idEditorBrush		*b, *next;
+	idEditorEntity	*e;
 	if ((selected_brushes.next == &selected_brushes) || (selected_brushes.next->next != &selected_brushes)) {
 		CString strName;
 		if (g_ptrSelectedFaces.GetSize() == 0) {
@@ -1777,7 +1554,7 @@ void Select_AllOfType() {
 					if ( idStr::Icmp(e->eclass->name, strName) == 0 ) {
 						bool	doIt = true;
 						if (bCriteria) {
-							CString str = ValueForKey(e, strKey);
+							CString str = e->ValueForKey(strKey);
 							if (str.CompareNoCase(strVal) != 0) {
 								doIt = false;
 							}
@@ -1807,14 +1584,14 @@ void Select_AllOfType() {
  */
 void Select_Reselect() {
 	CPtrArray	holdArray;
-	brush_t *b;
+	idEditorBrush *b;
 	for ( b = selected_brushes.next; b && b != &selected_brushes; b = b->next ) {
 		holdArray.Add(reinterpret_cast < void * > (b));
 	}
 
 	int n = holdArray.GetSize();
 	while (n-- > 0) {
-		b = reinterpret_cast < brush_t * > (holdArray.GetAt(n));
+		b = reinterpret_cast < idEditorBrush * > (holdArray.GetAt(n));
 		Select_Brush(b);
 	}
 
@@ -1826,7 +1603,7 @@ void Select_Reselect() {
  =======================================================================================================================
  */
 void Select_FitTexture(float height, float width) {
-	brush_t *b;
+	idEditorBrush *b;
 	int		nFaceCount = g_ptrSelectedFaces.GetSize();
 
 	if (selected_brushes.next == &selected_brushes && nFaceCount == 0) {
@@ -1847,7 +1624,7 @@ void Select_FitTexture(float height, float width) {
 	if (nFaceCount > 0) {
 		for (int i = 0; i < nFaceCount; i++) {
 			face_t	*selFace = reinterpret_cast < face_t * > (g_ptrSelectedFaces.GetAt(i));
-			brush_t *selBrush = reinterpret_cast < brush_t * > (g_ptrSelectedFaceBrushes.GetAt(i));
+			idEditorBrush *selBrush = reinterpret_cast < idEditorBrush * > (g_ptrSelectedFaceBrushes.GetAt(i));
 			Face_FitTexture(selFace, height, width);
 			Brush_Build(selBrush);
 		}
@@ -1871,11 +1648,11 @@ void Select_AxialTexture() {
 void Select_Hide(bool invert) {
 
 	if (invert) {
-		for (brush_t * b = active_brushes.next; b && b != &active_brushes; b = b->next) {
+		for (idEditorBrush * b = active_brushes.next; b && b != &active_brushes; b = b->next) {
 			b->hiddenBrush = true;
 		}
 	} else {
-		for (brush_t * b = selected_brushes.next; b && b != &selected_brushes; b = b->next) {
+		for (idEditorBrush * b = selected_brushes.next; b && b != &selected_brushes; b = b->next) {
 			b->hiddenBrush = true;
 		}
 	}
@@ -1883,14 +1660,14 @@ void Select_Hide(bool invert) {
 }
 
 void Select_WireFrame( bool wireFrame ) {
-	for (brush_t * b = selected_brushes.next; b && b != &selected_brushes; b = b->next) {
+	for (idEditorBrush * b = selected_brushes.next; b && b != &selected_brushes; b = b->next) {
 		b->forceWireFrame = wireFrame;
 	}
 	Sys_UpdateWindows(W_ALL);
 }
 
 void Select_ForceVisible( bool visible ) {
-	for (brush_t * b = selected_brushes.next; b && b != &selected_brushes; b = b->next) {
+	for (idEditorBrush * b = selected_brushes.next; b && b != &selected_brushes; b = b->next) {
 		b->forceVisibile = visible;
 	}
 	Sys_UpdateWindows(W_ALL);
@@ -1901,7 +1678,7 @@ void Select_ForceVisible( bool visible ) {
  =======================================================================================================================
  */
 void Select_ShowAllHidden() {
-	brush_t *b;
+	idEditorBrush *b;
 	for (b = selected_brushes.next; b && b != &selected_brushes; b = b->next) {
 		b->hiddenBrush = false;
 	}
@@ -1919,7 +1696,7 @@ void Select_ShowAllHidden() {
  =======================================================================================================================
  */
 void Select_Invert(void) {
-	brush_t *next, *prev;
+	idEditorBrush *next, *prev;
 
 	Sys_Status("inverting selection...\n");
 
@@ -1954,19 +1731,6 @@ void Select_Invert(void) {
 
 /*
  =======================================================================================================================
-	Select_Name
- =======================================================================================================================
- */
-void Select_Name(const char *pName) {
-	if (g_qeglobals.m_bBrushPrimitMode) {
-		for (brush_t * b = selected_brushes.next; b && b != &selected_brushes; b = b->next) {
-			Brush_SetEpair(b, "Name", pName);
-		}
-	}
-}
-
-/*
- =======================================================================================================================
  =======================================================================================================================
  */
 void Select_CenterOrigin() {
@@ -1975,13 +1739,13 @@ void Select_CenterOrigin() {
 	Select_GetTrueMid(mid);
 	mid.Snap();
 
-	brush_t		*b = selected_brushes.next;
-	entity_t	*e = b->owner;
+	idEditorBrush		*b = selected_brushes.next;
+	idEditorEntity	*e = b->owner;
 	if (e != NULL) {
 		if (e != world_entity) {
 			char	text[1024];
 			sprintf(text, "%i %i %i", (int)mid[0], (int)mid[1], (int)mid[2]);
-			SetKeyValue(e, "origin", text);
+			e->SetKeyValue("origin", text);
 			VectorCopy(mid, e->origin);
 		}
 	}
@@ -2010,9 +1774,9 @@ face_t *Select_GetSelectedFace(int index) {
  =======================================================================================================================
  =======================================================================================================================
  */
-brush_t *Select_GetSelectedFaceBrush(int index) {
+idEditorBrush *Select_GetSelectedFaceBrush(int index) {
 	assert(index >= 0 && index < Select_NumSelectedFaces());
-	return reinterpret_cast < brush_t * > (g_ptrSelectedFaceBrushes.GetAt(index));
+	return reinterpret_cast < idEditorBrush * > (g_ptrSelectedFaceBrushes.GetAt(index));
 }
 
 /*
@@ -2024,15 +1788,10 @@ void Select_SetDefaultTexture(const idMaterial *mat, bool fitScale, bool setText
 	brushprimit_texdef_t	brushprimit_tex;
 	memset(&tex, 0, sizeof(tex));
 	memset(&brushprimit_tex, 0, sizeof(brushprimit_tex));
-	if (g_qeglobals.m_bBrushPrimitMode) {
-		// brushprimit fitted to a 2x2 texture
-		brushprimit_tex.coords[0][0] = 1.0f;
-		brushprimit_tex.coords[1][1] = 1.0f;
-	}
-	else {
-		tex.scale[0] = (g_PrefsDlg.m_bHiColorTextures) ? 0.5 : 1;
-		tex.scale[1] = (g_PrefsDlg.m_bHiColorTextures) ? 0.5 : 1;
-	}
+
+	// brushprimit fitted to a 2x2 texture
+	brushprimit_tex.coords[0][0] = 1.0f;
+	brushprimit_tex.coords[1][1] = 1.0f;
 
 	tex.SetName(mat->GetName());
 	Texture_SetTexture(&tex, &brushprimit_tex, fitScale, setTexture);
@@ -2051,14 +1810,14 @@ void Select_SetDefaultTexture(const idMaterial *mat, bool fitScale, bool setText
 
 
 void Select_UpdateTextureName(const char *name) {
-	brush_t *b;
+	idEditorBrush *b;
 	int		nCount = g_ptrSelectedFaces.GetSize();
 	if (nCount > 0) {
 		Undo_Start("set face texture name");
 		ASSERT(g_ptrSelectedFaces.GetSize() == g_ptrSelectedFaceBrushes.GetSize());
 		for (int i = 0; i < nCount; i++) {
 			face_t	*selFace = reinterpret_cast < face_t * > (g_ptrSelectedFaces.GetAt(i));
-			brush_t *selBrush = reinterpret_cast < brush_t * > (g_ptrSelectedFaceBrushes.GetAt(i));
+			idEditorBrush *selBrush = reinterpret_cast < idEditorBrush * > (g_ptrSelectedFaceBrushes.GetAt(i));
 			Undo_AddBrush(selBrush);
 			selFace->texdef.SetName(name);
 			Brush_Build(selBrush);
@@ -2076,7 +1835,7 @@ void Select_UpdateTextureName(const char *name) {
 				Undo_EndBrush(b);
 			} else if (b->owner->eclass->nShowFlags & ECLASS_LIGHT) {
 				if ( idStr::Cmpn(name, "lights/", strlen("lights/")) == 0 ) {
-					SetKeyValue(b->owner, "texture", name);
+					b->owner->SetKeyValue("texture", name);
 					g_Inspectors->UpdateEntitySel(b->owner->eclass);
 					UpdateLightInspector();
 					Brush_Build(b);
@@ -2100,7 +1859,7 @@ void Select_FlipTexture(bool y) {
 	int faceCount = g_ptrSelectedFaces.GetSize();
 
 	Undo_Start("Select_FlipTexture");
-	for (brush_t *b = selected_brushes.next; b != &selected_brushes; b = b->next) {
+	for (idEditorBrush *b = selected_brushes.next; b != &selected_brushes; b = b->next) {
 		if (b->pPatch) {
 			Patch_FlipTexture(b->pPatch, y);
 		} else {
@@ -2111,7 +1870,7 @@ void Select_FlipTexture(bool y) {
 	if (faceCount > 0) {
 		for (int i = 0; i < faceCount; i++) {
 			face_t	*selFace = reinterpret_cast < face_t * > (g_ptrSelectedFaces.GetAt(i));
-			brush_t *selBrush = reinterpret_cast < brush_t * > (g_ptrSelectedFaceBrushes.GetAt(i));
+			idEditorBrush *selBrush = reinterpret_cast < idEditorBrush * > (g_ptrSelectedFaceBrushes.GetAt(i));
 			Face_FlipTexture_BrushPrimit(selFace, y);
 		}
 	}
@@ -2130,9 +1889,9 @@ void Select_FlipTexture(bool y) {
  =======================================================================================================================
  */
 void Select_SetKeyVal(const char *key, const char *val) {
-	for (brush_t * b = selected_brushes.next; b && b != &selected_brushes; b = b->next) {
+	for (idEditorBrush * b = selected_brushes.next; b && b != &selected_brushes; b = b->next) {
 		if (b->owner != world_entity) {
-			SetKeyValue(b->owner, key, val, false);
+			b->owner->SetKeyValue(key, val, false);
 		}
 	}
 }
@@ -2143,7 +1902,7 @@ void Select_SetKeyVal(const char *key, const char *val) {
  =======================================================================================================================
  */
 void Select_CopyPatchTextureCoords( patchMesh_t *p ) {
-	for (brush_t * b = selected_brushes.next; b && b != &selected_brushes; b = b->next) {
+	for (idEditorBrush * b = selected_brushes.next; b && b != &selected_brushes; b = b->next) {
 		if (b->pPatch) {
 			if ( b->pPatch->width <= p->width && b->pPatch->height <= p->height ) {
 				for ( int i = 0; i < b->pPatch->width; i ++ ) {
@@ -2163,7 +1922,7 @@ void Select_CopyPatchTextureCoords( patchMesh_t *p ) {
  =======================================================================================================================
  */
 void Select_ProjectFaceOntoPatch( face_t *face ) {
-	for (brush_t * b = selected_brushes.next; b && b != &selected_brushes; b = b->next) {
+	for (idEditorBrush * b = selected_brushes.next; b && b != &selected_brushes; b = b->next) {
 		if (b->pPatch) {
 			EmitBrushPrimitTextureCoordinates(face, NULL, b->pPatch);
 			Patch_MakeDirty(b->pPatch);
@@ -2179,7 +1938,7 @@ void Select_ProjectFaceOntoPatch( face_t *face ) {
 extern float Patch_Width(patchMesh_t *p);
 extern float Patch_Height(patchMesh_t *p);
 void Select_SetPatchFit(float dim1, float dim2, float srcWidth, float srcHeight, float rot) {
-	for (brush_t * b = selected_brushes.next; b && b != &selected_brushes; b = b->next) {
+	for (idEditorBrush * b = selected_brushes.next; b && b != &selected_brushes; b = b->next) {
 		if (b->pPatch) {
 			float w = Patch_Width(b->pPatch);
 			float h = Patch_Height(b->pPatch);
@@ -2195,11 +1954,11 @@ void Select_SetPatchST(float s1, float t1, float s2, float t2) {
 
 
 void Select_AllTargets() {
-	for (brush_t * b = selected_brushes.next; b && b != &selected_brushes; b = b->next) {
+	for (idEditorBrush * b = selected_brushes.next; b && b != &selected_brushes; b = b->next) {
 		if (b->owner != world_entity) {
 			const idKeyValue *kv = b->owner->epairs.MatchPrefix("target", NULL);
 			while (kv) {
-				entity_t *ent = FindEntity("name", kv->GetValue());
+				idEditorEntity *ent = FindEntity("name", kv->GetValue());
 				if (ent) {
 					Select_Brush(ent->brushes.onext, true, false);
 				}

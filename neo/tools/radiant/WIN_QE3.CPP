@@ -32,14 +32,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "qe3.h"
 #include "mru.h"
 
-extern CEdit				*g_pEdit;
-
-int		screen_width;
-int		screen_height;
-bool	have_quit;
-
-int		update_bits;
-
 /*
  =======================================================================================================================
  =======================================================================================================================
@@ -118,32 +110,6 @@ void Sys_Beep(void) {
  =======================================================================================================================
  =======================================================================================================================
  */
-char *TranslateString(char *buf) {
-	static char buf2[32768];
-	int			i, l;
-	char		*out;
-
-	l = strlen(buf);
-	out = buf2;
-	for (i = 0; i < l; i++) {
-		if (buf[i] == '\n') {
-			*out++ = '\r';
-			*out++ = '\n';
-		}
-		else {
-			*out++ = buf[i];
-		}
-	}
-
-	*out++ = 0;
-
-	return buf2;
-}
-
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
 double Sys_DoubleTime(void) {
 	return clock() / 1000.0;
 }
@@ -152,30 +118,8 @@ double Sys_DoubleTime(void) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void PrintPixels(HDC hDC) {
-	int						i;
-	PIXELFORMATDESCRIPTOR	p[64];
-
-	printf("### flags color layer\n");
-	for (i = 1; i < 64; i++) {
-		if (!DescribePixelFormat(hDC, i, sizeof(p[0]), &p[i])) {
-			break;
-		}
-
-		printf("%3i %5i %5i %5i\n", i, p[i].dwFlags, p[i].cColorBits, p[i].bReserved);
-	}
-
-	printf("%i modes\n", i - 1);
-}
-
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
 int WINAPI QEW_SetupPixelFormat(HDC hDC, bool zbuffer)
 {
-#if 1
-
 	int pixelFormat = Win_ChoosePixelFormat(hDC);
 	if (pixelFormat > 0) {
 		if (SetPixelFormat(hDC, pixelFormat, &win32.pfd) == NULL) {
@@ -187,55 +131,6 @@ int WINAPI QEW_SetupPixelFormat(HDC hDC, bool zbuffer)
 	}
 
 	return pixelFormat;
-#else
-	static PIXELFORMATDESCRIPTOR	pfd = {
-		sizeof(PIXELFORMATDESCRIPTOR),	// size of this pfd
-		1,						// version number
-		PFD_DRAW_TO_WINDOW |	// support window
-		PFD_SUPPORT_OPENGL |	// support OpenGL
-		PFD_DOUBLEBUFFER,		// double buffered
-		PFD_TYPE_RGBA,			// RGBA type
-		24,						// 24-bit color depth
-		0,
-		0,
-		0,
-		0,
-		0,
-		0,						// color bits ignored
-		0,						// no alpha buffer
-		0,						// shift bit ignored
-		0,						// no accumulation buffer
-		0,
-		0,
-		0,
-		0,						// accum bits ignored
-		32,						// depth bits
-		0,						// no stencil buffer
-		0,						// no auxiliary buffer
-		PFD_MAIN_PLANE,			// main layer
-		0,						// reserved
-		0,
-		0,
-		0						// layer masks ignored
-	};
-	int pixelformat = 0;
-
-	zbuffer = true;
-	if (!zbuffer) {
-		pfd.cDepthBits = 0;
-	}
-
-	if ((pixelformat = ChoosePixelFormat(hDC, &pfd)) == 0) {
-		printf("%d", GetLastError());
-		Error("ChoosePixelFormat failed");
-	}
-
-	if (!SetPixelFormat(hDC, pixelformat, &pfd)) {
-		Error("SetPixelFormat failed");
-	}
-
-	return pixelformat;
-#endif
 }
 
 /*
@@ -260,7 +155,7 @@ void Error(char *error, ...) {
 	sprintf
 	(
 		text2,
-		"%s\nGetLastError() = %i - %i\nAn unrecoverable error has occured. Would you like to edit Preferences before exiting Q3Radiant?",
+		"%s\nGetLastError() = %i - %i\nAn unrecoverable error has occured. Would you like to edit Preferences before exiting " EDITOR_WINDOWTEXT "?",
 		text,
 		err,
 		i
@@ -306,34 +201,16 @@ bool ConfirmModified(void) {
 	return true;
 }
 
-static OPENFILENAME ofn;	/* common dialog box structure */
-static char			szDirName[MAX_PATH];	/* directory string */
-static char			szFile[260];			/* filename string */
-static char			szFileTitle[260];		/* file title string */
-static char			szFilter[260] =			/* filter string */
-"Map file (*.map, *.reg)\0*.map;*.reg\0";
-static char			szProjectFilter[260] =	/* filter string */
-"Q3Radiant project (*.qe4, *.prj)\0*.qe4\0*.prj\0\0";
-static char			chReplace;				/* string separator for szFilter */
-static int			cbString;				/* integer count variables */
-static HANDLE		hf;						/* file handle */
+static OPENFILENAME ofn;														/* common dialog box structure */
+static char			szFile[260];												/* filename string */
+static char			szFileTitle[260];											/* file title string */
+static char			szFilter[260] =	"Map file (*.map, *.reg)\0*.map;*.reg\0";	/* filter string */
 
 /*
  =======================================================================================================================
  =======================================================================================================================
  */
 void OpenDialog(void) {
-	/* Obtain the system directory name and store it in szDirName. */
-	strcpy(szDirName, ValueForKey(g_qeglobals.d_project_entity, "mapspath"));
-	if (strlen(szDirName) == 0) {
-		strcpy(szDirName, ValueForKey(g_qeglobals.d_project_entity, "basepath"));
-		strcat(szDirName, "\\maps");
-	}
-
-	if (g_PrefsDlg.m_strMaps.GetLength() > 0) {
-		strcat(szDirName, va("\\%s", g_PrefsDlg.m_strMaps.GetString()));
-	}
-
 	/* Place the terminating null character in the szFile. */
 	szFile[0] = '\0';
 
@@ -346,8 +223,8 @@ void OpenDialog(void) {
 	ofn.nMaxFile = sizeof(szFile);
 	ofn.lpstrFileTitle = szFileTitle;
 	ofn.nMaxFileTitle = sizeof(szFileTitle);
-	ofn.lpstrInitialDir = szDirName;
-	ofn.Flags = OFN_SHOWHELP | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+	ofn.lpstrInitialDir = ""; //FIXME
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
 	/* Display the Open dialog box. */
 	if (!GetOpenFileName(&ofn)) {
@@ -371,55 +248,7 @@ void OpenDialog(void) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void ProjectDialog(void) {
-	/* Obtain the system directory name and store it in szDirName. */
-	strcpy(szDirName, ValueForKey(g_qeglobals.d_project_entity, "basepath"));
-
-	/* Place the terminating null character in the szFile. */
-	szFile[0] = '\0';
-
-	/* Set the members of the OPENFILENAME structure. */
-	ofn.lStructSize = sizeof(OPENFILENAME);
-	ofn.hwndOwner = g_pParentWnd->GetSafeHwnd();
-	ofn.lpstrFilter = szProjectFilter;
-	ofn.nFilterIndex = 1;
-	ofn.lpstrFile = szFile;
-	ofn.nMaxFile = sizeof(szFile);
-	ofn.lpstrFileTitle = szFileTitle;
-	ofn.nMaxFileTitle = sizeof(szFileTitle);
-	ofn.lpstrInitialDir = szDirName;
-	ofn.Flags = OFN_SHOWHELP | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-
-	/* Display the Open dialog box. */
-	if (!GetOpenFileName(&ofn)) {
-		return; // canceled
-	}
-
-	// Refresh the File menu.
-	PlaceMenuMRUItem(g_qeglobals.d_lpMruMenu, GetSubMenu(GetMenu(g_pParentWnd->GetSafeHwnd()), 0), ID_FILE_EXIT);
-
-	/* Open the file. */
-	if (!QE_LoadProject(ofn.lpstrFile)) {
-		Error("Couldn't load project file");
-	}
-}
-
-extern void AddSlash(CString &strPath);
-
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
 void SaveAsDialog(bool bRegion) {
-	strcpy(szDirName, ValueForKey(g_qeglobals.d_project_entity, "basepath"));
-
-	CString strPath = szDirName;
-	AddSlash(strPath);
-	strPath += "maps";
-	if (g_PrefsDlg.m_strMaps.GetLength() > 0) {
-		strPath += va("\\%s", g_PrefsDlg.m_strMaps.GetString());
-	}
-
 	/* Place the terminating null character in the szFile. */
 	szFile[0] = '\0';
 
@@ -432,8 +261,8 @@ void SaveAsDialog(bool bRegion) {
 	ofn.nMaxFile = sizeof(szFile);
 	ofn.lpstrFileTitle = szFileTitle;
 	ofn.nMaxFileTitle = sizeof(szFileTitle);
-	ofn.lpstrInitialDir = strPath;
-	ofn.Flags = OFN_SHOWHELP | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_OVERWRITEPROMPT;
+	ofn.lpstrInitialDir = "";
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_OVERWRITEPROMPT;
 
 	/* Display the Open dialog box. */
 	if (!GetSaveFileName(&ofn)) {
@@ -454,50 +283,4 @@ void SaveAsDialog(bool bRegion) {
 	}
 
 	Map_SaveFile(ofn.lpstrFile, bRegion);	// ignore region
-}
-
-/*
- * Menu modifications £
- * FillBSPMenu
- */
-const char	*bsp_commands[256];
-
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
-void FillBSPMenu(void) {
-	HMENU		hmenu;
-	int			i;
-	static int	count;
-
-	hmenu = GetSubMenu(GetMenu(g_pParentWnd->GetSafeHwnd()), MENU_BSP);
-
-	for (i = 0; i < count; i++) {
-		DeleteMenu(hmenu, CMD_BSPCOMMAND + i, MF_BYCOMMAND);
-	}
-
-	i = 0;
-	count = g_qeglobals.d_project_entity->epairs.GetNumKeyVals();
-	for (int j = 0; j < count; j++) {
-		if (g_qeglobals.d_project_entity->epairs.GetKeyVal(j)->GetKey()[0] == 'b' && g_qeglobals.d_project_entity->epairs.GetKeyVal(j)->GetKey()[1] == 's' && g_qeglobals.d_project_entity->epairs.GetKeyVal(j)->GetKey()[2] == 'p') {
-			bsp_commands[i] = g_qeglobals.d_project_entity->epairs.GetKeyVal(j)->GetKey().c_str();
-			AppendMenu(hmenu, MF_ENABLED | MF_STRING, CMD_BSPCOMMAND + i, (LPCTSTR) g_qeglobals.d_project_entity->epairs.GetKeyVal(j)->GetKey().c_str());
-			i++;
-		}
-	}
-
-	count = i;
-}
-
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
-void AddSlash(CString &strPath) {
-	if (strPath.GetLength() > 0) {
-		if (strPath.GetAt(strPath.GetLength() - 1) != '\\') {
-			strPath += '\\';
-		}
-	}
 }

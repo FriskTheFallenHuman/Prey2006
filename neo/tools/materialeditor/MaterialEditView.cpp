@@ -228,6 +228,13 @@ int MaterialEditView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	m_tabs.SetFont(materialEditorFont);
 
+	// Load the icon
+	HICON hIcon = AfxGetApp()->LoadIconA( IDI_GUIED );
+	if ( hIcon ) {
+		SetIcon( hIcon, TRUE );
+		SetIcon( hIcon, FALSE );
+	}
+
 	return 0;
 }
 

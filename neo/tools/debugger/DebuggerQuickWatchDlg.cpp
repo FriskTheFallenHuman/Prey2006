@@ -30,7 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 #pragma hdrstop
 
 
-#include "../../sys/win32/rc/debugger_resource.h"
+#include "../../sys/win32/rc/resource.h"
 #include "DebuggerApp.h"
 #include "DebuggerQuickWatchDlg.h"
 

@@ -46,7 +46,7 @@ static char		THIS_FILE[] = __FILE__;
 const char		*g_pDimStrings[] = { "x:%.f", "y:%.f", "z:%.f" };
 const char		*g_pOrgStrings[] = { "(x:%.f  y:%.f)", "(x:%.f  z:%.f)", "(y:%.f  z:%.f)" };
 CString			g_strDim;
-CString			g_strStatus;
+static CString	g_strStatus;
 
 bool			g_bCrossHairs = false;
 bool			g_bScaleMode;
@@ -59,15 +59,15 @@ CClipPoint		g_Clip1;
 CClipPoint		g_Clip2;
 CClipPoint		g_Clip3;
 CClipPoint		*g_pMovingClip;
-brush_t			g_brFrontSplits;
-brush_t			g_brBackSplits;
+idEditorBrush			g_brFrontSplits;
+idEditorBrush			g_brBackSplits;
 
-brush_t			g_brClipboard;
-brush_t			g_brUndo;
-entity_t		g_enClipboard;
+static idEditorBrush	g_brClipboard;
+static idEditorBrush	g_brUndo;
+static idEditorEntity	g_enClipboard;
 
-idVec3			g_vRotateOrigin;
-idVec3			g_vRotation;
+static idVec3	g_vRotateOrigin;
+static idVec3   g_vRotation;
 
 bool			g_bPathMode;
 CClipPoint		g_PathPoints[256];
@@ -77,10 +77,10 @@ int				g_nPathLimit;
 
 bool			g_bSmartGo;
 
-bool			g_bPointMode;
-CClipPoint		g_PointPoints[512];
-CClipPoint		*g_pMovingPoint;
-int				g_nPointCount;
+static bool		g_bPointMode;
+static CClipPoint  g_PointPoints[512];
+static CClipPoint* g_pMovingPoint;
+static int		g_nPointCount;
 int				g_nPointLimit;
 
 const int		XY_LEFT = 0x01;
@@ -102,10 +102,10 @@ void AcquirePath(int nCount, PFNPathCallback *pFunc) {
 	g_bPathMode = true;
 }
 
-CPtrArray	g_ptrMenus;
+static CPtrArray	g_ptrMenus;
 
-CMemFile	g_Clipboard(4096);
-CMemFile	g_PatchClipboard(4096);
+static CMemFile	g_Clipboard(4096);
+static CMemFile	g_PatchClipboard(4096);
 
 extern int	pressx;
 extern int	pressy;
@@ -114,18 +114,10 @@ extern int	pressy;
  =======================================================================================================================
  =======================================================================================================================
  */
-float fDiff(float f1, float f2) {
-	if (f1 > f2) {
-		return f1 - f2;
-	}
-	else {
-		return f2 - f1;
-	}
-}
 
 #define MAX_DRAG_POINTS 128
 
-CPtrArray			dragPoints;
+static CPtrArray dragPoints;
 static CDragPoint	*activeDrag = NULL;
 static bool			activeDragging = false;
 
@@ -133,16 +125,16 @@ static bool			activeDragging = false;
  =======================================================================================================================
  =======================================================================================================================
  */
-bool CDragPoint::PointWithin(idVec3 p, int nView) {
-	if (nView == -1) {
-		if (fDiff(p[0], vec[0]) <= 3 && fDiff(p[1], vec[1]) <= 3 && fDiff(p[2], vec[2]) <= 3) {
+bool CDragPoint::PointWithin(idVec3 p, ViewType nView) {
+	if (nView == (ViewType)-1) {
+		if (idMath::Diff(p[0], vec[0]) <= 3 && idMath::Diff(p[1], vec[1]) <= 3 && idMath::Diff(p[2], vec[2]) <= 3) {
 			return true;
 		}
 	}
 	else {
-		int nDim1 = (nView == YZ) ? 1 : 0;
-		int nDim2 = (nView == XY) ? 1 : 2;
-		if (fDiff(p[nDim1], vec[nDim1]) <= 3 && fDiff(p[nDim2], vec[nDim2]) <= 3) {
+		int nDim1 = (nView == ViewType::YZ) ? 1 : 0;
+		int nDim2 = (nView == ViewType::XY) ? 1 : 2;
+		if (idMath::Diff(p[nDim1], vec[nDim1]) <= 3 && idMath::Diff(p[nDim2], vec[nDim2]) <= 3) {
 			return true;
 		}
 	}
@@ -202,7 +194,7 @@ CDragPoint *PointRay(const idVec3 &org, const idVec3 &dir, float *dist) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void ClearSelectablePoints(brush_t *b) {
+void ClearSelectablePoints(idEditorBrush *b) {
 	if (b == NULL) {
 		dragPoints.RemoveAll();
 	}
@@ -227,7 +219,7 @@ void ClearSelectablePoints(brush_t *b) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void AddSelectablePoint(brush_t *b, idVec3 v, int type, bool priority) {
+void AddSelectablePoint(idEditorBrush *b, idVec3 v, int type, bool priority) {
 	dragPoints.Add(new CDragPoint(b, v, type, priority));
 }
 
@@ -235,7 +227,7 @@ void AddSelectablePoint(brush_t *b, idVec3 v, int type, bool priority) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void UpdateSelectablePoint(brush_t *b, idVec3 v, int type) {
+void UpdateSelectablePoint(idEditorBrush *b, idVec3 v, int type) {
 	int count = dragPoints.GetSize();
 	for (int i = 0; i < count; i++) {
 		CDragPoint	*drag = reinterpret_cast < CDragPoint * > (dragPoints.GetAt(i));
@@ -370,18 +362,20 @@ static void RotateLight(idVec3 &target, idVec3 &up, idVec3 &right, const idVec3 
  =======================================================================================================================
  =======================================================================================================================
 */
-extern idVec3 Brush_TransformedPoint(brush_t *b, const idVec3 &in);
-extern idMat3 Brush_RotationMatrix(brush_t *b);
+extern idVec3 idEditorBrushransformedPoint(idEditorBrush *b, const idVec3 &in);
+extern idMat3 Brush_RotationMatrix(idEditorBrush *b);
 bool UpdateActiveDragPoint(const idVec3 &move) {
 	if (activeDrag) {
 		idMat3 mat = Brush_RotationMatrix(activeDrag->pBrush);
 		idMat3 invmat = mat.Transpose();
 		idVec3	target, up, right, start, end;
 		CString str;
+		idEditorEntity* owner = activeDrag->pBrush->owner;
+		assert(owner);
 		if (activeDrag->nType == LIGHT_TARGET) {
-			GetVectorForKey(activeDrag->pBrush->owner, "light_target", target);
-			GetVectorForKey(activeDrag->pBrush->owner, "light_up", up);
-			GetVectorForKey(activeDrag->pBrush->owner, "light_right", right);
+			owner->GetVectorForKey("light_target", target);
+			owner->GetVectorForKey("light_up", up);
+			owner->GetVectorForKey("light_right", right);
 			target *= mat;
 			up *= mat;
 			right *= mat;
@@ -389,64 +383,64 @@ bool UpdateActiveDragPoint(const idVec3 &move) {
 			target *= invmat;
 			up *= invmat;
 			right *= invmat;
-			SetKeyVec3(activeDrag->pBrush->owner, "light_target", target);
-			SetKeyVec3(activeDrag->pBrush->owner, "light_up", up);
-			SetKeyVec3(activeDrag->pBrush->owner, "light_right", right);
+			owner->SetKeyVec3("light_target", target);
+			owner->SetKeyVec3("light_up", up);
+			owner->SetKeyVec3("light_right", right);
 			target += (activeDrag->pBrush->trackLightOrigin) ? activeDrag->pBrush->owner->lightOrigin : activeDrag->pBrush->owner->origin;
-			UpdateSelectablePoint(activeDrag->pBrush, Brush_TransformedPoint(activeDrag->pBrush, target), LIGHT_TARGET);
+			UpdateSelectablePoint(activeDrag->pBrush, idEditorBrushransformedPoint(activeDrag->pBrush, target), LIGHT_TARGET);
 			up += target;
-			UpdateSelectablePoint(activeDrag->pBrush, Brush_TransformedPoint(activeDrag->pBrush,up), LIGHT_UP);
+			UpdateSelectablePoint(activeDrag->pBrush, idEditorBrushransformedPoint(activeDrag->pBrush,up), LIGHT_UP);
 			right += target;
-			UpdateSelectablePoint(activeDrag->pBrush, Brush_TransformedPoint(activeDrag->pBrush,right), LIGHT_RIGHT);
+			UpdateSelectablePoint(activeDrag->pBrush, idEditorBrushransformedPoint(activeDrag->pBrush,right), LIGHT_RIGHT);
 		}
 		else if (activeDrag->nType == LIGHT_UP) {
-			GetVectorForKey(activeDrag->pBrush->owner, "light_up", up);
+			owner->GetVectorForKey("light_up", up);
 			up *= mat;
 			up += move;
 			up *= invmat;
-			SetKeyVec3(activeDrag->pBrush->owner, "light_up", up);
-			GetVectorForKey(activeDrag->pBrush->owner, "light_target", target);
+			owner->SetKeyVec3("light_up", up);
+			owner->GetVectorForKey("light_target", target);
 			target += (activeDrag->pBrush->trackLightOrigin) ? activeDrag->pBrush->owner->lightOrigin : activeDrag->pBrush->owner->origin;
 			up += target;
-			UpdateSelectablePoint(activeDrag->pBrush, Brush_TransformedPoint(activeDrag->pBrush,up), LIGHT_UP);
+			UpdateSelectablePoint(activeDrag->pBrush, idEditorBrushransformedPoint(activeDrag->pBrush,up), LIGHT_UP);
 		}
 		else if (activeDrag->nType == LIGHT_RIGHT) {
-			GetVectorForKey(activeDrag->pBrush->owner, "light_right", right);
+			owner->GetVectorForKey("light_right", right);
 			right *= mat;
 			right += move;
 			right *= invmat;
-			SetKeyVec3(activeDrag->pBrush->owner, "light_right", right);
-			GetVectorForKey(activeDrag->pBrush->owner, "light_target", target);
+			owner->SetKeyVec3("light_right", right);
+			owner->GetVectorForKey("light_target", target);
 			target += (activeDrag->pBrush->trackLightOrigin) ? activeDrag->pBrush->owner->lightOrigin : activeDrag->pBrush->owner->origin;
 			right += target;
-			UpdateSelectablePoint(activeDrag->pBrush, Brush_TransformedPoint(activeDrag->pBrush,right), LIGHT_RIGHT);
+			UpdateSelectablePoint(activeDrag->pBrush, idEditorBrushransformedPoint(activeDrag->pBrush,right), LIGHT_RIGHT);
 		}
 		else if (activeDrag->nType == LIGHT_START) {
-			GetVectorForKey(activeDrag->pBrush->owner, "light_start", start);
+			owner->GetVectorForKey("light_start", start);
 			start *= mat;
 			start += move;
 			start *= invmat;
-			SetKeyVec3(activeDrag->pBrush->owner, "light_start", start);
+			owner->SetKeyVec3("light_start", start);
 			start += (activeDrag->pBrush->trackLightOrigin) ? activeDrag->pBrush->owner->lightOrigin : activeDrag->pBrush->owner->origin;
-			UpdateSelectablePoint(activeDrag->pBrush, Brush_TransformedPoint(activeDrag->pBrush,start), LIGHT_START);
+			UpdateSelectablePoint(activeDrag->pBrush, idEditorBrushransformedPoint(activeDrag->pBrush,start), LIGHT_START);
 		}
 		else if (activeDrag->nType == LIGHT_END) {
-			GetVectorForKey(activeDrag->pBrush->owner, "light_end", end);
+			owner->GetVectorForKey("light_end", end);
 			end *= mat;
 			end += move;
 			end *= invmat;
-			SetKeyVec3(activeDrag->pBrush->owner, "light_end", end);
+			owner->SetKeyVec3("light_end", end);
 			end += (activeDrag->pBrush->trackLightOrigin) ? activeDrag->pBrush->owner->lightOrigin : activeDrag->pBrush->owner->origin;
-			UpdateSelectablePoint(activeDrag->pBrush, Brush_TransformedPoint(activeDrag->pBrush,end), LIGHT_END);
+			UpdateSelectablePoint(activeDrag->pBrush, idEditorBrushransformedPoint(activeDrag->pBrush,end), LIGHT_END);
 		}
 		else if (activeDrag->nType == LIGHT_CENTER) {
-			GetVectorForKey(activeDrag->pBrush->owner, "light_center", end);
+			owner->GetVectorForKey("light_center", end);
 			end *= mat;
 			end += move;
 			end *= invmat;
-			SetKeyVec3(activeDrag->pBrush->owner, "light_center", end);
+			owner->SetKeyVec3("light_center", end);
 			end += (activeDrag->pBrush->trackLightOrigin) ? activeDrag->pBrush->owner->lightOrigin : activeDrag->pBrush->owner->origin;
-			UpdateSelectablePoint(activeDrag->pBrush, Brush_TransformedPoint(activeDrag->pBrush, end), LIGHT_CENTER);
+			UpdateSelectablePoint(activeDrag->pBrush, idEditorBrushransformedPoint(activeDrag->pBrush, end), LIGHT_CENTER);
 		}
 
 		// FIXME: just build the frustrum values
@@ -461,7 +455,7 @@ bool UpdateActiveDragPoint(const idVec3 &move) {
  =======================================================================================================================
  =======================================================================================================================
 */
-bool SetDragPointCursor(idVec3 p, int nView) {
+bool SetDragPointCursor(idVec3 p, ViewType nView) {
 	activeDrag = NULL;
 
 	int numDragPoints = dragPoints.GetSize();
@@ -519,6 +513,7 @@ CXYWnd::CXYWnd() {
 	g_nPathLimit = 0;
 	m_nTimerID = -1;
 	m_nButtonstate = 0;
+	m_sViewName = "?";
 	XY_Init();
 }
 
@@ -553,6 +548,8 @@ BEGIN_MESSAGE_MAP(CXYWnd, CWnd)
 	ON_WM_PAINT()
 	ON_WM_KEYDOWN()
 	ON_WM_SIZE()
+	ON_WM_SIZING()
+	ON_WM_MOVING()
 	ON_WM_DESTROY()
 	ON_COMMAND(ID_SELECT_MOUSEROTATE, OnSelectMouserotate)
 	ON_WM_TIMER()
@@ -595,46 +592,13 @@ BOOL CXYWnd::PreCreateWindow(CREATESTRUCT &cs) {
 		cs.style = QE3_SPLITTER_STYLE;
 	}
 
+	cs.dwExStyle = WS_EX_TOOLWINDOW;
+
 	return CWnd::PreCreateWindow(cs);
 }
 
 HDC				s_hdcXY;
 HGLRC			s_hglrcXY;
-
-static unsigned s_stipple[32] = {
-	0xaaaaaaaa,
-	0x55555555,
-	0xaaaaaaaa,
-	0x55555555,
-	0xaaaaaaaa,
-	0x55555555,
-	0xaaaaaaaa,
-	0x55555555,
-	0xaaaaaaaa,
-	0x55555555,
-	0xaaaaaaaa,
-	0x55555555,
-	0xaaaaaaaa,
-	0x55555555,
-	0xaaaaaaaa,
-	0x55555555,
-	0xaaaaaaaa,
-	0x55555555,
-	0xaaaaaaaa,
-	0x55555555,
-	0xaaaaaaaa,
-	0x55555555,
-	0xaaaaaaaa,
-	0x55555555,
-	0xaaaaaaaa,
-	0x55555555,
-	0xaaaaaaaa,
-	0x55555555,
-	0xaaaaaaaa,
-	0x55555555,
-	0xaaaaaaaa,
-	0x55555555,
-};
 
 /*
  =======================================================================================================================
@@ -684,68 +648,6 @@ static void WXY_InitPixelFormat(PIXELFORMATDESCRIPTOR *pPFD) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void WXY_Print(void) {
-	DOCINFO		di;
-
-	PRINTDLG	pd;
-
-	/* initialize the PRINTDLG struct and execute it */
-	memset(&pd, 0, sizeof(pd));
-	pd.lStructSize = sizeof(pd);
-	pd.hwndOwner = g_pParentWnd->GetXYWnd()->GetSafeHwnd();
-	pd.Flags = PD_RETURNDC;
-	pd.hInstance = 0;
-	if (!PrintDlg(&pd) || !pd.hDC) {
-		g_pParentWnd->MessageBox("Could not PrintDlg()", "QE4 Print Error", MB_OK | MB_ICONERROR);
-		return;
-	}
-
-	/* StartDoc */
-	memset(&di, 0, sizeof(di));
-	di.cbSize = sizeof(di);
-	di.lpszDocName = "QE4";
-	if (StartDoc(pd.hDC, &di) <= 0) {
-		g_pParentWnd->MessageBox("Could not StartDoc()", "QE4 Print Error", MB_OK | MB_ICONERROR);
-		return;
-	}
-
-	/* StartPage */
-	if (StartPage(pd.hDC) <= 0) {
-		g_pParentWnd->MessageBox("Could not StartPage()", "QE4 Print Error", MB_OK | MB_ICONERROR);
-		return;
-	} { /* read pixels from the XY window */
-		int		bmwidth = 320, bmheight = 320;
-		int		pwidth, pheight;
-
-		RECT	r;
-
-		GetWindowRect(g_pParentWnd->GetXYWnd()->GetSafeHwnd(), &r);
-
-		bmwidth = r.right - r.left;
-		bmheight = r.bottom - r.top;
-
-		pwidth = GetDeviceCaps(pd.hDC, PHYSICALWIDTH) - GetDeviceCaps(pd.hDC, PHYSICALOFFSETX);
-		pheight = GetDeviceCaps(pd.hDC, PHYSICALHEIGHT) - GetDeviceCaps(pd.hDC, PHYSICALOFFSETY);
-
-		StretchBlt(pd.hDC, 0, 0, pwidth, pheight, s_hdcXY, 0, 0, bmwidth, bmheight, SRCCOPY);
-	}
-
-	/* EndPage and EndDoc */
-	if (EndPage(pd.hDC) <= 0) {
-		g_pParentWnd->MessageBox("QE4 Print Error", "Could not EndPage()", MB_OK | MB_ICONERROR);
-		return;
-	}
-
-	if (EndDoc(pd.hDC) <= 0) {
-		g_pParentWnd->MessageBox("QE4 Print Error", "Could not EndDoc()", MB_OK | MB_ICONERROR);
-		return;
-	}
-}
-
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
 int CXYWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	if (CWnd::OnCreate(lpCreateStruct) == -1) {
 		return -1;
@@ -754,8 +656,6 @@ int CXYWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	s_hdcXY = ::GetDC(GetSafeHwnd());
 	QEW_SetupPixelFormat(s_hdcXY, false);
 
-	qglPolygonStipple((unsigned char *)s_stipple);
-	qglLineStipple(3, 0xaaaa);
 	return 0;
 }
 
@@ -810,13 +710,13 @@ void CXYWnd::DropClipPoint(UINT nFlags, CPoint point) {
 				idVec3	smins, smaxs;
 				Select_GetBounds( smins, smaxs );
 
-				if ( m_nViewType == XY ) {
+				if ( m_nViewType == ViewType::XY ) {
 					if ( GetAsyncKeyState(VK_SHIFT) & 0x8000 ) {
 						pPt->z = smaxs.z;
 					} else {
 						pPt->z = smins.z;
 					}
-				} else if ( m_nViewType == YZ ) {
+				} else if ( m_nViewType == ViewType::YZ ) {
 					if ( GetAsyncKeyState(VK_SHIFT) & 0x8000 ) {
 						pPt->x = smaxs.x;
 					} else {
@@ -833,7 +733,7 @@ void CXYWnd::DropClipPoint(UINT nFlags, CPoint point) {
 		}
 	}
 
-	Sys_UpdateWindows(XY | W_CAMERA_IFON);
+	Sys_UpdateWindows(W_XY | W_CAMERA_ICON);
 }
 
 /*
@@ -863,7 +763,7 @@ void CXYWnd::DropPathPoint(UINT nFlags, CPoint point) {
 		}
 	}
 
-	Sys_UpdateWindows(XY | W_CAMERA_IFON);
+	Sys_UpdateWindows(W_XY | W_CAMERA_ICON);
 }
 
 /*
@@ -877,7 +777,7 @@ void CXYWnd::AddPointPoint(UINT nFlags, idVec3 *pVec) {
 	g_PointPoints[g_nPointCount].m_ptClip = *pVec;
 	g_PointPoints[g_nPointCount].SetPointPtr(pVec);
 	g_nPointCount++;
-	Sys_UpdateWindows(XY | W_CAMERA_IFON);
+	Sys_UpdateWindows(W_XY | W_CAMERA_ICON);
 }
 
 /*
@@ -941,7 +841,7 @@ float Betwixt(float f1, float f2) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void CXYWnd::ProduceSplits(brush_t **pFront, brush_t **pBack) {
+void CXYWnd::ProduceSplits(idEditorBrush **pFront, idEditorBrush **pBack) {
 	*pFront = NULL;
 	*pBack = NULL;
 	if (ClipMode()) {
@@ -952,14 +852,14 @@ void CXYWnd::ProduceSplits(brush_t **pFront, brush_t **pBack) {
 			VectorCopy(g_Clip3.m_ptClip, face.planepts[2]);
 			if (selected_brushes.next && (selected_brushes.next->next == &selected_brushes)) {
 				if (g_Clip3.Set() == false) {
-					if (m_nViewType == XY) {
+					if (m_nViewType == ViewType::XY) {
 						face.planepts[0][2] = selected_brushes.next->mins[2];
 						face.planepts[1][2] = selected_brushes.next->mins[2];
 						face.planepts[2][0] = Betwixt(g_Clip1.m_ptClip[0], g_Clip2.m_ptClip[0]);
 						face.planepts[2][1] = Betwixt(g_Clip1.m_ptClip[1], g_Clip2.m_ptClip[1]);
 						face.planepts[2][2] = selected_brushes.next->maxs[2];
 					}
-					else if (m_nViewType == YZ) {
+					else if (m_nViewType == ViewType::YZ) {
 						face.planepts[0][0] = selected_brushes.next->mins[0];
 						face.planepts[1][0] = selected_brushes.next->mins[0];
 						face.planepts[2][1] = Betwixt(g_Clip1.m_ptClip[1], g_Clip2.m_ptClip[1]);
@@ -985,10 +885,10 @@ void CXYWnd::ProduceSplits(brush_t **pFront, brush_t **pBack) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void CleanList(brush_t *pList) {
-	brush_t *pBrush = pList->next;
+void CleanList(idEditorBrush *pList) {
+	idEditorBrush *pBrush = pList->next;
 	while (pBrush != NULL && pBrush != pList) {
-		brush_t *pNext = pBrush->next;
+		idEditorBrush *pNext = pBrush->next;
 		Brush_Free(pBrush);
 		pBrush = pNext;
 	}
@@ -1002,8 +902,8 @@ void CXYWnd::ProduceSplitLists() {
 	if (AnyPatchesSelected()) {
 		Sys_Status("Deslecting patches for clip operation.\n");
 
-		brush_t *next;
-		for (brush_t * pb = selected_brushes.next; pb != &selected_brushes; pb = next) {
+		idEditorBrush *next;
+		for (idEditorBrush * pb = selected_brushes.next; pb != &selected_brushes; pb = next) {
 			next = pb->next;
 			if (pb->pPatch) {
 				Brush_RemoveFromList(pb);
@@ -1018,10 +918,10 @@ void CXYWnd::ProduceSplitLists() {
 	g_brFrontSplits.next = &g_brFrontSplits;
 	g_brBackSplits.next = &g_brBackSplits;
 
-	brush_t *pBrush;
+	idEditorBrush *pBrush;
 	for (pBrush = selected_brushes.next; pBrush != NULL && pBrush != &selected_brushes; pBrush = pBrush->next) {
-		brush_t *pFront = NULL;
-		brush_t *pBack = NULL;
+		idEditorBrush *pFront = NULL;
+		idEditorBrush *pBack = NULL;
 		if (ClipMode()) {
 			if (g_Clip1.Set() && g_Clip2.Set()) {
 				face_t	face;
@@ -1029,14 +929,14 @@ void CXYWnd::ProduceSplitLists() {
 				VectorCopy(g_Clip2.m_ptClip, face.planepts[1]);
 				VectorCopy(g_Clip3.m_ptClip, face.planepts[2]);
 				if (g_Clip3.Set() == false) {
-					if (g_pParentWnd->ActiveXY()->GetViewType() == XY) {
+					if (g_pParentWnd->ActiveXY()->GetViewType() == ViewType::XY) {
 						face.planepts[0][2] = pBrush->mins[2];
 						face.planepts[1][2] = pBrush->mins[2];
 						face.planepts[2][0] = Betwixt(g_Clip1.m_ptClip[0], g_Clip2.m_ptClip[0]);
 						face.planepts[2][1] = Betwixt(g_Clip1.m_ptClip[1], g_Clip2.m_ptClip[1]);
 						face.planepts[2][2] = pBrush->maxs[2];
 					}
-					else if (g_pParentWnd->ActiveXY()->GetViewType() == YZ) {
+					else if (g_pParentWnd->ActiveXY()->GetViewType() == ViewType::YZ) {
 						face.planepts[0][0] = pBrush->mins[0];
 						face.planepts[1][0] = pBrush->mins[0];
 						face.planepts[2][1] = Betwixt(g_Clip1.m_ptClip[1], g_Clip2.m_ptClip[1]);
@@ -1069,10 +969,10 @@ void CXYWnd::ProduceSplitLists() {
  =======================================================================================================================
  =======================================================================================================================
  */
-void Brush_CopyList(brush_t *pFrom, brush_t *pTo) {
-	brush_t *pBrush = pFrom->next;
+void Brush_CopyList(idEditorBrush *pFrom, idEditorBrush *pTo) {
+	idEditorBrush *pBrush = pFrom->next;
 	while (pBrush != NULL && pBrush != pFrom) {
-		brush_t *pNext = pBrush->next;
+		idEditorBrush *pNext = pBrush->next;
 		Brush_RemoveFromList(pBrush);
 		Brush_AddToList(pBrush, pTo);
 		pBrush = pNext;
@@ -1262,18 +1162,18 @@ void CXYWnd::OnMouseMove(UINT nFlags, CPoint point) {
 				bCrossHair = true;
 				SnapToPoint(point.x, m_nHeight - 1 - point.y, g_pMovingPoint->m_ptClip);
 				g_pMovingPoint->UpdatePointPtr();
-				Sys_UpdateWindows(XY | W_CAMERA_IFON);
+				Sys_UpdateWindows(W_XY | W_CAMERA_ICON);
 			}
 			else {
 				g_pMovingPoint = NULL;
 
-				int nDim1 = (m_nViewType == YZ) ? 1 : 0;
-				int nDim2 = (m_nViewType == XY) ? 1 : 2;
+				int nDim1 = (m_nViewType == ViewType::YZ) ? 1 : 0;
+				int nDim2 = (m_nViewType == ViewType::XY) ? 1 : 2;
 				for (int n = 0; n < g_nPointCount; n++) {
 					if
 					(
-						fDiff(g_PointPoints[n].m_ptClip[nDim1], tdp[nDim1]) < 3 &&
-						fDiff(g_PointPoints[n].m_ptClip[nDim2], tdp[nDim2]) < 3
+						idMath::Diff(g_PointPoints[n].m_ptClip[nDim1], tdp[nDim1]) < 3 &&
+						idMath::Diff(g_PointPoints[n].m_ptClip[nDim2], tdp[nDim2]) < 3
 					) {
 						bCrossHair = true;
 						g_pMovingPoint = &g_PointPoints[n];
@@ -1285,18 +1185,18 @@ void CXYWnd::OnMouseMove(UINT nFlags, CPoint point) {
 			if (g_pMovingClip && GetCapture() == this) {
 				bCrossHair = true;
 				SnapToPoint(point.x, m_nHeight - 1 - point.y, g_pMovingClip->m_ptClip);
-				Sys_UpdateWindows(XY | W_CAMERA_IFON);
+				Sys_UpdateWindows(W_XY | W_CAMERA_ICON);
 			}
 			else {
 				g_pMovingClip = NULL;
 
-				int nDim1 = (m_nViewType == YZ) ? 1 : 0;
-				int nDim2 = (m_nViewType == XY) ? 1 : 2;
+				int nDim1 = (m_nViewType == ViewType::YZ) ? 1 : 0;
+				int nDim2 = (m_nViewType == ViewType::XY) ? 1 : 2;
 				if (g_Clip1.Set()) {
 					if
 					(
-						fDiff(g_Clip1.m_ptClip[nDim1], tdp[nDim1]) < 3 &&
-						fDiff(g_Clip1.m_ptClip[nDim2], tdp[nDim2]) < 3
+						idMath::Diff(g_Clip1.m_ptClip[nDim1], tdp[nDim1]) < 3 &&
+						idMath::Diff(g_Clip1.m_ptClip[nDim2], tdp[nDim2]) < 3
 					) {
 						bCrossHair = true;
 						g_pMovingClip = &g_Clip1;
@@ -1306,8 +1206,8 @@ void CXYWnd::OnMouseMove(UINT nFlags, CPoint point) {
 				if (g_Clip2.Set()) {
 					if
 					(
-						fDiff(g_Clip2.m_ptClip[nDim1], tdp[nDim1]) < 3 &&
-						fDiff(g_Clip2.m_ptClip[nDim2], tdp[nDim2]) < 3
+						idMath::Diff(g_Clip2.m_ptClip[nDim1], tdp[nDim1]) < 3 &&
+						idMath::Diff(g_Clip2.m_ptClip[nDim2], tdp[nDim2]) < 3
 					) {
 						bCrossHair = true;
 						g_pMovingClip = &g_Clip2;
@@ -1317,8 +1217,8 @@ void CXYWnd::OnMouseMove(UINT nFlags, CPoint point) {
 				if (g_Clip3.Set()) {
 					if
 					(
-						fDiff(g_Clip3.m_ptClip[nDim1], tdp[nDim1]) < 3 &&
-						fDiff(g_Clip3.m_ptClip[nDim2], tdp[nDim2]) < 3
+						idMath::Diff(g_Clip3.m_ptClip[nDim1], tdp[nDim1]) < 3 &&
+						idMath::Diff(g_Clip3.m_ptClip[nDim2], tdp[nDim2]) < 3
 					) {
 						bCrossHair = true;
 						g_pMovingClip = &g_Clip3;
@@ -1334,18 +1234,18 @@ void CXYWnd::OnMouseMove(UINT nFlags, CPoint point) {
 			if (g_pMovingPath && GetCapture() == this) {
 				bCrossHair = true;
 				SnapToPoint(point.x, m_nHeight - 1 - point.y, g_pMovingPath->m_ptClip);
-				Sys_UpdateWindows(XY | W_CAMERA_IFON);
+				Sys_UpdateWindows(W_XY | W_CAMERA_ICON);
 			}
 			else {
 				g_pMovingPath = NULL;
 
-				int nDim1 = (m_nViewType == YZ) ? 1 : 0;
-				int nDim2 = (m_nViewType == XY) ? 1 : 2;
+				int nDim1 = (m_nViewType == ViewType::YZ) ? 1 : 0;
+				int nDim2 = (m_nViewType == ViewType::XY) ? 1 : 2;
 				for (int n = 0; n < g_nPathCount; n++) {
 					if
 					(
-						fDiff(g_PathPoints[n].m_ptClip[nDim1], tdp[nDim1]) < 3 &&
-						fDiff(g_PathPoints[n].m_ptClip[nDim2], tdp[nDim2]) < 3
+						idMath::Diff(g_PathPoints[n].m_ptClip[nDim1], tdp[nDim1]) < 3 &&
+						idMath::Diff(g_PathPoints[n].m_ptClip[nDim2], tdp[nDim2]) < 3
 					) {
 						bCrossHair = true;
 						g_pMovingPath = &g_PathPoints[n];
@@ -1417,7 +1317,7 @@ void CXYWnd::SetClipMode(bool bMode) {
 		CleanList(&g_brBackSplits);
 		g_brFrontSplits.next = &g_brFrontSplits;
 		g_brBackSplits.next = &g_brBackSplits;
-		Sys_UpdateWindows(XY | W_CAMERA_IFON);
+		Sys_UpdateWindows(W_XY | W_CAMERA_ICON);
 	}
 }
 
@@ -1473,7 +1373,7 @@ void CXYWnd::OnPaint() {
 	bool		bPaint = true;
 	if (!qwglMakeCurrent(dc.m_hDC, win32.hGLRC)) {
 		common->Printf("ERROR: wglMakeCurrent failed.. Error:%i\n", qglGetError());
-		common->Printf("Please restart Q3Radiant if the Map view is not working\n");
+		common->Printf("Please restart " EDITOR_WINDOWTEXT " if the Map view is not working\n");
 		bPaint = false;
 	}
 
@@ -1482,9 +1382,9 @@ void CXYWnd::OnPaint() {
 		XY_Draw();
 		QE_CheckOpenGLForErrors();
 
-		if (m_nViewType != XY) {
+		if (m_nViewType != ViewType::XY) {
 			qglPushMatrix();
-			if (m_nViewType == YZ) {
+			if (m_nViewType == ViewType::YZ) {
 				qglRotatef(-90, 0, 1, 0);	// put Z going up
 			}
 
@@ -1494,13 +1394,13 @@ void CXYWnd::OnPaint() {
 		if ( g_bCrossHairs ) {
 			qglColor4f( 0.2f, 0.9f, 0.2f, 0.8f );
 			qglBegin(GL_LINES);
-			if (m_nViewType == XY) {
+			if (m_nViewType == ViewType::XY) {
 				qglVertex2f(-16384, tdp[1]);
 				qglVertex2f(16384, tdp[1]);
 				qglVertex2f(tdp[0], -16384);
 				qglVertex2f(tdp[0], 16384);
 			}
-			else if (m_nViewType == YZ) {
+			else if (m_nViewType == ViewType::YZ) {
 				qglVertex3f(tdp[0], -16384, tdp[2]);
 				qglVertex3f(tdp[0], 16384, tdp[2]);
 				qglVertex3f(tdp[0], tdp[1], -16384);
@@ -1563,8 +1463,8 @@ void CXYWnd::OnPaint() {
 			if (g_Clip1.Set() && g_Clip2.Set() && selected_brushes.next != &selected_brushes) {
 				ProduceSplitLists();
 
-				brush_t *pBrush;
-				brush_t *pList = ((m_nViewType == XZ) ? !g_bSwitch : g_bSwitch) ? &g_brBackSplits : &g_brFrontSplits;
+				idEditorBrush *pBrush;
+				idEditorBrush *pList = ((m_nViewType == ViewType::XZ) ? !g_bSwitch : g_bSwitch) ? &g_brBackSplits : &g_brFrontSplits;
 				for (pBrush = pList->next; pBrush != NULL && pBrush != pList; pBrush = pBrush->next) {
 					qglColor3f(1, 1, 0);
 
@@ -1614,7 +1514,7 @@ void CXYWnd::OnPaint() {
 			}
 		}
 
-		if (m_nViewType != XY) {
+		if (m_nViewType != ViewType::XY) {
 			qglPopMatrix();
 		}
 
@@ -1633,12 +1533,12 @@ void CXYWnd::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 
 //
 // =======================================================================================================================
-//    FIXME: the brush_t *pBrush is never used. ( Entity_Create uses selected_brushes )
+//    FIXME: the idEditorBrush *pBrush is never used. ( Entity_Create uses selected_brushes )
 // =======================================================================================================================
 //
-void CreateEntityFromName(char *pName, brush_t *pBrush, bool forceFixed, idVec3 min, idVec3 max, idVec3 org) {
+void CreateEntityFromName(char *pName, idEditorBrush *pBrush, bool forceFixed, idVec3 min, idVec3 max, idVec3 org) {
 	eclass_t	*pecNew;
-	entity_t	*petNew;
+	idEditorEntity	*petNew;
 	if (stricmp(pName, "worldspawn") == 0) {
 		g_pParentWnd->MessageBox("Can't create an entity with worldspawn.", "info", 0);
 		return;
@@ -1657,15 +1557,15 @@ void CreateEntityFromName(char *pName, brush_t *pBrush, bool forceFixed, idVec3 
 		idVec3	rad = max - min;
 		rad *= 0.5;
 		if (rad.x != 0 && rad.y != 0 && rad.z != 0) {
-			SetKeyValue(petNew, "light_radius", va("%g %g %g", idMath::Fabs(rad.x), idMath::Fabs(rad.y), idMath::Fabs(rad.z)));
-			DeleteKey(petNew, "light");
+			petNew->SetKeyValue("light_radius", va("%g %g %g", idMath::Fabs(rad.x), idMath::Fabs(rad.y), idMath::Fabs(rad.z)));
+			petNew->DeleteKey("light");
 		}
 	}
 
 
 	if (petNew == NULL) {
 		if (!((selected_brushes.next == &selected_brushes) || (selected_brushes.next->next != &selected_brushes))) {
-			brush_t *b = selected_brushes.next;
+			idEditorBrush *b = selected_brushes.next;
 			if (b->owner != world_entity && ((b->owner->eclass->fixedsize && pecNew->fixedsize) || forceFixed)) {
 				idVec3	mins, maxs;
 				idVec3	origin;
@@ -1676,10 +1576,10 @@ void CreateEntityFromName(char *pName, brush_t *pBrush, bool forceFixed, idVec3 
 				VectorAdd(pecNew->mins, origin, mins);
 				VectorAdd(pecNew->maxs, origin, maxs);
 
-				brush_t *nb = Brush_Create(mins, maxs, &pecNew->texdef);
+				idEditorBrush *nb = Brush_Create(mins, maxs, &pecNew->texdef);
 				Entity_LinkBrush(b->owner, nb);
 				nb->owner->eclass = pecNew;
-				SetKeyValue(nb->owner, "classname", pName);
+				nb->owner->SetKeyValue("classname", pName);
 				Brush_Free(b);
 				Brush_Build(nb);
 				Brush_AddToList(nb, &active_brushes);
@@ -1695,7 +1595,7 @@ void CreateEntityFromName(char *pName, brush_t *pBrush, bool forceFixed, idVec3 
 	Select_Deselect();
 
 	//
-	// entity_t* pEntity = world_entity; if (selected_brushes.next !=
+	// idEditorEntity* pEntity = world_entity; if (selected_brushes.next !=
 	// &selected_brushes) pEntity = selected_brushes.next->owner;
 	//
 	Select_Brush(petNew->brushes.onext);
@@ -1707,20 +1607,20 @@ void CreateEntityFromName(char *pName, brush_t *pBrush, bool forceFixed, idVec3 
  =======================================================================================================================
  =======================================================================================================================
  */
-brush_t *CreateEntityBrush(int x, int y, CXYWnd *pWnd) {
+idEditorBrush *CreateEntityBrush(int x, int y, CXYWnd *pWnd) {
 	idVec3	mins, maxs;
 	int		i;
 	float	temp;
-	brush_t *n;
+	idEditorBrush *n;
 
 	pWnd->SnapToPoint(x, y, mins);
 	x += 32;
 	y += 32;
 	pWnd->SnapToPoint(x, y, maxs);
 
-	int nDim = (pWnd->GetViewType() == XY) ? 2 : (pWnd->GetViewType() == YZ) ? 0 : 1;
+	int nDim = (pWnd->GetViewType() == ViewType::XY) ? 2 : (pWnd->GetViewType() == ViewType::YZ) ? 0 : 1;
 	mins[nDim] = g_qeglobals.d_gridsize * ((int)(g_qeglobals.d_new_brush_bottom[nDim] / g_qeglobals.d_gridsize));
-	maxs[nDim] = g_qeglobals.d_gridsize * ((int)(g_qeglobals.d_new_brush_top[nDim] / g_qeglobals.d_gridsize));
+	maxs[nDim] = g_qeglobals.d_gridsize * ((int)(g_qeglobals.d_new_idEditorBrushop[nDim] / g_qeglobals.d_gridsize));
 
 	if (maxs[nDim] <= mins[nDim]) {
 		maxs[nDim] = mins[nDim] + g_qeglobals.d_gridsize;
@@ -1761,7 +1661,7 @@ void CreateRightClickEntity(CXYWnd *pWnd, int x, int y, char *pName) {
 	CRect	rctZ;
 	pWnd->GetClientRect(rctZ);
 
-	brush_t *pBrush;
+	idEditorBrush *pBrush;
 	if (selected_brushes.next == &selected_brushes) {
 		pBrush = CreateEntityBrush(x, rctZ.Height() - 1 - y, pWnd);
 		min.Zero();
@@ -1778,10 +1678,10 @@ void CreateRightClickEntity(CXYWnd *pWnd, int x, int y, char *pName) {
  =======================================================================================================================
  =======================================================================================================================
  */
-brush_t *CreateSmartBrush(idVec3 v) {
+idEditorBrush *CreateSmartBrush(idVec3 v) {
 	idVec3	mins, maxs;
 	int		i;
-	brush_t *n;
+	idEditorBrush *n;
 
 	for (i = 0; i < 3; i++) {
 		mins[i] = v[i] - 16;
@@ -1853,11 +1753,11 @@ void CreateSmartEntity(CXYWnd *pWnd, int x, int y, const char *pName) {
 		array.Add(reinterpret_cast < void * > (selected_brushes.next));
 		Select_Deselect();
 
-		brush_t *pBrush = CreateSmartBrush(g_PathPoints[0]);
+		idEditorBrush *pBrush = CreateSmartBrush(g_PathPoints[0]);
 		array.Add(pBrush);
 		Select_Deselect();
-		Select_Brush(reinterpret_cast < brush_t * > (array.GetAt(0)));
-		Select_Brush(reinterpret_cast < brush_t * > (array.GetAt(1)));
+		Select_Brush(reinterpret_cast < idEditorBrush * > (array.GetAt(0)));
+		Select_Brush(reinterpret_cast < idEditorBrush * > (array.GetAt(1)));
 		ConnectEntities();
 		g_bScreenUpdates = true;
 	}
@@ -1889,8 +1789,8 @@ void FinishSmartCreation() {
 
 		for (n = 0; n < g_nPathCount; n++) {
 			Select_Deselect();
-			Select_Brush(reinterpret_cast < brush_t * > (array.GetAt(n)));
-			Select_Brush(reinterpret_cast < brush_t * > (array.GetAt(n + 1)));
+			Select_Brush(reinterpret_cast < idEditorBrush * > (array.GetAt(n)));
+			Select_Brush(reinterpret_cast < idEditorBrush * > (array.GetAt(n + 1)));
 			ConnectEntities();
 		}
 
@@ -1937,7 +1837,7 @@ void CXYWnd::OnEntityCreate(unsigned int nID) {
 		}
 		else if (strItem.CompareNoCase("Remove") == 0) {
 			// remove selected brushes from their current group
-			brush_t *b;
+			idEditorBrush *b;
 			for (b = selected_brushes.next; b != &selected_brushes; b = b->next) {
 			}
 		}
@@ -2122,9 +2022,6 @@ bool MergeMenu(CMenu * pMenuDestination, const CMenu * pMenuAdd, bool bTopLevel 
  =======================================================================================================================
  */
 void CXYWnd::HandleDrop() {
-	if (g_PrefsDlg.m_bRightClick == false) {
-		return;
-	}
 
 	if (!m_mnuDrop.GetSafeHmenu()) {		// first time, load it up
 		m_mnuDrop.CreatePopupMenu();
@@ -2249,13 +2146,13 @@ void CXYWnd::XY_ToPoint(int x, int y, idVec3 &point) {
 	float	fy = y;
 	float	fw = m_nWidth;
 	float	fh = m_nHeight;
-	if (m_nViewType == XY) {
+	if (m_nViewType == ViewType::XY) {
 		point[0] = m_vOrigin[0] + (fx - fw / 2) / m_fScale;
 		point[1] = m_vOrigin[1] + (fy - fh / 2) / m_fScale;
 
 		// point[2] = 0;
 	}
-	else if (m_nViewType == YZ) {
+	else if (m_nViewType == ViewType::YZ) {
 		//
 		// //point[0] = 0; point[1] = m_vOrigin[0] + (fx - fw / 2) / m_fScale; point[2] =
 		// m_vOrigin[1] + (fy - fh / 2 ) / m_fScale;
@@ -2280,7 +2177,7 @@ void CXYWnd::XY_ToPoint(int x, int y, idVec3 &point) {
  =======================================================================================================================
  */
 void CXYWnd::XY_ToGridPoint(int x, int y, idVec3 &point) {
-	if (m_nViewType == XY) {
+	if (m_nViewType == ViewType::XY) {
 		point[0] = m_vOrigin[0] + (x - m_nWidth / 2) / m_fScale;
 		point[1] = m_vOrigin[1] + (y - m_nHeight / 2) / m_fScale;
 
@@ -2288,7 +2185,7 @@ void CXYWnd::XY_ToGridPoint(int x, int y, idVec3 &point) {
 		point[0] = floor(point[0] / g_qeglobals.d_gridsize + 0.5) * g_qeglobals.d_gridsize;
 		point[1] = floor(point[1] / g_qeglobals.d_gridsize + 0.5) * g_qeglobals.d_gridsize;
 	}
-	else if (m_nViewType == YZ) {
+	else if (m_nViewType == ViewType::YZ) {
 		//
 		// point[0] = 0; point[1] = m_vOrigin[0] + (x - m_nWidth / 2) / m_fScale; point[2]
 		// = m_vOrigin[1] + (y - m_nHeight / 2) / m_fScale;
@@ -2335,7 +2232,7 @@ void CXYWnd::XY_MouseDown(int x, int y, int buttons) {
 	VectorCopy(point, origin);
 
 	dir.Zero();
-	if (m_nViewType == XY) {
+	if (m_nViewType == ViewType::XY) {
 		origin[2] = HUGE_DISTANCE;
 		dir[2] = -1;
 		right[0] = 1 / m_fScale;
@@ -2346,7 +2243,7 @@ void CXYWnd::XY_MouseDown(int x, int y, int buttons) {
 		up[2] = 0;
 		point[2] = g_pParentWnd->GetCamera()->Camera().origin[2];
 	}
-	else if (m_nViewType == YZ) {
+	else if (m_nViewType == ViewType::YZ) {
 		origin[0] = HUGE_DISTANCE;
 		dir[0] = -1;
 		right[1] = 1 / m_fScale;
@@ -2403,7 +2300,7 @@ void CXYWnd::XY_MouseDown(int x, int y, int buttons) {
 			return;
 		}
 
-		Patch_SetView((m_nViewType == XY) ? W_XY : (m_nViewType == YZ) ? W_YZ : W_XZ);
+		Patch_SetView((m_nViewType == ViewType::XY) ? W_XY : (m_nViewType == ViewType::YZ) ? W_YZ : W_XZ);
 		Drag_Begin(x, y, buttons, right, up, origin, dir);
 		return;
 	}
@@ -2424,12 +2321,12 @@ void CXYWnd::XY_MouseDown(int x, int y, int buttons) {
 	) {
 		VectorSubtract(point, g_pParentWnd->GetCamera()->Camera().origin, point);
 
-		int n1 = (m_nViewType == XY) ? 1 : 2;
-		int n2 = (m_nViewType == YZ) ? 1 : 0;
-		int nAngle = (m_nViewType == XY) ? YAW : PITCH;
+		int n1 = (m_nViewType == ViewType::XY) ? 1 : 2;
+		int n2 = (m_nViewType == ViewType::YZ) ? 1 : 0;
+		int nAngle = (m_nViewType == ViewType::XY) ? YAW : PITCH;
 		if (point[n1] || point[n2]) {
 			g_pParentWnd->GetCamera()->Camera().angles[nAngle] = RAD2DEG( atan2(point[n1], point[n2]) );
-			Sys_UpdateWindows(W_CAMERA_IFON | W_XY_OVERLAY);
+			Sys_UpdateWindows(W_CAMERA_ICON | W_XY_OVERLAY);
 		}
 	}
 
@@ -2447,11 +2344,11 @@ void CXYWnd::XY_MouseDown(int x, int y, int buttons) {
 		}
 		else {
 			SnapToPoint(x, y, point);
-			if (m_nViewType == XY) {
+			if (m_nViewType == ViewType::XY) {
 				z.origin[0] = point[0];
 				z.origin[1] = point[1];
 			}
-			else if (m_nViewType == YZ) {
+			else if (m_nViewType == ViewType::YZ) {
 				z.origin[0] = point[1];
 				z.origin[1] = point[2];
 			}
@@ -2522,7 +2419,7 @@ void CXYWnd::NewBrushDrag(int x, int y) {
 	idVec3	mins, maxs, junk;
 	int		i;
 	float	temp;
-	brush_t *n;
+	idEditorBrush *n;
 
 	if ( radiant_entityMode.GetBool() ) {
 		return;
@@ -2539,11 +2436,11 @@ void CXYWnd::NewBrushDrag(int x, int y) {
 
 	SnapToPoint(m_nPressx, m_nPressy, mins);
 
-	int nDim = (m_nViewType == XY) ? 2 : (m_nViewType == YZ) ? 0 : 1;
+	int nDim = (m_nViewType == ViewType::XY) ? 2 : (m_nViewType == ViewType::YZ) ? 0 : 1;
 
 	mins[nDim] = g_qeglobals.d_gridsize * ((int)(g_qeglobals.d_new_brush_bottom[nDim] / g_qeglobals.d_gridsize));
 	SnapToPoint(x, y, maxs);
-	maxs[nDim] = g_qeglobals.d_gridsize * ((int)(g_qeglobals.d_new_brush_top[nDim] / g_qeglobals.d_gridsize));
+	maxs[nDim] = g_qeglobals.d_gridsize * ((int)(g_qeglobals.d_new_idEditorBrushop[nDim] / g_qeglobals.d_gridsize));
 	if (maxs[nDim] <= mins[nDim]) {
 		maxs[nDim] = mins[nDim] + g_qeglobals.d_gridsize;
 	}
@@ -2611,7 +2508,7 @@ bool CXYWnd::XY_MouseMoved(int x, int y, int buttons) {
 	// lbutton (possibly with control and or shift) with selection = drag selection
 	if (m_nButtonstate & MK_LBUTTON) {
 		Drag_MouseMoved(x, y, buttons);
-		Sys_UpdateWindows(W_XY_OVERLAY | W_CAMERA_IFON | W_Z);
+		Sys_UpdateWindows(W_XY_OVERLAY | W_CAMERA_ICON | W_Z);
 		return false;
 	}
 
@@ -2639,11 +2536,11 @@ bool CXYWnd::XY_MouseMoved(int x, int y, int buttons) {
 		}
 		else {
 			SnapToPoint(x, y, point);
-			if (m_nViewType == XY) {
+			if (m_nViewType == ViewType::XY) {
 				z.origin[0] = point[0];
 				z.origin[1] = point[1];
 			}
-			else if (m_nViewType == YZ) {
+			else if (m_nViewType == ViewType::YZ) {
 				z.origin[0] = point[1];
 				z.origin[1] = point[2];
 			}
@@ -2666,12 +2563,12 @@ bool CXYWnd::XY_MouseMoved(int x, int y, int buttons) {
 		SnapToPoint(x, y, point);
 		VectorSubtract(point, g_pParentWnd->GetCamera()->Camera().origin, point);
 
-		int n1 = (m_nViewType == XY) ? 1 : 2;
-		int n2 = (m_nViewType == YZ) ? 1 : 0;
-		int nAngle = (m_nViewType == XY) ? YAW : PITCH;
+		int n1 = (m_nViewType == ViewType::XY) ? 1 : 2;
+		int n2 = (m_nViewType == ViewType::YZ) ? 1 : 0;
+		int nAngle = (m_nViewType == ViewType::XY) ? YAW : PITCH;
 		if (point[n1] || point[n2]) {
 			g_pParentWnd->GetCamera()->Camera().angles[nAngle] = RAD2DEG( atan2(point[n1], point[n2]) );
-			Sys_UpdateWindows(W_CAMERA_IFON | W_XY_OVERLAY);
+			Sys_UpdateWindows(W_CAMERA_ICON | W_XY_OVERLAY);
 		}
 
 		return false;
@@ -2686,7 +2583,7 @@ bool CXYWnd::XY_MouseMoved(int x, int y, int buttons) {
 				int		*px = &x;
 				long	*px2 = &m_ptCursor.x;
 
-				if (fDiff(y, m_ptCursor.y) > fDiff(x, m_ptCursor.x)) {
+				if (idMath::Diff<long>(y, m_ptCursor.y) > idMath::Diff<long>(x, m_ptCursor.x)) {
 					px = &y;
 					px2 = &m_ptCursor.y;
 				}
@@ -2710,8 +2607,8 @@ bool CXYWnd::XY_MouseMoved(int x, int y, int buttons) {
 				Sys_UpdateWindows(W_XY | W_XY_OVERLAY);
 			}
 			else {
-				int nDim1 = (m_nViewType == YZ) ? 1 : 0;
-				int nDim2 = (m_nViewType == XY) ? 1 : 2;
+				int nDim1 = (m_nViewType == ViewType::YZ) ? 1 : 0;
+				int nDim2 = (m_nViewType == ViewType::XY) ? 1 : 2;
 				m_vOrigin[nDim1] -= (x - m_ptCursor.x) / m_fScale;
 				m_vOrigin[nDim2] += (y - m_ptCursor.y) / m_fScale;
 				SetCursorPos(m_ptCursor.x, m_ptCursor.y);
@@ -2732,7 +2629,7 @@ bool CXYWnd::XY_MouseMoved(int x, int y, int buttons) {
 
 /*
  =======================================================================================================================
-	DRAWING £
+	DRAWING
 	XY_DrawGrid
  =======================================================================================================================
  */
@@ -2746,8 +2643,8 @@ void CXYWnd::XY_DrawGrid() {
 	w = m_nWidth / 2 / m_fScale;
 	h = m_nHeight / 2 / m_fScale;
 
-	int nDim1 = (m_nViewType == YZ) ? 1 : 0;
-	int nDim2 = (m_nViewType == XY) ? 1 : 2;
+	int nDim1 = (m_nViewType == ViewType::YZ) ? 1 : 0;
+	int nDim2 = (m_nViewType == ViewType::XY) ? 1 : 2;
 
 	// int nDim1 = 0; int nDim2 = 1;
 	xb = m_vOrigin[nDim1] - w;
@@ -2779,6 +2676,7 @@ void CXYWnd::XY_DrawGrid() {
 	ye = startPos * ceil(ye / startPos);
 
 	// draw major blocks
+	qglLineWidth(0.25);
 	qglColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR].ToFloatPtr());
 
 	int stepSize = 64 * 0.1 / m_fScale;
@@ -2842,7 +2740,7 @@ void CXYWnd::XY_DrawGrid() {
 
 	// draw ZClip boundaries (if applicable)...
 	//
-	if (m_nViewType == XZ || m_nViewType == YZ)
+	if (m_nViewType == ViewType::XZ || m_nViewType == ViewType::YZ)
 	{
 		if (g_pParentWnd->GetZWnd()->m_pZClip)	// should always be the case at this point I think, but this is safer
 		{
@@ -2890,18 +2788,7 @@ void CXYWnd::XY_DrawGrid() {
 
 		qglRasterPos2f(m_vOrigin[nDim1] - w + 35 / m_fScale, m_vOrigin[nDim2] + h - 20 / m_fScale);
 
-		char	cView[20];
-		if (m_nViewType == XY) {
-			strcpy(cView, "XY Top");
-		}
-		else if (m_nViewType == XZ) {
-			strcpy(cView, "XZ Front");
-		}
-		else {
-			strcpy(cView, "YZ Side");
-		}
-
-		qglCallLists(strlen(cView), GL_UNSIGNED_BYTE, cView);
+		qglCallLists(strlen(m_sViewName), GL_UNSIGNED_BYTE, m_sViewName);
 	}
 
 	/*
@@ -2923,8 +2810,8 @@ void CXYWnd::XY_DrawBlockGrid() {
 	w = m_nWidth / 2 / m_fScale;
 	h = m_nHeight / 2 / m_fScale;
 
-	int nDim1 = (m_nViewType == YZ) ? 1 : 0;
-	int nDim2 = (m_nViewType == XY) ? 1 : 2;
+	int nDim1 = (m_nViewType == ViewType::YZ) ? 1 : 0;
+	int nDim2 = (m_nViewType == ViewType::XY) ? 1 : 2;
 
 	xb = m_vOrigin[nDim1] - w;
 	if (xb < region_mins[nDim1]) {
@@ -3004,18 +2891,17 @@ void GLColoredBoxWithLabel(float x, float y, float size, idVec4 color, const cha
 	qglCallLists(strlen(text), GL_UNSIGNED_BYTE, text);
 }
 
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
+//========================
+// DrawRotateIcon
+//========================
 void CXYWnd::DrawRotateIcon() {
 	float	x, y;
 
-	if (m_nViewType == XY) {
+	if (m_nViewType == ViewType::XY) {
 		x = g_vRotateOrigin[0];
 		y = g_vRotateOrigin[1];
 	}
-	else if (m_nViewType == YZ) {
+	else if (m_nViewType == ViewType::YZ) {
 		x = g_vRotateOrigin[1];
 		y = g_vRotateOrigin[2];
 	}
@@ -3047,8 +2933,8 @@ void CXYWnd::DrawRotateIcon() {
 
 	int w = m_nWidth / 2 / m_fScale;
 	int h = m_nHeight / 2 / m_fScale;
-	int nDim1 = (m_nViewType == YZ) ? 1 : 0;
-	int nDim2 = (m_nViewType == XY) ? 1 : 2;
+	int nDim1 = (m_nViewType == ViewType::YZ) ? 1 : 0;
+	int nDim2 = (m_nViewType == ViewType::XY) ? 1 : 2;
 	x = m_vOrigin[nDim1] - w + 35 / m_fScale;
 	y = m_vOrigin[nDim2] + h - 40 / m_fScale;
 	const char *p = "Rotate Z Axis";
@@ -3065,19 +2951,18 @@ void CXYWnd::DrawRotateIcon() {
 	qglCallLists(str.Length(), GL_UNSIGNED_BYTE, str.c_str());
 }
 
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
+//========================
+// DrawCameraIcon
+//========================
 void CXYWnd::DrawCameraIcon() {
 	float	x, y, a;
 
-	if (m_nViewType == XY) {
+	if (m_nViewType == ViewType::XY) {
 		x = g_pParentWnd->GetCamera()->Camera().origin[0];
 		y = g_pParentWnd->GetCamera()->Camera().origin[1];
 		a = g_pParentWnd->GetCamera()->Camera().angles[YAW] * idMath::M_DEG2RAD;
 	}
-	else if (m_nViewType == YZ) {
+	else if (m_nViewType == ViewType::YZ) {
 		x = g_pParentWnd->GetCamera()->Camera().origin[1];
 		y = g_pParentWnd->GetCamera()->Camera().origin[2];
 		a = g_pParentWnd->GetCamera()->Camera().angles[PITCH] * idMath::M_DEG2RAD;
@@ -3117,50 +3002,10 @@ void CXYWnd::DrawCameraIcon() {
 
 /*
  =======================================================================================================================
- =======================================================================================================================
- */
-void CXYWnd::DrawZIcon(void) {
-	if (m_nViewType == XY) {
-		float	x = z.origin[0];
-		float	y = z.origin[1];
-		qglEnable(GL_BLEND);
-		globalImages->BindNull();
-		qglPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		qglDisable(GL_CULL_FACE);
-		qglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		qglColor4f(0.0, 0.0, 1.0, 0.25);
-		qglBegin(GL_QUADS);
-		qglVertex3f(x - 8, y - 8, 0);
-		qglVertex3f(x + 8, y - 8, 0);
-		qglVertex3f(x + 8, y + 8, 0);
-		qglVertex3f(x - 8, y + 8, 0);
-		qglEnd();
-		qglDisable(GL_BLEND);
-
-		qglColor4f(0.0, 0.0, 1.0, 1);
-
-		qglBegin(GL_LINE_LOOP);
-		qglVertex3f(x - 8, y - 8, 0);
-		qglVertex3f(x + 8, y - 8, 0);
-		qglVertex3f(x + 8, y + 8, 0);
-		qglVertex3f(x - 8, y + 8, 0);
-		qglEnd();
-
-		qglBegin(GL_LINE_STRIP);
-		qglVertex3f(x - 4, y + 4, 0);
-		qglVertex3f(x + 4, y + 4, 0);
-		qglVertex3f(x - 4, y - 4, 0);
-		qglVertex3f(x + 4, y - 4, 0);
-		qglEnd();
-	}
-}
-
-/*
- =======================================================================================================================
 	FilterBrush
  =======================================================================================================================
  */
-bool FilterBrush(brush_t *pb) {
+bool FilterBrush(const idEditorBrush *pb) {
 
 	if (!pb->owner) {
 		return false;	// during construction
@@ -3172,22 +3017,6 @@ bool FilterBrush(brush_t *pb) {
 
 	if ( pb->forceVisibile ) {
 		return false;
-	}
-
-	if (g_pParentWnd->GetZWnd()->m_pZClip)	// ZClip class up and running? (and hence Z window built)
-	{
-		if (g_pParentWnd->GetZWnd()->m_pZClip->IsEnabled())
-		{
-			// ZClipping active...
-			//
-			if (pb->mins[2] > g_pParentWnd->GetZWnd()->m_pZClip->GetTop()	// brush bottom edge is above clip top
-				||
-				pb->maxs[2] < g_pParentWnd->GetZWnd()->m_pZClip->GetBottom()// brush top edge is below clip bottom
-				)
-			{
-				return TRUE;
-			}
-		}
 	}
 
 	if (g_qeglobals.d_savedinfo.exclude & (EXCLUDE_CAULK | EXCLUDE_VISPORTALS)) {
@@ -3275,10 +3104,9 @@ bool FilterBrush(brush_t *pb) {
 
 		return false;
 	}
-	else {
-		if ( g_qeglobals.d_savedinfo.exclude & EXCLUDE_ENT ) {
-			return ( idStr::Cmpn( pb->owner->eclass->name, "func_static", 10 ) != 0 );
-		}
+
+	if ( g_qeglobals.d_savedinfo.exclude & EXCLUDE_ENT ) {
+		return ( idStr::Cmpn( pb->owner->eclass->name, "func_static", 10 ) != 0 );
 	}
 
 	if ( g_qeglobals.d_savedinfo.exclude & EXCLUDE_LIGHTS && pb->owner->eclass->nShowFlags & ECLASS_LIGHT ) {
@@ -3302,7 +3130,7 @@ bool FilterBrush(brush_t *pb) {
 
 /*
  =======================================================================================================================
-	PATH LINES £
+	PATH LINES ï¿½
 	DrawPathLines Draws connections between entities. Needs to consider all entities, not just ones on screen, because
 	the lines can be visible when neither end is. Called for both camera view and xy view.
  =======================================================================================================================
@@ -3310,15 +3138,14 @@ bool FilterBrush(brush_t *pb) {
 void DrawPathLines(void) {
 	int			i, k;
 	idVec3		mid, mid1;
-	entity_t	*se, *te;
-	brush_t		*sb, *tb;
-	const char		*psz;
+	idEditorEntity	*se, *te;
+	idEditorBrush		*sb, *tb;
 	idVec3		dir, s1, s2;
 	float		len, f;
 	int			arrows;
 	int			num_entities;
 	const char		*ent_target[MAX_MAP_ENTITIES];
-	entity_t	*ent_entity[MAX_MAP_ENTITIES];
+	idEditorEntity	*ent_entity[MAX_MAP_ENTITIES];
 
 	if (g_qeglobals.d_savedinfo.exclude & EXCLUDE_PATHS) {
 		return;
@@ -3328,9 +3155,9 @@ void DrawPathLines(void) {
 	for (te = entities.next; te != &entities && num_entities != MAX_MAP_ENTITIES; te = te->next) {
 		for (i = 0; i < 2048; i++) {
 			if (i == 0) {
-				ent_target[num_entities] = ValueForKey(te, "target");
+				ent_target[num_entities] = te->ValueForKey("target");
 			} else {
-				ent_target[num_entities] = ValueForKey(te, va("target%i", i));
+				ent_target[num_entities] = te->ValueForKey(va("target%i", i));
 			}
 			if (ent_target[num_entities][0]) {
 				ent_entity[num_entities] = te;
@@ -3342,7 +3169,7 @@ void DrawPathLines(void) {
 	}
 
 	for (se = entities.next; se != &entities; se = se->next) {
-		psz = ValueForKey(se, "name");
+		const char* psz = se->ValueForKey("name");
 
 		if (psz == NULL || psz[0] == '\0') {
 			continue;
@@ -3369,10 +3196,13 @@ void DrawPathLines(void) {
 
 			VectorSubtract(mid1, mid, dir);
 			len = dir.Normalize();
-			s1[0] = -dir[1] * 8 + dir[0] * 8;
-			s2[0] = dir[1] * 8 + dir[0] * 8;
-			s1[1] = dir[0] * 8 + dir[1] * 8;
-			s2[1] = -dir[0] * 8 + dir[1] * 8;
+			s1.x = -dir.y * 8 + dir.x * 8;			
+			s1.y = dir.x * 8 + dir.y * 8;      
+			s1.z = dir.z * 8;
+
+			s2.x = dir.y * 8 + dir.x * 8;
+			s2.y = -dir.x * 8 + dir.y * 8;
+			s2.z = dir.z * 8;
 
 			qglColor3f(se->eclass->color[0], se->eclass->color[1], se->eclass->color[2]);
 
@@ -3416,7 +3246,7 @@ void CXYWnd::PaintSizeInfo(int nDim1, int nDim2, idVec3 vMinBounds, idVec3 vMaxB
 		g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES][2] * .65
 	);
 
-	if (m_nViewType == XY) {
+	if (m_nViewType == ViewType::XY) {
 		qglBegin(GL_LINES);
 
 		qglVertex3f(vMinBounds[nDim1], vMinBounds[nDim2] - 6.0f / m_fScale, 0.0f);
@@ -3451,7 +3281,7 @@ void CXYWnd::PaintSizeInfo(int nDim1, int nDim2, idVec3 vMinBounds, idVec3 vMaxB
 		g_strDim.Format(g_pOrgStrings[0], vMinBounds[nDim1], vMaxBounds[nDim2]);
 		qglCallLists(g_strDim.GetLength(), GL_UNSIGNED_BYTE, g_strDim);
 	}
-	else if (m_nViewType == XZ) {
+	else if (m_nViewType == ViewType::XZ) {
 		qglBegin(GL_LINES);
 
 		qglVertex3f(vMinBounds[nDim1], 0, vMinBounds[nDim2] - 6.0f / m_fScale);
@@ -3523,23 +3353,14 @@ void CXYWnd::PaintSizeInfo(int nDim1, int nDim2, idVec3 vMinBounds, idVec3 vMaxB
 	}
 }
 
-/* XY_Draw */
 long		g_lCount = 0;
 long		g_lTotal = 0;
-extern void DrawBrushEntityName(brush_t *b);
+extern void DrawBrushEntityName(idEditorBrush *b);
 
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
+//========================
+// XY_Draw
+//========================
 void CXYWnd::XY_Draw() {
-	brush_t		*brush;
-	float		w, h;
-	entity_t	*e;
-	idVec3		mins, maxs;
-	int			drawn, culled;
-	int			i;
-
 	if (!active_brushes.next) {
 		return; // not valid yet
 	}
@@ -3566,34 +3387,66 @@ void CXYWnd::XY_Draw() {
 	qglMatrixMode(GL_PROJECTION);
 	qglLoadIdentity();
 
-	w = m_nWidth / 2 / m_fScale;
-	h = m_nHeight / 2 / m_fScale;
+	const float w = m_nWidth / 2 / m_fScale;
+	const float h = m_nHeight / 2 / m_fScale;
 
-	int nDim1 = (m_nViewType == YZ) ? 1 : 0;
-	int nDim2 = (m_nViewType == XY) ? 1 : 2;
-	mins[0] = m_vOrigin[nDim1] - w;
-	maxs[0] = m_vOrigin[nDim1] + w;
-	mins[1] = m_vOrigin[nDim2] - h;
-	maxs[1] = m_vOrigin[nDim2] + h;
+	const int nDim1 = (m_nViewType == ViewType::YZ) ? 1 : 0;
+	const int nDim2 = (m_nViewType == ViewType::XY) ? 1 : 2;
 
-	idBounds viewBounds( mins, maxs );
-	viewBounds[0].z = -99999;
-	viewBounds[1].z = 99999;
+	idVec2		mins, maxs; //2D view port mins/max
+	idBounds viewBounds; //3D world space bounds	
+	if ( m_nViewType == ViewType::XY ) {
+		viewBounds[0].x = m_vOrigin.x - w;
+		viewBounds[1].x = m_vOrigin.x + w;
+		viewBounds[0].y = m_vOrigin.y - h;
+		viewBounds[1].y = m_vOrigin.y + h;
+		viewBounds[0].z = MIN_WORLD_COORD;
+		viewBounds[1].z = MAX_WORLD_COORD;
+
+		mins.x = m_vOrigin.x - w;
+		mins.y = m_vOrigin.y - h;
+		maxs.x = m_vOrigin.x + w;
+		maxs.y = m_vOrigin.y + h;
+	} else if( m_nViewType == ViewType::XZ ) {
+		viewBounds[0].x = m_vOrigin.x - w;
+		viewBounds[1].x = m_vOrigin.x + w;
+		viewBounds[0].y = MIN_WORLD_COORD;
+		viewBounds[1].y = MAX_WORLD_COORD;
+		viewBounds[0].z = m_vOrigin.z - h;
+		viewBounds[1].z = m_vOrigin.z + h;
+
+		mins.x = m_vOrigin.x - w;
+		mins.y = m_vOrigin.z - h;
+		maxs.x = m_vOrigin.x + w;
+		maxs.y = m_vOrigin.z + h;
+	} else if( m_nViewType == ViewType::YZ ) {
+		viewBounds[0].x = MIN_WORLD_COORD;
+		viewBounds[1].x = MAX_WORLD_COORD;
+		viewBounds[0].y = m_vOrigin.y - h;
+		viewBounds[1].y = m_vOrigin.y + h;
+		viewBounds[0].z = m_vOrigin.z - h;
+		viewBounds[1].z = m_vOrigin.z + h;
+
+		mins.x = m_vOrigin.y - w;
+		mins.y = m_vOrigin.z - h;
+		maxs.x = m_vOrigin.y + w;
+		maxs.y = m_vOrigin.z + h;
+	}
 
 	qglOrtho(mins[0], maxs[0], mins[1], maxs[1], MIN_WORLD_COORD, MAX_WORLD_COORD);
 
 	// draw stuff
 	globalImages->BindNull();
 	// now draw the grid
-	qglLineWidth(0.25);
 	XY_DrawGrid();
 	qglLineWidth(0.5);
 
-	drawn = culled = 0;
+	int drawn = 0;
+	int culled = 0;
 
-	if (m_nViewType != XY) {
+	if (m_nViewType != ViewType::XY) {
 		qglPushMatrix();
-		if (m_nViewType == YZ) {
+		if (m_nViewType == ViewType::YZ) {
 			qglRotatef(-90, 0, 1, 0);	// put Z going up
 		}
 
@@ -3601,9 +3454,9 @@ void CXYWnd::XY_Draw() {
 		qglRotatef(-90, 1, 0, 0);		// put Z going up
 	}
 
-	e = world_entity;
+	idEditorEntity* e = world_entity;
 
-	for ( brush = active_brushes.next; brush != &active_brushes; brush = brush->next ) {
+	for ( idEditorBrush* brush = active_brushes.next; brush != &active_brushes; brush = brush->next ) {
 		if ( brush->forceVisibile || ( brush->owner->eclass->nShowFlags & ( ECLASS_LIGHT | ECLASS_PROJECTEDLIGHT ) ) ) {
 		} else if (	brush->mins[nDim1] > maxs[0] ||	brush->mins[nDim2] > maxs[1] ||	brush->maxs[nDim1] < mins[0] || brush->maxs[nDim2] < mins[1] ) {
 			culled++;
@@ -3629,11 +3482,9 @@ void CXYWnd::XY_Draw() {
 	DrawPathLines();
 
 	// draw pointfile
-	if (g_qeglobals.d_pointfile_display_list) {
-		qglCallList(g_qeglobals.d_pointfile_display_list);
-	}
+	Pointfile_Draw();
 
-	if (!(m_nViewType == XY)) {
+	if (!(m_nViewType == ViewType::XY)) {
 		qglPopMatrix();
 	}
 
@@ -3643,9 +3494,9 @@ void CXYWnd::XY_Draw() {
 	}
 
 	// now draw selected brushes
-	if (m_nViewType != XY) {
+	if (m_nViewType != ViewType::XY) {
 		qglPushMatrix();
-		if (m_nViewType == YZ) {
+		if (m_nViewType == ViewType::YZ) {
 			qglRotatef(-90, 0, 1, 0);	// put Z going up
 		}
 
@@ -3671,11 +3522,6 @@ void CXYWnd::XY_Draw() {
 		qglColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].ToFloatPtr());
 	}
 
-	if (g_PrefsDlg.m_bNoStipple == FALSE) {
-		qglEnable(GL_LINE_STIPPLE);
-		qglLineStipple(3, 0xaaaa);
-	}
-
 	qglLineWidth(1);
 
 	idVec3	vMinBounds;
@@ -3685,7 +3531,7 @@ void CXYWnd::XY_Draw() {
 
 	int		nSaveDrawn = drawn;
 	bool	bFixedSize = false;
-	for (brush = selected_brushes.next; brush != &selected_brushes; brush = brush->next) {
+	for (idEditorBrush* brush = selected_brushes.next; brush != &selected_brushes; brush = brush->next) {
 		drawn++;
 		Brush_DrawXY(brush, m_nViewType, true);
 
@@ -3695,7 +3541,7 @@ void CXYWnd::XY_Draw() {
 			}
 
 			if (g_PrefsDlg.m_bSizePaint) {
-				for (i = 0; i < 3; i++) {
+				for (int i = 0; i < 3; i++) {
 					if (brush->mins[i] < vMinBounds[i]) {
 						vMinBounds[i] = brush->mins[i];
 					}
@@ -3706,10 +3552,6 @@ void CXYWnd::XY_Draw() {
 				}
 			}
 		}
-	}
-
-	if (g_PrefsDlg.m_bNoStipple == FALSE) {
-		qglDisable(GL_LINE_STIPPLE);
 	}
 
 	qglLineWidth(0.5);
@@ -3723,7 +3565,7 @@ void CXYWnd::XY_Draw() {
 		qglPointSize(4);
 		qglColor3f(0, 1, 0);
 		qglBegin(GL_POINTS);
-		for (i = 0; i < g_qeglobals.d_numpoints; i++) {
+		for (int i = 0; i < g_qeglobals.d_numpoints; i++) {
 			qglVertex3fv(g_qeglobals.d_points[i].ToFloatPtr());
 		}
 
@@ -3736,7 +3578,7 @@ void CXYWnd::XY_Draw() {
 		qglPointSize(4);
 		qglColor3f(0, 0, 1);
 		qglBegin(GL_POINTS);
-		for (i = 0; i < g_qeglobals.d_numedges; i++) {
+		for (int i = 0; i < g_qeglobals.d_numedges; i++) {
 			v1 = g_qeglobals.d_points[g_qeglobals.d_edges[i].p1].ToFloatPtr();
 			v2 = g_qeglobals.d_points[g_qeglobals.d_edges[i].p2].ToFloatPtr();
 			qglVertex3f((v1[0] + v2[0]) * 0.5, (v1[1] + v2[1]) * 0.5, (v1[2] + v2[2]) * 0.5);
@@ -3755,7 +3597,7 @@ void CXYWnd::XY_Draw() {
 		qglPointSize(1);
 		qglBegin(GL_POINTS);
 		g_pParentWnd->GetNurb()->SetOrder(3);
-		for (i = 0; i < 100; i++) {
+		for (int i = 0; i < 100; i++) {
 			idVec2 v = g_pParentWnd->GetNurb()->GetCurrentValue(time);
 			qglVertex3f(v.x, v.y, 0.0f);
 			time += 10;
@@ -3764,7 +3606,7 @@ void CXYWnd::XY_Draw() {
 		qglPointSize(4);
 		qglColor3f(0, 0, 1);
 		qglBegin(GL_POINTS);
-		for (i = 0; i < maxage; i++) {
+		for (int i = 0; i < maxage; i++) {
 			idVec2 v = g_pParentWnd->GetNurb()->GetValue(i);
 			qglVertex3f(v.x, v.y, 0.0f);
 		}
@@ -3781,7 +3623,7 @@ void CXYWnd::XY_Draw() {
 		-g_qeglobals.d_select_translate[2]
 	);
 
-	if (!(m_nViewType == XY)) {
+	if (!(m_nViewType == ViewType::XY)) {
 		qglPopMatrix();
 	}
 
@@ -3813,7 +3655,6 @@ void CXYWnd::XY_Draw() {
 
 	// now draw camera point
 	DrawCameraIcon();
-	DrawZIcon();
 
 	if (RotateMode()) {
 		DrawRotateIcon();
@@ -3826,6 +3667,7 @@ void CXYWnd::XY_Draw() {
 	qglFlush();
 
 	// QE_CheckOpenGLForErrors();
+	R_ToggleSmpFrame();
 }
 
 
@@ -3861,7 +3703,28 @@ void CXYWnd::OnSize(UINT nType, int cx, int cy) {
 	InvalidateRect(NULL, false);
 }
 
-brush_t hold_brushes;
+/*
+ =======================================================================================================================
+ =======================================================================================================================
+ */
+void CXYWnd::OnSizing( UINT nSide, LPRECT lpRect ) {
+	if ( TryDocking( GetSafeHwnd(), nSide, lpRect, 0 ) ) {
+		return;
+	}
+}
+
+/*
+ =======================================================================================================================
+ =======================================================================================================================
+ */
+void CXYWnd::OnMoving( UINT nSide, LPRECT lpRect ) {
+	if ( TryDocking( GetSafeHwnd(), nSide, lpRect, 0 ) )
+	{
+		return;
+	}
+}
+
+idEditorBrush hold_brushes;
 
 /*
  =======================================================================================================================
@@ -3872,13 +3735,13 @@ void CXYWnd::Clip() {
 		hold_brushes.next = &hold_brushes;
 		ProduceSplitLists();
 
-		// brush_t* pList = (g_bSwitch) ? &g_brFrontSplits : &g_brBackSplits;
-		brush_t *pList;
+		// idEditorBrush* pList = (g_bSwitch) ? &g_brFrontSplits : &g_brBackSplits;
+		idEditorBrush *pList;
 		if (g_PrefsDlg.m_bSwitchClip) {
-			pList = ((m_nViewType == XZ) ? g_bSwitch : !g_bSwitch) ? &g_brFrontSplits : &g_brBackSplits;
+			pList = ((m_nViewType == ViewType::XZ) ? g_bSwitch : !g_bSwitch) ? &g_brFrontSplits : &g_brBackSplits;
 		}
 		else {
-			pList = ((m_nViewType == XZ) ? !g_bSwitch : g_bSwitch) ? &g_brFrontSplits : &g_brBackSplits;
+			pList = ((m_nViewType == ViewType::XZ) ? !g_bSwitch : g_bSwitch) ? &g_brFrontSplits : &g_brBackSplits;
 		}
 
 		if (pList->next != pList) {
@@ -3936,7 +3799,7 @@ void CXYWnd::SplitClip() {
  */
 void CXYWnd::FlipClip() {
 	g_bSwitch = !g_bSwitch;
-	Sys_UpdateWindows(XY | W_CAMERA_IFON);
+	Sys_UpdateWindows(W_XY | W_CAMERA_ICON);
 }
 
 //
@@ -3945,9 +3808,9 @@ void CXYWnd::FlipClip() {
 // =======================================================================================================================
 //
 void CXYWnd::PositionView() {
-	int		nDim1 = (m_nViewType == YZ) ? 1 : 0;
-	int		nDim2 = (m_nViewType == XY) ? 1 : 2;
-	brush_t *b = selected_brushes.next;
+	int		nDim1 = (m_nViewType == ViewType::YZ) ? 1 : 0;
+	int		nDim2 = (m_nViewType == ViewType::XY) ? 1 : 2;
+	idEditorBrush *b = selected_brushes.next;
 	if (b && b->next != b) {
 		m_vOrigin[nDim1] = b->mins[nDim1];
 		m_vOrigin[nDim2] = b->mins[nDim2];
@@ -3963,11 +3826,11 @@ void CXYWnd::PositionView() {
  =======================================================================================================================
  */
 void CXYWnd::VectorCopyXY(const idVec3 &in, idVec3 &out) {
-	if (m_nViewType == XY) {
+	if (m_nViewType == ViewType::XY) {
 		out[0] = in[0];
 		out[1] = in[1];
 	}
-	else if (m_nViewType == XZ) {
+	else if (m_nViewType == ViewType::XZ) {
 		out[0] = in[0];
 		out[2] = in[2];
 	}
@@ -3982,6 +3845,14 @@ void CXYWnd::VectorCopyXY(const idVec3 &in, idVec3 &out) {
  =======================================================================================================================
  */
 void CXYWnd::OnDestroy() {
+
+	if (m_nViewType == ViewType::XY)
+	{
+		SaveDialogPlacement(this, "radiant_xywindow");
+		SaveDialogPlacement(this, "radiant_xzwindow");
+		SaveDialogPlacement(this, "radiant_yzwindow");
+	}
+
 	CWnd::OnDestroy();
 
 	// delete this;
@@ -3991,15 +3862,15 @@ void CXYWnd::OnDestroy() {
  =======================================================================================================================
  =======================================================================================================================
  */
-void CXYWnd::SetViewType(int n) {
+void CXYWnd::SetViewType(ViewType n) {
 	m_nViewType = n;
-	char *p = "YZ Side";
-	if (m_nViewType == XY) {
-		p = "XY Top";
-	} else if (m_nViewType == XZ) {
-		p = "XZ Front";
+	m_sViewName = "YZ Side";
+	if (m_nViewType == ViewType::XY) {
+		m_sViewName = "XY Top";
+	} else if (m_nViewType == ViewType::XZ) {
+		m_sViewName = "XZ Front";
 	}
-	SetWindowText(p);
+	SetWindowText(m_sViewName);
 };
 
 /*
@@ -4080,12 +3951,12 @@ void CXYWnd::OnSelectMouserotate() {
  =======================================================================================================================
  */
 void CleanCopyEntities() {
-	entity_t	*pe = g_enClipboard.next;
+	idEditorEntity	*pe = g_enClipboard.next;
 	while (pe != NULL && pe != &g_enClipboard) {
-		entity_t	*next = pe->next;
+		idEditorEntity	*next = pe->next;
 		pe->epairs.Clear();
 
-		Entity_Free(pe);
+		delete pe;
 		pe = next;
 	}
 
@@ -4096,10 +3967,9 @@ void CleanCopyEntities() {
  =======================================================================================================================
  =======================================================================================================================
  */
-entity_t *Entity_CopyClone(entity_t *e) {
-	entity_t	*n;
+idEditorEntity *Entity_CopyClone(idEditorEntity *e) {
 
-	n = Entity_New();
+	idEditorEntity* n = new idEditorEntity();
 	n->brushes.onext = n->brushes.oprev = &n->brushes;
 	n->eclass = e->eclass;
 	n->rotation = e->rotation;
@@ -4119,10 +3989,10 @@ entity_t *Entity_CopyClone(entity_t *e) {
  =======================================================================================================================
  =======================================================================================================================
  */
-bool OnList(entity_t *pFind, CPtrArray *pList) {
+bool OnList(idEditorEntity *pFind, CPtrArray *pList) {
 	int nSize = pList->GetSize();
 	while (nSize-- > 0) {
-		entity_t	*pEntity = reinterpret_cast < entity_t * > (pList->GetAt(nSize));
+		idEditorEntity	*pEntity = reinterpret_cast < idEditorEntity * > (pList->GetAt(nSize));
 		if (pEntity == pFind) {
 			return true;
 		}
@@ -4179,20 +4049,20 @@ void CXYWnd::Copy()
 	CPtrArray	holdArray;
 	CleanList(&g_brClipboard);
 	CleanCopyEntities();
-	for (brush_t * pBrush = selected_brushes.next; pBrush != NULL && pBrush != &selected_brushes; pBrush = pBrush->next) {
+	for (idEditorBrush * pBrush = selected_brushes.next; pBrush != NULL && pBrush != &selected_brushes; pBrush = pBrush->next) {
 		if (pBrush->owner == world_entity) {
-			brush_t *pClone = Brush_Clone(pBrush);
+			idEditorBrush *pClone = Brush_Clone(pBrush);
 			pClone->owner = NULL;
 			Brush_AddToList(pClone, &g_brClipboard);
 		}
 		else {
 			if (!OnList(pBrush->owner, &holdArray)) {
-				entity_t	*e = pBrush->owner;
+				idEditorEntity	*e = pBrush->owner;
 				holdArray.Add(reinterpret_cast < void * > (e));
 
-				entity_t	*pEClone = Entity_CopyClone(e);
-				for (brush_t * pEB = e->brushes.onext; pEB != &e->brushes; pEB = pEB->onext) {
-					brush_t *pClone = Brush_Clone(pEB);
+				idEditorEntity	*pEClone = Entity_CopyClone(e);
+				for (idEditorBrush * pEB = e->brushes.onext; pEB != &e->brushes; pEB = pEB->onext) {
+					idEditorBrush *pClone = Brush_Clone(pEB);
 
 					// Brush_AddToList (pClone, &g_brClipboard);
 					Entity_LinkBrush(pEClone, pClone);
@@ -4211,8 +4081,8 @@ void CXYWnd::Copy()
 void CXYWnd::Undo() {
 	/*
 	 * if (g_brUndo.next != &g_brUndo) { g_bScreenUpdates = false; Select_Delete();
-	 * for (brush_t* pBrush = g_brUndo.next ; pBrush != NULL && pBrush != &g_brUndo ;
-	 * pBrush=pBrush->next) { brush_t* pClone = Brush_Clone(pBrush); Brush_AddToList
+	 * for (idEditorBrush* pBrush = g_brUndo.next ; pBrush != NULL && pBrush != &g_brUndo ;
+	 * pBrush=pBrush->next) { idEditorBrush* pClone = Brush_Clone(pBrush); Brush_AddToList
 	 * (pClone, &active_brushes); Entity_LinkBrush (pBrush->pUndoOwner, pClone);
 	 * Brush_Build(pClone); Select_Brush(pClone); } CleanList(&g_brUndo);
 	 * g_bScreenUpdates = true; Sys_UpdateWindows(W_ALL); } else common->Printf("Nothing
@@ -4234,8 +4104,8 @@ void CXYWnd::UndoClear() {
  */
 void CXYWnd::UndoCopy() {
 	/*
-	 * CleanList(&g_brUndo); for (brush_t* pBrush = selected_brushes.next ; pBrush !=
-	 * NULL && pBrush != &selected_brushes ; pBrush=pBrush->next) { brush_t* pClone =
+	 * CleanList(&g_brUndo); for (idEditorBrush* pBrush = selected_brushes.next ; pBrush !=
+	 * NULL && pBrush != &selected_brushes ; pBrush=pBrush->next) { idEditorBrush* pClone =
 	 * Brush_Clone(pBrush); pClone->pUndoOwner = pBrush->owner; Brush_AddToList
 	 * (pClone, &g_brUndo); }
 	 */
@@ -4302,8 +4172,8 @@ void CXYWnd::Paste()
 	if (g_brClipboard.next != &g_brClipboard || g_enClipboard.next != &g_enClipboard) {
 		Select_Deselect();
 
-		for (brush_t * pBrush = g_brClipboard.next; pBrush != NULL && pBrush != &g_brClipboard; pBrush = pBrush->next) {
-			brush_t *pClone = Brush_Clone(pBrush);
+		for (idEditorBrush * pBrush = g_brClipboard.next; pBrush != NULL && pBrush != &g_brClipboard; pBrush = pBrush->next) {
+			idEditorBrush *pClone = Brush_Clone(pBrush);
 
 			// pClone->owner = pBrush->owner;
 			if (pClone->owner == NULL) {
@@ -4316,13 +4186,13 @@ void CXYWnd::Paste()
 
 		for
 		(
-			entity_t * pEntity = g_enClipboard.next;
+			idEditorEntity * pEntity = g_enClipboard.next;
 			pEntity != NULL && pEntity != &g_enClipboard;
 			pEntity = pEntity->next
 		) {
-			entity_t	*pEClone = Entity_Clone(pEntity);
-			for (brush_t * pEB = pEntity->brushes.onext; pEB != &pEntity->brushes; pEB = pEB->onext) {
-				brush_t *pClone = Brush_Clone(pEB);
+			idEditorEntity	*pEClone = Entity_Clone(pEntity);
+			for (idEditorBrush * pEB = pEntity->brushes.onext; pEB != &pEntity->brushes; pEB = pEB->onext) {
+				idEditorBrush *pClone = Brush_Clone(pEB);
 				Brush_AddToList(pClone, &selected_brushes);
 				Entity_LinkBrush(pEClone, pClone);
 				Brush_Build(pClone);
@@ -4362,8 +4232,8 @@ idVec3 &CXYWnd::RotateOrigin() {
  */
 void CXYWnd::OnTimer(UINT_PTR nIDEvent) {
 	if (nIDEvent == 100) {
-		int nDim1 = (m_nViewType == YZ) ? 1 : 0;
-		int nDim2 = (m_nViewType == XY) ? 1 : 2;
+		int nDim1 = (m_nViewType == ViewType::YZ) ? 1 : 0;
+		int nDim2 = (m_nViewType == ViewType::XY) ? 1 : 2;
 		m_vOrigin[nDim1] += m_ptDragAdj.x / m_fScale;
 		m_vOrigin[nDim2] -= m_ptDragAdj.y / m_fScale;
 		Sys_UpdateWindows(W_XY | W_CAMERA);
@@ -4462,9 +4332,6 @@ BOOL CXYWnd::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 	}
 	return TRUE;
 }
-
-
-
 
  //---------------------------------------------------------------------------
  // CyclePrecisionCrosshairMode

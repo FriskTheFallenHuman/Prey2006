@@ -62,6 +62,7 @@ void CWaitDlg::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CWaitDlg)
 	DDX_Text(pDX, IDC_WAITSTR, waitStr);
+	DDX_Control(pDX, IDD_WAITDLG_PROGRESS, m_progress);
 	//}}AFX_DATA_MAP
 }
 
@@ -91,7 +92,7 @@ BOOL CWaitDlg::OnInitDialog()
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CWaitDlg::SetText(const char *msg, bool append) {
+void CWaitDlg::SetText(const char *msg, float percent, bool append) {
 	if (append) {
 		waitStr = text;
 		waitStr += "\r\n";
@@ -100,6 +101,10 @@ void CWaitDlg::SetText(const char *msg, bool append) {
 		waitStr = msg;
 		text = msg;
 	}
+	
+	m_progress.SetRange(0, 100);
+	m_progress.SetPos(percent * 100);
+
 	UpdateData(FALSE);
 	Invalidate();
 	UpdateWindow();

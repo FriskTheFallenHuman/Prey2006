@@ -312,6 +312,30 @@ ID_TIME_T Sys_FileTimeStamp( FILE *fp ) {
 }
 
 /*
+=================
+Sys_IsFile
+=================
+*/
+bool Sys_IsFile( const char* path ) {
+	DWORD dwAttrib = GetFileAttributesA( path );
+
+	return ( dwAttrib != INVALID_FILE_ATTRIBUTES &&
+		   !( dwAttrib & FILE_ATTRIBUTE_DIRECTORY ) );
+}
+
+/*
+=================
+Sys_IsDirectory
+=================
+*/
+bool Sys_IsDirectory( const char* path ) {
+	DWORD dwAttrib = GetFileAttributesA( path );
+
+	return ( dwAttrib != INVALID_FILE_ATTRIBUTES &&
+		   ( dwAttrib & FILE_ATTRIBUTE_DIRECTORY ) );
+}
+
+/*
 ==============
 Sys_Cwd
 ==============

@@ -178,7 +178,7 @@ void CSurfaceDlg::SetTexMods() {
 		selFace = reinterpret_cast < face_t * > (g_ptrSelectedFaces.GetAt(0));
 	} else {
 		if (selected_brushes.next != &selected_brushes) {
-			brush_t *b = selected_brushes.next;
+			idEditorBrush *b = selected_brushes.next;
 			if (!b->pPatch) {
 				selFace = b->brush_faces;
 			}
@@ -196,11 +196,8 @@ void CSurfaceDlg::SetTexMods() {
 	UpdateData(FALSE);
 }
 
-
-bool g_bNewFace = false;
 bool g_bNewApplyHandling = false;
 bool g_bGatewayhack = false;
-
 
 /*
 =================
@@ -274,14 +271,12 @@ void UpdateSurfaceDialog() {
 	if (g_surfwin)  {
 		g_dlgSurface.SetTexMods();
 	}
-	g_pParentWnd->UpdateTextureBar();
 }
 
 bool ByeByeSurfaceDialog();
 
 void DoSurface (void) {
 
-	g_bNewFace = ( g_PrefsDlg.m_bFace != FALSE );
 	g_bNewApplyHandling = ( g_PrefsDlg.m_bNewApplyHandling != FALSE );
 	g_bGatewayhack = ( g_PrefsDlg.m_bGatewayHack != FALSE );
 	// save current state for cancel
@@ -417,14 +412,6 @@ void CSurfaceDlg::OnDestroy() {
 
 void CSurfaceDlg::OnBtnCancel() {
 	g_qeglobals.d_texturewin.texdef = g_old_texdef;
-	if (g_changed_surface) {
-		//++timo if !g_qeglobals.m_bBrushPrimitMode send a NULL brushprimit_texdef
-		if (!g_qeglobals.m_bBrushPrimitMode) {
-			common->Printf("Warning : non brush primitive mode call to CSurfaceDlg::GetTexMods broken\n");
-			common->Printf("          ( Select_SetTexture not called )\n");
-		}
-		//		Select_SetTexture(&g_qeglobals.d_texturewin.texdef);
-	}
 	g_surfwin = NULL;
 	DestroyWindow();
 }
@@ -490,7 +477,7 @@ void CSurfaceDlg::OnBtnBrushfit() {
 void CSurfaceDlg::OnBtnFacefit() {
 	UpdateData(TRUE);
 /*
-	brush_t *b;
+	idEditorBrush *b;
 	for (b=selected_brushes.next ; b != &selected_brushes ; b=b->next) {
 		if (!b->patchBrush) {
 			for (face_t* pFace = b->brush_faces; pFace; pFace = pFace->next) {

@@ -44,7 +44,7 @@ public:
 	void SetDict(idDict *_dict) {
 		dict = dict;
 	}
-	void SetEditEntity(entity_t *ent) {
+	void SetEditEntity(idEditorEntity *ent) {
 		editEntity = ent;
 	}
 	void CreateEntity();
@@ -54,7 +54,7 @@ public:
 	static CPreviewDlg *ShowSoundChooser();
 	static CPreviewDlg *ShowMaterialChooser();
 	static CPreviewDlg *ShowParticleChooser();
-	static CPreviewDlg *ShowSkinChooser( entity_t *ent );
+	static CPreviewDlg *ShowSkinChooser( idEditorEntity *ent );
 
 	void SetKeyVal(const char *key, const char *val) {
 		editKey.SetWindowText(key);
@@ -78,7 +78,7 @@ public:
 	virtual BOOL OnInitDialog();
 	virtual INT_PTR OnToolHitTest( CPoint point, TOOLINFO* pTI ) const;
 	void AddClassNames();
-	void UpdateEntitySel(eclass_t *ent);
+	void UpdateEntitySel(const eclass_t* ent);
 	void SetKeyValPairs( bool updateAnims = true );
 	static const char *TranslateString(const char *p);
 	void AddProp();
@@ -92,7 +92,7 @@ public:
 
 
 private:
-	entity_t *editEntity;
+	idEditorEntity *editEntity;
 	bool multipleEntities;
 	CPropertyList listKeyVal;
 	CPropertyList listVars;

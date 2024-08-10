@@ -52,13 +52,6 @@ class rvGEWorkspace
 {
 public:
 
-	enum ESourceControlState
-	{
-		SCS_NONE,
-		SCS_CHECKEDOUT,
-		SCS_CHECKEDIN,
-	};
-
 	enum EZoomLevel
 	{
 		ZOOM_MIN,
@@ -96,12 +89,6 @@ public:
 	bool					LoadFile				( const char* filename, idStr* error = NULL );
 	bool					SaveFile				( const char* filename );
 	const char*				GetFilename				( void );
-
-	// Source control methods
-	bool					CheckOut				( void );
-	bool					CheckIn					( void );
-	bool					UndoCheckout			( void );
-	ESourceControlState		GetSourceControlState	( void );
 
 	void					Render					( HDC hDC );
 
@@ -254,7 +241,6 @@ private:
 	bool					mModified;
 	bool					mNew;
 	bool					mDontAdd;
-	ESourceControlState		mSourceControlState;
 
 	// Resources
 	HCURSOR					mHandCursor;
@@ -328,11 +314,6 @@ ID_INLINE HWND rvGEWorkspace::GetWindow ( void )
 ID_INLINE idList<rvGEClipboardItem*> rvGEWorkspace::GetClipboard ( void )
 {
 	return mClipboard;
-}
-
-ID_INLINE rvGEWorkspace::ESourceControlState rvGEWorkspace::GetSourceControlState ( void )
-{
-	return mSourceControlState;
 }
 
 #endif // _GEWORKSPACE_H_

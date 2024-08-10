@@ -31,8 +31,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "GEApp.h"
 
-bool GECheckInDlg_DoModal ( HWND parent, const char* filename, idStr* comment );
-
 /*
 ================
 rvGEWorkspace::SaveFile
@@ -54,11 +52,10 @@ bool rvGEWorkspace::SaveFile ( const char* filename )
 	idStr ospath;
 
 	tempfile = "guis/temp.guied";
-	//ospath = fileSystem->RelativePathToOSPath ( tempfile, "fs_basepath" ); DG: change from SteelStorm2
-	ospath = fileSystem->RelativePathToOSPath ( tempfile, "fs_savepath" );
+	ospath = fileSystem->RelativePathToOSPath ( tempfile, tempfile ? "fs_savepath" : "fs_basepath" );
 
 	// Open the output file for write
-	file = fileSystem->OpenFileWrite(tempfile);
+	file = fileSystem->OpenFileWrite( tempfile, tempfile ? "fs_savepath" : "fs_basepath" );
 	if ( !file )
 	{
 		SetCursor ( LoadCursor ( NULL, IDC_ARROW ) );
@@ -357,41 +354,4 @@ bool rvGEWorkspace::LoadFile ( const char* filename, idStr* error )
 	}
 
 	return result;
-}
-
-/*
-================
-rvGEWorkspace::CheckIn
-
-Checks in the current workspace file into source control
-================
-*/
-bool rvGEWorkspace::CheckIn ( void )
-{
-	return false;
-
-}
-
-/*
-================
-rvGEWorkspace::CheckOut
-
-Checks out the current workspace file from source control
-================
-*/
-bool rvGEWorkspace::CheckOut ( void )
-{
-		return false;
-}
-
-/*
-================
-rvGEWorkspace::UndoCheckout
-
-Undoes the checkout of the current file
-================
-*/
-bool rvGEWorkspace::UndoCheckout ( void )
-{
-	return false;
 }

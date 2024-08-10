@@ -33,7 +33,8 @@ If you have questions concerning this license or the applicable additional terms
 
 #define	MAX_POINTFILE	8192
 static idVec3	s_pointvecs[MAX_POINTFILE];
-static int		s_num_points, s_check_point;
+static int		s_num_points = 0;
+static int		s_check_point = 0;
 
 void Pointfile_Delete (void)
 {
@@ -49,17 +50,18 @@ void Pointfile_Delete (void)
 // advance camera to next point
 void Pointfile_Next (void)
 {
-	idVec3	dir;
-
 	if (s_check_point >= s_num_points-2)
 	{
 		Sys_Status ("End of pointfile", 0);
 		return;
 	}
+
 	s_check_point++;
-	VectorCopy (s_pointvecs[s_check_point], g_pParentWnd->GetCamera()->Camera().origin);
-	VectorCopy (s_pointvecs[s_check_point], g_pParentWnd->GetXYWnd()->GetOrigin());
-	VectorSubtract (s_pointvecs[s_check_point+1], g_pParentWnd->GetCamera()->Camera().origin, dir);
+
+	g_pParentWnd->GetCamera()->Camera().origin = s_pointvecs[s_check_point];
+	g_pParentWnd->GetXYWnd()->GetOrigin() = s_pointvecs[s_check_point];
+
+	idVec3 dir = s_pointvecs[s_check_point+1] - g_pParentWnd->GetCamera()->Camera().origin;
 	dir.Normalize();
 	g_pParentWnd->GetCamera()->Camera().angles[1] = atan2 (dir[1], dir[0])*180/3.14159;
 	g_pParentWnd->GetCamera()->Camera().angles[0] = asin (dir[2])*180/3.14159;
@@ -70,17 +72,18 @@ void Pointfile_Next (void)
 // advance camera to previous point
 void Pointfile_Prev (void)
 {
-	idVec3	dir;
-
 	if ( s_check_point == 0)
 	{
 		Sys_Status ("Start of pointfile", 0);
 		return;
 	}
+
 	s_check_point--;
-	VectorCopy (s_pointvecs[s_check_point], g_pParentWnd->GetCamera()->Camera().origin);
-	VectorCopy (s_pointvecs[s_check_point], g_pParentWnd->GetXYWnd()->GetOrigin());
-	VectorSubtract (s_pointvecs[s_check_point+1], g_pParentWnd->GetCamera()->Camera().origin, dir);
+
+	g_pParentWnd->GetCamera()->Camera().origin = s_pointvecs[s_check_point];
+	g_pParentWnd->GetXYWnd()->GetOrigin() = s_pointvecs[s_check_point];
+
+	idVec3 dir = s_pointvecs[s_check_point+1] - g_pParentWnd->GetCamera()->Camera().origin;
 	dir.Normalize();
 	g_pParentWnd->GetCamera()->Camera().angles[1] = atan2 (dir[1], dir[0])*180/3.14159;
 	g_pParentWnd->GetCamera()->Camera().angles[0] = asin (dir[2])*180/3.14159;
@@ -88,7 +91,7 @@ void Pointfile_Prev (void)
 	Sys_UpdateWindows (W_ALL);
 }
 
-void WINAPI Pointfile_Check (void)
+void Pointfile_Check (void)
 {
 	char	name[1024];
 	FILE	*f;
@@ -104,59 +107,39 @@ void WINAPI Pointfile_Check (void)
 
 	common->Printf ("Reading pointfile %s\n", name);
 
-	if (!g_qeglobals.d_pointfile_display_list)
-		g_qeglobals.d_pointfile_display_list = qglGenLists(1);
-
 	s_num_points = 0;
-  qglNewList (g_qeglobals.d_pointfile_display_list,  GL_COMPILE);
-	qglColor3f (1, 0, 0);
-	qglDisable(GL_TEXTURE_2D);
-	qglDisable(GL_TEXTURE_1D);
-	qglLineWidth (2);
-	qglBegin(GL_LINE_STRIP);
 	do
 	{
-		if (fscanf (f, "%f %f %f\n", &v[0], &v[1], &v[2]) != 3)
+		const int n = fscanf(f, "%f %f %f\n", &v[0], &v[1], &v[2]);
+		if ( n != 3  || s_num_points >= MAX_POINTFILE)
 			break;
-		if (s_num_points < MAX_POINTFILE)
-		{
-			VectorCopy (v, s_pointvecs[s_num_points]);
-			s_num_points++;
-		}
-		qglVertex3fv( v.ToFloatPtr() );
+    
+		s_pointvecs[s_num_points] = v;      
+		s_num_points++;
+    
 	} while (1);
-	qglEnd();
-	qglLineWidth (0.5);
-	qglEndList ();
 
 	s_check_point = 0;
 	fclose (f);
-	//Pointfile_Next ();
 }
 
 void Pointfile_Draw( void )
 {
-	int i;
-
 	qglColor3f( 1.0F, 0.0F, 0.0F );
 	qglDisable(GL_TEXTURE_2D);
 	qglDisable(GL_TEXTURE_1D);
 	qglLineWidth (2);
 	qglBegin(GL_LINE_STRIP);
-	for ( i = 0; i < s_num_points; i++ )
-	{
+
+	for ( int i = 0; i < s_num_points; i++ ) {
 		qglVertex3fv( s_pointvecs[i].ToFloatPtr() );
 	}
+
 	qglEnd();
 	qglLineWidth( 0.5 );
 }
 
 void Pointfile_Clear (void)
 {
-	if (!g_qeglobals.d_pointfile_display_list)
-		return;
-
-	qglDeleteLists (g_qeglobals.d_pointfile_display_list, 1);
-	g_qeglobals.d_pointfile_display_list = 0;
-	Sys_UpdateWindows (W_ALL);
+	s_num_points = 0;
 }

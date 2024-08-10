@@ -171,6 +171,38 @@ void Sys_Mkdir( const char *path ) {
 }
 
 /*
+==========
+Sys_IsFile
+==========
+*/
+bool Sys_IsFile( const char* path ) {
+    assert( path );
+
+    struct stat st;
+    if ( stat( path, &st ) != -1 && S_ISREG( st.st_mode ) ) {
+        return true;
+    }
+
+    return false;
+}
+
+/*
+===============
+Sys_IsDirectory
+===============
+*/
+bool Sys_IsDirectory( const char* path ) {
+    assert(path);
+
+    struct stat st;
+    if ( stat( path, &st ) != -1 && S_ISDIR( st.st_mode ) ) {
+        return true;
+    }
+
+    return false;
+}
+
+/*
 ================
 Sys_ListFiles
 ================

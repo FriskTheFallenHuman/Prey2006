@@ -39,273 +39,70 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
 #endif
 
 idCVar radiant_entityMode( "radiant_entityMode", "0", CVAR_TOOL | CVAR_ARCHIVE, "" );
 
-/////////////////////////////////////////////////////////////////////////////
-// CRadiantApp
-
-BEGIN_MESSAGE_MAP(CRadiantApp, CWinApp)
-	//{{AFX_MSG_MAP(CRadiantApp)
-	ON_COMMAND(ID_HELP, OnHelp)
-	//}}AFX_MSG_MAP
+BEGIN_MESSAGE_MAP(CRadiantApp, CWinAppEx)
+	ON_COMMAND(ID_HELP, &CRadiantApp::OnAppHelp)
+	ON_COMMAND(ID_HELP_ABOUT, &CRadiantApp::OnAppAbout)
 	// Standard file based document commands
-	ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
-	ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
-	// Standard print setup command
-	ON_COMMAND(ID_FILE_PRINT_SETUP, CWinApp::OnFilePrintSetup)
+	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
+	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
-// CRadiantApp construction
-
-CRadiantApp::CRadiantApp()
-{
-	// TODO: add construction code here,
-	// Place all significant initialization in InitInstance
+/*
+================
+CRadiantApp::CRadiantApp
+================
+*/
+CRadiantApp::CRadiantApp() {
 }
-
-/////////////////////////////////////////////////////////////////////////////
-// The one and only CRadiantApp object
 
 CRadiantApp theApp;
-HINSTANCE g_DoomInstance = NULL;
-bool g_editorAlive = false;
-
-void RadiantPrint( const char *text ) {
-	if ( g_editorAlive && g_Inspectors ) {
-		if (g_Inspectors->consoleWnd.GetSafeHwnd()) {
-			g_Inspectors->consoleWnd.AddText( text );
-		}
-	}
-}
-
-void RadiantShutdown( void ) {
-	theApp.ExitInstance();
-}
 
 /*
-=================
-RadiantInit
-
-This is also called when you 'quit' in doom
-=================
+================
+CRadiantApp::InitInstance
+================
 */
-void RadiantInit( void ) {
+BOOL CRadiantApp::InitInstance() {
+	// InitCommonControlsEx() is required on Windows XP if an application
+	// manifest specifies use of ComCtl32.dll version 6 or later to enable
+	// visual styles.  Otherwise, any window creation will fail.
+	INITCOMMONCONTROLSEX InitCtrls;
+	InitCtrls.dwSize = sizeof(InitCtrls);
 
-	// make sure the renderer is initialized
-	if ( !renderSystem->IsOpenGLRunning() ) {
-		common->Printf( "no OpenGL running\n" );
-		return;
-	}
+	// Set this to include all the common control classes you want to use
+	// in your application.
+	InitCtrls.dwICC = ICC_WIN95_CLASSES;
+	InitCommonControlsEx(&InitCtrls);
 
-	g_editorAlive = true;
+	CWinAppEx::InitInstance();
 
-	// allocate a renderWorld and a soundWorld
-	if ( g_qeglobals.rw == NULL ) {
-		g_qeglobals.rw = renderSystem->AllocRenderWorld();
-		g_qeglobals.rw->InitFromMap( NULL );
-	}
-	if ( g_qeglobals.sw == NULL ) {
-		g_qeglobals.sw = soundSystem->AllocSoundWorld( g_qeglobals.rw );
-	}
-
-	if ( g_DoomInstance ) {
-		if ( ::IsWindowVisible( win32.hWnd ) ) {
-			::ShowWindow( win32.hWnd, SW_HIDE );
-			g_pParentWnd->ShowWindow( SW_SHOW );
-			g_pParentWnd->SetFocus();
-		}
-	} else {
-		Sys_GrabMouseCursor( false );
-
-		g_DoomInstance = win32.hInstance;
-
-		InitAfx();
-
-		CWinApp* pApp = AfxGetApp();
-		CWinThread *pThread = AfxGetThread();
-
-		// App global initializations (rare)
-		pApp->InitApplication();
-
-		// Perform specific initializations
-		pThread->InitInstance();
-
-		qglFinish();
-		//qwglMakeCurrent(0, 0);
-		qwglMakeCurrent(win32.hDC, win32.hGLRC);
-
-		// hide the doom window by default
-		::ShowWindow( win32.hWnd, SW_HIDE );
-	}
-}
-
-
-extern void Map_VerifyCurrentMap(const char *map);
-
-void RadiantSync( const char *mapName, const idVec3 &viewOrg, const idAngles &viewAngles ) {
-	if ( g_DoomInstance == NULL ) {
-		RadiantInit();
-	}
-
-	if ( g_DoomInstance ) {
-		idStr osPath;
-		osPath = fileSystem->RelativePathToOSPath( mapName );
-		Map_VerifyCurrentMap( osPath );
-		idAngles flip = viewAngles;
-		flip.pitch = -flip.pitch;
-		g_pParentWnd->GetCamera()->SetView( viewOrg, flip );
-		g_pParentWnd->SetFocus();
-		Sys_UpdateWindows( W_ALL );
-		g_pParentWnd->RoutineProcessing();
-	}
-}
-
-void RadiantRun( void ) {
-	static bool exceptionErr = false;
-	int show = ::IsWindowVisible(win32.hWnd);
-
-	try {
-		if (!exceptionErr && !show) {
-			//qglPushAttrib(GL_ALL_ATTRIB_BITS);
-			qglDepthMask(true);
-			theApp.Run();
-			//qglPopAttrib();
-			//qwglMakeCurrent(0, 0);
-			if (win32.hDC != NULL && win32.hGLRC != NULL)
-				qwglMakeCurrent(win32.hDC, win32.hGLRC);
-		}
-	}
-	catch( idException &ex ) {
-		::MessageBox(NULL, ex.error, "Exception error", MB_OK);
-		RadiantShutdown();
-	}
-}
-
-/////////////////////////////////////////////////////////////////////////////
-// CRadiantApp initialization
-
-HINSTANCE g_hOpenGL32 = NULL;
-HINSTANCE g_hOpenGL = NULL;
-bool g_bBuildList = false;
-
-BOOL CRadiantApp::InitInstance()
-{
-  //g_hOpenGL32 = ::LoadLibrary("opengl32.dll");
-	// AfxEnableControlContainer();
-
-	// Standard initialization
-	// If you are not using these features and wish to reduce the size
-	//  of your final executable, you should remove from the following
-	//  the specific initialization routines you do not need.
-  //AfxEnableMemoryTracking(FALSE);
-
-#ifdef _AFXDLL
-	//Enable3dControls();			// Call this when using MFC in a shared DLL
-#else
-	//Enable3dControlsStatic();	// Call this when linking to MFC statically
-#endif
-
-	// If there's a .INI file in the directory use it instead of registry
-
-	char RadiantPath[_MAX_PATH];
-	GetModuleFileName( NULL, RadiantPath, _MAX_PATH );
-
-	// search for exe
-	CFileFind Finder;
-	Finder.FindFile( RadiantPath );
-	Finder.FindNextFile();
-	// extract root
-	CString Root = Finder.GetRoot();
-	// build root\*.ini
-	CString IniPath = Root + "\\REGISTRY.INI";
-	// search for ini file
-	Finder.FindNextFile();
-	if (Finder.FindFile( IniPath ))
+	// Initialize OLE libraries
+	if (!AfxOleInit())
 	{
-		Finder.FindNextFile();
-		// use the .ini file instead of the registry
-		free((void*)m_pszProfileName);
-		m_pszProfileName=_tcsdup(_T(Finder.GetFilePath()));
-		// look for the registry key for void* buffers storage ( these can't go into .INI files )
-		int i=0;
-		CString key;
-		HKEY hkResult;
-		DWORD dwDisp;
-		DWORD type;
-		char iBuf[3];
-		do
-		{
-			sprintf( iBuf, "%d", i );
-			key = "Software\\Q3Radiant\\IniPrefs" + CString(iBuf);
-			// does this key exists ?
-			if ( RegOpenKeyEx( HKEY_CURRENT_USER, key, 0, KEY_ALL_ACCESS, &hkResult ) != ERROR_SUCCESS )
-			{
-				// this key doesn't exist, so it's the one we'll use
-				strcpy( g_qeglobals.use_ini_registry, key.GetBuffer(0) );
-				RegCreateKeyEx( HKEY_CURRENT_USER, key, 0, NULL,
-					REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkResult, &dwDisp );
-				RegSetValueEx( hkResult, "RadiantName", 0, REG_SZ, reinterpret_cast<CONST BYTE *>(RadiantPath), strlen( RadiantPath )+1 );
-				RegCloseKey( hkResult );
-				break;
-			}
-			else
-			{
-				char RadiantAux[ _MAX_PATH ];
-				unsigned long size = _MAX_PATH;
-				// the key exists, is it the one we are looking for ?
-				RegQueryValueEx( hkResult, "RadiantName", 0, &type, reinterpret_cast<BYTE *>(RadiantAux), &size );
-				RegCloseKey( hkResult );
-				if ( !strcmp( RadiantAux, RadiantPath ) )
-				{
-					// got it !
-					strcpy( g_qeglobals.use_ini_registry, key.GetBuffer(0) );
-					break;
-				}
-			}
-			i++;
-		} while (1);
-		g_qeglobals.use_ini = true;
+		return FALSE;
 	}
-	else
-	{
-		// Change the registry key under which our settings are stored.
-		SetRegistryKey( EDITOR_REGISTRY_KEY );
-		g_qeglobals.use_ini = false;
-	}
+
+	AfxEnableControlContainer();
+
+	AfxInitRichEdit2();
+
+	// Change the registry key under which our settings are stored.
+	SetRegistryKey( EDITOR_REGISTRY_KEY );
 
 	LoadStdProfileSettings();  // Load standard INI file options (including MRU)
 
 
-	// Register the application's document templates.  Document templates
-	//  serve as the connection between documents, frame windows and views.
-
-//	CMultiDocTemplate* pDocTemplate;
-//	pDocTemplate = new CMultiDocTemplate(
-//		IDR_RADIANTYPE,
-//		RUNTIME_CLASS(CRadiantDoc),
-//		RUNTIME_CLASS(CMainFrame), // custom MDI child frame
-//		RUNTIME_CLASS(CRadiantView));
-//	AddDocTemplate(pDocTemplate);
-
 	// create main MDI Frame window
-
 	g_PrefsDlg.LoadPrefs();
 
 	qglEnableClientState( GL_VERTEX_ARRAY );
 
-	CString strTemp = m_lpCmdLine;
-	strTemp.MakeLower();
-	if (strTemp.Find("builddefs") >= 0) {
-		g_bBuildList = true;
-	}
-
 	CMainFrame* pMainFrame = new CMainFrame;
-	if (!pMainFrame->LoadFrame(IDR_MENU_QUAKE3)) {
+	if (!pMainFrame->LoadFrame(IDR_MAINFRAME)) {
 		return FALSE;
 	}
 
@@ -324,37 +121,51 @@ BOOL CRadiantApp::InitInstance()
 	return TRUE;
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// CRadiantApp commands
-
-int CRadiantApp::ExitInstance()
-{
+/*
+================
+CRadiantApp::ExitInstance
+================
+*/
+int CRadiantApp::ExitInstance() {
 	common->Shutdown();
 	g_pParentWnd = NULL;
-	int ret = CWinApp::ExitInstance();
+	int ret = CWinAppEx::ExitInstance();
 	ExitProcess(0);
 	return ret;
 }
 
-
+/*
+================
+CRadiantApp::OnIdle
+================
+*/
 BOOL CRadiantApp::OnIdle(LONG lCount) {
 	if (g_pParentWnd) {
 		g_pParentWnd->RoutineProcessing();
 	}
 	return FALSE;
-	//return CWinApp::OnIdle(lCount);
+	//return CWinAppEx::OnIdle(lCount);
 }
 
-void CRadiantApp::OnHelp()
-{
-	ShellExecute(m_pMainWnd->GetSafeHwnd(), "open", "http://www.idDevNet.com", NULL, NULL, SW_SHOW);
+/*
+================
+CRadiantApp::OnAppHelp
+================
+*/
+void CRadiantApp::OnAppHelp() {
+	ShellExecute( m_pMainWnd->GetSafeHwnd(), "open", "https://iddevnet.dhewm3.org/doom3/index.html", NULL, NULL, SW_SHOW );
 }
 
-int CRadiantApp::Run( void )
-{
+/*
+================
+CRadiantApp::Run
+================
+*/
+int CRadiantApp::Run( void ) {
 	BOOL bIdle = TRUE;
 	LONG lIdleCount = 0;
 
+	lastFrameTime = std::chrono::steady_clock::now();
 
 #if _MSC_VER >= 1300
 	MSG *msg = AfxGetCurrentMessage();			// TODO Robert fix me!!
@@ -388,87 +199,32 @@ int CRadiantApp::Run( void )
 	return 0;
 }
 
+class CAboutRadiantDlg : public CAboutDlg {
+public:
+	CAboutRadiantDlg( void );
+	virtual BOOL OnInitDialog();
+};
 
-/*
-=============================================================
-
-REGISTRY INFO
-
-=============================================================
-*/
-
-bool SaveRegistryInfo(const char *pszName, void *pvBuf, long lSize)
-{
-	SetCvarBinary(pszName, pvBuf, lSize);
-	common->WriteFlaggedCVarsToFile( "editor.cfg", CVAR_TOOL, "sett" );
-	return true;
+CAboutRadiantDlg::CAboutRadiantDlg() : CAboutDlg( IDD_ABOUT ) {
+	SetDialogTitle( _T( "About Prey Editor" ) );
 }
 
-bool LoadRegistryInfo(const char *pszName, void *pvBuf, long *plSize)
-{
-	return GetCvarBinary(pszName, pvBuf, *plSize);
-}
+BOOL CAboutRadiantDlg::OnInitDialog() {
+	CAboutDlg::OnInitDialog();
 
-bool SaveWindowState(HWND hWnd, const char *pszName)
-{
-	RECT rc;
-	GetWindowRect(hWnd, &rc);
-	if (hWnd != g_pParentWnd->GetSafeHwnd()) {
-		if (::GetParent(hWnd) != g_pParentWnd->GetSafeHwnd()) {
-		  ::SetParent(hWnd, g_pParentWnd->GetSafeHwnd());
-		}
-		MapWindowPoints(NULL, g_pParentWnd->GetSafeHwnd(), (POINT *)&rc, 2);
-	}
-	return SaveRegistryInfo(pszName, &rc, sizeof(rc));
-}
+	CString buffer;
+	buffer.Format( "Prey Editor Build: %i\n%s\nCopyright �2006 Human Head, Inc.\n\n", BUILD_NUMBER, ID__DATE__ );
+	SetDlgItemText( IDC_ABOUT_TEXT, buffer );
 
-
-bool LoadWindowState(HWND hWnd, const char *pszName)
-{
-	RECT rc;
-	LONG lSize = sizeof(rc);
-
-	if (LoadRegistryInfo(pszName, &rc, &lSize))
-	{
-		if (rc.left < 0)
-			rc.left = 0;
-		if (rc.top < 0)
-			rc.top = 0;
-		if (rc.right < rc.left + 16)
-			rc.right = rc.left + 16;
-		if (rc.bottom < rc.top + 16)
-			rc.bottom = rc.top + 16;
-
-		MoveWindow(hWnd, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, FALSE);
-		return true;
-	}
-
-	return false;
+	return TRUE;
 }
 
 /*
-===============================================================
-
-  STATUS WINDOW
-
-===============================================================
+================
+CRadiantApp::OnAppAbout
+================
 */
-
-void Sys_UpdateStatusBar( void )
-{
-	extern int   g_numbrushes, g_numentities;
-
-	char numbrushbuffer[100] = "";
-
-	sprintf( numbrushbuffer, "Brushes: %d Entities: %d", g_numbrushes, g_numentities );
-	Sys_Status( numbrushbuffer, 2 );
-}
-
-void Sys_Status(const char *psz, int part )
-{
-	if ( part < 0 ) {
-		common->Printf("%s", psz);
-		part = 0;
-	}
-	g_pParentWnd->SetStatusText(part, psz);
+void CRadiantApp::OnAppAbout() {
+	CAboutRadiantDlg aboutDlg;
+	aboutDlg.DoModal();
 }

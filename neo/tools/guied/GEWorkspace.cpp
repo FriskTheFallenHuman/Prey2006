@@ -30,7 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 #pragma hdrstop
 
 
-#include "../../sys/win32/rc/guied_resource.h"
+#include "../../sys/win32/rc/resource.h"
 #include "../../renderer/tr_local.h"
 #include "../../sys/win32/win_local.h"
 #include "../../ui/EditWindow.h"
@@ -38,6 +38,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "../../ui/BindWindow.h"
 #include "../../ui/RenderWindow.h"
 #include "../../ui/ChoiceWindow.h"
+#include "../../ui/UserInterfaceLocal.h"
 
 #include "GEApp.h"
 #include "GEItemPropsDlg.h"
@@ -52,6 +53,8 @@ If you have questions concerning this license or the applicable additional terms
 #include "GEInsertModifier.h"
 #include "GEHideModifier.h"
 #include "GEDeleteModifier.h"
+
+extern idCVar gui_edit;
 
 static float g_ZoomScales[rvGEWorkspace::ZOOM_MAX] = { 0, 0.25f, 0.33f, 0.50f, 0.66f, 1.0f, 1.5f, 2.0f, 3.0f };
 
@@ -70,7 +73,6 @@ rvGEWorkspace::rvGEWorkspace ( rvGEApp* app ) : mApplication ( app )
 	mModified			= false;
 	mNew				= false;
 	mDragScroll			= false;
-	mSourceControlState = SCS_CHECKEDOUT;
 	mFilename			= "guis/Untitled.gui";
 	mDragType			= rvGESelectionMgr::HT_NONE;
 	mHandCursor			= LoadCursor ( app->GetInstance(), MAKEINTRESOURCE(IDC_GUIED_HAND) );
@@ -274,7 +276,7 @@ void rvGEWorkspace::Render ( HDC hdc )
 	if (!qwglMakeCurrent( hdc, win32.hGLRC ))
 	{
 		common->Printf("ERROR: wglMakeCurrent failed.. Error:%i\n", qglGetError());
-		common->Printf("Please restart Q3Radiant if the Map view is not working\n");
+		common->Printf("Please restart " EDITOR_WINDOWTEXT " if the Map view is not working\n");
 		return;
 	}
 
@@ -318,16 +320,24 @@ void rvGEWorkspace::Render ( HDC hdc )
 	tr.viewDef->isEditor = true;
 	renderSystem->BeginFrame(mWindowWidth, mWindowHeight );
 
+	// force gui_edit/debug draw.
+	idWindow::SetDebugDraw();
+
 	// Draw the gui
 	mInterface->Redraw ( 0 ); // eventLoop->Milliseconds() );
+
+	// disable debug draw
+	idWindow::DisableDebugDraw();
 
 	// We are done using the renderSystem now
 	renderSystem->EndFrame( &front, &back );
 
+	/*
 	if ( mApplication->GetActiveWorkspace ( ) == this )
 	{
 		mApplication->GetStatusBar().SetTriangles ( backEnd.pc.c_drawIndexes/3 );
 	}
+	*/
 
 	// Prepare the viewport for drawing selections, etc.
 	GL_State( GLS_DEFAULT );

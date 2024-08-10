@@ -28,8 +28,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef _QERTYPE_H
 #define _QERTYPE_H
 
-#define	MAXPOINTS	16
-
 class texdef_t
 {
 public:
@@ -121,44 +119,12 @@ public:
 	texdef_t	texdef;
 };
 
-#define QER_TRANS     0x00000001
-#define QER_NOCARVE   0x00000002
-
-typedef struct qtexture_s
-{
-	struct	qtexture_s *next;
-	char	name[64];		// includes partial directory and extension
-	int		width,  height;
-	int		contents;
-	int		flags;
-	int		value;
-	int		texture_number;	// gl bind number
-
-	// name of the .shader file
-  char  shadername[1024]; // old shader stuff
-  bool bFromShader;   // created from a shader
-  float fTrans;           // amount of transparency
-  int   nShaderFlags;     // qer_ shader flags
-	idVec3	color;			    // for flat shade mode
-	bool	inuse;		    // true = is present on the level
-
-	// cast this one to an IPluginQTexture if you are using it
-	// NOTE: casting can be done with a GETPLUGINQTEXTURE defined in isurfaceplugin.h
-	// TODO: if the __ISURFACEPLUGIN_H_ header is used, use a union { void *pData; IPluginQTexture *pPluginQTexture } kind of thing ?
-	void					*pData;
-
-	//++timo FIXME: this is the actual filename of the texture
-	// this will be removed after shader code cleanup
-	char filename[64];
-
-} qtexture_t;
-
 //++timo texdef and brushprimit_texdef are static
 // TODO : do dynamic ?
-typedef struct face_s
+struct face_t
 {
-	struct face_s			*next;
-	struct face_s			*original;		//used for vertex movement
+	face_t					*next;
+	face_t					*original;		//used for vertex movement
 	idVec3					planepts[3];
 	idVec3					orgplanepts[3];	// used for arbitrary rotation
 	texdef_t				texdef;
@@ -174,59 +140,19 @@ typedef struct face_s
 
 	// Timo new brush primit texdef
 	brushprimit_texdef_t	brushprimit_texdef;
+};
 
-	// cast this one to an IPluginTexdef if you are using it
-	// NOTE: casting can be done with a GETPLUGINTEXDEF defined in isurfaceplugin.h
-	// TODO: if the __ISURFACEPLUGIN_H_ header is used, use a union { void *pData; IPluginTexdef *pPluginTexdef } kind of thing ?
-	void					*pData;
-} face_t;
-
-typedef struct {
+struct curveVertex_t {
 	idVec3	xyz;
 	float	sideST[2];
 	float	capST[2];
-} curveVertex_t;
+};
 
-typedef struct {
+struct sideVertex_t {
 	curveVertex_t	v[2];
-} sideVertex_t;
+};
 
-
-#define	MIN_PATCH_WIDTH		3
-#define	MIN_PATCH_HEIGHT	3
-
-#define	MAX_PATCH_WIDTH		64
-#define	MAX_PATCH_HEIGHT	64
-
-// patch type info
-// type in lower 16 bits, flags in upper
-// endcaps directly follow this patch in the list
-
-// types
-#define PATCH_GENERIC     0x00000000    // generic flat patch
-#define PATCH_CYLINDER    0x00000001    // cylinder
-#define PATCH_BEVEL       0x00000002    // bevel
-#define PATCH_ENDCAP      0x00000004    // endcap
-#define PATCH_HEMISPHERE  0x00000008    // hemisphere
-#define PATCH_CONE        0x00000010    // cone
-#define PATCH_TRIANGLE    0x00000020    // simple tri, assumes 3x3 patch
-
-// behaviour styles
-#define PATCH_CAP         0x00001000    // flat patch applied as a cap
-#define PATCH_SEAM        0x00002000    // flat patch applied as a seam
-#define PATCH_THICK       0x00004000    // patch applied as a thick portion
-
-// styles
-#define PATCH_BEZIER      0x00000000    // default bezier
-#define PATCH_BSPLINE     0x10000000    // bspline
-
-#define PATCH_TYPEMASK     0x00000fff    //
-#define PATCH_BTYPEMASK    0x0000f000    //
-#define PATCH_STYLEMASK    0xffff0000    //
-
-
-struct brush_s;
-typedef struct brush_s brush_t;
+struct idEditorBrush;
 
 typedef struct {
 	int			width, height;		// in control points, not patches
@@ -237,7 +163,7 @@ typedef struct {
 	const idMaterial *d_texture;
 	idDrawVert *verts;
 	//idDrawVert *ctrl;
-	brush_t *	pSymbiot;
+	idEditorBrush *	pSymbiot;
 	bool		bSelected;
 	bool		bOverlay;
 	int			nListID;
@@ -245,10 +171,7 @@ typedef struct {
 	int			nListSelected;
 
 	idDict *	epairs;
-	// cast this one to an IPluginTexdef if you are using it
-	// NOTE: casting can be done with a GETPLUGINTEXDEF defined in isurfaceplugin.h
-	// TODO: if the __ISURFACEPLUGIN_H_ header is used, use a union { void *pData; IPluginTexdef *pPluginTexdef } kind of thing ?
-	void *		pData;
+
 	ID_INLINE idDrawVert &ctrl( int col, int row ) {
 		if ( col < 0 || col >= width || row < 0 || row >= height ) {
 			common->Warning( "patchMesh_t::ctrl: control point out of range" );
@@ -262,7 +185,7 @@ typedef struct {
 
 enum {
 	LIGHT_TARGET,
-  LIGHT_RIGHT,
+	LIGHT_RIGHT,
 	LIGHT_UP,
 	LIGHT_RADIUS,
 	LIGHT_X,
@@ -273,67 +196,7 @@ enum {
 	LIGHT_CENTER
 };
 
-
-typedef struct brush_s
-{
-	struct brush_s	*prev, *next;	// links in active/selected
-	struct brush_s	*oprev, *onext;	// links in entity
-	brush_t *   list;				//keep a handy link to the list its in
-	struct entity_s	*owner;
-	idVec3 mins, maxs;
-
-	idVec3	lightCenter;			// for moving the shading center of point lights
-	idVec3	lightRight;
-	idVec3	lightTarget;
-	idVec3	lightUp;
-	idVec3	lightRadius;
-	idVec3	lightOffset;
-	idVec3	lightColor;
-	idVec3	lightStart;
-	idVec3	lightEnd;
-	bool	pointLight;
-	bool	startEnd;
-	int		lightTexture;
-
-	bool	trackLightOrigin;	// this brush is a special case light brush
-	bool	entityModel;
-
-	face_t  *brush_faces;
-
-	bool bModelFailed;
-	//
-	// curve brush extensions
-	// all are derived from brush_faces
-	bool	hiddenBrush;
-	bool	forceWireFrame;
-	bool	forceVisibile;
-
-	patchMesh_t *pPatch;
-	struct entity_s *pUndoOwner;
-
-	int undoId;						//undo ID
-	int redoId;						//redo ID
-	int ownerId;					//entityId of the owner entity for undo
-
-	// TTimo: HTREEITEM is MFC, some plugins really don't like it
-#ifdef QERTYPES_USE_MFC
-	int numberId;         // brush number
-	HTREEITEM itemOwner;  // owner for grouping
-#else
-	int numberId;
-	DWORD itemOwner;
-#endif
-
-	idRenderModel	*modelHandle;
-
-	// brush primitive only
-	idDict	epairs;
-
-} brush_t;
-
-
 #define	MAX_FLAGS	8
-
 
 typedef struct trimodel_t
 {
@@ -372,18 +235,16 @@ enum EVAR_TYPES {
 	EVAR_SOUND
 };
 
-typedef struct evar_s {
+struct evar_t {
 	int	type;
 	idStr name;
 	idStr desc;
-} evar_t;
+};
 
-typedef struct eclass_s
-{
-	struct eclass_s *next;
+struct eclass_t {
+	eclass_t* next;
 	idStr	name;
 	bool	fixedsize;
-	bool	unknown;		// wasn't found in source
 	idVec3	mins, maxs;
 	idVec3	color;
 	texdef_t texdef;
@@ -393,15 +254,12 @@ typedef struct eclass_s
 	idRenderModel *modelHandle;
 	idRenderModel *entityModel;
 
-	int   nFrame;
 	unsigned int nShowFlags;
 	idStr	defMaterial;
 	idDict	args;
 	idDict	defArgs;
 	idList<evar_t> vars;
-
-	HMODULE	hPlug;
-} eclass_t;
+};
 
 extern	eclass_t	*eclass;
 
@@ -416,7 +274,7 @@ extern	eclass_t	*eclass;
 #define	W_Z_OVERLAY		0x0020
 #define W_CONSOLE		0x0040
 #define W_ENTITY		0x0080
-#define W_CAMERA_IFON	0x0100
+#define W_CAMERA_ICON	0x0100
 #define W_XZ			0x0200  //--| only used for patch vertex manip stuff
 #define W_YZ			0x0400  //--|
 #define W_MEDIA			0x1000
@@ -424,6 +282,6 @@ extern	eclass_t	*eclass;
 #define	W_ALL			0xFFFFFFFF
 
 // used in some Drawing routines
-enum VIEWTYPE {YZ, XZ, XY};
+enum class ViewType { YZ, XZ, XY };
 
 #endif

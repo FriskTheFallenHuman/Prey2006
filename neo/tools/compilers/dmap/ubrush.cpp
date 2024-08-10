@@ -33,15 +33,9 @@ If you have questions concerning this license or the applicable additional terms
 
 int		c_active_brushes;
 
-int		c_nodes;
-
 // if a brush just barely pokes onto the other side,
 // let it slide by without chopping
 #define	PLANESIDE_EPSILON	0.001
-//0.1
-
-
-
 
 /*
 ================
@@ -152,32 +146,6 @@ uBrush_t *CopyBrush (uBrush_t *brush)
 
 	return newbrush;
 }
-
-
-/*
-================
-DrawBrushList
-================
-*/
-void DrawBrushList (uBrush_t *brush)
-{
-	int		i;
-	side_t	*s;
-
-	GLS_BeginScene ();
-	for ( ; brush ; brush=brush->next)
-	{
-		for (i=0 ; i<brush->numsides ; i++)
-		{
-			s = &brush->sides[i];
-			if (!s->winding)
-				continue;
-			GLS_Winding (s->winding, 0);
-		}
-	}
-	GLS_EndScene ();
-}
-
 
 /*
 =============
@@ -442,7 +410,7 @@ void FilterBrushesIntoTree( uEntity_t *e ) {
 	int					r;
 	int					c_unique, c_clusters;
 
-	common->Printf( "----- FilterBrushesIntoTree -----\n");
+	common->VerbosePrintf( "----- FilterBrushesIntoTree -----\n");
 
 	c_unique = 0;
 	c_clusters = 0;
@@ -457,8 +425,8 @@ void FilterBrushesIntoTree( uEntity_t *e ) {
 		c_clusters += r;
 	}
 
-	common->Printf( "%5i total brushes\n", c_unique );
-	common->Printf( "%5i cluster references\n", c_clusters );
+	common->VerbosePrintf( "%5i total brushes\n", c_unique );
+	common->VerbosePrintf( "%5i cluster references\n", c_clusters );
 }
 
 

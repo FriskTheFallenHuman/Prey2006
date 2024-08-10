@@ -54,7 +54,7 @@ bool idWindow::registerIsTemporary[MAX_EXPRESSION_REGISTERS];		// statics to ass
 //float idWindow::shaderRegisters[MAX_EXPRESSION_REGISTERS];
 //wexpOp_t idWindow::shaderOps[MAX_EXPRESSION_OPS];
 
-idCVar idWindow::gui_debug( "gui_debug", "0", CVAR_GUI | CVAR_BOOL, "" );
+idCVar idWindow::gui_debug( "gui_debug", "0", CVAR_GUI | CVAR_INTEGER, "" );
 idCVar idWindow::gui_edit( "gui_edit", "0", CVAR_GUI | CVAR_BOOL, "" );
 
 extern idCVar r_skipGuiShaders;		// 1 = don't render any gui elements on surfaces
@@ -985,7 +985,7 @@ void idWindow::DebugDraw(int time, float x, float y) {
 	static char buff[16384];
 	if (dc) {
 		dc->EnableClipping(false);
-		if (gui_debug.GetInteger() == 1) {
+		if ( gui_debug.GetInteger() == 1  || gui_edit.GetBool() ) {
 			dc->DrawRect(drawRect.x, drawRect.y, drawRect.w, drawRect.h, 1, idDeviceContext::colorRed);
 		} else if (gui_debug.GetInteger() == 2) {
 			char out[1024];
@@ -1298,7 +1298,7 @@ void idWindow::Redraw(float x, float y) {
 		}
 	}
 
-	if ( gui_debug.GetInteger() ) {
+	if ( gui_debug.GetInteger() || gui_edit.GetBool() ) {
 		if ( foreColor.w() > 0.0 || backColor.w() > 0.0 ) {
 			DebugDraw(time, x, y);
 		}
@@ -1325,7 +1325,7 @@ void idWindow::Redraw(float x, float y) {
 		gui->DrawCursor();
 	}
 
-	if (gui_debug.GetInteger() && flags & WIN_DESKTOP) {
+	if ( ( gui_debug.GetInteger() || gui_edit.GetBool() ) && flags & WIN_DESKTOP ) {
 		dc->EnableClipping(false);
 		sprintf(str, "x: %1.f y: %1.f",  gui->CursorX(), gui->CursorY());
 		dc->DrawText(str, 0.25, 0, dc->colorWhite, idRectangle(0, 0, 100, 20), false);

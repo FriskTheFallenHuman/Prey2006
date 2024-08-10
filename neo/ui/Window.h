@@ -200,6 +200,14 @@ public:
 		ADJUST_BOTTOMLEFT
 	};
 
+	static void SetDebugDraw( void ) {
+		gui_edit.SetBool( true );
+	}
+
+	static void DisableDebugDraw( void ) {
+		gui_edit.SetBool( false );
+	}
+
 	static const char *ScriptNames[SCRIPT_COUNT];
 
 	static const idRegEntry RegisterVars[];
@@ -223,7 +231,7 @@ public:
 	void Size(float x, float y, float w, float h);
 	void SetupFromState();
 	void SetupBackground();
-	drawWin_t *FindChildByName(const char *name);
+	virtual drawWin_t *FindChildByName(const char *name);
 	idSimpleWindow *FindSimpleWinByName(const char *_name);
 	idWindow *GetParent() { return parent; }
 	idUserInterfaceLocal *GetGui() {return gui;};
@@ -304,11 +312,11 @@ public:
 	bool RunScript(int n);
 	bool RunScriptList(idGuiScriptList *src);
 	void SetRegs(const char *key, const char *val);
-	intptr_t ParseExpression( idParser *src, idWinVar *var = NULL, intptr_t component = 0 );
+	virtual intptr_t ParseExpression( idParser *src, idWinVar *var = NULL, intptr_t component = 0 );
 	int ExpressionConstant(float f);
 	idRegisterList *RegList() { return &regList; }
 	void AddCommand(const char *cmd);
-	void AddUpdateVar(idWinVar *var);
+	virtual void AddUpdateVar(idWinVar *var);
 	bool Interactive();
 	bool ContainsStateVars();
 	void SetChildWinVarVal(const char *name, const char *var, const char *val);
@@ -323,17 +331,17 @@ public:
 
 	void		AddDefinedVar		( idWinVar* var );
 
-	idWindow*	FindChildByPoint	( float x, float y, idWindow* below = NULL );
-	int			GetChildIndex		( idWindow* window );
-	int			GetChildCount		( void );
-	idWindow*	GetChild			( int index );
-	void		RemoveChild			( idWindow *win );
-	bool		InsertChild			( idWindow *win, idWindow* before );
+	virtual idWindow*	FindChildByPoint	( float x, float y, idWindow* below = NULL );
+	virtual int			GetChildIndex		( idWindow* window );
+	virtual int			GetChildCount		( void );
+	virtual idWindow*	GetChild			( int index );
+	virtual void		RemoveChild			( idWindow *win );
+	virtual bool		InsertChild			( idWindow *win, idWindow* before );
 
 	void		ScreenToClient		( idRectangle* rect );
 	void		ClientToScreen		( idRectangle* rect );
 
-	bool		UpdateFromDictionary ( idDict& dict );
+	virtual bool		UpdateFromDictionary ( idDict& dict );
 
 protected:
 
@@ -363,7 +371,7 @@ protected:
 	void RestoreExpressionParseState();
 	void ParseBracedExpression(idParser *src);
 	bool ParseScriptEntry(const char *name, idParser *src);
-	bool ParseRegEntry(const char *name, idParser *src);
+	virtual bool ParseRegEntry(const char *name, idParser *src);
 	virtual bool ParseInternalVar(const char *name, idParser *src);
 	void ParseString(idParser *src, idStr &out);
 	void ParseVec4(idParser *src, idVec4 &out);

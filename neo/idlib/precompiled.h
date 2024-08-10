@@ -36,9 +36,10 @@ If you have questions concerning this license or the applicable additional terms
 //   MBCS support in MFC is deprecated and may be removed in a future version of MFC."
 #define NO_WARN_MBCS_MFC_DEPRECATION
 
-#define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS	// prevent auto literal to string conversion
+#include <afxwin.h>
 
-#include "tools/comafx/StdAfx.h"
+#include "tools/comafx/framework.h"
+#include "tools/comafx/pch.h"
 
 // scaling factor based on DPI (dpi/96.0f, so 1.0 by default); implemented in win_main.cpp
 float Win_GetWindowScalingFactor(HWND window);

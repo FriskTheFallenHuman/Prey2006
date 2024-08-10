@@ -43,7 +43,7 @@ class CWaitDlg : public CDialog
 public:
 	CWaitDlg(CWnd* pParent = NULL, const char *msg = "Wait...");   // standard constructor
 	~CWaitDlg();
-	void SetText(const char *msg, bool append = false);
+	void SetText(const char *msg, float percent = 0.0f, bool append = false);
 	void AllowCancel( bool enable );
 	bool CancelPressed( void );
 
@@ -74,6 +74,7 @@ protected:
 private:
 	idStr	text;
 	bool	cancelPressed;
+	CProgressCtrl m_progress;
 };
 
 //{{AFX_INSERT_LOCATION}}

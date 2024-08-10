@@ -16,7 +16,7 @@
 //	If you use this code, drop me an email.  I'd like to know if you find the code
 //	useful.
 
-//#include "stdafx.h"
+//#include "pch.h"
 #include "precompiled.h"
 #pragma hdrstop
 

@@ -26,71 +26,77 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-void		Eclass_InitForSourceDirectory( const char *path );
+void		Eclass_InitForSourceDirectory();
 eclass_t *	Eclass_ForName( const char *name, bool has_brushes );
-bool		Eclass_hasModel(eclass_t *e, idVec3 &vMin, idVec3 &vMax);
 
-typedef struct entity_s {
-	struct entity_s	*prev, *next;
-	brush_t		brushes;					// head/tail of list
+struct idEditorEntity {
+	idEditorEntity* prev, * next;
+	idEditorBrush		brushes;					// head/tail of list
 	int			undoId, redoId, entityId;	// used for undo/redo
 	idVec3		origin;
 	qhandle_t	lightDef;
 	qhandle_t	modelDef;
-	idSoundEmitter *soundEmitter;
-	eclass_t *	eclass;
+	idSoundEmitter* soundEmitter;
+	const eclass_t* eclass;
 	idDict		epairs;
-	eclass_t *	md3Class;
 	idMat3		rotation;
 	idVec3		lightOrigin;		// for lights that have been combined with models
 	idMat3		lightRotation;		// ''
 	bool		trackLightOrigin;
 	idCurve<idVec3> *curve;
-} entity_t;
+	renderEntity_t	refent;
+
+	idEditorEntity();
+	~idEditorEntity();
+
+	void		BuildEntityRenderState( idEditorEntity *ent, bool update );
+
+	const char *ValueForKey( const char *key ) const;
+	int			GetNumKeys() const;
+	const char *GetKeyString( int iIndex ) const;
+	void		SetKeyValue( const char *key, const char *value, bool trackAngles = true );
+	void		DeleteKey( const char *key );
+	float		FloatForKey( const char *key );
+	int			IntForKey( const char *key );
+	bool		GetVectorForKey( const char *key, idVec3 &vec );
+	bool		GetVector4ForKey( const char *key, idVec4 &vec );
+	bool		GetFloatForKey( const char *key, float *f );
+	void		SetKeyVec3( const char *key, idVec3 v );
+	void		SetKeyMat3( const char *key, idMat3 m );
+	bool		GetMatrixForKey( const char *key, idMat3 &mat );
+
+	void		UpdateSoundEmitter();
+	idCurve<idVec3>* MakeCurve();
+	void		UpdateCurveData();
+	void		SetCurveData();
+
+	void		FreeEpairs();
+	int			MemorySize() const;
+
+	void		WriteSelected( FILE *f );
+	void		WriteSelected( CMemFile* );
+
+	idEditorEntity *	Clone() const;
+	void		AddToList( idEditorEntity *list );
+	void		RemoveFromList();
+	bool		HasModel() const;
+
+	void		PostParse(idEditorBrush *pList);
+
+	void		SetName( const char *name );
+
+	//Timo : used for parsing epairs in brush primitive
+	void		Name(bool force );
+};
 
 void		ParseEpair(idDict *dict);
-const char *ValueForKey(entity_t *ent, const char *key);
-int			GetNumKeys(entity_t *ent);
-const char *GetKeyString(entity_t *ent, int iIndex);
-void		SetKeyValue (entity_t *ent, const char *key, const char *value, bool trackAngles = true);
-void		DeleteKey (entity_t *ent, const char *key);
-float		FloatForKey (entity_t *ent, const char *key);
-int			IntForKey (entity_t *ent, const char *key);
-bool		GetVectorForKey (entity_t *ent, const char *key, idVec3 &vec);
-bool		GetVector4ForKey (entity_t *ent, const char *key, idVec4 &vec);
-bool		GetFloatForKey(entity_t *end, const char *key, float *f);
-void		SetKeyVec3(entity_t *ent, const char *key, idVec3 v);
-void		SetKeyMat3(entity_t *ent, const char *key, idMat3 m);
-bool		GetMatrixForKey(entity_t *ent, const char *key, idMat3 &mat);
 
-void		Entity_UpdateSoundEmitter( entity_t *ent );
-idCurve<idVec3> *Entity_MakeCurve( entity_t *e );
-void		Entity_UpdateCurveData( entity_t *e );
-void		Entity_SetCurveData( entity_t *e );
-void		Entity_Free (entity_t *e);
-void		Entity_FreeEpairs(entity_t *e);
-int			Entity_MemorySize(entity_t *e);
-entity_t *	Entity_Parse (bool onlypairs, brush_t* pList = NULL);
-void		Entity_Write (entity_t *e, FILE *f, bool use_region);
-void		Entity_WriteSelected(entity_t *e, FILE *f);
-void		Entity_WriteSelected(entity_t *e, CMemFile*);
-entity_t *	Entity_Create (eclass_t *c, bool forceFixed = false);
-entity_t *	Entity_Clone (entity_t *e);
-void		Entity_AddToList(entity_t *e, entity_t *list);
-void		Entity_RemoveFromList(entity_t *e);
-bool		EntityHasModel(entity_t *ent);
+idEditorEntity *	Entity_Parse (bool onlypairs, idEditorBrush* pList = NULL);
+idEditorEntity *	Entity_Create (eclass_t *c, bool forceFixed = false);
 
-void		Entity_LinkBrush (entity_t *e, brush_t *b);
-void		Entity_UnlinkBrush (brush_t *b);
-entity_t *	FindEntity(const char *pszKey, const char *pszValue);
-entity_t *	FindEntityInt(const char *pszKey, int iValue);
-entity_t *	Entity_New();
-void		Entity_SetName(entity_t *e, const char *name);
+void		Entity_LinkBrush (idEditorEntity *e, idEditorBrush *b);
+void		Entity_UnlinkBrush (idEditorBrush *b);
+idEditorEntity *	FindEntity(const char *pszKey, const char *pszValue);
+idEditorEntity *	FindEntityInt(const char *pszKey, int iValue);
 
-int			GetUniqueTargetId(int iHint);
-eclass_t *	GetCachedModel(entity_t *pEntity, const char *pName, idVec3 &vMin, idVec3 &vMax);
-
-//Timo : used for parsing epairs in brush primitive
-void		Entity_Name(entity_t *e, bool force);
-
-bool		IsBrushSelected(brush_t* bSel);
+bool		IsBrushSelected(const idEditorBrush* bSel);

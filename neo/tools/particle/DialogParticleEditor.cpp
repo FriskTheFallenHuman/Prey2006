@@ -30,9 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 #pragma hdrstop
 
 #include "../../sys/win32/win_local.h"
-#include "../../sys/win32/rc/common_resource.h"
-#include "../../sys/win32/rc/Radiant_resource.h"
-#include "../../sys/win32/rc/ParticleEditor_resource.h"
+#include "../../sys/win32/rc/resource.h"
 #include "../comafx/DialogName.h"
 #include "../comafx/VectorCtl.h"
 #include "../comafx/DialogColorPicker.h"

@@ -343,12 +343,6 @@ void CPreviewDlg::OnTvnSelchangedTreeMedia(NMHDR *pNMHDR, LRESULT *pResult)
 				else {
 					lsize = 768 * 1024;
 				}
-				if ( size > lsize ) {
-					if ( MessageBox("Model appears to be quite large, are you sure you want to preview it?", "High Poly Model?", MB_YESNO ) == IDNO ) {
-						*pResult = 0;
-						return;
-					}
-				}
 				m_drawModel.setMedia( modelMedia );
 				if ( currentMode == SKINS ) {
 					m_drawModel.SetSkin( mediaName );

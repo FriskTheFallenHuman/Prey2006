@@ -30,9 +30,10 @@ If you have questions concerning this license or the applicable additional terms
 #pragma hdrstop
 
 
-#include "../../sys/win32/rc/debugger_resource.h"
+#include "../../sys/win32/rc/resource.h"
 #include "DebuggerApp.h"
 #include "../Common/OpenFileDialog.h"
+#include "../Common/AboutBoxDlg.h"
 #include "DebuggerQuickWatchDlg.h"
 #include "DebuggerFindDlg.h"
 
@@ -55,6 +56,57 @@ If you have questions concerning this license or the applicable additional terms
 #define IDC_DBG_BREAKLIST		31012
 
 #define ID_DBG_FILE_MRU1		10000
+
+class CAboutDebuggerDlg : public CAboutDlg {
+public:
+	CAboutDebuggerDlg( void );
+	virtual BOOL OnInitDialog();
+};
+
+CAboutDebuggerDlg::CAboutDebuggerDlg() : CAboutDlg( IDD_ABOUT ) {
+	SetDialogTitle( _T( "About Script Debugger" ) );
+}
+
+BOOL CAboutDebuggerDlg::OnInitDialog() {
+	CAboutDlg::OnInitDialog();
+
+	CString buffer;
+	buffer.Format( "Script Debugger Build: %i\n%s\nCopyright ©2006 Human Head, Inc.\n\n", BUILD_NUMBER, ID__DATE__ );
+	SetDlgItemText( IDC_ABOUT_TEXT, buffer );
+
+	return TRUE;
+}
+
+static INT_PTR CALLBACK AboutDebugerDlgProc( HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam ) {
+	static CAboutDebuggerDlg *pDlg = nullptr;
+
+	if ( message == WM_INITDIALOG ) {
+		pDlg = reinterpret_cast<CAboutDebuggerDlg *>( lParam );
+		pDlg->Attach( hDlg ); // Attach the HWND to the MFC dialog
+		pDlg->OnInitDialog();
+		return TRUE;
+	}
+
+	if ( pDlg ) {
+		switch ( message ) {
+			case WM_COMMAND:
+				if ( LOWORD( wParam ) == IDOK || LOWORD( wParam ) == IDCANCEL ) {
+					EndDialog( hDlg, LOWORD( wParam ) );
+					return TRUE;
+				}
+				break;
+			default:
+				break;
+		}
+	}
+
+	return FALSE;
+}
+
+static void ShowAboutDebuggerDialog( HINSTANCE hInstance, HWND hParent ) {
+	CAboutDebuggerDlg aboutDlg;
+	DialogBoxParam( hInstance, MAKEINTRESOURCE( IDD_ABOUT ), hParent, AboutDebugerDlgProc, reinterpret_cast<LPARAM>( &aboutDlg ) );
+}
 
 /*
 ================
@@ -171,7 +223,7 @@ bool rvDebuggerWindow::Create ( HINSTANCE instance )
 
 	UpdateTitle ( );
 
-	Printf ( "Dhewm3 Script Debugger v1.1\n\n" );
+	Printf( va( "Script Debugger Build: %i\n\n", BUILD_NUMBER ) );
 
 	ShowWindow ( mWnd, SW_SHOW );
 	UpdateWindow ( mWnd );
@@ -532,7 +584,7 @@ void rvDebuggerWindow::UpdateTitle ( void )
 {
 	idStr title;
 
-	title = "Dhewm3 Script Debugger - ";
+	title = "Script Debugger - ";
 
 	if ( mClient->IsConnected ( ) )
 	{
@@ -1229,7 +1281,7 @@ int rvDebuggerWindow::HandleCommand ( WPARAM wparam, LPARAM lparam )
 		}
 
 		case ID_DBG_HELP_ABOUT:
-			DialogBox ( mInstance, MAKEINTRESOURCE(IDD_DBG_ABOUT), mWnd, AboutDlgProc );
+			ShowAboutDebuggerDialog( GetInstance(), mWnd );
 			break;
 
 		case ID_DBG_DEBUG_BREAK:
@@ -1844,7 +1896,7 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc ( HWND wnd, UINT msg, WPARAM wparam, 
 		case WM_CLOSE:
 			if ( window->mClient->IsConnected ( ) )
 			{
-				if ( IDNO == MessageBox ( wnd, "The debugger is currently connected to a running version of the game.  Are you sure you want to close now?", "Dhewm3 Script Debugger", MB_YESNO|MB_ICONQUESTION ) )
+				if ( IDNO == MessageBox ( wnd, "The debugger is currently connected to a running version of the game.  Are you sure you want to close now?", "Script Debugger", MB_YESNO|MB_ICONQUESTION ) )
 				{
 					return 0;
 				}

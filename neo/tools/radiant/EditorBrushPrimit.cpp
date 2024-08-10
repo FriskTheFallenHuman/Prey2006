@@ -209,7 +209,7 @@ void EmitBrushPrimitTextureCoordinates(face_t *f, idWinding *w, patchMesh_t *pat
 //    parse a brush in brush primitive format
 // =======================================================================================================================
 //
-void BrushPrimit_Parse(brush_t *b, bool newFormat, const idVec3 origin) {
+void BrushPrimit_Parse(idEditorBrush *b, bool newFormat, const idVec3 origin) {
 	face_t	*f;
 	int		i, j;
 	GetToken(true);
@@ -730,11 +730,6 @@ void Face_FitTexture_BrushPrimit(face_t *f, idVec3 mins, idVec3 maxs, float heig
  =======================================================================================================================
  */
 void Face_ScaleTexture_BrushPrimit(face_t *face, float sS, float sT) {
-	if (!g_qeglobals.m_bBrushPrimitMode) {
-		Sys_Status("BP mode required\n");
-		return;
-	}
-
 	brushprimit_texdef_t	*pBP = &face->brushprimit_texdef;
 	BPMatScale(pBP->coords, sS, sT);
 
@@ -1135,7 +1130,7 @@ void Face_FlipTexture_BrushPrimit(face_t *f, bool y) {
 #endif
 }
 
-void Brush_FlipTexture_BrushPrimit(brush_t *b, bool y) {
+void Brush_FlipTexture_BrushPrimit(idEditorBrush *b, bool y) {
 	for (face_t *f = b->brush_faces; f; f = f->next) {
 		Face_FlipTexture_BrushPrimit(f, y);
 	}

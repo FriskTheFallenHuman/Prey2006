@@ -30,7 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 #pragma hdrstop
 
 
-#include "sys/win32/rc/Common_resource.h"
+#include "sys/win32/rc/resource.h"
 // FIXME: SteelStorm2 has this whole file commented out
 
 idCVar rbfg_DefaultWidth( "rbfg_DefaultWidth", "0", 0, "" );

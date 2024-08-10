@@ -248,7 +248,7 @@ static void Drag_Setup( int x, int y, int buttons,
 		// yes, special handling
 		bool bOK = ( g_PrefsDlg.m_bALTEdge ) ? ( ::GetAsyncKeyState( VK_MENU ) != 0 ) : true;
 		if (bOK) {
-			for (brush_t * pBrush = selected_brushes.next; pBrush != &selected_brushes; pBrush = pBrush->next) {
+			for (idEditorBrush * pBrush = selected_brushes.next; pBrush != &selected_brushes; pBrush = pBrush->next) {
 				if (buttons & MK_CONTROL) {
 					Brush_SideSelect(pBrush, origin, dir, true);
 				}
@@ -338,7 +338,7 @@ void Drag_Begin( int x, int y, int buttons,
 		t = Test_Ray(origin, dir, false);
 		if (t.face) {
 			g_qeglobals.d_new_brush_bottom = t.brush->mins;
-			g_qeglobals.d_new_brush_top = t.brush->maxs;
+			g_qeglobals.d_new_idEditorBrushop = t.brush->maxs;
 
 			// use a local brushprimit_texdef fitted to a default 2x2 texture
 			brushprimit_texdef_t bp_local;
@@ -473,7 +473,7 @@ void Drag_Begin( int x, int y, int buttons,
 }
 
 
-void Brush_GetBounds(brush_t *b, idVec3 &mins, idVec3 &maxs) {
+void Brush_GetBounds(idEditorBrush *b, idVec3 &mins, idVec3 &maxs) {
 	int		i;
 
 	for (i = 0; i < 3; i++) {
@@ -500,7 +500,7 @@ MoveSelection
 */
 static void MoveSelection( const idVec3 &orgMove ) {
 	int		i, success;
-	brush_t *b;
+	idEditorBrush *b;
 	CString strStatus;
 	idVec3	vTemp, vTemp2, end, move;
 
@@ -518,12 +518,12 @@ static void MoveSelection( const idVec3 &orgMove ) {
 		float	fDeg = -move[2];
 		float	fAdj = move[2];
 		int axis = 0;
-		if (g_pParentWnd->ActiveXY()->GetViewType() == XY) {
+		if (g_pParentWnd->ActiveXY()->GetViewType() == ViewType::XY) {
 			fDeg = -move[1];
 			fAdj = move[1];
 			axis = 2;
 		}
-		else if (g_pParentWnd->ActiveXY()->GetViewType() == XZ) {
+		else if (g_pParentWnd->ActiveXY()->GetViewType() == ViewType::XZ) {
 			fDeg = move[2];
 			fAdj = move[2];
 			axis = 1;

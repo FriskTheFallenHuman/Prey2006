@@ -31,7 +31,9 @@ If you have questions concerning this license or the applicable additional terms
 
 #include <io.h>
 
-#include "../../sys/win32/rc/guied_resource.h"
+#include "../../sys/win32/rc/resource.h"
+#include "../../renderer/DeviceContext.h"
+#include "../Common/AboutBoxDlg.h"
 
 #include "GEApp.h"
 #include "GEOptionsDlg.h"
@@ -40,18 +42,56 @@ If you have questions concerning this license or the applicable additional terms
 static const int IDM_WINDOWCHILD	= 1000;
 static const int ID_GUIED_FILE_MRU1 = 10000;
 
-static INT_PTR CALLBACK AboutDlg_WndProc ( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-	switch ( msg )
-	{
-		case WM_COMMAND:
-			EndDialog ( hwnd, 1 );
-			break;
+class CAboutGEDlg : public CAboutDlg {
+public:
+	CAboutGEDlg( void );
+	virtual BOOL OnInitDialog();
+};
+
+CAboutGEDlg::CAboutGEDlg() : CAboutDlg( IDD_ABOUT ) {
+	SetDialogTitle( _T( "About GUI Editor" ) );
+}
+
+BOOL CAboutGEDlg::OnInitDialog() {
+	CAboutDlg::OnInitDialog();
+
+	CString buffer;
+	buffer.Format( "GUI Editor Build: %i\n%s\nCopyright ©2006 Human Head, Inc.\n\n", BUILD_NUMBER, ID__DATE__ );
+	SetDlgItemText( IDC_ABOUT_TEXT, buffer );
+
+	return TRUE;
+}
+
+static INT_PTR CALLBACK AboutDlgProc( HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam ) {
+	static CAboutGEDlg *pDlg = nullptr;
+
+	if ( message == WM_INITDIALOG ) {
+		pDlg = reinterpret_cast<CAboutGEDlg *>( lParam );
+		pDlg->Attach( hDlg ); // Attach the HWND to the MFC dialog
+		pDlg->OnInitDialog();
+		return TRUE;
+	}
+
+	if ( pDlg ) {
+		switch ( message ) {
+			case WM_COMMAND:
+				if ( LOWORD( wParam ) == IDOK || LOWORD( wParam ) == IDCANCEL ) {
+					EndDialog( hDlg, LOWORD( wParam ) );
+					return TRUE;
+				}
+				break;
+			default:
+				break;
+		}
 	}
 
 	return FALSE;
 }
 
+static void ShowAboutDialog( HINSTANCE hInstance, HWND hParent ) {
+	CAboutGEDlg aboutDlg;
+	DialogBoxParam( hInstance, MAKEINTRESOURCE( IDD_ABOUT ), hParent, AboutDlgProc, reinterpret_cast<LPARAM>( &aboutDlg ) );
+}
 
 rvGEApp::rvGEApp ( )
 {
@@ -112,7 +152,7 @@ bool rvGEApp::Initialize ( void )
 
 	// Create the main window
 	mMDIFrame = CreateWindow ( "QUAKE4_GUIEDITOR_CLASS",
-							  "Quake IV GUI Editor",
+							  "GUI Editor",
 							  WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS,
 							  CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 							  NULL, NULL, mInstance, (LPVOID)this );
@@ -323,6 +363,7 @@ LRESULT CALLBACK rvGEApp::FrameWndProc ( HWND hWnd, UINT uMsg, WPARAM wParam, LP
 		case WM_DESTROY:
 			app->mOptions.SetWindowPlacement ( "mdiframe", hWnd );
 			app->mOptions.Save ( );
+			GUIEditorShutdown();
 			ExitProcess(0);
 			break;
 
@@ -551,25 +592,6 @@ int rvGEApp::HandleCommand ( WPARAM wParam, LPARAM lParam )
 
 	switch ( LOWORD ( wParam ) )
 	{
-		case ID_GUIED_SOURCECONTROL_CHECKIN:
-			assert ( workspace );
-			HandleCommandSave ( workspace, workspace->GetFilename ( ) );
-			workspace->CheckIn ( );
-			break;
-
-		case ID_GUIED_SOURCECONTROL_CHECKOUT:
-			assert ( workspace );
-			workspace->CheckOut ( );
-			break;
-
-		case ID_GUIED_SOURCECONTROL_UNDOCHECKOUT:
-			assert ( workspace );
-			if ( IDYES == MessageBox ( va("Are you sure you want to undo the checkout of the file '%s'?",workspace->GetFilename()), MB_YESNO|MB_ICONQUESTION) )
-			{
-				workspace->UndoCheckout ( );
-			}
-			break;
-
 		case ID_GUIED_TOOLS_RELOADMATERIALS:
 			SetCursor ( LoadCursor ( NULL, IDC_WAIT ) );
 			cmdSystem->BufferCommandText( CMD_EXEC_NOW, "reloadImages\n" );
@@ -588,7 +610,7 @@ int rvGEApp::HandleCommand ( WPARAM wParam, LPARAM lParam )
 			break;
 
 		case ID_GUIED_HELP_ABOUT:
-			DialogBox ( GetInstance(), MAKEINTRESOURCE(IDD_GUIED_ABOUT), mMDIFrame, AboutDlg_WndProc );
+			ShowAboutDialog( GetInstance(), mMDIFrame );
 			break;
 
 		case ID_GUIED_TOOLS_VIEWER:
@@ -981,10 +1003,6 @@ int rvGEApp::HandleInitMenu ( WPARAM wParam, LPARAM lParam )
 				case ID_GUIED_EDIT_COPY:
 				case ID_GUIED_EDIT_PASTE:
 				case ID_GUIED_ITEM_ARRANGEMAKECHILD:
-				case ID_GUIED_SOURCECONTROL_GETLATESTVERSION:
-				case ID_GUIED_SOURCECONTROL_CHECKIN:
-				case ID_GUIED_SOURCECONTROL_CHECKOUT:
-				case ID_GUIED_SOURCECONTROL_UNDOCHECKOUT:
 				case ID_GUIED_FILE_CLOSE:
 					EnableMenuItem ( hmenu, nPos, MF_GRAYED|MF_BYPOSITION );
 					break;
@@ -1116,15 +1134,6 @@ int rvGEApp::HandleInitMenu ( WPARAM wParam, LPARAM lParam )
 			case ID_GUIED_ITEM_MAKESAMESIZEWIDTH:
 			case ID_GUIED_ITEM_ARRANGEMAKECHILD:
 				EnableMenuItem ( hmenu, nPos, MF_BYPOSITION|(workspace->GetSelectionMgr().Num()>1?MF_ENABLED:MF_GRAYED) );
-				break;
-
-			case ID_GUIED_SOURCECONTROL_CHECKIN:
-			case ID_GUIED_SOURCECONTROL_UNDOCHECKOUT:
-				EnableMenuItem ( hmenu, nPos, MF_BYPOSITION|((workspace->GetSourceControlState()==rvGEWorkspace::SCS_CHECKEDOUT)?MF_ENABLED:MF_GRAYED) );
-				break;
-
-			case ID_GUIED_SOURCECONTROL_CHECKOUT:
-				EnableMenuItem ( hmenu, nPos, MF_BYPOSITION|((workspace->GetSourceControlState()==rvGEWorkspace::SCS_CHECKEDIN)?MF_ENABLED:MF_GRAYED) );
 				break;
 
 			default:

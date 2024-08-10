@@ -62,6 +62,8 @@ CInspectorDialog::~CInspectorDialog()
 BEGIN_MESSAGE_MAP(CInspectorDialog, CTabsDlg)
 	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB_INSPECTOR, OnTcnSelchange )
 	ON_WM_SIZE()
+	ON_WM_SIZING()
+	ON_WM_MOVING()
 	ON_WM_DESTROY()
 	ON_WM_CLOSE()
 END_MESSAGE_MAP()
@@ -91,16 +93,26 @@ BOOL CInspectorDialog::OnInitDialog()
 
 	SetMode(W_CONSOLE);
 	initialized = true;
+	prevMode = W_CONSOLE;
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void CInspectorDialog::SetMode(int mode, bool updateTabs) {
+	// TODO: Needs some work
+	if ( IsWindowVisible() && prevMode == mode ) {
+		ShowWindow( 0 );
+	} else {
+		ShowWindow( 1 );
+	}
+
+	prevMode = mode;
+
 	FocusWindow ( mode );
 }
 
-void CInspectorDialog::UpdateEntitySel(eclass_t *ent) {
+void CInspectorDialog::UpdateEntitySel(const eclass_t* ent) {
 	entityDlg.UpdateEntitySel(ent);
 }
 
@@ -158,10 +170,22 @@ void CInspectorDialog::OnSize(UINT nType, int cx, int cy)
 	{
 		m_Windows.GetNextAssoc( pos, wID, (void*&)info );
 
-		if ( (info->m_State == DockedWindowInfo::DOCKED) ) {
+		if ( info->m_State == DockedWindowInfo::DOCKED ) {
 			info->m_Window->SetWindowPos(NULL, rect.left, rect.top, rect.Width(), rect.Height(), 0);
 		}
 
+	}
+}
+
+void CInspectorDialog::OnSizing( UINT nSide, LPRECT lpRect ) {
+	if ( TryDocking( GetSafeHwnd(), nSide, lpRect, 0 ) ) {
+		return;
+	}
+}
+
+void CInspectorDialog::OnMoving( UINT nSide, LPRECT lpRect ) {
+	if ( TryDocking( GetSafeHwnd(), nSide, lpRect, 0 ) ) {
+		return;
 	}
 }
 
@@ -175,11 +199,18 @@ void CInspectorDialog::OnDestroy()
 
 void CInspectorDialog::OnClose()
 {
-	CTabsDlg::OnClose();
+	ShowWindow( 0 );
+	//	CTabsDlg::OnClose();
 }
 
 BOOL CInspectorDialog::PreTranslateMessage(MSG* pMsg)
 {
+	/*
+	if ( pMsg->message == WM_LBUTTONDOWN || pMsg->message == WM_RBUTTONDOWN || pMsg->message == WM_MBUTTONDOWN ) {
+		g_Inspectors->BringWindowToTop();
+	}
+	*/
+
 	// TODO: Add your specialized code here and/or call the base class
 	if ( pMsg->message == WM_KEYDOWN || pMsg->message == WM_KEYUP) {
 		g_pParentWnd->PostMessage(pMsg->message, pMsg->wParam, pMsg->lParam);

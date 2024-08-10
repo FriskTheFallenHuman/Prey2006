@@ -30,7 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 #pragma hdrstop
 
 
-#include "../../sys/win32/rc/guied_resource.h"
+#include "../../sys/win32/rc/resource.h"
 #include "../../renderer/tr_local.h"
 
 #include "GEApp.h"
@@ -481,7 +481,7 @@ void rvGEViewer::Render	( HDC dc )
 	if (!qwglMakeCurrent( dc, win32.hGLRC ))
 	{
 		common->Printf("ERROR: wglMakeCurrent failed.. Error:%i\n", qglGetError());
-		common->Printf("Please restart Q3Radiant if the Map view is not working\n");
+		common->Printf("Please restart " EDITOR_WINDOWTEXT " if the Map view is not working\n");
 		return;
 	}
 

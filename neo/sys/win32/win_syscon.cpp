@@ -38,7 +38,7 @@ If you have questions concerning this license or the applicable additional terms
 #include <conio.h>
 #include "win_local.h"
 #ifdef ID_ALLOW_TOOLS
-#include "rc/prey_tools_resource.h"
+#include "rc/resource.h"
 #else
 #include "rc/prey_resource.h"
 #endif

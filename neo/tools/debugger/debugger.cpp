@@ -32,7 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #if defined( ID_ALLOW_TOOLS )
 #include "DebuggerServer.h"
-#include "../../sys/win32/rc/debugger_resource.h"
+#include "../../sys/win32/rc/resource.h"
 #include "DebuggerApp.h"
 #else
 #include "DebuggerServer.h"

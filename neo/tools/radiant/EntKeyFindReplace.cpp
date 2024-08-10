@@ -30,7 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 #pragma hdrstop
 
 
-//#include "stdafx.h"
+//#include "pch.h"
 #include "radiant.h"
 #include "GetString.h"	// for ErrorBox() etc
 #include "qe3.h"
@@ -38,7 +38,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "EntKeyFindReplace.h"
 //#include "oddbits.h"
 /*
-#include "stdafx.h"
+#include "pch.h"
 #include "Radiant.h"
 #include "ZWnd.h"
 #include "qe3.h"
