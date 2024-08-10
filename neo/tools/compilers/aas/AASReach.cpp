@@ -26,9 +26,11 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "tools/compilers/aas/AASReach.h"
+#include "AASFile_local.h"
+#include "AASReach.h"
 
 #define INSIDEUNITS							2.0f
 #define INSIDEUNITS_WALKEND					0.5f

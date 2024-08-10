@@ -16,12 +16,12 @@
 //	If you use this code, drop me an email.  I'd like to know if you find the code
 //	useful.
 
-//#include "stdafx.h"
+//#include "pch.h"
 #include "precompiled.h"
 #pragma hdrstop
 
 #include "PropTree.h"
-#include "../../../sys/win32/rc/proptree_Resource.h"
+#include "../../../sys/win32/rc/resource.h"
 #include "PropTreeItemColor.h"
 
 #ifdef _DEBUG

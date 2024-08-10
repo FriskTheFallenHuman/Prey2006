@@ -40,7 +40,7 @@ CSG_MakeHollow
 */
 void CSG_MakeHollow (void)
 {
-	brush_t		*b, *front, *back, *next;
+	idEditorBrush		*b, *front, *back, *next;
 	face_t		*f;
 	face_t		split;
 	idVec3		move;
@@ -83,10 +83,10 @@ Brush_Merge
  be the same as well.
 =============
 */
-brush_t *Brush_Merge(brush_t *brush1, brush_t *brush2, int onlyshape)
+idEditorBrush *Brush_Merge(idEditorBrush *brush1, idEditorBrush *brush2, int onlyshape)
 {
 	int i, shared;
-	brush_t *newbrush;
+	idEditorBrush *newbrush;
 	face_t *face1, *face2, *newface, *f;
 
 	// check for bounding box overlapp
@@ -230,11 +230,11 @@ Brush_MergeListPairs
   Input and output should be a single linked list using .next
 =============
 */
-brush_t *Brush_MergeListPairs(brush_t *brushlist, int onlyshape)
+idEditorBrush *Brush_MergeListPairs(idEditorBrush *brushlist, int onlyshape)
 {
 	int nummerges, merged;
-	brush_t *b1, *b2, *tail, *newbrush, *newbrushlist;
-	brush_t *lastb2;
+	idEditorBrush *b1, *b2, *tail, *newbrush, *newbrushlist;
+	idEditorBrush *lastb2;
 
 	if (!brushlist) return NULL;
 
@@ -301,9 +301,9 @@ Brush_MergeList
  be the same as well.
 =============
 */
-brush_t *Brush_MergeList(brush_t *brushlist, int onlyshape)
+idEditorBrush *Brush_MergeList(idEditorBrush *brushlist, int onlyshape)
 {
-	brush_t *brush1, *brush2, *brush3, *newbrush;
+	idEditorBrush *brush1, *brush2, *brush3, *newbrush;
 	face_t *face1, *face2, *face3, *newface, *f;
 
 	if (!brushlist) return NULL;
@@ -425,11 +425,11 @@ Brush_Subtract
  The originals are undisturbed.
 =============
 */
-brush_t *Brush_Subtract(brush_t *a, brush_t *b)
+idEditorBrush *Brush_Subtract(idEditorBrush *a, idEditorBrush *b)
 {
 	// a - b = out (list)
-	brush_t *front, *back;
-	brush_t *in, *out, *next;
+	idEditorBrush *front, *back;
+	idEditorBrush *in, *out, *next;
 	face_t *f;
 
 	in = a;
@@ -470,8 +470,8 @@ CSG_Subtract
 */
 void CSG_Subtract (void)
 {
-	brush_t		*b, *s, *fragments, *nextfragment, *frag, *next, *snext;
-	brush_t		fragmentlist;
+	idEditorBrush		*b, *s, *fragments, *nextfragment, *frag, *next, *snext;
+	idEditorBrush		fragmentlist;
 	int			i, numfragments, numbrushes;
 
 	Sys_Status ("Subtracting...\n");
@@ -596,8 +596,8 @@ CSG_Merge
 */
 void CSG_Merge(void)
 {
-	brush_t *b, *next, *newlist, *newbrush;
-	struct entity_s	*owner;
+	idEditorBrush *b, *next, *newlist, *newbrush;
+	idEditorEntity* owner;
 
 	Sys_Status("Merging...\n");
 

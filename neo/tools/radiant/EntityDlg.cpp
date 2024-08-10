@@ -268,7 +268,7 @@ void CEntityDlg::OnCbnSelchangeComboClass()
 				multipleEntities = false;
 			} else {
 				editEntity = selected_brushes.next->owner;
-				for (brush_t *b = selected_brushes.next->next; b != &selected_brushes; b = b->next) {
+				for (idEditorBrush *b = selected_brushes.next->next; b != &selected_brushes; b = b->next) {
 					if (b->owner != editEntity) {
 						multipleEntities = true;
 						break;
@@ -413,7 +413,7 @@ void CEntityDlg::SetKeyValPairs( bool updateAnims ) {
 	}
 }
 
-void CEntityDlg::UpdateEntitySel(eclass_t *ent) {
+void CEntityDlg::UpdateEntitySel(const eclass_t* ent) {
 	assert ( ent );
 	assert ( ent->name );
 	int index = comboClass.FindString(-1, ent->name);
@@ -480,13 +480,14 @@ void CEntityDlg::DelProp() {
 
 	editKey.GetWindowText(key);
 	if (multipleEntities) {
-		for (brush_t *b = selected_brushes.next; b != &selected_brushes; b = b->next) {
-			DeleteKey(b->owner, key);
-			Entity_UpdateCurveData( b->owner );
+		for (idEditorBrush *b = selected_brushes.next; b != &selected_brushes; b = b->next) {
+			assert(b->owner);
+			b->owner->DeleteKey(key);
+			b->owner->UpdateCurveData();	
 		}
 	} else {
-		DeleteKey(editEntity, key);
-		Entity_UpdateCurveData( editEntity );
+		editEntity->DeleteKey(key);
+		editEntity->UpdateCurveData();
 	}
 
 	// refresh the prop listbox
@@ -497,18 +498,23 @@ void CEntityDlg::DelProp() {
 
 BOOL CEntityDlg::PreTranslateMessage(MSG* pMsg)
 {
+	/*
+	if ( pMsg->message == WM_LBUTTONDOWN || pMsg->message == WM_RBUTTONDOWN || pMsg->message == WM_MBUTTONDOWN ) {
+		g_Inspectors->BringWindowToTop();
+	}
+	*/
 
 	if (pMsg->hwnd == editVal.GetSafeHwnd()) {
 		if (pMsg->message == WM_LBUTTONDOWN) {
 			editVal.SetFocus();
-			return TRUE;
+			//return TRUE; // Don't return so we can do default message handling
 		}
 	}
 
 	if (pMsg->hwnd == editKey.GetSafeHwnd()) {
 		if (pMsg->message == WM_LBUTTONDOWN) {
 			editKey.SetFocus();
-			return TRUE;
+			//return TRUE; // Don't return so we can do default message handling
 		}
 	}
 
@@ -617,23 +623,23 @@ void CEntityDlg::AddProp() {
 	bool isOrigin = ( idStr::Icmp( Key, "origin" ) == 0 );
 
 	if (multipleEntities) {
-		brush_t *b;
+		idEditorBrush *b;
 		for (b = selected_brushes.next; b != &selected_brushes; b = b->next) {
 			if (isName) {
-				Entity_SetName(b->owner, Value);
+				b->owner->SetName(Value);
 			} else {
 				if ( ! ( ( isModel || isOrigin ) && ( b->owner->eclass->nShowFlags & ECLASS_WORLDSPAWN ) ) ) {
-					SetKeyValue(b->owner, Key, Value);
+					b->owner->SetKeyValue(Key, Value);
 				}
 			}
 		}
 	}
 	else {
 		if (isName) {
-			Entity_SetName(editEntity, Value);
+			editEntity->SetName(Value);
 		} else {
 			if ( ! ( ( isModel || isOrigin ) && ( editEntity->eclass->nShowFlags & ECLASS_WORLDSPAWN ) ) ) {
-				SetKeyValue(editEntity, Key, Value);
+				editEntity->SetKeyValue(Key, Value);
 			}
 		}
 
@@ -805,7 +811,7 @@ CPreviewDlg *CEntityDlg::ShowParticleChooser() {
 	return &modelDlg;
 }
 
-CPreviewDlg *CEntityDlg::ShowSkinChooser(entity_t *ent) {
+CPreviewDlg *CEntityDlg::ShowSkinChooser(idEditorEntity *ent) {
 	static CPreviewDlg modelDlg;
 	modelDlg.SetMode(CPreviewDlg::SKINS);
 	modelDlg.SetModal();
@@ -929,7 +935,7 @@ void CEntityDlg::OnBnClickedButtonCurve() {
 			str += " )";
 			editVal.SetWindowText( str );
 			AddProp();
-			Entity_SetCurveData( editEntity );
+			editEntity->SetCurveData();
 		}
 	}
 }
@@ -949,7 +955,7 @@ void CEntityDlg::OnCbnDblclkComboClass()
 // =======================================================================================================================
 //
 void CEntityDlg::CreateEntity() {
-	entity_t	*petNew = NULL;
+	idEditorEntity	*petNew = NULL;
 	bool		forceFixed = false;
 
 	// check to make sure we have a brush
@@ -958,7 +964,7 @@ void CEntityDlg::CreateEntity() {
 		CRect	rctZ;
 		pWnd->GetClientRect(rctZ);
 
-		brush_t *pBrush;
+		idEditorBrush *pBrush;
 		if (selected_brushes.next == &selected_brushes) {
 			pBrush = CreateEntityBrush(g_nSmartX, rctZ.Height() - 1 - g_nSmartY, pWnd);
 			forceFixed = true;
@@ -990,14 +996,14 @@ void CEntityDlg::CreateEntity() {
 	// create it
 	if ((GetAsyncKeyState(VK_CONTROL) & 0x8000)) {
 		// MAJOR hack for xian
-extern void Brush_CopyList(brush_t *pFrom, brush_t *pTo);
-		brush_t temp_brushes;
+extern void Brush_CopyList(idEditorBrush *pFrom, idEditorBrush *pTo);
+		idEditorBrush temp_brushes;
 		temp_brushes.next = &temp_brushes;
 		Brush_CopyList(&selected_brushes, &temp_brushes);
 		Select_Deselect();
-		brush_t *pBrush = temp_brushes.next;
+		idEditorBrush *pBrush = temp_brushes.next;
 		while (pBrush != NULL && pBrush != &temp_brushes) {
-			brush_t *pNext = pBrush->next;
+			idEditorBrush *pNext = pBrush->next;
 			Brush_RemoveFromList(pBrush);
 			Brush_AddToList(pBrush, &selected_brushes);
 			pBrush = pNext;
@@ -1077,7 +1083,7 @@ void CEntityDlg::UpdateKeyVal(const char *key, const char *val) {
 		editEntity->epairs.Set(key, val);
 		SetKeyValPairs();
 		g_pParentWnd->GetCamera()->BuildEntityRenderState(editEntity, true);
-		Entity_UpdateSoundEmitter(editEntity);
+		editEntity->UpdateSoundEmitter();
 	}
 }
 
@@ -1252,7 +1258,7 @@ void CEntityDlg::InsertCurvePoint() {
 				// just do an add
 				AddCurvePoints();
 			} else {
-				idCurve<idVec3> *newCurve = Entity_MakeCurve( editEntity );
+				idCurve<idVec3>* newCurve = editEntity->MakeCurve();
 
 				if ( newCurve == NULL ) {
 					return;
@@ -1333,7 +1339,7 @@ void CEntityDlg::UpdateEntityCurve() {
 		return;
 	}
 
-	Entity_UpdateCurveData( editEntity );
+	editEntity->UpdateCurveData();
 
 	if ( g_qeglobals.d_select_mode == sel_editpoint ) {
 		g_qeglobals.d_numpoints = 0;

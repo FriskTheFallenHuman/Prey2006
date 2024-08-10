@@ -141,35 +141,3 @@ void MaterialEditorPrintConsole( const char *msg ) {
 HWND GetMaterialEditorWindow() {
 	return meMainFrame->GetSafeHwnd();
 }
-
-/**
-* Simple about box for the material editor.
-*/
-class CAboutDlg : public CDialog
-{
-public:
-	CAboutDlg();
-
-	enum { IDD = IDD_ME_ABOUTBOX };
-
-protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
-	DECLARE_MESSAGE_MAP()
-};
-
-/**
-* Constructor for the about box.
-*/
-CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD) {
-}
-
-/**
-* Called by the MFC framework to exchange data with the window controls.
-*/
-void CAboutDlg::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-}
-
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
-END_MESSAGE_MAP()

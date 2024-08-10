@@ -77,7 +77,7 @@ BOOL CCommandsDlg::OnInitDialog()
 	int nCount = g_nCommandCount;
 
 	CFile fileout;
-	fileout.Open("c:/commandlist.txt", CFile::modeCreate | CFile::modeWrite);
+	fileout.Open( "commandlist.txt", CFile::modeCreate | CFile::modeWrite );	// commandlist.txt is no longer written to "c:\"
 	for (int n = 0; n < nCount; n++)
 	{
 		CString strLine;
@@ -107,9 +107,10 @@ BOOL CCommandsDlg::OnInitDialog()
 
 		strLine.Format("%s \t\t\t%s%s", g_Commands[n].m_strCommand, strMod.GetString(), strKeys.GetString());
 
-		fileout.Write(strLine, strLine.GetLength());
-		fileout.Write("\r\n", 2);
+		fileout.Write( strLine, strLine.GetLength() );
+		fileout.Write( "\r\n", 2 );
 	}
 	fileout.Close();
+
 	return TRUE;
 }

@@ -635,45 +635,4 @@ DWORD dwType;
   GlobalFreePtr(lpTxt);
   return TRUE;
 }
-
-
-//*************************************************************
-//
-//  GetWin32Kind()
-//
-//  Purpose:
-//              Get the Win32 platform
-//
-//  Parameters:
-//
-//  Return: (WIN32KIND)
-//      WINNT -           Run under Windows NT
-//      WIN32S -          Run under Windows 3.1x + Win32s
-//      WIN95ORGREATHER - Run under Windows 95
-//
-//
-//  Comments:
-//      Win32 function designed for Windows NT and Windows 95
-//      See RegOpenKeyEx API for more info on lpszKey
-//
-//  History:    Date       Author       Comment
-//              09/24/94   G. Vollant   Created
-//
-//*************************************************************
-WIN32KIND GetWin32Kind()
-{
-BOOL IsWin395OrHigher(void);
-
-  WORD wVer;
-
-  if ((GetVersion() & 0x80000000) == 0)
-	return WINNT;
-  wVer = LOWORD(GetVersion());
-  wVer = (((WORD)LOBYTE(wVer)) << 8) | (WORD)HIBYTE(wVer);
-
-  if (wVer >= 0x035F)
-	return WIN95ORGREATHER;
-  else
-	return WIN32S;
-}
 #endif

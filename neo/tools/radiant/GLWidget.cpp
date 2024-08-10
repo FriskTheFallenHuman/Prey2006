@@ -212,7 +212,6 @@ void idGLDrawable::buttonUp(int button, float x, float y) {
 	handleMove = false;
 }
 
-extern float	fDiff(float f1, float f2);
 void idGLDrawable::mouseMove(float x, float y) {
 	if (handleMove) {
 		Update();
@@ -221,7 +220,7 @@ void idGLDrawable::mouseMove(float x, float y) {
 			float *px = &x;
 			float *px2 = &pressX;
 
-			if (fDiff(y, pressY) > fDiff(x, pressX)) {
+			if (idMath::Diff(y, pressY) > idMath::Diff(x, pressX)) {
 				px = &y;
 				px2 = &pressY;
 			}
@@ -301,7 +300,7 @@ void idGLDrawableMaterial::mouseMove(float x, float y) {
 			float *px = &x;
 			float *px2 = &pressX;
 
-			if (fDiff(y, pressY) > fDiff(x, pressX)) {
+			if (idMath::Diff(y, pressY) > idMath::Diff(x, pressX)) {
 				px = &y;
 				px2 = &pressY;
 			}
@@ -577,7 +576,7 @@ void idGLDrawableModel::mouseMove(float x, float y) {
 				float *px = &x;
 				float *px2 = &pressX;
 
-				if (fDiff(y, pressY) > fDiff(x, pressX)) {
+				if (idMath::Diff(y, pressY) > idMath::Diff(x, pressX)) {
 					px = &y;
 					px2 = &pressY;
 				}

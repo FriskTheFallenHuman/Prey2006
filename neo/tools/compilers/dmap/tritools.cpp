@@ -199,22 +199,6 @@ void BoundTriList( const mapTri_t *list, idBounds &b ) {
 
 /*
 ================
-DrawTri
-================
-*/
-void DrawTri( const mapTri_t *tri ) {
-	idWinding w;
-
-	w.SetNumPoints( 3 );
-	VectorCopy( tri->v[0].xyz, w[0] );
-	VectorCopy( tri->v[1].xyz, w[1] );
-	VectorCopy( tri->v[2].xyz, w[2] );
-	DrawWinding( &w );
-}
-
-
-/*
-================
 FlipTriList
 
 Swaps the vertex order

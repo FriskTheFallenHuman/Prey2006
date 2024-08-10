@@ -36,9 +36,7 @@ typedef enum
 {
 	cd_wire,
 	cd_solid,
-	cd_texture,
-	cd_light,
-	cd_blend
+	cd_texture
 } camera_draw_mode;
 
 typedef struct
@@ -61,12 +59,13 @@ typedef struct
 // CCamWnd window
 class CXYWnd;
 
-class CCamWnd : public CWnd
+class CCamWnd : public CDialogEx
 {
   DECLARE_DYNCREATE(CCamWnd);
 // Construction
 public:
-	CCamWnd();
+			CCamWnd();
+	virtual ~CCamWnd();
 
 // Attributes
 public:
@@ -84,9 +83,7 @@ public:
 // Implementation
 public:
 	void ShiftTexture_BrushPrimit(face_t *f, int x, int y);
-	CXYWnd* m_pXYFriend;
 	void SetXYFriend(CXYWnd* pWnd);
-	virtual ~CCamWnd();
 	camera_t& Camera(){return m_Camera;};
 	void Cam_MouseControl(float dtime);
 	void Cam_ChangeFloor(bool up);
@@ -100,7 +97,7 @@ public:
 	void SetProjectionMatrix();
 	void UpdateCameraView();
 
-	void BuildEntityRenderState( entity_t *ent, bool update );
+	void BuildEntityRenderState( idEditorEntity *ent, bool update );
 	bool GetRenderMode() {
 		return renderMode;
 	}
@@ -129,20 +126,29 @@ public:
 		m_Camera.angles = angles;
 	}
 
+	void Cam_BuildMatrix();
+
+	CXYWnd* m_pXYFriend;
+
 protected:
 	void Cam_Init();
-	void Cam_BuildMatrix();
 	void Cam_PositionDrag();
 	void Cam_MouseLook();
 	void Cam_MouseDown(int x, int y, int buttons);
 	void Cam_MouseUp (int x, int y, int buttons);
 	void Cam_MouseMoved (int x, int y, int buttons);
 	void InitCull();
-	bool CullBrush (brush_t *b, bool cubicOnly);
+	bool CullBrush (idEditorBrush *b, bool cubicOnly);
 	void Cam_Draw();
+	void DrawGrid();
 	void Cam_Render();
 
 	// game renderer interaction
+	void	FreeRendererState();
+	void	UpdateCaption();
+	bool	BuildBrushRenderData(idEditorBrush *brush);
+	void	DrawEntityData();
+
 	qhandle_t	worldModelDef;
 	idRenderModel	*worldModel;		// createRawModel of the brush and patch geometry
 	bool	worldDirty;
@@ -152,11 +158,10 @@ protected:
 	bool	selectMode;
 	bool	animationMode;
 	bool	soundMode;
-	void	FreeRendererState();
-	void	UpdateCaption();
-	bool	BuildBrushRenderData(brush_t *brush);
-	void	DrawEntityData();
 
+	bool m_bMouseLook = false; // To track if we are in mouse look mode
+	CPoint m_LastMousePos; // To store the last mouse position
+	float m_MouseSensitivity = 0.5; // Sensitivity for mouse look
 
 	camera_t m_Camera;
 	int	m_nCambuttonstate;
@@ -172,9 +177,13 @@ protected:
 	idVec3 saveOrg;
 	idAngles saveAng;
 	bool saveValid;
+	idVec3 m_vPressdelta;
 
 	// Generated message map functions
 protected:
+	void EnableMouseLook(bool enable);
+	void UpdateCameraOrientation(float dx, float dy);
+	void UpdateCameraPosition(float dx, float dy, float dz);
 	void OriginalMouseDown(UINT nFlags, CPoint point);
 	void OriginalMouseUp(UINT nFlags, CPoint point);
 	//{{AFX_MSG(CCamWnd)

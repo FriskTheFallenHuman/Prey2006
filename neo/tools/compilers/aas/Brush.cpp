@@ -26,12 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include "sys/platform.h"
-#include "idlib/MapFile.h"
-#include "framework/Common.h"
-#include "framework/FileSystem.h"
+#include "precompiled.h"
+#pragma hdrstop
 
-#include "tools/compilers/aas/Brush.h"
+#include "Brush.h"
 
 #define BRUSH_EPSILON					0.1f
 #define BRUSH_PLANE_NORMAL_EPSILON		0.00001f

@@ -81,6 +81,8 @@ void CTabsDlg::OnTcnSelchange(NMHDR *pNMHDR, LRESULT *pResult)
 
 		info->m_TabControlIndex = ID;
 		info->m_Window->ShowWindow(TRUE);
+
+		g_Inspectors->prevMode = info->m_ID;
 	}
 }
 

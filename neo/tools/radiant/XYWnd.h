@@ -44,7 +44,7 @@ const int SCALE_X = 0x01;
 const int SCALE_Y = 0x02;
 const int SCALE_Z = 0x04;
 
-bool FilterBrush(brush_t *pb);
+bool FilterBrush(const idEditorBrush *pb);
 
 typedef void (PFNPathCallback)(bool, int);
 // as i didn't really encapsulate anything this
@@ -67,7 +67,7 @@ public:
   operator float*() {return m_ptClip.ToFloatPtr();};
 };
 
-class CXYWnd : public CWnd
+class CXYWnd : public CDialogEx
 {
   DECLARE_DYNCREATE(CXYWnd);
 // Construction
@@ -109,7 +109,6 @@ public:
 	void SetOrigin(idVec3 org);		// PGM
 	void XY_Init();
   void XY_Draw();
-  void DrawZIcon();
   void DrawRotateIcon();
   void DrawCameraIcon();
   void XY_DrawBlockGrid();
@@ -150,8 +149,8 @@ public:
 
 
 	virtual ~CXYWnd();
-  void SetViewType(int n);
-  int GetViewType() {return  m_nViewType; };
+  void SetViewType(ViewType n);
+  ViewType GetViewType() {return  m_nViewType; };
   void SetScale(float f) {m_fScale = f;};
   float Scale() {return m_fScale;};
   int Width() {return m_nWidth;}
@@ -210,7 +209,8 @@ protected:
   //friend C3DFXCamWnd;
 
   CMenu m_mnuDrop;
-  int m_nViewType;
+  ViewType m_nViewType;
+  const char* m_sViewName;
 
   unsigned int m_nTimerID;
   int m_nScrollFlags;
@@ -220,7 +220,7 @@ protected:
 
 	void OriginalButtonUp(UINT nFlags, CPoint point);
 	void OriginalButtonDown(UINT nFlags, CPoint point);
-  void ProduceSplits(brush_t** pFront, brush_t** pBack);
+  void ProduceSplits(idEditorBrush** pFront, idEditorBrush** pBack);
   void ProduceSplitLists();
   void HandleDrop();
   void PaintSizeInfo(int nDim1, int nDim2, idVec3 vMinBounds, idVec3 vMaxBounds);
@@ -240,6 +240,8 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnSizing(UINT nSide, LPRECT lpRect);
+	afx_msg void OnMoving(UINT nSide, LPRECT lpRect);
 	afx_msg void OnDestroy();
 	afx_msg void OnSelectMouserotate();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);

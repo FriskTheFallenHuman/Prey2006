@@ -30,7 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 #pragma hdrstop
 
 
-#include "../../sys/win32/rc/DeclEditor_resource.h"
+#include "../../sys/win32/rc/resource.h"
 
 #include "../comafx/CPathTreeCtrl.h"
 #include "DialogDeclBrowser.h"

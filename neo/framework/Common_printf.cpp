@@ -30,6 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 #pragma hdrstop
 
 #include "Common_local.h"
+#include "../tools/compilers/dmap/dmap.h"
 
 idCVar com_timestampPrints( "com_timestampPrints", "0", CVAR_SYSTEM, "print time with each console print, 1 = msec, 2 = sec", 0, 2, idCmdSystem::ArgCompletion_Integer<0,2> );
 #ifndef ID_RETAIL
@@ -239,6 +240,22 @@ A raw string should NEVER be passed as fmt, because of "%f" type crashers.
 ==================
 */
 void idCommonLocal::Printf( const char *fmt, ... ) {
+	va_list argptr;
+	va_start( argptr, fmt );
+	VPrintf( fmt, argptr );
+	va_end( argptr );
+}
+
+/*
+==================
+idCommonLocal::VerbosePrintf
+==================
+*/
+void idCommonLocal::VerbosePrintf( const char *fmt, ... ) {
+	if( !dmapGlobals.verbose ) {
+		return;
+	}
+
 	va_list argptr;
 	va_start( argptr, fmt );
 	VPrintf( fmt, argptr );

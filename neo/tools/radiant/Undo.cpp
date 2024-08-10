@@ -55,8 +55,8 @@ typedef struct undo_s
 	int id;						//every undo has an unique id
 	int done;					//true when undo is build
 	char *operation;			//name of the operation
-	brush_t brushlist;			//deleted brushes
-	entity_t entitylist;		//deleted entities
+	idEditorBrush brushlist;			//deleted brushes
+	idEditorEntity entitylist;		//deleted entities
 	struct undo_s *prev, *next;	//next and prev undo in list
 } undo_t;
 
@@ -82,8 +82,8 @@ int Undo_MemorySize(void)
 	/*
 	int size;
 	undo_t *undo;
-	brush_t *pBrush;
-	entity_t *pEntity;
+	idEditorBrush *pBrush;
+	idEditorEntity *pEntity;
 
 	size = 0;
 	for (undo = g_undolist; undo; undo = undo->next)
@@ -111,8 +111,8 @@ Undo_ClearRedo
 void Undo_ClearRedo(void)
 {
 	undo_t *redo, *nextredo;
-	brush_t *pBrush, *pNextBrush;
-	entity_t *pEntity, *pNextEntity;
+	idEditorBrush *pBrush, *pNextBrush;
+	idEditorEntity *pEntity, *pNextEntity;
 
 	for (redo = g_redolist; redo; redo = nextredo)
 	{
@@ -125,7 +125,7 @@ void Undo_ClearRedo(void)
 		for (pEntity = redo->entitylist.next; pEntity != NULL && pEntity != &redo->entitylist; pEntity = pNextEntity)
 		{
 			pNextEntity = pEntity->next;
-			Entity_Free(pEntity);
+			delete pEntity;
 		}
 		Mem_Free(redo);
 	}
@@ -144,8 +144,8 @@ Undo_Clear
 void Undo_Clear(void)
 {
 	undo_t *undo, *nextundo;
-	brush_t *pBrush, *pNextBrush;
-	entity_t *pEntity, *pNextEntity;
+	idEditorBrush *pBrush, *pNextBrush;
+	idEditorEntity *pEntity, *pNextEntity;
 
 	Undo_ClearRedo();
 	for (undo = g_undolist; undo; undo = nextundo)
@@ -160,8 +160,8 @@ void Undo_Clear(void)
 		for (pEntity = undo->entitylist.next; pEntity != NULL && pEntity != &undo->entitylist; pEntity = pNextEntity)
 		{
 			pNextEntity = pEntity->next;
-			g_undoMemorySize -= Entity_MemorySize(pEntity);
-			Entity_Free(pEntity);
+			g_undoMemorySize -= pEntity->MemorySize();
+			delete pEntity;
 		}
 		g_undoMemorySize -= sizeof(undo_t);
 		Mem_Free(undo);
@@ -225,8 +225,8 @@ Undo_FreeFirstUndo
 void Undo_FreeFirstUndo(void)
 {
 	undo_t *undo;
-	brush_t *pBrush, *pNextBrush;
-	entity_t *pEntity, *pNextEntity;
+	idEditorBrush *pBrush, *pNextBrush;
+	idEditorEntity *pEntity, *pNextEntity;
 
 	//remove the oldest undo from the undo buffer
 	undo = g_undolist;
@@ -242,8 +242,8 @@ void Undo_FreeFirstUndo(void)
 	for (pEntity = undo->entitylist.next; pEntity != NULL && pEntity != &undo->entitylist; pEntity = pNextEntity)
 	{
 		pNextEntity = pEntity->next;
-		g_undoMemorySize -= Entity_MemorySize(pEntity);
-		Entity_Free(pEntity);
+		g_undoMemorySize -= pEntity->MemorySize();
+		delete pEntity;
 	}
 	g_undoMemorySize -= sizeof(undo_t);
 	Mem_Free(undo);
@@ -258,8 +258,8 @@ Undo_GeneralStart
 void Undo_GeneralStart(char *operation)
 {
 	undo_t *undo;
-	brush_t *pBrush;
-	entity_t *pEntity;
+	idEditorBrush *pBrush;
+	idEditorEntity *pEntity;
 
 
 	if (g_lastundo)
@@ -327,9 +327,9 @@ void Undo_GeneralStart(char *operation)
 Undo_BrushInUndo
 =============
 */
-int Undo_BrushInUndo(undo_t *undo, brush_t *brush)
+int Undo_BrushInUndo(undo_t *undo, idEditorBrush *brush)
 {
-	brush_t *b;
+	idEditorBrush *b;
 
 	for (b = undo->brushlist.next; b != &undo->brushlist; b = b->next)
 	{
@@ -343,9 +343,9 @@ int Undo_BrushInUndo(undo_t *undo, brush_t *brush)
 Undo_EntityInUndo
 =============
 */
-int Undo_EntityInUndo(undo_t *undo, entity_t *ent)
+int Undo_EntityInUndo(undo_t *undo, idEditorEntity *ent)
 {
-	entity_t *e;
+	idEditorEntity *e;
 
 	for (e = undo->entitylist.next; e != &undo->entitylist; e = e->next)
 	{
@@ -370,7 +370,7 @@ void Undo_Start(char *operation)
 Undo_AddBrush
 =============
 */
-void Undo_AddBrush(brush_t *pBrush)
+void Undo_AddBrush(idEditorBrush *pBrush)
 {
 	if (!g_lastundo)
 	{
@@ -385,7 +385,7 @@ void Undo_AddBrush(brush_t *pBrush)
 	if (Undo_BrushInUndo(g_lastundo, pBrush))
 		return;
 	//clone the brush
-	brush_t* pClone = Brush_FullClone(pBrush);
+	idEditorBrush* pClone = Brush_FullClone(pBrush);
 	//save the ID of the owner entity
 	pClone->ownerId = pBrush->owner->entityId;
 
@@ -405,9 +405,9 @@ void Undo_AddBrush(brush_t *pBrush)
 Undo_AddBrushList
 =============
 */
-void Undo_AddBrushList(brush_t *brushlist)
+void Undo_AddBrushList(idEditorBrush *brushlist)
 {
-	brush_t *pBrush;
+	idEditorBrush *pBrush;
 
 	if (!g_lastundo)
 	{
@@ -425,7 +425,7 @@ void Undo_AddBrushList(brush_t *brushlist)
 		if (Undo_BrushInUndo(g_lastundo, pBrush))
 			continue;
 		//clone the brush
-		brush_t* pClone = Brush_FullClone(pBrush);
+		idEditorBrush* pClone = Brush_FullClone(pBrush);
 		//save the ID of the owner entity
 		pClone->ownerId = pBrush->owner->entityId;
 		//save the old undo ID from previous undos
@@ -447,7 +447,7 @@ void Undo_AddBrushList(brush_t *brushlist)
 Undo_EndBrush
 =============
 */
-void Undo_EndBrush(brush_t *pBrush)
+void Undo_EndBrush(idEditorBrush *pBrush)
 {
 	if (!g_lastundo)
 	{
@@ -467,7 +467,7 @@ void Undo_EndBrush(brush_t *pBrush)
 Undo_EndBrushList
 =============
 */
-void Undo_EndBrushList(brush_t *brushlist)
+void Undo_EndBrushList(idEditorBrush *brushlist)
 {
 	if (!g_lastundo)
 	{
@@ -479,7 +479,7 @@ void Undo_EndBrushList(brush_t *brushlist)
 		//Sys_Status("Undo_End: last undo already finished.\n");
 		return;
 	}
-	for (brush_t* pBrush = brushlist->next; pBrush != NULL && pBrush != brushlist; pBrush=pBrush->next)
+	for (idEditorBrush* pBrush = brushlist->next; pBrush != NULL && pBrush != brushlist; pBrush=pBrush->next)
 	{
 		pBrush->undoId = g_lastundo->id;
 	}
@@ -490,9 +490,9 @@ void Undo_EndBrushList(brush_t *brushlist)
 Undo_AddEntity
 =============
 */
-void Undo_AddEntity(entity_t *entity)
+void Undo_AddEntity(idEditorEntity *entity)
 {
-	entity_t* pClone;
+	idEditorEntity* pClone;
 
 	if (!g_lastundo)
 	{
@@ -503,18 +503,18 @@ void Undo_AddEntity(entity_t *entity)
 	if (Undo_EntityInUndo(g_lastundo, entity))
 		return;
 	//clone the entity
-	pClone = Entity_Clone(entity);
+	pClone = entity->Clone();
 	//NOTE: Entity_Clone adds the entity to the entity list
 	//		so we remove it from that list here
-	Entity_RemoveFromList(pClone);
+	pClone->RemoveFromList();
 	//save the old undo ID for previous undos
 	pClone->undoId = entity->undoId;
 	//save the entity ID (we need a full clone)
 	pClone->entityId = entity->entityId;
 	//
-	Entity_AddToList(pClone, &g_lastundo->entitylist);
+	pClone->AddToList(&g_lastundo->entitylist);
 	//
-	g_undoMemorySize += Entity_MemorySize(pClone);
+	g_undoMemorySize += pClone->MemorySize();
 }
 
 /*
@@ -522,7 +522,7 @@ void Undo_AddEntity(entity_t *entity)
 Undo_EndEntity
 =============
 */
-void Undo_EndEntity(entity_t *entity)
+void Undo_EndEntity(idEditorEntity *entity)
 {
 	if (!g_lastundo)
 	{
@@ -582,8 +582,8 @@ Undo_Undo
 void Undo_Undo(void)
 {
 	undo_t *undo, *redo;
-	brush_t *pBrush, *pNextBrush;
-	entity_t *pEntity, *pNextEntity, *pUndoEntity;
+	idEditorBrush *pBrush, *pNextBrush;
+	idEditorEntity *pEntity, *pNextEntity, *pUndoEntity;
 
 	if (!g_lastundo)
 	{
@@ -681,28 +681,28 @@ void Undo_Undo(void)
 			//
 			//Entity_Free(pEntity);
 			//move the entity to the redo
-			Entity_RemoveFromList(pEntity);
-			Entity_AddToList(pEntity, &redo->entitylist);
+			pEntity->RemoveFromList();
+			pEntity->AddToList(&redo->entitylist);
 		}
 	}
 	// add the undo entities back into the entity list
 	for (pEntity = undo->entitylist.next; pEntity != NULL && pEntity != &undo->entitylist; pEntity = undo->entitylist.next)
 	{
-		g_undoMemorySize -= Entity_MemorySize(pEntity);
+		g_undoMemorySize -= pEntity->MemorySize();
 		//if this is the world entity
 		if (pEntity->entityId == world_entity->entityId)
 		{
 			//free the epairs of the world entity
-			Entity_FreeEpairs(world_entity);
+			world_entity->FreeEpairs();
 			//set back the original epairs
 			world_entity->epairs = pEntity->epairs;
 			//free the world_entity clone that stored the epairs
-			Entity_Free(pEntity);
+			delete pEntity;
 		}
 		else
 		{
-			Entity_RemoveFromList(pEntity);
-			Entity_AddToList(pEntity, &entities);
+			pEntity->RemoveFromList();
+			pEntity->AddToList(&entities);
 			pEntity->redoId = redo->id;
 		}
 	}
@@ -741,7 +741,7 @@ void Undo_Undo(void)
 	//
 
 	Sys_BeginWait();
-	brush_t *b, *next;
+	idEditorBrush *b, *next;
 	for (b = active_brushes.next ; b != NULL && b != &active_brushes ; b=next) {
 		next = b->next;
 		Brush_Build( b, true, false, false );
@@ -764,8 +764,8 @@ Undo_Redo
 void Undo_Redo(void)
 {
 	undo_t *redo;
-	brush_t *pBrush, *pNextBrush;
-	entity_t *pEntity, *pNextEntity, *pRedoEntity;
+	idEditorBrush *pBrush, *pNextBrush;
+	idEditorEntity *pEntity, *pNextEntity, *pRedoEntity;
 
 	if (!g_lastredo)
 	{
@@ -823,9 +823,9 @@ void Undo_Redo(void)
 			//
 			//Entity_Free(pEntity);
 			//move the entity to the redo
-			Entity_RemoveFromList(pEntity);
-			Entity_AddToList(pEntity, &g_lastundo->entitylist);
-			g_undoMemorySize += Entity_MemorySize(pEntity);
+			pEntity->RemoveFromList();
+			pEntity->AddToList(&g_lastundo->entitylist);
+			g_undoMemorySize += pEntity->MemorySize();
 		}
 	}
 	// add the undo entities back into the entity list
@@ -835,16 +835,16 @@ void Undo_Redo(void)
 		if (pEntity->entityId == world_entity->entityId)
 		{
 			//free the epairs of the world entity
-			Entity_FreeEpairs(world_entity);
+			world_entity->FreeEpairs();
 			//set back the original epairs
 			world_entity->epairs = pEntity->epairs;
 			//free the world_entity clone that stored the epairs
-			Entity_Free(pEntity);
+			delete pEntity;
 		}
 		else
 		{
-			Entity_RemoveFromList(pEntity);
-			Entity_AddToList(pEntity, &entities);
+			pEntity->RemoveFromList();
+			pEntity->AddToList(&entities);
 		}
 	}
 	// add the redo brushes back into the selected brushes

@@ -36,11 +36,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #define QE3_SPLITTER_STYLE (WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS)
 
-
-
-#define QE_AUTOSAVE_INTERVAL  5       // number of minutes between autosaves
-
-#define	_3DFXCAMERA_WINDOW_CLASS	"Q3DFXCamera"
 #define	CAMERA_WINDOW_CLASS	"QCamera"
 #define	XY_WINDOW_CLASS	    "QXY"
 #define	Z_WINDOW_CLASS		"QZ"
@@ -48,13 +43,9 @@ If you have questions concerning this license or the applicable additional terms
 #define	TEXTURE_WINDOW_CLASS	"QTEX"
 
 #define	ZWIN_WIDTH	40
-#define CWIN_SIZE	(0.4)
 
 #define	MAX_EDGES	512
 #define	MAX_POINTS	1024
-
-#define	CMD_TEXTUREWAD	60000
-#define	CMD_BSPCOMMAND	61000
 
 #define	PITCH	0
 #define	YAW		1
@@ -119,26 +110,8 @@ If you have questions concerning this license or the applicable additional terms
 // odd things not in windows header...
 #define	VK_COMMA		188
 #define	VK_PERIOD		190
-
-/*
-** window bits
-*/
-//++timo moved to qertypes.h
-// clean
-/*
-#define	W_CAMERA		  0x0001
-#define	W_XY			    0x0002
-#define	W_XY_OVERLAY	0x0004
-#define	W_Z				    0x0008
-#define	W_TEXTURE		  0x0010
-#define	W_Z_OVERLAY		0x0020
-#define W_CONSOLE		  0x0040
-#define W_ENTITY		  0x0080
-#define W_CAMERA_IFON 0x0100
-#define W_XZ          0x0200  //--| only used for patch vertex manip stuff
-#define W_YZ          0x0400  //--|
-#define	W_ALL			0xFFFFFFFF
-*/
+#define	VK_PLUS			187
+#define	VK_MINUS		189
 
 enum {
 	COLOR_TEXTUREBACK,

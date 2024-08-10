@@ -1,7 +1,7 @@
 // CPropTreeView.cpp : implementation file
 //
 
-//#include "stdafx.h"
+//#include "pch.h"
 #include "precompiled.h"
 #pragma hdrstop
 

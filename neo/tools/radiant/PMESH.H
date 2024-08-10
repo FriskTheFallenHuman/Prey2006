@@ -28,11 +28,11 @@ If you have questions concerning this license or the applicable additional terms
 
 // patch stuff
 patchMesh_t* MakeNewPatch(int width, int height);
-brush_t* AddBrushForPatch(patchMesh_t *pm, bool bLinkToWorld = true);
-brush_t* Patch_GenericMesh(int nWidth, int nHeight, int nOrientation = 2, bool bDeleteSource = true, bool bOverride = false, patchMesh_t *parent = NULL);
+idEditorBrush* AddBrushForPatch(patchMesh_t *pm, bool bLinkToWorld = true);
+idEditorBrush* Patch_GenericMesh(int nWidth, int nHeight, int nOrientation = 2, bool bDeleteSource = true, bool bOverride = false, patchMesh_t *parent = NULL);
 void Patch_ReadFile (char *name);
 void Patch_WriteFile (char *name);
-void Patch_BuildPoints (brush_t *b);
+void Patch_BuildPoints (idEditorBrush *b);
 void Patch_Move(patchMesh_t *p, const idVec3 vMove, bool bRebuild = false);
 //++timo had to add a default value for bSnap (see Patch_ApplyMatrix call from Select_ApplyMatrix in select.cpp)
 void Patch_ApplyMatrix(patchMesh_t *p, const idVec3 vOrigin, const idMat3 matrix, bool bSnap = false);
@@ -53,7 +53,7 @@ void Patch_ReadBuffer(char* pBuff, bool bSelect = false);
 void Patch_WriteFile (CMemFile* pMemFile);
 void Patch_UpdateSelected(idVec3 vMove);
 void Patch_AddRow(patchMesh_t *p);
-brush_t* Patch_Parse(bool bOld);
+idEditorBrush* Patch_Parse(bool bOld);
 void Patch_Write (patchMesh_t *p, FILE *f);
 void Patch_Write (patchMesh_t *p, CMemFile *file);
 void Patch_AdjustColumns(patchMesh_t *p, int nCols);
@@ -103,8 +103,8 @@ void Patch_Freeze();
 void Patch_MakeDirty(patchMesh_t *p);
 void Patch_UnFreeze(bool bAll);
 const char* Patch_GetTextureName();
-void Patch_FindReplaceTexture(brush_t *pb, const char *pFind, const char *pReplace, bool bForce);
-void Patch_ReplaceQTexture(brush_t *pb, idMaterial *pOld, idMaterial *pNew);
+void Patch_FindReplaceTexture(idEditorBrush *pb, const char *pFind, const char *pReplace, bool bForce);
+void Patch_ReplaceQTexture(idEditorBrush *pb, idMaterial *pOld, idMaterial *pNew);
 void Select_SnapToGrid();
 void Patch_FromTriangle(idVec5 vx, idVec5 vy, idVec5 vz);
 const char* Patch_GetKeyValue(patchMesh_t *p, const char *pKey);

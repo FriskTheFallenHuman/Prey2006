@@ -30,7 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 #pragma hdrstop
 
 
-#include "../../sys/win32/rc/AFEditor_resource.h"
+#include "../../sys/win32/rc/resource.h"
 
 #include "DialogAF.h"
 #include "DialogAFConstraint.h"

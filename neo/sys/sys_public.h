@@ -229,6 +229,9 @@ const char *	Sys_TimeStampToStr( ID_TIME_T timeStamp );
 
 bool			Sys_GetPath(sysPath_t type, idStr &path);
 
+bool            Sys_IsFile( const char* path );
+bool            Sys_IsDirectory( const char* path );
+
 // use fs_debug to verbose Sys_ListFiles
 // returns -1 if directory was not found (the list is cleared)
 int				Sys_ListFiles( const char *directory, const char *extension, idList<class idStr> &list );

@@ -30,82 +30,9 @@ If you have questions concerning this license or the applicable additional terms
 #pragma hdrstop
 
 #include "qe3.h"
-#include "cmdlib.h"
+#include "CMDLib.h"
 
 #define PATHSEPERATOR   '/'
-
-// rad additions
-// 11.29.99
-PFN_ERR *g_pfnError = NULL;
-PFN_PRINTF *g_pfnPrintf = NULL;
-PFN_ERR_NUM *g_pfnErrorNum = NULL;
-PFN_PRINTF_NUM *g_pfnPrintfNum = NULL;
-
-
-void Error(const char *pFormat, ...)
-{
-	if (g_pfnError)
-	{
-		va_list arg_ptr;
-		va_start(arg_ptr, pFormat);
-		g_pfnError(pFormat, arg_ptr);
-		va_end(arg_ptr);
-	}
-}
-
-void Printf(const char *pFormat, ...)
-{
-	if (g_pfnPrintf)
-	{
-		va_list arg_ptr;
-		va_start(arg_ptr, pFormat);
-		g_pfnPrintf(pFormat, arg_ptr);
-		va_end(arg_ptr);
-	}
-}
-
-void ErrorNum(int nErr, const char *pFormat, ...)
-{
-	if (g_pfnErrorNum)
-	{
-		va_list arg_ptr;
-		va_start(arg_ptr, pFormat);
-		g_pfnErrorNum(nErr, pFormat, arg_ptr);
-		va_end(arg_ptr);
-	}
-}
-
-void PrintfNum(int nErr, const char *pFormat, ...)
-{
-	if (g_pfnPrintfNum)
-	{
-		va_list arg_ptr;
-		va_start(arg_ptr, pFormat);
-		g_pfnPrintfNum(nErr, pFormat, arg_ptr);
-		va_end(arg_ptr);
-	}
-}
-
-void SetErrorHandler(PFN_ERR pe)
-{
-	g_pfnError = pe;
-}
-
-void SetPrintfHandler(PFN_PRINTF pe)
-{
-	g_pfnPrintf = pe;
-}
-
-void SetErrorHandlerNum(PFN_ERR_NUM pe)
-{
-	g_pfnErrorNum = pe;
-}
-
-void SetPrintfHandler(PFN_PRINTF_NUM pe)
-{
-	g_pfnPrintfNum = pe;
-}
-
 
 /*
 ================

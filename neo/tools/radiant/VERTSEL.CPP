@@ -31,13 +31,11 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "qe3.h"
 
-#define NEWEDGESEL	1
-
 /*
  =======================================================================================================================
  =======================================================================================================================
  */
-int FindPoint(idVec3 point) {
+static int FindPoint(idVec3 point) {
 	int i, j;
 
 	for (i = 0; i < g_qeglobals.d_numpoints; i++) {
@@ -64,7 +62,7 @@ int FindPoint(idVec3 point) {
  =======================================================================================================================
  =======================================================================================================================
  */
-int FindEdge(int p1, int p2, face_t *f) {
+static int FindEdge(int p1, int p2, face_t* f) {
 	int i;
 
 	for (i = 0; i < g_qeglobals.d_numedges; i++) {
@@ -85,21 +83,12 @@ int FindEdge(int p1, int p2, face_t *f) {
 	return g_qeglobals.d_numedges - 1;
 }
 
-#ifdef NEWEDGESEL
-void MakeFace (brush_t * b, face_t * f)
-#else
-void MakeFace (face_t * f)
-#endif
-{
+static void MakeFace (idEditorBrush * b, face_t * f) {
 	idWinding	*w;
 	int			i;
 	int			pnum[128];
 
-#ifdef NEWEDGESEL
 	w = Brush_MakeFaceWinding(b, f);
-#else
-	w = Brush_MakeFaceWinding(selected_brushes.next, f);
-#endif
 	if (!w) {
 		return;
 	}
@@ -118,45 +107,24 @@ void MakeFace (face_t * f)
  */
 void SetupVertexSelection(void) {
 	face_t	*f;
-	brush_t *b;
+	idEditorBrush *b;
 
 	g_qeglobals.d_numpoints = 0;
 	g_qeglobals.d_numedges = 0;
 
-#ifdef NEWEDGESEL
 	for (b = selected_brushes.next; b != &selected_brushes; b = b->next) {
 		for (f = b->brush_faces; f; f = f->next) {
 			MakeFace(b, f);
 		}
 	}
-
-#else
-	if (!QE_SingleBrush()) {
-		return;
-	}
-
-	b = selected_brushes.next;
-	for (f = b->brush_faces; f; f = f->next) {
-		MakeFace(b, f);
-	}
-#endif
 }
 
-#ifdef NEWEDGESEL
-void SelectFaceEdge (brush_t * b, face_t * f, int p1, int p2)
-#else
-void SelectFaceEdge (face_t * f, int p1, int p2)
-#endif
-{
+static void SelectFaceEdge (idEditorBrush * b, face_t * f, int p1, int p2) {
 	idWinding	*w;
 	int			i, j, k;
 	int			pnum[128];
 
-#ifdef NEWEDGESEL
 	w = Brush_MakeFaceWinding(b, f);
-#else
-	w = Brush_MakeFaceWinding(selected_brushes.next, f);
-#endif
 	if (!w) {
 		return;
 	}
@@ -183,77 +151,6 @@ void SelectFaceEdge (face_t * f, int p1, int p2)
 		Sys_Status("SelectFaceEdge: failed\n");
 	}
 	delete w;
-}
-
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
-void SelectVertex(int p1) {
-	brush_t		*b;
-	idWinding	*w;
-	int			i, j, k;
-	face_t		*f;
-
-#ifdef NEWEDGESEL
-	for (b = selected_brushes.next; b != &selected_brushes; b = b->next) {
-		for (f = b->brush_faces; f; f = f->next) {
-			w = Brush_MakeFaceWinding(b, f);
-			if (!w) {
-				continue;
-			}
-
-			for (i = 0; i < w->GetNumPoints(); i++) {
-				if ( FindPoint( (*w)[i].ToVec3() ) == p1 ) {
-					VectorCopy((*w)[(i + w->GetNumPoints() - 1) % w->GetNumPoints()], f->planepts[0]);
-					VectorCopy((*w)[i], f->planepts[1]);
-					VectorCopy((*w)[(i + 1) % w->GetNumPoints()], f->planepts[2]);
-					for (j = 0; j < 3; j++) {
-						for (k = 0; k < 3; k++) {
-							// f->planepts[j][k] = floor(f->planepts[j][k]/g_qeglobals.d_gridsize+0.5)*g_qeglobals.d_gridsize;
-						}
-					}
-
-					AddPlanept(&f->planepts[1]);
-
-					// MessageBeep(-1);
-					break;
-				}
-			}
-
-			delete w;
-		}
-	}
-
-#else
-	b = selected_brushes.next;
-	for (f = b->brush_faces; f; f = f->next) {
-		w = Brush_MakeFaceWinding(b, f);
-		if (!w) {
-			continue;
-		}
-
-		for (i = 0; i < w->GetNumPoints(); i++) {
-			if (FindPoint(w[i]) == p1) {
-				VectorCopy(w[(i + w->GetNumPoints() - 1) % w->GetNumPoints()], f->planepts[0]);
-				VectorCopy(w[i], f->planepts[1]);
-				VectorCopy(w[(i + 1) % w->GetNumPoints()], f->planepts[2]);
-				for (j = 0; j < 3; j++) {
-					for (k = 0; k < 3; k++) {
-						// f->planepts[j][k] = floor(f->planepts[j][k]/g_qeglobals.d_gridsize+0.5)*g_qeglobals.d_gridsize;
-					}
-				}
-
-				AddPlanept(&f->planepts[1]);
-
-				// MessageBeep(-1);
-				break;
-			}
-		}
-
-		delete w;
-	}
-#endif
 }
 
 /*
@@ -299,16 +196,11 @@ void SelectEdgeByRay(idVec3 org, idVec3 dir) {
 	//
 	g_qeglobals.d_num_move_points = 0;
 	e = &g_qeglobals.d_edges[besti];
-#ifdef NEWEDGESEL
-	for (brush_t * b = selected_brushes.next; b != &selected_brushes; b = b->next) {
+
+	for (idEditorBrush * b = selected_brushes.next; b != &selected_brushes; b = b->next) {
 		SelectFaceEdge(b, e->f1, e->p1, e->p2);
 		SelectFaceEdge(b, e->f2, e->p2, e->p1);
 	}
-
-#else
-	SelectFaceEdge(e->f1, e->p1, e->p2);
-	SelectFaceEdge(e->f2, e->p2, e->p1);
-#endif
 }
 
 /*
@@ -389,40 +281,4 @@ void SelectCurvePointByRay(const idVec3 &org, const idVec3 &dir, int buttons) {
 
 	// Sys_Status ("hit vertex\n");
 	AddPatchMovePoint( g_qeglobals.d_points[besti], ( buttons & MK_CONTROL ) != 0, ( buttons & MK_SHIFT ) != 0 );
-}
-
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
-void SelectSplinePointByRay(const idVec3 &org, const idVec3 &dir, int buttons) {
-	int		i, besti;
-	float	d, bestd;
-	idVec3	temp;
-
-	// find the point closest to the ray
-	besti = -1;
-	bestd = 8;
-
-	for (i = 0; i < g_qeglobals.d_numpoints; i++) {
-		temp = g_qeglobals.d_points[i] - org;
-		d = temp * dir;
-		temp = org + d * dir;
-		temp = g_qeglobals.d_points[i] - temp;
-		d = temp.Length();
-		if ( d <= bestd ) {
-			bestd = d;
-			besti = i;
-		}
-	}
-
-	if (besti == -1) {
-		return;
-	}
-
-	Sys_Status("hit curve point\n");
-	g_qeglobals.d_num_move_points = 0;
-	g_qeglobals.d_move_points[g_qeglobals.d_num_move_points++] = &g_qeglobals.d_points[besti];
-
-	// g_splineList->setSelectedPoint(&g_qeglobals.d_points[besti]);
 }

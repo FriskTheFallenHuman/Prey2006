@@ -81,7 +81,7 @@ BOOL CMapInfo::OnInitDialog()
   m_nTotalBrushes = 0;
   m_nTotalEntities = 0;
   m_nNet = 0;
-	for (brush_t* pBrush=active_brushes.next ; pBrush != &active_brushes ; pBrush=pBrush->next)
+	for (idEditorBrush* pBrush=active_brushes.next ; pBrush != &active_brushes ; pBrush=pBrush->next)
   {
 	m_nTotalBrushes++;
 	if (pBrush->owner == world_entity)
@@ -92,7 +92,7 @@ BOOL CMapInfo::OnInitDialog()
   CMapStringToPtr mapEntity;
 
   intptr_t nValue = 0;
-  for (entity_t* pEntity=entities.next ; pEntity != &entities ; pEntity=pEntity->next)
+  for (idEditorEntity* pEntity=entities.next ; pEntity != &entities ; pEntity=pEntity->next)
   {
 	m_nTotalEntities++;
 	nValue = 0;

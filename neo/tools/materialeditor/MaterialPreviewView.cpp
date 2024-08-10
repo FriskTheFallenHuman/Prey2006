@@ -179,7 +179,6 @@ void MaterialPreviewView::OnShowLightsChange( bool showLights ) {
  */
 
 extern bool		Sys_KeyDown(int key);
-extern float	fDiff(float f1, float f2);
 
 idGLDrawableView::idGLDrawableView() {
 	material = NULL;

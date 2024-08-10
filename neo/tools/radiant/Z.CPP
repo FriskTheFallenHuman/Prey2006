@@ -58,7 +58,7 @@ static int	cursorx, cursory;
  */
 void Z_MouseDown(int x, int y, int buttons) {
 	idVec3	org, dir, vup, vright;
-	brush_t *b;
+	idEditorBrush *b;
 
 	Sys_GetCursorPos(&cursorx, &cursory);
 
@@ -194,7 +194,7 @@ void Z_MouseMoved(int x, int y, int buttons) {
 
 	if (buttons == MK_LBUTTON) {
 		Drag_MouseMoved(x, y, buttons);
-		Sys_UpdateWindows(W_Z | W_CAMERA_IFON | W_XY);
+		Sys_UpdateWindows(W_Z | W_CAMERA_ICON | W_XY);
 		return;
 	}
 
@@ -339,7 +339,7 @@ GLbitfield	glbitClear = GL_COLOR_BUFFER_BIT;	// HACK
  =======================================================================================================================
  */
 void Z_Draw(void) {
-	brush_t		*brush;
+	idEditorBrush		*brush;
 	float		w, h;
 	float		top, bottom;
 	idVec3		org_top, org_bottom, dir_up, dir_down;

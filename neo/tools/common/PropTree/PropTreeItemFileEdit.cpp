@@ -1,14 +1,14 @@
 // PropTreeItemFileEdit.cpp : implementation file
 
 
-//#include "stdafx.h"
+//#include "pch.h"
 #include "precompiled.h"
 #pragma hdrstop
 
 #include "proptree.h"
 #include "PropTreeItemFileEdit.h"
 
-#include "../../../sys/win32/rc/proptree_Resource.h"
+#include "../../../sys/win32/rc/resource.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

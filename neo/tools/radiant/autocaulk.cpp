@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "qe3.h"
 #include "Radiant.h"
-#include "autocaulk.h"
+#include "AutoCaulk.h"
 
 // Note: the code in here looks pretty goofy in places, and probably doesn't use the new Q4 class stuff fully,
 //   but I just got it in and compiling from the JK2/SOF2 Radiants via some ugly code replaces, and it works, so there.
@@ -46,33 +46,42 @@ If you have questions concerning this license or the applicable additional terms
 #undef strnicmp
 #define strnicmp		idStr::Icmpn
 
-#if 1
-
+#define QER_TRANS     0x00000001
 
 //extern void ClearBounds (idVec3 mins, idVec3 maxs);
 //extern void AddPointToBounds (const idVec3 v, idVec3 mins, idVec3 maxs);
-void ClearBounds (idVec3 &mins, idVec3 &maxs)
+/*
+================
+ClearBounds
+================
+*/
+static void ClearBounds (idVec3 &mins, idVec3 &maxs)
 {
 	mins[0] = mins[1] = mins[2] = 99999;
 	maxs[0] = maxs[1] = maxs[2] = -99999;
 }
 
-void AddPointToBounds( const idVec3 &v, idVec3 &mins, idVec3 &maxs )
+/*
+================
+AddPointToBounds
+================
+*/
+static void AddPointToBounds( const idVec3 &v, idVec3 &mins, idVec3 &maxs )
 {
-	int		i;
-	float	val;
-
-	for (i=0 ; i<3 ; i++)
+	for (int i = 0 ; i < 3 ; i++)
 	{
-		val = v[i];
-		if (val < mins[i])
-			mins[i] = val;
-		if (val > maxs[i])
-			maxs[i] = val;
+		if (v[i] < mins[i])
+			mins[i] = v[i];
+		if (v[i] > maxs[i])
+			maxs[i] = v[i];
 	}
 }
 
-
+/*
+================
+FloorBounds
+================
+*/
 static void FloorBounds(idVec3 &mins, idVec3 &maxs)
 {
 	for (int i=0 ; i<3 ; i++)
@@ -82,28 +91,28 @@ static void FloorBounds(idVec3 &mins, idVec3 &maxs)
 	}
 }
 
-
-static LPCSTR vtos(idVec3 &v3)
-{
-	return va("%.3ff,%.3f,%.3f",v3[0],v3[1],v3[2]);
-}
 struct PairBrushFace_t
 {
 	face_t*		pFace;
-	brush_t*	pBrush;
+	idEditorBrush*	pBrush;
 };
-idList < PairBrushFace_t > FacesToCaulk;
+
+/*
+================
+Select_AutoCaulk
+================
+*/
 void Select_AutoCaulk()
 {
-	/*Sys_Printf*/common->Printf("Caulking...\n");
+	common->Printf("Caulking...\n");
 
-	FacesToCaulk.Clear();
+	idList < PairBrushFace_t > FacesToCaulk;
 
 	int iSystemBrushesSkipped = 0;
 	face_t *pSelectedFace;
 
-	brush_t *next;
-	for (brush_t *pSelectedBrush = selected_brushes.next ; pSelectedBrush != &selected_brushes ; pSelectedBrush = next)
+	idEditorBrush *next;
+	for (idEditorBrush *pSelectedBrush = selected_brushes.next ; pSelectedBrush != &selected_brushes ; pSelectedBrush = next)
 	{
 		next = pSelectedBrush->next;
 
@@ -129,8 +138,8 @@ void Select_AutoCaulk()
 
 		for (int iBrushListToScan = 0; iBrushListToScan<2; iBrushListToScan++)
 		{
-			brush_t	*snext;
-			for (brush_t *pScannedBrush = (iBrushListToScan?active_brushes.next:selected_brushes.next); pScannedBrush != (iBrushListToScan?&active_brushes:&selected_brushes) ; pScannedBrush = snext)
+			idEditorBrush	*snext;
+			for (idEditorBrush *pScannedBrush = (iBrushListToScan?active_brushes.next:selected_brushes.next); pScannedBrush != (iBrushListToScan?&active_brushes:&selected_brushes) ; pScannedBrush = snext)
 			{
 				snext = pScannedBrush->next;
 
@@ -288,7 +297,7 @@ void Select_AutoCaulk()
 	int iFacesCaulked = 0;
 	if (FacesToCaulk.Num())
 	{
-		LPCSTR psCaulkName = "textures/common/caulk";
+		const char* psCaulkName = "textures/common/caulk";
 		const idMaterial *pCaulk = Texture_ForName(psCaulkName);
 
 		if (pCaulk)
@@ -311,7 +320,7 @@ void Select_AutoCaulk()
 			{
 				PairBrushFace_t &PairBrushFace = FacesToCaulk[iListEntry];
 				face_t *pFace = PairBrushFace.pFace;
-				brush_t*pBrush= PairBrushFace.pBrush;
+				idEditorBrush*pBrush= PairBrushFace.pBrush;
 
 				pFace->d_texture = pCaulk;
 				pFace->texdef = tex;
@@ -324,17 +333,16 @@ void Select_AutoCaulk()
 		}
 		else
 		{
-			/*Sys_Printf*/common->Printf(" Unable to locate caulk texture at: \"%s\"!\n",psCaulkName);
+			common->Printf(" Unable to locate caulk texture at: \"%s\"!\n",psCaulkName);
 		}
 	}
 
-	/*Sys_Printf*/common->Printf("( %d faces caulked )\n",iFacesCaulked);
+	common->Printf("( %d faces caulked )\n",iFacesCaulked);
 
 	if (iSystemBrushesSkipped)
 	{
-		/*Sys_Printf*/common->Printf("( %d system-faced brushes skipped )\n",iSystemBrushesSkipped);
+		common->Printf("( %d system-faced brushes skipped )\n",iSystemBrushesSkipped);
 	}
 
 	Sys_UpdateWindows (W_ALL);
 }
-#endif
