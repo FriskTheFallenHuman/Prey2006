@@ -32,7 +32,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "../../sys/win32/rc/resource.h"
 #include "DebuggerApp.h"
-#include "../Common/OpenFileDialog.h"
 #include "../Common/AboutBoxDlg.h"
 #include "DebuggerQuickWatchDlg.h"
 #include "DebuggerFindDlg.h"
@@ -1391,16 +1390,25 @@ int rvDebuggerWindow::HandleCommand ( WPARAM wparam, LPARAM lparam )
 
 		case ID_DBG_FILE_OPEN:
 		{
-			rvOpenFileDialog dlg;
-			dlg.SetTitle ( "Open Script" );
-			dlg.SetFilter ( "*.script; *.gui; *.state" );
-			dlg.SetFlags ( OFD_MUSTEXIST );
-			if ( dlg.DoModal ( mWnd ) )
-			{
-				if ( !OpenScript ( dlg.GetFilename ( ) ) )
-				{
-					MessageBox ( mWnd, va("Failed to open script '%s'",dlg.GetFilename ( )), "Quake 4 Script Debugger", MB_OK );
-				}
+			OPENFILENAME ofn;
+			char		 szFile[MAX_PATH] = "";
+
+			// Initialize OPENFILENAME
+			ZeroMemory(&ofn, sizeof(OPENFILENAME));
+			ofn.lStructSize = sizeof(OPENFILENAME);
+			ofn.hwndOwner = win32.hWnd;
+			ofn.lpstrFile = szFile;
+			ofn.nMaxFile = sizeof(szFile);
+			ofn.lpstrFilter = "Game Script\0*.script\0All Files\0*.*\0";
+			ofn.nFilterIndex = 1;
+			ofn.lpstrFileTitle = NULL;
+			ofn.nMaxFileTitle = 0;
+			ofn.lpstrInitialDir = NULL;
+			ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+			// Display the Open dialog box.
+			if ( GetOpenFileName( &ofn ) == TRUE ) {
+				OpenScript ( ofn.lpstrFile );
 			}
 			break;
 		}

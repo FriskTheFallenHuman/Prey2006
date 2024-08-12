@@ -108,8 +108,8 @@ If you have questions concerning this license or the applicable additional terms
 #define RENDERDEMO_VERSION				100
 
 // editor info
-#define EDITOR_DEFAULT_PROJECT			"prey.qe4"
-#define EDITOR_REGISTRY_KEY				"PreyRadiant"
+#define TOOLS_REGISTRY_PATH				"Software\\id Software\\Human Head\\Tools\\"
+#define EDITOR_REGISTRY_KEY				"PreyEditor"
 #define EDITOR_WINDOWTEXT				"PREDITOR"
 
 // win32 info
@@ -117,7 +117,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // Linux info
 #ifndef LINUX_DEFAULT_PATH // allow overriding it from the build system with -DLINUX_DEFAULT_PATH="/bla/foo/whatever"
-	#define LINUX_DEFAULT_PATH			"/usr/local/games/prey"
+	#define LINUX_DEFAULT_PATH			"/usr/local/games/prey06"
 #endif
 
 // CD Key file info

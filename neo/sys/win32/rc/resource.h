@@ -15,6 +15,7 @@
 #define IDD_DIALOG_AF_CONSTRAINT_SLIDER 110
 #define IDD_DIALOG_AF_CONSTRAINT_SPRING 111
 #define IDI_ICON2                       112
+#define IDP_OLE_INIT_FAILED				113
 #define IDC_DIALOG_AF_TAB_MODE          200
 #define IDC_DIALOG_AF_START             201
 #define IDC_COMBO_AF                    202
@@ -664,7 +665,6 @@
 #define IDR_MAINFRAME                   10052
 #define IDR_RADIANTYPE                  10053
 #define IDR_SHADERTYPE                  10055
-#define IDR_TOOLBAR_SCALELOCK           10057
 #define IDR_TOOLBAR                     10058
 #define IDR_MENU_DROP                   10059
 #define IDR_POPUP_TEXTURE               10062
@@ -678,12 +678,8 @@
 #define IDB_ENDCAP                      10070
 #define IDB_BEVEL                       10071
 #define IDB_IBEVEL                      10072
-#define IDB_VIEWQE4                     10073
-#define IDB_VIEW4WAY                    10074
-#define IDB_VIEWDEFAULT                 10075
 #define IDB_VIEWDEFAULT2                10076
 #define IDB_VIEWDEFAULT3                10077
-#define IDB_VIEWDEFAULT_Z               10078
 #define IDB_BITMAP_GROUPS               10079
 #define IDB_BITMAP_MATERIAL             10080
 #define IDB_BITMAP_HSB                  10081
@@ -730,7 +726,6 @@
 #define IDC_BTN_PREVIEW                 10256
 #define IDC_BTN_ADDTARGET               10257
 #define IDC_BTN_SET                     10258
-#define IDC_BTN_OLDCOLOR                10259
 #define IDC_BUTTON_MODEL                10260
 #define IDC_SPIN_AUTOSAVE               10261
 #define IDC_BTN_DEL                     10262

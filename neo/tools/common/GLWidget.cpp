@@ -29,9 +29,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "precompiled.h"
 #pragma hdrstop
 
-#include "qe3.h"
-#include "Radiant.h"
-#include "GLWidget.h"
+#include "../radiant/QE3.H"
+#include "../radiant/Radiant.h"
+#include "../common/GLWidget.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

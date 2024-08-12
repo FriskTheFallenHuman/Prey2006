@@ -202,7 +202,7 @@ bool ConfirmModified(void) {
 }
 
 static OPENFILENAME ofn;														/* common dialog box structure */
-static char			szFile[260];												/* filename string */
+static char			szFile[MAX_PATH];											/* filename string */
 static char			szFileTitle[260];											/* file title string */
 static char			szFilter[260] =	"Map file (*.map, *.reg)\0*.map;*.reg\0";	/* filter string */
 
@@ -215,6 +215,7 @@ void OpenDialog(void) {
 	szFile[0] = '\0';
 
 	/* Set the members of the OPENFILENAME structure. */
+	ZeroMemory(&ofn, sizeof(OPENFILENAME));
 	ofn.lStructSize = sizeof(OPENFILENAME);
 	ofn.hwndOwner = g_pParentWnd->GetSafeHwnd();
 	ofn.lpstrFilter = szFilter;
@@ -223,11 +224,11 @@ void OpenDialog(void) {
 	ofn.nMaxFile = sizeof(szFile);
 	ofn.lpstrFileTitle = szFileTitle;
 	ofn.nMaxFileTitle = sizeof(szFileTitle);
-	ofn.lpstrInitialDir = ""; //FIXME
+	ofn.lpstrInitialDir = NULL;
 	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
 	/* Display the Open dialog box. */
-	if (!GetOpenFileName(&ofn)) {
+	if ( !GetOpenFileName( &ofn ) ) {
 		return; // canceled
 	}
 
@@ -253,6 +254,7 @@ void SaveAsDialog(bool bRegion) {
 	szFile[0] = '\0';
 
 	/* Set the members of the OPENFILENAME structure. */
+	ZeroMemory(&ofn, sizeof(OPENFILENAME));
 	ofn.lStructSize = sizeof(OPENFILENAME);
 	ofn.hwndOwner = g_pParentWnd->GetSafeHwnd();
 	ofn.lpstrFilter = szFilter;

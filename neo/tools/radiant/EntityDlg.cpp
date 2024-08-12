@@ -31,7 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "qe3.h"
 #include "Radiant.h"
-#include "GLWidget.h"
+#include "../common/GLWidget.h"
 #include "PropertyList.h"
 #include "entitydlg.h"
 #include "PreviewDlg.h"

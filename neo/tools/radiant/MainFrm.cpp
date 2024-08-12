@@ -1464,7 +1464,7 @@ void CMainFrame::OnFileNew() {
  =======================================================================================================================
  */
 void CMainFrame::OnFileOpen() {
-	if (ConfirmModified()) {
+	if ( ConfirmModified() ) {
 		OpenDialog();
 	}
 }
