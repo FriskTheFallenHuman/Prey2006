@@ -32,7 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 //
 
 #include <afxtempl.h>
-#include "GLWidget.h"
+#include "../common/GLWidget.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CDialogTextures dialog

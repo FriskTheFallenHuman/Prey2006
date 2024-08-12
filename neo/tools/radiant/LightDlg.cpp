@@ -869,7 +869,7 @@ void CLightDlg::OnBtnColor() {
 	r = color[0];
 	g = color[1];
 	b = color[2];
-	if ( DoNewColor( &r, &g, &b, &ob, UpdateLightDialog ) ) {
+	if ( DoColor( &r, &g, &b, &ob, UpdateLightDialog ) ) {
 		color[0] = ob * r;
 		color[1] = ob * g;
 		color[2] = ob * b;

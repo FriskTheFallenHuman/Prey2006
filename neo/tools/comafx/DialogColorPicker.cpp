@@ -33,122 +33,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "../../sys/win32/rc/resource.h"
 #include "DialogColorPicker.h"
 
-#ifdef ID_DEBUG_MEMORY
-#undef new
-#undef DEBUG_NEW
-#define DEBUG_NEW new
-#endif
-
-// Old color picker
-
-class CMyColorDialog : public CColorDialog
-{
-  DECLARE_DYNCREATE(CMyColorDialog);
-	 // Construction
-public:
-	 CMyColorDialog( COLORREF clrInit = 0, DWORD dwFlags = 0, CWnd *pParentWnd = NULL );
-	 virtual INT_PTR DoModal();
-
-protected:
-	 enum { NCUSTCOLORS = 16 };
-	 static COLORREF	c_CustColors[NCUSTCOLORS];
-	 static COLORREF	c_LastCustColors[NCUSTCOLORS];
-	 static bool		c_NeedToInitCustColors;
-	 static void		InitCustColors();
-	 static void		SaveCustColors();
-
-	 // Dialog Data
-	 //{{AFX_DATA(CMyColorDialog)
-	 //}}AFX_DATA
-
-protected:
-	 // ClassWizard generate virtual function overrides
-	 //{{AFX_VIRTUAL(CMyColorDialog)
-	 virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	 //}}AFX_VIRTUAL
-
-	 // Generated message map functions
-	 //{{AFX_MSG(CMyColorDialog)
-	 //}}AFX_MSG
-	 DECLARE_MESSAGE_MAP()
-};
-
-IMPLEMENT_DYNCREATE( CMyColorDialog, CColorDialog )
-
-bool CMyColorDialog::c_NeedToInitCustColors = true;
-COLORREF CMyColorDialog::c_CustColors[];
-COLORREF CMyColorDialog::c_LastCustColors[];
-
-#define SECTION _T("Custom Colors")
-
-void CMyColorDialog::InitCustColors() {
-	for ( int i = 0; i < NCUSTCOLORS; i++) {
-		CString entry;
-		entry.Format( "tool_color%d", i);
-		idCVar *cvar = cvarSystem->Find( entry );
-		if ( cvar ) {
-			c_LastCustColors[i] = c_CustColors[i] = cvar->GetInteger();
-		} else {
-			c_LastCustColors[i] = c_CustColors[i] = RGB( 255, 255, 255 );
-		}
-	}
-	c_NeedToInitCustColors= false;
-}
-
-void CMyColorDialog::SaveCustColors() {
-	for (int i = 0; i < NCUSTCOLORS; i++) {
-		if ( c_LastCustColors[i] != c_CustColors[i] ) {
-			CString entry;
-			entry.Format( "tool_color%d", i );
-			if ( c_CustColors[i] == RGB( 255, 255, 255 ) ) {
-				cvarSystem->SetCVarString( entry, "" );
-			} else {
-				cvarSystem->SetCVarString( entry, va( "%d", c_CustColors[i] ), CVAR_TOOL );
-			}
-			c_LastCustColors[i] = c_CustColors[i];
-		}
-	}
-}
-
-CMyColorDialog::CMyColorDialog( COLORREF clrInit, DWORD dwFlags,
-		CWnd* pParentWnd) : CColorDialog(clrInit,dwFlags,pParentWnd)
-{
-	 //{{AFX_DATA_INIT(CMyColorDialog)
-	 //}}AFX_DATA_INIT
-	 if (c_NeedToInitCustColors) {
-		  InitCustColors();
-	 }
-	 m_cc.lpCustColors = c_CustColors;
-}
-
-INT_PTR CMyColorDialog::DoModal() {
-	 int code = CColorDialog::DoModal();
-	 SaveCustColors();
-	 return code;
-}
-
-void CMyColorDialog::DoDataExchange(CDataExchange* pDX) {
-	 // overridden (calls this base class)
-	 CColorDialog::DoDataExchange(pDX);
-	 //{{AFX_DATA_MAP(CMyColorDialog)
-	 //}}AFX_DATA_MAP
-}
-
-BEGIN_MESSAGE_MAP(CMyColorDialog, CColorDialog)
-//{{AFX_MSG_MAP(CMyColorDialog)
-//}}AFX_MSG_MAP
-END_MESSAGE_MAP()
-
-COLORREF DoOldColor(COLORREF cr) {
-	CMyColorDialog dlg(cr, CC_FULLOPEN | CC_RGBINIT | CC_ANYCOLOR);
-	if (dlg.DoModal() == IDOK) {
-		return dlg.GetColor();
-	}
-	return cr;
-}
-
-// New color picker
-
 // Original ColorPicker/DIB source by Rajiv Ramachandran <rrajivram@hotmail.com>
 // included with Permission from the author
 
@@ -504,7 +388,6 @@ BEGIN_MESSAGE_MAP(CDialogColorPicker, CDialog)
 	ON_EN_CHANGE(IDC_EDIT_SAT, OnChangeEditSat)
 	ON_EN_CHANGE(IDC_EDIT_VAL, OnChangeEditVal)
 	ON_EN_CHANGE(IDC_EDIT_OVERBRIGHT, OnChangeEditOverbright)
-	ON_BN_CLICKED(IDC_BTN_OLDCOLOR, OnBtnColor)
 	ON_WM_TIMER()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -1287,16 +1170,7 @@ void CDialogColorPicker::OnTimer(UINT_PTR nIDEvent)  {
 	}
 }
 
-void CDialogColorPicker::OnBtnColor() {
-	COLORREF cr = DoOldColor(GetColor());
-	color.r = GetRValue(cr);
-	color.g = GetGValue(cr);
-	color.b = GetBValue(cr);
-	hsvColor = color.toHSV();
-	DrawAll();
-}
-
-bool DoNewColor( int* i1, int* i2, int* i3, float *overBright, void (*Update)( float, float, float, float ) ) {
+bool DoColor( int* i1, int* i2, int* i3, float *overBright, void (*Update)( float, float, float, float ) ) {
 	COLORREF cr = (*i1) + ((*i2) <<8) + ((*i3) <<16);
 	CDialogColorPicker dlg( cr );
 	//CMyColorDialog dlg(cr, CC_FULLOPEN | CC_RGBINIT | CC_ANYCOLOR);

@@ -1,0 +1,121 @@
+
+
+materialprops
+{
+	TYPE_GROUP,	"",					"General",			"General Parameters"
+	TYPE_STRING,	"description",		"Description",			"The description of the material.", 1 
+	TYPE_BOOL,	"translucent",		"Translucent",			"Makes the surface translucent."
+	TYPE_BOOL,	"forceOpaque",		"Force Opaque",			"Forces a surface to be opaque"
+	TYPE_BOOL,	"twoSided",			"Two Sided",			"The material is two sided."
+	TYPE_BOOL,	"backSided",		"Back Sided",			"The material is drawn on the backside of a polygon."
+	TYPE_STRING,	"deform",			"Deform",			"Performs different types of deformations to the material. Possible values are sprite, tube, flare <expression>, expand <expression>, move <expression>, eyeBall", 0
+	TYPE_STRING,	"sort",				"Sort",				"Defines the sort order of a surface with this material.", 0
+	TYPE_BOOL,	"mirror",			"Mirror",			"This surface is a mirror."
+
+	TYPE_GROUP,	"",			"Surface Parameters",		"Surface Parameters"
+	TYPE_BOOL,	"solid",		"Solid",			"Is this surface solid."
+	TYPE_BOOL,	"water",		"Water",			"Is this surface water."
+	TYPE_BOOL,	"playerclip",		"Player Clip",			"Will the player clip against this surface."
+	TYPE_BOOL,	"monsterclip",		"Monster Clip",			"Will monsters clip against this surface."
+	TYPE_BOOL,	"moveableclip", 	"Moveable Clip",		"Will moveable objects clip against this surface."
+	TYPE_BOOL,	"blood",		"Blood",			"Is this surface blood. (DOES NOT WORK)"
+	TYPE_BOOL,	"nonsolid",		"Non-Solid",			"Is this surface non-solid."
+	TYPE_BOOL,	"nullNormal",		"Null Normal",			"Renderbump will draw 0x80 0x80 0x80. This allows artists to force an area to reflect no light at all."
+	TYPE_BOOL,	"areaportal",		"Area Portal",			"Divides two areas."
+	TYPE_BOOL,	"qer_nocarve",		"Editor No Carve",		"Forces the editor to not cut brushes with this surface."
+	TYPE_BOOL,	"discrete",		"Discrete",			"Surfaces should not be automatically merged together or clipped to the world because they represent discrete objects like gui shaders, mirrors, or autosprites."
+	TYPE_BOOL,	"noFragment",		"No Fragement",			"The surface will not be diced up during the build process."
+	TYPE_BOOL,	"slick",		"Slick",			"Low player friction."
+	TYPE_BOOL,	"collision",		"Collision",			"Explicitly define a surface for collision testing."
+	TYPE_BOOL,	"noimpact",		"No Impact",			"Don't make impact explosions or marks."
+	TYPE_BOOL,	"nodamage",		"No Damage",			"No falling damage when hitting."
+	TYPE_BOOL,	"ladder",		"Ladder",			"The surface is climbable."
+	TYPE_BOOL,	"nosteps",		"No Steps",			"No footsteps on the surface. (DOES NOT WORK)"
+
+	TYPE_GROUP,	"",			"Light",			"Light Parameters"
+	TYPE_STRING,	"lightFalloffImage",	"Light Falloff Image",		"Specifies the image to use for the third axis of projected light volume.", 0
+	TYPE_STRING,	"spectrum",		"Spectrum",			"The spectrum of light this material will display under or if the material is a light then this is the spectrum the light gives off.", 0
+	TYPE_BOOL,	"ambientLight",		"Ambient Light",		"The material is an ambient light."
+	TYPE_BOOL,	"noShadows",		"No Shadows",			"Does the surface cast a shadow."
+	TYPE_BOOL,	"noSelfShadow",		"No Self Shadows",		"???"
+	TYPE_BOOL,	"forceShadows",		"Force Shadows",		"Allows nodraw surfaces to cast shadows."
+	TYPE_BOOL,	"fogLight",		"Fog Light",			"The material is a fog light."
+	TYPE_BOOL,	"noPortalFog",		"No Portal Fog",		"Disables the ability for fog lights to close a portal."
+	TYPE_BOOL,	"blendLight",		"Blend Light",			"blendLight allows a light projection with an arbitrary blend to be applied to everything inside it, allowing simple fogs that increase in a given direction without caring about the viewer position."
+	TYPE_BOOL,	"noFog",		"No Fog",			"Explicitly state that a surface does not accept fog."
+
+	TYPE_GROUP,	"",			"Decal Information",		"Decal Parameters"
+	TYPE_STRING,	"decalInfo",	"Decal Info",			"Stay Time, Fade Time, Start RGBA, End RGBA.", 0
+	TYPE_BOOL,	"noOverlays",		"No Overlays",			"Overlay and decal suppression."
+	TYPE_BOOL,	"forceOverlays",	"Force Overlays",		"Monster blood overlay forcing for alpha tested or translucent surfaces."
+	TYPE_BOOL,	"DECAL_MACRO",		"DECAL_MACRO",			"DECAL_MACRO for backwards compatibility with the preprocessor macros."	
+
+	TYPE_GROUP,	"",			"Miscellaneous",		"Miscellaneous Parameters"
+	TYPE_BOOL,	"polygonOffset",	"Polygon Offset",		"Renders the surface with a depth offset of 1."
+	TYPE_STRING,	"renderbump",		"Renderbump",			"Command used to specify how a bumpmap is built from a high and low poly model.", 0
+	TYPE_BOOL,	"unsmoothedTangents",	"Unsmoothed Tagents",		"Renderbump optimization for animating characters."
+	TYPE_STRING,	"guisurf",		"Gui Surface",			"Makes the surface a gui (Specify either a gui file or a render entity).", 0
+	TYPE_STRING,	"qer_editorimage",	"Editor Image",			"This image to use in the editor.", 0
+}
+
+stageprops
+{
+	TYPE_GROUP,	"",			"General",			"General stage properties."
+	TYPE_STRING,	"if",			"If",				"Conitional to determine if the stage should be rendered.", 0
+	TYPE_STRING,	"map",			"Map",				"The texture path for this stage.", 0
+	TYPE_STRING,	"blend",		"Blend",			"Blend type for this stage.", 0
+	TYPE_STRING,	"remoteRenderMap",	"Remote Rendermap",	"This stage is a remote view.", 0
+	TYPE_STRING,	"mirrorRenderMap",	"Mirror Rendermap",	"This stage is a mirror.", 0
+	
+	TYPE_STRING,	"videomap",		"Video Map",			"Path of the video to render during this stage.", 0
+	TYPE_STRING,	"soundmap",		"Sound Map",			"Path of the looping sound to emit.", 0
+	TYPE_STRING,	"cubeMap",		"Cube Map",			"Specify the cubemap image for the stage and that _px, _nx, _py, etc, are directly sent to GL.", 0
+	TYPE_STRING,	"cameraCubeMap",	"Camera Cube Map",		"_forward, _back, etc, rotated and flipped as needed before sending to GL.", 0
+	TYPE_STRING,	"texGen",		"Tex Gen",			"Sets the texture coordinate type to use during rendering.", 0
+
+	TYPE_GROUP,	"",			"Flags",			"Stage Flags."
+	TYPE_BOOL,	"ignoreAlphaTest",	"Ignore Alpha Test",		"Tells the stage to ignore any alpha testing that has been defined in previous stages."	
+	TYPE_BOOL,	"nearest",		"Nearest",			"Specifies that scaling the image larger or smaller will return the value of the texture element that is nearest (in Manhattan distance) to the center of the pixel being textured."	
+	TYPE_BOOL,	"linear",		"Linear",			"Specifies that scaling the image larger or smaller will return the weighted average of the four texture elements that are closest to the center of the pixel being textured."	
+	TYPE_BOOL,	"clamp",		"Clamp",			"Prevents texture wrapping by clamping the texture coordinate from 0 to 1."	
+	TYPE_BOOL,	"zeroclamp",		"Zero Clamp",			"Same as clamp but zeros the border without alpha allowing clamped projection textures even after picmip resampling."	
+	TYPE_BOOL,	"alphazeroclamp",	"Alpha Zero Clamp",		"Same as clamp but zeros the border with alpha allowing clamped projection textures even after picmip resampling"	
+	TYPE_BOOL,	"uncompressed",		"Uncompressed",			"Specified the stage should not be compressed."	
+	TYPE_BOOL,	"highquality",		"High Quality",			"Specifies that each color component is 8 bits."	
+	TYPE_BOOL,	"nopicmip",		"No Pic Mip",			"Specifies the image should not be downsized for mipmapping."	
+	TYPE_BOOL,	"vertexColor",		"Vertex Color",			"???"	
+	TYPE_BOOL,	"inverseVertexColor",	"Inverse Vertex Color",		"???"	
+
+	TYPE_GROUP,	"",			"Modifiers",			"Stage Modification Parameters."
+	TYPE_STRING,	"scroll",		"Scroll",			"Scrolls the texture by the specified expression amounts.", 0
+	TYPE_STRING,	"translate",		"Translate",			"Same as scroll.", 0
+	TYPE_STRING,	"scale",		"Scale",			"Scales without centering.", 0
+	TYPE_STRING,	"centerScale",		"Center Scale",			"Scales and centers the texture.", 0
+	TYPE_STRING,	"shear",		"Shear",			"Shear the texture.", 0
+	TYPE_STRING,	"rotate",		"Rotate",			"Rotates the texture.", 0
+
+	TYPE_GROUP,	"",			"Color",			"Color Parameters."
+	TYPE_BOOL,	"maskRed",		"Mask Red",			"Removes the red component."	
+	TYPE_BOOL,	"maskGreen",		"Mask Green",			"Removes the green component."	
+	TYPE_BOOL,	"maskBlue",		"Mask Blue",			"Removes the blue component."	
+	TYPE_BOOL,	"maskAlpha",		"Mask Alpha",			"Removes the alpha channel."	
+	TYPE_BOOL,	"maskColor",		"Mask Color",			"Writes only the alpha channel."	
+	TYPE_BOOL,	"maskDepth",		"Mask Depth",			"Turns off depth buffer writing."	
+	TYPE_BOOL,	"colored",		"Colored",			"Specifies the 4 color components as the first 4 shader parameters."	
+	TYPE_STRING,	"alphatest",		"Alpha Test",			"The expression is value from 0 to 1 that determines which fragments should be discarded. 0 will discard no fragments while 1 will discard all.", 0
+	TYPE_STRING,	"color",		"Color",			"Specify the 4 color components for the stage.", 0
+	TYPE_STRING,	"red",			"Red",				"Specify the red component for the stage.", 0
+	TYPE_STRING,	"green",		"Green",			"Specify the green component for the stage.", 0
+	TYPE_STRING,	"blue",			"Blue",				"Specify the blue component for the stage.", 0
+	TYPE_STRING,	"alpha",		"Alpha",			"Specify the alpha component for the stage.", 0
+	TYPE_STRING,	"rgb",			"RGB",				"Specify the RGB components for the stage.", 0
+	TYPE_STRING,	"rgba",			"RGBA",				"Specify the RGB and A components for the stage.", 0
+}
+
+specialmapstageprops
+{
+	TYPE_GROUP,	"",			"General",			"General stage properties."
+	TYPE_STRING,	"map",			"Map",				"The map path.", 0
+}
+
+

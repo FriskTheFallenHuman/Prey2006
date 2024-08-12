@@ -32,7 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "GLWidget.h"
+#include "../common/GLWidget.h"
 
 class CLightInfo {
 public:
