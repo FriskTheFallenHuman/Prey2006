@@ -29,39 +29,40 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFConstraintSlider dialog
 
-class DialogAFConstraintSlider : public CDialog {
+class DialogAFConstraintSlider : public CDialog
+{
 
-	DECLARE_DYNAMIC(DialogAFConstraintSlider)
+	DECLARE_DYNAMIC( DialogAFConstraintSlider )
 
 public:
-						DialogAFConstraintSlider(CWnd* pParent = NULL);   // standard constructor
+	DialogAFConstraintSlider( CWnd* pParent = NULL ); // standard constructor
 	virtual				~DialogAFConstraintSlider();
-	void				LoadFile( idDeclAF *af );
+	void				LoadFile( idDeclAF* af );
 	void				SaveFile( void );
-	void				LoadConstraint( idDeclAF_Constraint *c );
+	void				LoadConstraint( idDeclAF_Constraint* c );
 	void				SaveConstraint( void );
 	void				UpdateFile( void );
 
-						enum { IDD = IDD_DIALOG_AF_CONSTRAINT_HINGE };
+	enum { IDD = IDD_DIALOG_AF_CONSTRAINT_HINGE };
 
 protected:
-	virtual void		DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void		DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	virtual INT_PTR		OnToolHitTest( CPoint point, TOOLINFO* pTI ) const;
-	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR *pNMHDR, LRESULT *pResult );
+	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnBnClickedRadioSliderAxisBone();
 	afx_msg void		OnBnClickedRadioSliderAxisAngles();
 	afx_msg void		OnCbnSelchangeComboSliderAxisJoint1();
 	afx_msg void		OnCbnSelchangeComboSliderAxisJoint2();
 	afx_msg void		OnEnChangeEditSliderAxisPitch();
-	afx_msg void		OnDeltaposSpinSliderAxisPitch(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinSliderAxisPitch( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditSliderAxisYaw();
-	afx_msg void		OnDeltaposSpinSliderAxisYaw(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinSliderAxisYaw( NMHDR* pNMHDR, LRESULT* pResult );
 
 	DECLARE_MESSAGE_MAP()
 
 private:
-	idDeclAF *			file;
-	idDeclAF_Constraint*constraint;
+	idDeclAF* 			file;
+	idDeclAF_Constraint* constraint;
 
 	//{{AFX_DATA(DialogAFConstraintSlider)
 	CComboBox			m_comboAxisJoint1;

@@ -30,9 +30,10 @@ If you have questions concerning this license or the applicable additional terms
 
 // CMapInfo dialog
 
-class CMapInfo : public CDialogEx {
+class CMapInfo : public CDialogEx
+{
 public:
-	CMapInfo( CWnd *pParent = NULL );   // standard constructor
+	CMapInfo( CWnd* pParent = NULL );   // standard constructor
 
 	enum { IDD = IDD_DLG_MAPINFO };
 	CListBox	m_lstEntity;
@@ -41,7 +42,7 @@ public:
 	int		m_nTotalEntities;
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 
 protected:
 	virtual BOOL OnInitDialog();

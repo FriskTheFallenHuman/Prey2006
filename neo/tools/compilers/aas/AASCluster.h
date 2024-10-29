@@ -37,14 +37,15 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 */
 
-class idAASCluster {
+class idAASCluster
+{
 
 public:
-	bool					Build( idAASFileLocal *file );
-	bool					BuildSingleCluster( idAASFileLocal *file );
+	bool					Build( idAASFileLocal* file );
+	bool					BuildSingleCluster( idAASFileLocal* file );
 
 private:
-	idAASFileLocal *		file;
+	idAASFileLocal* 		file;
 	bool					noFaceFlood;
 
 private:

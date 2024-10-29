@@ -35,7 +35,8 @@ If you have questions concerning this license or the applicable additional terms
 /**
 * Structure used associate a material name with a tree item.
 */
-typedef struct {
+typedef struct
+{
 	idStr		materialName;
 	HTREEITEM	treeItem;
 } MaterialTreeItem_t;
@@ -43,22 +44,23 @@ typedef struct {
 /**
 * A tree view of all the materials that have been defined.
 */
-class MaterialTreeView : public CTreeView, public MaterialView {
+class MaterialTreeView : public CTreeView, public MaterialView
+{
 
 public:
 	virtual			~MaterialTreeView();
 
-	void			InitializeMaterialList(bool includeFile = true, const char* filename = NULL);
-	void			BuildMaterialList(bool includeFile = true, const char* filename = NULL);
+	void			InitializeMaterialList( bool includeFile = true, const char* filename = NULL );
+	void			BuildMaterialList( bool includeFile = true, const char* filename = NULL );
 
 	//Material Interface
-	virtual void	MV_OnMaterialChange(MaterialDoc* pMaterial);
-	virtual void	MV_OnMaterialApply(MaterialDoc* pMaterial);
-	virtual void	MV_OnMaterialSaved(MaterialDoc* pMaterial);
-	virtual void	MV_OnMaterialAdd(MaterialDoc* pMaterial);
-	virtual void	MV_OnMaterialDelete(MaterialDoc* pMaterial);
-	virtual void	MV_OnMaterialNameChanged(MaterialDoc* pMaterial, const char* oldName);
-	virtual void	MV_OnFileReload(const char* filename);
+	virtual void	MV_OnMaterialChange( MaterialDoc* pMaterial );
+	virtual void	MV_OnMaterialApply( MaterialDoc* pMaterial );
+	virtual void	MV_OnMaterialSaved( MaterialDoc* pMaterial );
+	virtual void	MV_OnMaterialAdd( MaterialDoc* pMaterial );
+	virtual void	MV_OnMaterialDelete( MaterialDoc* pMaterial );
+	virtual void	MV_OnMaterialNameChanged( MaterialDoc* pMaterial, const char* oldName );
+	virtual void	MV_OnFileReload( const char* filename );
 
 	bool			CanCopy();
 	bool			CanPaste();
@@ -68,23 +70,24 @@ public:
 	bool			CanSaveFile();
 	idStr			GetSaveFilename();
 
-	bool			FindNextMaterial(MaterialSearchData_t* searchData);
-	HTREEITEM		FindNextMaterial(HTREEITEM item, MaterialSearchData_t* searchData);
-	HTREEITEM		GetNextSeachItem(HTREEITEM item, bool stayInFile);
+	bool			FindNextMaterial( MaterialSearchData_t* searchData );
+	HTREEITEM		FindNextMaterial( HTREEITEM item, MaterialSearchData_t* searchData );
+	HTREEITEM		GetNextSeachItem( HTREEITEM item, bool stayInFile );
 
-	void			DeleteFolder(HTREEITEM item, bool addUndo = true);
-	HTREEITEM		AddFolder(const char* name, HTREEITEM parent);
-	void			RenameFolder(HTREEITEM item, const char* name);
+	void			DeleteFolder( HTREEITEM item, bool addUndo = true );
+	HTREEITEM		AddFolder( const char* name, HTREEITEM parent );
+	void			RenameFolder( HTREEITEM item, const char* name );
 
 
 protected:
 	MaterialTreeView();
-	DECLARE_DYNCREATE(MaterialTreeView)
+	DECLARE_DYNCREATE( MaterialTreeView )
 
 	/**
 	* List of tree item types
 	*/
-	enum {
+	enum
+	{
 		TYPE_ROOT = 0,
 		TYPE_FOLDER,
 		TYPE_FILE,
@@ -93,19 +96,19 @@ protected:
 	};
 
 	//Overrides
-	virtual BOOL	PreTranslateMessage(MSG* pMsg);
+	virtual BOOL	PreTranslateMessage( MSG* pMsg );
 
 	//Window Messages
-	afx_msg int		OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void	OnTvnSelchanged(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void	OnTvnBeginlabeledit(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void	OnTvnEndlabeledit(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void	OnContextMenu(CWnd* pWnd, CPoint point);
-	afx_msg void	OnNMRclick(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void	OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-	afx_msg void	OnTvnBegindrag(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void	OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg void	OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg int		OnCreate( LPCREATESTRUCT lpCreateStruct );
+	afx_msg void	OnTvnSelchanged( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void	OnTvnBeginlabeledit( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void	OnTvnEndlabeledit( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void	OnContextMenu( CWnd* pWnd, CPoint point );
+	afx_msg void	OnNMRclick( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void	OnChar( UINT nChar, UINT nRepCnt, UINT nFlags );
+	afx_msg void	OnTvnBegindrag( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void	OnMouseMove( UINT nFlags, CPoint point );
+	afx_msg void	OnLButtonUp( UINT nFlags, CPoint point );
 
 	//Menu Commands
 	afx_msg void	OnApplyMaterial();
@@ -124,26 +127,26 @@ protected:
 	afx_msg	void	OnPaste();
 
 	//Internal Messages
-	afx_msg LRESULT OnRenameFolderComplete(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnRenameMaterialComplete(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnRenameFolderComplete( WPARAM wParam, LPARAM lParam );
+	afx_msg LRESULT OnRenameMaterialComplete( WPARAM wParam, LPARAM lParam );
 
 	DECLARE_MESSAGE_MAP()
 
 
 	//Utility methods
-	void			RenameMaterial(HTREEITEM item, const char* originalName);
-	bool			GetFileName(HTREEITEM item, idStr& out);
-	idStr			GetMediaPath(HTREEITEM item, DWORD type);
-	void			GetMaterialPaths(HTREEITEM item, idList<MaterialTreeItem_t>* list);
-	void			AddStrList(const char *root, idStrList *list, bool includeFile);
-	void			PopupMenu(CPoint* pt);
-	void			SetItemImage(HTREEITEM item, bool mod, bool apply, bool children);
+	void			RenameMaterial( HTREEITEM item, const char* originalName );
+	bool			GetFileName( HTREEITEM item, idStr& out );
+	idStr			GetMediaPath( HTREEITEM item, DWORD type );
+	void			GetMaterialPaths( HTREEITEM item, idList<MaterialTreeItem_t>* list );
+	void			AddStrList( const char* root, idStrList* list, bool includeFile );
+	void			PopupMenu( CPoint* pt );
+	void			SetItemImage( HTREEITEM item, bool mod, bool apply, bool children );
 
 
 	//Methods for working with the quicktree
-	void			CleanLookupTrees(HTREEITEM item);
-	void			BuildLookupTrees(HTREEITEM item);
-	idStr			GetQuicktreePath(HTREEITEM item);
+	void			CleanLookupTrees( HTREEITEM item );
+	void			BuildLookupTrees( HTREEITEM item );
+	idStr			GetQuicktreePath( HTREEITEM item );
 
 
 protected:

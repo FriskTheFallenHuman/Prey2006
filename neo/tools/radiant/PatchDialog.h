@@ -30,14 +30,15 @@ If you have questions concerning this license or the applicable additional terms
 
 // CPatchDialog dialog
 
-class CPatchDialog : public CDialogEx {
-  patchMesh_t *m_Patch;
+class CPatchDialog : public CDialogEx
+{
+	patchMesh_t* m_Patch;
 
 public:
 	void UpdateInfo();
 	void SetPatchInfo();
 	void GetPatchInfo();
-	CPatchDialog( CWnd *pParent = NULL );   // standard constructor
+	CPatchDialog( CWnd* pParent = NULL );   // standard constructor
 	void UpdateSpinners( bool bUp, int nID );
 
 	enum { IDD = IDD_DIALOG_PATCH };
@@ -62,7 +63,7 @@ public:
 	float	m_fVShift;
 
 protected:
-	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 
 protected:
 	void UpdateRowColInfo();
@@ -75,7 +76,7 @@ protected:
 	afx_msg void OnSelchangeComboRow();
 	afx_msg void OnSelchangeComboType();
 	virtual void OnOK();
-	afx_msg void OnDeltaposSpin( NMHDR *pNMHDR, LRESULT *pResult );
+	afx_msg void OnDeltaposSpin( NMHDR* pNMHDR, LRESULT* pResult );
 	virtual BOOL OnInitDialog();
 	afx_msg void OnDestroy();
 	afx_msg void OnApply();

@@ -37,14 +37,15 @@ class DialogAFConstraint;
 
 // DialogAF dialog
 
-class DialogAF : public CDialog {
+class DialogAF : public CDialog
+{
 
-	DECLARE_DYNAMIC(DialogAF)
+	DECLARE_DYNAMIC( DialogAF )
 
 public:
-						DialogAF( CWnd* pParent = NULL );   // standard constructor
+	DialogAF( CWnd* pParent = NULL );   // standard constructor
 	virtual				~DialogAF();
-	void				LoadFile( idDeclAF *af );
+	void				LoadFile( idDeclAF* af );
 	void				SaveFile( void );
 	void				ReloadFile( void );
 	void				SetFileModified( void );
@@ -54,12 +55,12 @@ public:
 protected:
 	virtual BOOL		OnInitDialog();
 	virtual void		DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
-	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR *pNMHDR, LRESULT *pResult );
-	afx_msg void		OnSetFocus( CWnd *pOldWnd );
+	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void		OnSetFocus( CWnd* pOldWnd );
 	afx_msg void		OnDestroy();
-	afx_msg void		OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
+	afx_msg void		OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized );
 	afx_msg void		OnMove( int x, int y );
-	afx_msg void		OnTcnSelchangeTabMode( NMHDR *pNMHDR, LRESULT *pResult );
+	afx_msg void		OnTcnSelchangeTabMode( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnCbnSelchangeComboAf();
 	afx_msg void		OnBnClickedButtonAfNew();
 	afx_msg void		OnBnClickedButtonAfDelete();
@@ -72,14 +73,14 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	CTabCtrl *			wndTabs;
-	CWnd *				wndTabDisplay;
-	DialogAFView *		viewDlg;
-	DialogAFProperties *propertiesDlg;
-	DialogAFBody *		bodyDlg;
-	DialogAFConstraint *constraintDlg;
+	CTabCtrl* 			wndTabs;
+	CWnd* 				wndTabDisplay;
+	DialogAFView* 		viewDlg;
+	DialogAFProperties* propertiesDlg;
+	DialogAFBody* 		bodyDlg;
+	DialogAFConstraint* constraintDlg;
 
-	idDeclAF *			file;				// file being edited
+	idDeclAF* 			file;				// file being edited
 
 	//{{AFX_DATA(DialogAF)
 	CComboBox			AFList;				// list with .af files
@@ -89,7 +90,7 @@ private:
 
 private:
 	void				InitAFList( void );
-	void				AddTabItem( int id, const char *name );
+	void				AddTabItem( int id, const char* name );
 	void				SetTab( int id );
 	void				SetTabChildPos( void );
 };

@@ -43,35 +43,38 @@ typedef enum
 	sel_editpoint			// for editing points
 } select_t;
 
-class CDragPoint {
+class CDragPoint
+{
 public:
 	idVec3 vec;
-	idEditorBrush *pBrush;
+	idEditorBrush* pBrush;
 	int nType;
 	bool priority;
 	CDragPoint() {};
-	CDragPoint(idEditorBrush *b, idVec3 v, int type, bool p) {
+	CDragPoint( idEditorBrush* b, idVec3 v, int type, bool p )
+	{
 		pBrush = b;
-		VectorCopy(v, vec);
+		VectorCopy( v, vec );
 		nType = type;
 		priority = p;
 	}
 
-	void Set(idEditorBrush *b, idVec3 v, int type) {
+	void Set( idEditorBrush* b, idVec3 v, int type )
+	{
 		pBrush = b;
-		VectorCopy(v, vec);
+		VectorCopy( v, vec );
 		nType = type;
 	}
 
-	bool PointWithin(idVec3 p, ViewType nView = (ViewType)-1);
+	bool PointWithin( idVec3 p, ViewType nView = ( ViewType ) - 1 );
 };
 
 
 typedef struct
 {
-	idEditorBrush		*brush;
-	face_t		*face;
-	CDragPoint *point;
+	idEditorBrush*		brush;
+	face_t*		face;
+	CDragPoint* point;
 	float		dist;
 	bool	selected;
 } qertrace_t;
@@ -85,52 +88,52 @@ typedef struct
 #define SF_CYCLE           0x20
 
 
-qertrace_t Test_Ray ( const idVec3 &origin, const idVec3 &dir, int flags );
-CDragPoint *PointRay( const idVec3 &org, const idVec3 &dir, float *dist);
-void SelectCurvePointByRay( const idVec3 &org, const idVec3 &dir, int buttons);
+qertrace_t Test_Ray( const idVec3& origin, const idVec3& dir, int flags );
+CDragPoint* PointRay( const idVec3& org, const idVec3& dir, float* dist );
+void SelectCurvePointByRay( const idVec3& org, const idVec3& dir, int buttons );
 
-void Select_GetBounds (idVec3 &mins, idVec3 &maxs);
-void Select_Brush (idEditorBrush *b, bool bComplete = true, bool bStatus = true);
-void Select_Ray (idVec3 origin, idVec3 dir, int flags);
-void Select_Delete (void);
-void Select_Deselect (bool bDeselectFaces = true);
-void Select_Invert(void);
-void Select_Clone (void);
-void Select_Move (idVec3 delta, bool bSnap = true);
-void WINAPI Select_SetTexture (texdef_t *texdef, brushprimit_texdef_t *brushprimit_texdef, bool bFitScale = false, void* pPlugTexdef = NULL, bool update = true);
-void Select_FlipAxis (int axis);
-void Select_RotateAxis (int axis, float deg, bool bPaint = true, bool bMouse = false);
-void Select_CompleteTall (void);
-void Select_PartialTall (void);
-void Select_Touching (void);
-void Select_Inside (void);
+void Select_GetBounds( idVec3& mins, idVec3& maxs );
+void Select_Brush( idEditorBrush* b, bool bComplete = true, bool bStatus = true );
+void Select_Ray( idVec3 origin, idVec3 dir, int flags );
+void Select_Delete( void );
+void Select_Deselect( bool bDeselectFaces = true );
+void Select_Invert( void );
+void Select_Clone( void );
+void Select_Move( idVec3 delta, bool bSnap = true );
+void WINAPI Select_SetTexture( texdef_t* texdef, brushprimit_texdef_t* brushprimit_texdef, bool bFitScale = false, void* pPlugTexdef = NULL, bool update = true );
+void Select_FlipAxis( int axis );
+void Select_RotateAxis( int axis, float deg, bool bPaint = true, bool bMouse = false );
+void Select_CompleteTall( void );
+void Select_PartialTall( void );
+void Select_Touching( void );
+void Select_Inside( void );
 void Select_CenterOrigin();
 void Select_AllOfType();
 void Select_Reselect();
-void Select_FitTexture(float height = 1.0, float width = 1.0);
+void Select_FitTexture( float height = 1.0, float width = 1.0 );
 void Select_InitializeRotation();
 void Select_FinalizeRotation();
 
-void Select_Hide(bool invert = false);
+void Select_Hide( bool invert = false );
 void Select_ShowAllHidden();
 void Select_WireFrame( bool wireFrame );
 void Select_ForceVisible( bool visible );
-void Select_GetMid (idVec3 &mid);
-void Select_SetDefaultTexture(const idMaterial *mat, bool fitScale, bool setTexture);
-void Select_UpdateTextureName(const char *name);
+void Select_GetMid( idVec3& mid );
+void Select_SetDefaultTexture( const idMaterial* mat, bool fitScale, bool setTexture );
+void Select_UpdateTextureName( const char* name );
 
-void Select_FlipTexture(bool y);
-void Select_SetPatchFit(float dim1, float dim2, float srcWidth, float srcHeight, float rot);
-void Select_SetPatchST(float s1, float t1, float s2, float t2);
-void Select_ProjectFaceOntoPatch( face_t *face );
-void Select_CopyPatchTextureCoords( patchMesh_t *p );
+void Select_FlipTexture( bool y );
+void Select_SetPatchFit( float dim1, float dim2, float srcWidth, float srcHeight, float rot );
+void Select_SetPatchST( float s1, float t1, float s2, float t2 );
+void Select_ProjectFaceOntoPatch( face_t* face );
+void Select_CopyPatchTextureCoords( patchMesh_t* p );
 void Select_AllTargets();
-void Select_Scale(float x, float y, float z);
-void Select_RotateTexture(float amt, bool absolute = false);
-void Select_ScaleTexture(float x, float y, bool update = true, bool absolute = true);
-void Select_ShiftTexture(float x, float y, bool autoAdjust = false);
-void Select_GetTrueMid (idVec3 &mid);
-void Select_Scale(float x, float y, float z);
+void Select_Scale( float x, float y, float z );
+void Select_RotateTexture( float amt, bool absolute = false );
+void Select_ScaleTexture( float x, float y, bool update = true, bool absolute = true );
+void Select_ShiftTexture( float x, float y, bool autoAdjust = false );
+void Select_GetTrueMid( idVec3& mid );
+void Select_Scale( float x, float y, float z );
 
 
 #endif

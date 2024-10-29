@@ -30,9 +30,10 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "../common/GLWidget.h"
 
-class CLightInfo {
+class CLightInfo
+{
 public:
-				CLightInfo();
+	CLightInfo();
 
 	bool		pointLight;
 	float		fallOff;
@@ -64,18 +65,19 @@ public:
 	void		Defaults();
 	void		DefaultProjected();
 	void		DefaultPoint();
-	void		FromDict( const idDict *e );
-	void		ToDict( idDict *e );
-	void		ToDictFromDifferences( idDict *e, const idDict *differences );
-	void		ToDictWriteAllInfo( idDict *e );
+	void		FromDict( const idDict* e );
+	void		ToDict( idDict* e );
+	void		ToDictFromDifferences( idDict* e, const idDict* differences );
+	void		ToDictWriteAllInfo( idDict* e );
 };
 
 // CLightDlg dialog
 
-class CLightDlg : public CDialogEx {
+class CLightDlg : public CDialogEx
+{
 public:
-					CLightDlg( CWnd *pParent = NULL );   // standard constructor
-					~CLightDlg();
+	CLightDlg( CWnd* pParent = NULL );   // standard constructor
+	~CLightDlg();
 
 	void			UpdateDialogFromLightInfo( void );
 	void			UpdateDialog( bool updateChecks );
@@ -85,7 +87,7 @@ public:
 	void			EnableControls();
 	void			LoadLightTextures();
 	void			ColorButtons();
-	void			SaveLightInfo( const idDict *differences );
+	void			SaveLightInfo( const idDict* differences );
 
 	enum { IDD = IDD_DIALOG_LIGHT };
 	idGLWidget m_wndPreview;
@@ -130,7 +132,7 @@ public:
 	virtual BOOL DestroyWindow();
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 
 protected:
 
@@ -150,7 +152,7 @@ protected:
 	afx_msg void OnCheckRotate();
 	afx_msg void OnCheckStrobe();
 	virtual void OnCancel();
-	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	afx_msg HBRUSH OnCtlColor( CDC* pDC, CWnd* pWnd, UINT nCtlColor );
 	afx_msg void OnSelchangeComboTexture();
 	afx_msg void OnCheckCenter();
 	afx_msg void OnCheckParallel();
@@ -164,5 +166,5 @@ private:
 	CLightInfo				lightInfo;
 	CLightInfo				lightInfoOriginal;
 	idVec3					color;
-	idGLDrawableMaterial *	m_drawMaterial;
+	idGLDrawableMaterial* 	m_drawMaterial;
 };

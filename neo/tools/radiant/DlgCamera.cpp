@@ -40,19 +40,22 @@ If you have questions concerning this license or the applicable additional terms
 #include "CameraTargetDlg.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
 CDlgCamera g_dlgCamera;
 
 
-void showCameraInspector() {
-	if ( g_dlgCamera.GetSafeHwnd() == NULL ) {
+void showCameraInspector()
+{
+	if( g_dlgCamera.GetSafeHwnd() == NULL )
+	{
 		g_dlgCamera.Create( IDD_DLG_CAMERA );
 		CRect rct;
-		LONG lSize = sizeof(rct);
-		if (LoadRegistryInfo( "radiant_camerainspector", &rct, &lSize ) ) {
-			g_dlgCamera.SetWindowPos( NULL, rct.left, rct.top, 0,0, SWP_NOSIZE | SWP_SHOWWINDOW );
+		LONG lSize = sizeof( rct );
+		if( LoadRegistryInfo( "radiant_camerainspector", &rct, &lSize ) )
+		{
+			g_dlgCamera.SetWindowPos( NULL, rct.left, rct.top, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW );
 		}
 		Sys_UpdateWindows( W_ALL );
 	}
@@ -62,68 +65,74 @@ void showCameraInspector() {
 
 // CDlgCamera dialog
 
-CDlgCamera::CDlgCamera( CWnd *pParent )
-	: CDialogEx( CDlgCamera::IDD, pParent ) {
-	m_strName = _T("");
+CDlgCamera::CDlgCamera( CWnd* pParent )
+	: CDialogEx( CDlgCamera::IDD, pParent )
+{
+	m_strName = _T( "" );
 	m_fSeconds = 0.0f;
 	m_trackCamera = TRUE;
 	m_numSegments = 0;
 	m_currentSegment = 0;
-	m_strType = _T("");
+	m_strType = _T( "" );
 	m_editPoints = 0;
 }
 
 
-void CDlgCamera::DoDataExchange( CDataExchange *pDX ) {
-	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_SCROLLBAR_SEGMENT, m_wndSegments);
-	DDX_Control(pDX, IDC_LIST_EVENTS, m_wndEvents);
-	DDX_Control(pDX, IDC_COMBO_SPLINES, m_wndSplines);
-	DDX_Text(pDX, IDC_EDIT_CAM_NAME, m_strName);
-	DDX_Text(pDX, IDC_EDIT_LENGTH, m_fSeconds);
-	DDX_Check(pDX, IDC_CHECK_TRACKCAMERA, m_trackCamera);
-	DDX_Text(pDX, IDC_EDIT_TOTALSEGMENTS, m_numSegments);
-	DDX_Text(pDX, IDC_EDIT_SEGMENT, m_currentSegment);
-	DDX_Text(pDX, IDC_EDIT_TYPE, m_strType);
-	DDX_Radio(pDX, IDC_RADIO_EDITPOINTS, m_editPoints);
+void CDlgCamera::DoDataExchange( CDataExchange* pDX )
+{
+	CDialogEx::DoDataExchange( pDX );
+	DDX_Control( pDX, IDC_SCROLLBAR_SEGMENT, m_wndSegments );
+	DDX_Control( pDX, IDC_LIST_EVENTS, m_wndEvents );
+	DDX_Control( pDX, IDC_COMBO_SPLINES, m_wndSplines );
+	DDX_Text( pDX, IDC_EDIT_CAM_NAME, m_strName );
+	DDX_Text( pDX, IDC_EDIT_LENGTH, m_fSeconds );
+	DDX_Check( pDX, IDC_CHECK_TRACKCAMERA, m_trackCamera );
+	DDX_Text( pDX, IDC_EDIT_TOTALSEGMENTS, m_numSegments );
+	DDX_Text( pDX, IDC_EDIT_SEGMENT, m_currentSegment );
+	DDX_Text( pDX, IDC_EDIT_TYPE, m_strType );
+	DDX_Radio( pDX, IDC_RADIO_EDITPOINTS, m_editPoints );
 }
 
 
-BEGIN_MESSAGE_MAP(CDlgCamera, CDialogEx)
-	ON_BN_CLICKED(IDC_BTN_ADDEVENT, OnBtnAddevent)
-	ON_BN_CLICKED(IDC_BTN_ADDTARGET, OnBtnAddtarget)
-	ON_BN_CLICKED(IDC_BTN_DELEVENT, OnBtnDelevent)
-	ON_CBN_DBLCLK(IDC_COMBO_SPLINES, OnDblclkComboSplines)
-	ON_CBN_SELCHANGE(IDC_COMBO_SPLINES, OnSelchangeComboSplines)
-	ON_LBN_SELCHANGE(IDC_LIST_EVENTS, OnSelchangeListEvents)
-	ON_LBN_DBLCLK(IDC_LIST_EVENTS, OnDblclkListEvents)
+BEGIN_MESSAGE_MAP( CDlgCamera, CDialogEx )
+	ON_BN_CLICKED( IDC_BTN_ADDEVENT, OnBtnAddevent )
+	ON_BN_CLICKED( IDC_BTN_ADDTARGET, OnBtnAddtarget )
+	ON_BN_CLICKED( IDC_BTN_DELEVENT, OnBtnDelevent )
+	ON_CBN_DBLCLK( IDC_COMBO_SPLINES, OnDblclkComboSplines )
+	ON_CBN_SELCHANGE( IDC_COMBO_SPLINES, OnSelchangeComboSplines )
+	ON_LBN_SELCHANGE( IDC_LIST_EVENTS, OnSelchangeListEvents )
+	ON_LBN_DBLCLK( IDC_LIST_EVENTS, OnDblclkListEvents )
 	ON_WM_DESTROY()
-	ON_BN_CLICKED(IDC_APPLY, OnApply)
+	ON_BN_CLICKED( IDC_APPLY, OnApply )
 	ON_WM_HSCROLL()
-	ON_BN_CLICKED(ID_FILE_NEW, OnFileNew)
-	ON_BN_CLICKED(ID_FILE_OPEN, OnFileOpen)
-	ON_BN_CLICKED(ID_FILE_SAVE, OnFileSave)
-	ON_BN_CLICKED(IDC_TESTCAMERA, OnTestcamera)
-	ON_BN_CLICKED(IDC_BTN_DELETEPOINTS, OnBtnDeletepoints)
-	ON_BN_CLICKED(IDC_BTN_SELECTALL, OnBtnSelectall)
-	ON_BN_CLICKED(IDC_RADIO_EDITPOINTS, OnRadioEditpoints)
-	ON_BN_CLICKED(IDC_RADIO_EDITPOINTS2, OnRadioAddPoints)
+	ON_BN_CLICKED( ID_FILE_NEW, OnFileNew )
+	ON_BN_CLICKED( ID_FILE_OPEN, OnFileOpen )
+	ON_BN_CLICKED( ID_FILE_SAVE, OnFileSave )
+	ON_BN_CLICKED( IDC_TESTCAMERA, OnTestcamera )
+	ON_BN_CLICKED( IDC_BTN_DELETEPOINTS, OnBtnDeletepoints )
+	ON_BN_CLICKED( IDC_BTN_SELECTALL, OnBtnSelectall )
+	ON_BN_CLICKED( IDC_RADIO_EDITPOINTS, OnRadioEditpoints )
+	ON_BN_CLICKED( IDC_RADIO_EDITPOINTS2, OnRadioAddPoints )
 END_MESSAGE_MAP()
 
 // CDlgCamera message handlers
 
-void CDlgCamera::OnBtnAddevent() {
+void CDlgCamera::OnBtnAddevent()
+{
 	CDlgEvent dlg;
-	if ( dlg.DoModal() == IDOK ) {
+	if( dlg.DoModal() == IDOK )
+	{
 		long n = m_wndSegments.GetScrollPos() / 4 * 1000;
 		g_splineList->addEvent( static_cast<idCameraEvent::eventType>( dlg.m_event + 1 ), dlg.m_strParm, n );
 		setupFromCamera();
 	}
 }
 
-void CDlgCamera::OnBtnAddtarget() {
+void CDlgCamera::OnBtnAddtarget()
+{
 	CCameraTargetDlg dlg;
-	if ( dlg.DoModal() == IDOK ) {
+	if( dlg.DoModal() == IDOK )
+	{
 		g_splineList->addTarget( dlg.m_strName, static_cast<idCameraPosition::positionType>( dlg.m_nType ) );
 		setupFromCamera();
 		m_wndSplines.SetCurSel( g_splineList->numTargets() );
@@ -131,32 +140,39 @@ void CDlgCamera::OnBtnAddtarget() {
 	}
 }
 
-void CDlgCamera::OnBtnDelevent() {
+void CDlgCamera::OnBtnDelevent()
+{
 	// TODO: Add your control notification handler code here
 
 }
 
-void CDlgCamera::OnBtnDeltarget() {
+void CDlgCamera::OnBtnDeltarget()
+{
 	// TODO: Add your control notification handler code here
 
 }
 
-void CDlgCamera::OnDblclkComboSplines() {
+void CDlgCamera::OnDblclkComboSplines()
+{
 	// TODO: Add your control notification handler code here
 
 }
 
-void CDlgCamera::OnSelchangeComboSplines() {
+void CDlgCamera::OnSelchangeComboSplines()
+{
 	UpdateData( TRUE );
-	g_qeglobals.d_select_mode = (m_editPoints == 0) ? sel_editpoint : sel_addpoint;
+	g_qeglobals.d_select_mode = ( m_editPoints == 0 ) ? sel_editpoint : sel_addpoint;
 	g_qeglobals.d_numpoints = 0;
 	g_qeglobals.d_num_move_points = 0;
 	int i = m_wndSplines.GetCurSel();
-	if ( i > 0 ) {
+	if( i > 0 )
+	{
 		g_splineList->setActiveTarget( i - 1 );
-		g_qeglobals.selectObject = g_splineList->getActiveTarget(i-1);
+		g_qeglobals.selectObject = g_splineList->getActiveTarget( i - 1 );
 		g_splineList->startEdit( false );
-	} else {
+	}
+	else
+	{
 		g_splineList->startEdit( true );
 		g_qeglobals.selectObject = g_splineList->getPositionObj();
 	}
@@ -164,37 +180,43 @@ void CDlgCamera::OnSelchangeComboSplines() {
 	// * 4.0 to set increments in quarter seconds
 	m_wndSegments.SetScrollRange( 0, g_splineList->getTotalTime() * 4.0 );
 
-	Sys_UpdateWindows(W_ALL);
+	Sys_UpdateWindows( W_ALL );
 }
 
-void CDlgCamera::OnSelchangeListEvents() {
+void CDlgCamera::OnSelchangeListEvents()
+{
 	//int sel = m_wndEvents.GetCurSel();
 	//g_splineList->setActiveSegment(sel >= 0 ? sel : 0);
 }
 
-void CDlgCamera::OnDblclkListEvents() {
+void CDlgCamera::OnDblclkListEvents()
+{
 	// TODO: Add your control notification handler code here
 
 }
 
-void CDlgCamera::setupFromCamera() {
-	if ( m_wndSplines.GetSafeHwnd() ) {
+void CDlgCamera::setupFromCamera()
+{
+	if( m_wndSplines.GetSafeHwnd() )
+	{
 		idStr str;
 		m_strName = g_splineList->getName();
 		m_strType = g_splineList->getPositionObj()->typeStr();
 		m_wndSplines.ResetContent();
 		m_wndSplines.AddString( "Path" );
-		for ( int i = 0; i < g_splineList->numTargets(); i++ ) {
+		for( int i = 0; i < g_splineList->numTargets(); i++ )
+		{
 			m_wndSplines.AddString( g_splineList->getActiveTarget( i )->getName() );
 		}
 		m_wndSplines.SetCurSel( 0 );
 		m_fSeconds = g_splineList->getTotalTime();
-		m_wndSegments.SetScrollRange(0, g_splineList->getTotalTime() * 4.0);
+		m_wndSegments.SetScrollRange( 0, g_splineList->getTotalTime() * 4.0 );
 
 		m_wndEvents.ResetContent();
-		for ( int i = 0; i < g_splineList->numEvents(); i++ ) {
-			str = va( "%s\t%s", g_splineList->getEvent(i)->typeStr(), g_splineList->getEvent( i )->getParam() );
-			m_wndEvents.AddString(str);
+		for( int i = 0; i < g_splineList->numEvents(); i++ )
+		{
+			str = va( "%s\t%s", g_splineList->getEvent( i )->typeStr(), g_splineList->getEvent( i )->getParam() );
+			m_wndEvents.AddString( str );
 		}
 		//m_currentSegment = g_splineList->getActiveSegment();
 		//m_numSegments = g_splineList->numSegments();
@@ -203,21 +225,25 @@ void CDlgCamera::setupFromCamera() {
 	UpdateData( FALSE );
 }
 
-BOOL CDlgCamera::OnInitDialog() {
+BOOL CDlgCamera::OnInitDialog()
+{
 	CDialogEx::OnInitDialog();
 	setupFromCamera();
 	return TRUE;
 }
 
-void CDlgCamera::OnOK() {
+void CDlgCamera::OnOK()
+{
 	g_dlgCamera.ShowWindow( SW_HIDE );
 	g_qeglobals.d_select_mode = sel_brush;
 	g_splineList->stopEdit();
-	Sys_UpdateWindows(W_ALL);
+	Sys_UpdateWindows( W_ALL );
 }
 
-void CDlgCamera::OnDestroy() {
-	if (GetSafeHwnd()) {
+void CDlgCamera::OnDestroy()
+{
+	if( GetSafeHwnd() )
+	{
 		CRect rct;
 		GetWindowRect( rct );
 		SaveRegistryInfo( "radiant_camerainspector", &rct, sizeof( rct ) );
@@ -227,7 +253,8 @@ void CDlgCamera::OnDestroy() {
 }
 
 
-void CDlgCamera::OnApply() {
+void CDlgCamera::OnApply()
+{
 	UpdateData( TRUE );
 	g_splineList->setBaseTime( m_fSeconds );
 	g_splineList->setName( m_strName );
@@ -235,35 +262,44 @@ void CDlgCamera::OnApply() {
 	m_wndSegments.SetScrollRange( 0, g_splineList->getTotalTime() * 4.0 );
 }
 
-void CDlgCamera::OnHScroll( UINT nSBCode, UINT nPos, CScrollBar *pScrollBar ) {
+void CDlgCamera::OnHScroll( UINT nSBCode, UINT nPos, CScrollBar* pScrollBar )
+{
 	CDialogEx::OnHScroll( nSBCode, nPos, pScrollBar );
 	int max = g_splineList->getTotalTime() * 4;
-	if (max == 0) {
+	if( max == 0 )
+	{
 		max = 1;
 	}
 	int n = pScrollBar->GetScrollPos();
-	switch (nSBCode) {
-		case SB_LINEUP : {
+	switch( nSBCode )
+	{
+		case SB_LINEUP :
+		{
 			n--;
 		}
 		break;
-		case SB_LINEDOWN : {
+		case SB_LINEDOWN :
+		{
 			n++;
 		}
 		break;
-		case SB_PAGEUP : {
-			n -= (float)max * 0.10;
+		case SB_PAGEUP :
+		{
+			n -= ( float )max * 0.10;
 		}
 		break;
-		case SB_PAGEDOWN : {
-			n += (float)max * 0.10;
+		case SB_PAGEDOWN :
+		{
+			n += ( float )max * 0.10;
 		}
 		break;
-		case SB_THUMBPOSITION : {
+		case SB_THUMBPOSITION :
+		{
 			n = nPos;
 		}
 		break;
-		case SB_THUMBTRACK : {
+		case SB_THUMBTRACK :
+		{
 			n = nPos;
 		}
 	}
@@ -275,64 +311,75 @@ void CDlgCamera::OnHScroll( UINT nSBCode, UINT nPos, CScrollBar *pScrollBar ) {
 //		}
 //		n = g_splineList->numSegments() - 1;
 //	}
-	pScrollBar->SetScrollPos(n);
-	if ( m_trackCamera ) {
-		float p = (float)n / max;
+	pScrollBar->SetScrollPos( n );
+	if( m_trackCamera )
+	{
+		float p = ( float )n / max;
 		p *= g_splineList->getTotalTime() * 1000;
-		g_splineList->startCamera(0);
+		g_splineList->startCamera( 0 );
 		g_splineList->buildCamera();
 		idVec3 dir;
 		float fov;
-		g_splineList->getCameraInfo(p, g_pParentWnd->GetCamera()->Camera().origin, dir, &fov);
-		g_pParentWnd->GetCamera()->Camera().angles[1] = atan2 (dir[1], dir[0])*180/3.14159;
-		g_pParentWnd->GetCamera()->Camera().angles[0] = asin (dir[2])*180/3.14159;
+		g_splineList->getCameraInfo( p, g_pParentWnd->GetCamera()->Camera().origin, dir, &fov );
+		g_pParentWnd->GetCamera()->Camera().angles[1] = atan2( dir[1], dir[0] ) * 180 / 3.14159;
+		g_pParentWnd->GetCamera()->Camera().angles[0] = asin( dir[2] ) * 180 / 3.14159;
 
 	}
-	UpdateData(FALSE);
-	Sys_UpdateWindows(W_XY | W_CAMERA);
+	UpdateData( FALSE );
+	Sys_UpdateWindows( W_XY | W_CAMERA );
 }
 
-void CDlgCamera::OnFileNew() {
+void CDlgCamera::OnFileNew()
+{
 	g_splineList->clear();
 	setupFromCamera();
 }
 
-void CDlgCamera::OnFileOpen() {
+void CDlgCamera::OnFileOpen()
+{
 	DialogName dlg( "Open Camera File" );
-	if ( dlg.DoModal() == IDOK ) {
+	if( dlg.DoModal() == IDOK )
+	{
 		g_splineList->clear();
 		g_splineList->load( va( "cameras/%s.camera", dlg.m_strName.GetString() ) );
 	}
 }
 
-void CDlgCamera::OnFileSave() {
+void CDlgCamera::OnFileSave()
+{
 	DialogName dlg( "Save Camera File" );
-	if (dlg.DoModal() == IDOK) {
+	if( dlg.DoModal() == IDOK )
+	{
 		g_splineList->save( va( "cameras/%s.camera", dlg.m_strName.GetString() ) );
 	}
 }
 
-void CDlgCamera::OnTestcamera() {
+void CDlgCamera::OnTestcamera()
+{
 	// TODO: Add your control notification handler code here
 
 }
 
-void CDlgCamera::OnBtnDeletepoints() {
+void CDlgCamera::OnBtnDeletepoints()
+{
 	// TODO: Add your control notification handler code here
 
 }
 
-void CDlgCamera::OnBtnSelectall() {
+void CDlgCamera::OnBtnSelectall()
+{
 	// TODO: Add your control notification handler code here
 
 }
 
-void CDlgCamera::OnRadioEditpoints() {
-	UpdateData(TRUE);
+void CDlgCamera::OnRadioEditpoints()
+{
+	UpdateData( TRUE );
 	g_qeglobals.d_select_mode = sel_editpoint;
 }
 
-void CDlgCamera::OnRadioAddPoints() {
-	UpdateData(TRUE);
+void CDlgCamera::OnRadioAddPoints()
+{
+	UpdateData( TRUE );
 	g_qeglobals.d_select_mode = sel_addpoint;
 }

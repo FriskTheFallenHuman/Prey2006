@@ -28,8 +28,8 @@ If you have questions concerning this license or the applicable additional terms
 
 #pragma once
 
-int		LoadFile( const char *filename, void **bufferptr );
-void	DefaultExtension( char *path, char *extension );
-void	DefaultPath( char *path, char *basepath );
-void	StripFilename( char *path );
-void	StripExtension( char *path );
+int		LoadFile( const char* filename, void** bufferptr );
+void	DefaultExtension( char* path, char* extension );
+void	DefaultPath( char* path, char* basepath );
+void	StripFilename( char* path );
+void	StripExtension( char* path );

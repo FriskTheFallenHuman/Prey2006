@@ -36,68 +36,74 @@ public:
 	HWND	mWindow;
 	int		mID;
 
-	rvDialogItem ( int id ) { mID = id; }
-
-	void Cache ( HWND parent )
+	rvDialogItem( int id )
 	{
-		mWindow = GetDlgItem ( parent, mID );
+		mID = id;
 	}
 
-	void Check ( bool checked )
+	void Cache( HWND parent )
 	{
-		SendMessage ( mWindow, BM_SETCHECK, checked ? BST_CHECKED : BST_UNCHECKED, 0 );
+		mWindow = GetDlgItem( parent, mID );
 	}
 
-	void Enable ( bool enable )
+	void Check( bool checked )
 	{
-		EnableWindow ( mWindow, enable );
+		SendMessage( mWindow, BM_SETCHECK, checked ? BST_CHECKED : BST_UNCHECKED, 0 );
 	}
 
-	bool IsChecked ( void )
+	void Enable( bool enable )
 	{
-		return SendMessage ( mWindow, BM_GETCHECK, 0, 0 ) == BST_CHECKED ? true : false;
+		EnableWindow( mWindow, enable );
 	}
 
-	void SetText ( const char* text )
+	bool IsChecked( void )
 	{
-		SetWindowText ( mWindow, text );
+		return SendMessage( mWindow, BM_GETCHECK, 0, 0 ) == BST_CHECKED ? true : false;
 	}
 
-	void GetText ( idStr& out )
+	void SetText( const char* text )
+	{
+		SetWindowText( mWindow, text );
+	}
+
+	void GetText( idStr& out )
 	{
 		char text[4096];
-		GetWindowText ( mWindow, text, 4095 );
+		GetWindowText( mWindow, text, 4095 );
 		out = text;
 	}
 
-	float GetFloat ( void )
+	float GetFloat( void )
 	{
 		idStr text;
-		GetText ( text );
+		GetText( text );
 		return atof( text );
 	}
 
-	void SetFloat ( float f )
+	void SetFloat( float f )
 	{
-		SetText ( va("%g", f ) );
+		SetText( va( "%g", f ) );
 	}
 
-	operator HWND( void ) const { return mWindow; }
+	operator HWND( void ) const
+	{
+		return mWindow;
+	}
 };
 
 class rvDialogItemContainer
 {
 protected:
 
-	void Cache ( HWND parent, int count )
+	void Cache( HWND parent, int count )
 	{
 		int				i;
 		unsigned char*	ptr;
 
-		ptr = (unsigned char*)this;
-		for ( i = 0; i < count; i ++, ptr += sizeof(rvDialogItem) )
+		ptr = ( unsigned char* )this;
+		for( i = 0; i < count; i ++, ptr += sizeof( rvDialogItem ) )
 		{
-			((rvDialogItem*)ptr)->Cache ( parent );
+			( ( rvDialogItem* )ptr )->Cache( parent );
 		}
 	}
 };

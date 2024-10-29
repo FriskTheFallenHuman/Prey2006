@@ -33,38 +33,38 @@ If you have questions concerning this license or the applicable additional terms
 #include "CameraTargetDlg.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
+	#define new DEBUG_NEW
+	#undef THIS_FILE
+	static char THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
 // CCameraTargetDlg dialog
 
 
-CCameraTargetDlg::CCameraTargetDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CCameraTargetDlg::IDD, pParent)
+CCameraTargetDlg::CCameraTargetDlg( CWnd* pParent /*=NULL*/ )
+	: CDialog( CCameraTargetDlg::IDD, pParent )
 {
 	//{{AFX_DATA_INIT(CCameraTargetDlg)
 	m_nType = 0;
-	m_strName = _T("");
+	m_strName = _T( "" );
 	//}}AFX_DATA_INIT
 }
 
 
-void CCameraTargetDlg::DoDataExchange(CDataExchange* pDX)
+void CCameraTargetDlg::DoDataExchange( CDataExchange* pDX )
 {
-	CDialog::DoDataExchange(pDX);
+	CDialog::DoDataExchange( pDX );
 	//{{AFX_DATA_MAP(CCameraTargetDlg)
-	DDX_Radio(pDX, IDC_RADIO_FIXED, m_nType);
-	DDX_Text(pDX, IDC_EDIT_NAME, m_strName);
+	DDX_Radio( pDX, IDC_RADIO_FIXED, m_nType );
+	DDX_Text( pDX, IDC_EDIT_NAME, m_strName );
 	//}}AFX_DATA_MAP
 }
 
 
-BEGIN_MESSAGE_MAP(CCameraTargetDlg, CDialog)
+BEGIN_MESSAGE_MAP( CCameraTargetDlg, CDialog )
 	//{{AFX_MSG_MAP(CCameraTargetDlg)
-	ON_COMMAND(ID_POPUP_NEWCAMERA_FIXED, OnPopupNewcameraFixed)
+	ON_COMMAND( ID_POPUP_NEWCAMERA_FIXED, OnPopupNewcameraFixed )
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 

@@ -29,7 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AFX_CAMERATARGETDLG_H__DE6597C1_1F63_4835_8949_5D2D5F208C6B__INCLUDED_
 
 #if _MSC_VER > 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER > 1000
 // CameraTargetDlg.h : header file
 //
@@ -41,7 +41,7 @@ class CCameraTargetDlg : public CDialog
 {
 // Construction
 public:
-	CCameraTargetDlg(CWnd* pParent = NULL);   // standard constructor
+	CCameraTargetDlg( CWnd* pParent = NULL ); // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(CCameraTargetDlg)
@@ -54,8 +54,8 @@ public:
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CCameraTargetDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+protected:
+	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	//}}AFX_VIRTUAL
 
 // Implementation

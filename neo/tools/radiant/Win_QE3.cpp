@@ -36,15 +36,17 @@ If you have questions concerning this license or the applicable additional terms
  =======================================================================================================================
  =======================================================================================================================
  */
-void Sys_MarkMapModified(void) {
+void Sys_MarkMapModified( void )
+{
 	idStr title;
 
-	if (mapModified != 1) {
+	if( mapModified != 1 )
+	{
 		mapModified = 1;	// mark the map as changed
 		title = currentmap;
 		title += " *";
 		title.BackSlashesToSlashes();
-		Sys_SetTitle(title);
+		Sys_SetTitle( title );
 	}
 }
 
@@ -52,8 +54,9 @@ void Sys_MarkMapModified(void) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void Sys_SetTitle(const char *text) {
-	g_pParentWnd->SetWindowText(va("%s: %s",EDITOR_WINDOWTEXT, text));
+void Sys_SetTitle( const char* text )
+{
+	g_pParentWnd->SetWindowText( va( "%s: %s", EDITOR_WINDOWTEXT, text ) );
 }
 
 /*
@@ -63,17 +66,21 @@ void Sys_SetTitle(const char *text) {
  */
 HCURSOR waitcursor;
 
-void Sys_BeginWait(void) {
-	waitcursor = SetCursor(LoadCursor(NULL, IDC_WAIT));
+void Sys_BeginWait( void )
+{
+	waitcursor = SetCursor( LoadCursor( NULL, IDC_WAIT ) );
 }
 
-bool Sys_Waiting() {
-	return (waitcursor != NULL);
+bool Sys_Waiting()
+{
+	return ( waitcursor != NULL );
 }
 
-void Sys_EndWait(void) {
-	if (waitcursor) {
-		SetCursor(waitcursor);
+void Sys_EndWait( void )
+{
+	if( waitcursor )
+	{
+		SetCursor( waitcursor );
 		waitcursor = NULL;
 	}
 }
@@ -82,10 +89,11 @@ void Sys_EndWait(void) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void Sys_GetCursorPos(int *x, int *y) {
+void Sys_GetCursorPos( int* x, int* y )
+{
 	POINT	lpPoint;
 
-	GetCursorPos(&lpPoint);
+	GetCursorPos( &lpPoint );
 	*x = lpPoint.x;
 	*y = lpPoint.y;
 }
@@ -94,15 +102,17 @@ void Sys_GetCursorPos(int *x, int *y) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void Sys_SetCursorPos(int x, int y) {
-	SetCursorPos(x, y);
+void Sys_SetCursorPos( int x, int y )
+{
+	SetCursorPos( x, y );
 }
 
 /*
  =======================================================================================================================
  =======================================================================================================================
  */
-double Sys_DoubleTime(void) {
+double Sys_DoubleTime( void )
+{
 	return clock() / 1000.0;
 }
 
@@ -110,14 +120,18 @@ double Sys_DoubleTime(void) {
  =======================================================================================================================
  =======================================================================================================================
  */
-int WINAPI QEW_SetupPixelFormat( HDC hDC, bool zbuffer ) {
-	int pixelFormat = Win_ChoosePixelFormat(hDC);
-	if ( pixelFormat > 0 ) {
-		if ( SetPixelFormat( hDC, pixelFormat, &win32.pfd ) == NULL ) {
+int WINAPI QEW_SetupPixelFormat( HDC hDC, bool zbuffer )
+{
+	int pixelFormat = Win_ChoosePixelFormat( hDC );
+	if( pixelFormat > 0 )
+	{
+		if( SetPixelFormat( hDC, pixelFormat, &win32.pfd ) == NULL )
+		{
 			idLib::Error( "SetPixelFormat failed." );
 		}
 	}
-	else {
+	else
+	{
 		idLib::Error( "ChoosePixelFormat failed." );
 	}
 
@@ -129,12 +143,15 @@ int WINAPI QEW_SetupPixelFormat( HDC hDC, bool zbuffer ) {
 	FILE DIALOGS
  =======================================================================================================================
  */
-bool ConfirmModified(void) {
-	if (!mapModified) {
+bool ConfirmModified( void )
+{
+	if( !mapModified )
+	{
 		return true;
 	}
 
-	if ( g_pParentWnd->MessageBox( "This will lose changes to the map.", "Unsaved Changes", MB_OKCANCEL | MB_ICONWARNING ) == IDCANCEL ) {
+	if( g_pParentWnd->MessageBox( "This will lose changes to the map.", "Unsaved Changes", MB_OKCANCEL | MB_ICONWARNING ) == IDCANCEL )
+	{
 		return false;
 	}
 
@@ -150,36 +167,38 @@ static char			szFilter[260] =	"Map file (*.map, *.reg)\0*.map;*.reg\0";	/* filte
  =======================================================================================================================
  =======================================================================================================================
  */
-void OpenDialog(void) {
+void OpenDialog( void )
+{
 	/* Place the terminating null character in the szFile. */
 	szFile[0] = '\0';
 
 	/* Set the members of the OPENFILENAME structure. */
-	ZeroMemory(&ofn, sizeof(OPENFILENAME));
-	ofn.lStructSize = sizeof(OPENFILENAME);
+	ZeroMemory( &ofn, sizeof( OPENFILENAME ) );
+	ofn.lStructSize = sizeof( OPENFILENAME );
 	ofn.hwndOwner = g_pParentWnd->GetSafeHwnd();
 	ofn.lpstrFilter = szFilter;
 	ofn.nFilterIndex = 1;
 	ofn.lpstrFile = szFile;
-	ofn.nMaxFile = sizeof(szFile);
+	ofn.nMaxFile = sizeof( szFile );
 	ofn.lpstrFileTitle = szFileTitle;
-	ofn.nMaxFileTitle = sizeof(szFileTitle);
+	ofn.nMaxFileTitle = sizeof( szFileTitle );
 	ofn.lpstrInitialDir = NULL;
 	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
 	/* Display the Open dialog box. */
-	if ( !GetOpenFileName( &ofn ) ) {
+	if( !GetOpenFileName( &ofn ) )
+	{
 		return; // canceled
 	}
 
 	// Add the file in MRU. FIXME
-	AddNewItem(g_qeglobals.d_lpMruMenu, ofn.lpstrFile);
+	AddNewItem( g_qeglobals.d_lpMruMenu, ofn.lpstrFile );
 
 	// Refresh the File menu. FIXME
-	PlaceMenuMRUItem(g_qeglobals.d_lpMruMenu, GetSubMenu(GetMenu(g_pParentWnd->GetSafeHwnd()), 0), ID_FILE_EXIT);
+	PlaceMenuMRUItem( g_qeglobals.d_lpMruMenu, GetSubMenu( GetMenu( g_pParentWnd->GetSafeHwnd() ), 0 ), ID_FILE_EXIT );
 
 	/* Open the file. */
-	Map_LoadFile(ofn.lpstrFile);
+	Map_LoadFile( ofn.lpstrFile );
 
 	g_PrefsDlg.SavePrefs();
 
@@ -189,40 +208,45 @@ void OpenDialog(void) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void SaveAsDialog(bool bRegion) {
+void SaveAsDialog( bool bRegion )
+{
 	/* Place the terminating null character in the szFile. */
 	szFile[0] = '\0';
 
 	/* Set the members of the OPENFILENAME structure. */
-	ZeroMemory(&ofn, sizeof(OPENFILENAME));
-	ofn.lStructSize = sizeof(OPENFILENAME);
+	ZeroMemory( &ofn, sizeof( OPENFILENAME ) );
+	ofn.lStructSize = sizeof( OPENFILENAME );
 	ofn.hwndOwner = g_pParentWnd->GetSafeHwnd();
 	ofn.lpstrFilter = szFilter;
 	ofn.nFilterIndex = 1;
 	ofn.lpstrFile = szFile;
-	ofn.nMaxFile = sizeof(szFile);
+	ofn.nMaxFile = sizeof( szFile );
 	ofn.lpstrFileTitle = szFileTitle;
-	ofn.nMaxFileTitle = sizeof(szFileTitle);
+	ofn.nMaxFileTitle = sizeof( szFileTitle );
 	ofn.lpstrInitialDir = "";
 	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_OVERWRITEPROMPT;
 
 	/* Display the Open dialog box. */
-	if (!GetSaveFileName(&ofn)) {
+	if( !GetSaveFileName( &ofn ) )
+	{
 		return; // canceled
 	}
 
-	if (bRegion) {
-		DefaultExtension(ofn.lpstrFile, ".reg");
+	if( bRegion )
+	{
+		DefaultExtension( ofn.lpstrFile, ".reg" );
 	}
-	else {
-		DefaultExtension(ofn.lpstrFile, ".map");
-	}
-
-	if (!bRegion) {
-		strcpy(currentmap, ofn.lpstrFile);
-		AddNewItem(g_qeglobals.d_lpMruMenu, ofn.lpstrFile);
-		PlaceMenuMRUItem(g_qeglobals.d_lpMruMenu, GetSubMenu(GetMenu(g_pParentWnd->GetSafeHwnd()), 0), ID_FILE_EXIT);
+	else
+	{
+		DefaultExtension( ofn.lpstrFile, ".map" );
 	}
 
-	Map_SaveFile(ofn.lpstrFile, bRegion);	// ignore region
+	if( !bRegion )
+	{
+		strcpy( currentmap, ofn.lpstrFile );
+		AddNewItem( g_qeglobals.d_lpMruMenu, ofn.lpstrFile );
+		PlaceMenuMRUItem( g_qeglobals.d_lpMruMenu, GetSubMenu( GetMenu( g_pParentWnd->GetSafeHwnd() ), 0 ), ID_FILE_EXIT );
+	}
+
+	Map_SaveFile( ofn.lpstrFile, bRegion );	// ignore region
 }

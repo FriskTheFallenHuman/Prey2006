@@ -29,22 +29,23 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFName dialog
 
-class DialogAFName : public CDialog {
+class DialogAFName : public CDialog
+{
 
-	DECLARE_DYNAMIC(DialogAFName)
+	DECLARE_DYNAMIC( DialogAFName )
 
 public:
-						DialogAFName(CWnd* pParent = NULL);   // standard constructor
+	DialogAFName( CWnd* pParent = NULL ); // standard constructor
 	virtual				~DialogAFName();
-	void				SetName( CString &str );
-	void				GetName( CString &str );
-	void				SetComboBox( CComboBox *combo );
+	void				SetName( CString& str );
+	void				GetName( CString& str );
+	void				SetComboBox( CComboBox* combo );
 
-						enum { IDD = IDD_DIALOG_AF_NAME };
+	enum { IDD = IDD_DIALOG_AF_NAME };
 
 protected:
 	virtual BOOL		OnInitDialog();
-	virtual void		DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void		DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	afx_msg void		OnBnClickedOk();
 	afx_msg void		OnEnChangeEditAfName();
 
@@ -52,5 +53,5 @@ protected:
 
 private:
 	CString				m_editName;
-	CComboBox *			m_combo;
+	CComboBox* 			m_combo;
 };

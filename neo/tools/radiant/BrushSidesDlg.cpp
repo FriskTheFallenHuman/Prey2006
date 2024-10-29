@@ -34,12 +34,12 @@ If you have questions concerning this license or the applicable additional terms
 #include "BrushSidesDlg.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
 IMPLEMENT_DYNAMIC( CBrushSidesDlg, CDialogEx )
 
-CBrushSidesDlg::CBrushSidesDlg( bool bDoCone, bool bDoSphere, CWnd *pParent )
+CBrushSidesDlg::CBrushSidesDlg( bool bDoCone, bool bDoSphere, CWnd* pParent )
 	: CDialogEx( IDD_SIDES, pParent ), m_bDoCone( bDoCone ), m_bDoSphere( bDoSphere )
 {
 }
@@ -49,9 +49,10 @@ CBrushSidesDlg::~CBrushSidesDlg()
 {
 }
 
-void CBrushSidesDlg::DoDataExchange( CDataExchange *pDX ) {
+void CBrushSidesDlg::DoDataExchange( CDataExchange* pDX )
+{
 	CDialogEx::DoDataExchange( pDX );
-	DDX_Control(pDX, IDC_SIDES, m_editSides);
+	DDX_Control( pDX, IDC_SIDES, m_editSides );
 }
 
 BEGIN_MESSAGE_MAP( CBrushSidesDlg, CDialogEx )
@@ -59,7 +60,8 @@ BEGIN_MESSAGE_MAP( CBrushSidesDlg, CDialogEx )
 	ON_BN_CLICKED( IDCANCEL, OnCancel )
 END_MESSAGE_MAP()
 
-BOOL CBrushSidesDlg::OnInitDialog() {
+BOOL CBrushSidesDlg::OnInitDialog()
+{
 	CDialogEx::OnInitDialog();
 
 	m_editSides.SetFocus();
@@ -67,26 +69,34 @@ BOOL CBrushSidesDlg::OnInitDialog() {
 	return FALSE;  // return TRUE unless you set the focus to a control
 }
 
-void CBrushSidesDlg::OnOK() {
+void CBrushSidesDlg::OnOK()
+{
 	CString str;
 	m_editSides.GetWindowText( str );
 
-	if ( m_bDoCone ) {
+	if( m_bDoCone )
+	{
 		Brush_MakeSidedCone( _ttoi( str ) );
-	} else if ( m_bDoSphere ) {
+	}
+	else if( m_bDoSphere )
+	{
 		Brush_MakeSidedSphere( _ttoi( str ) );
-	} else {
+	}
+	else
+	{
 		Brush_MakeSided( _ttoi( str ) );
 	}
 
 	CDialogEx::OnOK();
 }
 
-void CBrushSidesDlg::OnCancel() {
+void CBrushSidesDlg::OnCancel()
+{
 	CDialogEx::OnCancel();
 }
 
-void DoSides( bool bCone, bool bSphere, bool bTorus ) {
+void DoSides( bool bCone, bool bSphere, bool bTorus )
+{
 	CBrushSidesDlg dlg( bCone, bSphere );
 	dlg.DoModal();
 }

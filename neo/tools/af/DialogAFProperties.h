@@ -29,25 +29,26 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFProperties dialog
 
-class DialogAFProperties : public CDialog {
+class DialogAFProperties : public CDialog
+{
 
-	DECLARE_DYNAMIC(DialogAFProperties)
+	DECLARE_DYNAMIC( DialogAFProperties )
 
 public:
-						DialogAFProperties( CWnd* pParent = NULL );   // standard constructor
+	DialogAFProperties( CWnd* pParent = NULL );   // standard constructor
 	virtual				~DialogAFProperties();
-	void				LoadFile( idDeclAF *af );
+	void				LoadFile( idDeclAF* af );
 	void				SaveFile( void );
 
-	DialogAFBody *		bodyDlg;
-	DialogAFConstraint *constraintDlg;
+	DialogAFBody* 		bodyDlg;
+	DialogAFConstraint* constraintDlg;
 
 	enum				{ IDD = IDD_DIALOG_AF_PROPERTIES };
 
 protected:
 	virtual void		DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 	virtual INT_PTR		OnToolHitTest( CPoint point, TOOLINFO* pTI ) const;
-	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR *pNMHDR, LRESULT *pResult );
+	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditModel();
 	afx_msg void		OnEnChangeEditSkin();
 	afx_msg void		OnBnClickedButtonBrowseModel();
@@ -56,15 +57,15 @@ protected:
 	afx_msg void		OnEnChangeEditContents();
 	afx_msg void		OnEnChangeEditClipmask();
 	afx_msg void		OnEnChangeEditLinearfriction();
-	afx_msg void		OnDeltaposSpinLinearfriction(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinLinearfriction( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditAngularfriction();
-	afx_msg void		OnDeltaposSpinAngularfriction(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinAngularfriction( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditContactfriction();
-	afx_msg void		OnDeltaposSpinContactfriction(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinContactfriction( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditConstraintfriction();
-	afx_msg void		OnDeltaposSpinConstraintfriction(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinConstraintfriction( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditTotalmass();
-	afx_msg void		OnDeltaposSpinTotalmass(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinTotalmass( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditLinearvelocity();
 	afx_msg void		OnEnChangeEditAngularvelocity();
 	afx_msg void		OnEnChangeEditLinearacceleration();
@@ -78,7 +79,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	idDeclAF *			file;
+	idDeclAF* 			file;
 
 	//{{AFX_DATA(DialogAFProperties)
 	CEdit				m_editModel;

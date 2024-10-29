@@ -28,6 +28,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef GEITEMPROPSDLG_H_
 #define GEITEMPROPSDLG_H_
 
-bool GEItemPropsDlg_DoModal	( HWND parent, idWindow* window, idDict& outDict );
+bool GEItemPropsDlg_DoModal( HWND parent, idWindow* window, idDict& outDict );
 
 #endif // GEITEMPROPSDLG_H_

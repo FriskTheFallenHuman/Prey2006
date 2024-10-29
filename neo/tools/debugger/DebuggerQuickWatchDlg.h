@@ -34,9 +34,9 @@ class rvDebuggerQuickWatchDlg
 {
 public:
 
-	rvDebuggerQuickWatchDlg ( );
+	rvDebuggerQuickWatchDlg( );
 
-	bool	DoModal				( rvDebuggerWindow* window, int callstackDepth, const char* variable = NULL );
+	bool	DoModal( rvDebuggerWindow* window, int callstackDepth, const char* variable = NULL );
 
 protected:
 
@@ -45,7 +45,7 @@ protected:
 	idStr				mVariable;
 	rvDebuggerWindow*	mDebuggerWindow;
 
-	void				SetVariable	( const char* varname, bool force = false );
+	void				SetVariable( const char* varname, bool force = false );
 
 private:
 
@@ -53,7 +53,7 @@ private:
 	int					mButtonFromRight;
 	int					mEditFromBottom;
 
-	static INT_PTR	CALLBACK DlgProc ( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam );
+	static INT_PTR	CALLBACK DlgProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam );
 };
 
 #endif // DEBUGGERQUICKWATCHDLG_H_

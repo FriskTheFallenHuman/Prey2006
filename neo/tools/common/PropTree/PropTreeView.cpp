@@ -10,10 +10,10 @@
 
 // CPropTreeView
 
-IMPLEMENT_DYNCREATE(CPropTreeView, CFormView)
+IMPLEMENT_DYNCREATE( CPropTreeView, CFormView )
 
 CPropTreeView::CPropTreeView()
-: CFormView((LPCTSTR) NULL)
+	: CFormView( ( LPCTSTR ) NULL )
 {
 }
 
@@ -21,7 +21,7 @@ CPropTreeView::~CPropTreeView()
 {
 }
 
-BEGIN_MESSAGE_MAP(CPropTreeView, CView)
+BEGIN_MESSAGE_MAP( CPropTreeView, CView )
 	ON_WM_CREATE()
 	ON_WM_SIZE()
 	ON_WM_PAINT()
@@ -30,7 +30,7 @@ END_MESSAGE_MAP()
 
 // CPropTreeView drawing
 
-void CPropTreeView::OnDraw(CDC* pDC)
+void CPropTreeView::OnDraw( CDC* pDC )
 {
 	//CDocument* pDoc = GetDocument();
 	// TODO: add draw code here
@@ -45,21 +45,21 @@ void CPropTreeView::AssertValid() const
 	CView::AssertValid();
 }
 
-void CPropTreeView::Dump(CDumpContext& dc) const
+void CPropTreeView::Dump( CDumpContext& dc ) const
 {
-	CView::Dump(dc);
+	CView::Dump( dc );
 }
 #endif //_DEBUG
 
 
-BOOL CPropTreeView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName,
-					   DWORD dwStyle, const RECT& rect, CWnd* pParentWnd,
-					   UINT nID, CCreateContext* pContext)
+BOOL CPropTreeView::Create( LPCTSTR lpszClassName, LPCTSTR lpszWindowName,
+							DWORD dwStyle, const RECT& rect, CWnd* pParentWnd,
+							UINT nID, CCreateContext* pContext )
 {
 	// create the view window itself
 	m_pCreateContext = pContext;
-	if (!CView::Create(lpszClassName, lpszWindowName,
-		dwStyle, rect, pParentWnd,  nID, pContext))
+	if( !CView::Create( lpszClassName, lpszWindowName,
+						dwStyle, rect, pParentWnd,  nID, pContext ) )
 	{
 		return FALSE;
 	}
@@ -68,32 +68,36 @@ BOOL CPropTreeView::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName,
 }
 // CPropTreeView message handlers
 
-int CPropTreeView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+int CPropTreeView::OnCreate( LPCREATESTRUCT lpCreateStruct )
 {
-	if (CView::OnCreate(lpCreateStruct) == -1)
+	if( CView::OnCreate( lpCreateStruct ) == -1 )
+	{
 		return -1;
+	}
 
 	DWORD dwStyle;
 	CRect rc;
 
 	// PTS_NOTIFY - CPropTree will send notification messages to the parent window
-	dwStyle = WS_CHILD|WS_VISIBLE|PTS_NOTIFY;
+	dwStyle = WS_CHILD | WS_VISIBLE | PTS_NOTIFY;
 
 	// Init the control's size to cover the entire client area
-	GetClientRect(rc);
+	GetClientRect( rc );
 
 	// Create CPropTree control
-	m_Tree.Create(dwStyle, rc, this, IDC_PROPERTYTREE);
+	m_Tree.Create( dwStyle, rc, this, IDC_PROPERTYTREE );
 
 	return 0;
 }
 
-void CPropTreeView::OnSize(UINT nType, int cx, int cy)
+void CPropTreeView::OnSize( UINT nType, int cx, int cy )
 {
-		CView::OnSize(nType, cx, cy);
+	CView::OnSize( nType, cx, cy );
 
-		if (::IsWindow(m_Tree.GetSafeHwnd()))
-			m_Tree.SetWindowPos(NULL, -1, -1, cx, cy, SWP_NOMOVE|SWP_NOZORDER);
+	if( ::IsWindow( m_Tree.GetSafeHwnd() ) )
+	{
+		m_Tree.SetWindowPos( NULL, -1, -1, cx, cy, SWP_NOMOVE | SWP_NOZORDER );
+	}
 }
 
 
@@ -102,9 +106,10 @@ void CPropTreeView::OnPaint()
 	Default();
 }
 
-void CPropTreeView::MeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct) {
-	float scaling_factor = Win_GetWindowScalingFactor(GetSafeHwnd());
-	int s20 = int(20 * scaling_factor);
+void CPropTreeView::MeasureItem( LPMEASUREITEMSTRUCT lpMeasureItemStruct )
+{
+	float scaling_factor = Win_GetWindowScalingFactor( GetSafeHwnd() );
+	int s20 = int( 20 * scaling_factor );
 
 	// #HvGNote : This should be the right way to do it, but hardcoded is fine too.
 	//if (measureItem && !measureItem->m_curValue.IsEmpty()) {
@@ -120,6 +125,6 @@ void CPropTreeView::MeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct) {
 	//	lpMeasureItemStruct->itemHeight = (ret >= s20) ? ret * scaling_factor : s20; //pixels
 	//}
 	//else {
-		lpMeasureItemStruct->itemHeight = s20; //pixels
+	lpMeasureItemStruct->itemHeight = s20; //pixels
 	//}
 }

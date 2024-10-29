@@ -30,11 +30,12 @@ If you have questions concerning this license or the applicable additional terms
 
 // CCurveDlg dialog
 
-class CCurveDlg : public CDialogEx {
+class CCurveDlg : public CDialogEx
+{
 	DECLARE_DYNAMIC( CCurveDlg )
 
 public:
-			CCurveDlg( CWnd *pParent = NULL );   // standard constructor
+	CCurveDlg( CWnd* pParent = NULL );   // standard constructor
 	virtual ~CCurveDlg();
 
 	enum { IDD = IDD_DIALOG_NEWCURVE };
@@ -42,7 +43,7 @@ public:
 	idStr strCurveType;
 protected:
 	CComboBox comboCurve;
-	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 	virtual void OnOK();
 
 	DECLARE_MESSAGE_MAP()

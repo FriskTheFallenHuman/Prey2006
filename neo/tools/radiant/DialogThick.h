@@ -30,16 +30,17 @@ If you have questions concerning this license or the applicable additional terms
 
 // CDialogThick dialog
 
-class CDialogThick : public CDialogEx {
+class CDialogThick : public CDialogEx
+{
 public:
-	CDialogThick( CWnd *pParent = NULL );   // standard constructor
+	CDialogThick( CWnd* pParent = NULL );   // standard constructor
 
 	enum { IDD = IDD_DIALOG_THICKEN };
 	BOOL	m_bSeams;
 	int		m_nAmount;
 
 protected:
-	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 };

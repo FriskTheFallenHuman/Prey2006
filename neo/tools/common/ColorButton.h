@@ -28,13 +28,13 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef COLORBUTTON_H_
 #define COLORBUTTON_H_
 
-void		ColorButton_DrawItem	( HWND hWnd, LPDRAWITEMSTRUCT dis );
-void		ColorButton_SetColor	( HWND hWnd, COLORREF color );
-void		ColorButton_SetColor	( HWND hWnd, const char* color );
-COLORREF	ColorButton_GetColor	( HWND hWnd );
+void		ColorButton_DrawItem( HWND hWnd, LPDRAWITEMSTRUCT dis );
+void		ColorButton_SetColor( HWND hWnd, COLORREF color );
+void		ColorButton_SetColor( HWND hWnd, const char* color );
+COLORREF	ColorButton_GetColor( HWND hWnd );
 
-void		AlphaButton_SetColor	( HWND hWnd, const char* color );
+void		AlphaButton_SetColor( HWND hWnd, const char* color );
 
-void		AlphaButton_OpenPopup	( HWND button );
+void		AlphaButton_OpenPopup( HWND button );
 
 #endif // COLORBUTTON_H_

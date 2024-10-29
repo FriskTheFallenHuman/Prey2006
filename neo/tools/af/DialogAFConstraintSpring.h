@@ -29,65 +29,66 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFConstraintSpring dialog
 
-class DialogAFConstraintSpring : public CDialog {
+class DialogAFConstraintSpring : public CDialog
+{
 
-	DECLARE_DYNAMIC(DialogAFConstraintSpring)
+	DECLARE_DYNAMIC( DialogAFConstraintSpring )
 
 public:
-						DialogAFConstraintSpring(CWnd* pParent = NULL);   // standard constructor
+	DialogAFConstraintSpring( CWnd* pParent = NULL ); // standard constructor
 	virtual				~DialogAFConstraintSpring();
-	void				LoadFile( idDeclAF *af );
+	void				LoadFile( idDeclAF* af );
 	void				SaveFile( void );
-	void				LoadConstraint( idDeclAF_Constraint *c );
+	void				LoadConstraint( idDeclAF_Constraint* c );
 	void				SaveConstraint( void );
 	void				UpdateFile( void );
 
-						enum { IDD = IDD_DIALOG_AF_CONSTRAINT_HINGE };
+	enum { IDD = IDD_DIALOG_AF_CONSTRAINT_HINGE };
 
 protected:
-	virtual void		DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void		DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	virtual INT_PTR		OnToolHitTest( CPoint point, TOOLINFO* pTI ) const;
-	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR *pNMHDR, LRESULT *pResult );
+	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnBnClickedRadioAnchorJoint();
 	afx_msg void		OnBnClickedRadioAnchorCoordinates();
 	afx_msg void		OnCbnSelchangeComboAnchorJoint();
 	afx_msg void		OnEnChangeEditAnchorX();
 	afx_msg void		OnEnChangeEditAnchorY();
 	afx_msg void		OnEnChangeEditAnchorZ();
-	afx_msg void		OnDeltaposSpinAnchorX(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void		OnDeltaposSpinAnchorY(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void		OnDeltaposSpinAnchorZ(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinAnchorX( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void		OnDeltaposSpinAnchorY( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void		OnDeltaposSpinAnchorZ( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnBnClickedRadioAnchor2Joint();
 	afx_msg void		OnBnClickedRadioAnchor2Coordinates();
 	afx_msg void		OnCbnSelchangeComboAnchor2Joint();
 	afx_msg void		OnEnChangeEditAnchor2X();
 	afx_msg void		OnEnChangeEditAnchor2Y();
 	afx_msg void		OnEnChangeEditAnchor2Z();
-	afx_msg void		OnDeltaposSpinAnchor2X(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void		OnDeltaposSpinAnchor2Y(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void		OnDeltaposSpinAnchor2Z(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinAnchor2X( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void		OnDeltaposSpinAnchor2Y( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void		OnDeltaposSpinAnchor2Z( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditSpringStretch();
-	afx_msg void		OnDeltaposSpinSpringStretch(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinSpringStretch( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditSpringCompress();
-	afx_msg void		OnDeltaposSpinSpringCompress(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinSpringCompress( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditSpringDamping();
-	afx_msg void		OnDeltaposSpinSpringDamping(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinSpringDamping( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditSpringRestLength();
-	afx_msg void		OnDeltaposSpinSpringRestLength(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinSpringRestLength( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnBnClickedRadioLimitNoMinLength();
 	afx_msg void		OnBnClickedRadioLimitMinLength();
 	afx_msg void		OnEnChangeEditLimitMinLength();
-	afx_msg void		OnDeltaposSpinLimitMinLength(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinLimitMinLength( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnBnClickedRadioLimitNoMaxLength();
 	afx_msg void		OnBnClickedRadioLimitMaxLength();
 	afx_msg void		OnEnChangeEditLimitMaxLength();
-	afx_msg void		OnDeltaposSpinLimitMaxLength(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinLimitMaxLength( NMHDR* pNMHDR, LRESULT* pResult );
 
 	DECLARE_MESSAGE_MAP()
 
 private:
-	idDeclAF *			file;
-	idDeclAF_Constraint*constraint;
+	idDeclAF* 			file;
+	idDeclAF_Constraint* constraint;
 
 	//{{AFX_DATA(DialogAFConstraintSpring)
 	CComboBox			m_comboAnchorJoint;

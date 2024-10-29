@@ -33,12 +33,12 @@ If you have questions concerning this license or the applicable additional terms
 
 
 #if defined( ID_ALLOW_TOOLS )
-#include "DebuggerServer.h"
-#include "DebuggerApp.h"
+	#include "DebuggerServer.h"
+	#include "DebuggerApp.h"
 #else
-#include "DebuggerServer.h"
-// we need a lot to be able to list all threads in mars_city1
-const int MAX_MSGLEN = 8600;
+	#include "DebuggerServer.h"
+	// we need a lot to be able to list all threads in mars_city1
+	const int MAX_MSGLEN = 8600;
 #endif
 
 /*
@@ -46,7 +46,7 @@ const int MAX_MSGLEN = 8600;
 rvDebuggerServer::rvDebuggerServer
 ================
 */
-rvDebuggerServer::rvDebuggerServer ( )
+rvDebuggerServer::rvDebuggerServer( )
 {
 	mConnected			= false;
 	mBreakNext			= false;
@@ -71,7 +71,7 @@ rvDebuggerServer::rvDebuggerServer ( )
 rvDebuggerServer::~rvDebuggerServer
 ================
 */
-rvDebuggerServer::~rvDebuggerServer ( )
+rvDebuggerServer::~rvDebuggerServer( )
 {
 }
 
@@ -83,10 +83,10 @@ Initialize the debugger server.  This function should be called before the
 debugger server is used.
 ================
 */
-bool rvDebuggerServer::Initialize ( void )
+bool rvDebuggerServer::Initialize( void )
 {
 	// Initialize the network connection
-	if ( !mPort.InitForPort ( 27980 ) )
+	if( !mPort.InitForPort( 27980 ) )
 	{
 		return false;
 	}
@@ -101,19 +101,19 @@ bool rvDebuggerServer::Initialize ( void )
 	mCriticalSection = SDL_CreateMutex();
 
 	// Server must be running on the local host on port 28980
-	Sys_StringToNetAdr ( com_dbgClientAdr.GetString( ), &mClientAdr, true );
+	Sys_StringToNetAdr( com_dbgClientAdr.GetString( ), &mClientAdr, true );
 	mClientAdr.port = 27981;
 
 	// Attempt to let the server know we are here.  The server may not be running so this
 	// message will just get ignored.
-	SendMessage ( DBMSG_CONNECT );
+	SendMessage( DBMSG_CONNECT );
 
 	return true;
 }
 
-void rvDebuggerServer::OSPathToRelativePath( const char *osPath, idStr &qpath )
+void rvDebuggerServer::OSPathToRelativePath( const char* osPath, idStr& qpath )
 {
-	if ( strchr( osPath, ':' ) ) // XXX: what about linux?
+	if( strchr( osPath, ':' ) )  // XXX: what about linux?
 	{
 		qpath = fileSystem->OSPathToRelativePath( osPath );
 	}
@@ -130,12 +130,12 @@ rvDebuggerServer::Shutdown
 Shutdown the debugger server.
 ================
 */
-void rvDebuggerServer::Shutdown ( void )
+void rvDebuggerServer::Shutdown( void )
 {
 	// Let the debugger client know we are shutting down
-	if ( mConnected )
+	if( mConnected )
 	{
-		SendMessage ( DBMSG_DISCONNECT );
+		SendMessage( DBMSG_DISCONNECT );
 		mConnected = false;
 	}
 
@@ -160,7 +160,7 @@ rvDebuggerServer::ProcessMessages
 Process all incoming network messages from the debugger client
 ================
 */
-bool rvDebuggerServer::ProcessMessages ( void )
+bool rvDebuggerServer::ProcessMessages( void )
 {
 	netadr_t adrFrom;
 	idBitMsg	 msg;
@@ -168,27 +168,30 @@ bool rvDebuggerServer::ProcessMessages ( void )
 
 	// Check for pending udp packets on the debugger port
 	int msgSize;
-	while ( mPort.GetPacket ( adrFrom, buffer, msgSize, MAX_MSGLEN) )
+	while( mPort.GetPacket( adrFrom, buffer, msgSize, MAX_MSGLEN ) )
 	{
 		short command;
-		msg.Init(buffer, sizeof(buffer));
-		msg.SetSize(msgSize);
+		msg.Init( buffer, sizeof( buffer ) );
+		msg.SetSize( msgSize );
 		msg.BeginReading();
-		
-		if ( adrFrom.type != NA_LOOPBACK ) {
+
+		if( adrFrom.type != NA_LOOPBACK )
+		{
 			// Only accept packets from the debugger server for security reasons
-			if ( !Sys_CompareNetAdrBase( adrFrom, mClientAdr ) )
+			if( !Sys_CompareNetAdrBase( adrFrom, mClientAdr ) )
+			{
 				continue;
+			}
 		}
 
 		command = msg.ReadShort( );
 
-		switch ( command )
+		switch( command )
 		{
 			case DBMSG_CONNECT:
 				mConnected = true;
-				SendMessage ( DBMSG_CONNECTED );
-				HandleInspectScripts ( NULL );
+				SendMessage( DBMSG_CONNECTED );
+				HandleInspectScripts( NULL );
 				com_editors |= EDITOR_DEBUGGER;
 				break;
 
@@ -199,22 +202,22 @@ bool rvDebuggerServer::ProcessMessages ( void )
 				break;
 
 			case DBMSG_DISCONNECT:
-				ClearBreakpoints ( );
-				Resume ( );
+				ClearBreakpoints( );
+				Resume( );
 				mConnected = false;
 				com_editors &= ~EDITOR_DEBUGGER;
 				break;
 
 			case DBMSG_ADDBREAKPOINT:
-				HandleAddBreakpoint ( &msg );
+				HandleAddBreakpoint( &msg );
 				break;
 
 			case DBMSG_REMOVEBREAKPOINT:
-				HandleRemoveBreakpoint ( &msg );
+				HandleRemoveBreakpoint( &msg );
 				break;
 
 			case DBMSG_RESUME:
-				HandleResume ( &msg );
+				HandleResume( &msg );
 				break;
 
 			case DBMSG_BREAK:
@@ -223,34 +226,34 @@ bool rvDebuggerServer::ProcessMessages ( void )
 
 			case DBMSG_STEPOVER:
 				mBreakStepOver = true;
-				mBreakStepOverDepth = ((idGameEditExt*) gameEdit)->GetInterpreterCallStackDepth(mBreakInterpreter);
-				mBreakStepOverFunc1 = ((idGameEditExt*) gameEdit)->GetInterpreterCallStackFunction(mBreakInterpreter);
-				if (mBreakStepOverDepth)
+				mBreakStepOverDepth = ( ( idGameEditExt* ) gameEdit )->GetInterpreterCallStackDepth( mBreakInterpreter );
+				mBreakStepOverFunc1 = ( ( idGameEditExt* ) gameEdit )->GetInterpreterCallStackFunction( mBreakInterpreter );
+				if( mBreakStepOverDepth )
 				{
-					mBreakStepOverFunc2 = ((idGameEditExt*) gameEdit)->GetInterpreterCallStackFunction(mBreakInterpreter,mBreakStepOverDepth - 1);
+					mBreakStepOverFunc2 = ( ( idGameEditExt* ) gameEdit )->GetInterpreterCallStackFunction( mBreakInterpreter, mBreakStepOverDepth - 1 );
 				}
 				else
 				{
 					mBreakStepOverFunc2 = NULL;
 				}
-				Resume ( );
+				Resume( );
 				break;
 
 			case DBMSG_STEPINTO:
 				mBreakStepInto = true;
-				Resume ( );
+				Resume( );
 				break;
 
 			case DBMSG_INSPECTVARIABLE:
-				HandleInspectVariable ( &msg );
+				HandleInspectVariable( &msg );
 				break;
 
 			case DBMSG_INSPECTCALLSTACK:
-				HandleInspectCallstack ( &msg );
+				HandleInspectCallstack( &msg );
 				break;
 
 			case DBMSG_INSPECTTHREADS:
-				HandleInspectThreads ( &msg );
+				HandleInspectThreads( &msg );
 				break;
 
 			case DBMSG_INSPECTSCRIPTS:
@@ -273,16 +276,16 @@ rvDebuggerServer::SendMessage
 Send a message with no data to the debugger server.
 ================
 */
-void rvDebuggerServer::SendMessage ( EDebuggerMessage dbmsg )
+void rvDebuggerServer::SendMessage( EDebuggerMessage dbmsg )
 {
 	idBitMsg	 msg;
 	byte	 buffer[MAX_MSGLEN];
 
 	msg.Init( buffer, sizeof( buffer ) );
 	msg.BeginWriting();
-	msg.WriteShort ( (short)dbmsg );
+	msg.WriteShort( ( short )dbmsg );
 
-	SendPacket ( msg.GetData(), msg.GetSize() );
+	SendPacket( msg.GetData(), msg.GetSize() );
 }
 
 /*
@@ -295,7 +298,7 @@ and is added as a new breakpoint to the breakpoint list with the
 data supplied in the message.
 ================
 */
-void rvDebuggerServer::HandleAddBreakpoint ( idBitMsg* msg )
+void rvDebuggerServer::HandleAddBreakpoint( idBitMsg* msg )
 {
 	bool onceOnly = false;
 	long lineNumber;
@@ -304,29 +307,29 @@ void rvDebuggerServer::HandleAddBreakpoint ( idBitMsg* msg )
 
 	// Read the breakpoint info
 	onceOnly = msg->ReadBits( 1 ) ? true : false;
-	lineNumber = msg->ReadInt ( );
-	id		   = msg->ReadInt ( );
+	lineNumber = msg->ReadInt( );
+	id		   = msg->ReadInt( );
 
-	msg->ReadString ( filename, sizeof(filename) );
+	msg->ReadString( filename, sizeof( filename ) );
 
-	//check for statement on requested breakpoint location 
-	if (!((idGameEditExt*) gameEdit)->IsLineCode(filename, lineNumber))
+	//check for statement on requested breakpoint location
+	if( !( ( idGameEditExt* ) gameEdit )->IsLineCode( filename, lineNumber ) )
 	{
 		idBitMsg	msgOut;
 		byte		buffer[MAX_MSGLEN];
 
-		msgOut.Init(buffer, sizeof(buffer));
+		msgOut.Init( buffer, sizeof( buffer ) );
 		msgOut.BeginWriting();
-		msgOut.WriteShort((short)DBMSG_REMOVEBREAKPOINT);
-		msgOut.WriteInt(lineNumber);
-		msgOut.WriteString(filename);
-		SendPacket(msgOut.GetData(), msgOut.GetSize());
+		msgOut.WriteShort( ( short )DBMSG_REMOVEBREAKPOINT );
+		msgOut.WriteInt( lineNumber );
+		msgOut.WriteString( filename );
+		SendPacket( msgOut.GetData(), msgOut.GetSize() );
 		return;
 	}
 
 
 	SDL_LockMutex( mCriticalSection );
-	mBreakpoints.Append ( new rvDebuggerBreakpoint ( filename, lineNumber, id, onceOnly ) );
+	mBreakpoints.Append( new rvDebuggerBreakpoint( filename, lineNumber, id, onceOnly ) );
 	SDL_UnlockMutex( mCriticalSection );
 }
 
@@ -339,25 +342,25 @@ message is handled by removing the breakpoint that matches the given id from the
 list.
 ================
 */
-void rvDebuggerServer::HandleRemoveBreakpoint ( idBitMsg* msg )
+void rvDebuggerServer::HandleRemoveBreakpoint( idBitMsg* msg )
 {
 	int i;
 	int id;
 
 	// ID that we are to remove
-	id = msg->ReadInt ( );
+	id = msg->ReadInt( );
 
 	// Since breakpoints are used by both threads we need to
 	// protect them with a crit section
 	SDL_LockMutex( mCriticalSection );
 
 	// Find the breakpoint that matches the given id and remove it from the list
-	for ( i = 0; i < mBreakpoints.Num(); i ++ )
+	for( i = 0; i < mBreakpoints.Num(); i ++ )
 	{
-		if ( mBreakpoints[i]->GetID ( ) == id )
+		if( mBreakpoints[i]->GetID( ) == id )
 		{
 			delete mBreakpoints[i];
-			mBreakpoints.RemoveIndex ( i );
+			mBreakpoints.RemoveIndex( i );
 			break;
 		}
 	}
@@ -373,7 +376,7 @@ Resume the game thread.
 ================
 
 */
-void rvDebuggerServer::HandleResume(idBitMsg* msg)
+void rvDebuggerServer::HandleResume( idBitMsg* msg )
 {
 	//Empty msg
 	Resume();
@@ -387,18 +390,18 @@ Handle an incoming inspect callstack message by sending a message
 back to the client with the callstack data.
 ================
 */
-void rvDebuggerServer::HandleInspectCallstack ( idBitMsg* msg )
+void rvDebuggerServer::HandleInspectCallstack( idBitMsg* msg )
 {
 	idBitMsg	 msgOut;
 	byte		 buffer[MAX_MSGLEN];
 
-	msgOut.Init(buffer, sizeof( buffer ) );
+	msgOut.Init( buffer, sizeof( buffer ) );
 	msgOut.BeginWriting();
-	msgOut.WriteShort ( (short)DBMSG_INSPECTCALLSTACK );
+	msgOut.WriteShort( ( short )DBMSG_INSPECTCALLSTACK );
 
-	((idGameEditExt*) gameEdit)->MSG_WriteInterpreterInfo(&msgOut, mBreakInterpreter, mBreakProgram, mBreakInstructionPointer);
+	( ( idGameEditExt* ) gameEdit )->MSG_WriteInterpreterInfo( &msgOut, mBreakInterpreter, mBreakProgram, mBreakInstructionPointer );
 
-	SendPacket (msgOut.GetData(), msgOut.GetSize() );
+	SendPacket( msgOut.GetData(), msgOut.GetSize() );
 }
 
 /*
@@ -408,7 +411,7 @@ rvDebuggerServer::HandleInspectThreads
 Send the list of the current threads in the interpreter back to the debugger client
 ================
 */
-void rvDebuggerServer::HandleInspectThreads ( idBitMsg* msg )
+void rvDebuggerServer::HandleInspectThreads( idBitMsg* msg )
 {
 	idBitMsg	msgOut;
 	byte		buffer[MAX_MSGLEN];
@@ -416,21 +419,21 @@ void rvDebuggerServer::HandleInspectThreads ( idBitMsg* msg )
 
 	// Initialize the message
 	msgOut.Init( buffer, sizeof( buffer ) );
-	msgOut.SetAllowOverflow(true);
+	msgOut.SetAllowOverflow( true );
 	msgOut.BeginWriting();
-	msgOut.WriteShort ( (short)DBMSG_INSPECTTHREADS );
+	msgOut.WriteShort( ( short )DBMSG_INSPECTTHREADS );
 
 	// Write the number of threads to the message
-	msgOut.WriteShort ((short)((idGameEditExt*) gameEdit)->GetTotalScriptThreads() );
+	msgOut.WriteShort( ( short )( ( idGameEditExt* ) gameEdit )->GetTotalScriptThreads() );
 
 	// Loop through all of the threads and write their name and number to the message
-	for ( i = 0; i < ((idGameEditExt*) gameEdit)->GetTotalScriptThreads(); i ++ )
+	for( i = 0; i < ( ( idGameEditExt* ) gameEdit )->GetTotalScriptThreads(); i ++ )
 	{
-		((idGameEditExt*) gameEdit)->MSG_WriteThreadInfo(&msgOut,((idGameEditExt*) gameEdit)->GetThreadByIndex(i), mBreakInterpreter);
+		( ( idGameEditExt* ) gameEdit )->MSG_WriteThreadInfo( &msgOut, ( ( idGameEditExt* ) gameEdit )->GetThreadByIndex( i ), mBreakInterpreter );
 	}
 
 	// Send off the inspect threads packet to the debugger client
-	SendPacket (msgOut.GetData(), msgOut.GetSize() );
+	SendPacket( msgOut.GetData(), msgOut.GetSize() );
 }
 
 /*
@@ -440,7 +443,8 @@ rvDebuggerServer::HandleExecCommand
 Send the list of the current loaded scripts in the interpreter back to the debugger client
 ================
 */
-void rvDebuggerServer::HandleExecCommand( idBitMsg *msg ) {
+void rvDebuggerServer::HandleExecCommand( idBitMsg* msg )
+{
 	char cmdStr[2048]; // HvG: randomly chose this size
 
 	msg->ReadString( cmdStr, sizeof( cmdStr ) );
@@ -462,13 +466,13 @@ void rvDebuggerServer::HandleInspectScripts( idBitMsg* msg )
 	byte		 buffer[MAX_MSGLEN];
 
 	// Initialize the message
-	msgOut.Init(buffer, sizeof(buffer));
+	msgOut.Init( buffer, sizeof( buffer ) );
 	msgOut.BeginWriting();
-	msgOut.WriteShort((short)DBMSG_INSPECTSCRIPTS);
+	msgOut.WriteShort( ( short )DBMSG_INSPECTSCRIPTS );
 
-	((idGameEditExt*) gameEdit)->MSG_WriteScriptList( &msgOut );
+	( ( idGameEditExt* ) gameEdit )->MSG_WriteScriptList( &msgOut );
 
-	SendPacket(msgOut.GetData(), msgOut.GetSize());
+	SendPacket( msgOut.GetData(), msgOut.GetSize() );
 }
 
 /*
@@ -478,18 +482,18 @@ rvDebuggerServer::HandleInspectVariable
 Respondes to a request from the debugger client to inspect the value of a given variable
 ================
 */
-void rvDebuggerServer::HandleInspectVariable ( idBitMsg* msg )
+void rvDebuggerServer::HandleInspectVariable( idBitMsg* msg )
 {
 	char varname[256];
 	int  scopeDepth;
 
-	if ( !mBreak )
+	if( !mBreak )
 	{
 		return;
 	}
 
-	scopeDepth = (short)msg->ReadShort ( );
-	msg->ReadString ( varname, 256 );
+	scopeDepth = ( short )msg->ReadShort( );
+	msg->ReadString( varname, 256 );
 
 	idStr varvalue;
 
@@ -499,18 +503,18 @@ void rvDebuggerServer::HandleInspectVariable ( idBitMsg* msg )
 	// Initialize the message
 	msgOut.Init( buffer, sizeof( buffer ) );
 	msgOut.BeginWriting();
-	msgOut.WriteShort ( (short)DBMSG_INSPECTVARIABLE );
+	msgOut.WriteShort( ( short )DBMSG_INSPECTVARIABLE );
 
-	if (!((idGameEditExt*) gameEdit)->GetRegisterValue(mBreakInterpreter, varname, varvalue, scopeDepth ) )
+	if( !( ( idGameEditExt* ) gameEdit )->GetRegisterValue( mBreakInterpreter, varname, varvalue, scopeDepth ) )
 	{
 		varvalue = "???";
 	}
 
-	msgOut.WriteShort ( (short)scopeDepth );
-	msgOut.WriteString ( varname );
-	msgOut.WriteString ( varvalue );
+	msgOut.WriteShort( ( short )scopeDepth );
+	msgOut.WriteString( varname );
+	msgOut.WriteString( varvalue );
 
-	SendPacket (msgOut.GetData(), msgOut.GetSize() );
+	SendPacket( msgOut.GetData(), msgOut.GetSize() );
 }
 
 /*
@@ -521,91 +525,93 @@ Check to see if any breakpoints have been hit.  This includes "break next",
 "step into", and "step over" break points
 ================
 */
-void rvDebuggerServer::CheckBreakpoints	( idInterpreter* interpreter, idProgram* program, int instructionPointer )
+void rvDebuggerServer::CheckBreakpoints( idInterpreter* interpreter, idProgram* program, int instructionPointer )
 {
 	const char*			filename;
 	int					i;
 
-	if ( !mConnected ) {
-		return;
-	}
-
-	
-	// Grab the current statement and the filename that it came from
-	filename = ((idGameEditExt*) gameEdit)->GetFilenameForStatement(program, instructionPointer);
-	int linenumber = ((idGameEditExt*) gameEdit)->GetLineNumberForStatement(program, instructionPointer);
-
-	// Operate on lines, not statements
-	if ( mLastStatementLine == linenumber && mLastStatementFile == filename)
+	if( !mConnected )
 	{
 		return;
 	}
-	
+
+
+	// Grab the current statement and the filename that it came from
+	filename = ( ( idGameEditExt* ) gameEdit )->GetFilenameForStatement( program, instructionPointer );
+	int linenumber = ( ( idGameEditExt* ) gameEdit )->GetLineNumberForStatement( program, instructionPointer );
+
+	// Operate on lines, not statements
+	if( mLastStatementLine == linenumber && mLastStatementFile == filename )
+	{
+		return;
+	}
+
 	// Save the last visited line and file so we can prevent
 	// double breaks on lines with more than one statement
-	mLastStatementFile = idStr(filename);
+	mLastStatementFile = idStr( filename );
 	mLastStatementLine = linenumber;
 
 	// Reset stepping when the last function on the callstack is returned from
-	if ( ((idGameEditExt*) gameEdit)->ReturnedFromFunction(program, interpreter,instructionPointer))
+	if( ( ( idGameEditExt* ) gameEdit )->ReturnedFromFunction( program, interpreter, instructionPointer ) )
 	{
 		mBreakStepOver = false;
 		mBreakStepInto = false;
 	}
 
 	// See if we are supposed to break on the next script line
-	if ( mBreakNext )
+	if( mBreakNext )
 	{
-		HandleInspectScripts(NULL);
-		Break ( interpreter, program, instructionPointer );
+		HandleInspectScripts( NULL );
+		Break( interpreter, program, instructionPointer );
 		return;
 	}
 
 	// Only break on the same callstack depth and thread as the break over
-	if ( mBreakStepOver )
+	if( mBreakStepOver )
 	{
 		//virtual bool CheckForBreakpointHit(interpreter,function1,function2,depth)
-		if (((idGameEditExt*) gameEdit)->CheckForBreakPointHit(interpreter, mBreakStepOverFunc1, mBreakStepOverFunc2, mBreakStepOverDepth))
+		if( ( ( idGameEditExt* ) gameEdit )->CheckForBreakPointHit( interpreter, mBreakStepOverFunc1, mBreakStepOverFunc2, mBreakStepOverDepth ) )
 		{
-			Break ( interpreter, program, instructionPointer );
+			Break( interpreter, program, instructionPointer );
 			return;
 		}
 	}
 
 	// See if we are supposed to break on the next line
-	if ( mBreakStepInto )
+	if( mBreakStepInto )
 	{
-		HandleInspectScripts(NULL);
+		HandleInspectScripts( NULL );
 		// Break
-		Break ( interpreter, program, instructionPointer );
+		Break( interpreter, program, instructionPointer );
 		return;
 	}
 
 	idStr qpath;
-	OSPathToRelativePath(filename,qpath);
-	qpath.BackSlashesToSlashes ( );
+	OSPathToRelativePath( filename, qpath );
+	qpath.BackSlashesToSlashes( );
 
 	SDL_LockMutex( mCriticalSection );
 
 	// Check all the breakpoints
-	for ( i = 0; i < mBreakpoints.Num ( ); i ++ )
+	for( i = 0; i < mBreakpoints.Num( ); i ++ )
 	{
 		rvDebuggerBreakpoint* bp = mBreakpoints[i];
 
 		// Skip if not match of the line number
-		if ( linenumber != bp->GetLineNumber ( ) )
+		if( linenumber != bp->GetLineNumber( ) )
 		{
 			continue;
 		}
 
 		// Skip if no match of the filename
-		if ( idStr::Icmp ( bp->GetFilename(), qpath.c_str() ) )
+		if( idStr::Icmp( bp->GetFilename(), qpath.c_str() ) )
 		{
 			continue;
 		}
 
 		// DG: onceOnly support
-		if ( bp->GetOnceOnly() ) {
+		if( bp->GetOnceOnly() )
+		{
 			// we'll do the one Break() a few lines below; remove it here while mBreakpoints is unmodified
 			// (it can be modifed from the client while in Break() below)
 			mBreakpoints.RemoveIndex( i );
@@ -616,7 +622,7 @@ void rvDebuggerServer::CheckBreakpoints	( idInterpreter* interpreter, idProgram*
 			byte		buffer[MAX_MSGLEN];
 			msgOut.Init( buffer, sizeof( buffer ) );
 			msgOut.BeginWriting();
-			msgOut.WriteShort( (short)DBMSG_REMOVEBREAKPOINT );
+			msgOut.WriteShort( ( short )DBMSG_REMOVEBREAKPOINT );
 			msgOut.WriteInt( linenumber );
 			msgOut.WriteString( qpath.c_str() );
 			SendPacket( msgOut.GetData(), msgOut.GetSize() );
@@ -626,9 +632,9 @@ void rvDebuggerServer::CheckBreakpoints	( idInterpreter* interpreter, idProgram*
 		// Pop out of the critical section so we dont get stuck
 		SDL_UnlockMutex( mCriticalSection );
 
-		HandleInspectScripts(NULL);
+		HandleInspectScripts( NULL );
 		// We hit a breakpoint, so break
-		Break ( interpreter, program, instructionPointer );
+		Break( interpreter, program, instructionPointer );
 
 		// Back into the critical section since we are going to have to leave it
 		SDL_LockMutex( mCriticalSection );
@@ -647,7 +653,7 @@ Halt execution of the game threads and inform the debugger client that
 the game has been halted
 ================
 */
-void rvDebuggerServer::Break ( idInterpreter* interpreter, idProgram* program, int instructionPointer )
+void rvDebuggerServer::Break( idInterpreter* interpreter, idProgram* program, int instructionPointer )
 {
 	idBitMsg			msg;
 	byte				buffer[MAX_MSGLEN];
@@ -659,8 +665,8 @@ void rvDebuggerServer::Break ( idInterpreter* interpreter, idProgram* program, i
 	mBreakNext     = false;
 
 	// Grab the current statement and the filename that it came from
-	filename = ((idGameEditExt*) gameEdit)->GetFilenameForStatement(program,instructionPointer);
-	int linenumber = ((idGameEditExt*) gameEdit)->GetLineNumberForStatement(program, instructionPointer);
+	filename = ( ( idGameEditExt* ) gameEdit )->GetFilenameForStatement( program, instructionPointer );
+	int linenumber = ( ( idGameEditExt* ) gameEdit )->GetLineNumberForStatement( program, instructionPointer );
 	idStr fileStr = filename;
 	fileStr.BackSlashesToSlashes();
 
@@ -676,13 +682,13 @@ void rvDebuggerServer::Break ( idInterpreter* interpreter, idProgram* program, i
 	// Inform the debugger of the breakpoint hit
 	msg.Init( buffer, sizeof( buffer ) );
 	msg.BeginWriting();
-	msg.WriteShort ( (short)DBMSG_BREAK );
-	msg.WriteInt ( linenumber );
-	msg.WriteString ( fileStr.c_str() );
+	msg.WriteShort( ( short )DBMSG_BREAK );
+	msg.WriteInt( linenumber );
+	msg.WriteString( fileStr.c_str() );
 
 	//msg.WriteInt64( (int64_t)mBreakProgram );
 
-	SendPacket ( msg.GetData(), msg.GetSize() );
+	SendPacket( msg.GetData(), msg.GetSize() );
 
 	// Suspend the game thread.  Since this will be called from within the main game thread
 	// execution wont return until after the thread is resumed
@@ -690,13 +696,14 @@ void rvDebuggerServer::Break ( idInterpreter* interpreter, idProgram* program, i
 	//     function in SDL and as this is only called within the main game thread anyway,
 	//     just use a condition variable to put this thread to sleep until Resume() has set mBreak
 	SDL_LockMutex( mGameThreadBreakLock );
-	while ( mBreak ) {
+	while( mBreak )
+	{
 		SDL_CondWait( mGameThreadBreakCond, mGameThreadBreakLock );
 	}
 	SDL_UnlockMutex( mGameThreadBreakLock );
 
 	// Let the debugger client know that we have started back up again
-	SendMessage ( DBMSG_RESUMED );
+	SendMessage( DBMSG_RESUMED );
 
 	// this should be platform specific
 	// TODO: maybe replace with SDL code? or does it not matter if debugger client runs on another machine?
@@ -704,13 +711,13 @@ void rvDebuggerServer::Break ( idInterpreter* interpreter, idProgram* program, i
 	// This is to give some time between the keypress that
 	// told us to resume and the setforeground window.  Otherwise the quake window
 	// would just flash
-	Sleep ( 150 );
+	Sleep( 150 );
 
 	// Bring the window back to the foreground
-	SetForegroundWindow ( win32.hWnd );
-	SetActiveWindow ( win32.hWnd );
-	UpdateWindow ( win32.hWnd );
-	SetFocus ( win32.hWnd );
+	SetForegroundWindow( win32.hWnd );
+	SetActiveWindow( win32.hWnd );
+	UpdateWindow( win32.hWnd );
+	SetFocus( win32.hWnd );
 #endif
 
 	// Give the mouse cursor back to the game
@@ -729,10 +736,10 @@ rvDebuggerServer::Resume
 Resume execution of the game.
 ================
 */
-void rvDebuggerServer::Resume ( void )
+void rvDebuggerServer::Resume( void )
 {
 	// Cant resume if not paused
-	if ( !mBreak )
+	if( !mBreak )
 	{
 		return;
 	}
@@ -740,7 +747,7 @@ void rvDebuggerServer::Resume ( void )
 	// Start the game thread back up
 	SDL_LockMutex( mGameThreadBreakLock );
 	mBreak = false;
-	SDL_CondSignal( mGameThreadBreakCond);
+	SDL_CondSignal( mGameThreadBreakCond );
 	SDL_UnlockMutex( mGameThreadBreakLock );
 }
 
@@ -751,16 +758,16 @@ rvDebuggerServer::ClearBreakpoints
 Remove all known breakpoints
 ================
 */
-void rvDebuggerServer::ClearBreakpoints	( void )
+void rvDebuggerServer::ClearBreakpoints( void )
 {
 	int i;
 
-	for ( i = 0; i < mBreakpoints.Num(); i ++ )
+	for( i = 0; i < mBreakpoints.Num(); i ++ )
 	{
 		delete mBreakpoints[i];
 	}
 
-	mBreakpoints.Clear ( );
+	mBreakpoints.Clear( );
 }
 
 /*
@@ -770,9 +777,9 @@ rvDebuggerServer::Print
 Sends a console print message over to the debugger client
 ================
 */
-void rvDebuggerServer::Print ( const char* text )
+void rvDebuggerServer::Print( const char* text )
 {
-	if ( !mConnected )
+	if( !mConnected )
 	{
 		return;
 	}
@@ -782,8 +789,8 @@ void rvDebuggerServer::Print ( const char* text )
 
 	msg.Init( buffer, sizeof( buffer ) );
 	msg.BeginWriting();
-	msg.WriteShort ( (short)DBMSG_PRINT );
-	msg.WriteString ( text );
+	msg.WriteShort( ( short )DBMSG_PRINT );
+	msg.WriteString( text );
 
-	SendPacket ( msg.GetData(), msg.GetSize() );
+	SendPacket( msg.GetData(), msg.GetSize() );
 }

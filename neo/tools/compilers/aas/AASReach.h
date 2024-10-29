@@ -37,25 +37,26 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 */
 
-class idAASReach {
+class idAASReach
+{
 
 public:
-	bool					Build( const idMapFile *mapFile, idAASFileLocal *file );
+	bool					Build( const idMapFile* mapFile, idAASFileLocal* file );
 
 private:
-	const idMapFile *		mapFile;
-	idAASFileLocal *		file;
+	const idMapFile* 		mapFile;
+	idAASFileLocal* 		file;
 	int						numReachabilities;
 	bool					allowSwimReachabilities;
 	bool					allowFlyReachabilities;
 
 private:	// reachability
-	void					FlagReachableAreas( idAASFileLocal *file );
+	void					FlagReachableAreas( idAASFileLocal* file );
 	bool					ReachabilityExists( int fromAreaNum, int toAreaNum );
 	bool					CanSwimInArea( int areaNum );
 	bool					AreaHasFloor( int areaNum );
 	bool					AreaIsClusterPortal( int areaNum );
-	void					AddReachabilityToArea( idReachability *reach, int areaNum );
+	void					AddReachabilityToArea( idReachability* reach, int areaNum );
 	void					Reachability_Fly( int areaNum );
 	void					Reachability_Swim( int areaNum );
 	void					Reachability_EqualFloorHeight( int areaNum );

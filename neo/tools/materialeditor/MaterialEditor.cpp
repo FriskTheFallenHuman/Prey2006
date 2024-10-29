@@ -34,7 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "MEMainFrame.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
 MEMainFrame* meMainFrame = NULL;
@@ -44,9 +44,10 @@ CFont* materialEditorFont = NULL;
 /**
 * Initializes the material editor tool.
 */
-void MaterialEditorInit( void ) {
+void MaterialEditorInit( void )
+{
 
-	InitPropTree(win32.hInstance);
+	InitPropTree( win32.hInstance );
 
 	com_editors = EDITOR_MATERIAL;
 
@@ -56,32 +57,32 @@ void MaterialEditorInit( void ) {
 	InitCommonControls();
 
 	// Initialize OLE libraries
-	if (!AfxOleInit())
+	if( !AfxOleInit() )
 	{
 		return;
 	}
 	AfxEnableControlContainer();
 
 	NONCLIENTMETRICS info;
-	info.cbSize = sizeof(info);
+	info.cbSize = sizeof( info );
 
-	::SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(info), &info, 0);
+	::SystemParametersInfo( SPI_GETNONCLIENTMETRICS, sizeof( info ), &info, 0 );
 
 	LOGFONT lf;
-	memset(&lf, 0, sizeof (LOGFONT));
+	memset( &lf, 0, sizeof( LOGFONT ) );
 
-	CWindowDC dc(NULL);
-	lf.lfCharSet = (BYTE)GetTextCharsetInfo(dc.GetSafeHdc(), NULL, 0);
+	CWindowDC dc( NULL );
+	lf.lfCharSet = ( BYTE )GetTextCharsetInfo( dc.GetSafeHdc(), NULL, 0 );
 
 	lf.lfHeight = info.lfMenuFont.lfHeight;
 	lf.lfWeight = info.lfMenuFont.lfWeight;
 	lf.lfItalic = info.lfMenuFont.lfItalic;
 
 	// check if we should use system font
-	_tcscpy(lf.lfFaceName, info.lfMenuFont.lfFaceName);
+	_tcscpy( lf.lfFaceName, info.lfMenuFont.lfFaceName );
 
 	materialEditorFont = new CFont;
-	materialEditorFont->CreateFontIndirect(&lf);
+	materialEditorFont->CreateFontIndirect( &lf );
 
 
 	// To create the main window, this code creates a new frame window
@@ -89,27 +90,30 @@ void MaterialEditorInit( void ) {
 	meMainFrame = new MEMainFrame;
 
 	// create and load the frame with its resources
-	meMainFrame->LoadFrame(IDR_ME_MAINFRAME, WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, NULL, NULL);
+	meMainFrame->LoadFrame( IDR_ME_MAINFRAME, WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, NULL, NULL );
 
 
 	// hide the doom window by default
-	::ShowWindow ( win32.hWnd, SW_HIDE );
+	::ShowWindow( win32.hWnd, SW_HIDE );
 
 	// The one and only window has been initialized, so show and update it
-	meMainFrame->ShowWindow(SW_SHOW);
+	meMainFrame->ShowWindow( SW_SHOW );
 	meMainFrame->UpdateWindow();
 }
 
 /**
 * Called every frame by the doom engine to allow the material editor to process messages.
 */
-void MaterialEditorRun( void ) {
+void MaterialEditorRun( void )
+{
 
-	MSG *msg = AfxGetCurrentMessage();
+	MSG* msg = AfxGetCurrentMessage();
 
-	while( ::PeekMessage(msg, NULL, NULL, NULL, PM_NOREMOVE) ) {
+	while( ::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) )
+	{
 		// pump message
-		if ( !AfxGetApp()->PumpMessage() ) {
+		if( !AfxGetApp()->PumpMessage() )
+		{
 		}
 	}
 }
@@ -117,7 +121,8 @@ void MaterialEditorRun( void ) {
 /**
 * Called by the doom engine when the material editor needs to be destroyed.
 */
-void MaterialEditorShutdown( void ) {
+void MaterialEditorShutdown( void )
+{
 
 	delete meMainFrame;
 
@@ -129,15 +134,19 @@ void MaterialEditorShutdown( void ) {
 /**
 * Allows the doom engine to reflect console output to the material editors console.
 */
-void MaterialEditorPrintConsole( const char *msg ) {
+void MaterialEditorPrintConsole( const char* msg )
+{
 	//meMainFrame can be null when starting immedeatly from commandline.
-	if(meMainFrame && com_editors & EDITOR_MATERIAL)
-		meMainFrame->PrintConsoleMessage(msg);
+	if( meMainFrame && com_editors & EDITOR_MATERIAL )
+	{
+		meMainFrame->PrintConsoleMessage( msg );
+	}
 }
 
 /**
 * Returns the handle to the main Material Editor Window
 */
-HWND GetMaterialEditorWindow() {
+HWND GetMaterialEditorWindow()
+{
 	return meMainFrame->GetSafeHwnd();
 }

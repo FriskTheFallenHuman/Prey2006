@@ -36,18 +36,22 @@ If you have questions concerning this license or the applicable additional terms
 idAASBuild::AllGapsLeadToOtherNode
 ============
 */
-bool idAASBuild::AllGapsLeadToOtherNode( idBrushBSPNode *nodeWithGaps, idBrushBSPNode *otherNode ) {
+bool idAASBuild::AllGapsLeadToOtherNode( idBrushBSPNode* nodeWithGaps, idBrushBSPNode* otherNode )
+{
 	int s;
-	idBrushBSPPortal *p;
+	idBrushBSPPortal* p;
 
-	for ( p = nodeWithGaps->GetPortals(); p; p = p->Next(s) ) {
-		s = (p->GetNode(1) == nodeWithGaps);
+	for( p = nodeWithGaps->GetPortals(); p; p = p->Next( s ) )
+	{
+		s = ( p->GetNode( 1 ) == nodeWithGaps );
 
-		if ( !PortalIsGap( p, s ) ) {
+		if( !PortalIsGap( p, s ) )
+		{
 			continue;
 		}
 
-		if ( p->GetNode(!s) != otherNode ) {
+		if( p->GetNode( !s ) != otherNode )
+		{
 			return false;
 		}
 	}
@@ -59,46 +63,59 @@ bool idAASBuild::AllGapsLeadToOtherNode( idBrushBSPNode *nodeWithGaps, idBrushBS
 idAASBuild::MergeWithAdjacentLeafNodes
 ============
 */
-bool idAASBuild::MergeWithAdjacentLeafNodes( idBrushBSP &bsp, idBrushBSPNode *node ) {
+bool idAASBuild::MergeWithAdjacentLeafNodes( idBrushBSP& bsp, idBrushBSPNode* node )
+{
 	int s, numMerges = 0, otherNodeFlags;
-	idBrushBSPPortal *p;
+	idBrushBSPPortal* p;
 
-	do {
-		for ( p = node->GetPortals(); p; p = p->Next(s) ) {
-			s = (p->GetNode(1) == node);
+	do
+	{
+		for( p = node->GetPortals(); p; p = p->Next( s ) )
+		{
+			s = ( p->GetNode( 1 ) == node );
 
 			// both leaf nodes must have the same contents
-			if ( node->GetContents() != p->GetNode(!s)->GetContents() ) {
+			if( node->GetContents() != p->GetNode( !s )->GetContents() )
+			{
 				continue;
 			}
 
 			// cannot merge leaf nodes if one is near a ledge and the other is not
-			if ( (node->GetFlags() & AREA_LEDGE) != (p->GetNode(!s)->GetFlags() & AREA_LEDGE) ) {
+			if( ( node->GetFlags() & AREA_LEDGE ) != ( p->GetNode( !s )->GetFlags() & AREA_LEDGE ) )
+			{
 				continue;
 			}
 
 			// cannot merge leaf nodes if one has a floor portal and the other a gap portal
-			if ( node->GetFlags() & AREA_FLOOR ) {
-				if ( p->GetNode(!s)->GetFlags() & AREA_GAP ) {
-					if ( !AllGapsLeadToOtherNode( p->GetNode(!s), node ) ) {
+			if( node->GetFlags() & AREA_FLOOR )
+			{
+				if( p->GetNode( !s )->GetFlags() & AREA_GAP )
+				{
+					if( !AllGapsLeadToOtherNode( p->GetNode( !s ), node ) )
+					{
 						continue;
 					}
 				}
 			}
-			else if ( node->GetFlags() & AREA_GAP ) {
-				if ( p->GetNode(!s)->GetFlags() & AREA_FLOOR ) {
-					if ( !AllGapsLeadToOtherNode( node, p->GetNode(!s) ) ) {
+			else if( node->GetFlags() & AREA_GAP )
+			{
+				if( p->GetNode( !s )->GetFlags() & AREA_FLOOR )
+				{
+					if( !AllGapsLeadToOtherNode( node, p->GetNode( !s ) ) )
+					{
 						continue;
 					}
 				}
 			}
 
-			otherNodeFlags = p->GetNode(!s)->GetFlags();
+			otherNodeFlags = p->GetNode( !s )->GetFlags();
 
 			// try to merge the leaf nodes
-			if ( bsp.TryMergeLeafNodes( p, s ) ) {
+			if( bsp.TryMergeLeafNodes( p, s ) )
+			{
 				node->SetFlag( otherNodeFlags );
-				if ( node->GetFlags() & AREA_FLOOR ) {
+				if( node->GetFlags() & AREA_FLOOR )
+				{
 					node->RemoveFlag( AREA_GAP );
 				}
 				numMerges++;
@@ -106,9 +123,11 @@ bool idAASBuild::MergeWithAdjacentLeafNodes( idBrushBSP &bsp, idBrushBSPNode *no
 				break;
 			}
 		}
-	} while( p );
+	}
+	while( p );
 
-	if ( numMerges ) {
+	if( numMerges )
+	{
 		return true;
 	}
 	return false;
@@ -119,28 +138,33 @@ bool idAASBuild::MergeWithAdjacentLeafNodes( idBrushBSP &bsp, idBrushBSPNode *no
 idAASBuild::MergeLeafNodes_r
 ============
 */
-void idAASBuild::MergeLeafNodes_r( idBrushBSP &bsp, idBrushBSPNode *node ) {
+void idAASBuild::MergeLeafNodes_r( idBrushBSP& bsp, idBrushBSPNode* node )
+{
 
-	if ( !node ) {
+	if( !node )
+	{
 		return;
 	}
 
-	if ( node->GetContents() & AREACONTENTS_SOLID ) {
+	if( node->GetContents() & AREACONTENTS_SOLID )
+	{
 		return;
 	}
 
-	if ( node->GetFlags() & NODE_DONE ) {
+	if( node->GetFlags() & NODE_DONE )
+	{
 		return;
 	}
 
-	if ( !node->GetChild(0) && !node->GetChild(1) ) {
+	if( !node->GetChild( 0 ) && !node->GetChild( 1 ) )
+	{
 		MergeWithAdjacentLeafNodes( bsp, node );
 		node->SetFlag( NODE_DONE );
 		return;
 	}
 
-	MergeLeafNodes_r( bsp, node->GetChild(0) );
-	MergeLeafNodes_r( bsp, node->GetChild(1) );
+	MergeLeafNodes_r( bsp, node->GetChild( 0 ) );
+	MergeLeafNodes_r( bsp, node->GetChild( 1 ) );
 
 	return;
 }
@@ -150,7 +174,8 @@ void idAASBuild::MergeLeafNodes_r( idBrushBSP &bsp, idBrushBSPNode *node ) {
 idAASBuild::MergeLeafNodes
 ============
 */
-void idAASBuild::MergeLeafNodes( idBrushBSP &bsp ) {
+void idAASBuild::MergeLeafNodes( idBrushBSP& bsp )
+{
 	numMergedLeafNodes = 0;
 
 	common->Printf( "[Merge Leaf Nodes]\n" );

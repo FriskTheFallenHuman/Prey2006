@@ -38,7 +38,7 @@ If you have questions concerning this license or the applicable additional terms
 #define GUIED_GRABSIZE		7
 #define GUIED_CENTERSIZE	5
 
-rvGESelectionMgr::rvGESelectionMgr ( )
+rvGESelectionMgr::rvGESelectionMgr( )
 {
 	mWorkspace = NULL;
 }
@@ -50,13 +50,13 @@ rvGESelectionMgr::SetSelection
 Sets the only selection for the workspace to the given window
 ================
 */
-void rvGESelectionMgr::Set ( idWindow* window )
+void rvGESelectionMgr::Set( idWindow* window )
 {
 	// Get rid of any current selections
-	Clear ( );
+	Clear( );
 
 	// Add this selection now
-	return Add ( window );
+	return Add( window );
 }
 
 /*
@@ -66,34 +66,34 @@ rvGESelectionMgr::Add
 Adds the given window to the selection list
 ================
 */
-void rvGESelectionMgr::Add ( idWindow* window, bool expand )
+void rvGESelectionMgr::Add( idWindow* window, bool expand )
 {
 	rvGEWindowWrapper* wrapper;
 
-	wrapper = rvGEWindowWrapper::GetWrapper ( window );
-	assert ( wrapper );
+	wrapper = rvGEWindowWrapper::GetWrapper( window );
+	assert( wrapper );
 
 	// If the window is already selected then dont add the selection
-	if ( wrapper->IsSelected ( ) )
+	if( wrapper->IsSelected( ) )
 	{
 		return;
 	}
 
-	wrapper->SetSelected ( true );
+	wrapper->SetSelected( true );
 
-	mSelections.Append ( window );
+	mSelections.Append( window );
 
-	if ( expand && wrapper->Expand ( ) )
+	if( expand && wrapper->Expand( ) )
 	{
-		gApp.GetNavigator ( ).Update ( );
+		gApp.GetNavigator( ).Update( );
 	}
 
-	gApp.GetNavigator ( ).UpdateSelections ( );
-	gApp.GetNavigator ( ).Refresh ( );
-	gApp.GetTransformer ( ).Update ( );
-	gApp.GetProperties().Update ( );
+	gApp.GetNavigator( ).UpdateSelections( );
+	gApp.GetNavigator( ).Refresh( );
+	gApp.GetTransformer( ).Update( );
+	gApp.GetProperties().Update( );
 
-	UpdateExpression ( );
+	UpdateExpression( );
 }
 
 /*
@@ -103,29 +103,29 @@ rvGESelectionMgr::RemoveSelection
 Removes the selection from the current workspace
 ================
 */
-void rvGESelectionMgr::Remove ( idWindow* window )
+void rvGESelectionMgr::Remove( idWindow* window )
 {
 	rvGEWindowWrapper* wrapper;
 
-	wrapper = rvGEWindowWrapper::GetWrapper ( window );
-	assert ( wrapper );
+	wrapper = rvGEWindowWrapper::GetWrapper( window );
+	assert( wrapper );
 
 	// Dont bother if the window isnt selectd already
-	if ( !wrapper->IsSelected ( ) )
+	if( !wrapper->IsSelected( ) )
 	{
 		return;
 	}
 
-	wrapper->SetSelected ( false );
+	wrapper->SetSelected( false );
 
-	mSelections.Remove ( window );
+	mSelections.Remove( window );
 
-	gApp.GetNavigator ( ).UpdateSelections ( );
-	gApp.GetNavigator ( ).Refresh ( );
-	gApp.GetTransformer ( ).Update ( );
-	gApp.GetProperties().Update ( );
+	gApp.GetNavigator( ).UpdateSelections( );
+	gApp.GetNavigator( ).Refresh( );
+	gApp.GetTransformer( ).Update( );
+	gApp.GetProperties().Update( );
 
-	UpdateExpression ( );
+	UpdateExpression( );
 }
 
 /*
@@ -135,21 +135,21 @@ rvGESelectionMgr::ClearSelections
 Remove all of the current selections
 ================
 */
-void rvGESelectionMgr::Clear ( void )
+void rvGESelectionMgr::Clear( void )
 {
 	int i;
 
-	for ( i = 0; i < mSelections.Num ( ); i ++ )
+	for( i = 0; i < mSelections.Num( ); i ++ )
 	{
-		rvGEWindowWrapper::GetWrapper ( mSelections[i] )->SetSelected ( false );
+		rvGEWindowWrapper::GetWrapper( mSelections[i] )->SetSelected( false );
 	}
 
-	mSelections.Clear ( );
+	mSelections.Clear( );
 
-	gApp.GetNavigator ( ).UpdateSelections ( );
-	gApp.GetNavigator ( ).Refresh ( );
-	gApp.GetTransformer ( ).Update ( );
-	gApp.GetProperties().Update ( );
+	gApp.GetNavigator( ).UpdateSelections( );
+	gApp.GetNavigator( ).Refresh( );
+	gApp.GetTransformer( ).Update( );
+	gApp.GetProperties().Update( );
 
 	mExpression = false;
 }
@@ -161,132 +161,132 @@ rvGESelectionMgr::Render
 Render the selections including the move/size bars
 ================
 */
-void rvGESelectionMgr::Render ( void )
+void rvGESelectionMgr::Render( void )
 {
-	if ( !mSelections.Num ( ) )
+	if( !mSelections.Num( ) )
 	{
 		return;
 	}
 
-	qglEnable(GL_BLEND);
-	qglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	qglEnable( GL_BLEND );
+	qglBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
-	UpdateRectangle ( );
+	UpdateRectangle( );
 
-	qglPolygonMode(GL_FRONT_AND_BACK, GL_LINE );
+	qglPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
-	idVec4&	color = gApp.GetOptions().GetSelectionColor ( );
-	qglColor4f ( color[0],color[1],color[2], 1.0f );
+	idVec4&	color = gApp.GetOptions().GetSelectionColor( );
+	qglColor4f( color[0], color[1], color[2], 1.0f );
 
-	qglBegin(GL_LINE_LOOP );
-	qglVertex2f ( mRect.x, mRect.y );
-	qglVertex2f ( mRect.x + mRect.w, mRect.y );
-	qglVertex2f ( mRect.x + mRect.w, mRect.y + mRect.h);
-	qglVertex2f ( mRect.x, mRect.y + mRect.h);
-	qglEnd ( );
+	qglBegin( GL_LINE_LOOP );
+	qglVertex2f( mRect.x, mRect.y );
+	qglVertex2f( mRect.x + mRect.w, mRect.y );
+	qglVertex2f( mRect.x + mRect.w, mRect.y + mRect.h );
+	qglVertex2f( mRect.x, mRect.y + mRect.h );
+	qglEnd( );
 
-	qglColor4f ( color[0],color[1],color[2], 0.75f );
+	qglColor4f( color[0], color[1], color[2], 0.75f );
 
 	int i;
-	for ( i = 0; i < mSelections.Num(); i ++ )
+	for( i = 0; i < mSelections.Num(); i ++ )
 	{
 		rvGEWindowWrapper*	wrapper;
 		idRectangle			rect;
 
-		wrapper = rvGEWindowWrapper::GetWrapper ( mSelections[i] );
-		assert ( wrapper );
+		wrapper = rvGEWindowWrapper::GetWrapper( mSelections[i] );
+		assert( wrapper );
 
-		rect = wrapper->GetScreenRect ( );
-		mWorkspace->WorkspaceToWindow ( rect );
+		rect = wrapper->GetScreenRect( );
+		mWorkspace->WorkspaceToWindow( rect );
 
-		if ( i == 0 )
+		if( i == 0 )
 		{
-			qglPolygonMode(GL_FRONT_AND_BACK, GL_FILL );
-			qglBegin ( GL_TRIANGLES );
-			qglVertex2f ( rect.x, rect.y );
-			qglVertex2f ( rect.x + GUIED_GRABSIZE, rect.y );
-			qglVertex2f ( rect.x, rect.y + GUIED_GRABSIZE );
-			qglEnd ( );
+			qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+			qglBegin( GL_TRIANGLES );
+			qglVertex2f( rect.x, rect.y );
+			qglVertex2f( rect.x + GUIED_GRABSIZE, rect.y );
+			qglVertex2f( rect.x, rect.y + GUIED_GRABSIZE );
+			qglEnd( );
 		}
 
-		qglPolygonMode(GL_FRONT_AND_BACK, GL_LINE );
-		qglBegin(GL_LINE_LOOP );
-		qglVertex2f ( rect.x, rect.y );
-		qglVertex2f ( rect.x + rect.w, rect.y );
-		qglVertex2f ( rect.x + rect.w, rect.y + rect.h);
-		qglVertex2f ( rect.x, rect.y + rect.h);
-		qglEnd ( );
+		qglPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+		qglBegin( GL_LINE_LOOP );
+		qglVertex2f( rect.x, rect.y );
+		qglVertex2f( rect.x + rect.w, rect.y );
+		qglVertex2f( rect.x + rect.w, rect.y + rect.h );
+		qglVertex2f( rect.x, rect.y + rect.h );
+		qglEnd( );
 
-		qglPolygonMode(GL_FRONT_AND_BACK, GL_FILL );
+		qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 		qglBegin( GL_QUADS );
-		qglVertex2f ( rect.x + (rect.w - GUIED_CENTERSIZE) / 2, rect.y + (rect.h - GUIED_CENTERSIZE) / 2 );
-		qglVertex2f ( rect.x + (rect.w + GUIED_CENTERSIZE) / 2, rect.y + (rect.h - GUIED_CENTERSIZE) / 2 );
-		qglVertex2f ( rect.x + (rect.w + GUIED_CENTERSIZE) / 2, rect.y + (rect.h + GUIED_CENTERSIZE) / 2 );
-		qglVertex2f ( rect.x + (rect.w - GUIED_CENTERSIZE) / 2, rect.y + (rect.h + GUIED_CENTERSIZE) / 2 );
-		qglEnd ( );
+		qglVertex2f( rect.x + ( rect.w - GUIED_CENTERSIZE ) / 2, rect.y + ( rect.h - GUIED_CENTERSIZE ) / 2 );
+		qglVertex2f( rect.x + ( rect.w + GUIED_CENTERSIZE ) / 2, rect.y + ( rect.h - GUIED_CENTERSIZE ) / 2 );
+		qglVertex2f( rect.x + ( rect.w + GUIED_CENTERSIZE ) / 2, rect.y + ( rect.h + GUIED_CENTERSIZE ) / 2 );
+		qglVertex2f( rect.x + ( rect.w - GUIED_CENTERSIZE ) / 2, rect.y + ( rect.h + GUIED_CENTERSIZE ) / 2 );
+		qglEnd( );
 	}
 
-	if ( mExpression )
+	if( mExpression )
 	{
 		return;
 	}
 
-	qglPolygonMode(GL_FRONT_AND_BACK, GL_LINE );
+	qglPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
-	qglColor4f ( color[0],color[1],color[2], 1.0f );
-	qglBegin(GL_QUADS);
+	qglColor4f( color[0], color[1], color[2], 1.0f );
+	qglBegin( GL_QUADS );
 
 	// Top Left
-	qglVertex2f ( mRect.x - GUIED_GRABSIZE, mRect.y - GUIED_GRABSIZE );
-	qglVertex2f ( mRect.x - 1, mRect.y - GUIED_GRABSIZE );
-	qglVertex2f ( mRect.x - 1, mRect.y - 1 );
-	qglVertex2f ( mRect.x - GUIED_GRABSIZE, mRect.y - 1 );
+	qglVertex2f( mRect.x - GUIED_GRABSIZE, mRect.y - GUIED_GRABSIZE );
+	qglVertex2f( mRect.x - 1, mRect.y - GUIED_GRABSIZE );
+	qglVertex2f( mRect.x - 1, mRect.y - 1 );
+	qglVertex2f( mRect.x - GUIED_GRABSIZE, mRect.y - 1 );
 
 	// Left
-	qglVertex2f ( mRect.x - GUIED_GRABSIZE, mRect.y + mRect.h / 2 - GUIED_GRABSIZE / 2);
-	qglVertex2f ( mRect.x - 1, mRect.y + mRect.h / 2 - GUIED_GRABSIZE / 2 );
-	qglVertex2f ( mRect.x - 1, mRect.y + mRect.h / 2 + GUIED_GRABSIZE / 2 );
-	qglVertex2f ( mRect.x - GUIED_GRABSIZE, mRect.y + mRect.h / 2 + GUIED_GRABSIZE / 2 );
+	qglVertex2f( mRect.x - GUIED_GRABSIZE, mRect.y + mRect.h / 2 - GUIED_GRABSIZE / 2 );
+	qglVertex2f( mRect.x - 1, mRect.y + mRect.h / 2 - GUIED_GRABSIZE / 2 );
+	qglVertex2f( mRect.x - 1, mRect.y + mRect.h / 2 + GUIED_GRABSIZE / 2 );
+	qglVertex2f( mRect.x - GUIED_GRABSIZE, mRect.y + mRect.h / 2 + GUIED_GRABSIZE / 2 );
 
 	// Bototm Left
-	qglVertex2f ( mRect.x - GUIED_GRABSIZE, mRect.y + mRect.h + 1 );
-	qglVertex2f ( mRect.x - 1, mRect.y + mRect.h + 1 );
-	qglVertex2f ( mRect.x - 1, mRect.y + mRect.h + GUIED_GRABSIZE );
-	qglVertex2f ( mRect.x - GUIED_GRABSIZE, mRect.y + mRect.h + GUIED_GRABSIZE );
+	qglVertex2f( mRect.x - GUIED_GRABSIZE, mRect.y + mRect.h + 1 );
+	qglVertex2f( mRect.x - 1, mRect.y + mRect.h + 1 );
+	qglVertex2f( mRect.x - 1, mRect.y + mRect.h + GUIED_GRABSIZE );
+	qglVertex2f( mRect.x - GUIED_GRABSIZE, mRect.y + mRect.h + GUIED_GRABSIZE );
 
 	// Bottom
-	qglVertex2f ( mRect.x - GUIED_GRABSIZE / 2 + mRect.w / 2, mRect.y + mRect.h + 1 );
-	qglVertex2f ( mRect.x + GUIED_GRABSIZE / 2 + mRect.w / 2, mRect.y + mRect.h + 1 );
-	qglVertex2f ( mRect.x + GUIED_GRABSIZE / 2 + mRect.w / 2, mRect.y + mRect.h + GUIED_GRABSIZE );
-	qglVertex2f ( mRect.x - GUIED_GRABSIZE / 2 + mRect.w / 2, mRect.y + mRect.h + GUIED_GRABSIZE );
+	qglVertex2f( mRect.x - GUIED_GRABSIZE / 2 + mRect.w / 2, mRect.y + mRect.h + 1 );
+	qglVertex2f( mRect.x + GUIED_GRABSIZE / 2 + mRect.w / 2, mRect.y + mRect.h + 1 );
+	qglVertex2f( mRect.x + GUIED_GRABSIZE / 2 + mRect.w / 2, mRect.y + mRect.h + GUIED_GRABSIZE );
+	qglVertex2f( mRect.x - GUIED_GRABSIZE / 2 + mRect.w / 2, mRect.y + mRect.h + GUIED_GRABSIZE );
 
 	// Bottom Right
-	qglVertex2f ( mRect.x + mRect.w + 1, mRect.y + mRect.h + 1 );
-	qglVertex2f ( mRect.x + mRect.w + GUIED_GRABSIZE, mRect.y + mRect.h + 1 );
-	qglVertex2f ( mRect.x + mRect.w + GUIED_GRABSIZE, mRect.y + mRect.h + GUIED_GRABSIZE );
-	qglVertex2f ( mRect.x + mRect.w + 1, mRect.y + mRect.h + GUIED_GRABSIZE );
+	qglVertex2f( mRect.x + mRect.w + 1, mRect.y + mRect.h + 1 );
+	qglVertex2f( mRect.x + mRect.w + GUIED_GRABSIZE, mRect.y + mRect.h + 1 );
+	qglVertex2f( mRect.x + mRect.w + GUIED_GRABSIZE, mRect.y + mRect.h + GUIED_GRABSIZE );
+	qglVertex2f( mRect.x + mRect.w + 1, mRect.y + mRect.h + GUIED_GRABSIZE );
 
 	// Right
-	qglVertex2f ( mRect.x + mRect.w + 1, mRect.y + mRect.h / 2 - GUIED_GRABSIZE / 2);
-	qglVertex2f ( mRect.x + mRect.w + GUIED_GRABSIZE, mRect.y + mRect.h / 2 - GUIED_GRABSIZE / 2 );
-	qglVertex2f ( mRect.x + mRect.w + GUIED_GRABSIZE, mRect.y + mRect.h / 2 + GUIED_GRABSIZE / 2 );
-	qglVertex2f ( mRect.x + mRect.w + 1, mRect.y + mRect.h / 2 + GUIED_GRABSIZE / 2 );
+	qglVertex2f( mRect.x + mRect.w + 1, mRect.y + mRect.h / 2 - GUIED_GRABSIZE / 2 );
+	qglVertex2f( mRect.x + mRect.w + GUIED_GRABSIZE, mRect.y + mRect.h / 2 - GUIED_GRABSIZE / 2 );
+	qglVertex2f( mRect.x + mRect.w + GUIED_GRABSIZE, mRect.y + mRect.h / 2 + GUIED_GRABSIZE / 2 );
+	qglVertex2f( mRect.x + mRect.w + 1, mRect.y + mRect.h / 2 + GUIED_GRABSIZE / 2 );
 
 	// Top Right
-	qglVertex2f ( mRect.x + mRect.w + 1, mRect.y - GUIED_GRABSIZE );
-	qglVertex2f ( mRect.x + mRect.w + GUIED_GRABSIZE, mRect.y - GUIED_GRABSIZE );
-	qglVertex2f ( mRect.x + mRect.w + GUIED_GRABSIZE, mRect.y - 1 );
-	qglVertex2f ( mRect.x + mRect.w + 1, mRect.y - 1 );
+	qglVertex2f( mRect.x + mRect.w + 1, mRect.y - GUIED_GRABSIZE );
+	qglVertex2f( mRect.x + mRect.w + GUIED_GRABSIZE, mRect.y - GUIED_GRABSIZE );
+	qglVertex2f( mRect.x + mRect.w + GUIED_GRABSIZE, mRect.y - 1 );
+	qglVertex2f( mRect.x + mRect.w + 1, mRect.y - 1 );
 
 	// Top
-	qglVertex2f ( mRect.x - GUIED_GRABSIZE / 2 + mRect.w / 2, mRect.y - GUIED_GRABSIZE );
-	qglVertex2f ( mRect.x + GUIED_GRABSIZE / 2 + mRect.w / 2, mRect.y - GUIED_GRABSIZE );
-	qglVertex2f ( mRect.x + GUIED_GRABSIZE / 2 + mRect.w / 2, mRect.y - 1 );
-	qglVertex2f ( mRect.x - GUIED_GRABSIZE / 2 + mRect.w / 2, mRect.y - 1 );
+	qglVertex2f( mRect.x - GUIED_GRABSIZE / 2 + mRect.w / 2, mRect.y - GUIED_GRABSIZE );
+	qglVertex2f( mRect.x + GUIED_GRABSIZE / 2 + mRect.w / 2, mRect.y - GUIED_GRABSIZE );
+	qglVertex2f( mRect.x + GUIED_GRABSIZE / 2 + mRect.w / 2, mRect.y - 1 );
+	qglVertex2f( mRect.x - GUIED_GRABSIZE / 2 + mRect.w / 2, mRect.y - 1 );
 
-	qglEnd ( );
+	qglEnd( );
 
-	qglPolygonMode(GL_FRONT_AND_BACK, GL_FILL );
+	qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 }
 
 /*
@@ -296,20 +296,20 @@ rvGESelectionMgr::UpdateRectangle
 Update the selection rectangle from all the currently selected items.
 ================
 */
-void rvGESelectionMgr::UpdateRectangle ( void )
+void rvGESelectionMgr::UpdateRectangle( void )
 {
 	int		i;
 	idVec2	point;
 
-	assert ( mWorkspace );
+	assert( mWorkspace );
 
-	if ( mSelections.Num ( ) <= 0 )
+	if( mSelections.Num( ) <= 0 )
 	{
 		return;
 	}
 
 	// Start with the first selections retangle
-	mRect = rvGEWindowWrapper::GetWrapper( mSelections[0] )->GetScreenRect ( );
+	mRect = rvGEWindowWrapper::GetWrapper( mSelections[0] )->GetScreenRect( );
 
 	// Its easier to do the calculates with it being top left and bottom right
 	// so temporarly convert width and height to right and bottom
@@ -317,21 +317,21 @@ void rvGESelectionMgr::UpdateRectangle ( void )
 	mRect.h += mRect.y;
 
 	// Merge all the rest of the rectangles to make the actual selection rectangle
-	for ( i = 1; i < mSelections.Num(); i ++ )
+	for( i = 1; i < mSelections.Num(); i ++ )
 	{
 		idRectangle selRect;
-		selRect = rvGEWindowWrapper::GetWrapper ( mSelections[i] )->GetScreenRect ( );
+		selRect = rvGEWindowWrapper::GetWrapper( mSelections[i] )->GetScreenRect( );
 
-		mRect.w = max(selRect.x+selRect.w,mRect.w);
-		mRect.h = max(selRect.y+selRect.h,mRect.h);
-		mRect.x = min(selRect.x,mRect.x);
-		mRect.y = min(selRect.y,mRect.y);
+		mRect.w = max( selRect.x + selRect.w, mRect.w );
+		mRect.h = max( selRect.y + selRect.h, mRect.h );
+		mRect.x = min( selRect.x, mRect.x );
+		mRect.y = min( selRect.y, mRect.y );
 	}
 
 	mRect.w -= mRect.x;
 	mRect.h -= mRect.y;
 
-	mWorkspace->WorkspaceToWindow ( mRect );
+	mWorkspace->WorkspaceToWindow( mRect );
 }
 
 /*
@@ -341,16 +341,16 @@ rvGESelectionMgr::UpdateExpression
 Update whether or not the selection has an expression in it
 ================
 */
-void rvGESelectionMgr::UpdateExpression ( void )
+void rvGESelectionMgr::UpdateExpression( void )
 {
 	int i;
 
 	mExpression = false;
-	for ( i = 0; i < mSelections.Num(); i ++ )
+	for( i = 0; i < mSelections.Num(); i ++ )
 	{
 		rvGEWindowWrapper* wrapper;
-		wrapper = rvGEWindowWrapper::GetWrapper ( mSelections[i] );
-		if ( wrapper && !wrapper->CanMoveAndSize ( ) )
+		wrapper = rvGEWindowWrapper::GetWrapper( mSelections[i] );
+		if( wrapper && !wrapper->CanMoveAndSize( ) )
 		{
 			mExpression = true;
 			break;
@@ -366,70 +366,70 @@ Test to see if the given coordinate is within the selection rectangle and if it 
 see what its over.
 ================
 */
-rvGESelectionMgr::EHitTest rvGESelectionMgr::HitTest ( float x, float y )
+rvGESelectionMgr::EHitTest rvGESelectionMgr::HitTest( float x, float y )
 {
-	if ( !mSelections.Num ( ) )
+	if( !mSelections.Num( ) )
 	{
 		return HT_NONE;
 	}
 
-	UpdateRectangle ( );
+	UpdateRectangle( );
 
 	// Inside the rectangle is moving
-	if ( mRect.Contains ( x, y ) )
+	if( mRect.Contains( x, y ) )
 	{
-		return mExpression?HT_SELECT:HT_MOVE;
+		return mExpression ? HT_SELECT : HT_MOVE;
 	}
 
-	if ( mExpression )
+	if( mExpression )
 	{
 		return HT_NONE;
 	}
 
 	// Check for top left sizing
-	if ( idRectangle ( mRect.x - GUIED_GRABSIZE, mRect.y - GUIED_GRABSIZE, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains ( x, y ) )
+	if( idRectangle( mRect.x - GUIED_GRABSIZE, mRect.y - GUIED_GRABSIZE, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) )
 	{
 		return HT_SIZE_TOPLEFT;
 	}
 
 	// Check for left sizing
-	if ( idRectangle ( mRect.x - GUIED_GRABSIZE, mRect.y + mRect.h / 2 - GUIED_GRABSIZE / 2, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains ( x, y ) )
+	if( idRectangle( mRect.x - GUIED_GRABSIZE, mRect.y + mRect.h / 2 - GUIED_GRABSIZE / 2, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) )
 	{
 		return HT_SIZE_LEFT;
 	}
 
 	// Check for bottom left sizing
-	if ( idRectangle ( mRect.x - GUIED_GRABSIZE, mRect.y + mRect.h, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains ( x, y ) )
+	if( idRectangle( mRect.x - GUIED_GRABSIZE, mRect.y + mRect.h, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) )
 	{
 		return HT_SIZE_BOTTOMLEFT;
 	}
 
 	// Check for bottom sizing
-	if ( idRectangle ( mRect.x + mRect.w / 2 - GUIED_GRABSIZE / 2, mRect.y + mRect.h, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains ( x, y ) )
+	if( idRectangle( mRect.x + mRect.w / 2 - GUIED_GRABSIZE / 2, mRect.y + mRect.h, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) )
 	{
 		return HT_SIZE_BOTTOM;
 	}
 
 	// Check for bottom right sizing
-	if ( idRectangle ( mRect.x + mRect.w, mRect.y + mRect.h, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains ( x, y ) )
+	if( idRectangle( mRect.x + mRect.w, mRect.y + mRect.h, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) )
 	{
 		return HT_SIZE_BOTTOMRIGHT;
 	}
 
 	// Check for right sizing
-	if ( idRectangle ( mRect.x + mRect.w, mRect.y + mRect.h / 2 - GUIED_GRABSIZE / 2, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains ( x, y ) )
+	if( idRectangle( mRect.x + mRect.w, mRect.y + mRect.h / 2 - GUIED_GRABSIZE / 2, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) )
 	{
 		return HT_SIZE_RIGHT;
 	}
 
 	// Check for top right sizing
-	if ( idRectangle ( mRect.x + mRect.w, mRect.y - GUIED_GRABSIZE, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains ( x, y ) )
+	if( idRectangle( mRect.x + mRect.w, mRect.y - GUIED_GRABSIZE, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) )
 	{
 		return HT_SIZE_TOPRIGHT;
 	}
 
 	// Check for top sizing
-	if ( idRectangle ( mRect.x + mRect.w / 2 - GUIED_GRABSIZE / 2, mRect.y - GUIED_GRABSIZE, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains ( x, y ) )
+	if( idRectangle( mRect.x + mRect.w / 2 - GUIED_GRABSIZE / 2, mRect.y - GUIED_GRABSIZE, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) )
 	{
 		return HT_SIZE_TOP;
 	}
@@ -444,7 +444,7 @@ rvGESelectionMgr::GetBottomMost
 Returns the bottom most selected window.
 ================
 */
-idWindow* rvGESelectionMgr::GetBottomMost ( void )
+idWindow* rvGESelectionMgr::GetBottomMost( void )
 {
 	idWindow*	bottom;
 	int			depth;
@@ -454,16 +454,16 @@ idWindow* rvGESelectionMgr::GetBottomMost ( void )
 	bottom = NULL;
 
 	// Loop through all the selections and find the bottom most window
-	for ( i = 0; i < mSelections.Num(); i ++ )
+	for( i = 0; i < mSelections.Num(); i ++ )
 	{
 		idWindow* parent;
 		int		  tempDepth;
 
 		// Calculate the depth of the window by iterating back through the windows parents
-		for ( tempDepth = 0, parent = mSelections[i]; parent; parent = parent->GetParent ( ), tempDepth++ );
+		for( tempDepth = 0, parent = mSelections[i]; parent; parent = parent->GetParent( ), tempDepth++ );
 
 		// If the new depth is less than the current depth then this window is below
-		if ( tempDepth < depth )
+		if( tempDepth < depth )
 		{
 			depth  = tempDepth;
 			bottom = mSelections[i];

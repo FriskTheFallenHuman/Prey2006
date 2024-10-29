@@ -35,10 +35,11 @@ If you have questions concerning this license or the applicable additional terms
 
 // CInspectorDialog dialog
 
-class CInspectorDialog : public CTabsDlg {
+class CInspectorDialog : public CTabsDlg
+{
 	//DECLARE_DYNAMIC(CInspectorDialog)
 public:
-			CInspectorDialog( CWnd *pParent = NULL );   // standard constructor
+	CInspectorDialog( CWnd* pParent = NULL );   // standard constructor
 	virtual ~CInspectorDialog();
 
 	enum { IDD = IDD_DIALOG_INSPECTORS };
@@ -50,20 +51,20 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
-	void AssignModel ();
-	void SetMode(int mode, bool updateTabs = true);
-	void UpdateEntitySel(const eclass_t* ent);
+	void AssignModel();
+	void SetMode( int mode, bool updateTabs = true );
+	void UpdateEntitySel( const eclass_t* ent );
 	void UpdateSelectedEntity();
 	void FillClassList();
-	bool GetSelectAllCriteria(idStr &key, idStr &val);
-	void SetDockedTabs(bool docked, int ID);
+	bool GetSelectAllCriteria( idStr& key, idStr& val );
+	void SetDockedTabs( bool docked, int ID );
 
-	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg void OnSizing(UINT nSide, LPRECT lpRect);
-	afx_msg void OnMoving(UINT nSide, LPRECT lpRect);
+	afx_msg void OnSize( UINT nType, int cx, int cy );
+	afx_msg void OnSizing( UINT nSide, LPRECT lpRect );
+	afx_msg void OnMoving( UINT nSide, LPRECT lpRect );
 	afx_msg void OnDestroy();
 	afx_msg void OnClose();
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual BOOL PreTranslateMessage( MSG* pMsg );
 
 	CTabCtrl		tabInspector;
 	//idGLConsoleWidget	consoleWnd;
@@ -75,4 +76,4 @@ public:
 	int prevMode;
 };
 
-extern CInspectorDialog *g_Inspectors;
+extern CInspectorDialog* g_Inspectors;

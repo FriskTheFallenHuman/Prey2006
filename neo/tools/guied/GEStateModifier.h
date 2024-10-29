@@ -29,21 +29,21 @@ If you have questions concerning this license or the applicable additional terms
 #define GESTATEMODIFIER_H_
 
 #ifndef GEMODIFIER_H_
-#include "GEModifier.h"
+	#include "GEModifier.h"
 #endif
 
 class rvGEStateModifier : public rvGEModifier
 {
 public:
 
-	rvGEStateModifier ( const char* name, idWindow* window, idDict& dict );
+	rvGEStateModifier( const char* name, idWindow* window, idDict& dict );
 
-	virtual bool		Apply	( void );
-	virtual bool		Undo	( void );
+	virtual bool		Apply( void );
+	virtual bool		Undo( void );
 
 protected:
 
-	bool	SetState	( idDict& dict );
+	bool	SetState( idDict& dict );
 
 	rvGEWindowWrapper::EWindowType	mWindowType;
 	rvGEWindowWrapper::EWindowType	mUndoWindowType;

@@ -32,7 +32,8 @@ If you have questions concerning this license or the applicable additional terms
 	#error "include 'pch.h' before including this file for PCH"
 #endif
 
-class CRadiantApp : public CWinAppEx {
+class CRadiantApp : public CWinAppEx
+{
 public:
 	CRadiantApp() noexcept;
 

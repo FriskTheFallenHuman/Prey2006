@@ -37,7 +37,8 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFView dialog
 
-toolTip_t DialogAFView::toolTips[] = {
+toolTip_t DialogAFView::toolTips[] =
+{
 	{ IDC_CHECK_VIEW_BODIES, "show bodies" },
 	{ IDC_CHECK_VIEW_BODYNAMES, "show body names" },
 	{ IDC_CHECK_VIEW_BODYMASS, "show body mass" },
@@ -64,15 +65,15 @@ toolTip_t DialogAFView::toolTips[] = {
 	{ 0, NULL }
 };
 
-IMPLEMENT_DYNAMIC(DialogAFView, CDialog)
+IMPLEMENT_DYNAMIC( DialogAFView, CDialog )
 
 /*
 ================
 DialogAFView::DialogAFView
 ================
 */
-DialogAFView::DialogAFView(CWnd* pParent /*=NULL*/)
-	: CDialog(DialogAFView::IDD, pParent)
+DialogAFView::DialogAFView( CWnd* pParent /*=NULL*/ )
+	: CDialog( DialogAFView::IDD, pParent )
 
 {
 	m_showBodies = cvarSystem->GetCVarBool( "af_showBodies" );
@@ -109,7 +110,8 @@ DialogAFView::DialogAFView(CWnd* pParent /*=NULL*/)
 DialogAFView::~DialogAFView
 ================
 */
-DialogAFView::~DialogAFView() {
+DialogAFView::~DialogAFView()
+{
 }
 
 /*
@@ -117,32 +119,33 @@ DialogAFView::~DialogAFView() {
 DialogAFView::DoDataExchange
 ================
 */
-void DialogAFView::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
+void DialogAFView::DoDataExchange( CDataExchange* pDX )
+{
+	CDialog::DoDataExchange( pDX );
 	//{{AFX_DATA_MAP(DialogAFView)
-	DDX_Check(pDX, IDC_CHECK_VIEW_BODIES, m_showBodies);
-	DDX_Check(pDX, IDC_CHECK_VIEW_BODYNAMES, m_showBodyNames);
-	DDX_Check(pDX, IDC_CHECK_VIEW_BODYMASS, m_showMass);
-	DDX_Check(pDX, IDC_CHECK_VIEW_TOTALMASS, m_showTotalMass);
-	DDX_Check(pDX, IDC_CHECK_VIEW_INERTIATENSOR, m_showInertia);
-	DDX_Check(pDX, IDC_CHECK_VIEW_VELOCITY, m_showVelocity);
-	DDX_Check(pDX, IDC_CHECK_VIEW_CONSTRAINTS, m_showConstraints);
-	DDX_Check(pDX, IDC_CHECK_VIEW_CONSTRAINTNAMES, m_showConstraintNames);
-	DDX_Check(pDX, IDC_CHECK_VIEW_PRIMARYONLY, m_showPrimaryOnly);
-	DDX_Check(pDX, IDC_CHECK_VIEW_LIMITS, m_showLimits);
-	DDX_Check(pDX, IDC_CHECK_VIEW_CONSTRAINEDBODIES, m_showConstrainedBodies);
-	DDX_Check(pDX, IDC_CHECK_VIEW_TREES, m_showTrees);
-	DDX_Check(pDX, IDC_CHECK_MD5_SKELETON, m_showSkeleton);
-	DDX_Check(pDX, IDC_CHECK_MD5_SKELETONONLY, m_showSkeletonOnly);
-	DDX_Check(pDX, IDC_CHECK_LINES_DEPTHTEST, m_debugLineDepthTest);
-	DDX_Check(pDX, IDC_CHECK_LINES_USEARROWS, m_debugLineUseArrows);
-	DDX_Check(pDX, IDC_CHECK_PHYSICS_NOFRICTION, m_noFriction);
-	DDX_Check(pDX, IDC_CHECK_PHYSICS_NOLIMITS, m_noLimits);
-	DDX_Check(pDX, IDC_CHECK_PHYSICS_NOGRAVITY, m_noGravity);
-	DDX_Check(pDX, IDC_CHECK_PHYSICS_NOSELFCOLLISION, m_noSelfCollision);
-	DDX_Check(pDX, IDC_CHECK_PHYSICS_TIMING, m_showTimings);
-	DDX_Check(pDX, IDC_CHECK_PHYSICS_DRAG_ENTITIES, m_dragEntity);
-	DDX_Check(pDX, IDC_CHECK_PHYSICS_SHOW_DRAG_SELECTION, m_dragShowSelection);
+	DDX_Check( pDX, IDC_CHECK_VIEW_BODIES, m_showBodies );
+	DDX_Check( pDX, IDC_CHECK_VIEW_BODYNAMES, m_showBodyNames );
+	DDX_Check( pDX, IDC_CHECK_VIEW_BODYMASS, m_showMass );
+	DDX_Check( pDX, IDC_CHECK_VIEW_TOTALMASS, m_showTotalMass );
+	DDX_Check( pDX, IDC_CHECK_VIEW_INERTIATENSOR, m_showInertia );
+	DDX_Check( pDX, IDC_CHECK_VIEW_VELOCITY, m_showVelocity );
+	DDX_Check( pDX, IDC_CHECK_VIEW_CONSTRAINTS, m_showConstraints );
+	DDX_Check( pDX, IDC_CHECK_VIEW_CONSTRAINTNAMES, m_showConstraintNames );
+	DDX_Check( pDX, IDC_CHECK_VIEW_PRIMARYONLY, m_showPrimaryOnly );
+	DDX_Check( pDX, IDC_CHECK_VIEW_LIMITS, m_showLimits );
+	DDX_Check( pDX, IDC_CHECK_VIEW_CONSTRAINEDBODIES, m_showConstrainedBodies );
+	DDX_Check( pDX, IDC_CHECK_VIEW_TREES, m_showTrees );
+	DDX_Check( pDX, IDC_CHECK_MD5_SKELETON, m_showSkeleton );
+	DDX_Check( pDX, IDC_CHECK_MD5_SKELETONONLY, m_showSkeletonOnly );
+	DDX_Check( pDX, IDC_CHECK_LINES_DEPTHTEST, m_debugLineDepthTest );
+	DDX_Check( pDX, IDC_CHECK_LINES_USEARROWS, m_debugLineUseArrows );
+	DDX_Check( pDX, IDC_CHECK_PHYSICS_NOFRICTION, m_noFriction );
+	DDX_Check( pDX, IDC_CHECK_PHYSICS_NOLIMITS, m_noLimits );
+	DDX_Check( pDX, IDC_CHECK_PHYSICS_NOGRAVITY, m_noGravity );
+	DDX_Check( pDX, IDC_CHECK_PHYSICS_NOSELFCOLLISION, m_noSelfCollision );
+	DDX_Check( pDX, IDC_CHECK_PHYSICS_TIMING, m_showTimings );
+	DDX_Check( pDX, IDC_CHECK_PHYSICS_DRAG_ENTITIES, m_dragEntity );
+	DDX_Check( pDX, IDC_CHECK_PHYSICS_SHOW_DRAG_SELECTION, m_dragShowSelection );
 	//}}AFX_DATA_MAP
 }
 
@@ -151,175 +154,213 @@ void DialogAFView::DoDataExchange(CDataExchange* pDX) {
 DialogAFView::OnToolHitTest
 ================
 */
-INT_PTR DialogAFView::OnToolHitTest( CPoint point, TOOLINFO* pTI ) const {
+INT_PTR DialogAFView::OnToolHitTest( CPoint point, TOOLINFO* pTI ) const
+{
 	CDialog::OnToolHitTest( point, pTI );
 	return DefaultOnToolHitTest( toolTips, this, point, pTI );
 }
 
-BEGIN_MESSAGE_MAP(DialogAFView, CDialog)
-	ON_NOTIFY_EX_RANGE(TTN_NEEDTEXTW, 0, 0xFFFF, OnToolTipNotify)
-	ON_NOTIFY_EX_RANGE(TTN_NEEDTEXTA, 0, 0xFFFF, OnToolTipNotify)
-	ON_BN_CLICKED(IDC_CHECK_VIEW_BODIES, OnBnClickedCheckViewBodies)
-	ON_BN_CLICKED(IDC_CHECK_VIEW_BODYNAMES, OnBnClickedCheckViewBodynames)
-	ON_BN_CLICKED(IDC_CHECK_VIEW_BODYMASS, OnBnClickedCheckViewBodyMass)
-	ON_BN_CLICKED(IDC_CHECK_VIEW_TOTALMASS, OnBnClickedCheckViewTotalMass)
-	ON_BN_CLICKED(IDC_CHECK_VIEW_INERTIATENSOR, OnBnClickedCheckViewInertiatensor)
-	ON_BN_CLICKED(IDC_CHECK_VIEW_VELOCITY, OnBnClickedCheckViewVelocity)
-	ON_BN_CLICKED(IDC_CHECK_VIEW_CONSTRAINTS, OnBnClickedCheckViewConstraints)
-	ON_BN_CLICKED(IDC_CHECK_VIEW_CONSTRAINTNAMES, OnBnClickedCheckViewConstraintnames)
-	ON_BN_CLICKED(IDC_CHECK_VIEW_PRIMARYONLY, OnBnClickedCheckViewPrimaryonly)
-	ON_BN_CLICKED(IDC_CHECK_VIEW_LIMITS, OnBnClickedCheckViewLimits)
-	ON_BN_CLICKED(IDC_CHECK_VIEW_CONSTRAINEDBODIES, OnBnClickedCheckViewConstrainedBodies)
-	ON_BN_CLICKED(IDC_CHECK_VIEW_TREES, OnBnClickedCheckViewTrees)
-	ON_BN_CLICKED(IDC_CHECK_MD5_SKELETON, OnBnClickedCheckMd5Skeleton)
-	ON_BN_CLICKED(IDC_CHECK_MD5_SKELETONONLY, OnBnClickedCheckMd5Skeletononly)
-	ON_BN_CLICKED(IDC_CHECK_LINES_DEPTHTEST, OnBnClickedCheckLinesDepthtest)
-	ON_BN_CLICKED(IDC_CHECK_LINES_USEARROWS, OnBnClickedCheckLinesUsearrows)
-	ON_BN_CLICKED(IDC_CHECK_PHYSICS_NOFRICTION, OnBnClickedCheckPhysicsNofriction)
-	ON_BN_CLICKED(IDC_CHECK_PHYSICS_NOLIMITS, OnBnClickedCheckPhysicsNolimits)
-	ON_BN_CLICKED(IDC_CHECK_PHYSICS_NOGRAVITY, OnBnClickedCheckPhysicsNogravity)
-	ON_BN_CLICKED(IDC_CHECK_PHYSICS_NOSELFCOLLISION, OnBnClickedCheckPhysicsNoselfcollision)
-	ON_BN_CLICKED(IDC_CHECK_PHYSICS_TIMING, OnBnClickedCheckPhysicsTiming)
-	ON_BN_CLICKED(IDC_CHECK_PHYSICS_DRAG_ENTITIES, OnBnClickedCheckPhysicsDragEntities)
-	ON_BN_CLICKED(IDC_CHECK_PHYSICS_SHOW_DRAG_SELECTION, OnBnClickedCheckPhysicsShowDragSelection)
+BEGIN_MESSAGE_MAP( DialogAFView, CDialog )
+	ON_NOTIFY_EX_RANGE( TTN_NEEDTEXTW, 0, 0xFFFF, OnToolTipNotify )
+	ON_NOTIFY_EX_RANGE( TTN_NEEDTEXTA, 0, 0xFFFF, OnToolTipNotify )
+	ON_BN_CLICKED( IDC_CHECK_VIEW_BODIES, OnBnClickedCheckViewBodies )
+	ON_BN_CLICKED( IDC_CHECK_VIEW_BODYNAMES, OnBnClickedCheckViewBodynames )
+	ON_BN_CLICKED( IDC_CHECK_VIEW_BODYMASS, OnBnClickedCheckViewBodyMass )
+	ON_BN_CLICKED( IDC_CHECK_VIEW_TOTALMASS, OnBnClickedCheckViewTotalMass )
+	ON_BN_CLICKED( IDC_CHECK_VIEW_INERTIATENSOR, OnBnClickedCheckViewInertiatensor )
+	ON_BN_CLICKED( IDC_CHECK_VIEW_VELOCITY, OnBnClickedCheckViewVelocity )
+	ON_BN_CLICKED( IDC_CHECK_VIEW_CONSTRAINTS, OnBnClickedCheckViewConstraints )
+	ON_BN_CLICKED( IDC_CHECK_VIEW_CONSTRAINTNAMES, OnBnClickedCheckViewConstraintnames )
+	ON_BN_CLICKED( IDC_CHECK_VIEW_PRIMARYONLY, OnBnClickedCheckViewPrimaryonly )
+	ON_BN_CLICKED( IDC_CHECK_VIEW_LIMITS, OnBnClickedCheckViewLimits )
+	ON_BN_CLICKED( IDC_CHECK_VIEW_CONSTRAINEDBODIES, OnBnClickedCheckViewConstrainedBodies )
+	ON_BN_CLICKED( IDC_CHECK_VIEW_TREES, OnBnClickedCheckViewTrees )
+	ON_BN_CLICKED( IDC_CHECK_MD5_SKELETON, OnBnClickedCheckMd5Skeleton )
+	ON_BN_CLICKED( IDC_CHECK_MD5_SKELETONONLY, OnBnClickedCheckMd5Skeletononly )
+	ON_BN_CLICKED( IDC_CHECK_LINES_DEPTHTEST, OnBnClickedCheckLinesDepthtest )
+	ON_BN_CLICKED( IDC_CHECK_LINES_USEARROWS, OnBnClickedCheckLinesUsearrows )
+	ON_BN_CLICKED( IDC_CHECK_PHYSICS_NOFRICTION, OnBnClickedCheckPhysicsNofriction )
+	ON_BN_CLICKED( IDC_CHECK_PHYSICS_NOLIMITS, OnBnClickedCheckPhysicsNolimits )
+	ON_BN_CLICKED( IDC_CHECK_PHYSICS_NOGRAVITY, OnBnClickedCheckPhysicsNogravity )
+	ON_BN_CLICKED( IDC_CHECK_PHYSICS_NOSELFCOLLISION, OnBnClickedCheckPhysicsNoselfcollision )
+	ON_BN_CLICKED( IDC_CHECK_PHYSICS_TIMING, OnBnClickedCheckPhysicsTiming )
+	ON_BN_CLICKED( IDC_CHECK_PHYSICS_DRAG_ENTITIES, OnBnClickedCheckPhysicsDragEntities )
+	ON_BN_CLICKED( IDC_CHECK_PHYSICS_SHOW_DRAG_SELECTION, OnBnClickedCheckPhysicsShowDragSelection )
 END_MESSAGE_MAP()
 
 
 // DialogAFView message handlers
 
-BOOL DialogAFView::OnToolTipNotify( UINT id, NMHDR *pNMHDR, LRESULT *pResult ) {
+BOOL DialogAFView::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult )
+{
 	return DefaultOnToolTipNotify( toolTips, id, pNMHDR, pResult );
 }
 
-void DialogAFView::OnBnClickedCheckViewBodies() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckViewBodies()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showBodies", m_showBodies != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewBodynames() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckViewBodynames()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showBodyNames", m_showBodyNames != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewBodyMass() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckViewBodyMass()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showMass", m_showMass != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewTotalMass() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckViewTotalMass()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showTotalMass", m_showTotalMass != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewInertiatensor() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckViewInertiatensor()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showInertia", m_showInertia != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewVelocity() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckViewVelocity()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showVelocity", m_showVelocity != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewConstraints() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckViewConstraints()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showConstraints", m_showConstraints != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewConstraintnames() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckViewConstraintnames()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showConstraintNames", m_showConstraintNames != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewPrimaryonly() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckViewPrimaryonly()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showPrimaryOnly", m_showPrimaryOnly != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewLimits() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckViewLimits()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showLimits", m_showLimits != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewConstrainedBodies() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckViewConstrainedBodies()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showConstrainedBodies", m_showConstrainedBodies != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewTrees() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckViewTrees()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showTrees", m_showTrees != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckMd5Skeleton() {
-	UpdateData(TRUE);
-	if ( !m_showSkeletonOnly ) {
-		if ( m_showSkeleton ) {
+void DialogAFView::OnBnClickedCheckMd5Skeleton()
+{
+	UpdateData( TRUE );
+	if( !m_showSkeletonOnly )
+	{
+		if( m_showSkeleton )
+		{
 			cvarSystem->SetCVarInteger( "r_showSkel", 1 );
-		} else {
+		}
+		else
+		{
 			cvarSystem->SetCVarInteger( "r_showSkel", 0 );
 		}
 	}
 }
 
-void DialogAFView::OnBnClickedCheckMd5Skeletononly() {
-	UpdateData(TRUE);
-	if ( m_showSkeletonOnly ) {
+void DialogAFView::OnBnClickedCheckMd5Skeletononly()
+{
+	UpdateData( TRUE );
+	if( m_showSkeletonOnly )
+	{
 		cvarSystem->SetCVarInteger( "r_showSkel", 2 );
-	} else {
-		if ( m_showSkeleton ) {
+	}
+	else
+	{
+		if( m_showSkeleton )
+		{
 			cvarSystem->SetCVarInteger( "r_showSkel", 1 );
-		} else {
+		}
+		else
+		{
 			cvarSystem->SetCVarInteger( "r_showSkel", 0 );
 		}
 	}
 }
 
-void DialogAFView::OnBnClickedCheckLinesDepthtest() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckLinesDepthtest()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "r_debugLineDepthTest", m_debugLineDepthTest != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckLinesUsearrows() {
-	UpdateData(TRUE);
-	if ( m_debugLineUseArrows ) {
+void DialogAFView::OnBnClickedCheckLinesUsearrows()
+{
+	UpdateData( TRUE );
+	if( m_debugLineUseArrows )
+	{
 		cvarSystem->SetCVarInteger( "r_debugArrowStep", 120 );
-	} else {
+	}
+	else
+	{
 		cvarSystem->SetCVarInteger( "r_debugArrowStep", 0 );
 	}
 }
 
-void DialogAFView::OnBnClickedCheckPhysicsNofriction() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckPhysicsNofriction()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_skipFriction", m_noFriction != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckPhysicsNolimits() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckPhysicsNolimits()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_skipLimits", m_noLimits != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckPhysicsNogravity() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckPhysicsNogravity()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarFloat( "g_gravity", m_noGravity ? 0.0f : m_gravity );
 }
 
-void DialogAFView::OnBnClickedCheckPhysicsNoselfcollision() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckPhysicsNoselfcollision()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_skipSelfCollision", m_noSelfCollision != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckPhysicsTiming() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckPhysicsTiming()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showTimings", m_showTimings != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckPhysicsDragEntities() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckPhysicsDragEntities()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "g_dragEntity", m_dragEntity != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckPhysicsShowDragSelection() {
-	UpdateData(TRUE);
+void DialogAFView::OnBnClickedCheckPhysicsShowDragSelection()
+{
+	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "g_dragShowSelection", m_dragShowSelection != FALSE );
 }

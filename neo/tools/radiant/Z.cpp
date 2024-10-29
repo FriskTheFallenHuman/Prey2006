@@ -40,7 +40,8 @@ z_t z;
 	Z_Init
  =======================================================================================================================
  */
-void Z_Init(void) {
+void Z_Init( void )
+{
 	z.origin[0] = 0;
 	z.origin[1] = 20;
 	z.origin[2] = 46;
@@ -56,23 +57,25 @@ static int	cursorx, cursory;
 	Z_MouseDown
  =======================================================================================================================
  */
-void Z_MouseDown(int x, int y, int buttons) {
+void Z_MouseDown( int x, int y, int buttons )
+{
 	idVec3	org, dir, vup, vright;
-	idEditorBrush *b;
+	idEditorBrush* b;
 
-	Sys_GetCursorPos(&cursorx, &cursory);
+	Sys_GetCursorPos( &cursorx, &cursory );
 
 	vup[0] = 0;
 	vup[1] = 0;
 	vup[2] = 1 / z.scale;
 
-	VectorCopy(z.origin, org);
-	org[2] += (y - (z.height / 2)) / z.scale;
+	VectorCopy( z.origin, org );
+	org[2] += ( y - ( z.height / 2 ) ) / z.scale;
 	org[1] = MIN_WORLD_COORD;
 
 	b = selected_brushes.next;
-	if (b != &selected_brushes) {
-		org[0] = (b->mins[0] + b->maxs[0]) / 2;
+	if( b != &selected_brushes )
+	{
+		org[0] = ( b->mins[0] + b->maxs[0] ) / 2;
 	}
 
 	dir[0] = 0;
@@ -86,57 +89,57 @@ void Z_MouseDown(int x, int y, int buttons) {
 
 	// new mouse code for ZClip, I'll do this stuff before falling through into the standard ZWindow mouse code...
 	//
-	if (g_pParentWnd->GetZWnd()->m_pZClip)	// should always be the case I think, but this is safer
+	if( g_pParentWnd->GetZWnd()->m_pZClip )	// should always be the case I think, but this is safer
 	{
 		bool bToggle = false;
 		bool bSetTop = false;
 		bool bSetBot = false;
 		bool bReset  = false;
 
-		if (g_PrefsDlg.m_nMouseButtons == 2)
+		if( g_PrefsDlg.m_nMouseButtons == 2 )
 		{
 			// 2 button mice...
 			//
-			bToggle = (GetKeyState(VK_F1) & 0x8000) != 0;
-			bSetTop = (GetKeyState(VK_F2) & 0x8000) != 0;
-			bSetBot = (GetKeyState(VK_F3) & 0x8000) != 0;
-			bReset  = (GetKeyState(VK_F4) & 0x8000) != 0;
+			bToggle = ( GetKeyState( VK_F1 ) & 0x8000 ) != 0;
+			bSetTop = ( GetKeyState( VK_F2 ) & 0x8000 ) != 0;
+			bSetBot = ( GetKeyState( VK_F3 ) & 0x8000 ) != 0;
+			bReset  = ( GetKeyState( VK_F4 ) & 0x8000 ) != 0;
 		}
 		else
 		{
 			// 3 button mice...
 			//
-			bToggle = (buttons == (MK_RBUTTON|MK_SHIFT|MK_CONTROL));
-			bSetTop = (buttons == (MK_RBUTTON|MK_SHIFT));
-			bSetBot = (buttons == (MK_RBUTTON|MK_CONTROL));
-			bReset  = (GetKeyState(VK_F4) & 0x8000) != 0;
+			bToggle = ( buttons == ( MK_RBUTTON | MK_SHIFT | MK_CONTROL ) );
+			bSetTop = ( buttons == ( MK_RBUTTON | MK_SHIFT ) );
+			bSetBot = ( buttons == ( MK_RBUTTON | MK_CONTROL ) );
+			bReset  = ( GetKeyState( VK_F4 ) & 0x8000 ) != 0;
 		}
 
-		if (bToggle)
+		if( bToggle )
 		{
-			g_pParentWnd->GetZWnd()->m_pZClip->Enable(!(g_pParentWnd->GetZWnd()->m_pZClip->IsEnabled()));
-			Sys_UpdateWindows (W_ALL);
+			g_pParentWnd->GetZWnd()->m_pZClip->Enable( !( g_pParentWnd->GetZWnd()->m_pZClip->IsEnabled() ) );
+			Sys_UpdateWindows( W_ALL );
 			return;
 		}
 
-		if (bSetTop)
+		if( bSetTop )
 		{
-			g_pParentWnd->GetZWnd()->m_pZClip->SetTop(org[2]);
-			Sys_UpdateWindows (W_ALL);
+			g_pParentWnd->GetZWnd()->m_pZClip->SetTop( org[2] );
+			Sys_UpdateWindows( W_ALL );
 			return;
 		}
 
-		if (bSetBot)
+		if( bSetBot )
 		{
-			g_pParentWnd->GetZWnd()->m_pZClip->SetBottom(org[2]);
-			Sys_UpdateWindows (W_ALL);
+			g_pParentWnd->GetZWnd()->m_pZClip->SetBottom( org[2] );
+			Sys_UpdateWindows( W_ALL );
 			return;
 		}
 
-		if (bReset)
+		if( bReset )
 		{
 			g_pParentWnd->GetZWnd()->m_pZClip->Reset();
-			Sys_UpdateWindows (W_ALL);
+			Sys_UpdateWindows( W_ALL );
 			return;
 		}
 	}
@@ -156,20 +159,22 @@ void Z_MouseDown(int x, int y, int buttons) {
 	int nMouseButton = g_PrefsDlg.m_nMouseButtons == 2 ? MK_RBUTTON : MK_MBUTTON;
 	if
 	(
-		(buttons == MK_LBUTTON) ||
-		(buttons == (MK_LBUTTON | MK_SHIFT)) ||
-		(buttons == MK_MBUTTON) // || (buttons == (MK_MBUTTON|MK_CONTROL))
+		( buttons == MK_LBUTTON ) ||
+		( buttons == ( MK_LBUTTON | MK_SHIFT ) ) ||
+		( buttons == MK_MBUTTON ) // || (buttons == (MK_MBUTTON|MK_CONTROL))
 		||
-		(buttons == (nMouseButton | MK_SHIFT | MK_CONTROL))
-	) {
-		Drag_Begin(x, y, buttons, vright, vup, org, dir);
+		( buttons == ( nMouseButton | MK_SHIFT | MK_CONTROL ) )
+	)
+	{
+		Drag_Begin( x, y, buttons, vright, vup, org, dir );
 		return;
 	}
 
 	// control mbutton = move camera
-	if ((buttons == (MK_CONTROL | nMouseButton)) || (buttons == (MK_CONTROL | MK_LBUTTON))) {
+	if( ( buttons == ( MK_CONTROL | nMouseButton ) ) || ( buttons == ( MK_CONTROL | MK_LBUTTON ) ) )
+	{
 		g_pParentWnd->GetCamera()->Camera().origin[2] = org[2];
-		Sys_UpdateWindows(W_CAMERA | W_XY_OVERLAY | W_Z);
+		Sys_UpdateWindows( W_CAMERA | W_XY_OVERLAY | W_Z );
 	}
 }
 
@@ -178,7 +183,8 @@ void Z_MouseDown(int x, int y, int buttons) {
 	Z_MouseUp
  =======================================================================================================================
  */
-void Z_MouseUp(int x, int y, int buttons) {
+void Z_MouseUp( int x, int y, int buttons )
+{
 	Drag_MouseUp();
 }
 
@@ -187,24 +193,29 @@ void Z_MouseUp(int x, int y, int buttons) {
 	Z_MouseMoved
  =======================================================================================================================
  */
-void Z_MouseMoved(int x, int y, int buttons) {
-	if (!buttons) {
+void Z_MouseMoved( int x, int y, int buttons )
+{
+	if( !buttons )
+	{
 		return;
 	}
 
-	if (buttons == MK_LBUTTON) {
-		Drag_MouseMoved(x, y, buttons);
-		Sys_UpdateWindows(W_Z | W_CAMERA_ICON | W_XY);
+	if( buttons == MK_LBUTTON )
+	{
+		Drag_MouseMoved( x, y, buttons );
+		Sys_UpdateWindows( W_Z | W_CAMERA_ICON | W_XY );
 		return;
 	}
 
 	// rbutton = drag z origin
-	if (buttons == MK_RBUTTON) {
-		Sys_GetCursorPos(&x, &y);
-		if (y != cursory) {
+	if( buttons == MK_RBUTTON )
+	{
+		Sys_GetCursorPos( &x, &y );
+		if( y != cursory )
+		{
 			z.origin[2] += y - cursory;
-			Sys_SetCursorPos(cursorx, cursory);
-			Sys_UpdateWindows(W_Z);
+			Sys_SetCursorPos( cursorx, cursory );
+			Sys_UpdateWindows( W_Z );
 		}
 
 		return;
@@ -212,9 +223,10 @@ void Z_MouseMoved(int x, int y, int buttons) {
 
 	// control mbutton = move camera
 	int nMouseButton = g_PrefsDlg.m_nMouseButtons == 2 ? MK_RBUTTON : MK_MBUTTON;
-	if ((buttons == (MK_CONTROL | nMouseButton)) || (buttons == (MK_CONTROL | MK_LBUTTON))) {
-		g_pParentWnd->GetCamera()->Camera().origin[2] = z.origin[2] + (y - (z.height / 2)) / z.scale;
-		Sys_UpdateWindows(W_CAMERA | W_XY_OVERLAY | W_Z);
+	if( ( buttons == ( MK_CONTROL | nMouseButton ) ) || ( buttons == ( MK_CONTROL | MK_LBUTTON ) ) )
+	{
+		g_pParentWnd->GetCamera()->Camera().origin[2] = z.origin[2] + ( y - ( z.height / 2 ) ) / z.scale;
+		Sys_UpdateWindows( W_CAMERA | W_XY_OVERLAY | W_Z );
 	}
 }
 
@@ -224,7 +236,8 @@ void Z_MouseMoved(int x, int y, int buttons) {
 	Z_DrawGrid
  =======================================================================================================================
  */
-void Z_DrawGrid(void) {
+void Z_DrawGrid( void )
+{
 	float	zz, zb, ze;
 	int		w, h;
 	char	text[32];
@@ -233,61 +246,68 @@ void Z_DrawGrid(void) {
 	h = z.height / 2 / z.scale;
 
 	zb = z.origin[2] - h;
-	if (zb < region_mins[2]) {
+	if( zb < region_mins[2] )
+	{
 		zb = region_mins[2];
 	}
 
-	zb = 64 * floor(zb / 64);
+	zb = 64 * floor( zb / 64 );
 
 	ze = z.origin[2] + h;
-	if (ze > region_maxs[2]) {
+	if( ze > region_maxs[2] )
+	{
 		ze = region_maxs[2];
 	}
 
-	ze = 64 * ceil(ze / 64);
+	ze = 64 * ceil( ze / 64 );
 
 	// draw major blocks
 	qglColor3fv( g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR].ToFloatPtr() );
 
-	qglBegin(GL_LINES);
+	qglBegin( GL_LINES );
 
-	qglVertex2f(0, zb);
-	qglVertex2f(0, ze);
+	qglVertex2f( 0, zb );
+	qglVertex2f( 0, ze );
 
-	for (zz = zb; zz < ze; zz += 64) {
-		qglVertex2f(-w, zz);
-		qglVertex2f(w, zz);
+	for( zz = zb; zz < ze; zz += 64 )
+	{
+		qglVertex2f( -w, zz );
+		qglVertex2f( w, zz );
 	}
 
 	qglEnd();
 
 	// draw minor blocks
-	if ( g_qeglobals.d_showgrid &&
-		g_qeglobals.d_gridsize * z.scale >= 4 &&
-		!g_qeglobals.d_savedinfo.colors[COLOR_GRIDMINOR].Compare( g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK] ) ) {
+	if( g_qeglobals.d_showgrid &&
+			g_qeglobals.d_gridsize * z.scale >= 4 &&
+			!g_qeglobals.d_savedinfo.colors[COLOR_GRIDMINOR].Compare( g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK] ) )
+	{
 
-		qglColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_GRIDMINOR].ToFloatPtr());
+		qglColor3fv( g_qeglobals.d_savedinfo.colors[COLOR_GRIDMINOR].ToFloatPtr() );
 
-		qglBegin(GL_LINES);
-		for (zz = zb; zz < ze; zz += g_qeglobals.d_gridsize) {
-			if (!((int)zz & 63)) {
+		qglBegin( GL_LINES );
+		for( zz = zb; zz < ze; zz += g_qeglobals.d_gridsize )
+		{
+			if( !( ( int )zz & 63 ) )
+			{
 				continue;
 			}
 
-			qglVertex2f(-w, zz);
-			qglVertex2f(w, zz);
+			qglVertex2f( -w, zz );
+			qglVertex2f( w, zz );
 		}
 
 		qglEnd();
 	}
 
 	// draw coordinate text if needed
-	qglColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_GRIDTEXT].ToFloatPtr());
+	qglColor3fv( g_qeglobals.d_savedinfo.colors[COLOR_GRIDTEXT].ToFloatPtr() );
 
-	for (zz = zb; zz < ze; zz += 64) {
-		qglRasterPos2f(-w + 1, zz);
-		sprintf(text, "%i", (int)zz);
-		qglCallLists(strlen(text), GL_UNSIGNED_BYTE, text);
+	for( zz = zb; zz < ze; zz += 64 )
+	{
+		qglRasterPos2f( -w + 1, zz );
+		sprintf( text, "%i", ( int )zz );
+		qglCallLists( strlen( text ), GL_UNSIGNED_BYTE, text );
 	}
 }
 
@@ -298,36 +318,39 @@ void Z_DrawGrid(void) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void ZDrawCameraIcon(void) {
+void ZDrawCameraIcon( void )
+{
 	float	x, y;
 	int		xCam = z.width / 4;
 
 	x = 0;
 	y = g_pParentWnd->GetCamera()->Camera().origin[2];
 
-	qglColor3f(0.0, 0.0, 1.0);
-	qglBegin(GL_LINE_STRIP);
-	qglVertex3f(x - xCam, y, 0);
-	qglVertex3f(x, y + CAM_GIZMO, 0);
-	qglVertex3f(x + xCam, y, 0);
-	qglVertex3f(x, y - CAM_GIZMO, 0);
-	qglVertex3f(x - xCam, y, 0);
-	qglVertex3f(x + xCam, y, 0);
-	qglVertex3f(x + xCam, y - CAM_HEIGHT, 0);
-	qglVertex3f(x - xCam, y - CAM_HEIGHT, 0);
-	qglVertex3f(x - xCam, y, 0);
+	qglColor3f( 0.0, 0.0, 1.0 );
+	qglBegin( GL_LINE_STRIP );
+	qglVertex3f( x - xCam, y, 0 );
+	qglVertex3f( x, y + CAM_GIZMO, 0 );
+	qglVertex3f( x + xCam, y, 0 );
+	qglVertex3f( x, y - CAM_GIZMO, 0 );
+	qglVertex3f( x - xCam, y, 0 );
+	qglVertex3f( x + xCam, y, 0 );
+	qglVertex3f( x + xCam, y - CAM_HEIGHT, 0 );
+	qglVertex3f( x - xCam, y - CAM_HEIGHT, 0 );
+	qglVertex3f( x - xCam, y, 0 );
 	qglEnd();
 }
 
 void ZDrawZClip()
 {
-	float x,y;
+	float x, y;
 
 	x = 0;
 	y = g_pParentWnd->GetCamera()->Camera().origin[2];
 
-	if (g_pParentWnd->GetZWnd()->m_pZClip)	// should always be the case I think
+	if( g_pParentWnd->GetZWnd()->m_pZClip )	// should always be the case I think
+	{
 		g_pParentWnd->GetZWnd()->m_pZClip->Paint();
+	}
 }
 
 
@@ -338,20 +361,22 @@ GLbitfield	glbitClear = GL_COLOR_BUFFER_BIT;	// HACK
 	Z_Draw
  =======================================================================================================================
  */
-void Z_Draw(void) {
-	idEditorBrush		*brush;
+void Z_Draw( void )
+{
+	idEditorBrush*		brush;
 	float		w, h;
 	float		top, bottom;
 	idVec3		org_top, org_bottom, dir_up, dir_down;
 	int			xCam = z.width / 3;
 
-	if (!active_brushes.next) {
+	if( !active_brushes.next )
+	{
 		return; // not valid yet
 	}
 
 	// clear
-	qglViewport(0, 0, z.width, z.height);
-	qglScissor(0, 0, z.width, z.height);
+	qglViewport( 0, 0, z.width, z.height );
+	qglScissor( 0, 0, z.width, z.height );
 
 	qglClearColor
 	(
@@ -368,30 +393,30 @@ void Z_Draw(void) {
 	 * Z_Draw() has been called once. Yeah, right. £
 	 * qglClear(glbitClear);
 	 */
-	qglClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	qglClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 	//
 	// glbitClear |= GL_DEPTH_BUFFER_BIT;
 	// qglClear(GL_DEPTH_BUFFER_BIT);
 	//
-	qglMatrixMode(GL_PROJECTION);
+	qglMatrixMode( GL_PROJECTION );
 	qglLoadIdentity();
 
 	w = z.width / 2 / z.scale;
 	h = z.height / 2 / z.scale;
-	qglOrtho(-w, w, z.origin[2] - h, z.origin[2] + h, -8, 8);
+	qglOrtho( -w, w, z.origin[2] - h, z.origin[2] + h, -8, 8 );
 
 	globalImages->BindNull();
-	qglDisable(GL_DEPTH_TEST);
-	qglDisable(GL_BLEND);
+	qglDisable( GL_DEPTH_TEST );
+	qglDisable( GL_BLEND );
 
 	// now draw the grid
 	Z_DrawGrid();
 
 	// draw stuff
-	qglDisable(GL_CULL_FACE);
+	qglDisable( GL_CULL_FACE );
 
-	qglPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 
 	globalImages->BindNull();
 
@@ -402,53 +427,58 @@ void Z_Draw(void) {
 	dir_down[0] = 0;
 	dir_down[1] = 0;
 	dir_down[2] = -1;
-	VectorCopy(z.origin, org_top);
+	VectorCopy( z.origin, org_top );
 	org_top[2] = 4096;
-	VectorCopy(z.origin, org_bottom);
+	VectorCopy( z.origin, org_bottom );
 	org_bottom[2] = -4096;
 
-	for (brush = active_brushes.next; brush != &active_brushes; brush = brush->next) {
+	for( brush = active_brushes.next; brush != &active_brushes; brush = brush->next )
+	{
 		if
 		(
 			brush->mins[0] >= z.origin[0] ||
 			brush->maxs[0] <= z.origin[0] ||
 			brush->mins[1] >= z.origin[1] ||
 			brush->maxs[1] <= z.origin[1]
-		) {
+		)
+		{
 			continue;
 		}
 
-		if (!Brush_Ray(org_top, dir_down, brush, &top)) {
+		if( !Brush_Ray( org_top, dir_down, brush, &top ) )
+		{
 			continue;
 		}
 
 		top = org_top[2] - top;
-		if (!Brush_Ray(org_bottom, dir_up, brush, &bottom)) {
+		if( !Brush_Ray( org_bottom, dir_up, brush, &bottom ) )
+		{
 			continue;
 		}
 
 		bottom = org_bottom[2] + bottom;
 
 		//q = declManager->FindMaterial(brush->brush_faces->texdef.name);
-		qglColor3f(brush->owner->eclass->color.x, brush->owner->eclass->color.y, brush->owner->eclass->color.z);
-		qglBegin(GL_QUADS);
-		qglVertex2f(-xCam, bottom);
-		qglVertex2f(xCam, bottom);
-		qglVertex2f(xCam, top);
-		qglVertex2f(-xCam, top);
+		qglColor3f( brush->owner->eclass->color.x, brush->owner->eclass->color.y, brush->owner->eclass->color.z );
+		qglBegin( GL_QUADS );
+		qglVertex2f( -xCam, bottom );
+		qglVertex2f( xCam, bottom );
+		qglVertex2f( xCam, top );
+		qglVertex2f( -xCam, top );
 		qglEnd();
 
-		qglColor3f(1, 1, 1);
-		qglBegin(GL_LINE_LOOP);
-		qglVertex2f(-xCam, bottom);
-		qglVertex2f(xCam, bottom);
-		qglVertex2f(xCam, top);
-		qglVertex2f(-xCam, top);
+		qglColor3f( 1, 1, 1 );
+		qglBegin( GL_LINE_LOOP );
+		qglVertex2f( -xCam, bottom );
+		qglVertex2f( xCam, bottom );
+		qglVertex2f( xCam, top );
+		qglVertex2f( -xCam, top );
 		qglEnd();
 	}
 
 	// now draw selected brushes
-	for (brush = selected_brushes.next; brush != &selected_brushes; brush = brush->next) {
+	for( brush = selected_brushes.next; brush != &selected_brushes; brush = brush->next )
+	{
 		if
 		(
 			!(
@@ -457,30 +487,33 @@ void Z_Draw(void) {
 				brush->mins[1] >= z.origin[1] ||
 				brush->maxs[1] <= z.origin[1]
 			)
-		) {
-			if (Brush_Ray(org_top, dir_down, brush, &top)) {
+		)
+		{
+			if( Brush_Ray( org_top, dir_down, brush, &top ) )
+			{
 				top = org_top[2] - top;
-				if (Brush_Ray(org_bottom, dir_up, brush, &bottom)) {
+				if( Brush_Ray( org_bottom, dir_up, brush, &bottom ) )
+				{
 					bottom = org_bottom[2] + bottom;
 
 					//q = declManager->FindMaterial(brush->brush_faces->texdef.name);
-					qglColor3f(brush->owner->eclass->color.x, brush->owner->eclass->color.y, brush->owner->eclass->color.z);
-					qglBegin(GL_QUADS);
-					qglVertex2f(-xCam, bottom);
-					qglVertex2f(xCam, bottom);
-					qglVertex2f(xCam, top);
-					qglVertex2f(-xCam, top);
+					qglColor3f( brush->owner->eclass->color.x, brush->owner->eclass->color.y, brush->owner->eclass->color.z );
+					qglBegin( GL_QUADS );
+					qglVertex2f( -xCam, bottom );
+					qglVertex2f( xCam, bottom );
+					qglVertex2f( xCam, top );
+					qglVertex2f( -xCam, top );
 					qglEnd();
 				}
 			}
 		}
 
-		qglColor3fv(g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].ToFloatPtr());
-		qglBegin(GL_LINE_LOOP);
-		qglVertex2f(-xCam, brush->mins[2]);
-		qglVertex2f(xCam, brush->mins[2]);
-		qglVertex2f(xCam, brush->maxs[2]);
-		qglVertex2f(-xCam, brush->maxs[2]);
+		qglColor3fv( g_qeglobals.d_savedinfo.colors[COLOR_SELBRUSHES].ToFloatPtr() );
+		qglBegin( GL_LINE_LOOP );
+		qglVertex2f( -xCam, brush->mins[2] );
+		qglVertex2f( xCam, brush->mins[2] );
+		qglVertex2f( xCam, brush->maxs[2] );
+		qglVertex2f( -xCam, brush->maxs[2] );
 		qglEnd();
 	}
 

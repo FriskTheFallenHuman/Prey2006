@@ -30,11 +30,12 @@ If you have questions concerning this license or the applicable additional terms
 
 // CWaitDlg dialog
 
-class CWaitDlg : public CDialogEx {
+class CWaitDlg : public CDialogEx
+{
 public:
-	CWaitDlg( CWnd *pParent = NULL, const char *msg = "Wait..." );   // standard constructor
+	CWaitDlg( CWnd* pParent = NULL, const char* msg = "Wait..." );   // standard constructor
 	~CWaitDlg();
-	void SetText(const char *msg, float percent = 0.0f, bool append = false);
+	void SetText( const char* msg, float percent = 0.0f, bool append = false );
 	void AllowCancel( bool enable );
 	bool CancelPressed( void );
 
@@ -42,7 +43,7 @@ public:
 	CString	waitStr;
 
 protected:
-	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 
 protected:
 	virtual BOOL OnInitDialog();

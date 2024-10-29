@@ -37,28 +37,29 @@ If you have questions concerning this license or the applicable additional terms
 /**
 * View that displays material and stage properties and allows the user to edit the properties.
 */
-class MaterialPropTreeView : public CPropTreeView, public MaterialView {
+class MaterialPropTreeView : public CPropTreeView, public MaterialView
+{
 
 public:
 	virtual				~MaterialPropTreeView();
 
-	void				SetPropertyListType(int listType, int stageNum = -1);
+	void				SetPropertyListType( int listType, int stageNum = -1 );
 
 	void				LoadSettings();
 	void				SaveSettings();
 
 	//Material Interface
-	virtual void		MV_OnMaterialChange(MaterialDoc* pMaterial);
+	virtual void		MV_OnMaterialChange( MaterialDoc* pMaterial );
 
 protected:
 	MaterialPropTreeView();
-	DECLARE_DYNCREATE(MaterialPropTreeView)
+	DECLARE_DYNCREATE( MaterialPropTreeView )
 
-	afx_msg void		OnPropertyChangeNotification( NMHDR *nmhdr, LRESULT *lresult );
-	afx_msg void		OnPropertyItemExpanding( NMHDR *nmhdr, LRESULT *lresult );
+	afx_msg void		OnPropertyChangeNotification( NMHDR* nmhdr, LRESULT* lresult );
+	afx_msg void		OnPropertyItemExpanding( NMHDR* nmhdr, LRESULT* lresult );
 	DECLARE_MESSAGE_MAP()
 
-	MaterialDef*		FindDefForTreeID(UINT treeID);
+	MaterialDef*		FindDefForTreeID( UINT treeID );
 	void				RefreshProperties();
 
 protected:

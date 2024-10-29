@@ -36,16 +36,17 @@ If you have questions concerning this license or the applicable additional terms
 
 // CEntKeyFindReplace dialog
 
-class CEntKeyFindReplace : public CDialogEx {
+class CEntKeyFindReplace : public CDialogEx
+{
 // Construction
 public:
-	CEntKeyFindReplace(CString *p_strFindKey,
-					   CString *p_strFindValue,
-					   CString *p_strReplaceKey,
-					   CString *p_strReplaceValue,
-					   bool *	p_bWholeStringMatchOnly,
-					   bool *	p_bSelectAllMatchingEnts,
-					   CWnd *	pParent = NULL);   // standard constructor
+	CEntKeyFindReplace( CString* p_strFindKey,
+						CString* p_strFindValue,
+						CString* p_strReplaceKey,
+						CString* p_strReplaceValue,
+						bool* 	p_bWholeStringMatchOnly,
+						bool* 	p_bSelectAllMatchingEnts,
+						CWnd* 	pParent = NULL );  // standard constructor
 
 	enum { IDD = IDD_ENTFINDREPLACE };
 	CString	m_strFindKey;
@@ -56,7 +57,7 @@ public:
 	BOOL	m_bSelectAllMatchingEnts;
 
 protected:
-	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 
 protected:
 
@@ -68,12 +69,12 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 
-	CString *m_pStrFindKey;
-	CString *m_pStrFindValue;
-	CString *m_pStrReplaceKey;
-	CString *m_pStrReplaceValue;
-	bool *	 m_pbWholeStringMatchOnly;
-	bool *	 m_pbSelectAllMatchingEnts;
+	CString* m_pStrFindKey;
+	CString* m_pStrFindValue;
+	CString* m_pStrReplaceKey;
+	CString* m_pStrReplaceValue;
+	bool* 	 m_pbWholeStringMatchOnly;
+	bool* 	 m_pbSelectAllMatchingEnts;
 
 	void CopyFields();
 };

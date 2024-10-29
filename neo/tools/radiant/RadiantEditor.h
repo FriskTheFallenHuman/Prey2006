@@ -42,14 +42,16 @@ const int RAD_ALT =     0x02;
 const int RAD_CONTROL = 0x04;
 const int RAD_PRESS   = 0x08;
 
-struct SCommandInfo {
+struct SCommandInfo
+{
 	char* m_strCommand;
 	unsigned int   m_nKey;
 	unsigned int   m_nModifiers;
 	unsigned int m_nCommand;
 };
 
-struct SKeyInfo {
+struct SKeyInfo
+{
 	char* m_strName;
 	unsigned int m_nVKKey;
 };

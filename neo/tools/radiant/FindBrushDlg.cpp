@@ -35,7 +35,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "MainFrm.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
 /*
@@ -43,61 +43,70 @@ If you have questions concerning this license or the applicable additional terms
 SelectBrush
 =================
 */
-void SelectBrush ( int entitynum, int brushnum ) {
-	idEditorEntity	*e;
-	idEditorBrush		*b;
+void SelectBrush( int entitynum, int brushnum )
+{
+	idEditorEntity*	e;
+	idEditorBrush*		b;
 	int			i;
 
-	if (entitynum == 0)
+	if( entitynum == 0 )
+	{
 		e = world_entity;
+	}
 	else
 	{
 		e = entities.next;
-		while (--entitynum)
+		while( --entitynum )
 		{
-			e=e->next;
-			if (e == &entities)
+			e = e->next;
+			if( e == &entities )
 			{
-				Sys_Status ("No such entity.", 0);
+				Sys_Status( "No such entity.", 0 );
 				return;
 			}
 		}
 	}
 
 	b = e->brushes.onext;
-	if (b == &e->brushes)
+	if( b == &e->brushes )
 	{
-		Sys_Status ("No such brush.", 0);
+		Sys_Status( "No such brush.", 0 );
 		return;
 	}
-	while (brushnum--)
+	while( brushnum-- )
 	{
-		b=b->onext;
-		if (b == &e->brushes)
+		b = b->onext;
+		if( b == &e->brushes )
 		{
-			Sys_Status ("No such brush.", 0);
+			Sys_Status( "No such brush.", 0 );
 			return;
 		}
 	}
 
-	Brush_RemoveFromList (b);
-	Brush_AddToList (b, &selected_brushes);
+	Brush_RemoveFromList( b );
+	Brush_AddToList( b, &selected_brushes );
 
 
-	Sys_UpdateWindows (W_ALL);
-	for (i=0 ; i<3 ; i++)
-  {
-	if (g_pParentWnd->GetXYWnd())
-	  g_pParentWnd->GetXYWnd()->GetOrigin()[i] = (b->mins[i] + b->maxs[i])/2;
+	Sys_UpdateWindows( W_ALL );
+	for( i = 0 ; i < 3 ; i++ )
+	{
+		if( g_pParentWnd->GetXYWnd() )
+		{
+			g_pParentWnd->GetXYWnd()->GetOrigin()[i] = ( b->mins[i] + b->maxs[i] ) / 2;
+		}
 
-	if (g_pParentWnd->GetXZWnd())
-	  g_pParentWnd->GetXZWnd()->GetOrigin()[i] = (b->mins[i] + b->maxs[i])/2;
+		if( g_pParentWnd->GetXZWnd() )
+		{
+			g_pParentWnd->GetXZWnd()->GetOrigin()[i] = ( b->mins[i] + b->maxs[i] ) / 2;
+		}
 
-	if (g_pParentWnd->GetYZWnd())
-	  g_pParentWnd->GetYZWnd()->GetOrigin()[i] = (b->mins[i] + b->maxs[i])/2;
-  }
+		if( g_pParentWnd->GetYZWnd() )
+		{
+			g_pParentWnd->GetYZWnd()->GetOrigin()[i] = ( b->mins[i] + b->maxs[i] ) / 2;
+		}
+	}
 
-	Sys_Status ("Selected.", 0);
+	Sys_Status( "Selected.", 0 );
 }
 
 /*
@@ -105,43 +114,48 @@ void SelectBrush ( int entitynum, int brushnum ) {
 GetSelectionIndex
 =================
 */
-void GetSelectionIndex (int *ent, int *brush)
+void GetSelectionIndex( int* ent, int* brush )
 {
-	idEditorBrush		*b, *b2;
-	idEditorEntity	*entity;
+	idEditorBrush*		b, *b2;
+	idEditorEntity*	entity;
 
 	*ent = *brush = 0;
 
 	b = selected_brushes.next;
-	if (b == &selected_brushes)
+	if( b == &selected_brushes )
+	{
 		return;
+	}
 
 	// find entity
-	if (b->owner != world_entity)
+	if( b->owner != world_entity )
 	{
-		(*ent)++;
-		for (entity = entities.next ; entity != &entities
-			; entity=entity->next, (*ent)++)
-		;
+		( *ent )++;
+		for( entity = entities.next ; entity != &entities
+				; entity = entity->next, ( *ent )++ )
+			;
 	}
 
 	// find brush
-	for (b2=b->owner->brushes.onext
-		; b2 != b && b2 != &b->owner->brushes
-		; b2=b2->onext, (*brush)++)
-	;
+	for( b2 = b->owner->brushes.onext
+			  ; b2 != b && b2 != &b->owner->brushes
+			; b2 = b2->onext, ( *brush )++ )
+		;
 }
 
 IMPLEMENT_DYNAMIC( CFindBrushDlg, CDialogEx )
 
-CFindBrushDlg::CFindBrushDlg( CWnd *pParent )
-	: CDialogEx( IDD_FINDBRUSH, pParent ) {
+CFindBrushDlg::CFindBrushDlg( CWnd* pParent )
+	: CDialogEx( IDD_FINDBRUSH, pParent )
+{
 }
 
-CFindBrushDlg::~CFindBrushDlg( void ) {
+CFindBrushDlg::~CFindBrushDlg( void )
+{
 }
 
-void CFindBrushDlg::DoDataExchange( CDataExchange *pDX ) {
+void CFindBrushDlg::DoDataExchange( CDataExchange* pDX )
+{
 	CDialogEx::DoDataExchange( pDX );
 	DDX_Control( pDX, IDC_FIND_ENTITY, m_editEntity );
 	DDX_Control( pDX, IDC_FIND_BRUSH, m_editBrush );
@@ -152,18 +166,19 @@ BEGIN_MESSAGE_MAP( CFindBrushDlg, CDialogEx )
 	ON_BN_CLICKED( IDCANCEL, &CFindBrushDlg::OnBnClickedCancel )
 END_MESSAGE_MAP()
 
-BOOL CFindBrushDlg::OnInitDialog( void ) {
+BOOL CFindBrushDlg::OnInitDialog( void )
+{
 	CDialogEx::OnInitDialog();
 
 	int ent, brush;
 	GetSelectionIndex( &ent, &brush );
 
 	CString entStr;
-	entStr.Format( _T("%d"), ent );
+	entStr.Format( _T( "%d" ), ent );
 	m_editEntity.SetWindowText( entStr );
 
 	CString brushStr;
-	brushStr.Format( _T("%d"), brush );
+	brushStr.Format( _T( "%d" ), brush );
 	m_editBrush.SetWindowText( brushStr );
 
 	m_editEntity.SetFocus();
@@ -171,7 +186,8 @@ BOOL CFindBrushDlg::OnInitDialog( void ) {
 	return FALSE;  // return TRUE unless you set the focus to a control
 }
 
-void CFindBrushDlg::OnBnClickedOk( void ) {
+void CFindBrushDlg::OnBnClickedOk( void )
+{
 	CString entStr, brushStr;
 	m_editEntity.GetWindowText( entStr );
 	m_editBrush.GetWindowText( brushStr );
@@ -182,6 +198,7 @@ void CFindBrushDlg::OnBnClickedOk( void ) {
 	CDialogEx::OnOK();
 }
 
-void CFindBrushDlg::OnBnClickedCancel() {
+void CFindBrushDlg::OnBnClickedCancel()
+{
 	CDialogEx::OnCancel();
 }

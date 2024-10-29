@@ -36,44 +36,51 @@ int g_entityId = 1;
 
 #define CURVE_TAG "curve_"
 
-extern void Brush_Resize(idEditorBrush *b, idVec3 vMin, idVec3 vMax);
+extern void Brush_Resize( idEditorBrush* b, idVec3 vMin, idVec3 vMax );
 
 /*
  =======================================================================================================================
  =======================================================================================================================
 */
-void idEditorEntity::BuildEntityRenderState( idEditorEntity *ent, bool update ) {
-	const char	*v;
+void idEditorEntity::BuildEntityRenderState( idEditorEntity* ent, bool update )
+{
+	const char*	v;
 	idDict		spawnArgs;
-	const char	*name = NULL;
+	const char*	name = NULL;
 
 	ent->UpdateSoundEmitter();
 
 	// delete the existing def if we aren't creating a brand new world
-	if ( !update ) {
-		if ( ent->lightDef >= 0 ) {
+	if( !update )
+	{
+		if( ent->lightDef >= 0 )
+		{
 			g_qeglobals.rw->FreeLightDef( ent->lightDef );
 			ent->lightDef = -1;
 		}
 
-		if ( ent->modelDef >= 0 ) {
+		if( ent->modelDef >= 0 )
+		{
 			g_qeglobals.rw->FreeEntityDef( ent->modelDef );
 			ent->modelDef = -1;
 		}
 	}
 
 	// if an entity doesn't have any brushes at all, don't do anything
-	if ( ent->brushes.onext == &ent->brushes ) {
+	if( ent->brushes.onext == &ent->brushes )
+	{
 		return;
 	}
 
 	// if the brush isn't displayed (filtered or culled), don't do anything
-	if ( FilterBrush( ent->brushes.onext ) ) {
+	if( FilterBrush( ent->brushes.onext ) )
+	{
 		return;
 	}
 
 	spawnArgs = ent->epairs;
-	if ( ent->eclass->defArgs.FindKey( "model" ) ) {
+	if( ent->eclass->defArgs.FindKey( "model" ) )
+	{
 		spawnArgs.Set( "model", ent->eclass->defArgs.GetString( "model" ) );
 	}
 
@@ -82,31 +89,37 @@ void idEditorEntity::BuildEntityRenderState( idEditorEntity *ent, bool update ) 
 	v = spawnArgs.GetString( "model" );
 
 	// Don't build the light frustum geometry.
-	if ( lightDef != -1 ) {
+	if( lightDef != -1 )
+	{
 		v = nullptr;
 	}
 
-	if ( v && *v ) {
+	if( v && *v )
+	{
 		renderEntity_t	refent;
 
 		refent.referenceSound = ent->soundEmitter;
 
-		if ( !stricmp( name, v ) ) {
+		if( !stricmp( name, v ) )
+		{
 			// build the model from brushes
 			idTriList tris( 1024 );
 			idMatList mats( 1024 );
 
-			for ( idEditorBrush *b = ent->brushes.onext; b != &ent->brushes; b = b->onext ) {
+			for( idEditorBrush* b = ent->brushes.onext; b != &ent->brushes; b = b->onext )
+			{
 				Brush_ToTris( b, &tris, &mats, false, true );
 			}
 
-			if ( ent->modelDef >= 0 ) {
+			if( ent->modelDef >= 0 )
+			{
 				g_qeglobals.rw->FreeEntityDef( ent->modelDef );
 				ent->modelDef = -1;
 			}
 
-			idRenderModel *bmodel = renderModelManager->FindModel( name );
-			if ( bmodel ) {
+			idRenderModel* bmodel = renderModelManager->FindModel( name );
+			if( bmodel )
+			{
 				renderModelManager->RemoveModel( bmodel );
 				renderModelManager->FreeModel( bmodel );
 			}
@@ -117,7 +130,8 @@ void idEditorEntity::BuildEntityRenderState( idEditorEntity *ent, bool update ) 
 
 			// add the surfaces to the renderModel
 			modelSurface_t	surf;
-			for ( int i = 0 ; i < tris.Num() ; i++ ) {
+			for( int i = 0 ; i < tris.Num() ; i++ )
+			{
 				surf.geometry = tris[i];
 				surf.shader = mats[i];
 				bmodel->AddSurface( surf );
@@ -132,29 +146,35 @@ void idEditorEntity::BuildEntityRenderState( idEditorEntity *ent, bool update ) 
 
 			ent->modelDef = g_qeglobals.rw->AddEntityDef( &refent );
 
-		} else {
+		}
+		else
+		{
 			// use the game's epair parsing code so
 			// we can use the same renderEntity generation
 			gameEdit->ParseSpawnArgsToRenderEntity( &spawnArgs, &refent );
-			idRenderModelMD5 *md5 = dynamic_cast<idRenderModelMD5 *>( refent.hModel );
-			if ( md5 ) {
+			idRenderModelMD5* md5 = dynamic_cast<idRenderModelMD5*>( refent.hModel );
+			if( md5 )
+			{
 				idStr str;
 				spawnArgs.GetString( "anim", "idle", str );
 				refent.numJoints = md5->NumJoints();
-				if ( update && refent.joints ) {
+				if( update && refent.joints )
+				{
 					Mem_Free16( refent.joints );
 				}
-				refent.joints = ( idJointMat * )Mem_Alloc16( refent.numJoints * sizeof( *refent.joints ) );
-				const idMD5Anim *anim = gameEdit->ANIM_GetAnimFromEntityDef( spawnArgs.GetString( "classname" ), str );
+				refent.joints = ( idJointMat* )Mem_Alloc16( refent.numJoints * sizeof( *refent.joints ) );
+				const idMD5Anim* anim = gameEdit->ANIM_GetAnimFromEntityDef( spawnArgs.GetString( "classname" ), str );
 				int frame = spawnArgs.GetInt( "frame" ) + 1;
-				if ( frame < 1 ) {
+				if( frame < 1 )
+				{
 					frame = 1;
 				}
-				const idVec3 &offset = gameEdit->ANIM_GetModelOffsetFromEntityDef( spawnArgs.GetString( "classname" ) );
+				const idVec3& offset = gameEdit->ANIM_GetModelOffsetFromEntityDef( spawnArgs.GetString( "classname" ) );
 				gameEdit->ANIM_CreateAnimFrame( md5, anim, refent.numJoints, refent.joints, ( frame * 1000 ) / 24, offset, false );
 			}
 
-			if ( ent->modelDef >= 0 ) {
+			if( ent->modelDef >= 0 )
+			{
 				g_qeglobals.rw->FreeEntityDef( ent->modelDef );
 			}
 
@@ -163,11 +183,13 @@ void idEditorEntity::BuildEntityRenderState( idEditorEntity *ent, bool update ) 
 	}
 
 	// check for lightdefs
-	if ( !( ent->eclass->nShowFlags & ECLASS_LIGHT ) ) {
+	if( !( ent->eclass->nShowFlags & ECLASS_LIGHT ) )
+	{
 		return;
 	}
 
-	if ( spawnArgs.GetBool( "start_off" ) ) {
+	if( spawnArgs.GetBool( "start_off" ) )
+	{
 		return;
 	}
 
@@ -178,10 +200,14 @@ void idEditorEntity::BuildEntityRenderState( idEditorEntity *ent, bool update ) 
 	gameEdit->ParseSpawnArgsToRenderLight( &spawnArgs, &lightParms );
 	lightParms.referenceSound = ent->soundEmitter;
 
-	if ( update && ent->lightDef >= 0 ) {
+	if( update && ent->lightDef >= 0 )
+	{
 		g_qeglobals.rw->UpdateLightDef( ent->lightDef, &lightParms );
-	} else {
-		if ( ent->lightDef >= 0 ) {
+	}
+	else
+	{
+		if( ent->lightDef >= 0 )
+		{
 			g_qeglobals.rw->FreeLightDef( ent->lightDef );
 		}
 		ent->lightDef = g_qeglobals.rw->AddLightDef( &lightParms );
@@ -202,14 +228,14 @@ int	idEditorEntity::GetNumKeys() const
  =======================================================================================================================
  =======================================================================================================================
  */
-const char *idEditorEntity::GetKeyString(int iIndex) const
+const char* idEditorEntity::GetKeyString( int iIndex ) const
 {
-	if ( iIndex < GetNumKeys() )
+	if( iIndex < GetNumKeys() )
 	{
-		return epairs.GetKeyVal(iIndex)->GetKey().c_str();
+		return epairs.GetKeyVal( iIndex )->GetKey().c_str();
 	}
 
-	assert(0);
+	assert( 0 );
 	return NULL;
 }
 
@@ -218,29 +244,34 @@ const char *idEditorEntity::GetKeyString(int iIndex) const
  =======================================================================================================================
  =======================================================================================================================
  */
-const char * idEditorEntity::ValueForKey(const char *key) const {
-	return epairs.GetString(key);
+const char* idEditorEntity::ValueForKey( const char* key ) const
+{
+	return epairs.GetString( key );
 }
 
 /*
  =======================================================================================================================
  =======================================================================================================================
  */
-void TrackMD3Angles(idEditorEntity *e, const char *key, const char *value) {
-	if ( idStr::Icmp(key, "angle") != 0 ) {
+void TrackMD3Angles( idEditorEntity* e, const char* key, const char* value )
+{
+	if( idStr::Icmp( key, "angle" ) != 0 )
+	{
 		return;
 	}
 
-	if ((e->eclass->fixedsize && e->eclass->nShowFlags & ECLASS_MISCMODEL) || e->HasModel()) {
-		float	a = e->FloatForKey("angle");
-		float	b = atof(value);
-		if (a != b) {
+	if( ( e->eclass->fixedsize && e->eclass->nShowFlags & ECLASS_MISCMODEL ) || e->HasModel() )
+	{
+		float	a = e->FloatForKey( "angle" );
+		float	b = atof( value );
+		if( a != b )
+		{
 			idVec3	vAngle;
 			vAngle[0] = vAngle[1] = 0;
 			vAngle[2] = -a;
-			Brush_Rotate(e->brushes.onext, vAngle, e->origin, true);
+			Brush_Rotate( e->brushes.onext, vAngle, e->origin, true );
 			vAngle[2] = b;
-			Brush_Rotate(e->brushes.onext, vAngle, e->origin, true);
+			Brush_Rotate( e->brushes.onext, vAngle, e->origin, true );
 		}
 	}
 }
@@ -249,17 +280,20 @@ void TrackMD3Angles(idEditorEntity *e, const char *key, const char *value) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void idEditorEntity::SetKeyValue( const char *key, const char *value, bool trackAngles ) {
-	if (!key || !key[0]) {
+void idEditorEntity::SetKeyValue( const char* key, const char* value, bool trackAngles )
+{
+	if( !key || !key[0] )
+	{
 		return;
 	}
 
-	if (trackAngles) {
-		TrackMD3Angles(this, key, value);
+	if( trackAngles )
+	{
+		TrackMD3Angles( this, key, value );
 	}
 
-	epairs.Set(key, value);
-	GetVectorForKey("origin", origin);
+	epairs.Set( key, value );
+	GetVectorForKey( "origin", origin );
 
 	// update sound in case this key was relevent
 	UpdateSoundEmitter();
@@ -269,32 +303,36 @@ void idEditorEntity::SetKeyValue( const char *key, const char *value, bool track
  =======================================================================================================================
  =======================================================================================================================
  */
-void idEditorEntity::SetKeyVec3( const char *key, idVec3 v ) {
-	if (!key || !key[0]) {
+void idEditorEntity::SetKeyVec3( const char* key, idVec3 v )
+{
+	if( !key || !key[0] )
+	{
 		return;
 	}
 
 	idStr str;
-	sprintf(str, "%g %g %g", v.x, v.y, v.z);
-	epairs.Set(key, str);
-	GetVectorForKey("origin", origin);
+	sprintf( str, "%g %g %g", v.x, v.y, v.z );
+	epairs.Set( key, str );
+	GetVectorForKey( "origin", origin );
 }
 
 /*
  =======================================================================================================================
  =======================================================================================================================
  */
-void idEditorEntity::SetKeyMat3( const char *key, idMat3 m ) {
-	if (!key || !key[0]) {
+void idEditorEntity::SetKeyMat3( const char* key, idMat3 m )
+{
+	if( !key || !key[0] )
+	{
 		return;
 	}
 
 	idStr str;
 
-	sprintf(str, "%g %g %g %g %g %g %g %g %g",m[0][0],m[0][1],m[0][2],m[1][0],m[1][1],m[1][2],m[2][0],m[2][1],m[2][2]);
+	sprintf( str, "%g %g %g %g %g %g %g %g %g", m[0][0], m[0][1], m[0][2], m[1][0], m[1][1], m[1][2], m[2][0], m[2][1], m[2][2] );
 
-	epairs.Set(key, str);
-	GetVectorForKey("origin", origin);
+	epairs.Set( key, str );
+	GetVectorForKey( "origin", origin );
 }
 
 
@@ -303,9 +341,11 @@ void idEditorEntity::SetKeyMat3( const char *key, idMat3 m ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void idEditorEntity::DeleteKey( const char *key ) {
-	epairs.Delete(key);
-	if (stricmp(key, "rotation") == 0) {
+void idEditorEntity::DeleteKey( const char* key )
+{
+	epairs.Delete( key );
+	if( stricmp( key, "rotation" ) == 0 )
+	{
 		rotation.Identity();
 	}
 }
@@ -314,11 +354,13 @@ void idEditorEntity::DeleteKey( const char *key ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-float idEditorEntity::FloatForKey( const char *key ) {
+float idEditorEntity::FloatForKey( const char* key )
+{
 	const char* k = ValueForKey( key );
 
-	if (k && *k) {
-		return atof(k);
+	if( k && *k )
+	{
+		return atof( k );
 	}
 
 	return 0.0;
@@ -328,22 +370,26 @@ float idEditorEntity::FloatForKey( const char *key ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-int idEditorEntity::IntForKey( const char *key ) {
+int idEditorEntity::IntForKey( const char* key )
+{
 	const char* k = ValueForKey( key );
-	return atoi(k);
+	return atoi( k );
 }
 
 /*
  =======================================================================================================================
  =======================================================================================================================
  */
-bool idEditorEntity::GetVectorForKey( const char *key, idVec3 &vec ) {
-	const char* k = ValueForKey(key);
-	if (k && strlen(k) > 0) {
-		sscanf(k, "%f %f %f", &vec[0], &vec[1], &vec[2]);
+bool idEditorEntity::GetVectorForKey( const char* key, idVec3& vec )
+{
+	const char* k = ValueForKey( key );
+	if( k && strlen( k ) > 0 )
+	{
+		sscanf( k, "%f %f %f", &vec[0], &vec[1], &vec[2] );
 		return true;
 	}
-	else {
+	else
+	{
 		vec[0] = vec[1] = vec[2] = 0;
 	}
 
@@ -354,13 +400,16 @@ bool idEditorEntity::GetVectorForKey( const char *key, idVec3 &vec ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-bool idEditorEntity::GetVector4ForKey( const char *key, idVec4 &vec ) {	
+bool idEditorEntity::GetVector4ForKey( const char* key, idVec4& vec )
+{
 	const char* k = ValueForKey( key );
-	if (k && strlen(k) > 0) {
-		sscanf(k, "%f %f %f %f", &vec[0], &vec[1], &vec[2], &vec[3]);
+	if( k && strlen( k ) > 0 )
+	{
+		sscanf( k, "%f %f %f %f", &vec[0], &vec[1], &vec[2], &vec[3] );
 		return true;
 	}
-	else {
+	else
+	{
 		vec[0] = vec[1] = vec[2] = vec[3] = 0;
 	}
 
@@ -371,10 +420,12 @@ bool idEditorEntity::GetVector4ForKey( const char *key, idVec4 &vec ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-bool idEditorEntity::GetFloatForKey( const char *key, float *f ) {
+bool idEditorEntity::GetFloatForKey( const char* key, float* f )
+{
 	const char* k = ValueForKey( key );
-	if (k && strlen(k) > 0) {
-		*f = atof(k);
+	if( k && strlen( k ) > 0 )
+	{
+		*f = atof( k );
 		return true;
 	}
 
@@ -386,9 +437,11 @@ bool idEditorEntity::GetFloatForKey( const char *key, float *f ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-bool idEditorEntity::GetMatrixForKey( const char *key, idMat3 &mat ) {	
+bool idEditorEntity::GetMatrixForKey( const char* key, idMat3& mat )
+{
 	const char* k = ValueForKey( key );
-	if (k && strlen(k) > 0) {
+	if( k && strlen( k ) > 0 )
+	{
 		sscanf
 		(
 			k,
@@ -405,7 +458,8 @@ bool idEditorEntity::GetMatrixForKey( const char *key, idMat3 &mat ) {
 		);
 		return true;
 	}
-	else {
+	else
+	{
 		mat.Identity();
 	}
 
@@ -417,7 +471,8 @@ bool idEditorEntity::GetMatrixForKey( const char *key, idMat3 &mat ) {
 	idEditorEntity::FreeEpairs() Frees the entity epairs.
  =======================================================================================================================
  */
-void idEditorEntity::FreeEpairs() {
+void idEditorEntity::FreeEpairs()
+{
 	epairs.Clear();
 }
 
@@ -426,9 +481,11 @@ void idEditorEntity::FreeEpairs() {
 	idEditorEntity::AddToList(idEditorEntity *list)
  =======================================================================================================================
  */
-void idEditorEntity::AddToList(idEditorEntity *list) {
-	if (next || prev) {
-		idLib::Error("Entity_AddToList: allready linked");
+void idEditorEntity::AddToList( idEditorEntity* list )
+{
+	if( next || prev )
+	{
+		idLib::Error( "Entity_AddToList: allready linked" );
 	}
 
 	next = list->next;
@@ -442,8 +499,10 @@ void idEditorEntity::AddToList(idEditorEntity *list) {
 	idEditorEntity::RemoveFromList()
  =======================================================================================================================
  */
-void idEditorEntity::RemoveFromList() {
-	if ( !next || !prev ) {
+void idEditorEntity::RemoveFromList()
+{
+	if( !next || !prev )
+	{
 		idLib::Error( "Entity_RemoveFromList: not linked" );
 	}
 
@@ -457,13 +516,16 @@ void idEditorEntity::RemoveFromList() {
 	idEditorEntity::~idEditorEntity() Frees the entity and any brushes is has. The entity is removed from the global entities list.
  =======================================================================================================================
  */
-idEditorEntity::~idEditorEntity() {
+idEditorEntity::~idEditorEntity()
+{
 
-	while ( brushes.onext != &brushes ) {
-		Brush_Free(brushes.onext);
+	while( brushes.onext != &brushes )
+	{
+		Brush_Free( brushes.onext );
 	}
 
-	if ( next ) {
+	if( next )
+	{
 		next->prev = prev;
 		prev->next = next;
 	}
@@ -480,7 +542,8 @@ idEditorEntity::~idEditorEntity() {
 int idEditorEntity::MemorySize() const
 {
 	int size = sizeof( idEditorEntity ) + epairs.Size();
-	for( const idEditorBrush* b = brushes.onext; b != &brushes; b = b->onext ) {
+	for( const idEditorBrush* b = brushes.onext; b != &brushes; b = b->onext )
+	{
 		size += Brush_MemorySize( b );
 	}
 	return( size );
@@ -492,13 +555,15 @@ int idEditorEntity::MemorySize() const
  =======================================================================================================================
  */
 
-struct EpairFixup {
-	const char *name;
+struct EpairFixup
+{
+	const char* name;
 	int type;
 };
 
 
-const EpairFixup FloatFixups[] = {
+const EpairFixup FloatFixups[] =
+{
 	{ "origin", 1 },
 	{ "rotation", 2 },
 	{ "_color", 1 },
@@ -514,41 +579,52 @@ const EpairFixup FloatFixups[] = {
 	{ "light_origin", 1 }
 };
 
-const int FixupCount = sizeof(FloatFixups) / sizeof(EpairFixup);
+const int FixupCount = sizeof( FloatFixups ) / sizeof( EpairFixup );
 
-void FixFloats(idDict *dict) {
+void FixFloats( idDict* dict )
+{
 	int count = dict->GetNumKeyVals();
-	for (int i = 0; i < count; i++) {
-		const idKeyValue *kv = dict->GetKeyVal(i);
-		for (int j = 0; j < FixupCount; j++) {
-			if (kv->GetKey().Icmp(FloatFixups[j].name) == 0) {
+	for( int i = 0; i < count; i++ )
+	{
+		const idKeyValue* kv = dict->GetKeyVal( i );
+		for( int j = 0; j < FixupCount; j++ )
+		{
+			if( kv->GetKey().Icmp( FloatFixups[j].name ) == 0 )
+			{
 				idStr val;
-				if (FloatFixups[j].type == 1) {
+				if( FloatFixups[j].type == 1 )
+				{
 					idVec3 v;
-					sscanf(kv->GetValue().c_str(), "%f %f %f", &v.x, &v.y, &v.z);
-					sprintf(val, "%g %g %g", v.x, v.y, v.z);
-				} else if (FloatFixups[j].type == 2) {
-					idMat3 mat;
-					sscanf(kv->GetValue().c_str(),	"%f %f %f %f %f %f %f %f %f ",&mat[0][0],&mat[0][1],&mat[0][2],&mat[1][0],&mat[1][1],&mat[1][2],&mat[2][0],&mat[2][1],&mat[2][2]);
-					sprintf(val, "%g %g %g %g %g %g %g %g %g",mat[0][0],mat[0][1],mat[0][2],mat[1][0],mat[1][1],mat[1][2],mat[2][0],mat[2][1],mat[2][2]);
-				} else {
-					float f = atof(kv->GetValue().c_str());
-					sprintf(val, "%g", f);
+					sscanf( kv->GetValue().c_str(), "%f %f %f", &v.x, &v.y, &v.z );
+					sprintf( val, "%g %g %g", v.x, v.y, v.z );
 				}
-				dict->Set(kv->GetKey(), val);
+				else if( FloatFixups[j].type == 2 )
+				{
+					idMat3 mat;
+					sscanf( kv->GetValue().c_str(),	"%f %f %f %f %f %f %f %f %f ", &mat[0][0], &mat[0][1], &mat[0][2], &mat[1][0], &mat[1][1], &mat[1][2], &mat[2][0], &mat[2][1], &mat[2][2] );
+					sprintf( val, "%g %g %g %g %g %g %g %g %g", mat[0][0], mat[0][1], mat[0][2], mat[1][0], mat[1][1], mat[1][2], mat[2][0], mat[2][1], mat[2][2] );
+				}
+				else
+				{
+					float f = atof( kv->GetValue().c_str() );
+					sprintf( val, "%g", f );
+				}
+				dict->Set( kv->GetKey(), val );
 				break;
 			}
 		}
 	}
 }
 
-void ParseEpair(idDict *dict) {
+void ParseEpair( idDict* dict )
+{
 	idStr key = token;
-	GetToken(false);
+	GetToken( false );
 	idStr val = token;
 
-	if (key.Length() > 0) {
-		dict->Set(key, val);
+	if( key.Length() > 0 )
+	{
+		dict->Set( key, val );
 	}
 }
 
@@ -557,11 +633,14 @@ void ParseEpair(idDict *dict) {
 	idEditorEntity::HasModel()
  =======================================================================================================================
  */
-bool idEditorEntity::HasModel() const {
-	const char	*model = ValueForKey("model");
-	const char	*name = ValueForKey("name");
-	if (model && *model) {
-		if ( idStr::Icmp(model, name) ) {
+bool idEditorEntity::HasModel() const
+{
+	const char*	model = ValueForKey( "model" );
+	const char*	name = ValueForKey( "name" );
+	if( model && *model )
+	{
+		if( idStr::Icmp( model, name ) )
+		{
 			return true;
 		}
 	}
@@ -574,7 +653,8 @@ bool idEditorEntity::HasModel() const {
 	idEditorEntity::idEditorEntity()
  =======================================================================================================================
  */
-idEditorEntity::idEditorEntity() {	
+idEditorEntity::idEditorEntity()
+{
 	prev = next = NULL;
 	brushes.prev = brushes.next = NULL;
 	brushes.oprev = brushes.onext = NULL;
@@ -599,18 +679,23 @@ idEditorEntity::idEditorEntity() {
 	idEditorEntity::UpdateCurveData()
  =======================================================================================================================
  */
-void idEditorEntity::UpdateCurveData() {
+void idEditorEntity::UpdateCurveData()
+{
 
-	if ( this->curve == NULL ) {
+	if( this->curve == NULL )
+	{
 		return;
 	}
 
-	const idKeyValue *kv = this->epairs.MatchPrefix( CURVE_TAG );
-	if ( kv == NULL ) { 
-		if ( this->curve ) {
+	const idKeyValue* kv = this->epairs.MatchPrefix( CURVE_TAG );
+	if( kv == NULL )
+	{
+		if( this->curve )
+		{
 			delete this->curve;
 			this->curve = NULL;
-			if ( g_qeglobals.d_select_mode == sel_editpoint ) {
+			if( g_qeglobals.d_select_mode == sel_editpoint )
+			{
 				g_qeglobals.d_select_mode = sel_brush;
 			}
 		}
@@ -620,7 +705,8 @@ void idEditorEntity::UpdateCurveData() {
 	int c = this->curve->GetNumValues();
 	idStr str = va( "%i ( ", c );
 	idVec3 v;
-	for ( int i = 0; i < c; i++ ) {
+	for( int i = 0; i < c; i++ )
+	{
 		v = this->curve->GetValue( i );
 		str += " ";
 		str += v.ToString();
@@ -636,13 +722,18 @@ void idEditorEntity::UpdateCurveData() {
 	idEditorEntity::MakeCurve()
  =======================================================================================================================
  */
-idCurve<idVec3>* idEditorEntity::MakeCurve() {
-	const idKeyValue *kv = this->epairs.MatchPrefix( CURVE_TAG );
-	if ( kv ) {
+idCurve<idVec3>* idEditorEntity::MakeCurve()
+{
+	const idKeyValue* kv = this->epairs.MatchPrefix( CURVE_TAG );
+	if( kv )
+	{
 		idStr str = kv->GetKey().Right( kv->GetKey().Length() - strlen( CURVE_TAG ) );
-		if ( str.Icmp( "CatmullRomSpline" ) == 0 ) {
+		if( str.Icmp( "CatmullRomSpline" ) == 0 )
+		{
 			return new idCurve_CatmullRomSpline<idVec3>();
-		} else if ( str.Icmp( "Nurbs" ) == 0 ) {
+		}
+		else if( str.Icmp( "Nurbs" ) == 0 )
+		{
 			return new idCurve_NURBS<idVec3>();
 		}
 	}
@@ -654,23 +745,27 @@ idCurve<idVec3>* idEditorEntity::MakeCurve() {
 	idEditorEntity::SetCurveData()
  =======================================================================================================================
  */
-void idEditorEntity::SetCurveData() {
+void idEditorEntity::SetCurveData()
+{
 
 	this->curve = this->MakeCurve();
-	const idKeyValue *kv = this->epairs.MatchPrefix( CURVE_TAG );
-	if ( kv && this->curve ) {
+	const idKeyValue* kv = this->epairs.MatchPrefix( CURVE_TAG );
+	if( kv && this->curve )
+	{
 		idLexer lex;
 		lex.LoadMemory( kv->GetValue(), kv->GetValue().Length(), "_curve" );
 		int numPoints = lex.ParseInt();
-		if ( numPoints > 0 ) {
-			float *fp = new float[numPoints * 3];
+		if( numPoints > 0 )
+		{
+			float* fp = new float[numPoints * 3];
 			lex.Parse1DMatrix( numPoints * 3, fp );
 			int time = 0;
-			for ( int i = 0; i < numPoints * 3; i += 3 ) {
+			for( int i = 0; i < numPoints * 3; i += 3 )
+			{
 				idVec3 v;
 				v.x = fp[i];
-				v.y = fp[i+1];
-				v.z = fp[i+2];
+				v.y = fp[i + 1];
+				v.z = fp[i + 2];
 				this->curve->AddValue( time, v );
 				time += 100;
 			}
@@ -684,10 +779,11 @@ void idEditorEntity::SetCurveData() {
 	idEditorEntity::PostParse()
  =======================================================================================================================
  */
-void idEditorEntity::PostParse(idEditorBrush *pList) {
+void idEditorEntity::PostParse( idEditorBrush* pList )
+{
 	bool		has_brushes;
-	eclass_t	*e;
-	idEditorBrush		*b;
+	eclass_t*	e;
+	idEditorBrush*		b;
 	idVec3		mins, maxs, zero;
 	idBounds bo;
 
@@ -695,39 +791,49 @@ void idEditorEntity::PostParse(idEditorBrush *pList) {
 
 	SetCurveData();
 
-	if (brushes.onext == &brushes) {
+	if( brushes.onext == &brushes )
+	{
 		has_brushes = false;
 	}
-	else {
+	else
+	{
 		has_brushes = true;
 	}
 
-	bool needsOrigin = !GetVectorForKey("origin", origin);
-	const char	*pModel = ValueForKey("model");
+	bool needsOrigin = !GetVectorForKey( "origin", origin );
+	const char*	pModel = ValueForKey( "model" );
 
-	const char *cp = ValueForKey("classname");
+	const char* cp = ValueForKey( "classname" );
 
-	if (strlen(cp)) {
-		e = Eclass_ForName(cp, has_brushes);
-	} else {
-		const char *cp2 = ValueForKey("name");
-		if (strlen(cp2)) {
+	if( strlen( cp ) )
+	{
+		e = Eclass_ForName( cp, has_brushes );
+	}
+	else
+	{
+		const char* cp2 = ValueForKey( "name" );
+		if( strlen( cp2 ) )
+		{
 			char buff[1024];
-			strcpy(buff, cp2);
-			int len = strlen(buff);
-			while ((isdigit(buff[len-1]) || buff[len-1] == '_') && len > 0) {
-				buff[len-1] = '\0';
+			strcpy( buff, cp2 );
+			int len = strlen( buff );
+			while( ( isdigit( buff[len - 1] ) || buff[len - 1] == '_' ) && len > 0 )
+			{
+				buff[len - 1] = '\0';
 				len--;
 			}
-			e = Eclass_ForName(buff, has_brushes);
-			SetKeyValue("classname", buff, false);
-		} else {
-			e = Eclass_ForName("", has_brushes);
+			e = Eclass_ForName( buff, has_brushes );
+			SetKeyValue( "classname", buff, false );
+		}
+		else
+		{
+			e = Eclass_ForName( "", has_brushes );
 		}
 	}
 	idStr str;
-	
-	if (e->defArgs.GetString("model", "", str) && e->entityModel == NULL) {
+
+	if( e->defArgs.GetString( "model", "", str ) && e->entityModel == NULL )
+	{
 		e->entityModel = gameEdit->ANIM_GetModelFromEntityDef( &e->defArgs );
 	}
 
@@ -735,132 +841,168 @@ void idEditorEntity::PostParse(idEditorBrush *pList) {
 
 	bool hasModel = HasModel();
 
-	if (hasModel) {
-		eclass->defArgs.GetString("model", "", str);
-		if (str.Length()) {
+	if( hasModel )
+	{
+		eclass->defArgs.GetString( "model", "", str );
+		if( str.Length() )
+		{
 			hasModel = false;
-			epairs.Delete("model");
+			epairs.Delete( "model" );
 		}
 	}
 
-	if (e->nShowFlags & ECLASS_WORLDSPAWN) {
+	if( e->nShowFlags & ECLASS_WORLDSPAWN )
+	{
 		origin.Zero();
 		needsOrigin = false;
 		epairs.Delete( "model" );
-	} else if (e->nShowFlags & ECLASS_LIGHT) {
-		if (GetVectorForKey("light_origin", lightOrigin)) {
-			GetMatrixForKey("light_rotation", lightRotation);
+	}
+	else if( e->nShowFlags & ECLASS_LIGHT )
+	{
+		if( GetVectorForKey( "light_origin", lightOrigin ) )
+		{
+			GetMatrixForKey( "light_rotation", lightRotation );
 			trackLightOrigin = true;
-		} else if (hasModel) {
-			SetKeyValue("light_origin", ValueForKey("origin"));
+		}
+		else if( hasModel )
+		{
+			SetKeyValue( "light_origin", ValueForKey( "origin" ) );
 			lightOrigin = origin;
-			if (GetMatrixForKey("rotation", lightRotation)) {
-				SetKeyValue("light_rotation", ValueForKey("rotation"));
+			if( GetMatrixForKey( "rotation", lightRotation ) )
+			{
+				SetKeyValue( "light_rotation", ValueForKey( "rotation" ) );
 			}
 			trackLightOrigin = true;
 		}
-	} else if ( e->nShowFlags & ECLASS_ENV ) {
+	}
+	else if( e->nShowFlags & ECLASS_ENV )
+	{
 		// need to create an origin from the bones here
 		idVec3 org;
 		idAngles ang;
 		bo.Clear();
 		bool hasBody = false;
-		const idKeyValue *arg = epairs.MatchPrefix( "body ", NULL );
-		while ( arg ) {
+		const idKeyValue* arg = epairs.MatchPrefix( "body ", NULL );
+		while( arg )
+		{
 			sscanf( arg->GetValue(), "%f %f %f %f %f %f", &org.x, &org.y, &org.z, &ang.pitch, &ang.yaw, &ang.roll );
 			bo.AddPoint( org );
 			arg = epairs.MatchPrefix( "body ", arg );
 			hasBody = true;
 		}
-		if (hasBody) {
+		if( hasBody )
+		{
 			origin = bo.GetCenter();
 		}
 	}
 
-	if (e->fixedsize || hasModel) {			// fixed size entity
-		if (brushes.onext != &brushes) {
-			for (b = brushes.onext; b != &brushes; b = b->onext) {
+	if( e->fixedsize || hasModel )  			// fixed size entity
+	{
+		if( brushes.onext != &brushes )
+		{
+			for( b = brushes.onext; b != &brushes; b = b->onext )
+			{
 				b->entityModel = true;
 			}
 		}
-		if (hasModel) {
+		if( hasModel )
+		{
 			// model entity
-			idRenderModel *modelHandle = renderModelManager->FindModel( pModel );
-			if ( dynamic_cast<idRenderModelPrt*>( modelHandle ) || dynamic_cast<idRenderModelLiquid*>( modelHandle ) ) {
+			idRenderModel* modelHandle = renderModelManager->FindModel( pModel );
+			if( dynamic_cast<idRenderModelPrt*>( modelHandle ) || dynamic_cast<idRenderModelLiquid*>( modelHandle ) )
+			{
 				bo.Zero();
 				bo.ExpandSelf( 12.0f );
-			} else {
+			}
+			else
+			{
 				bo = modelHandle->Bounds( NULL );
 			}
-			VectorCopy(bo[0], mins);
-			VectorCopy(bo[1], maxs);
-			for (int i = 0; i < 3; i++) {
-				if (mins[i] == maxs[i]) {
+			VectorCopy( bo[0], mins );
+			VectorCopy( bo[1], maxs );
+			for( int i = 0; i < 3; i++ )
+			{
+				if( mins[i] == maxs[i] )
+				{
 					mins[i]--;
 					maxs[i]++;
 				}
 			}
-			VectorAdd(mins, origin, mins);
-			VectorAdd(maxs, origin, maxs);
-			b = Brush_Create(mins, maxs, &e->texdef);
+			VectorAdd( mins, origin, mins );
+			VectorAdd( maxs, origin, maxs );
+			b = Brush_Create( mins, maxs, &e->texdef );
 			b->modelHandle = modelHandle;
 
 			float		yaw = 0;
-			bool		convertAngles = GetFloatForKey("angle", &yaw);
-			extern void Brush_Rotate(idEditorBrush *b, idMat3 matrix, idVec3 origin, bool bBuild);
-			extern void Brush_Rotate(idEditorBrush *b, idVec3 rot, idVec3 origin, bool bBuild);
+			bool		convertAngles = GetFloatForKey( "angle", &yaw );
+			extern void Brush_Rotate( idEditorBrush * b, idMat3 matrix, idVec3 origin, bool bBuild );
+			extern void Brush_Rotate( idEditorBrush * b, idVec3 rot, idVec3 origin, bool bBuild );
 
-			if (convertAngles) {
-				idVec3	rot(0, 0, yaw);
-				Brush_Rotate(b, rot, origin, false);
+			if( convertAngles )
+			{
+				idVec3	rot( 0, 0, yaw );
+				Brush_Rotate( b, rot, origin, false );
 			}
 
-			if (GetMatrixForKey("rotation", rotation)) {
+			if( GetMatrixForKey( "rotation", rotation ) )
+			{
 				idBounds bo2;
-				bo2.FromTransformedBounds(bo, origin, rotation);
+				bo2.FromTransformedBounds( bo, origin, rotation );
 				b->owner = this;
-				Brush_Resize(b, bo2[0], bo2[1]);
+				Brush_Resize( b, bo2[0], bo2[1] );
 			}
-			Entity_LinkBrush(this, b);
+			Entity_LinkBrush( this, b );
 		}
 
-		if (!hasModel || (eclass->nShowFlags & ECLASS_LIGHT && hasModel)) {
+		if( !hasModel || ( eclass->nShowFlags & ECLASS_LIGHT && hasModel ) )
+		{
 			// create a custom brush
-			if (trackLightOrigin) {
+			if( trackLightOrigin )
+			{
 				mins = e->mins + lightOrigin;
 				maxs = e->maxs + lightOrigin;
-			} else {
+			}
+			else
+			{
 				mins = e->mins + origin;
 				maxs = e->maxs + origin;
 			}
 
-			b = Brush_Create(mins, maxs, &e->texdef);
-			GetMatrixForKey("rotation", rotation);
-			Entity_LinkBrush(this, b);
+			b = Brush_Create( mins, maxs, &e->texdef );
+			GetMatrixForKey( "rotation", rotation );
+			Entity_LinkBrush( this, b );
 			b->trackLightOrigin = trackLightOrigin;
-			if ( e->texdef.name == NULL ) {
+			if( e->texdef.name == NULL )
+			{
 				brushprimit_texdef_t bp;
 				texdef_t td;
 				td.SetName( eclass->defMaterial );
 				Brush_SetTexture( b, &td, &bp, false );
 			}
 		}
-	} else {	// brush entity
-		if (brushes.next == &brushes) {
-			printf("Warning: Brush entity with no brushes\n");
+	}
+	else  	// brush entity
+	{
+		if( brushes.next == &brushes )
+		{
+			printf( "Warning: Brush entity with no brushes\n" );
 		}
 
-		if (!needsOrigin) {
-			idStr cn = ValueForKey("classname");
-			idStr name = ValueForKey("name");
-			idStr model = ValueForKey("model");
-			if (cn.Icmp("func_static") == 0) {
-				if (name.Icmp(model) == 0) {
+		if( !needsOrigin )
+		{
+			idStr cn = ValueForKey( "classname" );
+			idStr name = ValueForKey( "name" );
+			idStr model = ValueForKey( "model" );
+			if( cn.Icmp( "func_static" ) == 0 )
+			{
+				if( name.Icmp( model ) == 0 )
+				{
 					needsOrigin = true;
 				}
 			}
 		}
-		if (needsOrigin) {
+		if( needsOrigin )
+		{
 			idVec3	mins, maxs, mid;
 			int		i;
 			char	text[32];
@@ -868,39 +1010,49 @@ void idEditorEntity::PostParse(idEditorBrush *pList) {
 			maxs[0] = maxs[1] = maxs[2] = -999999;
 
 			// add in the origin
-			for (b = brushes.onext; b != &brushes; b = b->onext) {
-				Brush_Build(b, true, false, false);
-				for (i = 0; i < 3; i++) {
-					if (b->mins[i] < mins[i]) {
+			for( b = brushes.onext; b != &brushes; b = b->onext )
+			{
+				Brush_Build( b, true, false, false );
+				for( i = 0; i < 3; i++ )
+				{
+					if( b->mins[i] < mins[i] )
+					{
 						mins[i] = b->mins[i];
 					}
-					if (b->maxs[i] > maxs[i]) {
+					if( b->maxs[i] > maxs[i] )
+					{
 						maxs[i] = b->maxs[i];
 					}
 				}
 			}
 
-			for (i = 0; i < 3; i++) {
-				origin[i] = (mins[i] + ((maxs[i] - mins[i]) / 2));
+			for( i = 0; i < 3; i++ )
+			{
+				origin[i] = ( mins[i] + ( ( maxs[i] - mins[i] ) / 2 ) );
 			}
 
-			sprintf(text, "%i %i %i", (int)origin[0], (int)origin[1], (int)origin[2]);
-			SetKeyValue("origin", text);
+			sprintf( text, "%i %i %i", ( int )origin[0], ( int )origin[1], ( int )origin[2] );
+			SetKeyValue( "origin", text );
 		}
 
-		if (!(e->nShowFlags & ECLASS_WORLDSPAWN)) {
-			if (e->defArgs.FindKey("model") == NULL && (pModel == NULL || (pModel && strlen(pModel) == 0))) {
-				SetKeyValue("model", ValueForKey("name"));
+		if( !( e->nShowFlags & ECLASS_WORLDSPAWN ) )
+		{
+			if( e->defArgs.FindKey( "model" ) == NULL && ( pModel == NULL || ( pModel && strlen( pModel ) == 0 ) ) )
+			{
+				SetKeyValue( "model", ValueForKey( "name" ) );
 			}
 		}
-		else {
-			DeleteKey("origin");
+		else
+		{
+			DeleteKey( "origin" );
 		}
 	}
 
 	// add all the brushes to the main list
-	if (pList) {
-		for (b = brushes.onext; b != &brushes; b = b->onext) {
+	if( pList )
+	{
+		for( b = brushes.onext; b != &brushes; b = b->onext )
+		{
 			b->next = pList->next;
 			pList->next->prev = b;
 			b->prev = pList;
@@ -908,7 +1060,7 @@ void idEditorEntity::PostParse(idEditorBrush *pList) {
 		}
 	}
 
-	FixFloats(&epairs);
+	FixFloats( &epairs );
 }
 
 /*
@@ -917,35 +1069,43 @@ void idEditorEntity::PostParse(idEditorBrush *pList) {
 	global list. Used for parsing the project.
  =======================================================================================================================
  */
-idEditorEntity *Entity_Parse(bool onlypairs, idEditorBrush *pList) {
-	idEditorEntity	*ent;
+idEditorEntity* Entity_Parse( bool onlypairs, idEditorBrush* pList )
+{
+	idEditorEntity*	ent;
 
-	if (!GetToken(true)) {
+	if( !GetToken( true ) )
+	{
 		return NULL;
 	}
 
-	if (strcmp(token, "{")) {
-		idLib::Error("ParseEntity: { not found");
+	if( strcmp( token, "{" ) )
+	{
+		idLib::Error( "ParseEntity: { not found" );
 	}
 
 	ent = new idEditorEntity();
 	ent->brushes.onext = ent->brushes.oprev = &ent->brushes;
 	ent->origin.Zero();
 
-	do {
-		if (!GetToken(true)) {
-			idLib::Warning("ParseEntity: EOF without closing brace");
+	do
+	{
+		if( !GetToken( true ) )
+		{
+			idLib::Warning( "ParseEntity: EOF without closing brace" );
 			return NULL;
 		}
 
-		if (!strcmp(token, "}")) {
+		if( !strcmp( token, "}" ) )
+		{
 			break;
 		}
 
-		if (!strcmp(token, "{")) {
-			ent->GetVectorForKey("origin", ent->origin);
-			idEditorBrush *b = Brush_Parse(ent->origin);
-			if (b != NULL) {
+		if( !strcmp( token, "{" ) )
+		{
+			ent->GetVectorForKey( "origin", ent->origin );
+			idEditorBrush* b = Brush_Parse( ent->origin );
+			if( b != NULL )
+			{
 				b->owner = ent;
 
 				// add to the end of the entity chain
@@ -954,20 +1114,24 @@ idEditorEntity *Entity_Parse(bool onlypairs, idEditorBrush *pList) {
 				ent->brushes.oprev->onext = b;
 				ent->brushes.oprev = b;
 			}
-			else {
+			else
+			{
 				break;
 			}
 		}
-		else {
-			ParseEpair(&ent->epairs);
+		else
+		{
+			ParseEpair( &ent->epairs );
 		}
-	} while (1);
+	}
+	while( 1 );
 
-	if (onlypairs) {
+	if( onlypairs )
+	{
 		return ent;
 	}
 
-	ent->PostParse(pList);
+	ent->PostParse( pList );
 	return ent;
 }
 
@@ -975,9 +1139,11 @@ idEditorEntity *Entity_Parse(bool onlypairs, idEditorBrush *pList) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void VectorMidpoint(idVec3 va, idVec3 vb, idVec3 &out) {
-	for (int i = 0; i < 3; i++) {
-		out[i] = va[i] + ((vb[i] - va[i]) / 2);
+void VectorMidpoint( idVec3 va, idVec3 vb, idVec3& out )
+{
+	for( int i = 0; i < 3; i++ )
+	{
+		out[i] = va[i] + ( ( vb[i] - va[i] ) / 2 );
 	}
 }
 
@@ -985,9 +1151,12 @@ void VectorMidpoint(idVec3 va, idVec3 vb, idVec3 &out) {
  =======================================================================================================================
  =======================================================================================================================
  */
-bool IsBrushSelected(const idEditorBrush *bSel) {
-	for (const idEditorBrush * b = selected_brushes.next; b != NULL && b != &selected_brushes; b = b->next) {
-		if (b == bSel) {
+bool IsBrushSelected( const idEditorBrush* bSel )
+{
+	for( const idEditorBrush* b = selected_brushes.next; b != NULL && b != &selected_brushes; b = b->next )
+	{
+		if( b == bSel )
+		{
 			return true;
 		}
 	}
@@ -1000,51 +1169,62 @@ bool IsBrushSelected(const idEditorBrush *bSel) {
 //    idEditorEntity::WriteSelected()
 // =======================================================================================================================
 //
-void idEditorEntity::WriteSelected(FILE *file) {
-	const idEditorBrush *b;		
+void idEditorEntity::WriteSelected( FILE* file )
+{
+	const idEditorBrush* b;
 
-	for (b = brushes.onext; b != &brushes; b = b->onext) {
-		if (IsBrushSelected(b)) {
+	for( b = brushes.onext; b != &brushes; b = b->onext )
+	{
+		if( IsBrushSelected( b ) )
+		{
 			break;	// got one
 		}
 	}
 
-	if (b == &brushes) {
+	if( b == &brushes )
+	{
 		return;		// nothing selected
 	}
 
 	// if fixedsize, calculate a new origin based on the current brush position
-	if (eclass->fixedsize || HasModel()) {
+	if( eclass->fixedsize || HasModel() )
+	{
 		idVec3	origin;
 
-		if (!GetVectorForKey("origin", origin)) {
-			char text[128];	
-			VectorSubtract(brushes.onext->mins, eclass->mins, origin);
-			sprintf(text, "%i %i %i", (int)origin[0], (int)origin[1], (int)origin[2]);
-			SetKeyValue("origin", text);
+		if( !GetVectorForKey( "origin", origin ) )
+		{
+			char text[128];
+			VectorSubtract( brushes.onext->mins, eclass->mins, origin );
+			sprintf( text, "%i %i %i", ( int )origin[0], ( int )origin[1], ( int )origin[2] );
+			SetKeyValue( "origin", text );
 		}
 	}
 
-	fprintf(file, "{\n");	
+	fprintf( file, "{\n" );
 
-	for (int j = 0; j < epairs.GetNumKeyVals(); j++) {
-		fprintf(file, "\"%s\" \"%s\"\n", epairs.GetKeyVal(j)->GetKey().c_str(), epairs.GetKeyVal(j)->GetValue().c_str());
+	for( int j = 0; j < epairs.GetNumKeyVals(); j++ )
+	{
+		fprintf( file, "\"%s\" \"%s\"\n", epairs.GetKeyVal( j )->GetKey().c_str(), epairs.GetKeyVal( j )->GetValue().c_str() );
 	}
 
-	if (!HasModel()) {
+	if( !HasModel() )
+	{
 		int count = 0;
-		for (idEditorBrush* b = brushes.onext; b != &brushes; b = b->onext) {
-			if (eclass->fixedsize && !b->entityModel) {
+		for( idEditorBrush* b = brushes.onext; b != &brushes; b = b->onext )
+		{
+			if( eclass->fixedsize && !b->entityModel )
+			{
 				continue;
 			}
-			if (IsBrushSelected(b)) {
-				fprintf(file, "// brush %i\n", count);
+			if( IsBrushSelected( b ) )
+			{
+				fprintf( file, "// brush %i\n", count );
 				count++;
 				Brush_Write( b, file, origin, ( g_PrefsDlg.m_bNewMapFormat != FALSE ) );
 			}
 		}
 	}
-	fprintf(file, "}\n");
+	fprintf( file, "}\n" );
 }
 
 //
@@ -1052,107 +1232,134 @@ void idEditorEntity::WriteSelected(FILE *file) {
 //    idEditorEntity::WriteSelected() to a CMemFile
 // =======================================================================================================================
 //
-void idEditorEntity::WriteSelected(CMemFile *pMemFile) {
-	idEditorBrush *b;
+void idEditorEntity::WriteSelected( CMemFile* pMemFile )
+{
+	idEditorBrush* b;
 	idVec3	origin;
 	char	text[128];
 	int		count;
 
-	for (b = brushes.onext; b != &brushes; b = b->onext) {
-		if (IsBrushSelected(b)) {
+	for( b = brushes.onext; b != &brushes; b = b->onext )
+	{
+		if( IsBrushSelected( b ) )
+		{
 			break;	// got one
 		}
 	}
 
-	if (b == &brushes) {
+	if( b == &brushes )
+	{
 		return;		// nothing selected
 	}
 
 	// if fixedsize, calculate a new origin based on the current brush position
-	if (eclass->fixedsize || HasModel()) {
-		if (!GetVectorForKey("origin", origin)) {
-			VectorSubtract(brushes.onext->mins, eclass->mins, origin);
-			sprintf(text, "%i %i %i", (int)origin[0], (int)origin[1], (int)origin[2]);
-			SetKeyValue("origin", text);
+	if( eclass->fixedsize || HasModel() )
+	{
+		if( !GetVectorForKey( "origin", origin ) )
+		{
+			VectorSubtract( brushes.onext->mins, eclass->mins, origin );
+			sprintf( text, "%i %i %i", ( int )origin[0], ( int )origin[1], ( int )origin[2] );
+			SetKeyValue( "origin", text );
 		}
 	}
 
-	MemFile_fprintf(pMemFile, "{\n");
+	MemFile_fprintf( pMemFile, "{\n" );
 
 	count = epairs.GetNumKeyVals();
-	for (int j = 0; j < count; j++) {
-		MemFile_fprintf(pMemFile, "\"%s\" \"%s\"\n", epairs.GetKeyVal(j)->GetKey().c_str(), epairs.GetKeyVal(j)->GetValue().c_str());
+	for( int j = 0; j < count; j++ )
+	{
+		MemFile_fprintf( pMemFile, "\"%s\" \"%s\"\n", epairs.GetKeyVal( j )->GetKey().c_str(), epairs.GetKeyVal( j )->GetValue().c_str() );
 	}
 
-	if (!HasModel()) {
+	if( !HasModel() )
+	{
 		count = 0;
-		for (b = brushes.onext; b != &brushes; b = b->onext) {
-			if (eclass->fixedsize && !b->entityModel) {
+		for( b = brushes.onext; b != &brushes; b = b->onext )
+		{
+			if( eclass->fixedsize && !b->entityModel )
+			{
 				continue;
 			}
-			if (IsBrushSelected(b)) {
-				MemFile_fprintf(pMemFile, "// brush %i\n", count);
+			if( IsBrushSelected( b ) )
+			{
+				MemFile_fprintf( pMemFile, "// brush %i\n", count );
 				count++;
 				Brush_Write( b, pMemFile, origin, ( g_PrefsDlg.m_bNewMapFormat != FALSE ) );
 			}
 		}
 	}
-	MemFile_fprintf(pMemFile, "}\n");
+	MemFile_fprintf( pMemFile, "}\n" );
 }
 
 /*
  =======================================================================================================================
  =======================================================================================================================
  */
-void idEditorEntity::SetName(const char *name) {
-	CString oldName = ValueForKey("name");
-	CString oldModel = ValueForKey("model");
-	SetKeyValue("name", name);
-	if (oldName == oldModel) {
-		SetKeyValue("model", name);
+void idEditorEntity::SetName( const char* name )
+{
+	CString oldName = ValueForKey( "name" );
+	CString oldModel = ValueForKey( "model" );
+	SetKeyValue( "name", name );
+	if( oldName == oldModel )
+	{
+		SetKeyValue( "model", name );
 	}
 }
 
-extern bool Entity_NameIsUnique(const char *name);
+extern bool Entity_NameIsUnique( const char* name );
 
 /*
  =======================================================================================================================
  =======================================================================================================================
  */
-void idEditorEntity::Name(bool force) {
-	const char	*name = ValueForKey("name");
+void idEditorEntity::Name( bool force )
+{
+	const char*	name = ValueForKey( "name" );
 
-	if (!force && name && name[0]) {
+	if( !force && name && name[0] )
+	{
 		return;
 	}
-	if (name && name[0] && Entity_NameIsUnique(name)) {
+	if( name && name[0] && Entity_NameIsUnique( name ) )
+	{
 		return;
 	}
 
 	bool	setModel = false;
-	if (name[0]) {
-		const char	*model = ValueForKey("model");
-		if (model[0]) {
-			if ( idStr::Icmp(model, name) == 0 ) {
+	if( name[0] )
+	{
+		const char*	model = ValueForKey( "model" );
+		if( model[0] )
+		{
+			if( idStr::Icmp( model, name ) == 0 )
+			{
 				setModel = true;
 			}
 		}
 	}
 
-	const char *eclass = ValueForKey("classname");
-	if (eclass && eclass[0]) {
+	const char* eclass = ValueForKey( "classname" );
+	if( eclass && eclass[0] )
+	{
 		idStr str = cvarSystem->GetCVarString( "radiant_nameprefix" );
-		int id = Map_GetUniqueEntityID(str, eclass);
-		if (str.Length()) {
-			SetKeyValue("name", va("%s_%s_%i", str.c_str(), eclass, id));
-		} else {
-			SetKeyValue("name", va("%s_%i", eclass, id));
+		int id = Map_GetUniqueEntityID( str, eclass );
+		if( str.Length() )
+		{
+			SetKeyValue( "name", va( "%s_%s_%i", str.c_str(), eclass, id ) );
 		}
-		if (setModel) {
-			if (str.Length()) {
-				SetKeyValue("model", va("%s_%s_%i", str.c_str(), eclass, id));
-			} else {
-				SetKeyValue("model", va("%s_%i",  eclass, id));
+		else
+		{
+			SetKeyValue( "name", va( "%s_%i", eclass, id ) );
+		}
+		if( setModel )
+		{
+			if( str.Length() )
+			{
+				SetKeyValue( "model", va( "%s_%s_%i", str.c_str(), eclass, id ) );
+			}
+			else
+			{
+				SetKeyValue( "model", va( "%s_%i",  eclass, id ) );
 			}
 		}
 	}
@@ -1164,24 +1371,28 @@ void idEditorEntity::Name(bool force) {
 	are only used to find a midpoint. Otherwise, the brushes have their ownership transfered to the new entity.
  =======================================================================================================================
  */
-idEditorEntity *Entity_Create(eclass_t *entityClass, bool forceFixed) {
-	idEditorEntity	*e;
-	idEditorBrush		*b;
+idEditorEntity* Entity_Create( eclass_t* entityClass, bool forceFixed )
+{
+	idEditorEntity*	e;
+	idEditorBrush*		b;
 	idVec3		mins, maxs, origin;
 	char		text[32];
 	texdef_t td;
 	brushprimit_texdef_t bp;
 
 	// check to make sure the brushes are ok
-	for (b = selected_brushes.next; b != &selected_brushes; b = b->next) {
-		if (b->owner != world_entity) {
+	for( b = selected_brushes.next; b != &selected_brushes; b = b->next )
+	{
+		if( b->owner != world_entity )
+		{
 			MessageBox( g_pParentWnd->GetSafeHwnd(), "Entity NOT created, brushes not all from world.", "Can't Create Entity", MB_OK | MB_ICONERROR );
 			return NULL;
 		}
 	}
 
 	idStr str;
-	if (entityClass->defArgs.GetString("model", "", str) && entityClass->entityModel == NULL) {
+	if( entityClass->defArgs.GetString( "model", "", str ) && entityClass->entityModel == NULL )
+	{
 		entityClass->entityModel = gameEdit->ANIM_GetModelFromEntityDef( &entityClass->defArgs );
 	}
 
@@ -1189,32 +1400,34 @@ idEditorEntity *Entity_Create(eclass_t *entityClass, bool forceFixed) {
 	e = new idEditorEntity();
 	e->brushes.onext = e->brushes.oprev = &e->brushes;
 	e->eclass = entityClass;
-	e->epairs.Copy(entityClass->args);
-	e->SetKeyValue("classname", entityClass->name);
-	e->Name(false);
+	e->epairs.Copy( entityClass->args );
+	e->SetKeyValue( "classname", entityClass->name );
+	e->Name( false );
 
 	// add the entity to the entity list
-	e->AddToList(&entities);
+	e->AddToList( &entities );
 
-	if (entityClass->fixedsize) {
+	if( entityClass->fixedsize )
+	{
 		//
 		// just use the selection for positioning b = selected_brushes.next; for (i=0 ;
 		// i<3 ; i++) { e->origin[i] = b->mins[i] - c->mins[i]; }
 		//
-		Select_GetMid(e->origin);
-		VectorCopy(e->origin, origin);
+		Select_GetMid( e->origin );
+		VectorCopy( e->origin, origin );
 
 		// create a custom brush
-		VectorAdd(entityClass->mins, e->origin, mins);
-		VectorAdd(entityClass->maxs, e->origin, maxs);
+		VectorAdd( entityClass->mins, e->origin, mins );
+		VectorAdd( entityClass->maxs, e->origin, maxs );
 
-		b = Brush_Create(mins, maxs, &entityClass->texdef);
+		b = Brush_Create( mins, maxs, &entityClass->texdef );
 
-		Entity_LinkBrush(e, b);
+		Entity_LinkBrush( e, b );
 
-		if (entityClass->defMaterial.Length()) {
-			td.SetName(entityClass->defMaterial);
-			Brush_SetTexture(b, &td, &bp, false);
+		if( entityClass->defMaterial.Length() )
+		{
+			td.SetName( entityClass->defMaterial );
+			Brush_SetTexture( b, &td, &bp, false );
 		}
 
 
@@ -1225,20 +1438,23 @@ idEditorEntity *Entity_Create(eclass_t *entityClass, bool forceFixed) {
 		b->next = b->prev = &selected_brushes;
 		selected_brushes.next = selected_brushes.prev = b;
 
-		Brush_Build(b);
+		Brush_Build( b );
 	}
-	else {
+	else
+	{
 
-		Select_GetMid(origin);
+		Select_GetMid( origin );
 
 		// change the selected brushes over to the new entity
-		for (b = selected_brushes.next; b != &selected_brushes; b = b->next) {
-			Entity_UnlinkBrush(b);
-			Entity_LinkBrush(e, b);
-			Brush_Build(b); // so the key brush gets a name
-			if (entityClass->defMaterial.Length()) {
-				td.SetName(entityClass->defMaterial);
-				Brush_SetTexture(b, &td, &bp, false);
+		for( b = selected_brushes.next; b != &selected_brushes; b = b->next )
+		{
+			Entity_UnlinkBrush( b );
+			Entity_LinkBrush( e, b );
+			Brush_Build( b ); // so the key brush gets a name
+			if( entityClass->defMaterial.Length() )
+			{
+				td.SetName( entityClass->defMaterial );
+				Brush_SetTexture( b, &td, &bp, false );
 			}
 
 		}
@@ -1247,21 +1463,24 @@ idEditorEntity *Entity_Create(eclass_t *entityClass, bool forceFixed) {
 		//	origin[i] = vMin[i] + vMax[i] * 0.5;
 		//}
 
-		if (!forceFixed) {
-			e->SetKeyValue("model", e->ValueForKey("name"));
+		if( !forceFixed )
+		{
+			e->SetKeyValue( "model", e->ValueForKey( "name" ) );
 		}
 	}
 
-	sprintf(text, "%i %i %i", (int)origin[0], (int)origin[1], (int)origin[2]);
-	e->SetKeyValue("origin", text);
-	VectorCopy(origin, e->origin);
+	sprintf( text, "%i %i %i", ( int )origin[0], ( int )origin[1], ( int )origin[2] );
+	e->SetKeyValue( "origin", text );
+	VectorCopy( origin, e->origin );
 
-	Sys_UpdateWindows(W_ALL);
+	Sys_UpdateWindows( W_ALL );
 	return e;
 }
 
-void Brush_MakeDirty(idEditorBrush *b) {
-	for (face_t *f = b->brush_faces; f; f = f->next) {
+void Brush_MakeDirty( idEditorBrush* b )
+{
+	for( face_t* f = b->brush_faces; f; f = f->next )
+	{
 		f->dirty = true;
 	}
 }
@@ -1270,12 +1489,14 @@ void Brush_MakeDirty(idEditorBrush *b) {
 	Entity_LinkBrush
  =======================================================================================================================
  */
-void Entity_LinkBrush(idEditorEntity *e, idEditorBrush *b) {
-	if (b->oprev || b->onext) {
-		idLib::Error("Entity_LinkBrush: Allready linked");
+void Entity_LinkBrush( idEditorEntity* e, idEditorBrush* b )
+{
+	if( b->oprev || b->onext )
+	{
+		idLib::Error( "Entity_LinkBrush: Allready linked" );
 	}
 
-	Brush_MakeDirty(b);
+	Brush_MakeDirty( b );
 
 	b->owner = e;
 
@@ -1290,10 +1511,12 @@ void Entity_LinkBrush(idEditorEntity *e, idEditorBrush *b) {
 	Entity_UnlinkBrush
  =======================================================================================================================
  */
-void Entity_UnlinkBrush(idEditorBrush *b) {
+void Entity_UnlinkBrush( idEditorBrush* b )
+{
 	// if (!b->owner || !b->onext || !b->oprev)
-	if (!b->onext || !b->oprev) {
-		idLib::Error("Entity_UnlinkBrush: Not currently linked");
+	if( !b->onext || !b->oprev )
+	{
+		idLib::Error( "Entity_UnlinkBrush: Not currently linked" );
 	}
 
 	b->onext->oprev = b->oprev;
@@ -1307,13 +1530,14 @@ void Entity_UnlinkBrush(idEditorBrush *b) {
 	idEditorEntity::Clone()
  =======================================================================================================================
  */
-idEditorEntity *idEditorEntity::Clone() const {
-	idEditorEntity	*n = new idEditorEntity();
+idEditorEntity* idEditorEntity::Clone() const
+{
+	idEditorEntity*	n = new idEditorEntity();
 	n->brushes.onext = n->brushes.oprev = &n->brushes;
 	n->eclass = eclass;
 	n->rotation = rotation;
 	n->origin = origin;
-	n->AddToList(&entities);
+	n->AddToList( &entities );
 	n->epairs  = epairs;
 
 	return n;
@@ -1323,11 +1547,14 @@ idEditorEntity *idEditorEntity::Clone() const {
  =======================================================================================================================
  =======================================================================================================================
  */
-idEditorEntity *FindEntity(const char *pszKey, const char *pszValue) {
+idEditorEntity* FindEntity( const char* pszKey, const char* pszValue )
+{
 	idEditorEntity* pe = entities.next;
 
-	for (; pe != NULL && pe != &entities; pe = pe->next) {
-		if (!strcmp(pe->ValueForKey(pszKey), pszValue)) {
+	for( ; pe != NULL && pe != &entities; pe = pe->next )
+	{
+		if( !strcmp( pe->ValueForKey( pszKey ), pszValue ) )
+		{
 			return pe;
 		}
 	}
@@ -1338,11 +1565,14 @@ idEditorEntity *FindEntity(const char *pszKey, const char *pszValue) {
  =======================================================================================================================
  =======================================================================================================================
  */
-idEditorEntity *FindEntityInt(const char *pszKey, int iValue) {
+idEditorEntity* FindEntityInt( const char* pszKey, int iValue )
+{
 	idEditorEntity* pe = entities.next;
 
-	for (; pe != NULL && pe != &entities; pe = pe->next) {
-		if (pe->IntForKey(pszKey) == iValue) {
+	for( ; pe != NULL && pe != &entities; pe = pe->next )
+	{
+		if( pe->IntForKey( pszKey ) == iValue )
+		{
 			return pe;
 		}
 	}
@@ -1359,21 +1589,26 @@ to it not having one, being filtered away, or the sound mode being turned off.
 Creates or updates the soundEmitter if needed
 ====================
 */
-void idEditorEntity::UpdateSoundEmitter() {
+void idEditorEntity::UpdateSoundEmitter()
+{
 	bool	playing = false;
 
 	// if an entity doesn't have any brushes at all, don't do anything
 	// if the brush isn't displayed (filtered or culled), don't do anything
-	if ( g_pParentWnd->GetCamera()->GetSoundMode() 
-		&& this->brushes.onext != &this->brushes && !FilterBrush(this->brushes.onext) ) {
+	if( g_pParentWnd->GetCamera()->GetSoundMode()
+			&& this->brushes.onext != &this->brushes && !FilterBrush( this->brushes.onext ) )
+	{
 		// check for sounds
-		const char *v = ValueForKey( "s_shader" );
-		if ( v[0] ) {
+		const char* v = ValueForKey( "s_shader" );
+		if( v[0] )
+		{
 			refSound_t	sound;
 
 			gameEdit->ParseSpawnArgsToRefSound( &this->epairs, &sound );
-			if ( !sound.waitfortrigger ) {	// waitfortrigger will not start playing immediately
-				if ( !this->soundEmitter ) {
+			if( !sound.waitfortrigger )  	// waitfortrigger will not start playing immediately
+			{
+				if( !this->soundEmitter )
+				{
 					this->soundEmitter = g_qeglobals.sw->AllocSoundEmitter();
 				}
 				playing = true;
@@ -1385,7 +1620,8 @@ void idEditorEntity::UpdateSoundEmitter() {
 	}
 
 	// delete the soundEmitter if not used
-	if ( !playing && this->soundEmitter ) {
+	if( !playing && this->soundEmitter )
+	{
 		this->soundEmitter->Free( true );
 		this->soundEmitter = NULL;
 	}

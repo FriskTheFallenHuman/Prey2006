@@ -113,7 +113,8 @@ If you have questions concerning this license or the applicable additional terms
 #define	VK_PLUS			187
 #define	VK_MINUS		189
 
-enum {
+enum
+{
 	COLOR_TEXTUREBACK,
 	COLOR_GRIDBACK,
 	COLOR_GRIDMINOR,

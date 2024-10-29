@@ -83,25 +83,25 @@ If you have questions concerning this license or the applicable additional terms
 //
 //*************************************************************
 
-LPMRUMENU CreateMruMenu (WORD wNbLruShowInit,
-			WORD wNbLruMenuInit,WORD wMaxSizeLruItemInit,WORD wIdMruInit)
+LPMRUMENU CreateMruMenu( WORD wNbLruShowInit,
+						 WORD wNbLruMenuInit, WORD wMaxSizeLruItemInit, WORD wIdMruInit )
 {
-LPMRUMENU lpMruMenu;
-  lpMruMenu = (LPMRUMENU)GlobalAllocPtr(GHND,sizeof(MRUMENU));
+	LPMRUMENU lpMruMenu;
+	lpMruMenu = ( LPMRUMENU )GlobalAllocPtr( GHND, sizeof( MRUMENU ) );
 
-  lpMruMenu->wNbItemFill = 0;
-  lpMruMenu->wNbLruMenu = wNbLruMenuInit;
-  lpMruMenu->wNbLruShow = wNbLruShowInit;
-  lpMruMenu->wIdMru = wIdMruInit;
-  lpMruMenu->wMaxSizeLruItem = wMaxSizeLruItemInit;
-  lpMruMenu->lpMRU = (LPSTR)GlobalAllocPtr(GHND,
-					  lpMruMenu->wNbLruMenu*(UINT)lpMruMenu->wMaxSizeLruItem);
-  if (lpMruMenu->lpMRU == NULL)
-	 {
-	   GlobalFreePtr(lpMruMenu);
-	   lpMruMenu =  NULL;
-	 }
-  return lpMruMenu;
+	lpMruMenu->wNbItemFill = 0;
+	lpMruMenu->wNbLruMenu = wNbLruMenuInit;
+	lpMruMenu->wNbLruShow = wNbLruShowInit;
+	lpMruMenu->wIdMru = wIdMruInit;
+	lpMruMenu->wMaxSizeLruItem = wMaxSizeLruItemInit;
+	lpMruMenu->lpMRU = ( LPSTR )GlobalAllocPtr( GHND,
+					   lpMruMenu->wNbLruMenu * ( UINT )lpMruMenu->wMaxSizeLruItem );
+	if( lpMruMenu->lpMRU == NULL )
+	{
+		GlobalFreePtr( lpMruMenu );
+		lpMruMenu =  NULL;
+	}
+	return lpMruMenu;
 }
 
 //*************************************************************
@@ -132,7 +132,7 @@ LPMRUMENU lpMruMenu;
 
 LPMRUMENU CreateMruMenuDefault()
 {
-  return CreateMruMenu (NBMRUMENUSHOW,NBMRUMENU,MAXSIZEMRUITEM,IDMRU);
+	return CreateMruMenu( NBMRUMENUSHOW, NBMRUMENU, MAXSIZEMRUITEM, IDMRU );
 }
 
 
@@ -160,10 +160,10 @@ LPMRUMENU CreateMruMenuDefault()
 //              09/24/94   G. Vollant   Created
 //
 //*************************************************************
-void DeleteMruMenu(LPMRUMENU lpMruMenu)
+void DeleteMruMenu( LPMRUMENU lpMruMenu )
 {
-  GlobalFreePtr(lpMruMenu->lpMRU);
-  GlobalFreePtr(lpMruMenu);
+	GlobalFreePtr( lpMruMenu->lpMRU );
+	GlobalFreePtr( lpMruMenu );
 }
 
 //*************************************************************
@@ -188,9 +188,9 @@ void DeleteMruMenu(LPMRUMENU lpMruMenu)
 //              09/24/94   G. Vollant   Created
 //
 //*************************************************************
-void SetNbLruShow   (LPMRUMENU lpMruMenu,WORD wNbLruShowInit)
+void SetNbLruShow( LPMRUMENU lpMruMenu, WORD wNbLruShowInit )
 {
-  lpMruMenu->wNbLruShow = min(wNbLruShowInit,lpMruMenu->wNbLruMenu);
+	lpMruMenu->wNbLruShow = min( wNbLruShowInit, lpMruMenu->wNbLruMenu );
 }
 
 //*************************************************************
@@ -218,15 +218,17 @@ void SetNbLruShow   (LPMRUMENU lpMruMenu,WORD wNbLruShowInit)
 //              09/24/94   G. Vollant   Created
 //
 //*************************************************************
-BOOL SetMenuItem    (LPMRUMENU lpMruMenu,WORD wItem,LPSTR lpItem)
+BOOL SetMenuItem( LPMRUMENU lpMruMenu, WORD wItem, LPSTR lpItem )
 {
-  if (wItem >= NBMRUMENU)
-	return FALSE;
-  _fstrncpy((lpMruMenu->lpMRU) +
-			((lpMruMenu->wMaxSizeLruItem) * (UINT)wItem),
-			lpItem,lpMruMenu->wMaxSizeLruItem-1);
-  lpMruMenu->wNbItemFill = max(lpMruMenu->wNbItemFill,wItem+1);
-  return TRUE;
+	if( wItem >= NBMRUMENU )
+	{
+		return FALSE;
+	}
+	_fstrncpy( ( lpMruMenu->lpMRU ) +
+			   ( ( lpMruMenu->wMaxSizeLruItem ) * ( UINT )wItem ),
+			   lpItem, lpMruMenu->wMaxSizeLruItem - 1 );
+	lpMruMenu->wNbItemFill = max( lpMruMenu->wNbItemFill, wItem + 1 );
+	return TRUE;
 }
 
 //*************************************************************
@@ -259,17 +261,21 @@ BOOL SetMenuItem    (LPMRUMENU lpMruMenu,WORD wItem,LPSTR lpItem)
 //              09/24/94   G. Vollant   Created
 //
 //*************************************************************
-BOOL GetMenuItem    (LPMRUMENU lpMruMenu,WORD wItem,
-					 BOOL fIDMBased,LPSTR lpItem,UINT uiSize)
+BOOL GetMenuItem( LPMRUMENU lpMruMenu, WORD wItem,
+				  BOOL fIDMBased, LPSTR lpItem, UINT uiSize )
 {
-  if (fIDMBased)
-	wItem -= (lpMruMenu->wIdMru + 1);
-  if (wItem >= lpMruMenu->wNbItemFill)
-	return FALSE;
-  _fstrncpy(lpItem,(lpMruMenu->lpMRU) +
-				((lpMruMenu->wMaxSizeLruItem) * (UINT)(wItem)),uiSize);
-  *(lpItem+uiSize-1) = '\0';
-  return TRUE;
+	if( fIDMBased )
+	{
+		wItem -= ( lpMruMenu->wIdMru + 1 );
+	}
+	if( wItem >= lpMruMenu->wNbItemFill )
+	{
+		return FALSE;
+	}
+	_fstrncpy( lpItem, ( lpMruMenu->lpMRU ) +
+			   ( ( lpMruMenu->wMaxSizeLruItem ) * ( UINT )( wItem ) ), uiSize );
+	*( lpItem + uiSize - 1 ) = '\0';
+	return TRUE;
 }
 
 //*************************************************************
@@ -296,25 +302,25 @@ BOOL GetMenuItem    (LPMRUMENU lpMruMenu,WORD wItem,
 //              09/24/94   G. Vollant   Created
 //
 //*************************************************************
-void AddNewItem     (LPMRUMENU lpMruMenu,LPSTR lpItem)
+void AddNewItem( LPMRUMENU lpMruMenu, LPSTR lpItem )
 {
-WORD i,j;
-  for (i=0;i<lpMruMenu->wNbItemFill;i++)
-	if (lstrcmpi(lpItem,(lpMruMenu->lpMRU) +
-		((lpMruMenu->wMaxSizeLruItem) * (UINT)i)) == 0)
-	  {
-		// Shift the other items
-		for (j=i;j>0;j--)
-		 lstrcpy((lpMruMenu->lpMRU) + (lpMruMenu->wMaxSizeLruItem * (UINT)j),
-				 (lpMruMenu->lpMRU) + (lpMruMenu->wMaxSizeLruItem * (UINT)(j-1)));
-		_fstrncpy(lpMruMenu->lpMRU,lpItem,lpMruMenu->wMaxSizeLruItem-1);
-		return ;
-	  }
-  lpMruMenu->wNbItemFill = min(lpMruMenu->wNbItemFill+1,lpMruMenu->wNbLruMenu);
-  for (i=lpMruMenu->wNbItemFill-1;i>0;i--)
-	 lstrcpy(lpMruMenu->lpMRU + (lpMruMenu->wMaxSizeLruItem * (UINT)i),
-			 lpMruMenu->lpMRU + (lpMruMenu->wMaxSizeLruItem * (UINT)(i-1)));
-  _fstrncpy(lpMruMenu->lpMRU,lpItem,lpMruMenu->wMaxSizeLruItem-1);
+	WORD i, j;
+	for( i = 0; i < lpMruMenu->wNbItemFill; i++ )
+		if( lstrcmpi( lpItem, ( lpMruMenu->lpMRU ) +
+					  ( ( lpMruMenu->wMaxSizeLruItem ) * ( UINT )i ) ) == 0 )
+		{
+			// Shift the other items
+			for( j = i; j > 0; j-- )
+				lstrcpy( ( lpMruMenu->lpMRU ) + ( lpMruMenu->wMaxSizeLruItem * ( UINT )j ),
+						 ( lpMruMenu->lpMRU ) + ( lpMruMenu->wMaxSizeLruItem * ( UINT )( j - 1 ) ) );
+			_fstrncpy( lpMruMenu->lpMRU, lpItem, lpMruMenu->wMaxSizeLruItem - 1 );
+			return ;
+		}
+	lpMruMenu->wNbItemFill = min( lpMruMenu->wNbItemFill + 1, lpMruMenu->wNbLruMenu );
+	for( i = lpMruMenu->wNbItemFill - 1; i > 0; i-- )
+		lstrcpy( lpMruMenu->lpMRU + ( lpMruMenu->wMaxSizeLruItem * ( UINT )i ),
+				 lpMruMenu->lpMRU + ( lpMruMenu->wMaxSizeLruItem * ( UINT )( i - 1 ) ) );
+	_fstrncpy( lpMruMenu->lpMRU, lpItem, lpMruMenu->wMaxSizeLruItem - 1 );
 }
 
 //*************************************************************
@@ -343,18 +349,22 @@ WORD i,j;
 //              09/24/94   G. Vollant   Created
 //
 //*************************************************************
-BOOL DelMenuItem(LPMRUMENU lpMruMenu,WORD wItem,BOOL fIDMBased)
+BOOL DelMenuItem( LPMRUMENU lpMruMenu, WORD wItem, BOOL fIDMBased )
 {
-WORD i;
-  if (fIDMBased)
-	wItem -= (lpMruMenu->wIdMru + 1);
-  if (lpMruMenu->wNbItemFill <= wItem)
-	return FALSE;
-  lpMruMenu->wNbItemFill--;
-  for (i=wItem;i<lpMruMenu->wNbItemFill;i++)
-	 lstrcpy(lpMruMenu->lpMRU + (lpMruMenu->wMaxSizeLruItem * (UINT)i),
-			 lpMruMenu->lpMRU + (lpMruMenu->wMaxSizeLruItem * (UINT)(i+1)));
-  return TRUE;
+	WORD i;
+	if( fIDMBased )
+	{
+		wItem -= ( lpMruMenu->wIdMru + 1 );
+	}
+	if( lpMruMenu->wNbItemFill <= wItem )
+	{
+		return FALSE;
+	}
+	lpMruMenu->wNbItemFill--;
+	for( i = wItem; i < lpMruMenu->wNbItemFill; i++ )
+		lstrcpy( lpMruMenu->lpMRU + ( lpMruMenu->wMaxSizeLruItem * ( UINT )i ),
+				 lpMruMenu->lpMRU + ( lpMruMenu->wMaxSizeLruItem * ( UINT )( i + 1 ) ) );
+	return TRUE;
 }
 
 //*************************************************************
@@ -379,35 +389,41 @@ WORD i;
 //              09/24/94   G. Vollant   Created
 //
 //*************************************************************
-void PlaceMenuMRUItem(LPMRUMENU lpMruMenu,HMENU hMenu,UINT uiItem)
+void PlaceMenuMRUItem( LPMRUMENU lpMruMenu, HMENU hMenu, UINT uiItem )
 {
-int  i;
-WORD wNbShow;
-  if (hMenu == NULL)
-	return;
-  // remove old MRU in menu
-  for (i=0;i<=(int)(lpMruMenu->wNbLruMenu);i++)
-	RemoveMenu(hMenu,i+lpMruMenu->wIdMru,MF_BYCOMMAND);
+	int  i;
+	WORD wNbShow;
+	if( hMenu == NULL )
+	{
+		return;
+	}
+	// remove old MRU in menu
+	for( i = 0; i <= ( int )( lpMruMenu->wNbLruMenu ); i++ )
+	{
+		RemoveMenu( hMenu, i + lpMruMenu->wIdMru, MF_BYCOMMAND );
+	}
 
-  if (lpMruMenu->wNbItemFill == 0)
-	return;
+	if( lpMruMenu->wNbItemFill == 0 )
+	{
+		return;
+	}
 
-  // If they are item, insert a separator before the files
-  InsertMenu(hMenu,uiItem,MF_SEPARATOR,lpMruMenu->wIdMru,NULL);
+	// If they are item, insert a separator before the files
+	InsertMenu( hMenu, uiItem, MF_SEPARATOR, lpMruMenu->wIdMru, NULL );
 
-  wNbShow = min(lpMruMenu->wNbItemFill,lpMruMenu->wNbLruShow);
-  for (i=(int)wNbShow-1;i>=0;i--)
-  {
-  LPSTR lpTxt;
-	if (lpTxt = (LPSTR)GlobalAllocPtr(GHND,lpMruMenu->wMaxSizeLruItem + 20))
-	  {
-		wsprintf(lpTxt,"&%lu %s",
-				 (DWORD)(i+1),lpMruMenu->lpMRU + (lpMruMenu->wMaxSizeLruItem*(UINT)i));
-		InsertMenu(hMenu,(((WORD)i)!=(wNbShow-1)) ? (lpMruMenu->wIdMru+i+2) : lpMruMenu->wIdMru,
-				   MF_STRING,lpMruMenu->wIdMru+i+1,lpTxt);
-		GlobalFreePtr(lpTxt);
-	  }
-  }
+	wNbShow = min( lpMruMenu->wNbItemFill, lpMruMenu->wNbLruShow );
+	for( i = ( int )wNbShow - 1; i >= 0; i-- )
+	{
+		LPSTR lpTxt;
+		if( lpTxt = ( LPSTR )GlobalAllocPtr( GHND, lpMruMenu->wMaxSizeLruItem + 20 ) )
+		{
+			wsprintf( lpTxt, "&%lu %s",
+					  ( DWORD )( i + 1 ), lpMruMenu->lpMRU + ( lpMruMenu->wMaxSizeLruItem * ( UINT )i ) );
+			InsertMenu( hMenu, ( ( ( WORD )i ) != ( wNbShow - 1 ) ) ? ( lpMruMenu->wIdMru + i + 2 ) : lpMruMenu->wIdMru,
+						MF_STRING, lpMruMenu->wIdMru + i + 1, lpTxt );
+			GlobalFreePtr( lpTxt );
+		}
+	}
 
 }
 
@@ -441,26 +457,30 @@ WORD wNbShow;
 //              09/24/94   G. Vollant   Created
 //
 //*************************************************************
-BOOL SaveMruInIni(LPMRUMENU lpMruMenu,LPSTR lpszSection,LPSTR lpszFile)
+BOOL SaveMruInIni( LPMRUMENU lpMruMenu, LPSTR lpszSection, LPSTR lpszFile )
 {
-LPSTR lpTxt;
-WORD i;
+	LPSTR lpTxt;
+	WORD i;
 
-  lpTxt = (LPSTR)GlobalAllocPtr(GHND,lpMruMenu->wMaxSizeLruItem + 20);
-  if (lpTxt == NULL)
-	return FALSE;
-
-  for (i=0;i<lpMruMenu->wNbLruMenu;i++)
+	lpTxt = ( LPSTR )GlobalAllocPtr( GHND, lpMruMenu->wMaxSizeLruItem + 20 );
+	if( lpTxt == NULL )
 	{
-	char szEntry[16];
-	  wsprintf(szEntry,"File%lu",(DWORD)i+1);
-	  if (!GetMenuItem(lpMruMenu,i,FALSE,lpTxt,lpMruMenu->wMaxSizeLruItem + 10))
-		*lpTxt = '\0';
-	  WritePrivateProfileString(lpszSection,szEntry,lpTxt,lpszFile);
+		return FALSE;
 	}
-  GlobalFreePtr(lpTxt);
-  WritePrivateProfileString(NULL,NULL,NULL,lpszFile); // flush cache
-  return TRUE;
+
+	for( i = 0; i < lpMruMenu->wNbLruMenu; i++ )
+	{
+		char szEntry[16];
+		wsprintf( szEntry, "File%lu", ( DWORD )i + 1 );
+		if( !GetMenuItem( lpMruMenu, i, FALSE, lpTxt, lpMruMenu->wMaxSizeLruItem + 10 ) )
+		{
+			*lpTxt = '\0';
+		}
+		WritePrivateProfileString( lpszSection, szEntry, lpTxt, lpszFile );
+	}
+	GlobalFreePtr( lpTxt );
+	WritePrivateProfileString( NULL, NULL, NULL, lpszFile ); // flush cache
+	return TRUE;
 }
 
 
@@ -490,39 +510,43 @@ WORD i;
 //              09/24/94   G. Vollant   Created
 //
 //*************************************************************
-BOOL LoadMruInIni(LPMRUMENU lpMruMenu,LPSTR lpszSection,LPSTR lpszFile)
+BOOL LoadMruInIni( LPMRUMENU lpMruMenu, LPSTR lpszSection, LPSTR lpszFile )
 {
-LPSTR lpTxt;
-WORD i;
-  lpTxt = (LPSTR)GlobalAllocPtr(GHND,lpMruMenu->wMaxSizeLruItem + 20);
-  if (lpTxt == NULL)
-	return FALSE;
-
-  for (i=0;i<lpMruMenu->wNbLruMenu;i++)
+	LPSTR lpTxt;
+	WORD i;
+	lpTxt = ( LPSTR )GlobalAllocPtr( GHND, lpMruMenu->wMaxSizeLruItem + 20 );
+	if( lpTxt == NULL )
 	{
-	char szEntry[16];
-
-	  wsprintf(szEntry,"File%lu",(DWORD)i+1);
-	  GetPrivateProfileString(lpszSection,szEntry,"",lpTxt,
-							  lpMruMenu->wMaxSizeLruItem + 10,lpszFile);
-	  if (*lpTxt == '\0')
-		break;
-	  SetMenuItem(lpMruMenu,i,lpTxt);
+		return FALSE;
 	}
-  GlobalFreePtr(lpTxt);
-  return TRUE;
+
+	for( i = 0; i < lpMruMenu->wNbLruMenu; i++ )
+	{
+		char szEntry[16];
+
+		wsprintf( szEntry, "File%lu", ( DWORD )i + 1 );
+		GetPrivateProfileString( lpszSection, szEntry, "", lpTxt,
+								 lpMruMenu->wMaxSizeLruItem + 10, lpszFile );
+		if( *lpTxt == '\0' )
+		{
+			break;
+		}
+		SetMenuItem( lpMruMenu, i, lpTxt );
+	}
+	GlobalFreePtr( lpTxt );
+	return TRUE;
 }
 
 #ifdef WIN32
 
-BOOL IsWin395OrHigher(void)
+BOOL IsWin395OrHigher( void )
 {
-  WORD wVer;
+	WORD wVer;
 
-  wVer = LOWORD(GetVersion());
-  wVer = (((WORD)LOBYTE(wVer)) << 8) | (WORD)HIBYTE(wVer);
+	wVer = LOWORD( GetVersion() );
+	wVer = ( ( ( WORD )LOBYTE( wVer ) ) << 8 ) | ( WORD )HIBYTE( wVer );
 
-  return (wVer >= 0x035F);              // 5F = 95 dec
+	return ( wVer >= 0x035F );            // 5F = 95 dec
 }
 
 
@@ -552,31 +576,35 @@ BOOL IsWin395OrHigher(void)
 //              09/24/94   G. Vollant   Created
 //
 //*************************************************************
-BOOL SaveMruInReg(LPMRUMENU lpMruMenu,LPSTR lpszKey)
+BOOL SaveMruInReg( LPMRUMENU lpMruMenu, LPSTR lpszKey )
 {
-LPSTR lpTxt;
-WORD i;
-HKEY hCurKey;
-DWORD dwDisp;
+	LPSTR lpTxt;
+	WORD i;
+	HKEY hCurKey;
+	DWORD dwDisp;
 
-  lpTxt = (LPSTR)GlobalAllocPtr(GHND,lpMruMenu->wMaxSizeLruItem + 20);
-  if (lpTxt == NULL)
-	return FALSE;
-
-  RegCreateKeyEx(HKEY_CURRENT_USER,lpszKey,0,NULL,
-				  REG_OPTION_NON_VOLATILE,KEY_ALL_ACCESS,NULL,&hCurKey,&dwDisp);
-
-  for (i=0;i<lpMruMenu->wNbLruMenu;i++)
+	lpTxt = ( LPSTR )GlobalAllocPtr( GHND, lpMruMenu->wMaxSizeLruItem + 20 );
+	if( lpTxt == NULL )
 	{
-	char szEntry[16];
-	  wsprintf(szEntry,"File%lu",(DWORD)i+1);
-	  if (!GetMenuItem(lpMruMenu,i,FALSE,lpTxt,lpMruMenu->wMaxSizeLruItem + 10))
-		*lpTxt = '\0';
-	  RegSetValueEx(hCurKey,szEntry,0,REG_SZ,(unsigned char*)lpTxt,lstrlen(lpTxt));
+		return FALSE;
 	}
-  RegCloseKey(hCurKey);
-  GlobalFreePtr(lpTxt);
-  return TRUE;
+
+	RegCreateKeyEx( HKEY_CURRENT_USER, lpszKey, 0, NULL,
+					REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hCurKey, &dwDisp );
+
+	for( i = 0; i < lpMruMenu->wNbLruMenu; i++ )
+	{
+		char szEntry[16];
+		wsprintf( szEntry, "File%lu", ( DWORD )i + 1 );
+		if( !GetMenuItem( lpMruMenu, i, FALSE, lpTxt, lpMruMenu->wMaxSizeLruItem + 10 ) )
+		{
+			*lpTxt = '\0';
+		}
+		RegSetValueEx( hCurKey, szEntry, 0, REG_SZ, ( unsigned char* )lpTxt, lstrlen( lpTxt ) );
+	}
+	RegCloseKey( hCurKey );
+	GlobalFreePtr( lpTxt );
+	return TRUE;
 }
 
 //*************************************************************
@@ -605,34 +633,38 @@ DWORD dwDisp;
 //              09/24/94   G. Vollant   Created
 //
 //*************************************************************
-BOOL LoadMruInReg(LPMRUMENU lpMruMenu,LPSTR lpszKey)
+BOOL LoadMruInReg( LPMRUMENU lpMruMenu, LPSTR lpszKey )
 {
-LPSTR lpTxt;
-WORD i;
-HKEY hCurKey;
-DWORD dwType;
-  lpTxt = (LPSTR)GlobalAllocPtr(GHND,lpMruMenu->wMaxSizeLruItem + 20);
-  if (lpTxt == NULL)
-	return FALSE;
-
-  RegOpenKeyEx(HKEY_CURRENT_USER,lpszKey,0,KEY_READ,&hCurKey);
-
-
-  for (i=0;i<lpMruMenu->wNbLruMenu;i++)
+	LPSTR lpTxt;
+	WORD i;
+	HKEY hCurKey;
+	DWORD dwType;
+	lpTxt = ( LPSTR )GlobalAllocPtr( GHND, lpMruMenu->wMaxSizeLruItem + 20 );
+	if( lpTxt == NULL )
 	{
-	char szEntry[16];
-	DWORD dwSizeBuf;
-	  wsprintf(szEntry,"File%lu",(DWORD)i+1);
-	  *lpTxt = '\0';
-	  dwSizeBuf = lpMruMenu->wMaxSizeLruItem + 10;
-	  RegQueryValueEx(hCurKey,szEntry,NULL,&dwType,(LPBYTE)lpTxt,&dwSizeBuf);
-	  *(lpTxt+dwSizeBuf)='\0';
-	  if (*lpTxt == '\0')
-		break;
-	  SetMenuItem(lpMruMenu,i,lpTxt);
+		return FALSE;
 	}
-  RegCloseKey(hCurKey);
-  GlobalFreePtr(lpTxt);
-  return TRUE;
+
+	RegOpenKeyEx( HKEY_CURRENT_USER, lpszKey, 0, KEY_READ, &hCurKey );
+
+
+	for( i = 0; i < lpMruMenu->wNbLruMenu; i++ )
+	{
+		char szEntry[16];
+		DWORD dwSizeBuf;
+		wsprintf( szEntry, "File%lu", ( DWORD )i + 1 );
+		*lpTxt = '\0';
+		dwSizeBuf = lpMruMenu->wMaxSizeLruItem + 10;
+		RegQueryValueEx( hCurKey, szEntry, NULL, &dwType, ( LPBYTE )lpTxt, &dwSizeBuf );
+		*( lpTxt + dwSizeBuf ) = '\0';
+		if( *lpTxt == '\0' )
+		{
+			break;
+		}
+		SetMenuItem( lpMruMenu, i, lpTxt );
+	}
+	RegCloseKey( hCurKey );
+	GlobalFreePtr( lpTxt );
+	return TRUE;
 }
 #endif

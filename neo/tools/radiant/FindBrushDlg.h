@@ -28,15 +28,16 @@ If you have questions concerning this license or the applicable additional terms
 
 #pragma once
 
-class CFindBrushDlg : public CDialogEx {
+class CFindBrushDlg : public CDialogEx
+{
 	DECLARE_DYNAMIC( CFindBrushDlg )
 
 public:
-			CFindBrushDlg( CWnd *pParent = nullptr );   // standard constructor
+	CFindBrushDlg( CWnd* pParent = nullptr );   // standard constructor
 	virtual ~CFindBrushDlg( void );
 
 protected:
-	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 public:

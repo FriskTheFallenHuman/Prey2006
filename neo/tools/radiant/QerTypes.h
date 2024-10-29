@@ -41,29 +41,34 @@ public:
 	}
 	~texdef_t()
 	{
-		if ( name && name[0] ) {
+		if( name && name[0] )
+		{
 			delete []name;
 		}
 		name = NULL;
 	}
 
-	void SetName( const char *p )
+	void SetName( const char* p )
 	{
-		if ( name && name[0] ) {
+		if( name && name[0] )
+		{
 			delete []name;
 		}
-		if ( p && p[0] ) {
-			name = strcpy( new char[strlen(p)+1], p );
+		if( p && p[0] )
+		{
+			name = strcpy( new char[strlen( p ) + 1], p );
 		}
-		else {
+		else
+		{
 			name = "";
 		}
 	}
 
-	texdef_t& operator =(const texdef_t& rhs)
+	texdef_t& operator =( const texdef_t& rhs )
 	{
-		if ( &rhs != this ) {
-			SetName(rhs.name);
+		if( &rhs != this )
+		{
+			SetName( rhs.name );
 			shift[0] = rhs.shift[0];
 			shift[1] = rhs.shift[1];
 			rotate = rhs.rotate;
@@ -74,7 +79,7 @@ public:
 		return *this;
 	}
 	//char	name[128];
-	char *	name;
+	char* 	name;
 	float	shift[2];
 	float	rotate;
 	float	scale[2];
@@ -88,11 +93,13 @@ public:
 //	float	coords[2][3];
 //} brushprimit_texdef_t;
 
-class brushprimit_texdef_t {
+class brushprimit_texdef_t
+{
 public:
 	float	coords[2][3];
-	brushprimit_texdef_t() {
-		memset(&coords, 0, sizeof(coords));
+	brushprimit_texdef_t()
+	{
+		memset( &coords, 0, sizeof( coords ) );
 		coords[0][0] = 1.0;
 		coords[1][1] = 1.0;
 	}
@@ -101,13 +108,15 @@ public:
 class texturewin_t
 {
 public:
-	texturewin_t() {
-		memset(&brushprimit_texdef.coords, 0, sizeof(brushprimit_texdef.coords));
+	texturewin_t()
+	{
+		memset( &brushprimit_texdef.coords, 0, sizeof( brushprimit_texdef.coords ) );
 		brushprimit_texdef.coords[0][0] = 1.0;
 		brushprimit_texdef.coords[1][1] = 1.0;
 	}
 
-	~texturewin_t() {
+	~texturewin_t()
+	{
 	}
 	int			width, height;
 	int			originy;
@@ -123,8 +132,8 @@ public:
 // TODO : do dynamic ?
 struct face_t
 {
-	face_t					*next;
-	face_t					*original;		//used for vertex movement
+	face_t*					next;
+	face_t*					original;		//used for vertex movement
 	idVec3					planepts[3];
 	idVec3					orgplanepts[3];	// used for arbitrary rotation
 	texdef_t				texdef;
@@ -133,57 +142,64 @@ struct face_t
 	idPlane					originalPlane;
 	bool					dirty;
 
-	idWinding				*face_winding;
+	idWinding*				face_winding;
 
 	idVec3					d_color;
-	const idMaterial		*d_texture;
+	const idMaterial*		d_texture;
 
 	// Timo new brush primit texdef
 	brushprimit_texdef_t	brushprimit_texdef;
 };
 
-struct curveVertex_t {
+struct curveVertex_t
+{
 	idVec3	xyz;
 	float	sideST[2];
 	float	capST[2];
 };
 
-struct sideVertex_t {
+struct sideVertex_t
+{
 	curveVertex_t	v[2];
 };
 
 struct idEditorBrush;
 
-struct patchMesh_t {
+struct patchMesh_t
+{
 	int			width, height;		// in control points, not patches
 	int			horzSubdivisions;
 	int			vertSubdivisions;
 	bool		explicitSubdivisions;
 	int			contents, flags, value, type;
-	const idMaterial *d_texture;
-	idDrawVert *verts;
+	const idMaterial* d_texture;
+	idDrawVert* verts;
 	//idDrawVert *ctrl;
-	idEditorBrush *	pSymbiot;
+	idEditorBrush* 	pSymbiot;
 	bool		bSelected;
 	bool		bOverlay;
 	int			nListID;
 	int			nListIDCam;
 	int			nListSelected;
 
-	idDict *	epairs;
+	idDict* 	epairs;
 
-	ID_INLINE idDrawVert &ctrl( int col, int row ) {
-		if ( col < 0 || col >= width || row < 0 || row >= height ) {
+	ID_INLINE idDrawVert& ctrl( int col, int row )
+	{
+		if( col < 0 || col >= width || row < 0 || row >= height )
+		{
 			common->Warning( "patchMesh_t::ctrl: control point out of range" );
 			return verts[0];
 		}
-		else {
+		else
+		{
 			return verts[row * width + col];
 		}
 	}
 };
 
-enum {
+enum
+{
 	LIGHT_TARGET,
 	LIGHT_RIGHT,
 	LIGHT_UP,
@@ -200,8 +216,8 @@ enum {
 
 typedef struct trimodel_t
 {
-  idVec3 v[3];
-  float  st[3][2];
+	idVec3 v[3];
+	float  st[3][2];
 } trimodel;
 
 
@@ -223,7 +239,8 @@ typedef struct trimodel_t
 #define		ECLASS_COMBATNODE		0x00002000
 #define		ECLASS_LIQUID			0x00004000
 
-enum EVAR_TYPES {
+enum EVAR_TYPES
+{
 	EVAR_STRING,
 	EVAR_INT,
 	EVAR_FLOAT,
@@ -235,13 +252,15 @@ enum EVAR_TYPES {
 	EVAR_SOUND
 };
 
-struct evar_t {
+struct evar_t
+{
 	int	type;
 	idStr name;
 	idStr desc;
 };
 
-struct eclass_t {
+struct eclass_t
+{
 	eclass_t* next;
 	idStr	name;
 	bool	fixedsize;
@@ -251,8 +270,8 @@ struct eclass_t {
 	idStr	comments;
 	idStr	desc;
 
-	idRenderModel *modelHandle;
-	idRenderModel *entityModel;
+	idRenderModel* modelHandle;
+	idRenderModel* entityModel;
 
 	unsigned int nShowFlags;
 	idStr	defMaterial;
@@ -261,7 +280,7 @@ struct eclass_t {
 	idList<evar_t> vars;
 };
 
-extern	eclass_t	*eclass;
+extern	eclass_t*	eclass;
 
 /*
 ** window bits

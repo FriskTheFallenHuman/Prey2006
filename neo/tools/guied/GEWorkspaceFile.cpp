@@ -38,12 +38,12 @@ rvGEWorkspace::SaveFile
 Writes the contents of the open gui file to disk
 ================
 */
-bool rvGEWorkspace::SaveFile ( const char* filename )
+bool rvGEWorkspace::SaveFile( const char* filename )
 {
 	idFile*		file;
 	idWindow*	window;
 
-	SetCursor ( LoadCursor ( NULL, IDC_WAIT ) );
+	SetCursor( LoadCursor( NULL, IDC_WAIT ) );
 
 	mFilename = filename;
 
@@ -52,37 +52,37 @@ bool rvGEWorkspace::SaveFile ( const char* filename )
 	idStr ospath;
 
 	tempfile = "guis/temp.guied";
-	ospath = fileSystem->RelativePathToOSPath ( tempfile, tempfile ? "fs_savepath" : "fs_basepath" );
+	ospath = fileSystem->RelativePathToOSPath( tempfile, tempfile ? "fs_savepath" : "fs_basepath" );
 
 	// Open the output file for write
 	file = fileSystem->OpenFileWrite( tempfile, tempfile ? "fs_savepath" : "fs_basepath" );
-	if ( !file )
+	if( !file )
 	{
-		SetCursor ( LoadCursor ( NULL, IDC_ARROW ) );
+		SetCursor( LoadCursor( NULL, IDC_ARROW ) );
 		return false;
 	}
 
-	window = mInterface->GetDesktop ( );
+	window = mInterface->GetDesktop( );
 
-	WriteWindow ( file, 1, window );
+	WriteWindow( file, 1, window );
 
-	fileSystem->CloseFile ( file );
+	fileSystem->CloseFile( file );
 
-	if ( !CopyFile ( ospath, filename, FALSE ) )
+	if( !CopyFile( ospath, filename, FALSE ) )
 	{
-		DeleteFile ( ospath );
-		SetCursor ( LoadCursor ( NULL, IDC_ARROW ) );
+		DeleteFile( ospath );
+		SetCursor( LoadCursor( NULL, IDC_ARROW ) );
 		return false;
 	}
 
-	DeleteFile ( ospath );
+	DeleteFile( ospath );
 
 	mFilename = filename;
 	mModified = false;
 	mNew      = false;
-	UpdateTitle ( );
+	UpdateTitle( );
 
-	SetCursor ( LoadCursor ( NULL, IDC_ARROW ) );
+	SetCursor( LoadCursor( NULL, IDC_ARROW ) );
 
 	return true;
 }
@@ -94,13 +94,13 @@ rvGEWorkspace::WriteTabs
 Writes the given number of tabs to the given file
 ================
 */
-void rvGEWorkspace::WriteTabs ( idFile* file, int depth  )
+void rvGEWorkspace::WriteTabs( idFile* file, int depth )
 {
 	int i;
 
-	for ( i = 0; i < depth; i ++ )
+	for( i = 0; i < depth; i ++ )
 	{
-		file->Write ( "\t", 1 );
+		file->Write( "\t", 1 );
 	}
 }
 
@@ -111,123 +111,123 @@ rvGEWorkspace::WriteWindow
 Writes the contents of the given window to the file
 ================
 */
-bool rvGEWorkspace::WriteWindow ( idFile* file, int depth, idWindow* window )
+bool rvGEWorkspace::WriteWindow( idFile* file, int depth, idWindow* window )
 {
 	idStr				out;
 	rvGEWindowWrapper*	wrapper;
 	int					i;
 
-	wrapper = rvGEWindowWrapper::GetWrapper ( window );
-	if ( !wrapper )
+	wrapper = rvGEWindowWrapper::GetWrapper( window );
+	if( !wrapper )
 	{
 		return true;
 	}
 
-	if ( wrapper->IsDeleted ( ) )
+	if( wrapper->IsDeleted( ) )
 	{
 		return true;
 	}
 
 	// Window def header
-	WriteTabs ( file, depth - 1 );
+	WriteTabs( file, depth - 1 );
 
-	out = wrapper->WindowTypeToString ( wrapper->GetWindowType ( ) );
-	out.Append ( " " );
-	file->Write ( out, out.Length() );
+	out = wrapper->WindowTypeToString( wrapper->GetWindowType( ) );
+	out.Append( " " );
+	file->Write( out, out.Length() );
 
-	out = window->GetName ( );
-	file->Write ( out, out.Length() );
-	file->Write ( "\r\n", 2 );
+	out = window->GetName( );
+	file->Write( out, out.Length() );
+	file->Write( "\r\n", 2 );
 
-	WriteTabs ( file, depth - 1 );
+	WriteTabs( file, depth - 1 );
 
 	out = "{\r\n";
-	file->Write ( out, out.Length() );
-	file->ForceFlush ( );
+	file->Write( out, out.Length() );
+	file->ForceFlush( );
 
-	for ( i = 0; i < wrapper->GetStateDict().GetNumKeyVals(); i ++ )
+	for( i = 0; i < wrapper->GetStateDict().GetNumKeyVals(); i ++ )
 	{
-		const idKeyValue* key = wrapper->GetStateDict().GetKeyVal ( i );
+		const idKeyValue* key = wrapper->GetStateDict().GetKeyVal( i );
 
 		// Dont write name to the files
-		if ( !key->GetKey().Icmp ( "name" ) )
+		if( !key->GetKey().Icmp( "name" ) )
 		{
 			continue;
 		}
 
-		WriteTabs ( file, depth );
+		WriteTabs( file, depth );
 
 		out = key->GetKey();
-		out.Append ( "\t" );
-		file->Write ( out, out.Length() );
+		out.Append( "\t" );
+		file->Write( out, out.Length() );
 
 		const char* p;
-		for ( p = key->GetValue().c_str(); *p; p ++ )
+		for( p = key->GetValue().c_str(); *p; p ++ )
 		{
-			switch ( *p )
+			switch( *p )
 			{
 				case '\n':
-					file->Write ( "\\n", 2 );
+					file->Write( "\\n", 2 );
 					break;
 
 				default:
-					file->Write ( p, 1 );
+					file->Write( p, 1 );
 					break;
 			}
 		}
 
-		file->Write ( "\r\n", 2 );
+		file->Write( "\r\n", 2 );
 	}
 
-	for ( i = 0; i < wrapper->GetVariableDict().GetNumKeyVals(); i ++ )
+	for( i = 0; i < wrapper->GetVariableDict().GetNumKeyVals(); i ++ )
 	{
-		const idKeyValue* key = wrapper->GetVariableDict().GetKeyVal ( i );
+		const idKeyValue* key = wrapper->GetVariableDict().GetKeyVal( i );
 
-		WriteTabs ( file, depth );
+		WriteTabs( file, depth );
 
 		out = key->GetKey();
-		out.Append ( "\t" );
-		out.Append ( key->GetValue() );
-		out.Append ( "\r\n" );
+		out.Append( "\t" );
+		out.Append( key->GetValue() );
+		out.Append( "\r\n" );
 
-		file->Write ( out, out.Length() );
+		file->Write( out, out.Length() );
 	}
 
-	if ( wrapper->GetScriptDict().GetNumKeyVals() )
+	if( wrapper->GetScriptDict().GetNumKeyVals() )
 	{
-		file->Write ( "\r\n", 2 );
+		file->Write( "\r\n", 2 );
 	}
 
-	for ( i = 0; i < wrapper->GetScriptDict().GetNumKeyVals(); i ++ )
+	for( i = 0; i < wrapper->GetScriptDict().GetNumKeyVals(); i ++ )
 	{
-		const idKeyValue* key = wrapper->GetScriptDict().GetKeyVal ( i );
+		const idKeyValue* key = wrapper->GetScriptDict().GetKeyVal( i );
 
-		WriteTabs ( file, depth );
+		WriteTabs( file, depth );
 
-		file->Write ( key->GetKey(), key->GetKey().Length() );
-		file->Write ( " ", 1 );
+		file->Write( key->GetKey(), key->GetKey().Length() );
+		file->Write( " ", 1 );
 
 		idLexer src( key->GetValue(), key->GetValue().Length(), "", LEXFL_ALLOWMULTICHARLITERALS | LEXFL_NOSTRINGCONCAT | LEXFL_ALLOWBACKSLASHSTRINGCONCAT );
-		src.ParseBracedSectionExact ( out, depth + 1);
+		src.ParseBracedSectionExact( out, depth + 1 );
 
-		file->Write ( out, out.Length() );
-		file->Write ( "\r\n", 2 );
-		file->Write ( "\r\n", 2 );
+		file->Write( out, out.Length() );
+		file->Write( "\r\n", 2 );
+		file->Write( "\r\n", 2 );
 	}
 
-	for ( i = 0; i < wrapper->GetChildCount(); i ++ )
+	for( i = 0; i < wrapper->GetChildCount(); i ++ )
 	{
-		idWindow* child = wrapper->GetChild ( i );
+		idWindow* child = wrapper->GetChild( i );
 
-		WriteWindow ( file, depth + 1, child );
+		WriteWindow( file, depth + 1, child );
 	}
 
 	// Window def footer
-	WriteTabs ( file, depth - 1 );
+	WriteTabs( file, depth - 1 );
 
 	out = "}\r\n";
-	file->Write ( out, out.Length() );
-	file->ForceFlush ( );
+	file->Write( out, out.Length() );
+	file->ForceFlush( );
 
 	return true;
 }
@@ -239,7 +239,7 @@ rvGEWorkspace::NewFile
 Opens a new file for editing
 ================
 */
-bool rvGEWorkspace::NewFile ( void )
+bool rvGEWorkspace::NewFile( void )
 {
 	idStr	empty;
 	idStr	ospath;
@@ -248,35 +248,35 @@ bool rvGEWorkspace::NewFile ( void )
 	// Make a temporary file with nothing in it so we can just use
 	// load to do all the work
 	//ospath = fileSystem->RelativePathToOSPath ( "guis/Untitled.guiednew", "fs_basepath" ); DG: change from SteelStorm2
-	ospath = fileSystem->RelativePathToOSPath ( "guis/Untitled.guiednew", "fs_savepath" );
-	DeleteFile ( ospath );
+	ospath = fileSystem->RelativePathToOSPath( "guis/Untitled.guiednew", "fs_savepath" );
+	DeleteFile( ospath );
 
-	file = fileSystem->OpenFileWrite ( "guis/Untitled.guiednew" );
-	if ( NULL == file )
+	file = fileSystem->OpenFileWrite( "guis/Untitled.guiednew" );
+	if( NULL == file )
 	{
 		return false;
 	}
 
 	empty = "windowDef Desktop { rect 0,0,640,480 }";
-	file->Write ( empty, empty.Length() );
-	fileSystem->CloseFile ( file );
+	file->Write( empty, empty.Length() );
+	fileSystem->CloseFile( file );
 
 	// Load the temporary file
-	if ( !LoadFile ( ospath, NULL ) )
+	if( !LoadFile( ospath, NULL ) )
 	{
 		// Ensure the temp file doesnt hang around
-		DeleteFile ( ospath );
+		DeleteFile( ospath );
 		return false;
 	}
 
 	mNew = true;
 
 	// Ensure the temp file doesnt hang around
-	DeleteFile ( ospath );
+	DeleteFile( ospath );
 
 	// Go back to using a .gui extensions
-	ospath.StripFileExtension ( );
-	ospath.Append ( ".gui" );
+	ospath.StripFileExtension( );
+	ospath.Append( ".gui" );
 
 	mFilename = ospath;
 
@@ -290,7 +290,7 @@ rvGEWorkspace::LoadFile
 Loads the given gui file.
 ================
 */
-bool rvGEWorkspace::LoadFile ( const char* filename, idStr* error )
+bool rvGEWorkspace::LoadFile( const char* filename, idStr* error )
 {
 	delete mInterface;
 
@@ -300,28 +300,28 @@ bool rvGEWorkspace::LoadFile ( const char* filename, idStr* error )
 
 	tempfile = "guis/temp.guied";
 	//ospath = fileSystem->RelativePathToOSPath ( tempfile, "fs_basepath" ); DG: change from SteelStorm2
-	ospath = fileSystem->RelativePathToOSPath ( tempfile, "fs_savepath" );
+	ospath = fileSystem->RelativePathToOSPath( tempfile, "fs_savepath" );
 
 	// Make sure the gui directory exists
 	idStr createDir = ospath;
-	createDir.StripFilename ( );
-	CreateDirectory ( createDir, NULL );
+	createDir.StripFilename( );
+	CreateDirectory( createDir, NULL );
 
-	SetFileAttributes ( ospath, FILE_ATTRIBUTE_NORMAL );
-	DeleteFile ( ospath );
-	if ( !CopyFile ( filename, ospath, FALSE ) )
+	SetFileAttributes( ospath, FILE_ATTRIBUTE_NORMAL );
+	DeleteFile( ospath );
+	if( !CopyFile( filename, ospath, FALSE ) )
 	{
-		if ( error )
+		if( error )
 		{
 			*error = "File not found";
 		}
 		return false;
 	}
 
-	SetFileAttributes ( ospath, FILE_ATTRIBUTE_NORMAL );
+	SetFileAttributes( ospath, FILE_ATTRIBUTE_NORMAL );
 
 	mFilename = filename;
-	UpdateTitle ( );
+	UpdateTitle( );
 
 	// Let the real window system parse it first
 	mInterface = NULL;
@@ -329,28 +329,28 @@ bool rvGEWorkspace::LoadFile ( const char* filename, idStr* error )
 	try
 	{
 		mInterface = reinterpret_cast< idUserInterfaceLocal* >( uiManager->FindGui( tempfile, true, true ) );
-		if ( !mInterface && error )
+		if( !mInterface && error )
 		{
 			*error = "File not found";
 		}
 	}
-	catch ( idException& e )
+	catch( idException& e )
 	{
 		result = false;
-		if ( error )
+		if( error )
 		{
 			*error = e.error;
 		}
 		return false;
 	}
 
-	if ( result )
+	if( result )
 	{
-		rvGEWindowWrapper::GetWrapper ( mInterface->GetDesktop ( ) )->Expand ( );
+		rvGEWindowWrapper::GetWrapper( mInterface->GetDesktop( ) )->Expand( );
 	}
 	else
 	{
-		DeleteFile ( ospath );
+		DeleteFile( ospath );
 	}
 
 	return result;

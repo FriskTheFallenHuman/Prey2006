@@ -28,6 +28,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef GEITEMSCRIPTSDLG_H_
 #define GEITEMSCRIPTSDLG_H_
 
-bool GEItemScriptsDlg_DoModal ( HWND parent, idWindow* window );
+bool GEItemScriptsDlg_DoModal( HWND parent, idWindow* window );
 
 #endif // GEITEMSCRIPTSDLG_H_

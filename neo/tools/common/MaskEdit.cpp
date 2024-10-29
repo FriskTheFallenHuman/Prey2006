@@ -43,15 +43,15 @@ MaskEdit_WndProc
 Prevents the invalid characters from being entered
 ================
 */
-LRESULT CALLBACK MaskEdit_WndProc ( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
+LRESULT CALLBACK MaskEdit_WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
 {
-	rvGEMaskEdit* edit = (rvGEMaskEdit*)GetWindowLongPtr ( hWnd, GWLP_USERDATA );
+	rvGEMaskEdit* edit = ( rvGEMaskEdit* )GetWindowLongPtr( hWnd, GWLP_USERDATA );
 	WNDPROC		  wndproc = edit->mProc;
 
-	switch ( msg )
+	switch( msg )
 	{
 		case WM_CHAR:
-			if ( strchr ( edit->mInvalid, wParam ) )
+			if( strchr( edit->mInvalid, wParam ) )
 			{
 				return 0;
 			}
@@ -60,11 +60,11 @@ LRESULT CALLBACK MaskEdit_WndProc ( HWND hWnd, UINT msg, WPARAM wParam, LPARAM l
 
 		case WM_DESTROY:
 			delete edit;
-			SetWindowLongPtr ( hWnd, GWLP_WNDPROC, (LONG_PTR)wndproc );
+			SetWindowLongPtr( hWnd, GWLP_WNDPROC, ( LONG_PTR )wndproc );
 			break;
 	}
 
-	return CallWindowProc ( wndproc, hWnd, msg, wParam, lParam );
+	return CallWindowProc( wndproc, hWnd, msg, wParam, lParam );
 }
 
 /*
@@ -74,13 +74,13 @@ MaskEdit_Attach
 Attaches the mask edit control to a normal edit control
 ================
 */
-void MaskEdit_Attach ( HWND hWnd, const char* invalid )
+void MaskEdit_Attach( HWND hWnd, const char* invalid )
 {
 	rvGEMaskEdit* edit = new rvGEMaskEdit;
-	edit->mProc = (WNDPROC)GetWindowLongPtr ( hWnd, GWLP_WNDPROC );
-	strcpy ( edit->mInvalid, invalid );
-	SetWindowLongPtr ( hWnd, GWLP_USERDATA, (LONG_PTR)edit );
-	SetWindowLongPtr ( hWnd, GWLP_WNDPROC, (LONG_PTR)MaskEdit_WndProc );
+	edit->mProc = ( WNDPROC )GetWindowLongPtr( hWnd, GWLP_WNDPROC );
+	strcpy( edit->mInvalid, invalid );
+	SetWindowLongPtr( hWnd, GWLP_USERDATA, ( LONG_PTR )edit );
+	SetWindowLongPtr( hWnd, GWLP_WNDPROC, ( LONG_PTR )MaskEdit_WndProc );
 }
 
 /*
@@ -90,8 +90,8 @@ NumberEdit_Attach
 Allows editing of floating point numbers
 ================
 */
-void NumberEdit_Attach ( HWND hWnd )
+void NumberEdit_Attach( HWND hWnd )
 {
 	static const char invalid[] = "`~!@#$%^&*()_+|=\\qwertyuiop[]asdfghjkl;'zxcvbnm,/QWERTYUIOP{}ASDFGHJKL:ZXCVBNM<>";
-	MaskEdit_Attach ( hWnd, invalid );
+	MaskEdit_Attach( hWnd, invalid );
 }

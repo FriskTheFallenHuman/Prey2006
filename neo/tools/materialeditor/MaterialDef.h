@@ -33,13 +33,15 @@ If you have questions concerning this license or the applicable additional terms
 * definitions from the material definition file as the editor
 * is being initialized.
 */
-class MaterialDef {
+class MaterialDef
+{
 
 public:
 	/**
 	* Defines possible attribute types.
 	*/
-	enum {
+	enum
+	{
 		MATERIAL_DEF_TYPE_GROUP,
 		MATERIAL_DEF_TYPE_BOOL,
 		MATERIAL_DEF_TYPE_STRING,
@@ -56,11 +58,11 @@ public:
 
 public:
 
-	MaterialDef(void);
-	virtual ~MaterialDef(void);
+	MaterialDef( void );
+	virtual ~MaterialDef( void );
 
-	DWORD	GetViewData(const char* viewName);
-	void	SetViewData(const char* viewName, DWORD value);
+	DWORD	GetViewData( const char* viewName );
+	void	SetViewData( const char* viewName, DWORD value );
 };
 
 /**
@@ -75,14 +77,16 @@ typedef idList<MaterialDef*> MaterialDefList;
 * to access the MaterialDef and MaterialDefList data that is loaded. This class
 * is also responsible for loading and destroying the MaterialDef instances.
 */
-class MaterialDefManager {
+class MaterialDefManager
+{
 
 public:
 
 	/**
 	* Defines the groupings of material attributes.
 	*/
-	enum {
+	enum
+	{
 		MATERIAL_DEF_MATERIAL = 0,
 		MATERIAL_DEF_STAGE,
 		MATERIAL_DEF_SPECIAL_STAGE,
@@ -90,11 +94,11 @@ public:
 	};
 
 	static void					InitializeMaterialDefLists();
-	static void					InitializeMaterialDefList(idLexer* src, const char* typeName, MaterialDefList* list);
+	static void					InitializeMaterialDefList( idLexer* src, const char* typeName, MaterialDefList* list );
 
 	static void					DestroyMaterialDefLists();
 
-	static MaterialDefList*		GetMaterialDefs(int type);
+	static MaterialDefList*		GetMaterialDefs( int type );
 
 
 protected:

@@ -29,19 +29,20 @@ If you have questions concerning this license or the applicable additional terms
 #pragma once
 
 void HideInfoDialog();
-void ShowInfoDialog( const char *pText );
+void ShowInfoDialog( const char* pText );
 
 // CDialogInfo dialog
 
-class CDialogInfo : public CDialogEx {
+class CDialogInfo : public CDialogEx
+{
 public:
-	CDialogInfo( CWnd *pParent = NULL );   // standard constructor
+	CDialogInfo( CWnd* pParent = NULL );   // standard constructor
 
 	enum { IDD = IDD_DLG_INFORMATION };
 	CEdit	m_wndInfo;
 
 protected:
-	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 
 protected:
 	virtual BOOL OnInitDialog();

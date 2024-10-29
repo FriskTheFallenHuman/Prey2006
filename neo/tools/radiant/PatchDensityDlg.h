@@ -30,16 +30,17 @@ If you have questions concerning this license or the applicable additional terms
 
 // CPatchDensityDlg dialog
 
-class CPatchDensityDlg : public CDialogEx {
+class CPatchDensityDlg : public CDialogEx
+{
 public:
-	CPatchDensityDlg( CWnd *pParent = NULL );   // standard constructor
+	CPatchDensityDlg( CWnd* pParent = NULL );   // standard constructor
 
 	enum { IDD = IDD_DIALOG_NEWPATCH };
 	CComboBox	m_wndWidth;
 	CComboBox	m_wndHeight;
 
 protected:
-	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 
 protected:
 	virtual void OnOK();

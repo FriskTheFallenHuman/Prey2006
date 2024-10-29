@@ -44,7 +44,8 @@ If you have questions concerning this license or the applicable additional terms
 idLedge::idLedge
 ============
 */
-idLedge::idLedge( void ) {
+idLedge::idLedge( void )
+{
 }
 
 /*
@@ -52,15 +53,16 @@ idLedge::idLedge( void ) {
 idLedge::idLedge
 ============
 */
-idLedge::idLedge( const idVec3 &v1, const idVec3 &v2, const idVec3 &gravityDir, idBrushBSPNode *n ) {
+idLedge::idLedge( const idVec3& v1, const idVec3& v2, const idVec3& gravityDir, idBrushBSPNode* n )
+{
 	start = v1;
 	end = v2;
 	node = n;
 	numPlanes = 4;
-	planes[0].SetNormal( (v1 - v2).Cross( gravityDir ) );
+	planes[0].SetNormal( ( v1 - v2 ).Cross( gravityDir ) );
 	planes[0].Normalize();
 	planes[0].FitThroughPoint( v1 );
-	planes[1].SetNormal( (v1 - v2).Cross( planes[0].Normal() ) );
+	planes[1].SetNormal( ( v1 - v2 ).Cross( planes[0].Normal() ) );
 	planes[1].Normalize();
 	planes[1].FitThroughPoint( v1 );
 	planes[2].SetNormal( v1 - v2 );
@@ -77,12 +79,15 @@ idLedge::idLedge( const idVec3 &v1, const idVec3 &v2, const idVec3 &gravityDir, 
 idLedge::AddPoint
 ============
 */
-void idLedge::AddPoint( const idVec3 &v ) {
-	if ( planes[2].Distance( v ) > 0.0f ) {
+void idLedge::AddPoint( const idVec3& v )
+{
+	if( planes[2].Distance( v ) > 0.0f )
+	{
 		start = v;
 		planes[2].FitThroughPoint( start );
 	}
-	if ( planes[3].Distance( v ) > 0.0f ) {
+	if( planes[3].Distance( v ) > 0.0f )
+	{
 		end = v;
 		planes[3].FitThroughPoint( end );
 	}
@@ -95,7 +100,8 @@ idLedge::CreateBevels
   NOTE: this assumes the gravity is vertical
 ============
 */
-void idLedge::CreateBevels( const idVec3 &gravityDir ) {
+void idLedge::CreateBevels( const idVec3& gravityDir )
+{
 	int i, j;
 	idBounds bounds;
 	idVec3 size, normal;
@@ -106,7 +112,7 @@ void idLedge::CreateBevels( const idVec3 &gravityDir ) {
 	size = bounds[1] - bounds[0];
 
 	// plane through ledge
-	planes[0].SetNormal( (start - end).Cross( gravityDir ) );
+	planes[0].SetNormal( ( start - end ).Cross( gravityDir ) );
 	planes[0].Normalize();
 	planes[0].FitThroughPoint( start );
 	// axial bevels at start and end point
@@ -114,32 +120,33 @@ void idLedge::CreateBevels( const idVec3 &gravityDir ) {
 	normal = vec3_origin;
 	normal[i] = 1.0f;
 	j = end[i] > start[i];
-	planes[1+j].SetNormal( normal );
-	planes[1+!j].SetNormal( -normal );
+	planes[1 + j].SetNormal( normal );
+	planes[1 + !j].SetNormal( -normal );
 	planes[1].FitThroughPoint( start );
 	planes[2].FitThroughPoint( end );
 	numExpandedPlanes = 3;
 	// if additional bevels are required
-	if ( idMath::Fabs( size[!i] ) > 0.01f ) {
+	if( idMath::Fabs( size[!i] ) > 0.01f )
+	{
 		normal = vec3_origin;
 		normal[!i] = 1.0f;
 		j = end[!i] > start[!i];
-		planes[3+j].SetNormal( normal );
-		planes[3+!j].SetNormal( -normal );
+		planes[3 + j].SetNormal( normal );
+		planes[3 + !j].SetNormal( -normal );
 		planes[3].FitThroughPoint( start );
 		planes[4].FitThroughPoint( end );
 		numExpandedPlanes = 5;
 	}
 	// opposite of first
-	planes[numExpandedPlanes+0] = -planes[0];
+	planes[numExpandedPlanes + 0] = -planes[0];
 	// number of planes used for splitting
 	numSplitPlanes = numExpandedPlanes + 1;
 	// top plane
-	planes[numSplitPlanes+0].SetNormal( (start - end).Cross( planes[0].Normal() ) );
-	planes[numSplitPlanes+0].Normalize();
-	planes[numSplitPlanes+0].FitThroughPoint( start );
+	planes[numSplitPlanes + 0].SetNormal( ( start - end ).Cross( planes[0].Normal() ) );
+	planes[numSplitPlanes + 0].Normalize();
+	planes[numSplitPlanes + 0].FitThroughPoint( start );
 	// bottom plane
-	planes[numSplitPlanes+1] = -planes[numSplitPlanes+0];
+	planes[numSplitPlanes + 1] = -planes[numSplitPlanes + 0];
 	// total number of planes
 	numPlanes = numSplitPlanes + 2;
 }
@@ -149,17 +156,22 @@ void idLedge::CreateBevels( const idVec3 &gravityDir ) {
 idLedge::Expand
 ============
 */
-void idLedge::Expand( const idBounds &bounds, float maxStepHeight ) {
+void idLedge::Expand( const idBounds& bounds, float maxStepHeight )
+{
 	int i, j;
 	idVec3 v;
 
-	for ( i = 0; i < numExpandedPlanes; i++ ) {
+	for( i = 0; i < numExpandedPlanes; i++ )
+	{
 
-		for ( j = 0; j < 3; j++ ) {
-			if ( planes[i].Normal()[j] > 0.0f ) {
+		for( j = 0; j < 3; j++ )
+		{
+			if( planes[i].Normal()[j] > 0.0f )
+			{
 				v[j] = bounds[0][j];
 			}
-			else {
+			else
+			{
 				v[j] = bounds[1][j];
 			}
 		}
@@ -167,8 +179,8 @@ void idLedge::Expand( const idBounds &bounds, float maxStepHeight ) {
 		planes[i].SetDist( planes[i].Dist() + v * -planes[i].Normal() );
 	}
 
-	planes[numSplitPlanes+0].SetDist( planes[numSplitPlanes+0].Dist() + maxStepHeight );
-	planes[numSplitPlanes+1].SetDist( planes[numSplitPlanes+1].Dist() + 1.0f );
+	planes[numSplitPlanes + 0].SetDist( planes[numSplitPlanes + 0].Dist() + maxStepHeight );
+	planes[numSplitPlanes + 1].SetDist( planes[numSplitPlanes + 1].Dist() + 1.0f );
 }
 
 /*
@@ -176,12 +188,14 @@ void idLedge::Expand( const idBounds &bounds, float maxStepHeight ) {
 idLedge::ChopWinding
 ============
 */
-idWinding *idLedge::ChopWinding( const idWinding *winding ) const {
+idWinding* idLedge::ChopWinding( const idWinding* winding ) const
+{
 	int i;
-	idWinding *w;
+	idWinding* w;
 
 	w = winding->Copy();
-	for ( i = 0; i < numPlanes && w; i++ ) {
+	for( i = 0; i < numPlanes && w; i++ )
+	{
 		w = w->Clip( -planes[i], ON_EPSILON, true );
 	}
 	return w;
@@ -192,7 +206,8 @@ idWinding *idLedge::ChopWinding( const idWinding *winding ) const {
 idLedge::PointBetweenBounds
 ============
 */
-bool idLedge::PointBetweenBounds( const idVec3 &v ) const {
+bool idLedge::PointBetweenBounds( const idVec3& v ) const
+{
 	return ( planes[2].Distance( v ) < LEDGE_EPSILON ) && ( planes[3].Distance( v ) < LEDGE_EPSILON );
 }
 
@@ -208,43 +223,52 @@ bool idLedge::PointBetweenBounds( const idVec3 &v ) const {
 idAASBuild::LedgeSubdivFlood_r
 ============
 */
-void idAASBuild::LedgeSubdivFlood_r( idBrushBSPNode *node, const idLedge *ledge ) {
+void idAASBuild::LedgeSubdivFlood_r( idBrushBSPNode* node, const idLedge* ledge )
+{
 	int s1, i;
-	idBrushBSPPortal *p1;
-	idWinding *w;
-	idList<idBrushBSPNode *> nodeList;
+	idBrushBSPPortal* p1;
+	idWinding* w;
+	idList<idBrushBSPNode*> nodeList;
 
-	if ( node->GetFlags() & NODE_VISITED ) {
+	if( node->GetFlags() & NODE_VISITED )
+	{
 		return;
 	}
 
 	// if this is not already a ledge area
-	if ( !( node->GetFlags() & AREA_LEDGE ) ) {
-		for ( p1 = node->GetPortals(); p1; p1 = p1->Next(s1) ) {
-			s1 = (p1->GetNode(1) == node);
+	if( !( node->GetFlags() & AREA_LEDGE ) )
+	{
+		for( p1 = node->GetPortals(); p1; p1 = p1->Next( s1 ) )
+		{
+			s1 = ( p1->GetNode( 1 ) == node );
 
-			if ( !(p1->GetFlags() & FACE_FLOOR) ) {
+			if( !( p1->GetFlags() & FACE_FLOOR ) )
+			{
 				continue;
 			}
 
 			// split the area if some part of the floor portal is inside the expanded ledge
 			w = ledge->ChopWinding( p1->GetWinding() );
-			if ( !w ) {
+			if( !w )
+			{
 				continue;
 			}
 			delete w;
 
-			for ( i = 0; i < ledge->numSplitPlanes; i++ ) {
-				if ( node->PlaneSide( ledge->planes[i], 0.1f ) != SIDE_CROSS ) {
+			for( i = 0; i < ledge->numSplitPlanes; i++ )
+			{
+				if( node->PlaneSide( ledge->planes[i], 0.1f ) != SIDE_CROSS )
+				{
 					continue;
 				}
-				if ( !node->Split( ledge->planes[i], -1 ) ) {
+				if( !node->Split( ledge->planes[i], -1 ) )
+				{
 					continue;
 				}
 				numLedgeSubdivisions++;
 				DisplayRealTimeString( "\r%6d", numLedgeSubdivisions );
-				node->GetChild(0)->SetFlag( NODE_VISITED );
-				LedgeSubdivFlood_r( node->GetChild(1), ledge );
+				node->GetChild( 0 )->SetFlag( NODE_VISITED );
+				LedgeSubdivFlood_r( node->GetChild( 1 ), ledge );
 				return;
 			}
 
@@ -256,16 +280,19 @@ void idAASBuild::LedgeSubdivFlood_r( idBrushBSPNode *node, const idLedge *ledge 
 	node->SetFlag( NODE_VISITED );
 
 	// get all nodes we might need to flood into
-	for ( p1 = node->GetPortals(); p1; p1 = p1->Next(s1) ) {
-		s1 = (p1->GetNode(1) == node);
+	for( p1 = node->GetPortals(); p1; p1 = p1->Next( s1 ) )
+	{
+		s1 = ( p1->GetNode( 1 ) == node );
 
-		if ( p1->GetNode( !s1 )->GetContents() & AREACONTENTS_SOLID ) {
+		if( p1->GetNode( !s1 )->GetContents() & AREACONTENTS_SOLID )
+		{
 			continue;
 		}
 
 		// flood through this portal if the portal is partly inside the expanded ledge
 		w = ledge->ChopWinding( p1->GetWinding() );
-		if ( !w ) {
+		if( !w )
+		{
 			continue;
 		}
 		delete w;
@@ -274,7 +301,8 @@ void idAASBuild::LedgeSubdivFlood_r( idBrushBSPNode *node, const idLedge *ledge 
 	}
 
 	// flood into other nodes
-	for ( i = 0; i < nodeList.Num(); i++ ) {
+	for( i = 0; i < nodeList.Num(); i++ )
+	{
 		LedgeSubdivLeafNodes_r( nodeList[i], ledge );
 	}
 }
@@ -287,16 +315,19 @@ idAASBuild::LedgeSubdivLeafNodes_r
   Here we recurse down the tree from the original node to find all the new leaf nodes the ledge might be part of.
 ============
 */
-void idAASBuild::LedgeSubdivLeafNodes_r( idBrushBSPNode *node, const idLedge *ledge ) {
-	if ( !node ) {
+void idAASBuild::LedgeSubdivLeafNodes_r( idBrushBSPNode* node, const idLedge* ledge )
+{
+	if( !node )
+	{
 		return;
 	}
-	if ( !node->GetChild(0) && !node->GetChild(1) ) {
+	if( !node->GetChild( 0 ) && !node->GetChild( 1 ) )
+	{
 		LedgeSubdivFlood_r( node, ledge );
 		return;
 	}
-	LedgeSubdivLeafNodes_r( node->GetChild(0), ledge );
-	LedgeSubdivLeafNodes_r( node->GetChild(1), ledge );
+	LedgeSubdivLeafNodes_r( node->GetChild( 0 ), ledge );
+	LedgeSubdivLeafNodes_r( node->GetChild( 1 ), ledge );
 }
 
 /*
@@ -304,21 +335,25 @@ void idAASBuild::LedgeSubdivLeafNodes_r( idBrushBSPNode *node, const idLedge *le
 idAASBuild::LedgeSubdiv
 ============
 */
-void idAASBuild::LedgeSubdiv( idBrushBSPNode *root ) {
+void idAASBuild::LedgeSubdiv( idBrushBSPNode* root )
+{
 	int i, j;
-	idBrush *brush;
-	idList<idBrushSide *> sideList;
+	idBrush* brush;
+	idList<idBrushSide*> sideList;
 
 	// create ledge bevels and expand ledges
-	for ( i = 0; i < ledgeList.Num(); i++ ) {
+	for( i = 0; i < ledgeList.Num(); i++ )
+	{
 
 		ledgeList[i].CreateBevels( aasSettings->gravityDir );
 		ledgeList[i].Expand( aasSettings->boundingBoxes[0], aasSettings->maxStepHeight );
 
 		// if we should write out a ledge map
-		if ( ledgeMap ) {
+		if( ledgeMap )
+		{
 			sideList.SetNum( 0 );
-			for ( j = 0; j < ledgeList[i].numPlanes; j++ ) {
+			for( j = 0; j < ledgeList[i].numPlanes; j++ )
+			{
 				sideList.Append( new idBrushSide( ledgeList[i].planes[j], -1 ) );
 			}
 
@@ -343,55 +378,71 @@ void idAASBuild::LedgeSubdiv( idBrushBSPNode *root ) {
 idAASBuild::IsLedgeSide_r
 ============
 */
-bool idAASBuild::IsLedgeSide_r( idBrushBSPNode *node, idFixedWinding *w, const idPlane &plane, const idVec3 &normal, const idVec3 &origin, const float radius ) {
+bool idAASBuild::IsLedgeSide_r( idBrushBSPNode* node, idFixedWinding* w, const idPlane& plane, const idVec3& normal, const idVec3& origin, const float radius )
+{
 	int res, i;
 	idFixedWinding back;
 	float dist;
 
-	if ( !node ) {
+	if( !node )
+	{
 		return false;
 	}
 
-	while ( node->GetChild(0) && node->GetChild(1) ) {
+	while( node->GetChild( 0 ) && node->GetChild( 1 ) )
+	{
 		dist = node->GetPlane().Distance( origin );
-		if ( dist > radius ) {
+		if( dist > radius )
+		{
 			res = SIDE_FRONT;
 		}
-		else if ( dist < -radius ) {
+		else if( dist < -radius )
+		{
 			res = SIDE_BACK;
 		}
-		else {
+		else
+		{
 			res = w->Split( &back, node->GetPlane(), LEDGE_EPSILON );
 		}
-		if ( res == SIDE_FRONT ) {
-			node = node->GetChild(0);
+		if( res == SIDE_FRONT )
+		{
+			node = node->GetChild( 0 );
 		}
-		else if ( res == SIDE_BACK ) {
-			node = node->GetChild(1);
+		else if( res == SIDE_BACK )
+		{
+			node = node->GetChild( 1 );
 		}
-		else if ( res == SIDE_ON ) {
+		else if( res == SIDE_ON )
+		{
 			// continue with the side the winding faces
-			if ( node->GetPlane().Normal() * normal > 0.0f ) {
-				node = node->GetChild(0);
+			if( node->GetPlane().Normal() * normal > 0.0f )
+			{
+				node = node->GetChild( 0 );
 			}
-			else {
-				node = node->GetChild(1);
+			else
+			{
+				node = node->GetChild( 1 );
 			}
 		}
-		else {
-			if ( IsLedgeSide_r( node->GetChild(1), &back, plane, normal, origin, radius ) ) {
+		else
+		{
+			if( IsLedgeSide_r( node->GetChild( 1 ), &back, plane, normal, origin, radius ) )
+			{
 				return true;
 			}
-			node = node->GetChild(0);
+			node = node->GetChild( 0 );
 		}
 	}
 
-	if ( node->GetContents() & AREACONTENTS_SOLID ) {
+	if( node->GetContents() & AREACONTENTS_SOLID )
+	{
 		return false;
 	}
 
-	for ( i = 0; i < w->GetNumPoints(); i++ ) {
-		if ( plane.Distance( (*w)[i].ToVec3() ) > 0.0f ) {
+	for( i = 0; i < w->GetNumPoints(); i++ )
+	{
+		if( plane.Distance( ( *w )[i].ToVec3() ) > 0.0f )
+		{
 			return true;
 		}
 	}
@@ -404,45 +455,55 @@ bool idAASBuild::IsLedgeSide_r( idBrushBSPNode *node, idFixedWinding *w, const i
 idAASBuild::AddLedge
 ============
 */
-void idAASBuild::AddLedge( const idVec3 &v1, const idVec3 &v2, idBrushBSPNode *node ) {
+void idAASBuild::AddLedge( const idVec3& v1, const idVec3& v2, idBrushBSPNode* node )
+{
 	int i, j, merged;
 
 	// first try to merge the ledge with existing ledges
 	merged = -1;
-	for ( i = 0; i < ledgeList.Num(); i++ ) {
+	for( i = 0; i < ledgeList.Num(); i++ )
+	{
 
-		for ( j = 0; j < 2; j++ ) {
-			if ( idMath::Fabs( ledgeList[i].planes[j].Distance( v1 ) ) > LEDGE_EPSILON ) {
+		for( j = 0; j < 2; j++ )
+		{
+			if( idMath::Fabs( ledgeList[i].planes[j].Distance( v1 ) ) > LEDGE_EPSILON )
+			{
 				break;
 			}
-			if ( idMath::Fabs( ledgeList[i].planes[j].Distance( v2 ) ) > LEDGE_EPSILON ) {
+			if( idMath::Fabs( ledgeList[i].planes[j].Distance( v2 ) ) > LEDGE_EPSILON )
+			{
 				break;
 			}
 		}
-		if ( j < 2 ) {
+		if( j < 2 )
+		{
 			continue;
 		}
 
-		if ( !ledgeList[i].PointBetweenBounds( v1 ) &&
-			!ledgeList[i].PointBetweenBounds( v2 ) ) {
+		if( !ledgeList[i].PointBetweenBounds( v1 ) &&
+				!ledgeList[i].PointBetweenBounds( v2 ) )
+		{
 			continue;
 		}
 
-		if ( merged == -1 ) {
+		if( merged == -1 )
+		{
 			ledgeList[i].AddPoint( v1 );
 			ledgeList[i].AddPoint( v2 );
 			merged = i;
 		}
-		else {
+		else
+		{
 			ledgeList[merged].AddPoint( ledgeList[i].start );
 			ledgeList[merged].AddPoint( ledgeList[i].end );
-			ledgeList.RemoveIndex(i);
+			ledgeList.RemoveIndex( i );
 			break;
 		}
 	}
 
 	// if the ledge could not be merged
-	if ( merged == -1 ) {
+	if( merged == -1 )
+	{
 		ledgeList.Append( idLedge( v1, v2, aasSettings->gravityDir, node ) );
 	}
 }
@@ -452,38 +513,45 @@ void idAASBuild::AddLedge( const idVec3 &v1, const idVec3 &v2, idBrushBSPNode *n
 idAASBuild::FindLeafNodeLedges
 ============
 */
-void idAASBuild::FindLeafNodeLedges( idBrushBSPNode *root, idBrushBSPNode *node ) {
+void idAASBuild::FindLeafNodeLedges( idBrushBSPNode* root, idBrushBSPNode* node )
+{
 	int s1, i;
-	idBrushBSPPortal *p1;
-	idWinding *w;
+	idBrushBSPPortal* p1;
+	idWinding* w;
 	idVec3 v1, v2, normal, origin;
 	idFixedWinding winding;
 	idBounds bounds;
 	idPlane plane;
 	float radius;
 
-	for ( p1 = node->GetPortals(); p1; p1 = p1->Next(s1) ) {
-		s1 = (p1->GetNode(1) == node);
+	for( p1 = node->GetPortals(); p1; p1 = p1->Next( s1 ) )
+	{
+		s1 = ( p1->GetNode( 1 ) == node );
 
-		if ( !(p1->GetFlags() & FACE_FLOOR) ) {
+		if( !( p1->GetFlags() & FACE_FLOOR ) )
+		{
 			continue;
 		}
 
-		if ( s1 ) {
+		if( s1 )
+		{
 			plane = p1->GetPlane();
 			w = p1->GetWinding()->Reverse();
 		}
-		else {
+		else
+		{
 			plane = -p1->GetPlane();
 			w = p1->GetWinding();
 		}
 
-		for ( i = 0; i < w->GetNumPoints(); i++ ) {
+		for( i = 0; i < w->GetNumPoints(); i++ )
+		{
 
-			v1 = (*w)[i].ToVec3();
-			v2 = (*w)[(i+1)%w->GetNumPoints()].ToVec3();
-			normal = (v2 - v1).Cross( aasSettings->gravityDir );
-			if ( normal.Normalize() < 0.5f ) {
+			v1 = ( *w )[i].ToVec3();
+			v2 = ( *w )[( i + 1 ) % w->GetNumPoints()].ToVec3();
+			normal = ( v2 - v1 ).Cross( aasSettings->gravityDir );
+			if( normal.Normalize() < 0.5f )
+			{
 				continue;
 			}
 
@@ -494,20 +562,22 @@ void idAASBuild::FindLeafNodeLedges( idBrushBSPNode *root, idBrushBSPNode *node 
 			winding += winding[0].ToVec3() + ( aasSettings->maxStepHeight + 1.0f ) * aasSettings->gravityDir;
 
 			winding.GetBounds( bounds );
-			origin = (bounds[1] - bounds[0]) * 0.5f;
+			origin = ( bounds[1] - bounds[0] ) * 0.5f;
 			radius = origin.Length() + LEDGE_EPSILON;
 			origin = bounds[0] + origin;
 
 			plane.FitThroughPoint( v1 + aasSettings->maxStepHeight * aasSettings->gravityDir );
 
-			if ( !IsLedgeSide_r( root, &winding, plane, normal, origin, radius ) ) {
+			if( !IsLedgeSide_r( root, &winding, plane, normal, origin, radius ) )
+			{
 				continue;
 			}
 
 			AddLedge( v1, v2, node );
 		}
 
-		if ( w != p1->GetWinding() ) {
+		if( w != p1->GetWinding() )
+		{
 			delete w;
 		}
 	}
@@ -518,17 +588,22 @@ void idAASBuild::FindLeafNodeLedges( idBrushBSPNode *root, idBrushBSPNode *node 
 idAASBuild::FindLedges_r
 ============
 */
-void idAASBuild::FindLedges_r( idBrushBSPNode *root, idBrushBSPNode *node ) {
-	if ( !node ) {
+void idAASBuild::FindLedges_r( idBrushBSPNode* root, idBrushBSPNode* node )
+{
+	if( !node )
+	{
 		return;
 	}
 
-	if ( node->GetContents() & AREACONTENTS_SOLID ) {
+	if( node->GetContents() & AREACONTENTS_SOLID )
+	{
 		return;
 	}
 
-	if ( !node->GetChild(0) && !node->GetChild(1) ) {
-		if ( node->GetFlags() & NODE_VISITED ) {
+	if( !node->GetChild( 0 ) && !node->GetChild( 1 ) )
+	{
+		if( node->GetFlags() & NODE_VISITED )
+		{
 			return;
 		}
 		FindLeafNodeLedges( root, node );
@@ -536,8 +611,8 @@ void idAASBuild::FindLedges_r( idBrushBSPNode *root, idBrushBSPNode *node ) {
 		return;
 	}
 
-	FindLedges_r( root, node->GetChild(0) );
-	FindLedges_r( root, node->GetChild(1) );
+	FindLedges_r( root, node->GetChild( 0 ) );
+	FindLedges_r( root, node->GetChild( 1 ) );
 }
 
 /*
@@ -545,7 +620,8 @@ void idAASBuild::FindLedges_r( idBrushBSPNode *root, idBrushBSPNode *node ) {
 idAASBuild::WriteLedgeMap
 ============
 */
-void idAASBuild::WriteLedgeMap( const idStr &fileName, const idStr &ext ) {
+void idAASBuild::WriteLedgeMap( const idStr& fileName, const idStr& ext )
+{
 	ledgeMap = new idBrushMap( fileName, ext );
 	ledgeMap->SetTexture( "textures/base_trim/bluetex4q_ed" );
 }
@@ -558,7 +634,8 @@ idAASBuild::LedgeSubdivision
 		only ledges with vertical sides are considered
 ============
 */
-void idAASBuild::LedgeSubdivision( idBrushBSP &bsp ) {
+void idAASBuild::LedgeSubdivision( idBrushBSP& bsp )
+{
 	numLedgeSubdivisions = 0;
 	ledgeList.Clear();
 

@@ -2,7 +2,7 @@
 #define __PROP_TREE_ITEM_FILE_EDIT_H__
 
 #if _MSC_VER > 1000
-#pragma once
+	#pragma once
 #endif
 
 
@@ -42,8 +42,8 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void OnContextMenu( CWnd* pWnd, CPoint point );
+	afx_msg int OnCreate( LPCREATESTRUCT lpCreateStruct );
 };
 
 /////////////////////////////////////////////////////////////////////////////

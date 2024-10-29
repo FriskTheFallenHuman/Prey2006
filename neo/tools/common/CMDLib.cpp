@@ -38,15 +38,15 @@ If you have questions concerning this license or the applicable additional terms
 Q_filelength
 ================
 */
-int Q_filelength (FILE *f)
+int Q_filelength( FILE* f )
 {
 	int		pos;
 	int		end;
 
-	pos = ftell (f);
-	fseek (f, 0, SEEK_END);
-	end = ftell (f);
-	fseek (f, pos, SEEK_SET);
+	pos = ftell( f );
+	fseek( f, 0, SEEK_END );
+	end = ftell( f );
+	fseek( f, pos, SEEK_SET );
 
 	return end;
 }
@@ -56,26 +56,29 @@ int Q_filelength (FILE *f)
 LoadFile
 ==============
 */
-int LoadFile (const char *filename, void **bufferptr)
+int LoadFile( const char* filename, void** bufferptr )
 {
-	FILE	*f;
+	FILE*	f;
 	int    length;
-	void    *buffer;
+	void*    buffer;
 
 	*bufferptr = NULL;
 
-	if ( filename == NULL || strlen(filename) == 0 ) {
+	if( filename == NULL || strlen( filename ) == 0 )
+	{
 		return -1;
 	}
 
 	f = fopen( filename, "rb" );
-	if ( !f ) {
+	if( !f )
+	{
 		return -1;
 	}
 	length = Q_filelength( f );
-	buffer = Mem_ClearedAlloc( length+1 );
-	((char *)buffer)[length] = 0;
-	if ( (int)fread( buffer, 1, length, f ) != length ) {
+	buffer = Mem_ClearedAlloc( length + 1 );
+	( ( char* )buffer )[length] = 0;
+	if( ( int )fread( buffer, 1, length, f ) != length )
+	{
 		idLib::Error( "File read failure" );
 	}
 	fclose( f );
@@ -89,23 +92,25 @@ int LoadFile (const char *filename, void **bufferptr)
 DefaultExtension
 ==============
 */
-void DefaultExtension (char *path, char *extension)
+void DefaultExtension( char* path, char* extension )
 {
-	char    *src;
+	char*    src;
 	//
 	// if path doesn't have a .EXT, append extension
 	// (extension should include the .)
 	//
-	src = path + strlen(path) - 1;
+	src = path + strlen( path ) - 1;
 
-	while (*src != PATHSEPERATOR && src != path)
+	while( *src != PATHSEPERATOR && src != path )
 	{
-		if (*src == '.')
-			return;                 // it has an extension
+		if( *src == '.' )
+		{
+			return;    // it has an extension
+		}
 		src--;
 	}
 
-	strcat (path, extension);
+	strcat( path, extension );
 }
 
 /*
@@ -113,15 +118,17 @@ void DefaultExtension (char *path, char *extension)
 DefaultPath
 ==============
 */
-void DefaultPath (char *path, char *basepath)
+void DefaultPath( char* path, char* basepath )
 {
 	char    temp[128];
 
-	if (path[0] == PATHSEPERATOR)
-		return;                   // absolute path location
-	strcpy (temp,path);
-	strcpy (path,basepath);
-	strcat (path,temp);
+	if( path[0] == PATHSEPERATOR )
+	{
+		return;    // absolute path location
+	}
+	strcpy( temp, path );
+	strcpy( path, basepath );
+	strcat( path, temp );
 }
 
 /*
@@ -129,12 +136,13 @@ void DefaultPath (char *path, char *basepath)
 StripFilename
 ==============
 */
-void StripFilename (char *path)
+void StripFilename( char* path )
 {
 	int             length;
 
-	length = strlen(path)-1;
-	while (length > 0 && path[length] != PATHSEPERATOR) {
+	length = strlen( path ) - 1;
+	while( length > 0 && path[length] != PATHSEPERATOR )
+	{
 		length--;
 	}
 	path[length] = 0;
@@ -145,18 +153,21 @@ void StripFilename (char *path)
 StripExtension
 ==============
 */
-void StripExtension (char *path)
+void StripExtension( char* path )
 {
 	int             length;
 
-	length = strlen(path)-1;
-	while (length > 0 && path[length] != '.')
+	length = strlen( path ) - 1;
+	while( length > 0 && path[length] != '.' )
 	{
 		length--;
-		if (path[length] == '/')
-			return;		// no extension
+		if( path[length] == '/' )
+		{
+			return;    // no extension
+		}
 	}
-	if (length) {
+	if( length )
+	{
 		path[length] = 0;
 	}
 }

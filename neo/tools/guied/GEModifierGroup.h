@@ -29,27 +29,27 @@ If you have questions concerning this license or the applicable additional terms
 #define GEMODIFIERGROUP_H_
 
 #ifndef GEMODIFIER_H_
-#include "GEModifier.h"
+	#include "GEModifier.h"
 #endif
 
 class rvGEModifierGroup : public rvGEModifier
 {
 public:
 
-	rvGEModifierGroup ( );
-	~rvGEModifierGroup ( );
+	rvGEModifierGroup( );
+	~rvGEModifierGroup( );
 
-	virtual bool		Apply		( void );
-	virtual bool		Undo		( void );
+	virtual bool		Apply( void );
+	virtual bool		Undo( void );
 
-	virtual bool		CanMerge	( rvGEModifier* merge );
+	virtual bool		CanMerge( rvGEModifier* merge );
 
-	virtual bool		Merge		( rvGEModifier* merge );
+	virtual bool		Merge( rvGEModifier* merge );
 
-	virtual bool		IsValid		( void );
+	virtual bool		IsValid( void );
 
-	bool				Append		( rvGEModifier* mod );
-	int					GetCount	( void );
+	bool				Append( rvGEModifier* mod );
+	int					GetCount( void );
 
 
 protected:
@@ -60,7 +60,7 @@ protected:
 
 ID_INLINE int rvGEModifierGroup::GetCount( void )
 {
-	return mModifiers.Num ( );
+	return mModifiers.Num( );
 }
 
 #endif

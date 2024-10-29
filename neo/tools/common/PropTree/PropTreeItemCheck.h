@@ -33,13 +33,13 @@ public:
 // Attributes
 public:
 	// The attribute area needs drawing
-	virtual void DrawAttribute(CDC* pDC, const RECT& rc);
+	virtual void DrawAttribute( CDC* pDC, const RECT& rc );
 
 	// Retrieve the item's attribute value
 	virtual LPARAM GetItemValue();
 
 	// Set the item's attribute value
-	virtual void SetItemValue(LPARAM lParam);
+	virtual void SetItemValue( LPARAM lParam );
 
 	// Called when attribute area has changed size
 	virtual void OnMove();
@@ -51,14 +51,17 @@ public:
 	virtual void OnCommit();
 
 	// Called to activate the item
-	virtual void OnActivate(int activateType, CPoint point);
+	virtual void OnActivate( int activateType, CPoint point );
 
-	bool HitCheckBoxTest(const POINT& pt);
+	bool HitCheckBoxTest( const POINT& pt );
 
 	bool CreateCheckBox();
 
-	BOOL		GetCheckState() { return checkState; };
-	void	SetCheckState(BOOL state);
+	BOOL		GetCheckState()
+	{
+		return checkState;
+	};
+	void	SetCheckState( BOOL state );
 
 
 protected:

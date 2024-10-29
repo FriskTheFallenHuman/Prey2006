@@ -47,22 +47,26 @@ public:
 	/**
 	* Defines the type of stages
 	*/
-	enum {
+	enum
+	{
 		STAGE_TYPE_MATERIAL,
 		STAGE_TYPE_STAGE,
 		STAGE_TYPE_SPECIAL_MAP_STAGE
 	};
 
 	//Associates a property view with this stage view
-	void					SetMaterialPropertyView(MaterialPropTreeView* propView) { m_propView = propView; };
+	void					SetMaterialPropertyView( MaterialPropTreeView* propView )
+	{
+		m_propView = propView;
+	};
 
 	//MaterialView Interface
-	virtual void			MV_OnMaterialSelectionChange(MaterialDoc* pMaterial);
-	virtual void			MV_OnMaterialStageAdd(MaterialDoc* pMaterial, int stageNum);
-	virtual void			MV_OnMaterialStageDelete(MaterialDoc* pMaterial, int stageNum);
-	virtual void			MV_OnMaterialStageMove(MaterialDoc* pMaterial, int from, int to);
-	virtual void			MV_OnMaterialAttributeChanged(MaterialDoc* pMaterial, int stage, const char* attribName);
-	virtual void			MV_OnMaterialSaved(MaterialDoc* pMaterial);
+	virtual void			MV_OnMaterialSelectionChange( MaterialDoc* pMaterial );
+	virtual void			MV_OnMaterialStageAdd( MaterialDoc* pMaterial, int stageNum );
+	virtual void			MV_OnMaterialStageDelete( MaterialDoc* pMaterial, int stageNum );
+	virtual void			MV_OnMaterialStageMove( MaterialDoc* pMaterial, int from, int to );
+	virtual void			MV_OnMaterialAttributeChanged( MaterialDoc* pMaterial, int stage, const char* attribName );
+	virtual void			MV_OnMaterialSaved( MaterialDoc* pMaterial );
 
 	//Edit Operation Tests
 	bool					CanCopy();
@@ -76,15 +80,15 @@ public:
 
 protected:
 	StageView();
-	DECLARE_DYNCREATE(StageView)
+	DECLARE_DYNCREATE( StageView )
 
-	afx_msg int				OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void			OnLvnItemchanged(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void			OnLvnDeleteallitems(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void			OnLvnBegindrag(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void			OnLButtonUp(UINT nFlags, CPoint point);
-	afx_msg void			OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg void			OnNMRclick(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg int				OnCreate( LPCREATESTRUCT lpCreateStruct );
+	afx_msg void			OnLvnItemchanged( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void			OnLvnDeleteallitems( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void			OnLvnBegindrag( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void			OnLButtonUp( UINT nFlags, CPoint point );
+	afx_msg void			OnMouseMove( UINT nFlags, CPoint point );
+	afx_msg void			OnNMRclick( NMHDR* pNMHDR, LRESULT* pResult );
 
 	afx_msg void			OnRenameStage();
 	afx_msg void			OnDeleteStage();
@@ -97,19 +101,19 @@ protected:
 	afx_msg void			OnCopy();
 	afx_msg void			OnPaste();
 
-	afx_msg void			OnLvnBeginlabeledit(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void			OnLvnEndlabeledit(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void			OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg void			OnLvnBeginlabeledit( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void			OnLvnEndlabeledit( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void			OnChar( UINT nChar, UINT nRepCnt, UINT nFlags );
 	DECLARE_MESSAGE_MAP()
 
 	//Overrides
-	virtual BOOL			PreTranslateMessage(MSG* pMsg);
-	virtual BOOL			PreCreateWindow(CREATESTRUCT& cs);
+	virtual BOOL			PreTranslateMessage( MSG* pMsg );
+	virtual BOOL			PreCreateWindow( CREATESTRUCT& cs );
 
 	//Toggle List View Interface
-	virtual void			OnStateChanged(int index, int toggleState);
+	virtual void			OnStateChanged( int index, int toggleState );
 
-	void					PopupMenu(CPoint* pt);
+	void					PopupMenu( CPoint* pt );
 
 	void					DropItemOnList();
 

@@ -31,51 +31,53 @@ If you have questions concerning this license or the applicable additional terms
 
 // CEditViewDlg dialog
 
-class CEditViewDlg : public CDialogEx {
+class CEditViewDlg : public CDialogEx
+{
 
-    DECLARE_DYNAMIC( CEditViewDlg )
+	DECLARE_DYNAMIC( CEditViewDlg )
 
 public:
-    enum { MATERIALS, GUIS };
-    CEditViewDlg( CWnd *pParent = nullptr );   // standard constructor
-    virtual ~CEditViewDlg();
+	enum { MATERIALS, GUIS };
+	CEditViewDlg( CWnd* pParent = nullptr );   // standard constructor
+	virtual ~CEditViewDlg();
 
-    void SetMode( int _mode ) {
-        mode = _mode;
-    }
+	void SetMode( int _mode )
+	{
+		mode = _mode;
+	}
 
-    void SetMaterialInfo( const char *name, const char *file, int line );
-    void SetGuiInfo( const char *name );
-    void UpdateEditPreview();
+	void SetMaterialInfo( const char* name, const char* file, int line );
+	void SetGuiInfo( const char* name );
+	void UpdateEditPreview();
 
-    // Dialog Data
-    enum { IDD = IDD_DIALOG_EDITVIEW };
+	// Dialog Data
+	enum { IDD = IDD_DIALOG_EDITVIEW };
 
 protected:
-    CFindReplaceDialog *findDlg;
-    CMediaPreviewDlg mediaPreview;
-    int mode;
-    idStr fileName;
-    idStr matName;
-    idStr editText;
-    idStr findStr;
-    int line;
-    CEdit editInfo;
+	CFindReplaceDialog* findDlg;
+	CMediaPreviewDlg mediaPreview;
+	int mode;
+	idStr fileName;
+	idStr matName;
+	idStr editText;
+	idStr findStr;
+	int line;
+	CEdit editInfo;
 
-    void ShowFindDlg();
+	void ShowFindDlg();
 
-    virtual void DoDataExchange( CDataExchange *pDX ) override;    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX ) override;    // DDX/DDV support
 
-    DECLARE_MESSAGE_MAP()
+	DECLARE_MESSAGE_MAP()
 
 public:
-    afx_msg void OnSize( UINT nType, int cx, int cy );
-    afx_msg void OnBnClickedButtonOpen();
-    afx_msg void OnBnClickedButtonSave();
-    virtual BOOL OnInitDialog() override;
-    afx_msg void OnDestroy();
-    afx_msg void OnTimer( UINT_PTR nIDEvent );
-    afx_msg void OnBnClickedButtonGoto();
-    virtual BOOL PreTranslateMessage( MSG *pMsg ) override;
-    afx_msg LRESULT OnFindDialogMessage( WPARAM wParam, LPARAM lParam );
+	afx_msg void OnSize( UINT nType, int cx, int cy );
+	afx_msg void OnBnClickedButtonOpen();
+	afx_msg void OnBnClickedButtonSave();
+	virtual BOOL OnInitDialog() override;
+	afx_msg void OnDestroy();
+	afx_msg void OnTimer( UINT_PTR nIDEvent );
+	afx_msg void OnBnClickedButtonGoto();
+	virtual BOOL PreTranslateMessage( MSG* pMsg ) override;
+	afx_msg LRESULT OnFindDialogMessage( WPARAM wParam, LPARAM lParam );
 };

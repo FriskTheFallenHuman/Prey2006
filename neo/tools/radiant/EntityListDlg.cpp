@@ -34,15 +34,17 @@ If you have questions concerning this license or the applicable additional terms
 #include "EntityListDlg.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
 CEntityListDlg g_EntityListDlg;
 
 // CEntityListDlg dialog
 
-void CEntityListDlg::ShowDialog() {
-	if ( g_EntityListDlg.GetSafeHwnd() == NULL ) {
+void CEntityListDlg::ShowDialog()
+{
+	if( g_EntityListDlg.GetSafeHwnd() == NULL )
+	{
 		g_EntityListDlg.Create( IDD_DLG_ENTITYLIST );
 	}
 	g_EntityListDlg.UpdateList();
@@ -50,93 +52,111 @@ void CEntityListDlg::ShowDialog() {
 
 }
 
-CEntityListDlg::CEntityListDlg( CWnd *pParent )
-	: CDialogEx( CEntityListDlg::IDD, pParent ) {
+CEntityListDlg::CEntityListDlg( CWnd* pParent )
+	: CDialogEx( CEntityListDlg::IDD, pParent )
+{
 }
 
 
-void CEntityListDlg::DoDataExchange( CDataExchange *pDX ) {
-	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST_ENTITY, m_lstEntity);
-	DDX_Control(pDX, IDC_LIST_ENTITIES, listEntities);
+void CEntityListDlg::DoDataExchange( CDataExchange* pDX )
+{
+	CDialogEx::DoDataExchange( pDX );
+	DDX_Control( pDX, IDC_LIST_ENTITY, m_lstEntity );
+	DDX_Control( pDX, IDC_LIST_ENTITIES, listEntities );
 }
 
-BEGIN_MESSAGE_MAP(CEntityListDlg, CDialogEx)
-	ON_BN_CLICKED(IDC_SELECT, OnSelect)
+BEGIN_MESSAGE_MAP( CEntityListDlg, CDialogEx )
+	ON_BN_CLICKED( IDC_SELECT, OnSelect )
 	ON_WM_CLOSE()
 	ON_WM_DESTROY()
-	ON_LBN_SELCHANGE(IDC_LIST_ENTITIES, OnLbnSelchangeListEntities)
-	ON_LBN_DBLCLK(IDC_LIST_ENTITIES, OnLbnDblclkListEntities)
+	ON_LBN_SELCHANGE( IDC_LIST_ENTITIES, OnLbnSelchangeListEntities )
+	ON_LBN_DBLCLK( IDC_LIST_ENTITIES, OnLbnDblclkListEntities )
 END_MESSAGE_MAP()
 
 // CEntityListDlg message handlers
 
-void CEntityListDlg::OnSelect() {
+void CEntityListDlg::OnSelect()
+{
 	int index = listEntities.GetCurSel();
-	if ( index != LB_ERR ) {
-		idEditorEntity *ent = reinterpret_cast<idEditorEntity*>(listEntities.GetItemDataPtr(index));
-		if (ent) {
+	if( index != LB_ERR )
+	{
+		idEditorEntity* ent = reinterpret_cast<idEditorEntity*>( listEntities.GetItemDataPtr( index ) );
+		if( ent )
+		{
 			Select_Deselect();
 			Select_Brush( ent->brushes.onext );
 		}
 	}
-	Sys_UpdateWindows(W_ALL);
+	Sys_UpdateWindows( W_ALL );
 }
 
-void CEntityListDlg::UpdateList() {
+void CEntityListDlg::UpdateList()
+{
 	listEntities.ResetContent();
-	for ( idEditorEntity *pEntity=entities.next ; pEntity != &entities ; pEntity=pEntity->next ) {
-		int index = listEntities.AddString(pEntity->epairs.GetString( "name" ) );
-		if ( index != LB_ERR ) {
-			listEntities.SetItemDataPtr( index, (void *)pEntity );
+	for( idEditorEntity* pEntity = entities.next ; pEntity != &entities ; pEntity = pEntity->next )
+	{
+		int index = listEntities.AddString( pEntity->epairs.GetString( "name" ) );
+		if( index != LB_ERR )
+		{
+			listEntities.SetItemDataPtr( index, ( void* )pEntity );
 		}
 	}
 }
 
-void CEntityListDlg::OnSysCommand( UINT nID,  LPARAM lParam ) {
-	if ( nID == SC_CLOSE ) {
+void CEntityListDlg::OnSysCommand( UINT nID,  LPARAM lParam )
+{
+	if( nID == SC_CLOSE )
+	{
 		DestroyWindow();
 	}
 }
 
-void CEntityListDlg::OnCancel() {
+void CEntityListDlg::OnCancel()
+{
 	DestroyWindow();
 }
 
-BOOL CEntityListDlg::OnInitDialog() {
+BOOL CEntityListDlg::OnInitDialog()
+{
 	CDialogEx::OnInitDialog();
 
 	UpdateList();
 
 	CRect rct;
-	m_lstEntity.GetClientRect(rct);
-	m_lstEntity.InsertColumn(0, "Key", LVCFMT_LEFT, rct.Width() / 2);
-	m_lstEntity.InsertColumn(1, "Value", LVCFMT_LEFT, rct.Width() / 2);
-	m_lstEntity.DeleteColumn(2);
-	UpdateData(FALSE);
+	m_lstEntity.GetClientRect( rct );
+	m_lstEntity.InsertColumn( 0, "Key", LVCFMT_LEFT, rct.Width() / 2 );
+	m_lstEntity.InsertColumn( 1, "Value", LVCFMT_LEFT, rct.Width() / 2 );
+	m_lstEntity.DeleteColumn( 2 );
+	UpdateData( FALSE );
 
 	return TRUE;
 }
 
-void CEntityListDlg::OnClose() {
+void CEntityListDlg::OnClose()
+{
 	DestroyWindow();
 }
 
-void CEntityListDlg::OnLbnSelchangeListEntities() {
+void CEntityListDlg::OnLbnSelchangeListEntities()
+{
 	int index = listEntities.GetCurSel();
-	if ( index != LB_ERR ) {
+	if( index != LB_ERR )
+	{
 		m_lstEntity.DeleteAllItems();
-		idEditorEntity *pEntity = reinterpret_cast<idEditorEntity *>( listEntities.GetItemDataPtr(index) );
-		if (pEntity) {
+		idEditorEntity* pEntity = reinterpret_cast<idEditorEntity*>( listEntities.GetItemDataPtr( index ) );
+		if( pEntity )
+		{
 			int count = pEntity->epairs.GetNumKeyVals();
-			for ( int i = 0; i < count; i++ ) {
-				int nParent = m_lstEntity.InsertItem( 0, pEntity->epairs.GetKeyVal(i)->GetKey() );
-				m_lstEntity.SetItem( nParent, 1, LVIF_TEXT, pEntity->epairs.GetKeyVal(i)->GetValue(), 0, 0, 0, (LPARAM)(pEntity) );
+			for( int i = 0; i < count; i++ )
+			{
+				int nParent = m_lstEntity.InsertItem( 0, pEntity->epairs.GetKeyVal( i )->GetKey() );
+				m_lstEntity.SetItem( nParent, 1, LVIF_TEXT, pEntity->epairs.GetKeyVal( i )->GetValue(), 0, 0, 0, ( LPARAM )( pEntity ) );
 			}
 		}
 	}
 }
 
-void CEntityListDlg::OnLbnDblclkListEntities() {
+void CEntityListDlg::OnLbnDblclkListEntities()
+{
 	OnSelect();
 }

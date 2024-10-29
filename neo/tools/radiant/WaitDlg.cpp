@@ -33,39 +33,43 @@ If you have questions concerning this license or the applicable additional terms
 #include "WaitDlg.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
 // CWaitDlg dialog
 
-CWaitDlg::CWaitDlg( CWnd *pParent, const char *msg )
-	: CDialogEx( CWaitDlg::IDD, pParent ) {
+CWaitDlg::CWaitDlg( CWnd* pParent, const char* msg )
+	: CDialogEx( CWaitDlg::IDD, pParent )
+{
 	waitStr = msg;
 	cancelPressed = false;
-	Create(CWaitDlg::IDD);
+	Create( CWaitDlg::IDD );
 }
 
-CWaitDlg::~CWaitDlg() {
-	g_pParentWnd->SetBusy(false);
+CWaitDlg::~CWaitDlg()
+{
+	g_pParentWnd->SetBusy( false );
 }
 
-void CWaitDlg::DoDataExchange( CDataExchange *pDX ) {
-	CDialogEx::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_WAITSTR, waitStr);
-	DDX_Control(pDX, IDD_WAITDLG_PROGRESS, m_progress);
+void CWaitDlg::DoDataExchange( CDataExchange* pDX )
+{
+	CDialogEx::DoDataExchange( pDX );
+	DDX_Text( pDX, IDC_WAITSTR, waitStr );
+	DDX_Control( pDX, IDD_WAITDLG_PROGRESS, m_progress );
 }
 
-BEGIN_MESSAGE_MAP(CWaitDlg, CDialogEx)
+BEGIN_MESSAGE_MAP( CWaitDlg, CDialogEx )
 END_MESSAGE_MAP()
 
 // CWaitDlg message handlers
 
-BOOL CWaitDlg::OnInitDialog() {
+BOOL CWaitDlg::OnInitDialog()
+{
 	CDialogEx::OnInitDialog();
 	//GetDlgItem(IDC_WAITSTR)->SetWindowText(waitStr);
-	GetDlgItem(IDC_WAITSTR)->SetFocus();
-	UpdateData(FALSE);
-	ShowWindow(SW_SHOW);
+	GetDlgItem( IDC_WAITSTR )->SetFocus();
+	UpdateData( FALSE );
+	ShowWindow( SW_SHOW );
 
 	// cancel disabled by default
 	AllowCancel( false );
@@ -73,47 +77,59 @@ BOOL CWaitDlg::OnInitDialog() {
 	return TRUE;
 }
 
-void CWaitDlg::SetText( const char *msg, float percent, bool append ) {
-	if ( append ) {
+void CWaitDlg::SetText( const char* msg, float percent, bool append )
+{
+	if( append )
+	{
 		waitStr = text;
 		waitStr += "\r\n";
 		waitStr += msg;
-	} else {
+	}
+	else
+	{
 		waitStr = msg;
 		text = msg;
 	}
-	
-	m_progress.SetRange(0, 100);
-	m_progress.SetPos(percent * 100);
 
-	UpdateData(FALSE);
+	m_progress.SetRange( 0, 100 );
+	m_progress.SetPos( percent * 100 );
+
+	UpdateData( FALSE );
 	Invalidate();
 	UpdateWindow();
-	ShowWindow (SW_SHOWNORMAL);
+	ShowWindow( SW_SHOWNORMAL );
 }
 
-void CWaitDlg::AllowCancel( bool enable ) {
+void CWaitDlg::AllowCancel( bool enable )
+{
 	// this shows or hides the Cancel button
-	CWnd *pCancelButton = GetDlgItem (IDCANCEL);
-	ASSERT (pCancelButton);
-	if ( enable ) {
-		pCancelButton->ShowWindow (SW_NORMAL);
-	} else {
-		pCancelButton->ShowWindow (SW_HIDE);
+	CWnd* pCancelButton = GetDlgItem( IDCANCEL );
+	ASSERT( pCancelButton );
+	if( enable )
+	{
+		pCancelButton->ShowWindow( SW_NORMAL );
+	}
+	else
+	{
+		pCancelButton->ShowWindow( SW_HIDE );
 	}
 }
 
-bool CWaitDlg::CancelPressed( void ) {
-	MSG *msg = AfxGetCurrentMessage();			// TODO Robert fix me!!
-	while( ::PeekMessage(msg, NULL, NULL, NULL, PM_NOREMOVE) ) {
+bool CWaitDlg::CancelPressed( void )
+{
+	MSG* msg = AfxGetCurrentMessage();			// TODO Robert fix me!!
+	while( ::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) )
+	{
 		// pump message
-		if ( !AfxGetApp()->PumpMessage() ) {
+		if( !AfxGetApp()->PumpMessage() )
+		{
 		}
 	}
 
 	return cancelPressed;
 }
 
-void CWaitDlg::OnCancel() {
+void CWaitDlg::OnCancel()
+{
 	cancelPressed = true;
 }

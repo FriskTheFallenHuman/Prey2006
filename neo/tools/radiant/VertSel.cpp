@@ -35,23 +35,29 @@ If you have questions concerning this license or the applicable additional terms
  =======================================================================================================================
  =======================================================================================================================
  */
-static int FindPoint(idVec3 point) {
+static int FindPoint( idVec3 point )
+{
 	int i, j;
 
-	for (i = 0; i < g_qeglobals.d_numpoints; i++) {
-		for (j = 0; j < 3; j++) {
-			if (idMath::Fabs(point[j] - g_qeglobals.d_points[i][j]) > 0.1) {
+	for( i = 0; i < g_qeglobals.d_numpoints; i++ )
+	{
+		for( j = 0; j < 3; j++ )
+		{
+			if( idMath::Fabs( point[j] - g_qeglobals.d_points[i][j] ) > 0.1 )
+			{
 				break;
 			}
 		}
 
-		if (j == 3) {
+		if( j == 3 )
+		{
 			return i;
 		}
 	}
 
-	VectorCopy(point, g_qeglobals.d_points[g_qeglobals.d_numpoints]);
-	if (g_qeglobals.d_numpoints < MAX_POINTS - 1) {
+	VectorCopy( point, g_qeglobals.d_points[g_qeglobals.d_numpoints] );
+	if( g_qeglobals.d_numpoints < MAX_POINTS - 1 )
+	{
 		g_qeglobals.d_numpoints++;
 	}
 
@@ -62,11 +68,14 @@ static int FindPoint(idVec3 point) {
  =======================================================================================================================
  =======================================================================================================================
  */
-static int FindEdge(int p1, int p2, face_t* f) {
+static int FindEdge( int p1, int p2, face_t* f )
+{
 	int i;
 
-	for (i = 0; i < g_qeglobals.d_numedges; i++) {
-		if (g_qeglobals.d_edges[i].p1 == p2 && g_qeglobals.d_edges[i].p2 == p1) {
+	for( i = 0; i < g_qeglobals.d_numedges; i++ )
+	{
+		if( g_qeglobals.d_edges[i].p1 == p2 && g_qeglobals.d_edges[i].p2 == p1 )
+		{
 			g_qeglobals.d_edges[i].f2 = f;
 			return i;
 		}
@@ -76,27 +85,32 @@ static int FindEdge(int p1, int p2, face_t* f) {
 	g_qeglobals.d_edges[g_qeglobals.d_numedges].p2 = p2;
 	g_qeglobals.d_edges[g_qeglobals.d_numedges].f1 = f;
 
-	if (g_qeglobals.d_numedges < MAX_EDGES - 1) {
+	if( g_qeglobals.d_numedges < MAX_EDGES - 1 )
+	{
 		g_qeglobals.d_numedges++;
 	}
 
 	return g_qeglobals.d_numedges - 1;
 }
 
-static void MakeFace (idEditorBrush * b, face_t * f) {
-	idWinding	*w;
+static void MakeFace( idEditorBrush* b, face_t* f )
+{
+	idWinding*	w;
 	int			i;
 	int			pnum[128];
 
-	w = Brush_MakeFaceWinding(b, f);
-	if (!w) {
+	w = Brush_MakeFaceWinding( b, f );
+	if( !w )
+	{
 		return;
 	}
-	for (i = 0; i < w->GetNumPoints(); i++) {
-		pnum[i] = FindPoint( (*w)[i].ToVec3() );
+	for( i = 0; i < w->GetNumPoints(); i++ )
+	{
+		pnum[i] = FindPoint( ( *w )[i].ToVec3() );
 	}
-	for (i = 0; i < w->GetNumPoints(); i++) {
-		FindEdge(pnum[i], pnum[(i + 1) % w->GetNumPoints()], f);
+	for( i = 0; i < w->GetNumPoints(); i++ )
+	{
+		FindEdge( pnum[i], pnum[( i + 1 ) % w->GetNumPoints()], f );
 	}
 	delete w;
 }
@@ -105,50 +119,61 @@ static void MakeFace (idEditorBrush * b, face_t * f) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void SetupVertexSelection(void) {
-	face_t	*f;
-	idEditorBrush *b;
+void SetupVertexSelection( void )
+{
+	face_t*	f;
+	idEditorBrush* b;
 
 	g_qeglobals.d_numpoints = 0;
 	g_qeglobals.d_numedges = 0;
 
-	for (b = selected_brushes.next; b != &selected_brushes; b = b->next) {
-		for (f = b->brush_faces; f; f = f->next) {
-			MakeFace(b, f);
+	for( b = selected_brushes.next; b != &selected_brushes; b = b->next )
+	{
+		for( f = b->brush_faces; f; f = f->next )
+		{
+			MakeFace( b, f );
 		}
 	}
 }
 
-static void SelectFaceEdge (idEditorBrush * b, face_t * f, int p1, int p2) {
-	idWinding	*w;
+static void SelectFaceEdge( idEditorBrush* b, face_t* f, int p1, int p2 )
+{
+	idWinding*	w;
 	int			i, j, k;
 	int			pnum[128];
 
-	w = Brush_MakeFaceWinding(b, f);
-	if (!w) {
+	w = Brush_MakeFaceWinding( b, f );
+	if( !w )
+	{
 		return;
 	}
-	for (i = 0; i < w->GetNumPoints(); i++) {
-		pnum[i] = FindPoint( (*w)[i].ToVec3() );
+	for( i = 0; i < w->GetNumPoints(); i++ )
+	{
+		pnum[i] = FindPoint( ( *w )[i].ToVec3() );
 	}
-	for (i = 0; i < w->GetNumPoints(); i++) {
-		if (pnum[i] == p1 && pnum[(i + 1) % w->GetNumPoints()] == p2) {
-			VectorCopy(g_qeglobals.d_points[pnum[i]], f->planepts[0]);
-			VectorCopy(g_qeglobals.d_points[pnum[(i + 1) % w->GetNumPoints()]], f->planepts[1]);
-			VectorCopy(g_qeglobals.d_points[pnum[(i + 2) % w->GetNumPoints()]], f->planepts[2]);
-			for (j = 0; j < 3; j++) {
-				for (k = 0; k < 3; k++) {
+	for( i = 0; i < w->GetNumPoints(); i++ )
+	{
+		if( pnum[i] == p1 && pnum[( i + 1 ) % w->GetNumPoints()] == p2 )
+		{
+			VectorCopy( g_qeglobals.d_points[pnum[i]], f->planepts[0] );
+			VectorCopy( g_qeglobals.d_points[pnum[( i + 1 ) % w->GetNumPoints()]], f->planepts[1] );
+			VectorCopy( g_qeglobals.d_points[pnum[( i + 2 ) % w->GetNumPoints()]], f->planepts[2] );
+			for( j = 0; j < 3; j++ )
+			{
+				for( k = 0; k < 3; k++ )
+				{
 					f->planepts[j][k] =
-					floor(f->planepts[j][k] / g_qeglobals.d_gridsize + 0.5) * g_qeglobals.d_gridsize;
+						floor( f->planepts[j][k] / g_qeglobals.d_gridsize + 0.5 ) * g_qeglobals.d_gridsize;
 				}
 			}
-			AddPlanept(&f->planepts[0]);
-			AddPlanept(&f->planepts[1]);
+			AddPlanept( &f->planepts[0] );
+			AddPlanept( &f->planepts[1] );
 			break;
 		}
 	}
-	if ( i == w->GetNumPoints() ) {
-		Sys_Status("SelectFaceEdge: failed\n");
+	if( i == w->GetNumPoints() )
+	{
+		Sys_Status( "SelectFaceEdge: failed\n" );
 	}
 	delete w;
 }
@@ -157,19 +182,22 @@ static void SelectFaceEdge (idEditorBrush * b, face_t * f, int p1, int p2) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void SelectEdgeByRay(idVec3 org, idVec3 dir) {
+void SelectEdgeByRay( idVec3 org, idVec3 dir )
+{
 	int		i, j, besti;
 	float	d, bestd;
 	idVec3	mid, temp;
-	pedge_t *e;
+	pedge_t* e;
 
 	// find the edge closest to the ray
 	besti = -1;
 	bestd = 8;
 
-	for (i = 0; i < g_qeglobals.d_numedges; i++) {
-		for (j = 0; j < 3; j++) {
-			mid[j] = 0.5 * (g_qeglobals.d_points[g_qeglobals.d_edges[i].p1][j] + g_qeglobals.d_points[g_qeglobals.d_edges[i].p2][j]);
+	for( i = 0; i < g_qeglobals.d_numedges; i++ )
+	{
+		for( j = 0; j < 3; j++ )
+		{
+			mid[j] = 0.5 * ( g_qeglobals.d_points[g_qeglobals.d_edges[i].p1][j] + g_qeglobals.d_points[g_qeglobals.d_edges[i].p2][j] );
 		}
 
 		temp = mid - org;
@@ -177,18 +205,20 @@ void SelectEdgeByRay(idVec3 org, idVec3 dir) {
 		temp = org + d * dir;
 		temp = mid - temp;
 		d = temp.Length();
-		if ( d < bestd ) {
+		if( d < bestd )
+		{
 			bestd = d;
 			besti = i;
 		}
 	}
 
-	if (besti == -1) {
-		Sys_Status("Click didn't hit an edge\n");
+	if( besti == -1 )
+	{
+		Sys_Status( "Click didn't hit an edge\n" );
 		return;
 	}
 
-	Sys_Status("hit edge\n");
+	Sys_Status( "hit edge\n" );
 
 	//
 	// make the two faces that border the edge use the two edge points as primary drag
@@ -197,9 +227,10 @@ void SelectEdgeByRay(idVec3 org, idVec3 dir) {
 	g_qeglobals.d_num_move_points = 0;
 	e = &g_qeglobals.d_edges[besti];
 
-	for (idEditorBrush * b = selected_brushes.next; b != &selected_brushes; b = b->next) {
-		SelectFaceEdge(b, e->f1, e->p1, e->p2);
-		SelectFaceEdge(b, e->f2, e->p2, e->p1);
+	for( idEditorBrush* b = selected_brushes.next; b != &selected_brushes; b = b->next )
+	{
+		SelectFaceEdge( b, e->f1, e->p1, e->p2 );
+		SelectFaceEdge( b, e->f2, e->p2, e->p1 );
 	}
 }
 
@@ -207,7 +238,8 @@ void SelectEdgeByRay(idVec3 org, idVec3 dir) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void SelectVertexByRay(idVec3 org, idVec3 dir) {
+void SelectVertexByRay( idVec3 org, idVec3 dir )
+{
 	int		i, besti;
 	float	d, bestd;
 	idVec3	temp;
@@ -217,36 +249,40 @@ void SelectVertexByRay(idVec3 org, idVec3 dir) {
 	besti = -1;
 	bestd = 8 / scale / 2;
 
-	for (i = 0; i < g_qeglobals.d_numpoints; i++) {
+	for( i = 0; i < g_qeglobals.d_numpoints; i++ )
+	{
 		temp = g_qeglobals.d_points[i] - org;
 		d = temp * dir;
 		temp = org + d * dir;
 		temp = g_qeglobals.d_points[i] - temp;
 		d = temp.Length();
-		if ( d < bestd ) {
+		if( d < bestd )
+		{
 			bestd = d;
 			besti = i;
 		}
 	}
 
-	if (besti == -1 || bestd > 8 / scale / 2 ) {
-		Sys_Status("Click didn't hit a vertex\n");
+	if( besti == -1 || bestd > 8 / scale / 2 )
+	{
+		Sys_Status( "Click didn't hit a vertex\n" );
 		return;
 	}
 
-	Sys_Status("hit vertex\n");
+	Sys_Status( "hit vertex\n" );
 	g_qeglobals.d_move_points[g_qeglobals.d_num_move_points++] = &g_qeglobals.d_points[besti];
 
 	// SelectVertex (besti);
 }
 
-extern void AddPatchMovePoint(idVec3 v, bool bMulti, bool bFull);
+extern void AddPatchMovePoint( idVec3 v, bool bMulti, bool bFull );
 
 /*
  =======================================================================================================================
  =======================================================================================================================
  */
-void SelectCurvePointByRay(const idVec3 &org, const idVec3 &dir, int buttons) {
+void SelectCurvePointByRay( const idVec3& org, const idVec3& dir, int buttons )
+{
 	int		i, besti;
 	float	d, bestd;
 	idVec3	temp;
@@ -257,23 +293,27 @@ void SelectCurvePointByRay(const idVec3 &org, const idVec3 &dir, int buttons) {
 	bestd = 8 / scale / 2;
 	//bestd = 8;
 
-	for (i = 0; i < g_qeglobals.d_numpoints; i++) {
+	for( i = 0; i < g_qeglobals.d_numpoints; i++ )
+	{
 		temp = g_qeglobals.d_points[i] - org;
 		d = temp * dir;
 		temp = org + d * dir;
 		temp = g_qeglobals.d_points[i] - temp;
 		d = temp.Length();
-		if ( d <= bestd ) {
+		if( d <= bestd )
+		{
 			bestd = d;
 			besti = i;
 		}
 	}
 
-	if (besti == -1) {
-		if (g_pParentWnd->ActiveXY()->AreaSelectOK()) {
+	if( besti == -1 )
+	{
+		if( g_pParentWnd->ActiveXY()->AreaSelectOK() )
+		{
 			g_qeglobals.d_select_mode = sel_area;
-			VectorCopy(org, g_qeglobals.d_vAreaTL);
-			VectorCopy(org, g_qeglobals.d_vAreaBR);
+			VectorCopy( org, g_qeglobals.d_vAreaTL );
+			VectorCopy( org, g_qeglobals.d_vAreaBR );
 		}
 
 		return;

@@ -2,7 +2,7 @@
 #define AFX_PROPTREEITEMCOLOR_H__50C09AC0_1F02_4150_AA6A_5151345D87A2__INCLUDED_
 
 #if _MSC_VER > 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER > 1000
 // PropTreeItemColor.h : header file
 //
@@ -37,13 +37,13 @@ public:
 // Attributes
 public:
 	// The attribute area needs drawing
-	virtual void DrawAttribute(CDC* pDC, const RECT& rc);
+	virtual void DrawAttribute( CDC* pDC, const RECT& rc );
 
 	// Retrieve the item's attribute value
 	virtual LPARAM GetItemValue();
 
 	// Set the item's attribute value
-	virtual void SetItemValue(LPARAM lParam);
+	virtual void SetItemValue( LPARAM lParam );
 
 	// Called when attribute area has changed size
 	virtual void OnMove();
@@ -55,9 +55,9 @@ public:
 	virtual void OnCommit();
 
 	// Called to activate the item
-	virtual void OnActivate(int activateType, CPoint point);
+	virtual void OnActivate( int activateType, CPoint point );
 
-	static void SetDefaultColorsList(COLORREF* pColors);
+	static void SetDefaultColorsList( COLORREF* pColors );
 
 protected:
 	COLORREF			m_cColor;
@@ -80,12 +80,12 @@ public:
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CPropTreeItemColor)
-	afx_msg void OnKillFocus(CWnd* pNewWnd);
+	afx_msg void OnKillFocus( CWnd* pNewWnd );
 	afx_msg void OnPaint();
 	afx_msg void OnClose();
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnMouseMove( UINT nFlags, CPoint point );
+	afx_msg BOOL OnSetCursor( CWnd* pWnd, UINT nHitTest, UINT message );
+	afx_msg void OnLButtonDown( UINT nFlags, CPoint point );
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

@@ -33,9 +33,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "shlobj.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
+	#define new DEBUG_NEW
+	#undef THIS_FILE
+	static char THIS_FILE[] = __FILE__;
 #endif
 
 #define MOUSE_KEY				"radiant_MouseButtons"
@@ -102,14 +102,14 @@ static char THIS_FILE[] = __FILE__;
 // CPrefsDlg dialog
 
 
-CPrefsDlg::CPrefsDlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CPrefsDlg::IDD, pParent)
+CPrefsDlg::CPrefsDlg( CWnd* pParent /*=NULL*/ )
+	: CDialogEx( CPrefsDlg::IDD, pParent )
 {
 	//{{AFX_DATA_INIT(CPrefsDlg)
 	m_bVertex = FALSE;
 	m_bAutoSave = TRUE;
 	m_bNewApplyHandling = FALSE;
-	m_strAutoSave = _T("5");
+	m_strAutoSave = _T( "5" );
 	m_bLoadLastMap = FALSE;
 	m_bSnapShots = FALSE;
 	m_fTinySize = 0.5;
@@ -127,8 +127,8 @@ CPrefsDlg::CPrefsDlg(CWnd* pParent /*=NULL*/)
 	m_bHiColorTextures = TRUE;
 	m_bChaseMouse = FALSE;
 	//m_bNoStipple = FALSE;
-	m_strMaps = _T("");
-	m_strModels = _T("");
+	m_strMaps = _T( "" );
+	m_strModels = _T( "" );
 	m_bNewMapFormat = TRUE;
 	//}}AFX_DATA_INIT
 	//LoadPrefs();
@@ -142,38 +142,38 @@ CPrefsDlg::CPrefsDlg(CWnd* pParent /*=NULL*/)
 	m_nUndoLevels = 63;
 }
 
-void CPrefsDlg::DoDataExchange(CDataExchange* pDX)
+void CPrefsDlg::DoDataExchange( CDataExchange* pDX )
 {
-	CDialogEx::DoDataExchange(pDX);
+	CDialogEx::DoDataExchange( pDX );
 	//{{AFX_DATA_MAP(CPrefsDlg)
-	DDX_Control(pDX, IDC_SPIN_UNDO, m_wndUndoSpin);
-	DDX_Control(pDX, IDC_SPIN_POINTSIZE, m_wndFontSpin);
-	DDX_Control(pDX, IDC_SLIDER_CAMSPEED, m_wndCamSpeed);
-	DDX_Control(pDX, IDC_SPIN_AUTOSAVE, m_wndSpin);
-	DDX_Check(pDX, IDC_CHECK_AUTOSAVE, m_bAutoSave);
-	DDX_Text(pDX, IDC_EDIT_AUTOSAVE, m_strAutoSave);
-	DDX_Check(pDX, IDC_CHECK_LOADLASTMAP, m_bLoadLastMap);
-	DDX_Check(pDX, IDC_CHECK_SNAPSHOTS, m_bSnapShots);
-	DDX_Text(pDX, IDC_EDIT_STATUSPOINTSIZE, m_nStatusSize);
-	DDV_MinMaxInt(pDX, m_nStatusSize, 2, 14);
-	DDX_Check(pDX, IDC_CHECK_LIGHTDRAW, m_bNewLightDraw);
-	DDX_Check(pDX, IDC_CHECK_ALTDRAG, m_bALTEdge);
-	DDX_Check(pDX, IDC_CHECK_SNAPT, m_bSnapTToGrid);
-	DDX_Check(pDX, IDC_CHECK_SIZEPAINT, m_bSizePaint);
-	DDX_Check(pDX, IDC_CHECK_NOCLAMP, m_bNoClamp);
-	DDX_Text(pDX, IDC_EDIT_ROTATION, m_nRotation);
-	DDX_Check(pDX, IDC_CHECK_HICOLOR, m_bHiColorTextures);
-	DDX_Check(pDX, IDC_CHECK_MOUSECHASE, m_bChaseMouse);
+	DDX_Control( pDX, IDC_SPIN_UNDO, m_wndUndoSpin );
+	DDX_Control( pDX, IDC_SPIN_POINTSIZE, m_wndFontSpin );
+	DDX_Control( pDX, IDC_SLIDER_CAMSPEED, m_wndCamSpeed );
+	DDX_Control( pDX, IDC_SPIN_AUTOSAVE, m_wndSpin );
+	DDX_Check( pDX, IDC_CHECK_AUTOSAVE, m_bAutoSave );
+	DDX_Text( pDX, IDC_EDIT_AUTOSAVE, m_strAutoSave );
+	DDX_Check( pDX, IDC_CHECK_LOADLASTMAP, m_bLoadLastMap );
+	DDX_Check( pDX, IDC_CHECK_SNAPSHOTS, m_bSnapShots );
+	DDX_Text( pDX, IDC_EDIT_STATUSPOINTSIZE, m_nStatusSize );
+	DDV_MinMaxInt( pDX, m_nStatusSize, 2, 14 );
+	DDX_Check( pDX, IDC_CHECK_LIGHTDRAW, m_bNewLightDraw );
+	DDX_Check( pDX, IDC_CHECK_ALTDRAG, m_bALTEdge );
+	DDX_Check( pDX, IDC_CHECK_SNAPT, m_bSnapTToGrid );
+	DDX_Check( pDX, IDC_CHECK_SIZEPAINT, m_bSizePaint );
+	DDX_Check( pDX, IDC_CHECK_NOCLAMP, m_bNoClamp );
+	DDX_Text( pDX, IDC_EDIT_ROTATION, m_nRotation );
+	DDX_Check( pDX, IDC_CHECK_HICOLOR, m_bHiColorTextures );
+	DDX_Check( pDX, IDC_CHECK_MOUSECHASE, m_bChaseMouse );
 	//DDX_Check(pDX, IDC_CHECK_NOSTIPPLE, m_bNoStipple);
-	DDX_Text(pDX, IDC_EDIT_UNDOLEVELS, m_nUndoLevels);
-	DDV_MinMaxInt(pDX, m_nUndoLevels, 1, 64);
-	DDX_Text(pDX, IDC_EDIT_MAPS, m_strMaps);
-	DDX_Check(pDX, IDC_CHECK_NEWMAPFORMAT, m_bNewMapFormat);
+	DDX_Text( pDX, IDC_EDIT_UNDOLEVELS, m_nUndoLevels );
+	DDV_MinMaxInt( pDX, m_nUndoLevels, 1, 64 );
+	DDX_Text( pDX, IDC_EDIT_MAPS, m_strMaps );
+	DDX_Check( pDX, IDC_CHECK_NEWMAPFORMAT, m_bNewMapFormat );
 	//}}AFX_DATA_MAP
 }
 
 
-BEGIN_MESSAGE_MAP(CPrefsDlg, CDialogEx)
+BEGIN_MESSAGE_MAP( CPrefsDlg, CDialogEx )
 	//{{AFX_MSG_MAP(CPrefsDlg)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -184,107 +184,130 @@ END_MESSAGE_MAP()
 BOOL CPrefsDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
-	m_wndSpin.SetRange(1,60);
-	m_wndCamSpeed.SetRange(10, 5000);
-	m_wndCamSpeed.SetPos(m_nMoveSpeed);
+	m_wndSpin.SetRange( 1, 60 );
+	m_wndCamSpeed.SetRange( 10, 5000 );
+	m_wndCamSpeed.SetPos( m_nMoveSpeed );
 
-	m_wndFontSpin.SetRange(4,24);
-	m_wndUndoSpin.SetRange(1,64);
+	m_wndFontSpin.SetRange( 4, 24 );
+	m_wndUndoSpin.SetRange( 1, 64 );
 
-	GetDlgItem(IDC_CHECK_HICOLOR)->EnableWindow(TRUE);
-	GetDlgItem(IDC_CHECK_NOCLAMP)->EnableWindow(TRUE);
+	GetDlgItem( IDC_CHECK_HICOLOR )->EnableWindow( TRUE );
+	GetDlgItem( IDC_CHECK_NOCLAMP )->EnableWindow( TRUE );
 
 	//GetDlgItem(IDC_CHECK_NOCLAMP)->EnableWindow(FALSE);
 
 	return TRUE;	// return TRUE unless you set the focus to a control
-					// EXCEPTION: OCX Property Pages should return FALSE
+	// EXCEPTION: OCX Property Pages should return FALSE
 }
 void CPrefsDlg::OnOK()
 {
 
 	m_nMoveSpeed = m_wndCamSpeed.GetPos();
-	m_nAngleSpeed = (float)m_nMoveSpeed * 0.50;
+	m_nAngleSpeed = ( float )m_nMoveSpeed * 0.50;
 
 	SavePrefs();
 
-	if ( g_pParentWnd ) {
+	if( g_pParentWnd )
+	{
 		g_pParentWnd->SetGridStatus();
 	}
-	Sys_UpdateWindows(W_ALL);
-	Undo_SetMaxSize(m_nUndoLevels);
+	Sys_UpdateWindows( W_ALL );
+	Undo_SetMaxSize( m_nUndoLevels );
 	CDialogEx::OnOK();
 }
 
-int GetCvarInt(const char *name, const int def) {
-	idCVar *cvar = cvarSystem->Find( name );
-	if ( cvar ) {
+int GetCvarInt( const char* name, const int def )
+{
+	idCVar* cvar = cvarSystem->Find( name );
+	if( cvar )
+	{
 		return cvar->GetInteger();
-	} else {
+	}
+	else
+	{
 		return def;
 	}
 }
 
-const char *GetCvarString( const char *name, const char *def ) {
-	idCVar *cvar = cvarSystem->Find( name );
-	if ( cvar ) {
+const char* GetCvarString( const char* name, const char* def )
+{
+	idCVar* cvar = cvarSystem->Find( name );
+	if( cvar )
+	{
 		return cvar->GetString();
-	} else {
+	}
+	else
+	{
 		return def;
 	}
 }
 
 static const char hexDigits[] = "0123456789ABCDEF";
 
-void SetCvarInt( const char *name, const int value ) {
+void SetCvarInt( const char* name, const int value )
+{
 	cvarSystem->SetCVarInteger( name, value, CVAR_TOOL );
 }
 
-void SetCvarString( const char *name, const char *value ) {
+void SetCvarString( const char* name, const char* value )
+{
 	cvarSystem->SetCVarString( name, value, CVAR_TOOL );
 }
 
-void SetCvarBinary(const char *name, void *pv, int size) {
-	unsigned char *in = new unsigned char[size];
+void SetCvarBinary( const char* name, void* pv, int size )
+{
+	unsigned char* in = new unsigned char[size];
 	idStr s;
 	memset( in, 0, size );
 	memcpy( in, pv, size );
-	for ( int i = 0; i < size; i++ ) {
+	for( int i = 0; i < size; i++ )
+	{
 		s += hexDigits[in[i] >> 4];
 		s += hexDigits[in[i] & 0x0f];
 	}
 	delete []in;
-	SetCvarString(name, s);
+	SetCvarString( name, s );
 }
 
-bool GetCvarBinary( const char *name, void *pv, int size ) {
+bool GetCvarBinary( const char* name, void* pv, int size )
+{
 	bool ret = false;
-	unsigned char *out = new unsigned char[size];
+	unsigned char* out = new unsigned char[size];
 	idStr s = GetCvarString( name, "" );
-	if ( s.Length() / 2 == size ) {
+	if( s.Length() / 2 == size )
+	{
 		int j = 0;
-		for ( int i = 0; i < s.Length(); i += 2 ) {
+		for( int i = 0; i < s.Length(); i += 2 )
+		{
 			char c;
-			if (s[i] > '9') {
+			if( s[i] > '9' )
+			{
 				c = s[i] - 'A' + 0x0a;
-			} else {
+			}
+			else
+			{
 				c = s[i] - 0x30;
 			}
 			c <<= 4;
-			if (s[i+1] > '9') {
-				c |= s[i+1] - 'A' + 0x0a;
-			} else {
-				c |= s[i+1] - 0x30;
+			if( s[i + 1] > '9' )
+			{
+				c |= s[i + 1] - 'A' + 0x0a;
+			}
+			else
+			{
+				c |= s[i + 1] - 0x30;
 			}
 			out[j++] = c;
 		}
-		memcpy(pv, out, size);
+		memcpy( pv, out, size );
 		ret = true;
 	}
 	delete []out;
 	return ret;
 }
 
-void CPrefsDlg::LoadPrefs() {
+void CPrefsDlg::LoadPrefs()
+{
 	CString strBuff;
 	m_nMouseButtons = 3;
 
@@ -299,16 +322,19 @@ void CPrefsDlg::LoadPrefs() {
 	m_bGatewayHack = GetCvarInt( HACK_KEY, 0 );
 	m_bCleanTiny = GetCvarInt( TINYBRUSH_KEY, 0 );
 	strBuff = GetCvarString( TINYSIZE_KEY, "0.5" );
-	m_fTinySize = atof(strBuff );
+	m_fTinySize = atof( strBuff );
 	m_nAutoSave = GetCvarInt( AUTOSAVETIME_KEY, 5 );
-	if ( m_nAutoSave <= 0 ) { m_nAutoSave = 1; }
-	m_strAutoSave.Format("%i", m_nAutoSave );
+	if( m_nAutoSave <= 0 )
+	{
+		m_nAutoSave = 1;
+	}
+	m_strAutoSave.Format( "%i", m_nAutoSave );
 	m_bSnapShots = GetCvarInt( SNAPSHOT_KEY, 0 );
 	m_nStatusSize = GetCvarInt( STATUS_KEY, 10 );
 	m_nMoveSpeed = GetCvarInt( MOVESPEED_KEY, 400 );
 	m_nAngleSpeed = GetCvarInt( ANGLESPEED_KEY, 300 );
 	m_bNewLightDraw = GetCvarInt( LIGHTDRAW_KEY, 1 );
-	m_bCubicClipping = ( GetCvarInt( CUBICCLIP_KEY, 1) != 0  );
+	m_bCubicClipping = ( GetCvarInt( CUBICCLIP_KEY, 1 ) != 0 );
 	m_nCubicScale = GetCvarInt( CUBICSCALE_KEY, 13 );
 	m_bALTEdge = GetCvarInt( ALTEDGE_KEY, 0 );
 	m_bSnapTToGrid = GetCvarInt( SNAPT_KEY, 0 );
@@ -330,14 +356,17 @@ void CPrefsDlg::LoadPrefs() {
 	m_strModels = GetCvarString( MODELS_KEY, "" );
 	m_bNewMapFormat = GetCvarInt( NEWMAPFORMAT_KEY, 1 );
 
-	if ( m_bRunBefore == FALSE ) {
+	if( m_bRunBefore == FALSE )
+	{
 		SetGamePrefs();
 	}
 }
 
-void CPrefsDlg::SavePrefs() {
-	if ( GetSafeHwnd() ) {
-		UpdateData(TRUE);
+void CPrefsDlg::SavePrefs()
+{
+	if( GetSafeHwnd() )
+	{
+		UpdateData( TRUE );
 	}
 
 	m_nMouseButtons = 3;
@@ -380,7 +409,8 @@ void CPrefsDlg::SavePrefs() {
 	common->WriteFlaggedCVarsToFile( "editor.cfg", CVAR_TOOL, "sett" );
 }
 
-void CPrefsDlg::SetGamePrefs() {
+void CPrefsDlg::SetGamePrefs()
+{
 	m_bHiColorTextures = TRUE;
 	SavePrefs();
 }

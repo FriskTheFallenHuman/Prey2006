@@ -35,36 +35,36 @@ If you have questions concerning this license or the applicable additional terms
 #include "../../ui/UserInterfaceLocal.h"
 
 #ifndef GEOPTIONS_H_
-#include "GEOptions.h"
+	#include "GEOptions.h"
 #endif // GEOPTIONS_H_
 
 #ifndef GEWINDOWWRAPPER_H_
-#include "GEWindowWrapper.h"
+	#include "GEWindowWrapper.h"
 #endif // GEWINDOWWRAPPER_H_
 
 #ifndef GEWORKSPACE_H_
-#include "GEWorkspace.h"
+	#include "GEWorkspace.h"
 #endif // GEWORKSPACE_H_
 
 #ifndef GENAVIGATOR_H_
-#include "GENavigator.h"
+	#include "GENavigator.h"
 #endif // GENAVIGATOR_H_
 
 #ifndef GEPROPERTIES_H_
-#include "GEProperties.h"
+	#include "GEProperties.h"
 #endif // GEPROPERTIES_H_
 
 #ifndef GETRANSFORMER_H_
-#include "GETransformer.h"
+	#include "GETransformer.h"
 #endif // GETRANSFORMER_H_
 
 #ifndef GESTATUSBAR_H_
-#include "GEStatusBar.h"
+	#include "GEStatusBar.h"
 #endif // GESTATUSBAR_H_
 
 // Utility functions
-const char *StringFromVec4	( idVec4& vec );
-bool		IsExpression	( const char* s );
+const char* StringFromVec4( idVec4& vec );
+bool		IsExpression( const char* s );
 
 
 class rvGEViewer;
@@ -73,46 +73,46 @@ class rvGEApp
 {
 public:
 
-	rvGEApp ( );
-	~rvGEApp ( );
+	rvGEApp( );
+	~rvGEApp( );
 
-	bool				Initialize				( void );
-	void				RunFrame				( void );
+	bool				Initialize( void );
+	void				RunFrame( void );
 //	bool				Uninitialize			( void );
 
-	bool				TranslateAccelerator	( LPMSG msg );
+	bool				TranslateAccelerator( LPMSG msg );
 
-	rvGEWorkspace*		GetActiveWorkspace		( HWND* retwnd = NULL );
-	rvGENavigator&		GetNavigator			( void );
-	rvGEProperties&		GetProperties			( void );
-	rvGETransformer&	GetTransformer			( void );
-	rvGEOptions&		GetOptions				( void );
-	HINSTANCE			GetInstance				( void );
-	HWND				GetMDIFrame				( void );
-	HWND				GetMDIClient			( void );
-	rvGEStatusBar&		GetStatusBar			( void );
+	rvGEWorkspace*		GetActiveWorkspace( HWND* retwnd = NULL );
+	rvGENavigator&		GetNavigator( void );
+	rvGEProperties&		GetProperties( void );
+	rvGETransformer&	GetTransformer( void );
+	rvGEOptions&		GetOptions( void );
+	HINSTANCE			GetInstance( void );
+	HWND				GetMDIFrame( void );
+	HWND				GetMDIClient( void );
+	rvGEStatusBar&		GetStatusBar( void );
 
-	bool				OpenFile				( const char* filename );
-	bool				SaveFile				( const char* filename );
-	bool				NewFile					( void );
+	bool				OpenFile( const char* filename );
+	bool				SaveFile( const char* filename );
+	bool				NewFile( void );
 
-	bool				IsActive				( void );
+	bool				IsActive( void );
 
-	void				CloseViewer				( void );
+	void				CloseViewer( void );
 
-	int					ToolWindowActivate		( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
+	int					ToolWindowActivate( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
 
-	int					MessageBox				( const char* text, int flags );
+	int					MessageBox( const char* text, int flags );
 
 protected:
 
-	int						HandleCommand				( WPARAM wParam, LPARAM lParam );
-	int						HandleInitMenu				( WPARAM wParam, LPARAM lParam );
+	int						HandleCommand( WPARAM wParam, LPARAM lParam );
+	int						HandleInitMenu( WPARAM wParam, LPARAM lParam );
 
-	void					HandleCommandSave			( rvGEWorkspace* workspace, const char* filename );
+	void					HandleCommandSave( rvGEWorkspace* workspace, const char* filename );
 
-	bool					InitRecentFiles				( void );
-	void					UpdateRecentFiles			( void );
+	bool					InitRecentFiles( void );
+	void					UpdateRecentFiles( void );
 
 	HWND					mMDIFrame;
 	HWND					mMDIClient;
@@ -134,52 +134,52 @@ protected:
 
 private:
 
-	static LRESULT CALLBACK	FrameWndProc			( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
-	static LRESULT CALLBACK	MDIChildProc			( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+	static LRESULT CALLBACK	FrameWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+	static LRESULT CALLBACK	MDIChildProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
 };
 
-ID_INLINE bool rvGEApp::IsActive ( void )
+ID_INLINE bool rvGEApp::IsActive( void )
 {
 	return mMDIFrame ? true : false;
 }
 
-ID_INLINE rvGENavigator& rvGEApp::GetNavigator ( void )
+ID_INLINE rvGENavigator& rvGEApp::GetNavigator( void )
 {
 	return mNavigator;
 }
 
-ID_INLINE rvGEProperties& rvGEApp::GetProperties ( void )
+ID_INLINE rvGEProperties& rvGEApp::GetProperties( void )
 {
 	return mProperties;
 }
 
-ID_INLINE rvGETransformer& rvGEApp::GetTransformer ( void )
+ID_INLINE rvGETransformer& rvGEApp::GetTransformer( void )
 {
 	return mTransformer;
 }
 
-ID_INLINE rvGEOptions& rvGEApp::GetOptions ( void )
+ID_INLINE rvGEOptions& rvGEApp::GetOptions( void )
 {
 	return mOptions;
 }
 
-ID_INLINE HINSTANCE rvGEApp::GetInstance ( void )
+ID_INLINE HINSTANCE rvGEApp::GetInstance( void )
 {
 	return mInstance;
 }
 
-ID_INLINE rvGEStatusBar& rvGEApp::GetStatusBar ( void )
+ID_INLINE rvGEStatusBar& rvGEApp::GetStatusBar( void )
 {
 	return mStatusBar;
 }
 
-ID_INLINE HWND rvGEApp::GetMDIFrame ( void )
+ID_INLINE HWND rvGEApp::GetMDIFrame( void )
 {
 	return mMDIFrame;
 }
 
-ID_INLINE HWND rvGEApp::GetMDIClient ( void )
+ID_INLINE HWND rvGEApp::GetMDIClient( void )
 {
 	return mMDIClient;
 }

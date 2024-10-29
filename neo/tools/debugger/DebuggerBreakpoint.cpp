@@ -30,20 +30,20 @@ If you have questions concerning this license or the applicable additional terms
 #pragma hdrstop
 
 #if defined( ID_ALLOW_TOOLS )
-#include "DebuggerApp.h"
+	#include "DebuggerApp.h"
 #endif
 #include "DebuggerBreakpoint.h"
 
 int rvDebuggerBreakpoint::mNextID = 1;
 
-rvDebuggerBreakpoint::rvDebuggerBreakpoint ( const char* filename, int linenumber, int id, bool onceOnly )
+rvDebuggerBreakpoint::rvDebuggerBreakpoint( const char* filename, int linenumber, int id, bool onceOnly )
 {
 	mFilename = filename;
 	mLineNumber = linenumber;
 	mEnabled = true;
 	mOnceOnly = onceOnly;
 
-	if ( id == -1 )
+	if( id == -1 )
 	{
 		mID = mNextID++;
 	}
@@ -53,13 +53,13 @@ rvDebuggerBreakpoint::rvDebuggerBreakpoint ( const char* filename, int linenumbe
 	}
 }
 
-rvDebuggerBreakpoint::rvDebuggerBreakpoint ( rvDebuggerBreakpoint& bp )
+rvDebuggerBreakpoint::rvDebuggerBreakpoint( rvDebuggerBreakpoint& bp )
 {
 	mFilename = bp.mFilename;
 	mEnabled = bp.mEnabled;
 	mLineNumber = bp.mLineNumber;
 }
 
-rvDebuggerBreakpoint::~rvDebuggerBreakpoint ( void )
+rvDebuggerBreakpoint::~rvDebuggerBreakpoint( void )
 {
 }

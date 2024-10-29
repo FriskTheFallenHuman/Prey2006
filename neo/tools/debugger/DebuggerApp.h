@@ -32,19 +32,19 @@ If you have questions concerning this license or the applicable additional terms
 //#include "../../framework/sync/Msg.h"
 
 #ifndef REGISTRYOPTIONS_H_
-#include "../common/RegistryOptions.h"
+	#include "../common/RegistryOptions.h"
 #endif
 
 #ifndef DEBUGGERWINDOW_H_
-#include "DebuggerWindow.h"
+	#include "DebuggerWindow.h"
 #endif
 
 #ifndef DEBUGGERMESSAGES_H_
-#include "DebuggerMessages.h"
+	#include "DebuggerMessages.h"
 #endif
 
 #ifndef DEBUGGERCLIENT_H_
-#include "DebuggerClient.h"
+	#include "DebuggerClient.h"
 #endif
 
 // These were changed to static by ID so to make it easy we just throw them
@@ -56,19 +56,19 @@ class rvDebuggerApp
 {
 public:
 
-	rvDebuggerApp ( );
+	rvDebuggerApp( );
 	~rvDebuggerApp();
 
-	bool				Initialize				( HINSTANCE hInstance );
-	int					Run						( void );
+	bool				Initialize( HINSTANCE hInstance );
+	int					Run( void );
 
-	rvRegistryOptions&	GetOptions				( void );
-	rvDebuggerClient&	GetClient				( void );
-	rvDebuggerWindow&	GetWindow				( void );
+	rvRegistryOptions&	GetOptions( void );
+	rvDebuggerClient&	GetClient( void );
+	rvDebuggerWindow&	GetWindow( void );
 
-	HINSTANCE			GetInstance				( void );
+	HINSTANCE			GetInstance( void );
 
-	bool				TranslateAccelerator	( LPMSG msg );
+	bool				TranslateAccelerator( LPMSG msg );
 
 protected:
 
@@ -80,28 +80,28 @@ protected:
 
 private:
 
-	bool	ProcessNetMessages		( void );
-	bool	ProcessWindowMessages	( void );
+	bool	ProcessNetMessages( void );
+	bool	ProcessWindowMessages( void );
 };
 
-ID_INLINE HINSTANCE rvDebuggerApp::GetInstance ( void )
+ID_INLINE HINSTANCE rvDebuggerApp::GetInstance( void )
 {
 	return mInstance;
 }
 
-ID_INLINE rvDebuggerClient& rvDebuggerApp::GetClient ( void )
+ID_INLINE rvDebuggerClient& rvDebuggerApp::GetClient( void )
 {
 	return mClient;
 }
 
-ID_INLINE rvRegistryOptions& rvDebuggerApp::GetOptions ( void )
+ID_INLINE rvRegistryOptions& rvDebuggerApp::GetOptions( void )
 {
 	return mOptions;
 }
 
-ID_INLINE rvDebuggerWindow& rvDebuggerApp::GetWindow ( void )
+ID_INLINE rvDebuggerWindow& rvDebuggerApp::GetWindow( void )
 {
-	assert ( mDebuggerWindow );
+	assert( mDebuggerWindow );
 	return *mDebuggerWindow;
 }
 

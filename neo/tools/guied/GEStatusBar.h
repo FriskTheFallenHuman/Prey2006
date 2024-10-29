@@ -32,19 +32,19 @@ class rvGEStatusBar
 {
 public:
 
-	rvGEStatusBar ( );
+	rvGEStatusBar( );
 
-	bool	Create			( HWND parent, UINT id, bool visible = true );
-	void	Resize			( int width, int height );
+	bool	Create( HWND parent, UINT id, bool visible = true );
+	void	Resize( int width, int height );
 
-	HWND	GetWindow		( void );
+	HWND	GetWindow( void );
 
-	void	SetZoom			( int zoom );
-	void	SetTriangles	( int tris );
-	void	SetSimple		( bool simple );
+	void	SetZoom( int zoom );
+	void	SetTriangles( int tris );
+	void	SetSimple( bool simple );
 
-	void	Show			( bool state );
-	void	Update			( void );
+	void	Show( bool state );
+	void	Update( void );
 
 protected:
 
@@ -54,35 +54,35 @@ protected:
 	int		mTriangles;
 };
 
-ID_INLINE HWND rvGEStatusBar::GetWindow ( void )
+ID_INLINE HWND rvGEStatusBar::GetWindow( void )
 {
 	return mWnd;
 }
 
-ID_INLINE void rvGEStatusBar::SetZoom ( int zoom )
+ID_INLINE void rvGEStatusBar::SetZoom( int zoom )
 {
-	if ( mZoom != zoom )
+	if( mZoom != zoom )
 	{
 		mZoom = zoom;
-		Update ( );
+		Update( );
 	}
 }
 
-ID_INLINE void rvGEStatusBar::SetTriangles ( int triangles )
+ID_INLINE void rvGEStatusBar::SetTriangles( int triangles )
 {
-	if ( triangles != mTriangles )
+	if( triangles != mTriangles )
 	{
 		mTriangles = triangles;
-		Update ( );
+		Update( );
 	}
 }
 
-ID_INLINE void rvGEStatusBar::SetSimple ( bool simple )
+ID_INLINE void rvGEStatusBar::SetSimple( bool simple )
 {
-	if ( mSimple != simple )
+	if( mSimple != simple )
 	{
 		mSimple = simple;
-		Update ( );
+		Update( );
 	}
 }
 

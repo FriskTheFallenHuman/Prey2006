@@ -33,19 +33,19 @@ public:
 // Attributes
 public:
 	// The non-attribute area needs drawing
-	virtual LONG DrawItem(CDC* pDC, const RECT& rc, LONG x, LONG y);
+	virtual LONG DrawItem( CDC* pDC, const RECT& rc, LONG x, LONG y );
 
 	// The attribute area needs drawing
-	virtual void DrawAttribute(CDC* pDC, const RECT& rc);
+	virtual void DrawAttribute( CDC* pDC, const RECT& rc );
 
 	// Retrieve the item's attribute value
 	virtual LPARAM GetItemValue();
 
 	// Set the item's attribute value
-	virtual void SetItemValue(LPARAM lParam);
+	virtual void SetItemValue( LPARAM lParam );
 
 	// Overrideable - Returns TRUE if the point is on the button
-	virtual BOOL HitButton(const POINT& pt);
+	virtual BOOL HitButton( const POINT& pt );
 
 	void SetButtonText( LPCSTR text );
 

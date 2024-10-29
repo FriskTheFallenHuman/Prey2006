@@ -32,9 +32,10 @@ extern void showCameraInspector();
 
 // CDlgCamera dialog
 
-class CDlgCamera : public CDialogEx {
+class CDlgCamera : public CDialogEx
+{
 public:
-	CDlgCamera( CWnd *pParent = NULL );   // standard constructor
+	CDlgCamera( CWnd* pParent = NULL );   // standard constructor
 	void setupFromCamera();
 
 	enum { IDD = IDD_DLG_CAMERA };
@@ -50,7 +51,7 @@ public:
 	int		m_editPoints;
 
 protected:
-	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 
 protected:
 	afx_msg void OnBtnAddevent();
@@ -65,7 +66,7 @@ protected:
 	virtual void OnOK();
 	afx_msg void OnDestroy();
 	afx_msg void OnApply();
-	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	afx_msg void OnHScroll( UINT nSBCode, UINT nPos, CScrollBar* pScrollBar );
 	afx_msg void OnFileNew();
 	afx_msg void OnFileOpen();
 	afx_msg void OnFileSave();

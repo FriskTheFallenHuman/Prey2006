@@ -38,7 +38,7 @@ class ConsoleView : public CFormView
 {
 
 public:
-	enum{ IDD = IDD_CONSOLE_FORM };
+	enum { IDD = IDD_CONSOLE_FORM };
 
 	CEdit			editConsole;
 	CEdit			editInput;
@@ -53,26 +53,26 @@ public:
 	virtual			~ConsoleView();
 
 	//Public Operations
-	void			AddText(const char *msg);
-	void			SetConsoleText ( const idStr& text );
-	void			ExecuteCommand ( const idStr& cmd = "" );
+	void			AddText( const char* msg );
+	void			SetConsoleText( const idStr& text );
+	void			ExecuteCommand( const idStr& cmd = "" );
 
 
 protected:
 	ConsoleView();
-	DECLARE_DYNCREATE(ConsoleView)
+	DECLARE_DYNCREATE( ConsoleView )
 
 	//CFormView Overrides
-	virtual BOOL	PreTranslateMessage(MSG* pMsg);
-	virtual void	DoDataExchange(CDataExchange* pDX);
+	virtual BOOL	PreTranslateMessage( MSG* pMsg );
+	virtual void	DoDataExchange( CDataExchange* pDX );
 	virtual void	OnInitialUpdate();
 
 	//Message Handlers
-	afx_msg void	OnSize(UINT nType, int cx, int cy);
+	afx_msg void	OnSize( UINT nType, int cx, int cy );
 	DECLARE_MESSAGE_MAP()
 
 	//Protected Operations
-	const char*		TranslateString(const char *buf);
+	const char*		TranslateString( const char* buf );
 
 
 };

@@ -41,12 +41,13 @@ If you have questions concerning this license or the applicable additional terms
 idAASFileLocal::Optimize
 ================
 */
-void idAASFileLocal::Optimize( void ) {
+void idAASFileLocal::Optimize( void )
+{
 	int i, j, k, faceNum, edgeNum, areaFirstFace, faceFirstEdge;
-	aasArea_t *area;
-	aasFace_t *face;
-	aasEdge_t *edge;
-	idReachability *reach;
+	aasArea_t* area;
+	aasFace_t* face;
+	aasEdge_t* edge;
+	idReachability* reach;
 	idList<int> vertexRemap;
 	idList<int> edgeRemap;
 	idList<int> faceRemap;
@@ -68,68 +69,83 @@ void idAASFileLocal::Optimize( void ) {
 	newFaces.SetNum( 1, false );
 	newFaceIndex.Resize( faceIndex.Num() );
 
-	for ( i = 0; i < areas.Num(); i++ ) {
+	for( i = 0; i < areas.Num(); i++ )
+	{
 		area = &areas[i];
 
 		areaFirstFace = newFaceIndex.Num();
-		for ( j = 0; j < area->numFaces; j++ ) {
+		for( j = 0; j < area->numFaces; j++ )
+		{
 			faceNum = faceIndex[area->firstFace + j];
-			face = &faces[ abs(faceNum) ];
+			face = &faces[ abs( faceNum ) ];
 
 			// store face
-			if ( !faceRemap[ abs(faceNum) ] ) {
-				faceRemap[ abs(faceNum) ] = newFaces.Num();
+			if( !faceRemap[ abs( faceNum ) ] )
+			{
+				faceRemap[ abs( faceNum ) ] = newFaces.Num();
 				newFaces.Append( *face );
 
 				// don't store edges for faces we don't care about
-				if ( !( face->flags & ( FACE_FLOOR|FACE_LADDER ) ) ) {
+				if( !( face->flags & ( FACE_FLOOR | FACE_LADDER ) ) )
+				{
 
-					newFaces[ newFaces.Num()-1 ].firstEdge = 0;
-					newFaces[ newFaces.Num()-1 ].numEdges = 0;
+					newFaces[ newFaces.Num() - 1 ].firstEdge = 0;
+					newFaces[ newFaces.Num() - 1 ].numEdges = 0;
 
-				} else {
+				}
+				else
+				{
 
 					// store edges
 					faceFirstEdge = newEdgeIndex.Num();
-					for ( k = 0; k < face->numEdges; k++ ) {
+					for( k = 0; k < face->numEdges; k++ )
+					{
 						edgeNum = edgeIndex[ face->firstEdge + k ];
-						edge = &edges[ abs(edgeNum) ];
+						edge = &edges[ abs( edgeNum ) ];
 
-						if ( !edgeRemap[ abs(edgeNum) ] ) {
-							if ( edgeNum < 0 ) {
-								edgeRemap[ abs(edgeNum) ] = -newEdges.Num();
+						if( !edgeRemap[ abs( edgeNum ) ] )
+						{
+							if( edgeNum < 0 )
+							{
+								edgeRemap[ abs( edgeNum ) ] = -newEdges.Num();
 							}
-							else {
-								edgeRemap[ abs(edgeNum) ] = newEdges.Num();
+							else
+							{
+								edgeRemap[ abs( edgeNum ) ] = newEdges.Num();
 							}
 
 							// remap vertices if not yet remapped
-							if ( vertexRemap[ edge->vertexNum[0] ] == -1 ) {
+							if( vertexRemap[ edge->vertexNum[0] ] == -1 )
+							{
 								vertexRemap[ edge->vertexNum[0] ] = newVertices.Num();
 								newVertices.Append( vertices[ edge->vertexNum[0] ] );
 							}
-							if ( vertexRemap[ edge->vertexNum[1] ] == -1 ) {
+							if( vertexRemap[ edge->vertexNum[1] ] == -1 )
+							{
 								vertexRemap[ edge->vertexNum[1] ] = newVertices.Num();
 								newVertices.Append( vertices[ edge->vertexNum[1] ] );
 							}
 
 							newEdges.Append( *edge );
-							newEdges[ newEdges.Num()-1 ].vertexNum[0] = vertexRemap[ edge->vertexNum[0] ];
-							newEdges[ newEdges.Num()-1 ].vertexNum[1] = vertexRemap[ edge->vertexNum[1] ];
+							newEdges[ newEdges.Num() - 1 ].vertexNum[0] = vertexRemap[ edge->vertexNum[0] ];
+							newEdges[ newEdges.Num() - 1 ].vertexNum[1] = vertexRemap[ edge->vertexNum[1] ];
 						}
 
-						newEdgeIndex.Append( edgeRemap[ abs(edgeNum) ] );
+						newEdgeIndex.Append( edgeRemap[ abs( edgeNum ) ] );
 					}
 
-					newFaces[ newFaces.Num()-1 ].firstEdge = faceFirstEdge;
-					newFaces[ newFaces.Num()-1 ].numEdges = newEdgeIndex.Num() - faceFirstEdge;
+					newFaces[ newFaces.Num() - 1 ].firstEdge = faceFirstEdge;
+					newFaces[ newFaces.Num() - 1 ].numEdges = newEdgeIndex.Num() - faceFirstEdge;
 				}
 			}
 
-			if ( faceNum < 0 ) {
-				newFaceIndex.Append( -faceRemap[ abs(faceNum) ] );
-			} else {
-				newFaceIndex.Append( faceRemap[ abs(faceNum) ] );
+			if( faceNum < 0 )
+			{
+				newFaceIndex.Append( -faceRemap[ abs( faceNum ) ] );
+			}
+			else
+			{
+				newFaceIndex.Append( faceRemap[ abs( faceNum ) ] );
 			}
 		}
 
@@ -137,7 +153,8 @@ void idAASFileLocal::Optimize( void ) {
 		area->numFaces = newFaceIndex.Num() - areaFirstFace;
 
 		// remap the reachability edges
-		for ( reach = area->reach; reach; reach = reach->next ) {
+		for( reach = area->reach; reach; reach = reach->next )
+		{
 			reach->edgeNum = abs( edgeRemap[reach->edgeNum] );
 		}
 	}

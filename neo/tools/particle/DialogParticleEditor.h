@@ -31,18 +31,22 @@ If you have questions concerning this license or the applicable additional terms
 
 #pragma once
 
-class CRangeSlider : public CSliderCtrl {
+class CRangeSlider : public CSliderCtrl
+{
 public:
-	void SetValueRange(float _low, float _high) {
+	void SetValueRange( float _low, float _high )
+	{
 		low = _low;
 		high = _high;
 	}
 
-	void SetValuePos( float val ) {
+	void SetValuePos( float val )
+	{
 		SetPos( GetRangeMin() + ( GetRangeMax() - GetRangeMin() ) * ( val - low ) / ( high - low ) );
 	}
 
-	float GetValue() {
+	float GetValue()
+	{
 		return low + ( high - low ) * ( float )( GetPos() - GetRangeMin() ) / ( GetRangeMax() - GetRangeMin() );
 	}
 private:
@@ -51,22 +55,23 @@ private:
 
 // CDialogParticleEditor dialog
 
-class CDialogParticleEditor : public CDialog {
+class CDialogParticleEditor : public CDialog
+{
 
-	DECLARE_DYNAMIC(CDialogParticleEditor)
+	DECLARE_DYNAMIC( CDialogParticleEditor )
 
 public:
-						CDialogParticleEditor(CWnd* pParent = NULL);   // standard constructor
+	CDialogParticleEditor( CWnd* pParent = NULL ); // standard constructor
 	virtual				~CDialogParticleEditor();
 
-	void				SelectParticle( const char *name );
+	void				SelectParticle( const char* name );
 	void				SetParticleVisualization( int i );
 	void				SetVectorControlUpdate( idQuat rotation );
 
 	enum { TESTMODEL, IMPACT, MUZZLE, FLIGHT, SELECTED };
 
 	//{{AFX_VIRTUAL(CDialogParticleEditor)
-	virtual void		DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void		DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	virtual BOOL		OnInitDialog();
 	//}}AFX_VIRTUAL
 
@@ -116,7 +121,7 @@ protected:
 	afx_msg	void		OnBtnZdn();
 	afx_msg	void		OnBtnDrop();
 	afx_msg void		OnDestroy();
-	afx_msg void		OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	afx_msg void		OnHScroll( UINT nSBCode, UINT nPos, CScrollBar* pScrollBar );
 	//}}AFX_MSG
 
 	DECLARE_MESSAGE_MAP()
@@ -200,8 +205,8 @@ private:
 	void				RemoveStage();
 	void				ShowStage();
 	void				HideStage();
-	idDeclParticle *	GetCurParticle();
-	idParticleStage *	GetCurStage();
+	idDeclParticle* 	GetCurParticle();
+	idParticleStage* 	GetCurStage();
 	void				ClearDlgVars();
 	void				CurStageToDlgVars();
 	void				DlgVarsToCurStage();
@@ -210,8 +215,8 @@ private:
 	void				SetParticleView();
 	void				UpdateParticleData();
 	CToolTipCtrl		toolTipCtrl;
-	BOOL				PreTranslateMessage(MSG *pMsg);
-	void				SetSelectedModel( const char *val );
+	BOOL				PreTranslateMessage( MSG* pMsg );
+	void				SetSelectedModel( const char* val );
 	void				EnableStageControls();
 	void				EnableEditControls();
 	void				UpdateSelectedOrigin( float x, float y, float z );

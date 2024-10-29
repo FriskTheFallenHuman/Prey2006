@@ -46,7 +46,7 @@ If you have questions concerning this license or the applicable additional terms
 class idBrush;
 class idBrushList;
 
-void DisplayRealTimeString( const char *string, ... ) id_attribute((format(printf,1,2)));
+void DisplayRealTimeString( const char* string, ... ) id_attribute( ( format( printf, 1, 2 ) ) );
 
 
 //===============================================================
@@ -60,30 +60,52 @@ void DisplayRealTimeString( const char *string, ... ) id_attribute((format(print
 #define SFL_USED_SPLITTER			0x0004
 #define SFL_TESTED_SPLITTER			0x0008
 
-class idBrushSide {
+class idBrushSide
+{
 
 	friend class idBrush;
 
 public:
-							idBrushSide( void );
-							idBrushSide( const idPlane &plane, int planeNum );
-							~idBrushSide( void );
+	idBrushSide( void );
+	idBrushSide( const idPlane& plane, int planeNum );
+	~idBrushSide( void );
 
-	int						GetFlags( void ) const { return flags; }
-	void					SetFlag( int flag ) { flags |= flag; }
-	void					RemoveFlag( int flag ) { flags &= ~flag; }
-	const idPlane &			GetPlane( void ) const { return plane; }
-	void					SetPlaneNum( int num ) { planeNum = num; }
-	int						GetPlaneNum( void ) { return planeNum; }
-	const idWinding *		GetWinding( void ) const { return winding; }
-	idBrushSide *			Copy( void ) const;
-	int						Split( const idPlane &splitPlane, idBrushSide **front, idBrushSide **back ) const;
+	int						GetFlags( void ) const
+	{
+		return flags;
+	}
+	void					SetFlag( int flag )
+	{
+		flags |= flag;
+	}
+	void					RemoveFlag( int flag )
+	{
+		flags &= ~flag;
+	}
+	const idPlane& 			GetPlane( void ) const
+	{
+		return plane;
+	}
+	void					SetPlaneNum( int num )
+	{
+		planeNum = num;
+	}
+	int						GetPlaneNum( void )
+	{
+		return planeNum;
+	}
+	const idWinding* 		GetWinding( void ) const
+	{
+		return winding;
+	}
+	idBrushSide* 			Copy( void ) const;
+	int						Split( const idPlane& splitPlane, idBrushSide** front, idBrushSide** back ) const;
 
 private:
 	int						flags;
 	int						planeNum;
 	idPlane					plane;
-	idWinding *				winding;
+	idWinding* 				winding;
 };
 
 
@@ -95,45 +117,88 @@ private:
 
 #define BFL_NO_VALID_SPLITTERS		0x0001
 
-class idBrush {
+class idBrush
+{
 
 	friend class idBrushList;
 
 public:
-							idBrush( void );
-							~idBrush( void );
+	idBrush( void );
+	~idBrush( void );
 
-	int						GetFlags( void ) const { return flags; }
-	void					SetFlag( int flag ) { flags |= flag; }
-	void					RemoveFlag( int flag ) { flags &= ~flag; }
-	void					SetEntityNum( int num ) { entityNum = num; }
-	void					SetPrimitiveNum( int num ) { primitiveNum = num; }
-	void					SetContents( int contents ) { this->contents = contents; }
-	int						GetContents( void ) const { return contents; }
-	const idBounds &		GetBounds( void ) const { return bounds; }
+	int						GetFlags( void ) const
+	{
+		return flags;
+	}
+	void					SetFlag( int flag )
+	{
+		flags |= flag;
+	}
+	void					RemoveFlag( int flag )
+	{
+		flags &= ~flag;
+	}
+	void					SetEntityNum( int num )
+	{
+		entityNum = num;
+	}
+	void					SetPrimitiveNum( int num )
+	{
+		primitiveNum = num;
+	}
+	void					SetContents( int contents )
+	{
+		this->contents = contents;
+	}
+	int						GetContents( void ) const
+	{
+		return contents;
+	}
+	const idBounds& 		GetBounds( void ) const
+	{
+		return bounds;
+	}
 	float					GetVolume( void ) const;
-	int						GetNumSides( void ) const { return sides.Num(); }
-	idBrushSide *			GetSide( int i ) const { return sides[i]; }
-	void					SetPlaneSide( int s ) { planeSide = s; }
-	void					SavePlaneSide( void ) { savedPlaneSide = planeSide; }
-	int						GetSavedPlaneSide( void ) const { return savedPlaneSide; }
-	bool					FromSides( idList<idBrushSide *> &sideList );
-	bool					FromWinding( const idWinding &w, const idPlane &windingPlane );
-	bool					FromBounds( const idBounds &bounds );
-	void					Transform( const idVec3 &origin, const idMat3 &axis );
-	idBrush *				Copy( void ) const;
-	bool					TryMerge( const idBrush *brush, const idPlaneSet &planeList );
-							// returns true if the brushes did intersect
-	bool					Subtract( const idBrush *b, idBrushList &list ) const;
-							// split the brush into a front and back brush
-	int						Split( const idPlane &plane, int planeNum, idBrush **front, idBrush **back ) const;
-							// expand the brush for an axial bounding box
-	void					ExpandForAxialBox( const idBounds &bounds );
-							// next brush in list
-	idBrush *				Next( void ) const { return next; }
+	int						GetNumSides( void ) const
+	{
+		return sides.Num();
+	}
+	idBrushSide* 			GetSide( int i ) const
+	{
+		return sides[i];
+	}
+	void					SetPlaneSide( int s )
+	{
+		planeSide = s;
+	}
+	void					SavePlaneSide( void )
+	{
+		savedPlaneSide = planeSide;
+	}
+	int						GetSavedPlaneSide( void ) const
+	{
+		return savedPlaneSide;
+	}
+	bool					FromSides( idList<idBrushSide*>& sideList );
+	bool					FromWinding( const idWinding& w, const idPlane& windingPlane );
+	bool					FromBounds( const idBounds& bounds );
+	void					Transform( const idVec3& origin, const idMat3& axis );
+	idBrush* 				Copy( void ) const;
+	bool					TryMerge( const idBrush* brush, const idPlaneSet& planeList );
+	// returns true if the brushes did intersect
+	bool					Subtract( const idBrush* b, idBrushList& list ) const;
+	// split the brush into a front and back brush
+	int						Split( const idPlane& plane, int planeNum, idBrush** front, idBrush** back ) const;
+	// expand the brush for an axial bounding box
+	void					ExpandForAxialBox( const idBounds& bounds );
+	// next brush in list
+	idBrush* 				Next( void ) const
+	{
+		return next;
+	}
 
 private:
-	mutable idBrush *		next;				// next brush in list
+	mutable idBrush* 		next;				// next brush in list
 	int						entityNum;			// entity number in editor
 	int						primitiveNum;		// primitive number in editor
 	int						flags;				// brush flags
@@ -142,11 +207,11 @@ private:
 	int						planeSide;			// side of a plane this brush is on
 	int						savedPlaneSide;		// saved plane side
 	idBounds				bounds;				// brush bounds
-	idList<idBrushSide *>	sides;				// list with sides
+	idList<idBrushSide*>	sides;				// list with sides
 
 private:
 	bool					CreateWindings( void );
-	void					BoundBrush( const idBrush *original = NULL );
+	void					BoundBrush( const idBrush* original = NULL );
 	void					AddBevelsForAxialBox( void );
 	bool					RemoveSidesWithoutWinding( void );
 };
@@ -158,50 +223,70 @@ private:
 //
 //===============================================================
 
-class idBrushList {
+class idBrushList
+{
 public:
-							idBrushList( void );
-							~idBrushList( void );
+	idBrushList( void );
+	~idBrushList( void );
 
-	int						Num( void ) const { return numBrushes; }
-	int						NumSides( void ) const { return numBrushSides; }
-	idBrush *				Head( void ) const { return head; }
-	idBrush *				Tail( void ) const { return tail; }
-	void					Clear( void ) { head = tail = NULL; numBrushes = 0; }
-	bool					IsEmpty( void ) const { return (numBrushes == 0); }
+	int						Num( void ) const
+	{
+		return numBrushes;
+	}
+	int						NumSides( void ) const
+	{
+		return numBrushSides;
+	}
+	idBrush* 				Head( void ) const
+	{
+		return head;
+	}
+	idBrush* 				Tail( void ) const
+	{
+		return tail;
+	}
+	void					Clear( void )
+	{
+		head = tail = NULL;
+		numBrushes = 0;
+	}
+	bool					IsEmpty( void ) const
+	{
+		return ( numBrushes == 0 );
+	}
 	idBounds				GetBounds( void ) const;
-							// add brush to the tail of the list
-	void					AddToTail( idBrush *brush );
-							// add list to the tail of the list
-	void					AddToTail( idBrushList &list );
-							// add brush to the front of the list
-	void					AddToFront( idBrush *brush );
-							// add list to the front of the list
-	void					AddToFront( idBrushList &list );
-							// remove the brush from the list
-	void					Remove( idBrush *brush );
-							// remove the brush from the list and delete the brush
-	void					Delete( idBrush *brush);
-							// returns a copy of the brush list
-	idBrushList *			Copy( void ) const;
-							// delete all brushes in the list
+	// add brush to the tail of the list
+	void					AddToTail( idBrush* brush );
+	// add list to the tail of the list
+	void					AddToTail( idBrushList& list );
+	// add brush to the front of the list
+	void					AddToFront( idBrush* brush );
+	// add list to the front of the list
+	void					AddToFront( idBrushList& list );
+	// remove the brush from the list
+	void					Remove( idBrush* brush );
+	// remove the brush from the list and delete the brush
+	void					Delete( idBrush* brush );
+	// returns a copy of the brush list
+	idBrushList* 			Copy( void ) const;
+	// delete all brushes in the list
 	void					Free( void );
-							// split the brushes in the list into two lists
-	void					Split( const idPlane &plane, int planeNum, idBrushList &frontList, idBrushList &backList, bool useBrushSavedPlaneSide = false );
-							// chop away all brush overlap
-	void					Chop( bool (*ChopAllowed)( idBrush *b1, idBrush *b2 ) );
-							// merge brushes
-	void					Merge( bool (*MergeAllowed)( idBrush *b1, idBrush *b2 ) );
-							// set the given flag on all brush sides facing the plane
-	void					SetFlagOnFacingBrushSides( const idPlane &plane, int flag );
-							// get a list with planes for all brushes in the list
-	void					CreatePlaneList( idPlaneSet &planeList ) const;
-							// write a brush map with the brushes in the list
-	void					WriteBrushMap( const idStr &fileName, const idStr &ext ) const;
+	// split the brushes in the list into two lists
+	void					Split( const idPlane& plane, int planeNum, idBrushList& frontList, idBrushList& backList, bool useBrushSavedPlaneSide = false );
+	// chop away all brush overlap
+	void					Chop( bool ( *ChopAllowed )( idBrush* b1, idBrush* b2 ) );
+	// merge brushes
+	void					Merge( bool ( *MergeAllowed )( idBrush* b1, idBrush* b2 ) );
+	// set the given flag on all brush sides facing the plane
+	void					SetFlagOnFacingBrushSides( const idPlane& plane, int flag );
+	// get a list with planes for all brushes in the list
+	void					CreatePlaneList( idPlaneSet& planeList ) const;
+	// write a brush map with the brushes in the list
+	void					WriteBrushMap( const idStr& fileName, const idStr& ext ) const;
 
 private:
-	idBrush *				head;
-	idBrush *				tail;
+	idBrush* 				head;
+	idBrush* 				tail;
 	int						numBrushes;
 	int						numBrushSides;
 };
@@ -213,17 +298,21 @@ private:
 //
 //===============================================================
 
-class idBrushMap {
+class idBrushMap
+{
 
 public:
-							idBrushMap( const idStr &fileName, const idStr &ext );
-							~idBrushMap( void );
-	void					SetTexture( const idStr &textureName ) { texture = textureName; }
-	void					WriteBrush( const idBrush *brush );
-	void					WriteBrushList( const idBrushList &brushList );
+	idBrushMap( const idStr& fileName, const idStr& ext );
+	~idBrushMap( void );
+	void					SetTexture( const idStr& textureName )
+	{
+		texture = textureName;
+	}
+	void					WriteBrush( const idBrush* brush );
+	void					WriteBrushList( const idBrushList& brushList );
 
 private:
-	idFile *				fp;
+	idFile* 				fp;
 	idStr					texture;
 	int						brushCount;
 };

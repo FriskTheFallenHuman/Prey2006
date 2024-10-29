@@ -32,15 +32,15 @@ class rvGESizeModifier : public rvGEModifier
 {
 public:
 
-	rvGESizeModifier ( const char* name, idWindow* window, float l, float t, float r, float b );
+	rvGESizeModifier( const char* name, idWindow* window, float l, float t, float r, float b );
 
-	virtual bool		CanMerge	( rvGEModifier* merge );
-	virtual bool		Merge		( rvGEModifier* merge );
+	virtual bool		CanMerge( rvGEModifier* merge );
+	virtual bool		Merge( rvGEModifier* merge );
 
-	virtual bool		Apply		( void );
-	virtual bool		Undo		( void );
+	virtual bool		Apply( void );
+	virtual bool		Undo( void );
 
-	virtual bool		IsValid		( void );
+	virtual bool		IsValid( void );
 
 protected:
 
@@ -48,7 +48,7 @@ protected:
 	idRectangle		mOldRect;
 };
 
-ID_INLINE bool rvGESizeModifier::CanMerge ( rvGEModifier* merge )
+ID_INLINE bool rvGESizeModifier::CanMerge( rvGEModifier* merge )
 {
 	return true;
 }

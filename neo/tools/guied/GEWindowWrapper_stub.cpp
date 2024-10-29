@@ -40,7 +40,10 @@ static rvGEWindowWrapper stub_wrap( NULL, rvGEWindowWrapper::WT_UNKNOWN );
 
 rvGEWindowWrapper::rvGEWindowWrapper( idWindow* window, EWindowType type ) { }
 
-rvGEWindowWrapper* rvGEWindowWrapper::GetWrapper ( idWindow* window ) { return &stub_wrap; }
+rvGEWindowWrapper* rvGEWindowWrapper::GetWrapper( idWindow* window )
+{
+	return &stub_wrap;
+}
 
 void rvGEWindowWrapper::SetStateKey( const char*, const char*, bool ) { }
 

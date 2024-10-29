@@ -32,15 +32,16 @@ If you have questions concerning this license or the applicable additional terms
 
 // CDialogTextures dialog
 
-class CDialogTextures : public CDialogEx {
+class CDialogTextures : public CDialogEx
+{
 // Construction
 public:
-	enum { NONE, TEXTURES, MATERIALS, MODELS, SCRIPTS, SOUNDS, SOUNDPARENT, GUIS, PARTICLES, FX,NUMIDS };
-	static const char *TypeNames[NUMIDS];
-	CDialogTextures( CWnd *pParent = NULL );   // standard constructor
+	enum { NONE, TEXTURES, MATERIALS, MODELS, SCRIPTS, SOUNDS, SOUNDPARENT, GUIS, PARTICLES, FX, NUMIDS };
+	static const char* TypeNames[NUMIDS];
+	CDialogTextures( CWnd* pParent = NULL );   // standard constructor
 	void OnCancel();
 	void CollapseEditor();
-	void SelectCurrentItem( bool collapse, const char *name, int id );
+	void SelectCurrentItem( bool collapse, const char* name, int id );
 
 	enum { IDD = IDD_DIALOG_TEXTURELIST };
 	CButton	m_chkHideRoot;
@@ -54,7 +55,7 @@ public:
 	idGLDrawable m_testDrawable;
 	idGLDrawableMaterial m_drawMaterial;
 	idGLDrawableModel m_drawModel;
-	const idMaterial *editMaterial;
+	const idMaterial* editMaterial;
 	idStr editGui;
 	idStr currentFile;
 	idStr mediaName;
@@ -63,36 +64,36 @@ public:
 	int mode;
 
 protected:
-	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
-	virtual BOOL PreCreateWindow( CREATESTRUCT &cs );
+	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
+	virtual BOOL PreCreateWindow( CREATESTRUCT& cs );
 
 protected:
-	void addStrList(const char *root, const idStrList &list, int id);
-	void addScripts(bool rootItems);
-	void addModels(bool rootItems);
-	void addMaterials(bool rootItems);
-	void addSounds(bool rootItems);
-	void addGuis(bool rootItems);
-	void addFXs(bool rootItems);
-	void addParticles(bool rootItems);
+	void addStrList( const char* root, const idStrList& list, int id );
+	void addScripts( bool rootItems );
+	void addModels( bool rootItems );
+	void addMaterials( bool rootItems );
+	void addSounds( bool rootItems );
+	void addGuis( bool rootItems );
+	void addFXs( bool rootItems );
+	void addParticles( bool rootItems );
 	void BuildTree();
-	void CollapseChildren(HTREEITEM parent);
-	const char *buildItemName(HTREEITEM item, const char *rootName);
-	bool loadTree( HTREEITEM item, const idStr &name, CWaitDlg *dlg );
-	HTREEITEM findItem(const char *name, HTREEITEM item, HTREEITEM *foundItem);
+	void CollapseChildren( HTREEITEM parent );
+	const char* buildItemName( HTREEITEM item, const char* rootName );
+	bool loadTree( HTREEITEM item, const idStr& name, CWaitDlg* dlg );
+	HTREEITEM findItem( const char* name, HTREEITEM item, HTREEITEM* foundItem );
 
 	virtual void OnOK();
 	virtual BOOL OnInitDialog();
 	afx_msg void OnLoad();
 	afx_msg void OnRefresh();
-	afx_msg void OnClickTreeTextures(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnSelchangedTreeTextures(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnDblclkTreeTextures(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnClickTreeTextures( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void OnSelchangedTreeTextures( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void OnDblclkTreeTextures( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void OnPreview();
 	afx_msg void OnMaterialEdit();
 	afx_msg void OnMaterialInfo();
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg int OnCreate( LPCREATESTRUCT lpCreateStruct );
+	afx_msg void OnSize( UINT nType, int cx, int cy );
 	afx_msg void OnCheckHideroot();
 
 	DECLARE_MESSAGE_MAP()
@@ -101,7 +102,7 @@ protected:
 	idStr					itemName;
 
 public:
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	afx_msg void OnSetFocus(CWnd* pOldWnd);
-	afx_msg void OnNMRclickTreeTextures(NMHDR *pNMHDR, LRESULT *pResult);
+	virtual BOOL PreTranslateMessage( MSG* pMsg );
+	afx_msg void OnSetFocus( CWnd* pOldWnd );
+	afx_msg void OnNMRclickTreeTextures( NMHDR* pNMHDR, LRESULT* pResult );
 };

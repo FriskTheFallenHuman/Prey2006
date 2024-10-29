@@ -33,21 +33,21 @@ class rvGEViewer
 {
 public:
 
-	rvGEViewer ( );
+	rvGEViewer( );
 
-	bool				Create		( HWND parent );
-	bool				Destroy		( void );
-	bool				OpenFile	( const char* filename );
+	bool				Create( HWND parent );
+	bool				Destroy( void );
+	bool				OpenFile( const char* filename );
 
-	void				RunFrame	( void );
+	void				RunFrame( void );
 
-	HWND				GetWindow	( void );
+	HWND				GetWindow( void );
 
 protected:
 
-	void				Render		( HDC dc );
-	void				Play		( void );
-	void				Pause		( void );
+	void				Render( HDC dc );
+	void				Play( void );
+	void				Pause( void );
 
 	HWND					mWnd;
 	int						mWindowWidth;
@@ -59,16 +59,16 @@ protected:
 	int						mLastTime;
 	int						mTime;
 
-	LRESULT		HandlePaint	( WPARAM wParam, LPARAM lParam );
+	LRESULT		HandlePaint( WPARAM wParam, LPARAM lParam );
 
 private:
 
-	bool	SetupPixelFormat ( void );
+	bool	SetupPixelFormat( void );
 
-	static LRESULT CALLBACK WndProc ( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
+	static LRESULT CALLBACK WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
 };
 
-ID_INLINE HWND rvGEViewer::GetWindow ( void )
+ID_INLINE HWND rvGEViewer::GetWindow( void )
 {
 	return mWnd;
 }

@@ -30,9 +30,9 @@ If you have questions concerning this license or the applicable additional terms
 #define __QE3_H__
 
 #ifdef ID_DEBUG_MEMORY
-#undef new
-#undef DEBUG_NEW
-#define DEBUG_NEW new
+	#undef new
+	#undef DEBUG_NEW
+	#define DEBUG_NEW new
 #endif
 
 #include "QerTypes.h"
@@ -74,12 +74,14 @@ const float	HUGE_DISTANCE = 100000;
 #include "SplashScreen.h"
 #include "../common/AboutBoxDlg.h"
 
-typedef struct {
+typedef struct
+{
 	int		p1, p2;
-	face_t	*f1, *f2;
+	face_t*	f1, *f2;
 } pedge_t;
 
-typedef struct {
+typedef struct
+{
 	int		iSize;
 	int		iTexMenu;		// nearest, linear, etc
 	char	szProject[256];	// last project loaded
@@ -99,20 +101,21 @@ typedef struct {
 //
 // TTimo NOTE: WINAPI funcs can be accessed by plugins
 void    Sys_UpdateStatusBar( void );
-void    Sys_UpdateWindows (int bits);
-double	Sys_DoubleTime (void);
-void    Sys_GetCursorPos (int *x, int *y);
-void    Sys_SetCursorPos (int x, int y);
-void    Sys_SetTitle (const char *text);
-void    Sys_BeginWait (void);
+void    Sys_UpdateWindows( int bits );
+double	Sys_DoubleTime( void );
+void    Sys_GetCursorPos( int* x, int* y );
+void    Sys_SetCursorPos( int x, int y );
+void    Sys_SetTitle( const char* text );
+void    Sys_BeginWait( void );
 bool	Sys_Waiting();
-void    Sys_EndWait (void);
-void    Sys_Status(const char *psz, int part = -1);
+void    Sys_EndWait( void );
+void    Sys_Status( const char* psz, int part = -1 );
 
 /*
 ** most of the QE globals are stored in this structure
 */
-typedef struct {
+typedef struct
+{
 	bool d_showgrid;
 	float d_gridsize;
 	float d_selectedgridsize;
@@ -132,10 +135,10 @@ typedef struct {
 	int       d_numedges;
 
 	int       d_num_move_points;
-	idVec3    *d_move_points[MAX_MOVE_POINTS];
+	idVec3*    d_move_points[MAX_MOVE_POINTS];
 
 	int			d_num_move_planes;
-	idPlane		*d_move_planes[MAX_MOVE_PLANES];
+	idPlane*		d_move_planes[MAX_MOVE_PLANES];
 
 	texturewin_t d_texturewin;
 
@@ -145,10 +148,10 @@ typedef struct {
 
 	// connect entities uses the last two brushes selected
 	int			 d_select_count;
-	idEditorBrush		*d_select_order[MAX_MAP_ENTITIES];
+	idEditorBrush*		d_select_order[MAX_MAP_ENTITIES];
 	idVec3       d_select_translate;    // for dragging w/o making new display lists
 	select_t     d_select_mode;
-	idPointListInterface *selectObject;	//
+	idPointListInterface* selectObject;	//
 
 	int		     d_font_list;
 
@@ -167,54 +170,54 @@ typedef struct {
 	idVec3  d_vAreaBR;
 
 	// the editor has its own soundWorld and renderWorld, completely distinct from the game
-	idRenderWorld	*rw;
-	idSoundWorld	*sw;
+	idRenderWorld*	rw;
+	idSoundWorld*	sw;
 } QEGlobals_t;
 
 //=========================
 // pointfile.cpp
 //========================
-void Pointfile_Delete (void);
-void Pointfile_Check (void);
-void Pointfile_Next (void);
-void Pointfile_Prev (void);
-void Pointfile_Clear (void);
+void Pointfile_Delete( void );
+void Pointfile_Check( void );
+void Pointfile_Next( void );
+void Pointfile_Prev( void );
+void Pointfile_Clear( void );
 void Pointfile_Draw( void );
 
 //========================
 // drag.c
 //========================
-void Drag_Begin (int x, int y, int buttons,
-		   const idVec3 &xaxis, const idVec3 &yaxis,
-		   const idVec3 &origin, const idVec3 &dir);
-void Drag_MouseMoved (int x, int y, int buttons);
-void Drag_MouseUp (int nButtons = 0);
+void Drag_Begin( int x, int y, int buttons,
+				 const idVec3& xaxis, const idVec3& yaxis,
+				 const idVec3& origin, const idVec3& dir );
+void Drag_MouseMoved( int x, int y, int buttons );
+void Drag_MouseUp( int nButtons = 0 );
 extern bool g_moveOnly;
 
 //========================
 // csg.c
 //========================
-void CSG_MakeHollow (void);
-void CSG_Subtract (void);
-void CSG_Merge (void);
+void CSG_MakeHollow( void );
+void CSG_Subtract( void );
+void CSG_Merge( void );
 
 //========================
 // vertsel.c
 //========================
-void SetupVertexSelection (void);
-void SelectEdgeByRay (idVec3 org, idVec3 dir);
-void SelectVertexByRay (idVec3 org, idVec3 dir);
+void SetupVertexSelection( void );
+void SelectEdgeByRay( idVec3 org, idVec3 dir );
+void SelectVertexByRay( idVec3 org, idVec3 dir );
 
-void ConnectEntities (void);
+void ConnectEntities( void );
 
 //========================
 // win_main.c
 //========================
-extern bool SaveWindowState(HWND hWnd, const char *pszName);
-extern bool LoadWindowState(HWND hWnd, const char *pszName);
+extern bool SaveWindowState( HWND hWnd, const char* pszName );
+extern bool LoadWindowState( HWND hWnd, const char* pszName );
 
-extern bool SaveRegistryInfo(const char *pszName, void *pvBuf, long lSize);
-extern bool LoadRegistryInfo(const char *pszName, void *pvBuf, long *plSize);
+extern bool SaveRegistryInfo( const char* pszName, void* pvBuf, long lSize );
+extern bool LoadRegistryInfo( const char* pszName, void* pvBuf, long* plSize );
 
 //========================
 // win_dlg.c
@@ -226,33 +229,33 @@ void DoSurface();
 //
 //	*ripped from QE5
 //========================
-bool FindClosestBottom(HWND h, LPRECT rect, LPRECT parentrect);
-bool FindClosestTop(HWND h, LPRECT rect, LPRECT parentrect);
-bool FindClosestLeft(HWND h, LPRECT rect, LPRECT parentrect, int widthlimit);
-bool FindClosestRight(HWND h, LPRECT rect, LPRECT parentrect, int widthlimit);
-bool FindClosestHorizontal(HWND h, LPRECT rect, LPRECT parentrect);
-bool FindClosestVertical(HWND h, LPRECT rect, LPRECT parentrect);
-bool TryDocking(HWND h, long side, LPRECT rect, int widthlimit);
+bool FindClosestBottom( HWND h, LPRECT rect, LPRECT parentrect );
+bool FindClosestTop( HWND h, LPRECT rect, LPRECT parentrect );
+bool FindClosestLeft( HWND h, LPRECT rect, LPRECT parentrect, int widthlimit );
+bool FindClosestRight( HWND h, LPRECT rect, LPRECT parentrect, int widthlimit );
+bool FindClosestHorizontal( HWND h, LPRECT rect, LPRECT parentrect );
+bool FindClosestVertical( HWND h, LPRECT rect, LPRECT parentrect );
+bool TryDocking( HWND h, long side, LPRECT rect, int widthlimit );
 
 //========================
 // QE function declarations
 //========================
 void	QE_CheckAutoSave( void );
 void	QE_CountBrushesAndUpdateStatusBar( void );
-void	WINAPI QE_CheckOpenGLForErrors(void);
-void	QE_Init (void);
-bool	QE_SingleBrush (bool bQuiet = false, bool entityOK = false);
+void	WINAPI QE_CheckOpenGLForErrors( void );
+void	QE_Init( void );
+bool	QE_SingleBrush( bool bQuiet = false, bool entityOK = false );
 
 
 //========================
 // sys stuff
 //========================
-void Sys_MarkMapModified (void);
+void Sys_MarkMapModified( void );
 
 //========================
 // QE Win32 function declarations
 //========================
-int  WINAPI QEW_SetupPixelFormat(HDC hDC, bool zbuffer );
+int  WINAPI QEW_SetupPixelFormat( HDC hDC, bool zbuffer );
 
 //========================
 // extern declarations
@@ -264,29 +267,29 @@ extern bool g_bAxialMode;
 extern int g_axialAnchor;
 extern int g_axialDest;
 
-extern void Face_FlipTexture_BrushPrimit(face_t *face, bool y);
-extern void Brush_FlipTexture_BrushPrimit(idEditorBrush *b, bool y);
+extern void Face_FlipTexture_BrushPrimit( face_t* face, bool y );
+extern void Brush_FlipTexture_BrushPrimit( idEditorBrush* b, bool y );
 
 //========================
 // new brush primitive stuff
 // Timo
 //========================
 //void ComputeAxisBase( idVec3 &normal,idVec3 &texS,idVec3 &texT );
-void FaceToBrushPrimitFace(face_t *f);
-void EmitBrushPrimitTextureCoordinates(face_t *, idWinding *, patchMesh_t *patch = NULL);
+void FaceToBrushPrimitFace( face_t* f );
+void EmitBrushPrimitTextureCoordinates( face_t*, idWinding*, patchMesh_t* patch = NULL );
 // EmitTextureCoordinates, is old code used for brush to brush primitive conversion
-void EmitTextureCoordinates ( idVec5 &xyzst, const idMaterial *q, face_t *f, bool force = false);
-void BrushPrimit_Parse(idEditorBrush *, bool newFormat, const idVec3 origin);
+void EmitTextureCoordinates( idVec5& xyzst, const idMaterial* q, face_t* f, bool force = false );
+void BrushPrimit_Parse( idEditorBrush*, bool newFormat, const idVec3 origin );
 // compute a fake shift scale rot representation from the texture matrix
-void TexMatToFakeTexCoords( float texMat[2][3], float shift[2], float *rot, float scale[2] );
+void TexMatToFakeTexCoords( float texMat[2][3], float shift[2], float* rot, float scale[2] );
 void FakeTexCoordsToTexMat( float shift[2], float rot, float scale[2], float texMat[2][3] );
-void ConvertTexMatWithQTexture( brushprimit_texdef_t *texMat1, const idMaterial *qtex1, brushprimit_texdef_t *texMat2, const idMaterial *qtex2, float sScale = 1.0, float tScale = 1.0 );
+void ConvertTexMatWithQTexture( brushprimit_texdef_t* texMat1, const idMaterial* qtex1, brushprimit_texdef_t* texMat2, const idMaterial* qtex2, float sScale = 1.0, float tScale = 1.0 );
 // texture locking
-void Face_MoveTexture_BrushPrimit(face_t *f, idVec3 delta);
-void Select_ShiftTexture_BrushPrimit( face_t *f, float x, float y, bool autoAdjust );
-void RotateFaceTexture_BrushPrimit(face_t *f, int nAxis, float fDeg, idVec3 vOrigin );
+void Face_MoveTexture_BrushPrimit( face_t* f, idVec3 delta );
+void Select_ShiftTexture_BrushPrimit( face_t* f, float x, float y, bool autoAdjust );
+void RotateFaceTexture_BrushPrimit( face_t* f, int nAxis, float fDeg, idVec3 vOrigin );
 
-void ApplyMatrix_BrushPrimit(face_t *f, idMat3 matrix, idVec3 origin);
+void ApplyMatrix_BrushPrimit( face_t* f, idMat3 matrix, idVec3 origin );
 // low level functions .. put in mathlib?
 #define BPMatCopy(a,b) {b[0][0] = a[0][0]; b[0][1] = a[0][1]; b[0][2] = a[0][2]; b[1][0] = a[1][0]; b[1][1] = a[1][1]; b[1][2] = a[1][2];}
 // apply a scale transformation to the BP matrix
@@ -294,20 +297,20 @@ void ApplyMatrix_BrushPrimit(face_t *f, idMat3 matrix, idVec3 origin);
 // apply a translation transformation to a BP matrix
 #define BPMatTranslate(m,s,t) {m[0][2] += m[0][0]*s + m[0][1]*t; m[1][2] += m[1][0]*s+m[1][1]*t;}
 // 2D homogeneous matrix product C = A*B
-void BPMatMul(float A[2][3], float B[2][3], float C[2][3]);
+void BPMatMul( float A[2][3], float B[2][3], float C[2][3] );
 // apply a rotation (degrees)
-void BPMatRotate(float A[2][3], float theta);
+void BPMatRotate( float A[2][3], float theta );
 #ifdef _DEBUG
-void BPMatDump(float A[2][3]);
+	void BPMatDump( float A[2][3] );
 #endif
 
 extern bool g_bShowLightVolumes;
 extern bool g_bShowLightTextures;
-extern const idMaterial *Texture_LoadLight(const char *name);
+extern const idMaterial* Texture_LoadLight( const char* name );
 
 #define	FONT_HEIGHT	10
 
-void UniqueTargetName(idStr& rStr);
+void UniqueTargetName( idStr& rStr );
 
 #define MAP_VERSION 2.0
 
@@ -321,7 +324,7 @@ extern idCVar radiant_entityMode;
 extern void CleanUpEntities();
 extern void QE_CountBrushesAndUpdateStatusBar();
 extern void	QE_CheckAutoSave();
-extern bool SaveWindowState(HWND hWnd, const char *pszName);
+extern bool SaveWindowState( HWND hWnd, const char* pszName );
 extern void Map_Snapshot();
 extern bool g_bRotateMode;
 extern bool g_bClipMode;
@@ -329,10 +332,10 @@ extern bool g_bScaleMode;
 extern int g_nScaleHow;
 extern bool g_bPathMode;
 
-extern void FindReplaceTextures(const char* pFind, const char* pReplace, bool bSelected, bool bForce);
+extern void FindReplaceTextures( const char* pFind, const char* pReplace, bool bSelected, bool bForce );
 extern bool region_active;
-extern void Map_ImportFile (char *filename);
-extern void Map_SaveSelected(char* pFilename);
+extern void Map_ImportFile( char* filename );
+extern void Map_SaveSelected( char* pFilename );
 extern bool g_bSwitch;
 extern idEditorBrush g_brFrontSplits;
 extern idEditorBrush g_brBackSplits;
@@ -342,39 +345,39 @@ extern CClipPoint g_Clip3;
 extern CClipPoint* g_pMovingClip;
 extern idEditorBrush* g_pSplitList;
 extern CClipPoint g_PathPoints[256];
-extern void AcquirePath(int nCount, PFNPathCallback* pFunc);
+extern void AcquirePath( int nCount, PFNPathCallback* pFunc );
 extern bool g_bScreenUpdates;
 extern SCommandInfo g_Commands[];
 extern int g_nCommandCount;
 extern SKeyInfo g_Keys[];
 extern int g_nKeyCount;
-extern void HandlePopup(CWnd* pWindow, unsigned int uId);
+extern void HandlePopup( CWnd* pWindow, unsigned int uId );
 extern z_t z;
-extern void Clamp(float& f, int nClamp);
-extern bool WriteFileString( FILE *fp, char *string, ... );
-extern void MemFile_fprintf(CMemFile* pMemFile, const char* pText, ...);
-extern void SaveWindowPlacement(HWND hwnd, const char* pName);
-extern bool LoadWindowPlacement(HWND hwnd, const char* pName);
+extern void Clamp( float& f, int nClamp );
+extern bool WriteFileString( FILE* fp, char* string, ... );
+extern void MemFile_fprintf( CMemFile* pMemFile, const char* pText, ... );
+extern void SaveWindowPlacement( HWND hwnd, const char* pName );
+extern bool LoadWindowPlacement( HWND hwnd, const char* pName );
 
-void SaveDialogPlacement(CDialog* dlg, const char* pName);
-extern bool ConfirmModified (void);
+void SaveDialogPlacement( CDialog* dlg, const char* pName );
+extern bool ConfirmModified( void );
 extern void DoPatchInspector();
 void UpdatePatchInspector();
 extern int g_nSmartX;
 extern int g_nSmartY;
-extern idEditorBrush* CreateEntityBrush(int x, int y, CXYWnd* pWnd);
-int PointInMoveList( idVec3 *pf );
+extern idEditorBrush* CreateEntityBrush( int x, int y, CXYWnd* pWnd );
+int PointInMoveList( idVec3* pf );
 
 extern bool ByeByeSurfaceDialog();
 extern void UpdateSurfaceDialog();
 extern void UpdateLightInspector();
 
-int GetCvarInt(const char *name, const int def);
-const char *GetCvarString(const char *name, const char *def);
-void SetCvarInt(const char *name, const int value);
-void SetCvarString(const char *name, const char *value);
-void SetCvarBinary(const char *name, void *pv, int size);
-bool GetCvarBinary(const char *name, void *pv, int size);
+int GetCvarInt( const char* name, const int def );
+const char* GetCvarString( const char* name, const char* def );
+void SetCvarInt( const char* name, const int value );
+void SetCvarString( const char* name, const char* value );
+void SetCvarBinary( const char* name, void* pv, int size );
+bool GetCvarBinary( const char* name, void* pv, int size );
 
 void UpdateRadiantColor( float r, float g, float b, float a );
 

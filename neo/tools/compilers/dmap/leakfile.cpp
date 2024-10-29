@@ -50,19 +50,21 @@ that leads from the outside leaf to a specifically
 occupied leaf
 =============
 */
-void LeakFile (tree_t *tree)
+void LeakFile( tree_t* tree )
 {
 	idVec3	mid;
-	FILE	*linefile;
+	FILE*	linefile;
 	idStr	filename;
 	idStr	ospath;
-	node_t	*node;
+	node_t*	node;
 	int		count;
 
-	if (!tree->outside_node.occupied)
+	if( !tree->outside_node.occupied )
+	{
 		return;
+	}
 
-	common->Printf ("--- LeakFile ---\n");
+	common->Printf( "--- LeakFile ---\n" );
 
 	//
 	// write the points to the file
@@ -70,26 +72,27 @@ void LeakFile (tree_t *tree)
 	sprintf( filename, "%s.lin", dmapGlobals.mapFileBase );
 	ospath = fileSystem->RelativePathToOSPath( filename );
 	linefile = fopen( ospath, "w" );
-	if ( !linefile ) {
+	if( !linefile )
+	{
 		common->Error( "Couldn't open %s\n", filename.c_str() );
 	}
 
 	count = 0;
 	node = &tree->outside_node;
-	while (node->occupied > 1)
+	while( node->occupied > 1 )
 	{
 		int			next;
-		uPortal_t	*p, *nextportal = NULL;
-		node_t		*nextnode = NULL;
+		uPortal_t*	p, *nextportal = NULL;
+		node_t*		nextnode = NULL;
 		int			s;
 
 		// find the best portal exit
 		next = node->occupied;
-		for (p=node->portals ; p ; p = p->next[!s])
+		for( p = node->portals ; p ; p = p->next[!s] )
 		{
-			s = (p->nodes[0] == node);
-			if (p->nodes[s]->occupied
-				&& p->nodes[s]->occupied < next)
+			s = ( p->nodes[0] == node );
+			if( p->nodes[s]->occupied
+					&& p->nodes[s]->occupied < next )
 			{
 				nextportal = p;
 				nextnode = p->nodes[s];
@@ -98,14 +101,14 @@ void LeakFile (tree_t *tree)
 		}
 		node = nextnode;
 		mid = nextportal->winding->GetCenter();
-		fprintf (linefile, "%f %f %f\n", mid[0], mid[1], mid[2]);
+		fprintf( linefile, "%f %f %f\n", mid[0], mid[1], mid[2] );
 		count++;
 	}
 	// add the occupant center
 	node->occupant->mapEntity->epairs.GetVector( "origin", "", mid );
 
-	fprintf (linefile, "%f %f %f\n", mid[0], mid[1], mid[2]);
-	common->Printf ("%5i point linefile\n", count+1);
+	fprintf( linefile, "%f %f %f\n", mid[0], mid[1], mid[2] );
+	common->Printf( "%5i point linefile\n", count + 1 );
 
-	fclose (linefile);
+	fclose( linefile );
 }

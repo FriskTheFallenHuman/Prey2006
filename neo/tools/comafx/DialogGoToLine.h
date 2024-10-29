@@ -31,13 +31,14 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogGoToLine dialog
 
-class DialogGoToLine : public CDialog {
+class DialogGoToLine : public CDialog
+{
 
-	DECLARE_DYNAMIC(DialogGoToLine)
+	DECLARE_DYNAMIC( DialogGoToLine )
 
 public:
 
-						DialogGoToLine( CWnd* pParent = NULL );   // standard constructor
+	DialogGoToLine( CWnd* pParent = NULL );   // standard constructor
 	virtual				~DialogGoToLine();
 
 	enum				{ IDD = IDD_DIALOG_GOTOLINE };

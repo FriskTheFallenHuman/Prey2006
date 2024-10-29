@@ -31,14 +31,15 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "../../sys/win32/rc/resource.h"
 
-class CAboutDlg : public CDialog {
+class CAboutDlg : public CDialog
+{
 public:
-	CAboutDlg( UINT nIDTemplate, CWnd *pParent = nullptr );
+	CAboutDlg( UINT nIDTemplate, CWnd* pParent = nullptr );
 
-	void SetDialogTitle( const CString &title );
+	void SetDialogTitle( const CString& title );
 
 protected:
-	virtual void DoDataExchange( CDataExchange *pDX );
+	virtual void DoDataExchange( CDataExchange* pDX );
 	virtual BOOL OnInitDialog();
 
 	afx_msg void OnOK( void );

@@ -42,17 +42,17 @@ public:
 	CZClip();
 	~CZClip();
 
-	int		GetTop(void);
-	int		GetBottom(void);
-	void	SetTop(int iNewZ);
-	void	SetBottom(int iNewZ);
-	void	Reset(void);
-	bool	IsEnabled(void);
-	bool	Enable(bool bOnOff);
-	void	Paint(void);
+	int		GetTop( void );
+	int		GetBottom( void );
+	void	SetTop( int iNewZ );
+	void	SetBottom( int iNewZ );
+	void	Reset( void );
+	bool	IsEnabled( void );
+	bool	Enable( bool bOnOff );
+	void	Paint( void );
 
 protected:
-	void	Legalise(void);
+	void	Legalise( void );
 
 	bool	m_bEnabled;
 	int		m_iZClipTop;

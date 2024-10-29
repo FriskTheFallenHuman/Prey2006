@@ -31,32 +31,33 @@ If you have questions concerning this license or the applicable additional terms
 #include "../common/GLWidget.h"
 
 
-class idGLDrawableView : public idGLDrawable {
+class idGLDrawableView : public idGLDrawable
+{
 
 public:
 	idGLDrawableView();
 	~idGLDrawableView();
 
-	virtual void setMedia(const char *name);
-	virtual void draw(int x, int y, int w, int h);
-	virtual void buttonUp(int button){}
-	virtual void buttonDown(int _button, float x, float y);
-	virtual void mouseMove(float x, float y);
+	virtual void setMedia( const char* name );
+	virtual void draw( int x, int y, int w, int h );
+	virtual void buttonUp( int button ) {}
+	virtual void buttonDown( int _button, float x, float y );
+	virtual void mouseMove( float x, float y );
 	virtual void Update() {};
 
-	void UpdateCamera( renderView_t *refdef );
+	void UpdateCamera( renderView_t* refdef );
 	void UpdateModel( void );
 	void UpdateLights( void );
 
 	void addLight( void );
 	void deleteLight( const int lightId );
-	void drawLights( renderView_t *refdef );
+	void drawLights( renderView_t* refdef );
 
 	void InitWorld();
 	void ResetView( void );
 
 	void setLightShader( const int lightId, const idStr shaderName );
-	void setLightColor( const int lightId, const idVec3 &value );
+	void setLightColor( const int lightId, const idVec3& value );
 	void setLightRadius( const int lightId, const float radius );
 	void setLightAllowMove( const int lightId, const bool move );
 	void setObject( int Id );
@@ -66,9 +67,9 @@ public:
 	void setGlobalParm( int parmNum, float value );
 
 protected:
-	idRenderWorld		*world;
-	idRenderModel		*worldModel;
-	const idMaterial	*material;
+	idRenderWorld*		world;
+	idRenderModel*		worldModel;
+	const idMaterial*	material;
 
 	bool			showLights;
 
@@ -84,11 +85,12 @@ protected:
 
 	float			globalParms[MAX_GLOBAL_SHADER_PARMS];
 
-	typedef struct {
+	typedef struct
+	{
 		renderLight_t		renderLight;
 		qhandle_t			lightDefHandle;
 		idVec3				origin;
-		const idMaterial	*shader;
+		const idMaterial*	shader;
 		float				radius;
 		idVec3				color;
 		bool				allowMove;
@@ -103,16 +105,16 @@ protected:
 
 class MaterialPreviewView : public CView, public MaterialView
 {
-	DECLARE_DYNCREATE(MaterialPreviewView)
+	DECLARE_DYNCREATE( MaterialPreviewView )
 
 protected:
 	MaterialPreviewView();
 	virtual ~MaterialPreviewView();
 
 public:
-	virtual void OnDraw(CDC* pDC);      // overridden to draw this view
+	virtual void OnDraw( CDC* pDC );    // overridden to draw this view
 
-	void	MV_OnMaterialSelectionChange(MaterialDoc* pMaterial);
+	void	MV_OnMaterialSelectionChange( MaterialDoc* pMaterial );
 
 	void	OnModelChange( int modelId );
 	void	OnCustomModelChange( idStr modelName );
@@ -123,7 +125,7 @@ public:
 
 	void	OnLightShaderChange( int lightId, idStr shaderName );
 	void	OnLightRadiusChange( int lightId, float radius );
-	void	OnLightColorChange( int lightId, idVec3 &color );
+	void	OnLightColorChange( int lightId, idVec3& color );
 	void	OnLightAllowMoveChange( int lightId, bool move );
 
 	void	OnAddLight( void );
@@ -131,7 +133,7 @@ public:
 
 #ifdef _DEBUG
 	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
+	virtual void Dump( CDumpContext& dc ) const;
 #endif
 
 protected:
@@ -143,6 +145,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg int OnCreate( LPCREATESTRUCT lpCreateStruct );
+	afx_msg void OnSize( UINT nType, int cx, int cy );
 };

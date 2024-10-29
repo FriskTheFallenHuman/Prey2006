@@ -35,10 +35,11 @@ class MaterialTreeView;
 /**
 * Base class for modifications that can be made to a material that can be undone and redone.
 */
-class MaterialModifier {
+class MaterialModifier
+{
 
 public:
-	MaterialModifier(MaterialDocManager* manager, const char* materialName);
+	MaterialModifier( MaterialDocManager* manager, const char* materialName );
 	virtual ~MaterialModifier() {};
 
 	virtual void			Undo() = 0;
@@ -52,10 +53,11 @@ protected:
 /**
 * Base class for Undo/Redo operations for attribute changes
 */
-class AttributeMaterialModifier : public MaterialModifier {
+class AttributeMaterialModifier : public MaterialModifier
+{
 
 public:
-	AttributeMaterialModifier(MaterialDocManager* manager, const char* materialName, int stage, const char* key);
+	AttributeMaterialModifier( MaterialDocManager* manager, const char* materialName, int stage, const char* key );
 	virtual ~AttributeMaterialModifier() {};
 
 	virtual void			Undo() = 0;
@@ -69,10 +71,11 @@ protected:
 /**
 * Undo/Redo operation for string attribute changes
 */
-class AttributeMaterialModifierString : public AttributeMaterialModifier {
+class AttributeMaterialModifierString : public AttributeMaterialModifier
+{
 
 public:
-	AttributeMaterialModifierString(MaterialDocManager* manager, const char* materialName, int stage, const char* key, const char* value, const char* oldValue);
+	AttributeMaterialModifierString( MaterialDocManager* manager, const char* materialName, int stage, const char* key, const char* value, const char* oldValue );
 	virtual ~AttributeMaterialModifierString() {};
 
 	virtual void			Undo();
@@ -87,10 +90,11 @@ protected:
 /**
 * Undo/Redo operation for boolean attribute changes
 */
-class AttributeMaterialModifierBool : public AttributeMaterialModifier {
+class AttributeMaterialModifierBool : public AttributeMaterialModifier
+{
 
 public:
-	AttributeMaterialModifierBool(MaterialDocManager* manager, const char* materialName, int stage, const char* key, bool value, bool oldValue);
+	AttributeMaterialModifierBool( MaterialDocManager* manager, const char* materialName, int stage, const char* key, bool value, bool oldValue );
 	virtual ~AttributeMaterialModifierBool() {};
 
 	virtual void			Undo();
@@ -105,10 +109,11 @@ protected:
 /**
 * Undo/Redo operation for stage moves
 */
-class StageMoveModifier : public MaterialModifier {
+class StageMoveModifier : public MaterialModifier
+{
 
 public:
-	StageMoveModifier(MaterialDocManager* manager, const char* materialName, int from, int to);
+	StageMoveModifier( MaterialDocManager* manager, const char* materialName, int from, int to );
 	virtual ~StageMoveModifier() {};
 
 	virtual void			Undo();
@@ -122,9 +127,10 @@ protected:
 /**
 * Undo/Redo operation for stage deletes
 */
-class StageDeleteModifier : public MaterialModifier {
+class StageDeleteModifier : public MaterialModifier
+{
 public:
-	StageDeleteModifier(MaterialDocManager* manager, const char* materialName, int stageNum, idDict stageData);
+	StageDeleteModifier( MaterialDocManager* manager, const char* materialName, int stageNum, idDict stageData );
 	virtual ~StageDeleteModifier() {};
 
 	virtual void			Undo();
@@ -138,9 +144,10 @@ protected:
 /**
 * Undo/Redo operation for stage inserts
 */
-class StageInsertModifier : public MaterialModifier {
+class StageInsertModifier : public MaterialModifier
+{
 public:
-	StageInsertModifier(MaterialDocManager* manager, const char* materialName, int stageNum, int stageType, const char* stageName);
+	StageInsertModifier( MaterialDocManager* manager, const char* materialName, int stageNum, int stageType, const char* stageName );
 	virtual ~StageInsertModifier() {};
 
 	virtual void			Undo();
@@ -155,9 +162,10 @@ protected:
 /**
 * Undo/Redo operation for adding materials
 */
-class AddMaterialModifier : public MaterialModifier {
+class AddMaterialModifier : public MaterialModifier
+{
 public:
-	AddMaterialModifier(MaterialDocManager* manager, const char* materialName, const char* materialFile);
+	AddMaterialModifier( MaterialDocManager* manager, const char* materialName, const char* materialFile );
 	virtual ~AddMaterialModifier() {};
 
 	virtual void			Undo();
@@ -170,9 +178,10 @@ protected:
 /**
 * Undo/Redo operation for deleting materials
 */
-class DeleteMaterialModifier : public MaterialModifier {
+class DeleteMaterialModifier : public MaterialModifier
+{
 public:
-	DeleteMaterialModifier(MaterialDocManager* manager, const char* materialName);
+	DeleteMaterialModifier( MaterialDocManager* manager, const char* materialName );
 	virtual ~DeleteMaterialModifier() {};
 
 	virtual void			Undo();
@@ -185,9 +194,10 @@ protected:
 /**
 * Undo/Redo operation for moving materials
 */
-class MoveMaterialModifier : public MaterialModifier {
+class MoveMaterialModifier : public MaterialModifier
+{
 public:
-	MoveMaterialModifier(MaterialDocManager* manager, const char* materialName, const char* materialFile, const char* copyMaterial);
+	MoveMaterialModifier( MaterialDocManager* manager, const char* materialName, const char* materialFile, const char* copyMaterial );
 	virtual ~MoveMaterialModifier() {};
 
 	virtual void			Undo();
@@ -201,9 +211,10 @@ protected:
 /**
 * Undo/Redo operation for renaming materials
 */
-class RenameMaterialModifier : public MaterialModifier {
+class RenameMaterialModifier : public MaterialModifier
+{
 public:
-	RenameMaterialModifier(MaterialDocManager* manager, const char* materialName, const char* oldName);
+	RenameMaterialModifier( MaterialDocManager* manager, const char* materialName, const char* oldName );
 	virtual ~RenameMaterialModifier() {};
 
 	virtual void			Undo();
@@ -216,9 +227,10 @@ protected:
 /**
 * Undo/Redo operation for adding material folders
 */
-class AddMaterialFolderModifier : public MaterialModifier {
+class AddMaterialFolderModifier : public MaterialModifier
+{
 public:
-	AddMaterialFolderModifier(MaterialDocManager* manager, const char* materialName, MaterialTreeView* view, HTREEITEM item, HTREEITEM parent);
+	AddMaterialFolderModifier( MaterialDocManager* manager, const char* materialName, MaterialTreeView* view, HTREEITEM item, HTREEITEM parent );
 	virtual ~AddMaterialFolderModifier() {};
 
 	virtual void			Undo();
@@ -233,9 +245,10 @@ protected:
 /**
 * Undo/Redo operation for renaming a material folder
 */
-class RenameMaterialFolderModifier : public MaterialModifier {
+class RenameMaterialFolderModifier : public MaterialModifier
+{
 public:
-	RenameMaterialFolderModifier(MaterialDocManager* manager, const char* materialName, MaterialTreeView* view, HTREEITEM item, const char* oldName);
+	RenameMaterialFolderModifier( MaterialDocManager* manager, const char* materialName, MaterialTreeView* view, HTREEITEM item, const char* oldName );
 	virtual ~RenameMaterialFolderModifier() {};
 
 	virtual void			Undo();
@@ -250,9 +263,10 @@ protected:
 /**
 * Undo/Redo operation for deleting a material folder
 */
-class DeleteMaterialFolderModifier : public MaterialModifier {
+class DeleteMaterialFolderModifier : public MaterialModifier
+{
 public:
-	DeleteMaterialFolderModifier(MaterialDocManager* manager, const char* materialName, MaterialTreeView* view, HTREEITEM parent, idStrList* affectedMaterials);
+	DeleteMaterialFolderModifier( MaterialDocManager* manager, const char* materialName, MaterialTreeView* view, HTREEITEM parent, idStrList* affectedMaterials );
 	virtual ~DeleteMaterialFolderModifier() {};
 
 	virtual void			Undo();

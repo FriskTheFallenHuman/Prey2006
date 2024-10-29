@@ -29,75 +29,76 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFConstraintUniversal dialog
 
-class DialogAFConstraintUniversal : public CDialog {
+class DialogAFConstraintUniversal : public CDialog
+{
 
-	DECLARE_DYNAMIC(DialogAFConstraintUniversal)
+	DECLARE_DYNAMIC( DialogAFConstraintUniversal )
 
 public:
-						DialogAFConstraintUniversal(CWnd* pParent = NULL);   // standard constructor
+	DialogAFConstraintUniversal( CWnd* pParent = NULL ); // standard constructor
 	virtual				~DialogAFConstraintUniversal();
-	void				LoadFile( idDeclAF *af );
+	void				LoadFile( idDeclAF* af );
 	void				SaveFile( void );
-	void				LoadConstraint( idDeclAF_Constraint *c );
+	void				LoadConstraint( idDeclAF_Constraint* c );
 	void				SaveConstraint( void );
 	void				UpdateFile( void );
 
-						enum { IDD = IDD_DIALOG_AF_CONSTRAINT_UNIVERSAL };
+	enum { IDD = IDD_DIALOG_AF_CONSTRAINT_UNIVERSAL };
 
 protected:
-	virtual void		DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void		DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	virtual INT_PTR		OnToolHitTest( CPoint point, TOOLINFO* pTI ) const;
-	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR *pNMHDR, LRESULT *pResult );
+	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnBnClickedRadioAnchorJoint();
 	afx_msg void		OnBnClickedRadioAnchorCoordinates();
 	afx_msg void		OnCbnSelchangeComboAnchorJoint();
 	afx_msg void		OnEnChangeEditAnchorX();
 	afx_msg void		OnEnChangeEditAnchorY();
 	afx_msg void		OnEnChangeEditAnchorZ();
-	afx_msg void		OnDeltaposSpinAnchorX(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void		OnDeltaposSpinAnchorY(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void		OnDeltaposSpinAnchorZ(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinAnchorX( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void		OnDeltaposSpinAnchorY( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void		OnDeltaposSpinAnchorZ( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnBnClickedRadioUniversalBoneShaft1();
 	afx_msg void		OnBnClickedRadioUniversalAnglesShaft1();
 	afx_msg void		OnCbnSelchangeComboUniversalJoint1Shaft1();
 	afx_msg void		OnCbnSelchangeComboUniversalJoint2Shaft1();
 	afx_msg void		OnEnChangeEditUniversalPitchShaft1();
-	afx_msg void		OnDeltaposSpinUniversalPitchShaft1(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinUniversalPitchShaft1( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditUniversalYawShaft1();
-	afx_msg void		OnDeltaposSpinUniversalYawShaft1(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinUniversalYawShaft1( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnBnClickedRadioUniversalBoneShaft2();
 	afx_msg void		OnBnClickedRadioUniversalAnglesShaft2();
 	afx_msg void		OnCbnSelchangeComboUniversalJoint1Shaft2();
 	afx_msg void		OnCbnSelchangeComboUniversalJoint2Shaft2();
 	afx_msg void		OnEnChangeEditUniversalPitchShaft2();
-	afx_msg void		OnDeltaposSpinUniversalPitchShaft2(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinUniversalPitchShaft2( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditUniversalYawShaft2();
-	afx_msg void		OnDeltaposSpinUniversalYawShaft2(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinUniversalYawShaft2( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnBnClickedRadioUniversalLimitNone();
 	afx_msg void		OnBnClickedRadioUniversalLimitCone();
 	afx_msg void		OnBnClickedRadioUniversalLimitPyramid();
 	afx_msg void		OnEnChangeEditUniversalLimitConeAngle();
-	afx_msg void		OnDeltaposSpinUniversalLimitConeAngle(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinUniversalLimitConeAngle( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditUniversalLimitPyramidAngle1();
-	afx_msg void		OnDeltaposSpinUniversalLimitPyramidAngle1(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinUniversalLimitPyramidAngle1( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditUniversalLimitPyramidAngle2();
-	afx_msg void		OnDeltaposSpinUniversalLimitPyramidAngle2(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinUniversalLimitPyramidAngle2( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditUniversalLimitRoll();
-	afx_msg void		OnDeltaposSpinUniversalLimitRoll(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinUniversalLimitRoll( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnBnClickedRadioUniversalLimitBone();
 	afx_msg void		OnBnClickedRadioUniversalLimitAngles();
 	afx_msg void		OnCbnSelchangeComboUniversalLimitJoint1();
 	afx_msg void		OnCbnSelchangeComboUniversalLimitJoint2();
 	afx_msg void		OnEnChangeEditUniversalLimitPitch();
-	afx_msg void		OnDeltaposSpinUniversalLimitPitch(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinUniversalLimitPitch( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnEnChangeEditUniversalLimitYaw();
-	afx_msg void		OnDeltaposSpinUniversalLimitYaw(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void		OnDeltaposSpinUniversalLimitYaw( NMHDR* pNMHDR, LRESULT* pResult );
 
 	DECLARE_MESSAGE_MAP()
 
 private:
-	idDeclAF *			file;
-	idDeclAF_Constraint*constraint;
+	idDeclAF* 			file;
+	idDeclAF_Constraint* constraint;
 
 	//{{AFX_DATA(DialogAFConstraintUniversal)
 	CComboBox			m_comboAnchorJoint;

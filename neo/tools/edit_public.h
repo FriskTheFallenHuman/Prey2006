@@ -46,40 +46,40 @@ class	idInterpreter;
 void	RadiantInit( void );
 void	RadiantShutdown( void );
 void	RadiantRun( void );
-void	RadiantPrint( const char *text );
+void	RadiantPrint( const char* text );
 
 
 // in-game Light Editor
-void	LightEditorInit( const idDict *spawnArgs );
+void	LightEditorInit( const idDict* spawnArgs );
 void	LightEditorShutdown( void );
 void	LightEditorRun( void );
 
 
 // in-game Sound Editor
-void	SoundEditorInit( const idDict *spawnArgs );
+void	SoundEditorInit( const idDict* spawnArgs );
 void	SoundEditorShutdown( void );
 void	SoundEditorRun( void );
 
 
 // in-game Articulated Figure Editor
-void	AFEditorInit( const idDict *spawnArgs );
+void	AFEditorInit( const idDict* spawnArgs );
 void	AFEditorShutdown( void );
 void	AFEditorRun( void );
 
 
 // in-game Particle Editor
-void	ParticleEditorInit( const idDict *spawnArgs );
+void	ParticleEditorInit( const idDict* spawnArgs );
 void	ParticleEditorShutdown( void );
 void	ParticleEditorRun( void );
 
 // in-game Script Editor
-void	ScriptEditorInit( const idDict *spawnArgs );
+void	ScriptEditorInit( const idDict* spawnArgs );
 void	ScriptEditorShutdown( void );
 void	ScriptEditorRun( void );
 
 
 // in-game Declaration Browser
-void	DeclBrowserInit( const idDict *spawnArgs );
+void	DeclBrowserInit( const idDict* spawnArgs );
 void	DeclBrowserShutdown( void );
 void	DeclBrowserRun( void );
 void	DeclBrowserReloadDeclarations( void );
@@ -89,21 +89,21 @@ void	DeclBrowserReloadDeclarations( void );
 void	GUIEditorInit( void );
 void	GUIEditorShutdown( void );
 void	GUIEditorRun( void );
-bool	GUIEditorHandleMessage( void *msg );
+bool	GUIEditorHandleMessage( void* msg );
 
 
 // Script Debugger
 void	DebuggerClientLaunch( void );
-void	DebuggerClientInit( const char *cmdline );
+void	DebuggerClientInit( const char* cmdline );
 bool	DebuggerServerInit( void );
 void	DebuggerServerShutdown( void );
-void	DebuggerServerPrint( const char *text );
-void	DebuggerServerCheckBreakpoint( idInterpreter *interpreter, idProgram *program, int instructionPointer );
+void	DebuggerServerPrint( const char* text );
+void	DebuggerServerCheckBreakpoint( idInterpreter* interpreter, idProgram* program, int instructionPointer );
 
 //Material Editor
 void	MaterialEditorInit( void );
 void	MaterialEditorRun( void );
 void	MaterialEditorShutdown( void );
-void	MaterialEditorPrintConsole( const char *msg );
+void	MaterialEditorPrintConsole( const char* msg );
 
 #endif /* !__EDIT_PUBLIC_H__ */

@@ -29,17 +29,17 @@ If you have questions concerning this license or the applicable additional terms
 #define GEDELETEMODIFIER_H_
 
 #ifndef GEMODIFIER_H_
-#include "GEModifier.h"
+	#include "GEModifier.h"
 #endif
 
 class rvGEDeleteModifier : public rvGEModifier
 {
 public:
 
-	rvGEDeleteModifier ( const char* name, idWindow* window );
+	rvGEDeleteModifier( const char* name, idWindow* window );
 
-	virtual bool		Apply	( void );
-	virtual bool		Undo	( void );
+	virtual bool		Apply( void );
+	virtual bool		Undo( void );
 };
 
 #endif // GEDELETEMODIFIER_H_

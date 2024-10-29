@@ -34,21 +34,23 @@ If you have questions concerning this license or the applicable additional terms
 #include "CapDialog.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
 // CCapDialog dialog
 
-CCapDialog::CCapDialog( CWnd *pParent )
-	: CDialogEx( CCapDialog::IDD, pParent ) {
+CCapDialog::CCapDialog( CWnd* pParent )
+	: CDialogEx( CCapDialog::IDD, pParent )
+{
 	m_nCap = 0;
 }
 
 
-void CCapDialog::DoDataExchange( CDataExchange *pDX ) {
-	CDialogEx::DoDataExchange(pDX);
-	DDX_Radio(pDX, IDC_RADIO_CAP, m_nCap);
+void CCapDialog::DoDataExchange( CDataExchange* pDX )
+{
+	CDialogEx::DoDataExchange( pDX );
+	DDX_Radio( pDX, IDC_RADIO_CAP, m_nCap );
 }
 
-BEGIN_MESSAGE_MAP(CCapDialog, CDialogEx)
+BEGIN_MESSAGE_MAP( CCapDialog, CDialogEx )
 END_MESSAGE_MAP()

@@ -30,9 +30,10 @@ If you have questions concerning this license or the applicable additional terms
 
 // CEntityListDlg dialog
 
-class CEntityListDlg : public CDialogEx {
+class CEntityListDlg : public CDialogEx
+{
 public:
-	CEntityListDlg( CWnd *pParent = NULL );   // standard constructor
+	CEntityListDlg( CWnd* pParent = NULL );   // standard constructor
 	void UpdateList();
 	static void ShowDialog();
 
@@ -40,7 +41,7 @@ public:
 	CListCtrl	m_lstEntity;
 
 protected:
-	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 
 protected:
 	afx_msg void OnSelect();

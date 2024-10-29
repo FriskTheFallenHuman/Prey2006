@@ -31,11 +31,13 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "AboutBoxDlg.h"
 
-CAboutDlg::CAboutDlg( UINT nIDTemplate, CWnd *pParent /*=nullptr*/ )
-	: CDialog( nIDTemplate, pParent ) {
+CAboutDlg::CAboutDlg( UINT nIDTemplate, CWnd* pParent /*=nullptr*/ )
+	: CDialog( nIDTemplate, pParent )
+{
 }
 
-void CAboutDlg::DoDataExchange( CDataExchange *pDX ) {
+void CAboutDlg::DoDataExchange( CDataExchange* pDX )
+{
 	CDialog::DoDataExchange( pDX );
 }
 
@@ -43,24 +45,28 @@ BEGIN_MESSAGE_MAP( CAboutDlg, CDialog )
 	ON_COMMAND( IDOK, &CAboutDlg::OnOK )
 END_MESSAGE_MAP()
 
-void CAboutDlg::OnOK( void ) {
+void CAboutDlg::OnOK( void )
+{
 	EndDialog( IDOK );
 }
 
-void CAboutDlg::SetDialogTitle( const CString &title ) {
+void CAboutDlg::SetDialogTitle( const CString& title )
+{
 	m_strTitle = title;
 }
 
-BOOL CAboutDlg::OnInitDialog() {
+BOOL CAboutDlg::OnInitDialog()
+{
 	CDialog::OnInitDialog();
 
-	if ( !m_strTitle.IsEmpty() ) {
+	if( !m_strTitle.IsEmpty() )
+	{
 		SetWindowText( m_strTitle );
 	}
 
 	CString buffer;
 	buffer.Format( "Renderer:\t%s", qglGetString( GL_RENDERER ) );
-	SetDlgItemText( IDC_ABOUT_GLRENDERER, buffer);
+	SetDlgItemText( IDC_ABOUT_GLRENDERER, buffer );
 
 	buffer.Format( "Version:\t\t%s", qglGetString( GL_VERSION ) );
 	SetDlgItemText( IDC_ABOUT_GLVERSION, buffer );
@@ -68,19 +74,23 @@ BOOL CAboutDlg::OnInitDialog() {
 	buffer.Format( "Vendor:\t\t%s", qglGetString( GL_VENDOR ) );
 	SetDlgItemText( IDC_ABOUT_GLVENDOR, buffer );
 
-	const GLubyte *extensions = qglGetString( GL_EXTENSIONS );
-	if ( extensions ) {
-		CString extStr = (char *)extensions;
-		CListBox *pListBox = (CListBox *)GetDlgItem( IDC_ABOUT_GLEXTENSIONS );
+	const GLubyte* extensions = qglGetString( GL_EXTENSIONS );
+	if( extensions )
+	{
+		CString extStr = ( char* )extensions;
+		CListBox* pListBox = ( CListBox* )GetDlgItem( IDC_ABOUT_GLEXTENSIONS );
 
 		int start = 0;
 		int end;
-		while ( ( end = extStr.Find( ' ', start ) ) != -1 ) {
+		while( ( end = extStr.Find( ' ', start ) ) != -1 )
+		{
 			pListBox->AddString( extStr.Mid( start, end - start ) );
 			start = end + 1;
 		}
 		pListBox->AddString( extStr.Mid( start ) );
-	} else {
+	}
+	else
+	{
 		SetDlgItemText( IDC_ABOUT_GLEXTENSIONS, "No extensions found." );
 	}
 

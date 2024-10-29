@@ -30,16 +30,17 @@ If you have questions concerning this license or the applicable additional terms
 
 // CScaleDialog dialog
 
-class CScaleDialog : public CDialogEx {
+class CScaleDialog : public CDialogEx
+{
 public:
-	CScaleDialog( CWnd *pParent = NULL );   // standard constructor
+	CScaleDialog( CWnd* pParent = NULL );   // standard constructor
 	enum { IDD = IDD_DIALOG_SCALE };
 	float	m_fZ;
 	float	m_fX;
 	float	m_fY;
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 };

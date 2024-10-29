@@ -32,7 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 class CTabsDlg;
 class CTearoffContainerWindow : public CWnd
 {
-	DECLARE_DYNAMIC(CTearoffContainerWindow)
+	DECLARE_DYNAMIC( CTearoffContainerWindow )
 
 public:
 	CTearoffContainerWindow();
@@ -46,12 +46,12 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	bool m_DragPreviewActive;
 public:
-	afx_msg void OnNcLButtonDblClk(UINT nHitTest, CPoint point);
-	void SetDialog ( CWnd* dlg , int ID );
-	void SetDockManager ( CTabsDlg* dlg );
+	afx_msg void OnNcLButtonDblClk( UINT nHitTest, CPoint point );
+	void SetDialog( CWnd* dlg , int ID );
+	void SetDockManager( CTabsDlg* dlg );
 	afx_msg void OnClose();
 	BOOL PreTranslateMessage( MSG* pMsg );
-	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnSize( UINT nType, int cx, int cy );
 	afx_msg void OnDestroy();
-	afx_msg void OnSetFocus(CWnd* pOldWnd);
+	afx_msg void OnSetFocus( CWnd* pOldWnd );
 };

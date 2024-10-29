@@ -28,6 +28,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef GEOPTIONSDLG_H_
 #define GEOPTIONSDLG_H_
 
-bool GEOptionsDlg_DoModal ( HWND parent );
+bool GEOptionsDlg_DoModal( HWND parent );
 
 #endif // GEOPTIONSDLG_H_

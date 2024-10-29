@@ -30,25 +30,26 @@ If you have questions concerning this license or the applicable additional terms
 
 // CCommandsDlg dialog
 
-class CCommandsDlg : public CDialogEx {
+class CCommandsDlg : public CDialogEx
+{
 public:
-    CCommandsDlg( CWnd *Parent = nullptr );   // standard constructor
+	CCommandsDlg( CWnd* Parent = nullptr );   // standard constructor
 
-    // Dialog Data
-    enum { IDD = IDD_DLG_COMMANDLIST };
-    CListBox m_lstCommands;
+	// Dialog Data
+	enum { IDD = IDD_DLG_COMMANDLIST };
+	CListBox m_lstCommands;
 
 protected:
-    virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 
-    // Generated message map functions
-    virtual BOOL OnInitDialog();
-    DECLARE_MESSAGE_MAP()
+	// Generated message map functions
+	virtual BOOL OnInitDialog();
+	DECLARE_MESSAGE_MAP()
 
 private:
-    void PopulateCommandList();
-    CString FormatCommandLine( int commandIndex );
-    CString GetCommandKeyString( int commandIndex );
-    CString GetCommandModifiersString( int commandIndex );
-    void WriteCommandToFile( CFile &fileout, const CString &strLine );
+	void PopulateCommandList();
+	CString FormatCommandLine( int commandIndex );
+	CString GetCommandKeyString( int commandIndex );
+	CString GetCommandModifiersString( int commandIndex );
+	void WriteCommandToFile( CFile& fileout, const CString& strLine );
 };

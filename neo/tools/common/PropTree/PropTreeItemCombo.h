@@ -2,7 +2,7 @@
 #define AFX_PROPTREEITEMCOMBO_H__9916BC6F_751F_4B15_996F_3C9F6334A259__INCLUDED_
 
 #if _MSC_VER > 1000
-#pragma once
+	#pragma once
 #endif // _MSC_VER > 1000
 // PropTreeItemCombo.h : header file
 //
@@ -37,13 +37,13 @@ public:
 // Attributes
 public:
 	// The attribute area needs drawing
-	virtual void DrawAttribute(CDC* pDC, const RECT& rc);
+	virtual void DrawAttribute( CDC* pDC, const RECT& rc );
 
 	// Retrieve the item's attribute value
 	virtual LPARAM GetItemValue();
 
 	// Set the item's attribute value
-	virtual void SetItemValue(LPARAM lParam);
+	virtual void SetItemValue( LPARAM lParam );
 
 	// Called when attribute area has changed size
 	virtual void OnMove();
@@ -55,16 +55,16 @@ public:
 	virtual void OnCommit();
 
 	// Called to activate the item
-	virtual void OnActivate(int activateType, CPoint point);
+	virtual void OnActivate( int activateType, CPoint point );
 
 	// Create your combo box with your specified styles
-	BOOL CreateComboBox(DWORD dwStyle = WS_CHILD|WS_VSCROLL|CBS_SORT|CBS_DROPDOWNLIST);
+	BOOL CreateComboBox( DWORD dwStyle = WS_CHILD | WS_VSCROLL | CBS_SORT | CBS_DROPDOWNLIST );
 
 	// Create combo box with TRUE/FALSE selections
 	BOOL CreateComboBoxBool();
 
 	// Set the height for the dropdown combo box
-	void SetDropDownHeight(LONG nDropHeight);
+	void SetDropDownHeight( LONG nDropHeight );
 
 	// Get the height of the dropdown combo box
 	LONG GetDropDownHeight();
@@ -75,7 +75,7 @@ protected:
 
 // Operations
 protected:
-	LONG FindCBData(LPARAM lParam);
+	LONG FindCBData( LPARAM lParam );
 
 // Overrides
 	// ClassWizard generated virtual function overrides

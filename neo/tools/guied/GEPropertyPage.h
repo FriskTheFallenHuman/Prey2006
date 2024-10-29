@@ -33,15 +33,27 @@ class rvGEPropertyPage
 {
 public:
 
-	rvGEPropertyPage ( );
+	rvGEPropertyPage( );
 
-	virtual bool	Init			( void ) { return true; }
-	virtual bool	Apply			( void ) { return true; }
-	virtual bool	SetActive		( void ) { return true; }
-	virtual bool	KillActive		( void ) { return true; }
-	virtual int		HandleMessage	( UINT msg, WPARAM wParam, LPARAM lParam );
+	virtual bool	Init( void )
+	{
+		return true;
+	}
+	virtual bool	Apply( void )
+	{
+		return true;
+	}
+	virtual bool	SetActive( void )
+	{
+		return true;
+	}
+	virtual bool	KillActive( void )
+	{
+		return true;
+	}
+	virtual int		HandleMessage( UINT msg, WPARAM wParam, LPARAM lParam );
 
-	static INT_PTR CALLBACK WndProc ( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
+	static INT_PTR CALLBACK WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
 
 protected:
 

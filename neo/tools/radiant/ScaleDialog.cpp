@@ -34,25 +34,27 @@ If you have questions concerning this license or the applicable additional terms
 #include "ScaleDialog.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
 // CScaleDialog dialog
 
-CScaleDialog::CScaleDialog( CWnd *pParent )
-	: CDialogEx( CScaleDialog::IDD, pParent ) {
+CScaleDialog::CScaleDialog( CWnd* pParent )
+	: CDialogEx( CScaleDialog::IDD, pParent )
+{
 	m_fZ = 1.0f;
 	m_fX = 1.0f;
 	m_fY = 1.0f;
 }
 
 
-void CScaleDialog::DoDataExchange( CDataExchange *pDX ) {
-	CDialogEx::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT_Z, m_fZ);
-	DDX_Text(pDX, IDC_EDIT_X, m_fX);
-	DDX_Text(pDX, IDC_EDIT_Y, m_fY);
+void CScaleDialog::DoDataExchange( CDataExchange* pDX )
+{
+	CDialogEx::DoDataExchange( pDX );
+	DDX_Text( pDX, IDC_EDIT_Z, m_fZ );
+	DDX_Text( pDX, IDC_EDIT_X, m_fX );
+	DDX_Text( pDX, IDC_EDIT_Y, m_fY );
 }
 
-BEGIN_MESSAGE_MAP(CScaleDialog, CDialogEx)
+BEGIN_MESSAGE_MAP( CScaleDialog, CDialogEx )
 END_MESSAGE_MAP()

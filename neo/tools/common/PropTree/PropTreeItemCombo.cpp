@@ -26,9 +26,9 @@
 #include "PropTreeItemCombo.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
+	#define new DEBUG_NEW
+	#undef THIS_FILE
+	static char THIS_FILE[] = __FILE__;
 #endif
 
 #define DROPDOWN_HEIGHT			100
@@ -37,8 +37,8 @@ static char THIS_FILE[] = __FILE__;
 // CPropTreeItemCombo
 
 CPropTreeItemCombo::CPropTreeItemCombo() :
-	m_lComboData(0),
-	m_nDropHeight(DROPDOWN_HEIGHT)
+	m_lComboData( 0 ),
+	m_nDropHeight( DROPDOWN_HEIGHT )
 {
 }
 
@@ -47,41 +47,45 @@ CPropTreeItemCombo::~CPropTreeItemCombo()
 }
 
 
-BEGIN_MESSAGE_MAP(CPropTreeItemCombo, CComboBox)
+BEGIN_MESSAGE_MAP( CPropTreeItemCombo, CComboBox )
 	//{{AFX_MSG_MAP(CPropTreeItemCombo)
-	ON_CONTROL_REFLECT(CBN_SELCHANGE, OnSelchange)
-	ON_CONTROL_REFLECT(CBN_KILLFOCUS, OnKillfocus)
+	ON_CONTROL_REFLECT( CBN_SELCHANGE, OnSelchange )
+	ON_CONTROL_REFLECT( CBN_KILLFOCUS, OnKillfocus )
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeItemCombo message handlers
 
-void CPropTreeItemCombo::DrawAttribute(CDC* pDC, const RECT& rc)
+void CPropTreeItemCombo::DrawAttribute( CDC* pDC, const RECT& rc )
 {
-	ASSERT(m_pProp!=NULL);
+	ASSERT( m_pProp != NULL );
 
 	// verify the window has been created
-	if (!IsWindow(m_hWnd))
+	if( !IsWindow( m_hWnd ) )
 	{
-		TRACE0("CPropTreeItemCombo::DrawAttribute() - The window has not been created\n");
+		TRACE0( "CPropTreeItemCombo::DrawAttribute() - The window has not been created\n" );
 		return;
 	}
 
-	pDC->SelectObject(IsReadOnly() ? m_pProp->GetNormalFont() : m_pProp->GetBoldFont());
-	pDC->SetTextColor(RGB(0,0,0));
-	pDC->SetBkMode(TRANSPARENT);
+	pDC->SelectObject( IsReadOnly() ? m_pProp->GetNormalFont() : m_pProp->GetBoldFont() );
+	pDC->SetTextColor( RGB( 0, 0, 0 ) );
+	pDC->SetBkMode( TRANSPARENT );
 
 	CRect r = rc;
 	CString s;
 	LONG idx;
 
-	if ((idx = GetCurSel())!=CB_ERR)
-		GetLBText(idx, s);
+	if( ( idx = GetCurSel() ) != CB_ERR )
+	{
+		GetLBText( idx, s );
+	}
 	else
-		s = _T("");
+	{
+		s = _T( "" );
+	}
 
-	pDC->DrawText(s, r, DT_SINGLELINE|DT_VCENTER);
+	pDC->DrawText( s, r, DT_SINGLELINE | DT_VCENTER );
 }
 
 
@@ -91,7 +95,7 @@ LPARAM CPropTreeItemCombo::GetItemValue()
 }
 
 
-void CPropTreeItemCombo::SetItemValue(LPARAM lParam)
+void CPropTreeItemCombo::SetItemValue( LPARAM lParam )
 {
 	m_lComboData = lParam;
 	OnRefresh();
@@ -100,17 +104,21 @@ void CPropTreeItemCombo::SetItemValue(LPARAM lParam)
 
 void CPropTreeItemCombo::OnMove()
 {
-	if (IsWindow(m_hWnd) && IsWindowVisible())
-		SetWindowPos(NULL, m_rc.left, m_rc.top, m_rc.Width() + 1, m_rc.Height(), SWP_NOZORDER|SWP_SHOWWINDOW);
+	if( IsWindow( m_hWnd ) && IsWindowVisible() )
+	{
+		SetWindowPos( NULL, m_rc.left, m_rc.top, m_rc.Width() + 1, m_rc.Height(), SWP_NOZORDER | SWP_SHOWWINDOW );
+	}
 }
 
 
 void CPropTreeItemCombo::OnRefresh()
 {
-	LONG idx = FindCBData(m_lComboData);
+	LONG idx = FindCBData( m_lComboData );
 
-	if (idx!=CB_ERR)
-		SetCurSel(idx);
+	if( idx != CB_ERR )
+	{
+		SetCurSel( idx );
+	}
 }
 
 
@@ -119,43 +127,51 @@ void CPropTreeItemCombo::OnCommit()
 	LONG idx;
 
 	// store combo box item data
-	if ((idx = GetCurSel())==CB_ERR)
+	if( ( idx = GetCurSel() ) == CB_ERR )
+	{
 		m_lComboData = 0;
+	}
 	else
-		m_lComboData = (LPARAM)GetItemData(idx);
+	{
+		m_lComboData = ( LPARAM )GetItemData( idx );
+	}
 
-	ShowWindow(SW_HIDE);
+	ShowWindow( SW_HIDE );
 }
 
 
-void CPropTreeItemCombo::OnActivate(int activateType, CPoint point)
+void CPropTreeItemCombo::OnActivate( int activateType, CPoint point )
 {
 	// activate the combo box
-	SetWindowPos(NULL, m_rc.left, m_rc.top, m_rc.Width() + 1, m_rc.Height() + m_nDropHeight, SWP_NOZORDER|SWP_SHOWWINDOW);
+	SetWindowPos( NULL, m_rc.left, m_rc.top, m_rc.Width() + 1, m_rc.Height() + m_nDropHeight, SWP_NOZORDER | SWP_SHOWWINDOW );
 	SetFocus();
 
-	if (GetCount())
-		ShowDropDown(TRUE);
+	if( GetCount() )
+	{
+		ShowDropDown( TRUE );
+	}
 }
 
 
-BOOL CPropTreeItemCombo::CreateComboBox(DWORD dwStyle)
+BOOL CPropTreeItemCombo::CreateComboBox( DWORD dwStyle )
 {
-	ASSERT(m_pProp!=NULL);
+	ASSERT( m_pProp != NULL );
 
-	if (IsWindow(m_hWnd))
+	if( IsWindow( m_hWnd ) )
+	{
 		DestroyWindow();
+	}
 
 	// force as not visible child window
-	dwStyle = (WS_CHILD|WS_VSCROLL|dwStyle) & ~WS_VISIBLE;
+	dwStyle = ( WS_CHILD | WS_VSCROLL | dwStyle ) & ~WS_VISIBLE;
 
-	if (!Create(dwStyle, CRect(0,0,0,0), m_pProp->GetCtrlParent(), GetCtrlID()))
+	if( !Create( dwStyle, CRect( 0, 0, 0, 0 ), m_pProp->GetCtrlParent(), GetCtrlID() ) )
 	{
-		TRACE0("CPropTreeItemCombo::CreateComboBox() - failed to create combo box\n");
+		TRACE0( "CPropTreeItemCombo::CreateComboBox() - failed to create combo box\n" );
 		return FALSE;
 	}
 
-	SendMessage(WM_SETFONT, (WPARAM)m_pProp->GetNormalFont()->m_hObject);
+	SendMessage( WM_SETFONT, ( WPARAM )m_pProp->GetNormalFont()->m_hObject );
 
 	return TRUE;
 }
@@ -163,46 +179,50 @@ BOOL CPropTreeItemCombo::CreateComboBox(DWORD dwStyle)
 
 BOOL CPropTreeItemCombo::CreateComboBoxBool()
 {
-	ASSERT(m_pProp!=NULL);
+	ASSERT( m_pProp != NULL );
 
-	if (IsWindow(m_hWnd))
+	if( IsWindow( m_hWnd ) )
+	{
 		DestroyWindow();
+	}
 
 	// force as a non-visible child window
-	DWORD dwStyle = WS_CHILD|WS_VSCROLL|CBS_SORT|CBS_DROPDOWNLIST;
+	DWORD dwStyle = WS_CHILD | WS_VSCROLL | CBS_SORT | CBS_DROPDOWNLIST;
 
-	if (!Create(dwStyle, CRect(0,0,0,0), m_pProp->GetCtrlParent(), GetCtrlID()))
+	if( !Create( dwStyle, CRect( 0, 0, 0, 0 ), m_pProp->GetCtrlParent(), GetCtrlID() ) )
 	{
-		TRACE0("CPropTreeItemCombo::CreateComboBoxBool() - failed to create combo box\n");
+		TRACE0( "CPropTreeItemCombo::CreateComboBoxBool() - failed to create combo box\n" );
 		return FALSE;
 	}
 
-	SendMessage(WM_SETFONT, (WPARAM)m_pProp->GetNormalFont()->m_hObject);
+	SendMessage( WM_SETFONT, ( WPARAM )m_pProp->GetNormalFont()->m_hObject );
 
 	// file the combo box
 	LONG idx;
 	CString s;
 
-	s.LoadString(IDS_TRUE);
-	idx = AddString(s);
-	SetItemData(idx, TRUE);
+	s.LoadString( IDS_TRUE );
+	idx = AddString( s );
+	SetItemData( idx, TRUE );
 
-	s.LoadString(IDS_FALSE);
-	idx = AddString(s);
-	SetItemData(idx, FALSE);
+	s.LoadString( IDS_FALSE );
+	idx = AddString( s );
+	SetItemData( idx, FALSE );
 
 	return TRUE;
 }
 
 
-LONG CPropTreeItemCombo::FindCBData(LPARAM lParam)
+LONG CPropTreeItemCombo::FindCBData( LPARAM lParam )
 {
 	LONG idx;
 
-	for (idx = 0; idx < GetCount(); idx++)
+	for( idx = 0; idx < GetCount(); idx++ )
 	{
-		if (GetItemData(idx)==(DWORD)lParam)
+		if( GetItemData( idx ) == ( DWORD )lParam )
+		{
 			return idx;
+		}
 	}
 
 	return CB_ERR;
@@ -221,7 +241,7 @@ void CPropTreeItemCombo::OnKillfocus()
 }
 
 
-void CPropTreeItemCombo::SetDropDownHeight(LONG nDropHeight)
+void CPropTreeItemCombo::SetDropDownHeight( LONG nDropHeight )
 {
 	m_nDropHeight = nDropHeight;
 }

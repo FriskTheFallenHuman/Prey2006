@@ -34,10 +34,12 @@ If you have questions concerning this license or the applicable additional terms
 
 CSplashScreen* CSplashScreen::c_pSplashWnd = NULL;
 
-CSplashScreen::CSplashScreen() {
+CSplashScreen::CSplashScreen()
+{
 }
 
-CSplashScreen::~CSplashScreen() {
+CSplashScreen::~CSplashScreen()
+{
 }
 
 BEGIN_MESSAGE_MAP( CSplashScreen, CWnd )
@@ -45,24 +47,31 @@ BEGIN_MESSAGE_MAP( CSplashScreen, CWnd )
 	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
-void CSplashScreen::ShowSplashScreen( CWnd *pParentWnd ) {
-	if ( c_pSplashWnd == NULL ) {
+void CSplashScreen::ShowSplashScreen( CWnd* pParentWnd )
+{
+	if( c_pSplashWnd == NULL )
+	{
 		c_pSplashWnd = new CSplashScreen;
-		if ( !c_pSplashWnd->Create( pParentWnd ) ) {
+		if( !c_pSplashWnd->Create( pParentWnd ) )
+		{
 			delete c_pSplashWnd;
 		}
 	}
 }
 
-void CSplashScreen::HideSplashScreen() {
-	if ( c_pSplashWnd != NULL ) {
+void CSplashScreen::HideSplashScreen()
+{
+	if( c_pSplashWnd != NULL )
+	{
 		c_pSplashWnd->Hide();
 		c_pSplashWnd = NULL;
 	}
 }
 
-BOOL CSplashScreen::Create( CWnd *pParentWnd ) {
-	if ( !m_bitmap.LoadBitmap( IDB_BITMAP_LOGO ) ) {
+BOOL CSplashScreen::Create( CWnd* pParentWnd )
+{
+	if( !m_bitmap.LoadBitmap( IDB_BITMAP_LOGO ) )
+	{
 		return FALSE;
 	}
 
@@ -72,7 +81,8 @@ BOOL CSplashScreen::Create( CWnd *pParentWnd ) {
 	CRect rect( 0, 0, bm.bmWidth, bm.bmHeight );
 	DWORD dwStyle = WS_POPUP | WS_VISIBLE;
 
-	if ( !CWnd::CreateEx( 0, AfxRegisterWndClass( 0, AfxGetApp()->LoadStandardCursor( IDC_ARROW ) ), NULL, dwStyle, rect, pParentWnd, 0 ) ) {
+	if( !CWnd::CreateEx( 0, AfxRegisterWndClass( 0, AfxGetApp()->LoadStandardCursor( IDC_ARROW ) ), NULL, dwStyle, rect, pParentWnd, 0 ) )
+	{
 		return FALSE;
 	}
 
@@ -94,20 +104,23 @@ void CSplashScreen::Hide()
 	DestroyWindow();
 }
 
-void CSplashScreen::PostNcDestroy() {
+void CSplashScreen::PostNcDestroy()
+{
 	delete this;
 }
 
-void CSplashScreen::OnPaint() {
+void CSplashScreen::OnPaint()
+{
 	CPaintDC dc( this );
 	DrawSplash( &dc );
 }
 
-void CSplashScreen::DrawSplash( CDC *pDC ) {
+void CSplashScreen::DrawSplash( CDC* pDC )
+{
 	CDC dcImage;
 	dcImage.CreateCompatibleDC( pDC );
 
-	CBitmap *pOldBitmap = dcImage.SelectObject( &m_bitmap );
+	CBitmap* pOldBitmap = dcImage.SelectObject( &m_bitmap );
 
 	BITMAP bm;
 	m_bitmap.GetBitmap( &bm );
@@ -117,6 +130,7 @@ void CSplashScreen::DrawSplash( CDC *pDC ) {
 	dcImage.SelectObject( pOldBitmap );
 }
 
-void CSplashScreen::OnTimer( UINT_PTR nIDEvent ) {
+void CSplashScreen::OnTimer( UINT_PTR nIDEvent )
+{
 	//Hide();
 }

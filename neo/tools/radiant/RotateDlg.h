@@ -30,9 +30,10 @@ If you have questions concerning this license or the applicable additional terms
 
 // CRotateDlg dialog
 
-class CRotateDlg : public CDialogEx {
+class CRotateDlg : public CDialogEx
+{
 public:
-	CRotateDlg( CWnd *pParent = NULL );   // standard constructor
+	CRotateDlg( CWnd* pParent = NULL );   // standard constructor
 
 	enum { IDD = IDD_ROTATE };
 	CSpinButtonCtrl	m_wndSpin3;
@@ -43,7 +44,7 @@ public:
 	CString	m_strZ;
 
 protected:
-	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 
 protected:
 	void ApplyNoPaint();
@@ -51,9 +52,9 @@ protected:
 	virtual void OnOK();
 	afx_msg void OnApply();
 	virtual BOOL OnInitDialog();
-	afx_msg void OnDeltaposSpin1(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnDeltaposSpin2(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnDeltaposSpin3(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnDeltaposSpin1( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void OnDeltaposSpin2( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void OnDeltaposSpin3( NMHDR* pNMHDR, LRESULT* pResult );
 
 	DECLARE_MESSAGE_MAP()
 };

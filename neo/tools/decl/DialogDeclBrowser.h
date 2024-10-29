@@ -33,16 +33,17 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogDeclBrowser dialog
 
-class DialogDeclBrowser : public CDialog {
+class DialogDeclBrowser : public CDialog
+{
 
-	DECLARE_DYNAMIC(DialogDeclBrowser)
+	DECLARE_DYNAMIC( DialogDeclBrowser )
 
 public:
-						DialogDeclBrowser( CWnd* pParent = NULL );   // standard constructor
+	DialogDeclBrowser( CWnd* pParent = NULL );   // standard constructor
 	virtual				~DialogDeclBrowser();
 
 	void				ReloadDeclarations( void );
-	bool				CompareDecl( HTREEITEM item, const char *name ) const;
+	bool				CompareDecl( HTREEITEM item, const char* name ) const;
 
 	//{{AFX_VIRTUAL(DialogDeclBrowser)
 	virtual BOOL		OnInitDialog();
@@ -51,15 +52,15 @@ public:
 
 protected:
 	//{{AFX_MSG(DialogDeclBrowser)
-	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR *pNMHDR, LRESULT *pResult );
-	afx_msg void		OnSetFocus( CWnd *pOldWnd );
+	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void		OnSetFocus( CWnd* pOldWnd );
 	afx_msg void		OnDestroy();
-	afx_msg void		OnActivate(UINT nState, CWnd* pWndOther, BOOL bMinimized);
+	afx_msg void		OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized );
 	afx_msg void		OnMove( int x, int y );
 	afx_msg void		OnSize( UINT nType, int cx, int cy );
 	afx_msg void		OnSizing( UINT nSide, LPRECT lpRect );
 	afx_msg void		OnTreeSelChanged( NMHDR* pNMHDR, LRESULT* pResult );
-	afx_msg void		OnTreeDblclk( NMHDR *pNMHDR, LRESULT *pResult );
+	afx_msg void		OnTreeDblclk( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void		OnBnClickedFind();
 	afx_msg void		OnBnClickedEdit();
 	afx_msg void		OnBnClickedNew();
@@ -95,18 +96,18 @@ private:
 	idStr				findNameString;
 	idStr				findTextString;
 
-	TCHAR *				m_pchTip;
-	WCHAR *				m_pwchTip;
+	TCHAR* 				m_pchTip;
+	WCHAR* 				m_pwchTip;
 
 private:
-	void				AddDeclTypeToTree( declType_t type, const char *root, CPathTreeCtrl &tree );
-	void				AddScriptsToTree( CPathTreeCtrl &tree );
-	void				AddGUIsToTree( CPathTreeCtrl &tree );
+	void				AddDeclTypeToTree( declType_t type, const char* root, CPathTreeCtrl& tree );
+	void				AddScriptsToTree( CPathTreeCtrl& tree );
+	void				AddGUIsToTree( CPathTreeCtrl& tree );
 	void				InitBaseDeclTree( void );
 
-	void				GetDeclName( HTREEITEM item, idStr &typeName, idStr &declName ) const;
-	const idDecl *		GetDeclFromTreeItem( HTREEITEM item ) const;
-	const idDecl *		GetSelectedDecl( void ) const;
+	void				GetDeclName( HTREEITEM item, idStr& typeName, idStr& declName ) const;
+	const idDecl* 		GetDeclFromTreeItem( HTREEITEM item ) const;
+	const idDecl* 		GetSelectedDecl( void ) const;
 	void				EditSelected( void ) const;
 };
 

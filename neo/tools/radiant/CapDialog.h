@@ -30,18 +30,22 @@ If you have questions concerning this license or the applicable additional terms
 
 // CCapDialog dialog
 
-class CCapDialog : public CDialogEx {
+class CCapDialog : public CDialogEx
+{
 public:
 	enum {BEVEL = 0, ENDCAP, IBEVEL, IENDCAP};
-	CCapDialog( CWnd *pParent = NULL );   // standard constructor
+	CCapDialog( CWnd* pParent = NULL );   // standard constructor
 
-	int getCapType() { return m_nCap; };
+	int getCapType()
+	{
+		return m_nCap;
+	};
 
 	enum { IDD = IDD_DIALOG_CAP };
 	int		m_nCap;
 
 protected:
-	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 };

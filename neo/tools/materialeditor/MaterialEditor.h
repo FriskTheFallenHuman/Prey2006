@@ -32,7 +32,8 @@ If you have questions concerning this license or the applicable additional terms
 /**
 * Structure used to store the user defined search parameters.
 */
-typedef struct {
+typedef struct
+{
 	bool		searched;
 	idStr		searchText;
 	int			nameOnly;

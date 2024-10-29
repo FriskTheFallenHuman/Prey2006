@@ -30,12 +30,13 @@ If you have questions concerning this license or the applicable additional terms
 
 // CSurfaceDlg dialog
 
-class CSurfaceDlg : public CDialogEx {
+class CSurfaceDlg : public CDialogEx
+{
 	bool m_bPatchMode;
-	CWnd *focusControl;
+	CWnd* focusControl;
 
 public:
-	CSurfaceDlg( CWnd *pParent = NULL );   // standard constructor
+	CSurfaceDlg( CWnd* pParent = NULL );   // standard constructor
 	void SetTexMods();
 
 	enum { IDD = IDD_SURFACE };
@@ -65,20 +66,20 @@ public:
 	BOOL	m_absolute;
 
 public:
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+	virtual BOOL PreTranslateMessage( MSG* pMsg );
+protected:
+	virtual void DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
+	virtual BOOL PreCreateWindow( CREATESTRUCT& cs );
 
 protected:
 
-	void UpdateSpinners(int nScrollCode, int nPos, CScrollBar* pBar);
-	void UpdateSpinners(bool bUp, int nID);
+	void UpdateSpinners( int nScrollCode, int nPos, CScrollBar* pBar );
+	void UpdateSpinners( bool bUp, int nID );
 
 	virtual BOOL OnInitDialog();
-	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
-	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	afx_msg void OnHScroll( UINT nSBCode, UINT nPos, CScrollBar* pScrollBar );
+	afx_msg void OnKeyDown( UINT nChar, UINT nRepCnt, UINT nFlags );
+	afx_msg void OnVScroll( UINT nSBCode, UINT nPos, CScrollBar* pScrollBar );
 	afx_msg void OnApply();
 	virtual void OnOK();
 	afx_msg void OnClose();
@@ -86,9 +87,9 @@ protected:
 	afx_msg void OnDestroy();
 	afx_msg void OnBtnCancel();
 	afx_msg void OnBtnColor();
-	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnDeltaPosSpin(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg HBRUSH OnCtlColor( CDC* pDC, CWnd* pWnd, UINT nCtlColor );
+	afx_msg int OnCreate( LPCREATESTRUCT lpCreateStruct );
+	afx_msg void OnDeltaPosSpin( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void OnBtnPatchdetails();
 	afx_msg void OnBtnPatchnatural();
 	afx_msg void OnBtnPatchreset();

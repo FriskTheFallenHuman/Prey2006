@@ -34,24 +34,26 @@ If you have questions concerning this license or the applicable additional terms
 #include "DialogThick.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
 // CDialogThick dialog
 
-CDialogThick::CDialogThick( CWnd *pParent )
-	: CDialogEx( CDialogThick::IDD, pParent ) {
+CDialogThick::CDialogThick( CWnd* pParent )
+	: CDialogEx( CDialogThick::IDD, pParent )
+{
 	m_bSeams = TRUE;
 	m_nAmount = 8;
 }
 
 
-void CDialogThick::DoDataExchange( CDataExchange *pDX ) {
-	CDialogEx::DoDataExchange(pDX);
-	DDX_Check(pDX, IDC_CHECK_SEAMS, m_bSeams);
-	DDX_Text(pDX, IDC_EDIT_AMOUNT, m_nAmount);
+void CDialogThick::DoDataExchange( CDataExchange* pDX )
+{
+	CDialogEx::DoDataExchange( pDX );
+	DDX_Check( pDX, IDC_CHECK_SEAMS, m_bSeams );
+	DDX_Text( pDX, IDC_EDIT_AMOUNT, m_nAmount );
 }
 
 
-BEGIN_MESSAGE_MAP(CDialogThick, CDialogEx)
+BEGIN_MESSAGE_MAP( CDialogThick, CDialogEx )
 END_MESSAGE_MAP()

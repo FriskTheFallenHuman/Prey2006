@@ -42,7 +42,8 @@ bool g_editorAlive = false;
 // 2 - control 4 - press only
 //
 
-SCommandInfo	g_Commands[] = {
+SCommandInfo	g_Commands[] =
+{
 	{ "Texture_AxialByHeight",   'U',			0,						ID_SELECT_AXIALTEXTURE_BYHEIGHT },
 	{ "Texture_AxialArbitrary",  'U',			RAD_SHIFT,				ID_SELECT_AXIALTEXTURE_ARBITRARY },
 	{ "Texture_AxialByWidth",    'U',			RAD_CONTROL,			ID_SELECT_AXIALTEXTURE_BYWIDTH },
@@ -59,7 +60,7 @@ SCommandInfo	g_Commands[] = {
 	{ "Texture_ShiftDown",       VK_DOWN,		RAD_SHIFT,				ID_SELECTION_TEXTURE_SHIFTDOWN },
 	{ "Texture_ScaleLeft",       VK_LEFT,		RAD_CONTROL,			ID_SELECTION_TEXTURE_SCALELEFT },
 	{ "Texture_ScaleRight",      VK_RIGHT,		RAD_CONTROL,			ID_SELECTION_TEXTURE_SCALERIGHT },
-	{ "Texture_InvertX",         'I',			RAD_CONTROL|RAD_SHIFT,	ID_CURVE_NEGATIVETEXTUREY },
+	{ "Texture_InvertX",         'I',			RAD_CONTROL | RAD_SHIFT,	ID_CURVE_NEGATIVETEXTUREY },
 	{ "Texture_InvertY",         'I',			RAD_SHIFT,				ID_CURVE_NEGATIVETEXTUREX },
 	{ "Texture_ToggleLock",      'T',			RAD_SHIFT,				ID_TOGGLE_LOCK },
 	{ "Texture_ShowAllTextures", 'A',			RAD_CONTROL,			ID_TEXTURES_SHOWALL },
@@ -102,7 +103,7 @@ SCommandInfo	g_Commands[] = {
 	{ "Grid_Up",                 VK_OEM_6,		0,						ID_GRID_NEXT }, /* ]} in US layouts */
 	{ "Grid_Toggle",             '0',			0,						ID_GRID_TOGGLE },
 	{ "Grid_ToggleSizePaint",    'Q',			RAD_PRESS,				ID_SELECTION_TOGGLESIZEPAINT },
-	{ "Grid_PrecisionCursorMode",VK_F11,		0,						ID_PRECISION_CURSOR_CYCLE},
+	{ "Grid_PrecisionCursorMode", VK_F11,		0,						ID_PRECISION_CURSOR_CYCLE},
 	{ "Grid_NextView",           VK_TAB,		RAD_CONTROL,			ID_VIEW_NEXTVIEW },
 	{ "Grid_ToggleCrosshairs",   'X',			RAD_SHIFT,				ID_VIEW_CROSSHAIR },
 	{ "Grid_ZZoomOut",           VK_INSERT,		RAD_CONTROL,			ID_VIEW_ZZOOMOUT },
@@ -116,8 +117,8 @@ SCommandInfo	g_Commands[] = {
 	{ "Brush_Make8Sided",        '8',			RAD_CONTROL,			ID_BRUSH_8SIDED },
 	{ "Brush_Make9Sided",        '9',			RAD_CONTROL,			ID_BRUSH_9SIDED },
 
-	{ "Leak_NextSpot",           'K',			RAD_CONTROL|RAD_SHIFT,	ID_MISC_NEXTLEAKSPOT },
-	{ "Leak_PrevSpot",           'L',			RAD_CONTROL|RAD_SHIFT,	ID_MISC_PREVIOUSLEAKSPOT },
+	{ "Leak_NextSpot",           'K',			RAD_CONTROL | RAD_SHIFT,	ID_MISC_NEXTLEAKSPOT },
+	{ "Leak_PrevSpot",           'L',			RAD_CONTROL | RAD_SHIFT,	ID_MISC_PREVIOUSLEAKSPOT },
 
 	{ "File_Open",               'O',			RAD_CONTROL,			ID_FILE_OPEN },
 	{ "File_Save",               'S',			RAD_CONTROL,			ID_FILE_SAVE },
@@ -127,19 +128,19 @@ SCommandInfo	g_Commands[] = {
 	{ "Patch_BendMode",           'B',			0,						ID_PATCH_BEND },
 	{ "Patch_FreezeVertices",     'F',			0,						ID_CURVE_FREEZE },
 	{ "Patch_UnFreezeVertices",   'F',			RAD_CONTROL,			ID_CURVE_UNFREEZE },
-	{ "Patch_UnFreezeAllVertices",'F',			RAD_CONTROL|RAD_SHIFT,	ID_CURVE_UNFREEZEALL },
+	{ "Patch_UnFreezeAllVertices", 'F',			RAD_CONTROL | RAD_SHIFT,	ID_CURVE_UNFREEZEALL },
 	{ "Patch_Thicken",            'T',			RAD_CONTROL,			ID_CURVE_THICKEN },
 	{ "Patch_ClearOverlays",      'Y',			RAD_SHIFT,				ID_CURVE_OVERLAY_CLEAR },
 	{ "Patch_MakeOverlay",        'Y',			0,						ID_CURVE_OVERLAY_SET },
-	{ "Patch_CycleCapTexturing",  'P',			RAD_CONTROL|RAD_SHIFT,	ID_CURVE_CYCLECAP },
-	{ "Patch_CycleCapTexturingAlt",'P',			RAD_SHIFT,				ID_CURVE_CYCLECAPALT },
+	{ "Patch_CycleCapTexturing",  'P',			RAD_CONTROL | RAD_SHIFT,	ID_CURVE_CYCLECAP },
+	{ "Patch_CycleCapTexturingAlt", 'P',			RAD_SHIFT,				ID_CURVE_CYCLECAPALT },
 	{ "Patch_InvertCurve",        'I',			RAD_CONTROL,			ID_CURVE_NEGATIVE },
-	{ "Patch_IncPatchColumn",     VK_ADD,		RAD_CONTROL|RAD_SHIFT,	ID_CURVE_INSERTCOLUMN },
+	{ "Patch_IncPatchColumn",     VK_ADD,		RAD_CONTROL | RAD_SHIFT,	ID_CURVE_INSERTCOLUMN },
 	{ "Patch_IncPatchRow",        VK_ADD,		RAD_CONTROL,			ID_CURVE_INSERTROW },
-	{ "Patch_DecPatchColumn",     VK_SUBTRACT,	RAD_CONTROL|RAD_SHIFT,	ID_CURVE_DELETECOLUMN },
+	{ "Patch_DecPatchColumn",     VK_SUBTRACT,	RAD_CONTROL | RAD_SHIFT,	ID_CURVE_DELETECOLUMN },
 	{ "Patch_DecPatchRow",        VK_SUBTRACT,	RAD_CONTROL,			ID_CURVE_DELETEROW },
 	{ "Patch_RedisperseRows",     'E',			RAD_CONTROL,			ID_CURVE_REDISPERSE_ROWS },
-	{ "Patch_RedisperseCols",     'E',			RAD_CONTROL|RAD_SHIFT,	ID_CURVE_REDISPERSE_COLS },
+	{ "Patch_RedisperseCols",     'E',			RAD_CONTROL | RAD_SHIFT,	ID_CURVE_REDISPERSE_COLS },
 	{ "Patch_Naturalize",         'N',			RAD_CONTROL,			ID_PATCH_NATURALIZE },
 	{ "Patch_SnapToGrid",         'G',			RAD_CONTROL,			ID_SELECT_SNAPTOGRID },
 	{ "Patch_CapCurrentCurve",    'C',			RAD_SHIFT,				ID_CURVE_CAP },
@@ -162,9 +163,9 @@ SCommandInfo	g_Commands[] = {
 	{ "Window_PatchInspector",	   'M',			RAD_SHIFT,				ID_PATCH_INSPECTOR },
 	{ "Window_EntityList",		   'I',			0,						ID_EDIT_ENTITYINFO },
 	{ "Window_Preferences",		   'P',			0,						ID_PREFS },
-	{ "Window_ToggleCamera",	   'C',			RAD_CONTROL|RAD_SHIFT,	ID_TOGGLECAMERA },
-	{ "Window_ToggleView",		   'V',			RAD_CONTROL|RAD_SHIFT,	ID_TOGGLEVIEW },
-	{ "Window_ToggleZ",            'Z',			RAD_CONTROL|RAD_SHIFT,	ID_TOGGLEZ },
+	{ "Window_ToggleCamera",	   'C',			RAD_CONTROL | RAD_SHIFT,	ID_TOGGLECAMERA },
+	{ "Window_ToggleView",		   'V',			RAD_CONTROL | RAD_SHIFT,	ID_TOGGLEVIEW },
+	{ "Window_ToggleZ",            'Z',			RAD_CONTROL | RAD_SHIFT,	ID_TOGGLEZ },
 	{ "Window_LightEditor",        'J',			0,						ID_PROJECTED_LIGHT },
 	{ "Window_EntityColor",        'K',			0,						ID_MISC_SELECTENTITYCOLOR },
 
@@ -187,7 +188,7 @@ SCommandInfo	g_Commands[] = {
 	{ "Selection_Ungroup",		   'G',			RAD_SHIFT,				ID_SELECTION_UNGROUPENTITY },
 	{ "Selection_CSGMerge",		   'M',			RAD_SHIFT,				ID_SELECTION_CSGMERGE },
 	{ "Selection_CenterOrigin",    'O',			RAD_SHIFT,				ID_SELECTION_CENTER_ORIGIN },
-	{ "Selection_SelectCompleteEntity",   'E',	RAD_CONTROL|RAD_ALT|RAD_SHIFT , ID_SELECT_COMPLETE_ENTITY },
+	{ "Selection_SelectCompleteEntity",   'E',	RAD_CONTROL | RAD_ALT | RAD_SHIFT , ID_SELECT_COMPLETE_ENTITY },
 	{ "Selection_SelectAllOfType", 'A',			RAD_SHIFT,				ID_SELECT_ALL },
 
 	{ "Show_ToggleLights",		   '0',			RAD_ALT,				ID_VIEW_SHOWLIGHTS },
@@ -195,7 +196,7 @@ SCommandInfo	g_Commands[] = {
 	{ "Show_ToggleClip",           'L',			RAD_CONTROL,			ID_VIEW_SHOWCLIP },
 	{ "Show_HideSelected",         'H',			0,						ID_VIEW_HIDESHOW_HIDESELECTED },
 	{ "Show_ShowHidden",           'H',			RAD_SHIFT,				ID_VIEW_HIDESHOW_SHOWHIDDEN },
-	{ "Show_HideNotSelected",      'H',			RAD_CONTROL|RAD_SHIFT,	ID_VIEW_HIDESHOW_HIDENOTSELECTED },
+	{ "Show_HideNotSelected",      'H',			RAD_CONTROL | RAD_SHIFT,	ID_VIEW_HIDESHOW_HIDENOTSELECTED },
 
 	{ "Render_ToggleSound",		   VK_F9,		0,						ID_VIEW_RENDERSOUND },
 	{ "Render_ToggleSelections",   VK_F8,		0,						ID_VIEW_RENDERSELECTION },
@@ -216,12 +217,13 @@ SCommandInfo	g_Commands[] = {
 	{ "Rotate_ToggleFlatRotation", 'R',			RAD_CONTROL,			ID_VIEW_CAMERAUPDATE },
 	{ "Rotate_CycleRotationAxis", 'R',			RAD_SHIFT,				ID_TOGGLE_ROTATELOCK },
 
-	{ "_AutoCaulk",				  'A',			RAD_CONTROL|RAD_SHIFT,	ID_AUTOCAULK },	// ctrl-shift-a, since SHIFT-A is already taken
+	{ "_AutoCaulk",				  'A',			RAD_CONTROL | RAD_SHIFT,	ID_AUTOCAULK },	// ctrl-shift-a, since SHIFT-A is already taken
 };
 
-int				g_nCommandCount = sizeof(g_Commands) / sizeof(SCommandInfo);
+int				g_nCommandCount = sizeof( g_Commands ) / sizeof( SCommandInfo );
 
-SKeyInfo		g_Keys[] = {
+SKeyInfo		g_Keys[] =
+{
 	/* To understand the VK_* information, please read the MSDN:
 		http://msdn.microsoft.com/en-us/library/ms927178.aspx
 	*/
@@ -282,16 +284,19 @@ SKeyInfo		g_Keys[] = {
 	{ "]", VK_OEM_6 },  /* Was 221, 0xDD */
 };
 
-int				g_nKeyCount = sizeof(g_Keys) / sizeof(SKeyInfo);
+int				g_nKeyCount = sizeof( g_Keys ) / sizeof( SKeyInfo );
 
 /*
 ================
 RadiantPrint
 ================
 */
-void RadiantPrint( const char *text ) {
-	if ( g_editorAlive && g_Inspectors ) {
-		if ( g_Inspectors->consoleWnd.GetSafeHwnd() ) {
+void RadiantPrint( const char* text )
+{
+	if( g_editorAlive && g_Inspectors )
+	{
+		if( g_Inspectors->consoleWnd.GetSafeHwnd() )
+		{
 			g_Inspectors->consoleWnd.AddText( text );
 		}
 	}
@@ -302,7 +307,8 @@ void RadiantPrint( const char *text ) {
 RadiantShutdown
 ================
 */
-void RadiantShutdown( void ) {
+void RadiantShutdown( void )
+{
 	theApp.ExitInstance();
 }
 
@@ -313,10 +319,12 @@ RadiantInit
 This is also called when you 'quit' in doom
 =================
 */
-void RadiantInit( void ) {
+void RadiantInit( void )
+{
 
 	// make sure the renderer is initialized
-	if ( !renderSystem->IsOpenGLRunning() ) {
+	if( !renderSystem->IsOpenGLRunning() )
+	{
 		common->Printf( "no OpenGL running\n" );
 		return;
 	}
@@ -324,21 +332,27 @@ void RadiantInit( void ) {
 	g_editorAlive = true;
 
 	// allocate a renderWorld and a soundWorld
-	if ( g_qeglobals.rw == NULL ) {
+	if( g_qeglobals.rw == NULL )
+	{
 		g_qeglobals.rw = renderSystem->AllocRenderWorld();
 		g_qeglobals.rw->InitFromMap( NULL );
 	}
-	if ( g_qeglobals.sw == NULL ) {
+	if( g_qeglobals.sw == NULL )
+	{
 		g_qeglobals.sw = soundSystem->AllocSoundWorld( g_qeglobals.rw );
 	}
 
-	if ( g_DoomInstance ) {
-		if ( ::IsWindowVisible( win32.hWnd ) ) {
+	if( g_DoomInstance )
+	{
+		if( ::IsWindowVisible( win32.hWnd ) )
+		{
 			::ShowWindow( win32.hWnd, SW_HIDE );
 			g_pParentWnd->ShowWindow( SW_SHOW );
 			g_pParentWnd->SetFocus();
 		}
-	} else {
+	}
+	else
+	{
 		Sys_GrabMouseCursor( false );
 
 		g_DoomInstance = win32.hInstance;
@@ -350,7 +364,7 @@ void RadiantInit( void ) {
 #endif // !_DEBUG
 
 		CWinApp* pApp = AfxGetApp();
-		CWinThread *pThread = AfxGetThread();
+		CWinThread* pThread = AfxGetThread();
 
 		// App global initializations (rare)
 		pApp->InitApplication();
@@ -359,7 +373,7 @@ void RadiantInit( void ) {
 		pThread->InitInstance();
 
 		qglFinish();
-		qwglMakeCurrent(win32.hDC, win32.hGLRC);
+		qwglMakeCurrent( win32.hDC, win32.hGLRC );
 
 		// hide the doom window by default
 		::ShowWindow( win32.hWnd, SW_HIDE );
@@ -375,20 +389,26 @@ void RadiantInit( void ) {
 RadiantRun
 ================
 */
-void RadiantRun( void ) {
+void RadiantRun( void )
+{
 	static bool exceptionErr = false;
 	int show = ::IsWindowVisible( win32.hWnd );
 
-	try {
-		if ( !exceptionErr && !show ) {
+	try
+	{
+		if( !exceptionErr && !show )
+		{
 			qglDepthMask( true );
 			theApp.Run();
 
-			if ( win32.hDC != NULL && win32.hGLRC != NULL )
+			if( win32.hDC != NULL && win32.hGLRC != NULL )
+			{
 				qwglMakeCurrent( win32.hDC, win32.hGLRC );
+			}
 		}
 	}
-	catch( idException &ex ) {
+	catch( idException& ex )
+	{
 		::MessageBox( NULL, ex.error, "Exception error", MB_OK );
 		RadiantShutdown();
 	}
@@ -407,7 +427,8 @@ REGISTRY INFO
 SaveRegistryInfo
 ================
 */
-bool SaveRegistryInfo( const char *pszName, void *pvBuf, long lSize ) {
+bool SaveRegistryInfo( const char* pszName, void* pvBuf, long lSize )
+{
 	SetCvarBinary( pszName, pvBuf, lSize );
 	common->WriteFlaggedCVarsToFile( "editor.cfg", CVAR_TOOL, "sett" );
 	return true;
@@ -418,7 +439,8 @@ bool SaveRegistryInfo( const char *pszName, void *pvBuf, long lSize ) {
 LoadRegistryInfo
 ================
 */
-bool LoadRegistryInfo( const char *pszName, void *pvBuf, long *plSize ) {
+bool LoadRegistryInfo( const char* pszName, void* pvBuf, long* plSize )
+{
 	return GetCvarBinary( pszName, pvBuf, *plSize );
 }
 
@@ -427,16 +449,19 @@ bool LoadRegistryInfo( const char *pszName, void *pvBuf, long *plSize ) {
 SaveWindowState
 ================
 */
-bool SaveWindowState( HWND hWnd, const char *pszName ) {
+bool SaveWindowState( HWND hWnd, const char* pszName )
+{
 	RECT rc;
-	GetWindowRect(hWnd, &rc);
-	if ( hWnd != g_pParentWnd->GetSafeHwnd() ) {
-		if ( ::GetParent(hWnd) != g_pParentWnd->GetSafeHwnd() ) {
-		  ::SetParent( hWnd, g_pParentWnd->GetSafeHwnd() );
+	GetWindowRect( hWnd, &rc );
+	if( hWnd != g_pParentWnd->GetSafeHwnd() )
+	{
+		if( ::GetParent( hWnd ) != g_pParentWnd->GetSafeHwnd() )
+		{
+			::SetParent( hWnd, g_pParentWnd->GetSafeHwnd() );
 		}
-		MapWindowPoints( NULL, g_pParentWnd->GetSafeHwnd(), (POINT *)&rc, 2 );
+		MapWindowPoints( NULL, g_pParentWnd->GetSafeHwnd(), ( POINT* )&rc, 2 );
 	}
-	return SaveRegistryInfo( pszName, &rc, sizeof(rc) );
+	return SaveRegistryInfo( pszName, &rc, sizeof( rc ) );
 }
 
 /*
@@ -444,24 +469,30 @@ bool SaveWindowState( HWND hWnd, const char *pszName ) {
 LoadWindowState
 ================
 */
-bool LoadWindowState( HWND hWnd, const char *pszName ) {
+bool LoadWindowState( HWND hWnd, const char* pszName )
+{
 	RECT rc;
 	LONG lSize = sizeof( rc );
 
-	if ( LoadRegistryInfo( pszName, &rc, &lSize ) ) {
-		if ( rc.left < 0 ) {
+	if( LoadRegistryInfo( pszName, &rc, &lSize ) )
+	{
+		if( rc.left < 0 )
+		{
 			rc.left = 0;
 		}
 
-		if ( rc.top < 0 ) {
+		if( rc.top < 0 )
+		{
 			rc.top = 0;
 		}
 
-		if ( rc.right < rc.left + 16 ) {
+		if( rc.right < rc.left + 16 )
+		{
 			rc.right = rc.left + 16;
 		}
 
-		if ( rc.bottom < rc.top + 16 ) {
+		if( rc.bottom < rc.top + 16 )
+		{
 			rc.bottom = rc.top + 16;
 		}
 
@@ -485,7 +516,8 @@ bool LoadWindowState( HWND hWnd, const char *pszName ) {
 Sys_UpdateStatusBar
 ================
 */
-void Sys_UpdateStatusBar( void ) {
+void Sys_UpdateStatusBar( void )
+{
 	extern int   g_numbrushes, g_numentities;
 
 	char numbrushbuffer[100] = "";
@@ -499,8 +531,10 @@ void Sys_UpdateStatusBar( void ) {
 Sys_Status
 ================
 */
-void Sys_Status(const char *psz, int part ) {
-	if ( part < 0 ) {
+void Sys_Status( const char* psz, int part )
+{
+	if( part < 0 )
+	{
 		common->Printf( "%s", psz );
 		part = 0;
 	}

@@ -29,7 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 #define DEBUGGERWINDOW_H_
 
 #ifndef DEBUGGERSCRIPT_H_
-#include "DebuggerScript.h"
+	#include "DebuggerScript.h"
 #endif
 
 class rvDebuggerWatch
@@ -49,61 +49,61 @@ class rvDebuggerWindow
 {
 public:
 
-	rvDebuggerWindow ( );
-	~rvDebuggerWindow ( );
+	rvDebuggerWindow( );
+	~rvDebuggerWindow( );
 
-	bool							Create				( HINSTANCE hInstance );
+	bool							Create( HINSTANCE hInstance );
 
-	static bool						Activate			( void );
+	static bool						Activate( void );
 
-	void							ProcessNetMessage	( idBitMsg * msg );
+	void							ProcessNetMessage( idBitMsg* msg );
 
-	void							Printf				( const char* format, ... );
+	void							Printf( const char* format, ... );
 
-	HWND							GetWindow			( void );
+	HWND							GetWindow( void );
 
-	void							AddWatch			( const char* name, bool update = true );
+	void							AddWatch( const char* name, bool update = true );
 
-	HINSTANCE						GetInstance			( void );
+	HINSTANCE						GetInstance( void );
 
 private:
-	bool							RegisterClass	( void );
-	void							CreateToolbar	( void );
-	bool							InitRecentFiles	( void );
+	bool							RegisterClass( void );
+	void							CreateToolbar( void );
+	bool							InitRecentFiles( void );
 
-	int								HandleInitMenu			( WPARAM wParam, LPARAM lParam );
-	int								HandleCommand			( WPARAM wParam, LPARAM lParam );
-	int								HandleCreate			( WPARAM wparam, LPARAM lparam );
-	int								HandleActivate			( WPARAM wparam, LPARAM lparam );
-	int								HandleDrawItem			( WPARAM wparam, LPARAM lparam );
+	int								HandleInitMenu( WPARAM wParam, LPARAM lParam );
+	int								HandleCommand( WPARAM wParam, LPARAM lParam );
+	int								HandleCreate( WPARAM wparam, LPARAM lparam );
+	int								HandleActivate( WPARAM wparam, LPARAM lparam );
+	int								HandleDrawItem( WPARAM wparam, LPARAM lparam );
 	void							HandleTooltipGetDispInfo( WPARAM wparam, LPARAM lparam );
 
-	void							ResizeImageList				( int& widthOut, int& heightOut);
-	static LRESULT					CALLBACK WndProc			( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam );
-	static LRESULT					CALLBACK MarginWndProc		( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam );
-	static LRESULT					CALLBACK ScriptWndProc		( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam );
-	static INT_PTR					CALLBACK AboutDlgProc		( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam );
+	void							ResizeImageList( int& widthOut, int& heightOut );
+	static LRESULT					CALLBACK WndProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam );
+	static LRESULT					CALLBACK MarginWndProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam );
+	static LRESULT					CALLBACK ScriptWndProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam );
+	static INT_PTR					CALLBACK AboutDlgProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam );
 	static int						CALLBACK ScriptWordBreakProc( LPTSTR text, int current, int max, int action );
 
-	bool							FindPrev			( const char* text = NULL );
-	bool							FindNext			( const char* text = NULL );
+	bool							FindPrev( const char* text = NULL );
+	bool							FindNext( const char* text = NULL );
 
 	void							UpdateBreakpointList( void );
-	void							UpdateScriptList	( void );
-	void							UpdateWatch			( void );
-	void							UpdateWindowMenu	( void );
-	void							UpdateScript		( void );
-	void							UpdateToolbar		( void );
-	void							UpdateTitle			( void );
-	void							UpdateCallstack		( void );
-	void							UpdateRecentFiles	( void );
-	bool							OpenScript			( const char* filename, int lineNumber = -1, idProgram* program = NULL );
-	void							EnableWindows		( bool state );
+	void							UpdateScriptList( void );
+	void							UpdateWatch( void );
+	void							UpdateWindowMenu( void );
+	void							UpdateScript( void );
+	void							UpdateToolbar( void );
+	void							UpdateTitle( void );
+	void							UpdateCallstack( void );
+	void							UpdateRecentFiles( void );
+	bool							OpenScript( const char* filename, int lineNumber = -1, idProgram* program = NULL );
+	void							EnableWindows( bool state );
 
-	int								GetSelectedText		( idStr& text );
+	int								GetSelectedText( idStr& text );
 
-	void							ToggleBreakpoint	( void );
-	float							GetMarginWidth      ( void );
+	void							ToggleBreakpoint( void );
+	float							GetMarginWidth( void );
 	HWND							mWnd;
 	HWND							mWndScript;
 	HWND							mWndOutput;
@@ -159,7 +159,7 @@ private:
 rvDebuggerWindow::GetWindow
 ================
 */
-ID_INLINE HWND rvDebuggerWindow::GetWindow ( void )
+ID_INLINE HWND rvDebuggerWindow::GetWindow( void )
 {
 	return mWnd;
 }
@@ -169,9 +169,9 @@ ID_INLINE HWND rvDebuggerWindow::GetWindow ( void )
 rvDebuggerWindow::UpdateToolbar
 ================
 */
-ID_INLINE void rvDebuggerWindow::UpdateToolbar ( void )
+ID_INLINE void rvDebuggerWindow::UpdateToolbar( void )
 {
-	HandleInitMenu ( (WPARAM)GetMenu ( mWnd ), 0 );
+	HandleInitMenu( ( WPARAM )GetMenu( mWnd ), 0 );
 }
 
 /*
@@ -179,7 +179,7 @@ ID_INLINE void rvDebuggerWindow::UpdateToolbar ( void )
 rvDebuggerWindow::GetInstance
 ================
 */
-ID_INLINE HINSTANCE rvDebuggerWindow::GetInstance ( void )
+ID_INLINE HINSTANCE rvDebuggerWindow::GetInstance( void )
 {
 	return mInstance;
 }

@@ -31,16 +31,16 @@ If you have questions concerning this license or the applicable additional terms
 
 
 #if defined( ID_ALLOW_TOOLS )
-#include "DebuggerServer.h"
-#include "../../sys/win32/rc/resource.h"
-#include "DebuggerApp.h"
+	#include "DebuggerServer.h"
+	#include "../../sys/win32/rc/resource.h"
+	#include "DebuggerApp.h"
 #else
-#include "DebuggerServer.h"
+	#include "DebuggerServer.h"
 #endif
 
 #if defined( ID_ALLOW_TOOLS )
-rvDebuggerApp					gDebuggerApp; // this is also used in other source files
-static HWND						gDebuggerWindow = NULL;
+	rvDebuggerApp					gDebuggerApp; // this is also used in other source files
+	static HWND						gDebuggerWindow = NULL;
 #endif
 
 static rvDebuggerServer*		gDebuggerServer			= NULL;
@@ -55,23 +55,23 @@ DebuggerMain
 Main entry point for the debugger application
 ================
 */
-void DebuggerClientInit( const char *cmdline )
+void DebuggerClientInit( const char* cmdline )
 {
 	// See if the debugger is already running
-	if ( rvDebuggerWindow::Activate ( ) )
+	if( rvDebuggerWindow::Activate( ) )
 	{
 		goto DebuggerClientInitDone;
 	}
 
-	if ( !gDebuggerApp.Initialize ( win32.hInstance ) )
+	if( !gDebuggerApp.Initialize( win32.hInstance ) )
 	{
 		goto DebuggerClientInitDone;
 	}
-	
+
 	// hide the doom window by default
 	::ShowWindow( win32.hWnd, SW_HIDE );
 
-	gDebuggerApp.Run ( );
+	gDebuggerApp.Run( );
 
 DebuggerClientInitDone:
 
@@ -86,16 +86,18 @@ Launches another instance of the running executable with +debugger appended
 to the end to indicate that the debugger should start up.
 ================
 */
-void DebuggerClientLaunch ( void )
+void DebuggerClientLaunch( void )
 {
-	if ( renderSystem->IsFullScreen() ) {
+	if( renderSystem->IsFullScreen() )
+	{
 		common->Printf( "Cannot run the script debugger in fullscreen mode.\n"
-					"Set r_fullscreen to 0 and vid_restart.\n" );
+						"Set r_fullscreen to 0 and vid_restart.\n" );
 		return;
 	}
 
 	// See if the debugger is already running
-	if ( rvDebuggerWindow::Activate ( ) ) {
+	if( rvDebuggerWindow::Activate( ) )
+	{
 		return;
 	}
 
@@ -105,18 +107,18 @@ void DebuggerClientLaunch ( void )
 	STARTUPINFO			startup;
 	PROCESS_INFORMATION	process;
 
-	ZeroMemory ( &startup, sizeof(startup) );
-	startup.cb = sizeof(startup);
+	ZeroMemory( &startup, sizeof( startup ) );
+	startup.cb = sizeof( startup );
 
-	GetCurrentDirectory ( MAX_PATH, curDir );
+	GetCurrentDirectory( MAX_PATH, curDir );
 
-	GetModuleFileName ( NULL, exeFile, MAX_PATH );
-	const char* s = va("%s +set fs_game %s +set fs_basepath %s +debugger", exeFile, cvarSystem->GetCVarString( "fs_game" ), cvarSystem->GetCVarString( "fs_basepath" ) );
-	CreateProcess ( NULL, (LPSTR)s,
-					NULL, NULL, FALSE, 0, NULL, curDir, &startup, &process );
+	GetModuleFileName( NULL, exeFile, MAX_PATH );
+	const char* s = va( "%s +set fs_game %s +set fs_basepath %s +debugger", exeFile, cvarSystem->GetCVarString( "fs_game" ), cvarSystem->GetCVarString( "fs_basepath" ) );
+	CreateProcess( NULL, ( LPSTR )s,
+				   NULL, NULL, FALSE, 0, NULL, curDir, &startup, &process );
 
-	CloseHandle ( process.hThread );
-	CloseHandle ( process.hProcess );
+	CloseHandle( process.hThread );
+	CloseHandle( process.hProcess );
 }
 #endif // #if defined( ID_ALLOW_TOOLS )
 
@@ -127,13 +129,13 @@ DebuggerServerThread
 Thread proc for the debugger server
 ================
 */
-static int SDLCALL DebuggerServerThread ( void *param )
+static int SDLCALL DebuggerServerThread( void* param )
 {
-	assert ( gDebuggerServer );
+	assert( gDebuggerServer );
 
-	while ( !gDebuggerServerQuit )
+	while( !gDebuggerServerQuit )
 	{
-		gDebuggerServer->ProcessMessages ( );
+		gDebuggerServer->ProcessMessages( );
 		SDL_Delay( 1 );
 	}
 
@@ -147,38 +149,38 @@ DebuggerServerInit
 Starts up the debugger server
 ================
 */
-bool DebuggerServerInit ( void )
+bool DebuggerServerInit( void )
 {
 	com_enableDebuggerServer.ClearModified( );
 
-	if ( !com_debuggerSupported )
+	if( !com_debuggerSupported )
 	{
 		common->Warning( "Called DebuggerServerInit() without the gameDLL supporting it!\n" );
 		return false;
 	}
 
 	// Dont do this if we are in the debugger already
-	if ( gDebuggerServer != NULL 
-		|| ( com_editors & EDITOR_DEBUGGER ) )
+	if( gDebuggerServer != NULL
+			|| ( com_editors & EDITOR_DEBUGGER ) )
 	{
 		return false;
 	}
 
 	// Allocate the new debugger server
 	gDebuggerServer = new rvDebuggerServer;
-	if ( !gDebuggerServer )
+	if( !gDebuggerServer )
 	{
 		return false;
 	}
 
 	// Initialize the debugger server
-	if ( !gDebuggerServer->Initialize ( ) )
+	if( !gDebuggerServer->Initialize( ) )
 	{
 		delete gDebuggerServer;
 		gDebuggerServer = NULL;
 		return false;
 	}
-	
+
 	// Start the debugger server thread
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 	gDebuggerServerThread = SDL_CreateThread( DebuggerServerThread, "DebuggerServer", NULL );
@@ -196,9 +198,9 @@ DebuggerServerShutdown
 Shuts down the debugger server
 ================
 */
-void DebuggerServerShutdown ( void )
+void DebuggerServerShutdown( void )
 {
-	if ( gDebuggerServerThread != NULL )
+	if( gDebuggerServerThread != NULL )
 	{
 		// Signal the debugger server to quit
 		gDebuggerServerQuit = true;
@@ -226,14 +228,14 @@ DebuggerServerCheckBreakpoint
 Check to see if there is a breakpoint associtated with this statement
 ================
 */
-void DebuggerServerCheckBreakpoint ( idInterpreter* interpreter, idProgram* program, int instructionPointer )
+void DebuggerServerCheckBreakpoint( idInterpreter* interpreter, idProgram* program, int instructionPointer )
 {
-	if ( !gDebuggerServer )
+	if( !gDebuggerServer )
 	{
 		return;
 	}
 
-	gDebuggerServer->CheckBreakpoints ( interpreter, program, instructionPointer );
+	gDebuggerServer->CheckBreakpoints( interpreter, program, instructionPointer );
 }
 
 /*
@@ -243,12 +245,12 @@ DebuggerServerPrint
 Sends a print message to the debugger client
 ================
 */
-void DebuggerServerPrint ( const char* text )
+void DebuggerServerPrint( const char* text )
 {
-	if ( !gDebuggerServer )
+	if( !gDebuggerServer )
 	{
 		return;
 	}
 
-	gDebuggerServer->Print ( text );
+	gDebuggerServer->Print( text );
 }

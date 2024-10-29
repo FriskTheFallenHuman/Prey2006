@@ -28,15 +28,16 @@ If you have questions concerning this license or the applicable additional terms
 
 #pragma once
 
-class CBrushSidesDlg : public CDialogEx {
+class CBrushSidesDlg : public CDialogEx
+{
 	DECLARE_DYNAMIC( CBrushSidesDlg )
 
 public:
-				CBrushSidesDlg( bool bDoCone, bool bDoSphere, CWnd *pParent = nullptr );
+	CBrushSidesDlg( bool bDoCone, bool bDoSphere, CWnd* pParent = nullptr );
 	virtual		~CBrushSidesDlg();
 
 protected:
-	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 public:

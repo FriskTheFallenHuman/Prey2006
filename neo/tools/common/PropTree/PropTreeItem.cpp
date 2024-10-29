@@ -39,39 +39,41 @@
 //
 
 // draw a dotted horizontal line
-static void _DotHLine(HDC hdc, LONG x, LONG y, LONG w)
+static void _DotHLine( HDC hdc, LONG x, LONG y, LONG w )
 {
-	for (; w>0; w-=2, x+=2)
-		SetPixel(hdc, x, y, GetSysColor(COLOR_BTNSHADOW));
+	for( ; w > 0; w -= 2, x += 2 )
+	{
+		SetPixel( hdc, x, y, GetSysColor( COLOR_BTNSHADOW ) );
+	}
 }
 
 
 // draw the plus/minus button
-static void _DrawExpand(HDC hdc, LONG x, LONG y, BOOL bExpand, BOOL bFill,LONG EXPANDBOX, LONG EXPANDBOXHALF)
+static void _DrawExpand( HDC hdc, LONG x, LONG y, BOOL bExpand, BOOL bFill, LONG EXPANDBOX, LONG EXPANDBOXHALF )
 {
 	HPEN hPen;
 	HPEN oPen;
 	HBRUSH oBrush;
 
-	hPen = CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
-	oPen = (HPEN)SelectObject(hdc, hPen);
-	oBrush = (HBRUSH)SelectObject(hdc, GetStockObject(bFill ? WHITE_BRUSH : NULL_BRUSH));
+	hPen = CreatePen( PS_SOLID, 1, GetSysColor( COLOR_BTNSHADOW ) );
+	oPen = ( HPEN )SelectObject( hdc, hPen );
+	oBrush = ( HBRUSH )SelectObject( hdc, GetStockObject( bFill ? WHITE_BRUSH : NULL_BRUSH ) );
 
-	Rectangle(hdc, x, y, x + EXPANDBOX, y + EXPANDBOX);
-	SelectObject(hdc, GetStockObject(BLACK_PEN));
+	Rectangle( hdc, x, y, x + EXPANDBOX, y + EXPANDBOX );
+	SelectObject( hdc, GetStockObject( BLACK_PEN ) );
 
-	if (!bExpand)
+	if( !bExpand )
 	{
-		MoveToEx(hdc, x + EXPANDBOXHALF, y + 2, NULL);
-		LineTo(hdc, x + EXPANDBOXHALF, y + EXPANDBOX - 2);
+		MoveToEx( hdc, x + EXPANDBOXHALF, y + 2, NULL );
+		LineTo( hdc, x + EXPANDBOXHALF, y + EXPANDBOX - 2 );
 	}
 
-	MoveToEx(hdc, x + 2, y + EXPANDBOXHALF, NULL);
-	LineTo(hdc, x + EXPANDBOX - 2, y + EXPANDBOXHALF);
+	MoveToEx( hdc, x + 2, y + EXPANDBOXHALF, NULL );
+	LineTo( hdc, x + EXPANDBOX - 2, y + EXPANDBOXHALF );
 
-	SelectObject(hdc, oPen);
-	SelectObject(hdc, oBrush);
-	DeleteObject(hPen);
+	SelectObject( hdc, oPen );
+	SelectObject( hdc, oBrush );
+	DeleteObject( hPen );
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -79,23 +81,23 @@ static void _DrawExpand(HDC hdc, LONG x, LONG y, BOOL bExpand, BOOL bFill,LONG E
 //
 
 CPropTreeItem::CPropTreeItem() :
-	m_pProp(NULL),
-	m_sLabel(_T("")),
-	m_sInfo(_T("")),
-	m_loc(0,0),
-	m_rc(0,0,0,0),
-	m_lParam(0),
-	m_nCtrlID(0),
-	m_dwState(0),
-	m_bActivated(FALSE),
-	m_bCommitOnce(FALSE),
-	m_rcExpand(0,0,0,0),
-	m_rcCheckbox(0,0,0,0),
-	m_rcButton(0,0,0,0),
-	m_pParent(NULL),
-	m_pSibling(NULL),
-	m_pChild(NULL),
-	m_pVis(NULL)
+	m_pProp( NULL ),
+	m_sLabel( _T( "" ) ),
+	m_sInfo( _T( "" ) ),
+	m_loc( 0, 0 ),
+	m_rc( 0, 0, 0, 0 ),
+	m_lParam( 0 ),
+	m_nCtrlID( 0 ),
+	m_dwState( 0 ),
+	m_bActivated( FALSE ),
+	m_bCommitOnce( FALSE ),
+	m_rcExpand( 0, 0, 0, 0 ),
+	m_rcCheckbox( 0, 0, 0, 0 ),
+	m_rcButton( 0, 0, 0, 0 ),
+	m_pParent( NULL ),
+	m_pSibling( NULL ),
+	m_pChild( NULL ),
+	m_pVis( NULL )
 {
 }
 
@@ -107,100 +109,120 @@ CPropTreeItem::~CPropTreeItem()
 
 BOOL CPropTreeItem::IsExpanded()
 {
-	return (m_dwState & TreeItemExpanded) ? TRUE : FALSE;
+	return ( m_dwState & TreeItemExpanded ) ? TRUE : FALSE;
 }
 
 
 BOOL CPropTreeItem::IsSelected()
 {
-	return (m_dwState & TreeItemSelected) ? TRUE : FALSE;
+	return ( m_dwState & TreeItemSelected ) ? TRUE : FALSE;
 }
 
 
 BOOL CPropTreeItem::IsChecked()
 {
-	return (m_dwState & TreeItemChecked) ? TRUE : FALSE;
+	return ( m_dwState & TreeItemChecked ) ? TRUE : FALSE;
 }
 
 
 BOOL CPropTreeItem::IsReadOnly()
 {
-	return (m_dwState & TreeItemReadOnly) ? TRUE : FALSE;
+	return ( m_dwState & TreeItemReadOnly ) ? TRUE : FALSE;
 }
 
 
 BOOL CPropTreeItem::IsActivated()
 {
-	return (m_dwState & TreeItemActivated) ? TRUE : FALSE;
+	return ( m_dwState & TreeItemActivated ) ? TRUE : FALSE;
 }
 
 
-void CPropTreeItem::Select(BOOL bSelect)
+void CPropTreeItem::Select( BOOL bSelect )
 {
-	if (bSelect)
+	if( bSelect )
+	{
 		m_dwState |= TreeItemSelected;
+	}
 	else
+	{
 		m_dwState &= ~TreeItemSelected;
+	}
 }
 
 
-void CPropTreeItem::Expand(BOOL bExpand)
+void CPropTreeItem::Expand( BOOL bExpand )
 {
-	if (bExpand)
+	if( bExpand )
+	{
 		m_dwState |= TreeItemExpanded;
+	}
 	else
+	{
 		m_dwState &= ~TreeItemExpanded;
+	}
 }
 
 
-void CPropTreeItem::Check(BOOL bCheck)
+void CPropTreeItem::Check( BOOL bCheck )
 {
-	if (bCheck)
+	if( bCheck )
+	{
 		m_dwState |= TreeItemChecked;
+	}
 	else
+	{
 		m_dwState &= ~TreeItemChecked;
+	}
 }
 
 
-void CPropTreeItem::ReadOnly(BOOL bReadOnly)
+void CPropTreeItem::ReadOnly( BOOL bReadOnly )
 {
-	if (bReadOnly)
+	if( bReadOnly )
+	{
 		m_dwState |= TreeItemReadOnly;
+	}
 	else
+	{
 		m_dwState &= ~TreeItemReadOnly;
+	}
 }
 
 
 BOOL CPropTreeItem::IsCheckBox()
 {
-	return (m_dwState & TreeItemCheckbox) ? TRUE : FALSE;
+	return ( m_dwState & TreeItemCheckbox ) ? TRUE : FALSE;
 }
 
 
-void CPropTreeItem::HasCheckBox(BOOL bCheckbox)
+void CPropTreeItem::HasCheckBox( BOOL bCheckbox )
 {
-	if (bCheckbox)
+	if( bCheckbox )
+	{
 		m_dwState |= TreeItemCheckbox;
+	}
 	else
+	{
 		m_dwState &= ~TreeItemCheckbox;
+	}
 }
 
 
-BOOL CPropTreeItem::HitExpand(const POINT& pt)
+BOOL CPropTreeItem::HitExpand( const POINT& pt )
 {
-	return m_rcExpand.PtInRect(pt);
+	return m_rcExpand.PtInRect( pt );
 }
 
 
-BOOL CPropTreeItem::HitCheckBox(const POINT& pt)
+BOOL CPropTreeItem::HitCheckBox( const POINT& pt )
 {
-	return m_rcCheckbox.PtInRect(pt);
+	return m_rcCheckbox.PtInRect( pt );
 }
 
 
 BOOL CPropTreeItem::IsRootLevel()
 {
-	ASSERT(m_pProp!=NULL);
+	ASSERT( m_pProp != NULL );
 	return GetParent() == m_pProp->GetRootItem();
 }
 
@@ -212,17 +234,19 @@ LONG CPropTreeItem::GetTotalHeight()
 
 	nHeight = GetHeight();
 
-	if (IsExpanded())
+	if( IsExpanded() )
 	{
-		for (pItem = GetChild(); pItem; pItem = pItem->GetSibling())
+		for( pItem = GetChild(); pItem; pItem = pItem->GetSibling() )
+		{
 			nHeight += pItem->GetTotalHeight();
+		}
 	}
 
 	return nHeight;
 }
 
 
-void CPropTreeItem::SetLabelText(LPCTSTR sLabel)
+void CPropTreeItem::SetLabelText( LPCTSTR sLabel )
 {
 	m_sLabel = sLabel;
 }
@@ -234,7 +258,7 @@ LPCTSTR CPropTreeItem::GetLabelText()
 }
 
 
-void CPropTreeItem::SetInfoText(LPCTSTR sInfo)
+void CPropTreeItem::SetInfoText( LPCTSTR sInfo )
 {
 	m_sInfo = sInfo;
 }
@@ -246,7 +270,7 @@ LPCTSTR CPropTreeItem::GetInfoText()
 }
 
 
-void CPropTreeItem::SetCtrlID(UINT nCtrlID)
+void CPropTreeItem::SetCtrlID( UINT nCtrlID )
 {
 	m_nCtrlID = nCtrlID;
 }
@@ -260,9 +284,9 @@ UINT CPropTreeItem::GetCtrlID()
 
 LONG CPropTreeItem::GetHeight()
 {
-	if (m_pProp)
+	if( m_pProp )
 	{
-		float scaling_factor = Win_GetWindowScalingFactor(m_pProp->GetSafeHwnd());
+		float scaling_factor = Win_GetWindowScalingFactor( m_pProp->GetSafeHwnd() );
 		return PROPTREEITEM_DEFHEIGHT * scaling_factor;
 	}
 	return PROPTREEITEM_DEFHEIGHT;
@@ -276,7 +300,7 @@ LPARAM CPropTreeItem::GetItemValue()
 }
 
 
-void CPropTreeItem::SetItemValue(LPARAM)
+void CPropTreeItem::SetItemValue( LPARAM )
 {
 	// no items are assocatied with this type
 }
@@ -300,12 +324,12 @@ void CPropTreeItem::OnCommit()
 }
 
 
-void CPropTreeItem::Activate(int activateType, CPoint point)
+void CPropTreeItem::Activate( int activateType, CPoint point )
 {
 	m_bActivated = TRUE;
 	m_bCommitOnce = FALSE;
 
-	OnActivate(activateType, point);
+	OnActivate( activateType, point );
 }
 
 
@@ -313,27 +337,29 @@ void CPropTreeItem::CommitChanges()
 {
 	m_bActivated = FALSE;
 
-	if (m_bCommitOnce)
+	if( m_bCommitOnce )
+	{
 		return;
+	}
 
 	m_bCommitOnce = TRUE;
 
-	ASSERT(m_pProp!=NULL);
+	ASSERT( m_pProp != NULL );
 
 	OnCommit();
 
-	m_pProp->SendNotify(PTN_ITEMCHANGED, this);
-	m_pProp->RefreshItems(this);
+	m_pProp->SendNotify( PTN_ITEMCHANGED, this );
+	m_pProp->RefreshItems( this );
 }
 
 
-void CPropTreeItem::OnActivate(int activateType, CPoint point)
+void CPropTreeItem::OnActivate( int activateType, CPoint point )
 {
 	// no attributes, do nothing
 }
 
 
-void CPropTreeItem::SetPropOwner(CPropTree* pProp)
+void CPropTreeItem::SetPropOwner( CPropTree* pProp )
 {
 	m_pProp = pProp;
 }
@@ -369,58 +395,58 @@ CPropTreeItem* CPropTreeItem::GetNextVisible()
 }
 
 
-void CPropTreeItem::SetParent(CPropTreeItem* pParent)
+void CPropTreeItem::SetParent( CPropTreeItem* pParent )
 {
 	m_pParent = pParent;
 }
 
 
-void CPropTreeItem::SetSibling(CPropTreeItem* pSibling)
+void CPropTreeItem::SetSibling( CPropTreeItem* pSibling )
 {
 	m_pSibling = pSibling;
 }
 
 
-void CPropTreeItem::SetChild(CPropTreeItem* pChild)
+void CPropTreeItem::SetChild( CPropTreeItem* pChild )
 {
 	m_pChild = pChild;
 }
 
 
-void CPropTreeItem::SetNextVisible(CPropTreeItem* pVis)
+void CPropTreeItem::SetNextVisible( CPropTreeItem* pVis )
 {
 	m_pVis = pVis;
 }
 
 
-LONG CPropTreeItem::DrawItem(CDC* pDC, const RECT& rc, LONG x, LONG y)
+LONG CPropTreeItem::DrawItem( CDC* pDC, const RECT& rc, LONG x, LONG y )
 {
 	CPoint pt;
 	LONG nTotal, nCol, ey;
 	CRect drc, ir;
 
-	ASSERT(m_pProp!=NULL);
+	ASSERT( m_pProp != NULL );
 
-	float scaling_factor = Win_GetWindowScalingFactor(m_pProp->GetSafeHwnd());
-	int PNINDENT_s = int(PNINDENT * scaling_factor);
-	int PROPTREEITEM_SPACE_s = int(PROPTREEITEM_SPACE * scaling_factor);
-	int PROPTREEITEM_CHECKBOX_s = int(PROPTREEITEM_CHECKBOX * scaling_factor);
-	int PROPTREEITEM_EXPANDBOX_s = int(PROPTREEITEM_EXPANDBOX * scaling_factor);
-	int PROPTREEITEM_EXPANDCOLUMN_s = int(PROPTREEITEM_EXPANDCOLUMN * scaling_factor);
-	int PROPTREEITEM_EXPANDBOXHALF_s = int(PROPTREEITEM_EXPANDBOXHALF * scaling_factor);
+	float scaling_factor = Win_GetWindowScalingFactor( m_pProp->GetSafeHwnd() );
+	int PNINDENT_s = int( PNINDENT * scaling_factor );
+	int PROPTREEITEM_SPACE_s = int( PROPTREEITEM_SPACE * scaling_factor );
+	int PROPTREEITEM_CHECKBOX_s = int( PROPTREEITEM_CHECKBOX * scaling_factor );
+	int PROPTREEITEM_EXPANDBOX_s = int( PROPTREEITEM_EXPANDBOX * scaling_factor );
+	int PROPTREEITEM_EXPANDCOLUMN_s = int( PROPTREEITEM_EXPANDCOLUMN * scaling_factor );
+	int PROPTREEITEM_EXPANDBOXHALF_s = int( PROPTREEITEM_EXPANDBOXHALF * scaling_factor );
 	// Add TreeItem the list of visble items
-	m_pProp->AddToVisibleList(this);
+	m_pProp->AddToVisibleList( this );
 
 	// store the item's location
-	m_loc = CPoint(x, y);
+	m_loc = CPoint( x, y );
 
 	// store the items rectangle position
-	m_rc.SetRect(m_pProp->GetOrigin().x + PROPTREEITEM_SPACE_s, m_loc.y, rc.right, m_loc.y + GetHeight()-1);
-	m_rc.OffsetRect(0, -m_pProp->GetOrigin().y);
+	m_rc.SetRect( m_pProp->GetOrigin().x + PROPTREEITEM_SPACE_s, m_loc.y, rc.right, m_loc.y + GetHeight() - 1 );
+	m_rc.OffsetRect( 0, -m_pProp->GetOrigin().y );
 
 	// init temp drawing variables
 	nTotal = GetHeight();
-	ey = (nTotal >> 1) - (PROPTREEITEM_EXPANDBOX_s >> 1) - 2;
+	ey = ( nTotal >> 1 ) - ( PROPTREEITEM_EXPANDBOX_s >> 1 ) - 2;
 
 	bool bCheck = false;
 
@@ -429,36 +455,42 @@ LONG CPropTreeItem::DrawItem(CDC* pDC, const RECT& rc, LONG x, LONG y)
 	pt.y -= m_pProp->GetOrigin().y;
 	nCol = m_pProp->GetOrigin().x;
 
-	if (IsRootLevel())
-		drc.SetRect(pt.x + PROPTREEITEM_EXPANDCOLUMN_s, pt.y, rc.right, pt.y + nTotal);
+	if( IsRootLevel() )
+	{
+		drc.SetRect( pt.x + PROPTREEITEM_EXPANDCOLUMN_s, pt.y, rc.right, pt.y + nTotal );
+	}
 	else
-		drc.SetRect(pt.x + PROPTREEITEM_EXPANDCOLUMN_s, pt.y, nCol, pt.y + nTotal);
+	{
+		drc.SetRect( pt.x + PROPTREEITEM_EXPANDCOLUMN_s, pt.y, nCol, pt.y + nTotal );
+	}
 
 	// root level items are shaded
-	if (IsRootLevel())
+	if( IsRootLevel() )
 	{
-		HGDIOBJ hOld = pDC->SelectObject(GetSysColorBrush(COLOR_BTNFACE));
-		pDC->PatBlt(rc.left, drc.top, rc.right - rc.left + 1, drc.Height(), PATCOPY);
-		pDC->SelectObject(hOld);
+		HGDIOBJ hOld = pDC->SelectObject( GetSysColorBrush( COLOR_BTNFACE ) );
+		pDC->PatBlt( rc.left, drc.top, rc.right - rc.left + 1, drc.Height(), PATCOPY );
+		pDC->SelectObject( hOld );
 	}
 
 	// calc/draw expand box position
-	if (GetChild())
+	if( GetChild() )
 	{
-		m_rcExpand.left = PROPTREEITEM_EXPANDCOLUMN_s /2 - PROPTREEITEM_EXPANDBOXHALF_s;
+		m_rcExpand.left = PROPTREEITEM_EXPANDCOLUMN_s / 2 - PROPTREEITEM_EXPANDBOXHALF_s;
 		m_rcExpand.top = m_loc.y + ey;
 		m_rcExpand.right = m_rcExpand.left + PROPTREEITEM_EXPANDBOX_s - 1;
 		m_rcExpand.bottom = m_rcExpand.top + PROPTREEITEM_EXPANDBOX_s - 1;
 
 		ir = m_rcExpand;
-		ir.OffsetRect(0, -m_pProp->GetOrigin().y);
-		_DrawExpand(pDC->m_hDC, ir.left, ir.top, IsExpanded(), !IsRootLevel(), PROPTREEITEM_EXPANDBOX_s, PROPTREEITEM_EXPANDBOXHALF_s);
+		ir.OffsetRect( 0, -m_pProp->GetOrigin().y );
+		_DrawExpand( pDC->m_hDC, ir.left, ir.top, IsExpanded(), !IsRootLevel(), PROPTREEITEM_EXPANDBOX_s, PROPTREEITEM_EXPANDBOXHALF_s );
 	}
 	else
+	{
 		m_rcExpand.SetRectEmpty();
+	}
 
 	// calc/draw check box position
-	if (IsCheckBox())
+	if( IsCheckBox() )
 	{
 		bCheck = true;
 
@@ -471,15 +503,17 @@ LONG CPropTreeItem::DrawItem(CDC* pDC, const RECT& rc, LONG x, LONG y)
 		m_rcCheckbox = ir;
 	}
 	else
+	{
 		m_rcCheckbox.SetRectEmpty();
+	}
 
 	HRGN hRgn = NULL;
 
 	// create a clipping region for the label
-	if (!IsRootLevel())
+	if( !IsRootLevel() )
 	{
-		hRgn = CreateRectRgn(drc.left, drc.top, drc.right, drc.bottom);
-		SelectClipRgn(pDC->m_hDC, hRgn);
+		hRgn = CreateRectRgn( drc.left, drc.top, drc.right, drc.bottom );
+		SelectClipRgn( pDC->m_hDC, hRgn );
 	}
 
 	// calc label position
@@ -487,111 +521,119 @@ LONG CPropTreeItem::DrawItem(CDC* pDC, const RECT& rc, LONG x, LONG y)
 	ir.left += PROPTREEITEM_SPACE_s;
 
 	// offset the label text if item has a check box
-	if (bCheck)
-		OffsetRect(&ir, PROPTREEITEM_CHECKBOX_s + PROPTREEITEM_SPACE_s * 2, 0);
+	if( bCheck )
+	{
+		OffsetRect( &ir, PROPTREEITEM_CHECKBOX_s + PROPTREEITEM_SPACE_s * 2, 0 );
+	}
 
 	// draw label
-	if (!m_sLabel.IsEmpty())
+	if( !m_sLabel.IsEmpty() )
 	{
-		if (IsRootLevel())
-			pDC->SelectObject(CPropTree::GetBoldFont());
+		if( IsRootLevel() )
+		{
+			pDC->SelectObject( CPropTree::GetBoldFont() );
+		}
 		else
-			pDC->SelectObject(CPropTree::GetNormalFont());
+		{
+			pDC->SelectObject( CPropTree::GetNormalFont() );
+		}
 
-		pDC->SetTextColor(GetSysColor(COLOR_BTNTEXT));
-		pDC->SetBkMode(TRANSPARENT);
-		pDC->DrawText(m_sLabel, &ir, DT_SINGLELINE|DT_VCENTER|DT_CALCRECT);
+		pDC->SetTextColor( GetSysColor( COLOR_BTNTEXT ) );
+		pDC->SetBkMode( TRANSPARENT );
+		pDC->DrawText( m_sLabel, &ir, DT_SINGLELINE | DT_VCENTER | DT_CALCRECT );
 
 		// draw the text highlighted if selected
-		if (IsSelected())
+		if( IsSelected() )
 		{
-			HGDIOBJ oPen = pDC->SelectObject(GetStockObject(NULL_PEN));
-			HGDIOBJ oBrush = pDC->SelectObject(GetSysColorBrush(COLOR_HIGHLIGHT));
+			HGDIOBJ oPen = pDC->SelectObject( GetStockObject( NULL_PEN ) );
+			HGDIOBJ oBrush = pDC->SelectObject( GetSysColorBrush( COLOR_HIGHLIGHT ) );
 
 			CRect dr;
 			dr = drc;
 			dr.left = PROPTREEITEM_EXPANDCOLUMN_s;
 
-			pDC->Rectangle(&dr);
+			pDC->Rectangle( &dr );
 
-			pDC->SelectObject(oPen);
-			pDC->SelectObject(oBrush);
+			pDC->SelectObject( oPen );
+			pDC->SelectObject( oBrush );
 
-			pDC->SetTextColor(GetSysColor(COLOR_BTNHIGHLIGHT));
+			pDC->SetTextColor( GetSysColor( COLOR_BTNHIGHLIGHT ) );
 		}
 
 		// check if we need to draw the text as disabled
-		if (!m_pProp->IsWindowEnabled())
-			pDC->SetTextColor(GetSysColor(COLOR_GRAYTEXT));
+		if( !m_pProp->IsWindowEnabled() )
+		{
+			pDC->SetTextColor( GetSysColor( COLOR_GRAYTEXT ) );
+		}
 
-		pDC->DrawText(m_sLabel, &ir, DT_SINGLELINE|DT_VCENTER);
+		pDC->DrawText( m_sLabel, &ir, DT_SINGLELINE | DT_VCENTER );
 	}
 
 	// draw check box frame
-	if (IsCheckBox())
+	if( IsCheckBox() )
 	{
 		ir = m_rcCheckbox;
-		ir.OffsetRect(0, -m_pProp->GetOrigin().y);
-		pDC->DrawFrameControl(&ir, DFC_BUTTON, DFCS_BUTTONCHECK | (IsChecked() ? DFCS_CHECKED : 0));
+		ir.OffsetRect( 0, -m_pProp->GetOrigin().y );
+		pDC->DrawFrameControl( &ir, DFC_BUTTON, DFCS_BUTTONCHECK | ( IsChecked() ? DFCS_CHECKED : 0 ) );
 	}
 
 	// remove clip region
-	if (hRgn)
+	if( hRgn )
 	{
-		SelectClipRgn(pDC->m_hDC, NULL);
-		DeleteObject(hRgn);
+		SelectClipRgn( pDC->m_hDC, NULL );
+		DeleteObject( hRgn );
 	}
 
 	// draw horzontal sep
 	float tmpScale = scaling_factor;
-	while (tmpScale > 0)
+	while( tmpScale > 0 )
 	{
-		_DotHLine(pDC->m_hDC, PROPTREEITEM_EXPANDCOLUMN_s, pt.y + nTotal - 1, rc.right - PROPTREEITEM_EXPANDCOLUMN_s + 1);
+		_DotHLine( pDC->m_hDC, PROPTREEITEM_EXPANDCOLUMN_s, pt.y + nTotal - 1, rc.right - PROPTREEITEM_EXPANDCOLUMN_s + 1 );
 		tmpScale -= 1.0f;
 	}
 
 	// draw separators
-	if (!IsRootLevel())
+	if( !IsRootLevel() )
 	{
 		// column sep
-		CPen pn1(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
+		CPen pn1( PS_SOLID, 1, GetSysColor( COLOR_BTNSHADOW ) );
 		CPen* pOld;
 
-		pOld = pDC->SelectObject(&pn1);
-		pDC->MoveTo(nCol, drc.top);
-		pDC->LineTo(nCol, drc.bottom);
+		pOld = pDC->SelectObject( &pn1 );
+		pDC->MoveTo( nCol, drc.top );
+		pDC->LineTo( nCol, drc.bottom );
 
-		CPen pn2(PS_SOLID, 1, GetSysColor(COLOR_BTNHIGHLIGHT));
-		pDC->SelectObject(&pn2);
-		pDC->MoveTo(nCol + 1, drc.top);
-		pDC->LineTo(nCol + 1, drc.bottom);
+		CPen pn2( PS_SOLID, 1, GetSysColor( COLOR_BTNHIGHLIGHT ) );
+		pDC->SelectObject( &pn2 );
+		pDC->MoveTo( nCol + 1, drc.top );
+		pDC->LineTo( nCol + 1, drc.bottom );
 
-		pDC->SelectObject(pOld);
+		pDC->SelectObject( pOld );
 	}
 
 	// draw attribute
-	if (!IsRootLevel())
+	if( !IsRootLevel() )
 	{
 		// create clip region
-		hRgn = CreateRectRgn(m_rc.left, m_rc.top, m_rc.right, m_rc.bottom);
-		SelectClipRgn(pDC->m_hDC, hRgn);
+		hRgn = CreateRectRgn( m_rc.left, m_rc.top, m_rc.right, m_rc.bottom );
+		SelectClipRgn( pDC->m_hDC, hRgn );
 
-		DrawAttribute(pDC, m_rc);
+		DrawAttribute( pDC, m_rc );
 
-		SelectClipRgn(pDC->m_hDC, NULL);
-		DeleteObject(hRgn);
+		SelectClipRgn( pDC->m_hDC, NULL );
+		DeleteObject( hRgn );
 	}
 
 	// draw children
-	if (GetChild() && IsExpanded())
+	if( GetChild() && IsExpanded() )
 	{
 		y += nTotal;
 
 		CPropTreeItem* pNext;
 
-		for (pNext = GetChild(); pNext; pNext = pNext->GetSibling())
+		for( pNext = GetChild(); pNext; pNext = pNext->GetSibling() )
 		{
-			LONG nHeight = pNext->DrawItem(pDC, rc, x + (IsRootLevel() ? 0 : PNINDENT), y);
+			LONG nHeight = pNext->DrawItem( pDC, rc, x + ( IsRootLevel() ? 0 : PNINDENT ), y );
 			nTotal += nHeight;
 			y += nHeight;
 		}
@@ -601,7 +643,7 @@ LONG CPropTreeItem::DrawItem(CDC* pDC, const RECT& rc, LONG x, LONG y)
 }
 
 
-void CPropTreeItem::DrawAttribute(CDC*, const RECT&)
+void CPropTreeItem::DrawAttribute( CDC*, const RECT& )
 {
 	// no attributes are assocatied with this type
 }

@@ -29,31 +29,32 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFConstraintFixed dialog
 
-class DialogAFConstraintFixed : public CDialog {
+class DialogAFConstraintFixed : public CDialog
+{
 
-	DECLARE_DYNAMIC(DialogAFConstraintFixed)
+	DECLARE_DYNAMIC( DialogAFConstraintFixed )
 
 public:
-						DialogAFConstraintFixed(CWnd* pParent = NULL);   // standard constructor
+	DialogAFConstraintFixed( CWnd* pParent = NULL ); // standard constructor
 	virtual				~DialogAFConstraintFixed();
-	void				LoadFile( idDeclAF *af );
+	void				LoadFile( idDeclAF* af );
 	void				SaveFile( void );
-	void				LoadConstraint( idDeclAF_Constraint *c );
+	void				LoadConstraint( idDeclAF_Constraint* c );
 	void				SaveConstraint( void );
 	void				UpdateFile( void );
 
-						enum { IDD = IDD_DIALOG_AF_CONSTRAINT_FIXED };
+	enum { IDD = IDD_DIALOG_AF_CONSTRAINT_FIXED };
 
 protected:
-	virtual void		DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void		DoDataExchange( CDataExchange* pDX );  // DDX/DDV support
 	virtual INT_PTR		OnToolHitTest( CPoint point, TOOLINFO* pTI ) const;
-	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR *pNMHDR, LRESULT *pResult );
+	afx_msg BOOL		OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult );
 
 	DECLARE_MESSAGE_MAP()
 
 private:
-	idDeclAF *			file;
-	idDeclAF_Constraint*constraint;
+	idDeclAF* 			file;
+	idDeclAF_Constraint* constraint;
 
 	//{{AFX_DATA(DialogAFConstraintHinge)
 	//}}AFX_DATA

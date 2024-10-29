@@ -44,16 +44,16 @@ public:
 	enum { IDD = IDD_FIND };
 
 public:
-	FindDialog(CWnd* pParent = NULL);
+	FindDialog( CWnd* pParent = NULL );
 	virtual ~FindDialog();
 
 	BOOL					Create();
 
 protected:
-	DECLARE_DYNAMIC(FindDialog)
+	DECLARE_DYNAMIC( FindDialog )
 
 	//Overrides
-	virtual void			DoDataExchange(CDataExchange* pDX);
+	virtual void			DoDataExchange( CDataExchange* pDX );
 	virtual BOOL			OnInitDialog();
 
 	//Messages

@@ -38,36 +38,45 @@ const float PLANE_EPSILON = 0.0001f;
 CSG_MakeHollow
 =============
 */
-void CSG_MakeHollow (void)
+void CSG_MakeHollow( void )
 {
-	idEditorBrush		*b, *front, *back, *next;
-	face_t		*f;
+	idEditorBrush*		b, *front, *back, *next;
+	face_t*		f;
 	face_t		split;
 	idVec3		move;
 	int			i;
 
-	for (b = selected_brushes.next ; b != &selected_brushes ; b=next)
+	for( b = selected_brushes.next ; b != &selected_brushes ; b = next )
 	{
 		next = b->next;
 
-	if (b->owner->eclass->fixedsize || b->pPatch || b->hiddenBrush || b->modelHandle > 0)
-		  continue;
-
-		for ( f = b->brush_faces; f; f = f->next ) {
-			split = *f;
-			VectorScale (f->plane, g_qeglobals.d_gridsize, move);
-			for (i=0 ; i<3 ; i++)
-				VectorSubtract (split.planepts[i], move, split.planepts[i]);
-
-			Brush_SplitBrushByFace (b, &split, &front, &back);
-			if (back)
-				Brush_Free (back);
-			if (front)
-				Brush_AddToList (front, &selected_brushes);
+		if( b->owner->eclass->fixedsize || b->pPatch || b->hiddenBrush || b->modelHandle > 0 )
+		{
+			continue;
 		}
-		Brush_Free (b);
+
+		for( f = b->brush_faces; f; f = f->next )
+		{
+			split = *f;
+			VectorScale( f->plane, g_qeglobals.d_gridsize, move );
+			for( i = 0 ; i < 3 ; i++ )
+			{
+				VectorSubtract( split.planepts[i], move, split.planepts[i] );
+			}
+
+			Brush_SplitBrushByFace( b, &split, &front, &back );
+			if( back )
+			{
+				Brush_Free( back );
+			}
+			if( front )
+			{
+				Brush_AddToList( front, &selected_brushes );
+			}
+		}
+		Brush_Free( b );
 	}
-	Sys_UpdateWindows (W_ALL);
+	Sys_UpdateWindows( W_ALL );
 }
 
 /*
@@ -83,17 +92,17 @@ Brush_Merge
  be the same as well.
 =============
 */
-idEditorBrush *Brush_Merge(idEditorBrush *brush1, idEditorBrush *brush2, int onlyshape)
+idEditorBrush* Brush_Merge( idEditorBrush* brush1, idEditorBrush* brush2, int onlyshape )
 {
 	int i, shared;
-	idEditorBrush *newbrush;
-	face_t *face1, *face2, *newface, *f;
+	idEditorBrush* newbrush;
+	face_t* face1, *face2, *newface, *f;
 
 	// check for bounding box overlapp
-	for (i = 0; i < 3; i++)
+	for( i = 0; i < 3; i++ )
 	{
-		if (brush1->mins[i] > brush2->maxs[i] + ON_EPSILON
-				|| brush1->maxs[i] < brush2->mins[i] - ON_EPSILON)
+		if( brush1->mins[i] > brush2->maxs[i] + ON_EPSILON
+				|| brush1->maxs[i] < brush2->mins[i] - ON_EPSILON )
 		{
 			// never merge if the brushes overlap
 			return NULL;
@@ -102,45 +111,55 @@ idEditorBrush *Brush_Merge(idEditorBrush *brush1, idEditorBrush *brush2, int onl
 	//
 	shared = 0;
 	// check if the new brush would be convex... flipped planes make a brush non-convex
-	for (face1 = brush1->brush_faces; face1; face1 = face1->next)
+	for( face1 = brush1->brush_faces; face1; face1 = face1->next )
 	{
 		// don't check the faces of brush 1 and 2 touching each other
-		for (face2 = brush2->brush_faces; face2; face2 = face2->next)
+		for( face2 = brush2->brush_faces; face2; face2 = face2->next )
 		{
-			if ( face1->plane.Compare( -face2->plane, PLANE_EPSILON ) )
+			if( face1->plane.Compare( -face2->plane, PLANE_EPSILON ) )
 			{
 				shared++;
 				// there may only be ONE shared side
-				if (shared > 1)
+				if( shared > 1 )
+				{
 					return NULL;
+				}
 				break;
 			}
 		}
 		// if this face plane is shared
-		if (face2) continue;
+		if( face2 )
+		{
+			continue;
+		}
 		//
-		for (face2 = brush2->brush_faces; face2; face2 = face2->next)
+		for( face2 = brush2->brush_faces; face2; face2 = face2->next )
 		{
 			// don't check the faces of brush 1 and 2 touching each other
-			for ( f = brush1->brush_faces; f; f = f->next ) {
-				if ( face2->plane.Compare( -f->plane, PLANE_EPSILON ) ) {
+			for( f = brush1->brush_faces; f; f = f->next )
+			{
+				if( face2->plane.Compare( -f->plane, PLANE_EPSILON ) )
+				{
 					break;
 				}
 			}
-			if ( f ) {
+			if( f )
+			{
 				continue;
 			}
 
-			if ( face1->plane.Compare( face2->plane, PLANE_EPSILON ) )
+			if( face1->plane.Compare( face2->plane, PLANE_EPSILON ) )
 			{
 				//if the texture/shader references should be the same but are not
-				if (!onlyshape && stricmp(face1->texdef.name, face2->texdef.name) != 0)
+				if( !onlyshape && stricmp( face1->texdef.name, face2->texdef.name ) != 0 )
+				{
 					return NULL;
+				}
 				continue;
 			}
 			//
-			if ( face1->face_winding->PlanesConcave( *face2->face_winding,
-							face1->plane.Normal(), face2->plane.Normal(), -face1->plane[3], -face2->plane[3]))
+			if( face1->face_winding->PlanesConcave( *face2->face_winding,
+													face1->plane.Normal(), face2->plane.Normal(), -face1->plane[3], -face2->plane[3] ) )
 			{
 				return NULL;
 			} //end if
@@ -149,74 +168,91 @@ idEditorBrush *Brush_Merge(idEditorBrush *brush1, idEditorBrush *brush2, int onl
 	//
 	newbrush = Brush_Alloc();
 	//
-	for (face1 = brush1->brush_faces; face1; face1 = face1->next)
+	for( face1 = brush1->brush_faces; face1; face1 = face1->next )
 	{
 		// don't add the faces of brush 1 and 2 touching each other
-		for (face2 = brush2->brush_faces; face2; face2 = face2->next)
+		for( face2 = brush2->brush_faces; face2; face2 = face2->next )
 		{
-			if ( face1->plane.Compare( -face2->plane, PLANE_EPSILON ) ) {
+			if( face1->plane.Compare( -face2->plane, PLANE_EPSILON ) )
+			{
 				break;
 			}
 		}
-		if ( face2 )
-			continue;
-		// don't add faces with the same plane twice
-		for (f = newbrush->brush_faces; f; f = f->next)
+		if( face2 )
 		{
-			if ( face1->plane.Compare( f->plane, PLANE_EPSILON ) )
-				break;
-			if ( face1->plane.Compare( -f->plane, PLANE_EPSILON ) )
-				break;
+			continue;
 		}
-		if ( f ) {
+		// don't add faces with the same plane twice
+		for( f = newbrush->brush_faces; f; f = f->next )
+		{
+			if( face1->plane.Compare( f->plane, PLANE_EPSILON ) )
+			{
+				break;
+			}
+			if( face1->plane.Compare( -f->plane, PLANE_EPSILON ) )
+			{
+				break;
+			}
+		}
+		if( f )
+		{
 			continue;
 		}
 
 		newface = Face_Alloc();
 		newface->texdef = face1->texdef;
-		VectorCopy(face1->planepts[0], newface->planepts[0]);
-		VectorCopy(face1->planepts[1], newface->planepts[1]);
-		VectorCopy(face1->planepts[2], newface->planepts[2]);
+		VectorCopy( face1->planepts[0], newface->planepts[0] );
+		VectorCopy( face1->planepts[1], newface->planepts[1] );
+		VectorCopy( face1->planepts[2], newface->planepts[2] );
 		newface->plane = face1->plane;
 		newface->next = newbrush->brush_faces;
 		newbrush->brush_faces = newface;
 	}
 
-	for (face2 = brush2->brush_faces; face2; face2 = face2->next) {
+	for( face2 = brush2->brush_faces; face2; face2 = face2->next )
+	{
 		// don't add the faces of brush 1 and 2 touching each other
-		for (face1 = brush1->brush_faces; face1; face1 = face1->next)
+		for( face1 = brush1->brush_faces; face1; face1 = face1->next )
 		{
-			if ( face2->plane.Compare( -face1->plane, PLANE_EPSILON ) ) {
+			if( face2->plane.Compare( -face1->plane, PLANE_EPSILON ) )
+			{
 				break;
 			}
 		}
-		if (face1)
-			continue;
-		// don't add faces with the same plane twice
-		for (f = newbrush->brush_faces; f; f = f->next)
+		if( face1 )
 		{
-			if ( face2->plane.Compare( f->plane, PLANE_EPSILON ) )
-				break;
-			if ( face2->plane.Compare( -f->plane, PLANE_EPSILON ) )
-				break;
+			continue;
 		}
-		if ( f ) {
+		// don't add faces with the same plane twice
+		for( f = newbrush->brush_faces; f; f = f->next )
+		{
+			if( face2->plane.Compare( f->plane, PLANE_EPSILON ) )
+			{
+				break;
+			}
+			if( face2->plane.Compare( -f->plane, PLANE_EPSILON ) )
+			{
+				break;
+			}
+		}
+		if( f )
+		{
 			continue;
 		}
 		//
 		newface = Face_Alloc();
 		newface->texdef = face2->texdef;
-		VectorCopy(face2->planepts[0], newface->planepts[0]);
-		VectorCopy(face2->planepts[1], newface->planepts[1]);
-		VectorCopy(face2->planepts[2], newface->planepts[2]);
+		VectorCopy( face2->planepts[0], newface->planepts[0] );
+		VectorCopy( face2->planepts[1], newface->planepts[1] );
+		VectorCopy( face2->planepts[2], newface->planepts[2] );
 		newface->plane = face2->plane;
 		newface->next = newbrush->brush_faces;
 		newbrush->brush_faces = newface;
 	}
 	// link the new brush to an entity
-	Entity_LinkBrush (brush1->owner, newbrush);
+	Entity_LinkBrush( brush1->owner, newbrush );
 	// build windings for the faces
-	Brush_BuildWindings( newbrush, false);
+	Brush_BuildWindings( newbrush, false );
 	return newbrush;
 }
 
@@ -230,41 +266,50 @@ Brush_MergeListPairs
   Input and output should be a single linked list using .next
 =============
 */
-idEditorBrush *Brush_MergeListPairs(idEditorBrush *brushlist, int onlyshape)
+idEditorBrush* Brush_MergeListPairs( idEditorBrush* brushlist, int onlyshape )
 {
 	int nummerges, merged;
-	idEditorBrush *b1, *b2, *tail, *newbrush, *newbrushlist;
-	idEditorBrush *lastb2;
+	idEditorBrush* b1, *b2, *tail, *newbrush, *newbrushlist;
+	idEditorBrush* lastb2;
 
-	if (!brushlist) return NULL;
+	if( !brushlist )
+	{
+		return NULL;
+	}
 
 	nummerges = 0;
 	do
 	{
-		for (tail = brushlist; tail; tail = tail->next)
+		for( tail = brushlist; tail; tail = tail->next )
 		{
-			if (!tail->next) break;
+			if( !tail->next )
+			{
+				break;
+			}
 		}
 		merged = 0;
 		newbrushlist = NULL;
-		for (b1 = brushlist; b1; b1 = brushlist)
+		for( b1 = brushlist; b1; b1 = brushlist )
 		{
 			lastb2 = b1;
-			for (b2 = b1->next; b2; b2 = b2->next)
+			for( b2 = b1->next; b2; b2 = b2->next )
 			{
-				newbrush = Brush_Merge(b1, b2, onlyshape);
-				if (newbrush)
+				newbrush = Brush_Merge( b1, b2, onlyshape );
+				if( newbrush )
 				{
 					tail->next = newbrush;
 					lastb2->next = b2->next;
 					brushlist = brushlist->next;
 					b1->next = b1->prev = NULL;
 					b2->next = b2->prev = NULL;
-					Brush_Free(b1);
-					Brush_Free(b2);
-					for (tail = brushlist; tail; tail = tail->next)
+					Brush_Free( b1 );
+					Brush_Free( b2 );
+					for( tail = brushlist; tail; tail = tail->next )
 					{
-						if (!tail->next) break;
+						if( !tail->next )
+						{
+							break;
+						}
 					} //end for
 					merged++;
 					nummerges++;
@@ -273,7 +318,7 @@ idEditorBrush *Brush_MergeListPairs(idEditorBrush *brushlist, int onlyshape)
 				lastb2 = b2;
 			}
 			//if b1 can't be merged with any of the other brushes
-			if (!b2)
+			if( !b2 )
 			{
 				brushlist = brushlist->next;
 				//keep b1
@@ -282,7 +327,8 @@ idEditorBrush *Brush_MergeListPairs(idEditorBrush *brushlist, int onlyshape)
 			}
 		}
 		brushlist = newbrushlist;
-	} while(merged);
+	}
+	while( merged );
 	return newbrushlist;
 }
 
@@ -301,64 +347,86 @@ Brush_MergeList
  be the same as well.
 =============
 */
-idEditorBrush *Brush_MergeList(idEditorBrush *brushlist, int onlyshape)
+idEditorBrush* Brush_MergeList( idEditorBrush* brushlist, int onlyshape )
 {
-	idEditorBrush *brush1, *brush2, *brush3, *newbrush;
-	face_t *face1, *face2, *face3, *newface, *f;
+	idEditorBrush* brush1, *brush2, *brush3, *newbrush;
+	face_t* face1, *face2, *face3, *newface, *f;
 
-	if (!brushlist) return NULL;
-	for (brush1 = brushlist; brush1; brush1 = brush1->next)
+	if( !brushlist )
+	{
+		return NULL;
+	}
+	for( brush1 = brushlist; brush1; brush1 = brush1->next )
 	{
 		// check if the new brush would be convex... flipped planes make a brush concave
-		for (face1 = brush1->brush_faces; face1; face1 = face1->next)
+		for( face1 = brush1->brush_faces; face1; face1 = face1->next )
 		{
 			// don't check face1 if it touches another brush
-			for (brush2 = brushlist; brush2; brush2 = brush2->next)
+			for( brush2 = brushlist; brush2; brush2 = brush2->next )
 			{
-				if (brush2 == brush1) continue;
-				for (face2 = brush2->brush_faces; face2; face2 = face2->next)
+				if( brush2 == brush1 )
 				{
-					if ( face1->plane.Compare( -face2->plane, PLANE_EPSILON ) ) {
+					continue;
+				}
+				for( face2 = brush2->brush_faces; face2; face2 = face2->next )
+				{
+					if( face1->plane.Compare( -face2->plane, PLANE_EPSILON ) )
+					{
 						break;
 					}
 				}
-				if (face2)
+				if( face2 )
+				{
 					break;
+				}
 			}
 			// if face1 touches another brush
-			if (brush2)
+			if( brush2 )
+			{
 				continue;
+			}
 			//
-			for (brush2 = brush1->next; brush2; brush2 = brush2->next)
+			for( brush2 = brush1->next; brush2; brush2 = brush2->next )
 			{
 				// don't check the faces of brush 2 touching another brush
-				for (face2 = brush2->brush_faces; face2; face2 = face2->next)
+				for( face2 = brush2->brush_faces; face2; face2 = face2->next )
 				{
-					for (brush3 = brushlist; brush3; brush3 = brush3->next)
+					for( brush3 = brushlist; brush3; brush3 = brush3->next )
 					{
-						if (brush3 == brush2) continue;
-						for (face3 = brush3->brush_faces; face3; face3 = face3->next)
+						if( brush3 == brush2 )
 						{
-							if ( face2->plane.Compare( -face3->plane, PLANE_EPSILON ) )
-								break;
+							continue;
 						}
-						if (face3)
+						for( face3 = brush3->brush_faces; face3; face3 = face3->next )
+						{
+							if( face2->plane.Compare( -face3->plane, PLANE_EPSILON ) )
+							{
+								break;
+							}
+						}
+						if( face3 )
+						{
 							break;
+						}
 					}
 					// if face2 touches another brush
-					if (brush3)
-						continue;
-					//
-					if ( face1->plane.Compare( face2->plane, PLANE_EPSILON ) )
+					if( brush3 )
 					{
-						//if the texture/shader references should be the same but are not
-						if (!onlyshape && stricmp(face1->texdef.name, face2->texdef.name) != 0)
-							return NULL;
 						continue;
 					}
 					//
-					if ( face1->face_winding->PlanesConcave( *face2->face_winding,
-							face1->plane.Normal(), face2->plane.Normal(), -face1->plane[3], -face2->plane[3]))
+					if( face1->plane.Compare( face2->plane, PLANE_EPSILON ) )
+					{
+						//if the texture/shader references should be the same but are not
+						if( !onlyshape && stricmp( face1->texdef.name, face2->texdef.name ) != 0 )
+						{
+							return NULL;
+						}
+						continue;
+					}
+					//
+					if( face1->face_winding->PlanesConcave( *face2->face_winding,
+															face1->plane.Normal(), face2->plane.Normal(), -face1->plane[3], -face2->plane[3] ) )
 					{
 						return NULL;
 					}
@@ -369,50 +437,64 @@ idEditorBrush *Brush_MergeList(idEditorBrush *brushlist, int onlyshape)
 	//
 	newbrush = Brush_Alloc();
 	//
-	for (brush1 = brushlist; brush1; brush1 = brush1->next)
+	for( brush1 = brushlist; brush1; brush1 = brush1->next )
 	{
-		for (face1 = brush1->brush_faces; face1; face1 = face1->next)
+		for( face1 = brush1->brush_faces; face1; face1 = face1->next )
 		{
 			// don't add face1 to the new brush if it touches another brush
-			for (brush2 = brushlist; brush2; brush2 = brush2->next)
+			for( brush2 = brushlist; brush2; brush2 = brush2->next )
 			{
-				if (brush2 == brush1) continue;
-				for (face2 = brush2->brush_faces; face2; face2 = face2->next)
+				if( brush2 == brush1 )
 				{
-					if ( face1->plane.Compare( -face2->plane, PLANE_EPSILON ) ) {
+					continue;
+				}
+				for( face2 = brush2->brush_faces; face2; face2 = face2->next )
+				{
+					if( face1->plane.Compare( -face2->plane, PLANE_EPSILON ) )
+					{
 						break;
 					}
 				}
-				if (face2)
+				if( face2 )
+				{
 					break;
+				}
 			}
-			if (brush2)
-				continue;
-			// don't add faces with the same plane twice
-			for (f = newbrush->brush_faces; f; f = f->next)
+			if( brush2 )
 			{
-				if ( face1->plane.Compare( f->plane, PLANE_EPSILON ) )
-					break;
-				if ( face1->plane.Compare( -f->plane, PLANE_EPSILON ) )
-					break;
-			}
-			if (f)
 				continue;
+			}
+			// don't add faces with the same plane twice
+			for( f = newbrush->brush_faces; f; f = f->next )
+			{
+				if( face1->plane.Compare( f->plane, PLANE_EPSILON ) )
+				{
+					break;
+				}
+				if( face1->plane.Compare( -f->plane, PLANE_EPSILON ) )
+				{
+					break;
+				}
+			}
+			if( f )
+			{
+				continue;
+			}
 			//
 			newface = Face_Alloc();
 			newface->texdef = face1->texdef;
-			VectorCopy(face1->planepts[0], newface->planepts[0]);
-			VectorCopy(face1->planepts[1], newface->planepts[1]);
-			VectorCopy(face1->planepts[2], newface->planepts[2]);
+			VectorCopy( face1->planepts[0], newface->planepts[0] );
+			VectorCopy( face1->planepts[1], newface->planepts[1] );
+			VectorCopy( face1->planepts[2], newface->planepts[2] );
 			newface->plane = face1->plane;
 			newface->next = newbrush->brush_faces;
 			newbrush->brush_faces = newface;
 		}
 	}
 	// link the new brush to an entity
-	Entity_LinkBrush (brushlist->owner, newbrush);
+	Entity_LinkBrush( brushlist->owner, newbrush );
 	// build windings for the faces
-	Brush_BuildWindings( newbrush, false);
+	Brush_BuildWindings( newbrush, false );
 	return newbrush;
 }
 
@@ -425,38 +507,43 @@ Brush_Subtract
  The originals are undisturbed.
 =============
 */
-idEditorBrush *Brush_Subtract(idEditorBrush *a, idEditorBrush *b)
+idEditorBrush* Brush_Subtract( idEditorBrush* a, idEditorBrush* b )
 {
 	// a - b = out (list)
-	idEditorBrush *front, *back;
-	idEditorBrush *in, *out, *next;
-	face_t *f;
+	idEditorBrush* front, *back;
+	idEditorBrush* in, *out, *next;
+	face_t* f;
 
 	in = a;
 	out = NULL;
-	for (f = b->brush_faces; f && in; f = f->next)
+	for( f = b->brush_faces; f && in; f = f->next )
 	{
-		Brush_SplitBrushByFace(in, f, &front, &back);
-		if (in != a) Brush_Free(in);
-		if (front)
-		{	// add to list
+		Brush_SplitBrushByFace( in, f, &front, &back );
+		if( in != a )
+		{
+			Brush_Free( in );
+		}
+		if( front )
+		{
+			// add to list
 			front->next = out;
 			out = front;
 		}
 		in = back;
 	}
 	//NOTE: in != a just in case brush b has no faces
-	if (in && in != a)
+	if( in && in != a )
 	{
-		Brush_Free(in);
+		Brush_Free( in );
 	}
 	else
-	{	//didn't really intersect
-		for (b = out; b; b = next)
+	{
+		//didn't really intersect
+		for( b = out; b; b = next )
 		{
 			next = b->next;
 			b->next = b->prev = NULL;
-			Brush_Free(b);
+			Brush_Free( b );
 		}
 		return a;
 	}
@@ -468,17 +555,17 @@ idEditorBrush *Brush_Subtract(idEditorBrush *a, idEditorBrush *b)
 CSG_Subtract
 =============
 */
-void CSG_Subtract (void)
+void CSG_Subtract( void )
 {
-	idEditorBrush		*b, *s, *fragments, *nextfragment, *frag, *next, *snext;
+	idEditorBrush*		b, *s, *fragments, *nextfragment, *frag, *next, *snext;
 	idEditorBrush		fragmentlist;
 	int			i, numfragments, numbrushes;
 
-	Sys_Status ("Subtracting...\n");
+	Sys_Status( "Subtracting...\n" );
 
-	if (selected_brushes.next == &selected_brushes)
+	if( selected_brushes.next == &selected_brushes )
 	{
-		Sys_Status("No brushes selected.\n");
+		Sys_Status( "No brushes selected.\n" );
 		return;
 	}
 
@@ -487,106 +574,122 @@ void CSG_Subtract (void)
 
 	numfragments = 0;
 	numbrushes = 0;
-	for (b = selected_brushes.next ; b != &selected_brushes ; b=next)
+	for( b = selected_brushes.next ; b != &selected_brushes ; b = next )
 	{
 		next = b->next;
 
-		if (b->owner->eclass->fixedsize || b->modelHandle > 0)
-			continue;	// can't use texture from a fixed entity, so don't subtract
+		if( b->owner->eclass->fixedsize || b->modelHandle > 0 )
+		{
+			continue;    // can't use texture from a fixed entity, so don't subtract
+		}
 
 		// chop all fragments further up
-		for (s = fragmentlist.next; s != &fragmentlist; s = snext)
+		for( s = fragmentlist.next; s != &fragmentlist; s = snext )
 		{
 			snext = s->next;
 
-			for (i=0 ; i<3 ; i++)
-				if (b->mins[i] >= s->maxs[i] - ON_EPSILON
-				|| b->maxs[i] <= s->mins[i] + ON_EPSILON)
+			for( i = 0 ; i < 3 ; i++ )
+				if( b->mins[i] >= s->maxs[i] - ON_EPSILON
+						|| b->maxs[i] <= s->mins[i] + ON_EPSILON )
+				{
 					break;
-			if (i != 3)
-				continue;	// definately don't touch
-			fragments = Brush_Subtract(s, b);
+				}
+			if( i != 3 )
+			{
+				continue;    // definately don't touch
+			}
+			fragments = Brush_Subtract( s, b );
 			// if the brushes did not really intersect
-			if (fragments == s)
+			if( fragments == s )
+			{
 				continue;
+			}
 			// try to merge fragments
-			fragments = Brush_MergeListPairs(fragments, true);
+			fragments = Brush_MergeListPairs( fragments, true );
 			// add the fragments to the list
-			for (frag = fragments; frag; frag = nextfragment)
+			for( frag = fragments; frag; frag = nextfragment )
 			{
 				nextfragment = frag->next;
 				frag->next = NULL;
 				frag->owner = s->owner;
-				Brush_AddToList(frag, &fragmentlist);
+				Brush_AddToList( frag, &fragmentlist );
 			}
 			// free the original brush
-			Brush_Free(s);
+			Brush_Free( s );
 		}
 
 		// chop any active brushes up
-		for (s = active_brushes.next; s != &active_brushes; s = snext)
+		for( s = active_brushes.next; s != &active_brushes; s = snext )
 		{
 			snext = s->next;
 
-			if (s->owner->eclass->fixedsize || s->pPatch || s->hiddenBrush || s->modelHandle > 0)
-				continue;
-
-			//face_t *pFace = s->brush_faces;
-			if ( s->brush_faces->d_texture && ( s->brush_faces->d_texture->GetContentFlags()& CONTENTS_NOCSG ) )
+			if( s->owner->eclass->fixedsize || s->pPatch || s->hiddenBrush || s->modelHandle > 0 )
 			{
 				continue;
 			}
 
-			for (i=0 ; i<3 ; i++)
-				if (b->mins[i] >= s->maxs[i] - ON_EPSILON
-				|| b->maxs[i] <= s->mins[i] + ON_EPSILON)
-					break;
-			if (i != 3)
-				continue;	// definately don't touch
-
-			fragments = Brush_Subtract(s, b);
-			// if the brushes did not really intersect
-			if (fragments == s)
+			//face_t *pFace = s->brush_faces;
+			if( s->brush_faces->d_texture && ( s->brush_faces->d_texture->GetContentFlags()& CONTENTS_NOCSG ) )
+			{
 				continue;
+			}
+
+			for( i = 0 ; i < 3 ; i++ )
+				if( b->mins[i] >= s->maxs[i] - ON_EPSILON
+						|| b->maxs[i] <= s->mins[i] + ON_EPSILON )
+				{
+					break;
+				}
+			if( i != 3 )
+			{
+				continue;    // definately don't touch
+			}
+
+			fragments = Brush_Subtract( s, b );
+			// if the brushes did not really intersect
+			if( fragments == s )
+			{
+				continue;
+			}
 			//
-			Undo_AddBrush(s);
+			Undo_AddBrush( s );
 			// one extra brush chopped up
 			numbrushes++;
 			// try to merge fragments
-			fragments = Brush_MergeListPairs(fragments, true);
+			fragments = Brush_MergeListPairs( fragments, true );
 			// add the fragments to the list
-			for (frag = fragments; frag; frag = nextfragment)
+			for( frag = fragments; frag; frag = nextfragment )
 			{
 				nextfragment = frag->next;
 				frag->next = NULL;
 				frag->owner = s->owner;
-				Brush_AddToList(frag, &fragmentlist);
+				Brush_AddToList( frag, &fragmentlist );
 			}
 			// free the original brush
-			Brush_Free(s);
+			Brush_Free( s );
 		}
 	}
 
 	// move all fragments to the active brush list
-	for (frag = fragmentlist.next; frag != &fragmentlist; frag = nextfragment)
+	for( frag = fragmentlist.next; frag != &fragmentlist; frag = nextfragment )
 	{
 		nextfragment = frag->next;
 		numfragments++;
-		Brush_RemoveFromList(frag);
-		Brush_AddToList(frag, &active_brushes);
-		Undo_EndBrush(frag);
+		Brush_RemoveFromList( frag );
+		Brush_AddToList( frag, &active_brushes );
+		Undo_EndBrush( frag );
 	}
 
-	if (numfragments == 0)
+	if( numfragments == 0 )
 	{
-		common->Printf("Selected brush%s did not intersect with any other brushes.\n",
-					(selected_brushes.next->next == &selected_brushes) ? "":"es");
+		common->Printf( "Selected brush%s did not intersect with any other brushes.\n",
+						( selected_brushes.next->next == &selected_brushes ) ? "" : "es" );
 		return;
 	}
-	Sys_Status("done.");
-	common->Printf(" (created %d fragment%s out of %d brush%s)\n", numfragments, (numfragments == 1)?"":"s",
-							numbrushes, (numbrushes == 1)?"":"es");
-	Sys_UpdateWindows(W_ALL);
+	Sys_Status( "done." );
+	common->Printf( " (created %d fragment%s out of %d brush%s)\n", numfragments, ( numfragments == 1 ) ? "" : "s",
+					numbrushes, ( numbrushes == 1 ) ? "" : "es" );
+	Sys_UpdateWindows( W_ALL );
 }
 
 /*
@@ -594,94 +697,94 @@ void CSG_Subtract (void)
 CSG_Merge
 =============
 */
-void CSG_Merge(void)
+void CSG_Merge( void )
 {
-	idEditorBrush *b, *next, *newlist, *newbrush;
+	idEditorBrush* b, *next, *newlist, *newbrush;
 	idEditorEntity* owner;
 
-	Sys_Status("Merging...\n");
+	Sys_Status( "Merging...\n" );
 
-	if (selected_brushes.next == &selected_brushes)
+	if( selected_brushes.next == &selected_brushes )
 	{
-		Sys_Status("No brushes selected.\n");
+		Sys_Status( "No brushes selected.\n" );
 		return;
 	}
 
-	if (selected_brushes.next->next == &selected_brushes)
+	if( selected_brushes.next->next == &selected_brushes )
 	{
-		Sys_Status("At least two brushes have to be selected.\n");
+		Sys_Status( "At least two brushes have to be selected.\n" );
 		return;
 	}
 
 	owner = selected_brushes.next->owner;
 
-	for (b = selected_brushes.next; b != &selected_brushes; b = next)
+	for( b = selected_brushes.next; b != &selected_brushes; b = next )
 	{
 		next = b->next;
 
-		if (b->owner->eclass->fixedsize || b->modelHandle > 0)
+		if( b->owner->eclass->fixedsize || b->modelHandle > 0 )
 		{
 			// can't use texture from a fixed entity, so don't subtract
-			Sys_Status("Cannot add fixed size entities.\n");
+			Sys_Status( "Cannot add fixed size entities.\n" );
 			return;
 		}
 
-		if (b->pPatch)
+		if( b->pPatch )
 		{
-			Sys_Status("Cannot add patches.\n");
+			Sys_Status( "Cannot add patches.\n" );
 			return;
 		}
 
-		if ( b->brush_faces->d_texture && ( b->brush_faces->d_texture->GetContentFlags() & CONTENTS_NOCSG ) )
+		if( b->brush_faces->d_texture && ( b->brush_faces->d_texture->GetContentFlags() & CONTENTS_NOCSG ) )
 		{
-			Sys_Status("Cannot add brushes using shaders that don't allows CSG operations.\n");
+			Sys_Status( "Cannot add brushes using shaders that don't allows CSG operations.\n" );
 			return;
 		}
 
-		if (b->owner != owner)
+		if( b->owner != owner )
 		{
-			Sys_Status("Cannot add brushes from different entities.\n");
+			Sys_Status( "Cannot add brushes from different entities.\n" );
 			return;
 		}
 
 	}
 
 	newlist = NULL;
-	for (b = selected_brushes.next; b != &selected_brushes; b = next)
+	for( b = selected_brushes.next; b != &selected_brushes; b = next )
 	{
 		next = b->next;
 
-		Brush_RemoveFromList(b);
+		Brush_RemoveFromList( b );
 		b->next = newlist;
 		b->prev = NULL;
 		newlist = b;
 	}
 
-	newbrush = Brush_MergeList(newlist, true);
+	newbrush = Brush_MergeList( newlist, true );
 	// if the new brush would not be convex
-	if (!newbrush)
+	if( !newbrush )
 	{
 		// add the brushes back into the selection
-		for (b = newlist; b; b = next)
+		for( b = newlist; b; b = next )
 		{
 			next = b->next;
 			b->next = NULL;
 			b->prev = NULL;
-			Brush_AddToList(b, &selected_brushes);
+			Brush_AddToList( b, &selected_brushes );
 		}
-		Sys_Status("Cannot add a set of brushes with a concave hull.\n");
+		Sys_Status( "Cannot add a set of brushes with a concave hull.\n" );
 		return;
 	}
 	// free the original brushes
-	for (b = newlist; b; b = next)
+	for( b = newlist; b; b = next )
 	{
 		next = b->next;
 		b->next = NULL;
 		b->prev = NULL;
-		Brush_Free(b);
+		Brush_Free( b );
 	}
-	Brush_AddToList(newbrush, &selected_brushes);
+	Brush_AddToList( newbrush, &selected_brushes );
 
-	Sys_Status ("done.\n");
-	Sys_UpdateWindows (W_ALL);
+	Sys_Status( "done.\n" );
+	Sys_UpdateWindows( W_ALL );
 }
