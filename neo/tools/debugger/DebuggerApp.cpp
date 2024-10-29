@@ -39,7 +39,7 @@ rvDebuggerApp::rvDebuggerApp
 ================
 */
 rvDebuggerApp::rvDebuggerApp( )  //:
-//mOptions ( "Software\\id Software\\DOOM3\\Tools\\Debugger" )
+//mOptions ( TOOLS_REGISTRY_PATH "Debugger" )
 {
 	mInstance		= NULL;
 	mDebuggerWindow = NULL;

@@ -45,7 +45,7 @@ END_MESSAGE_MAP()
 FindDialog::FindDialog( CWnd* pParent )
 	:	CDialog( FindDialog::IDD, pParent )
 {
-	registry.Init( "Software\\id Software\\DOOM3\\Tools\\MaterialEditor\\Find" );
+	registry.Init( TOOLS_REGISTRY_PATH "MaterialEditor\\Find" );
 	parent = ( MEMainFrame* )pParent;
 }
 

@@ -36,7 +36,7 @@ If you have questions concerning this license or the applicable additional terms
 MEOptions::MEOptions( )
 {
 
-	registry.Init( "Software\\id Software\\DOOM3\\Tools\\MaterialEditor" );
+	registry.Init( TOOLS_REGISTRY_PATH "MaterialEditor" );
 
 	materialTreeWidth = 0;
 	stageWidth = 0;

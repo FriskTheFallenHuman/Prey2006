@@ -32,7 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 /**
 * Wrapper class that is responsible for reading and writing Material Editor
 * settings to the registry. Settings are written to
-* Software\\id Software\\DOOM3\\Tools\\MaterialEditor
+* TOOLS_REGISTRY_PATH\\MaterialEditor
 */
 class MEOptions
 {

@@ -46,7 +46,7 @@ END_MESSAGE_MAP()
 */
 MaterialPropTreeView::MaterialPropTreeView()
 {
-	registry.Init( "Software\\id Software\\DOOM3\\Tools\\MaterialEditor\\PropertySettings" );
+	registry.Init( TOOLS_REGISTRY_PATH "MaterialEditor\\PropertySettings" );
 	internalChange = false;
 }
 

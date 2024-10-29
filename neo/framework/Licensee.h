@@ -108,7 +108,7 @@ If you have questions concerning this license or the applicable additional terms
 #define RENDERDEMO_VERSION				100
 
 // editor info
-#define TOOLS_REGISTRY_PATH				"Software\\id Software\\Human Head\\Tools\\"
+#define TOOLS_REGISTRY_PATH				"Software\\Human Head\\Prey\\Tools\\"
 #define EDITOR_REGISTRY_KEY				"PreyEditor"
 #define EDITOR_WINDOWTEXT				"PREDITOR"
 

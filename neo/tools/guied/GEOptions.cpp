@@ -63,7 +63,7 @@ rvGEOptions::Init
 */
 void rvGEOptions::Init()
 {
-	mRegistry.Init( "Software\\id Software\\DOOM3\\Tools\\GUIEditor" );
+	mRegistry.Init( TOOLS_REGISTRY_PATH "GUIEditor" );
 }
 
 /*
