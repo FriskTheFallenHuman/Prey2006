@@ -391,7 +391,7 @@ void Drag_Begin( int x, int y, int buttons,
 		if( t.face )
 		{
 			g_qeglobals.d_new_brush_bottom = t.brush->mins;
-			g_qeglobals.d_new_idEditorBrushop = t.brush->maxs;
+			g_qeglobals.d_new_brush_top = t.brush->maxs;
 
 			// use a local brushprimit_texdef fitted to a default 2x2 texture
 			brushprimit_texdef_t bp_local;

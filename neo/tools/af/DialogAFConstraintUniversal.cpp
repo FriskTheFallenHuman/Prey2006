@@ -150,7 +150,7 @@ void DialogAFConstraintUniversal::DoDataExchange( CDataExchange* pDX )
 DialogAFConstraintUniversal::InitJointLists
 ================
 */
-void DialogAFConstraintUniversal::InitJointLists( void )
+void DialogAFConstraintUniversal::InitJointLists()
 {
 	m_comboAnchorJoint.ResetContent();
 	m_comboJoint1Shaft1.ResetContent();
@@ -202,7 +202,7 @@ void DialogAFConstraintUniversal::LoadFile( idDeclAF* af )
 DialogAFConstraintUniversal::SaveFile
 ================
 */
-void DialogAFConstraintUniversal::SaveFile( void )
+void DialogAFConstraintUniversal::SaveFile()
 {
 	SaveConstraint();
 }
@@ -312,7 +312,7 @@ void DialogAFConstraintUniversal::LoadConstraint( idDeclAF_Constraint* c )
 DialogAFConstraintUniversal::SaveConstraint
 ================
 */
-void DialogAFConstraintUniversal::SaveConstraint( void )
+void DialogAFConstraintUniversal::SaveConstraint()
 {
 	int s1, s2;
 	CString str;
@@ -385,7 +385,7 @@ void DialogAFConstraintUniversal::SaveConstraint( void )
 DialogAFConstraintUniversal::UpdateFile
 ================
 */
-void DialogAFConstraintUniversal::UpdateFile( void )
+void DialogAFConstraintUniversal::UpdateFile()
 {
 	SaveConstraint();
 	if( file )

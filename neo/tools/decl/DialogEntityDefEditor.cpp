@@ -166,7 +166,7 @@ bool DialogEntityDefEditor::TestDecl( const idStr& declText )
 DialogEntityDefEditor::UpdateStatusBar
 ================
 */
-void DialogEntityDefEditor::UpdateStatusBar( void )
+void DialogEntityDefEditor::UpdateStatusBar()
 {
 	if( decl )
 	{

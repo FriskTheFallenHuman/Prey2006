@@ -35,5 +35,5 @@ extern	int		scriptline;
 
 void StartTokenParsing( const char* data );
 bool GetToken( bool crossline );
-void UngetToken( void );
-bool TokenAvailable( void );
+void UngetToken();
+bool TokenAvailable();

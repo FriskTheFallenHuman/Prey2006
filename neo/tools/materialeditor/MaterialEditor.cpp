@@ -44,7 +44,7 @@ CFont* materialEditorFont = NULL;
 /**
 * Initializes the material editor tool.
 */
-void MaterialEditorInit( void )
+void MaterialEditorInit()
 {
 
 	InitPropTree( win32.hInstance );
@@ -104,7 +104,7 @@ void MaterialEditorInit( void )
 /**
 * Called every frame by the doom engine to allow the material editor to process messages.
 */
-void MaterialEditorRun( void )
+void MaterialEditorRun()
 {
 
 	MSG* msg = AfxGetCurrentMessage();
@@ -121,7 +121,7 @@ void MaterialEditorRun( void )
 /**
 * Called by the doom engine when the material editor needs to be destroyed.
 */
-void MaterialEditorShutdown( void )
+void MaterialEditorShutdown()
 {
 
 	delete meMainFrame;

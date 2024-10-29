@@ -1625,7 +1625,7 @@ void CMainFrame::OnSize( UINT nType, int cx, int cy )
 	}
 }
 
-void	OpenDialog( void );
+void	OpenDialog();
 void	SaveAsDialog( bool bRegion );
 void	Select_Ungroup();
 
@@ -2246,7 +2246,7 @@ void CMainFrame::OnViewSide()
 	Sys_UpdateWindows( W_XY );
 }
 
-static void UpdateGrid( void )
+static void UpdateGrid()
 {
 	// g_qeglobals.d_gridsize = 1 << g_qeglobals.d_gridsize;
 	if( g_PrefsDlg.m_bSnapTToGrid )

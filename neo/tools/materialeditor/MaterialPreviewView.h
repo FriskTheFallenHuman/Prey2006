@@ -46,15 +46,15 @@ public:
 	virtual void Update() {};
 
 	void UpdateCamera( renderView_t* refdef );
-	void UpdateModel( void );
-	void UpdateLights( void );
+	void UpdateModel();
+	void UpdateLights();
 
-	void addLight( void );
+	void addLight();
 	void deleteLight( const int lightId );
 	void drawLights( renderView_t* refdef );
 
 	void InitWorld();
-	void ResetView( void );
+	void ResetView();
 
 	void setLightShader( const int lightId, const idStr shaderName );
 	void setLightColor( const int lightId, const idVec3& value );
@@ -128,7 +128,7 @@ public:
 	void	OnLightColorChange( int lightId, idVec3& color );
 	void	OnLightAllowMoveChange( int lightId, bool move );
 
-	void	OnAddLight( void );
+	void	OnAddLight();
 	void	OnDeleteLight( int lightId );
 
 #ifdef _DEBUG

@@ -44,7 +44,7 @@ public:
 	enum				{ IDD = IDD_DIALOG_GOTOLINE };
 
 	void				SetRange( int firstLine, int lastLine );
-	int					GetLine( void ) const;
+	int					GetLine() const;
 
 protected:
 	virtual BOOL		OnInitDialog();

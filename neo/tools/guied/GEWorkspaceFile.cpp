@@ -239,7 +239,7 @@ rvGEWorkspace::NewFile
 Opens a new file for editing
 ================
 */
-bool rvGEWorkspace::NewFile( void )
+bool rvGEWorkspace::NewFile()
 {
 	idStr	empty;
 	idStr	ospath;

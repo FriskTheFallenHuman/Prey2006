@@ -138,7 +138,7 @@ void DialogAFConstraintBallAndSocket::DoDataExchange( CDataExchange* pDX )
 DialogAFConstraintBallAndSocket::InitJointLists
 ================
 */
-void DialogAFConstraintBallAndSocket::InitJointLists( void )
+void DialogAFConstraintBallAndSocket::InitJointLists()
 {
 	m_comboAnchorJoint.ResetContent();
 	m_comboLimitJoint1.ResetContent();
@@ -186,7 +186,7 @@ void DialogAFConstraintBallAndSocket::LoadFile( idDeclAF* af )
 DialogAFConstraintBallAndSocket::SaveFile
 ================
 */
-void DialogAFConstraintBallAndSocket::SaveFile( void )
+void DialogAFConstraintBallAndSocket::SaveFile()
 {
 	SaveConstraint();
 }
@@ -279,7 +279,7 @@ void DialogAFConstraintBallAndSocket::LoadConstraint( idDeclAF_Constraint* c )
 DialogAFConstraintBallAndSocket::SaveConstraint
 ================
 */
-void DialogAFConstraintBallAndSocket::SaveConstraint( void )
+void DialogAFConstraintBallAndSocket::SaveConstraint()
 {
 	int s1, s2;
 	CString str;
@@ -339,7 +339,7 @@ void DialogAFConstraintBallAndSocket::SaveConstraint( void )
 DialogAFConstraintBallAndSocket::UpdateFile
 ================
 */
-void DialogAFConstraintBallAndSocket::UpdateFile( void )
+void DialogAFConstraintBallAndSocket::UpdateFile()
 {
 	SaveConstraint();
 	if( file )

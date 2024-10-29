@@ -53,7 +53,7 @@ BEGIN_MESSAGE_MAP( MaterialPreviewPropView, CPropTreeView )
 END_MESSAGE_MAP()
 
 
-void MaterialPreviewPropView::AddLight( void )
+void MaterialPreviewPropView::AddLight()
 {
 	int i, count, lightShaderIndex = 0;
 	const idMaterial* mat;
@@ -125,7 +125,7 @@ void MaterialPreviewPropView::AddLight( void )
 }
 
 //Create sample data for the preview properties
-void MaterialPreviewPropView::InitializePropTree( void )
+void MaterialPreviewPropView::InitializePropTree()
 {
 	int i;
 	CPropTreeItem*		pRoot;

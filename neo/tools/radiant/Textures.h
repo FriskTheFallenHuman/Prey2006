@@ -29,7 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 // a texturename of the form (0 0 0) will
 // create a solid color texture
 
-void		Texture_ShowInuse( void );
+void		Texture_ShowInuse();
 void		Texture_ShowAll();
 void		Texture_HideAll();
 

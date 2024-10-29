@@ -94,7 +94,7 @@ void DialogGoToLine::SetRange( int firstLine, int lastLine )
 DialogGoToLine::GetLine
 ================
 */
-int DialogGoToLine::GetLine( void ) const
+int DialogGoToLine::GetLine() const
 {
 	return line;
 }

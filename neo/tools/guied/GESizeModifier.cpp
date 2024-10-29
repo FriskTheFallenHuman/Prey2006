@@ -52,21 +52,21 @@ bool rvGESizeModifier::Merge( rvGEModifier* mergebase )
 	return true;
 }
 
-bool rvGESizeModifier::Apply( void )
+bool rvGESizeModifier::Apply()
 {
 	mWrapper->SetRect( mNewRect );
 
 	return true;
 }
 
-bool rvGESizeModifier::Undo( void )
+bool rvGESizeModifier::Undo()
 {
 	mWrapper->SetRect( mOldRect );
 
 	return true;
 }
 
-bool rvGESizeModifier::IsValid( void )
+bool rvGESizeModifier::IsValid()
 {
 	if( !mWindow->GetParent( ) )
 	{

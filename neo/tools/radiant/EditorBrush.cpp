@@ -328,7 +328,7 @@ static void SnapVectorToGrid( idVec3& v )
 Brush_Alloc
 ================
 */
-idEditorBrush* Brush_Alloc( void )
+idEditorBrush* Brush_Alloc()
 {
 	idEditorBrush* b = new idEditorBrush;
 	b->prev = b->next = NULL;
@@ -499,7 +499,7 @@ float ShadeForNormal( idVec3 normal )
 Face_Alloc
 ================
 */
-face_t* Face_Alloc( void )
+face_t* Face_Alloc()
 {
 	brushprimit_texdef_t	bp;
 
@@ -1912,28 +1912,6 @@ idEditorBrush* Brush_Parse( idVec3 origin )
 	while( 1 );
 
 	return b;
-}
-
-/*
-================
-QERApp_MapPrintf_FILE
-
-  callback for surface properties plugin must fit a PFN_QERAPP_MAPPRINTF ( see isurfaceplugin.h )
-  carefully initialize !
-================
-*/
-FILE*	g_File;
-
-void WINAPI QERApp_MapPrintf_FILE( char* text, ... )
-{
-	va_list argptr;
-	char	buf[32768];
-
-	va_start( argptr, text );
-	vsprintf( buf, text, argptr );
-	va_end( argptr );
-
-	fprintf( g_File, buf );
 }
 
 /*
@@ -3415,7 +3393,7 @@ extern void UpdateSelectablePoint( idEditorBrush* b, idVec3 v, int type );
 
 /*
 ================
-idEditorBrushransformedPoint
+Brush_TransformedPoint
 ================
 */
 
@@ -3430,7 +3408,7 @@ idMat3 Brush_RotationMatrix( idEditorBrush* b )
 	return mat;
 }
 
-idVec3 idEditorBrushransformedPoint( idEditorBrush* b, const idVec3& in )
+idVec3 Brush_TransformedPoint( idEditorBrush* b, const idVec3& in )
 {
 	idVec3 out = in;
 	out -= b->owner->origin;
@@ -3518,11 +3496,11 @@ static void Brush_UpdateLightPoints( idEditorBrush* b, const idVec3& offset )
 		VectorAdd( b->lightTarget, vRight, b->lightRight );
 		VectorAdd( b->lightTarget, vUp, b->lightUp );
 
-		UpdateSelectablePoint( b, idEditorBrushransformedPoint( b, b->lightUp ), LIGHT_UP );
-		UpdateSelectablePoint( b, idEditorBrushransformedPoint( b, b->lightRight ), LIGHT_RIGHT );
-		UpdateSelectablePoint( b, idEditorBrushransformedPoint( b, b->lightTarget ), LIGHT_TARGET );
-		UpdateSelectablePoint( b, idEditorBrushransformedPoint( b, b->lightStart ), LIGHT_START );
-		UpdateSelectablePoint( b, idEditorBrushransformedPoint( b, b->lightEnd ), LIGHT_END );
+		UpdateSelectablePoint( b, Brush_TransformedPoint( b, b->lightUp ), LIGHT_UP );
+		UpdateSelectablePoint( b, Brush_TransformedPoint( b, b->lightRight ), LIGHT_RIGHT );
+		UpdateSelectablePoint( b, Brush_TransformedPoint( b, b->lightTarget ), LIGHT_TARGET );
+		UpdateSelectablePoint( b, Brush_TransformedPoint( b, b->lightStart ), LIGHT_START );
+		UpdateSelectablePoint( b, Brush_TransformedPoint( b, b->lightEnd ), LIGHT_END );
 		b->pointLight = false;
 	}
 	else
@@ -5035,7 +5013,7 @@ void Brush_Draw( const idEditorBrush* b, bool bSelected )
 
 		qglEnd();
 
-		if( model )
+		if( model  || face->d_texture->GetEditorAlpha() != 1.0f )
 		{
 			qglDisable( GL_BLEND );
 		}

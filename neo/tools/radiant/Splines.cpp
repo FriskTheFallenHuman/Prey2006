@@ -29,7 +29,8 @@ If you have questions concerning this license or the applicable additional terms
 #include "precompiled.h"
 #pragma hdrstop
 
-#include "splines.h"
+#include "QE3.h"
+#include "Splines.h"
 
 idCameraDef splineList;
 idCameraDef* g_splineList = &splineList;
@@ -1794,6 +1795,11 @@ bool idCameraPosition::parseToken( const idStr& key, idParser* src )
 	{
 		src->ReadToken( &token );
 		name = token;
+		return true;
+	}
+	else if( !key.Icmp( "time" ) )
+	{
+		time = src->ParseInt();
 		return true;
 	}
 	else

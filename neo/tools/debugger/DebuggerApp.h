@@ -60,13 +60,13 @@ public:
 	~rvDebuggerApp();
 
 	bool				Initialize( HINSTANCE hInstance );
-	int					Run( void );
+	int					Run();
 
-	rvRegistryOptions&	GetOptions( void );
-	rvDebuggerClient&	GetClient( void );
-	rvDebuggerWindow&	GetWindow( void );
+	rvRegistryOptions&	GetOptions();
+	rvDebuggerClient&	GetClient();
+	rvDebuggerWindow&	GetWindow();
 
-	HINSTANCE			GetInstance( void );
+	HINSTANCE			GetInstance();
 
 	bool				TranslateAccelerator( LPMSG msg );
 
@@ -80,26 +80,26 @@ protected:
 
 private:
 
-	bool	ProcessNetMessages( void );
-	bool	ProcessWindowMessages( void );
+	bool	ProcessNetMessages();
+	bool	ProcessWindowMessages();
 };
 
-ID_INLINE HINSTANCE rvDebuggerApp::GetInstance( void )
+ID_INLINE HINSTANCE rvDebuggerApp::GetInstance()
 {
 	return mInstance;
 }
 
-ID_INLINE rvDebuggerClient& rvDebuggerApp::GetClient( void )
+ID_INLINE rvDebuggerClient& rvDebuggerApp::GetClient()
 {
 	return mClient;
 }
 
-ID_INLINE rvRegistryOptions& rvDebuggerApp::GetOptions( void )
+ID_INLINE rvRegistryOptions& rvDebuggerApp::GetOptions()
 {
 	return mOptions;
 }
 
-ID_INLINE rvDebuggerWindow& rvDebuggerApp::GetWindow( void )
+ID_INLINE rvDebuggerWindow& rvDebuggerApp::GetWindow()
 {
 	assert( mDebuggerWindow );
 	return *mDebuggerWindow;

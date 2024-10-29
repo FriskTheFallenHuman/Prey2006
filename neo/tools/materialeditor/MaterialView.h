@@ -41,14 +41,14 @@ public:
 	/**
 	* Constructor.
 	*/
-	MaterialView( void )
+	MaterialView()
 	{
 		materialDocManager = NULL;
 	};
 	/**
 	* Destructor.
 	*/
-	virtual ~MaterialView( void ) {};
+	virtual ~MaterialView() {};
 
 	//////////////////////////////////////////////////////////////////////////
 	//Public Interface to be implemented by subclasses

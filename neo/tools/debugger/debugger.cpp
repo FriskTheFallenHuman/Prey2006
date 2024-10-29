@@ -86,7 +86,7 @@ Launches another instance of the running executable with +debugger appended
 to the end to indicate that the debugger should start up.
 ================
 */
-void DebuggerClientLaunch( void )
+void DebuggerClientLaunch()
 {
 	if( renderSystem->IsFullScreen() )
 	{
@@ -141,7 +141,6 @@ static int SDLCALL DebuggerServerThread( void* param )
 
 	return 0;
 }
-
 /*
 ================
 DebuggerServerInit
@@ -149,7 +148,7 @@ DebuggerServerInit
 Starts up the debugger server
 ================
 */
-bool DebuggerServerInit( void )
+bool DebuggerServerInit()
 {
 	com_enableDebuggerServer.ClearModified( );
 
@@ -198,7 +197,7 @@ DebuggerServerShutdown
 Shuts down the debugger server
 ================
 */
-void DebuggerServerShutdown( void )
+void DebuggerServerShutdown()
 {
 	if( gDebuggerServerThread != NULL )
 	{

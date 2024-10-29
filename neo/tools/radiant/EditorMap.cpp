@@ -48,8 +48,8 @@ idEditorEntity	entities;				// head/tail of doubly linked list
 
 idEditorEntity*	world_entity = NULL;	// "classname" "worldspawn" !
 
-void		AddRegionBrushes( void );
-void		RemoveRegionBrushes( void );
+void		AddRegionBrushes();
+void		RemoveRegionBrushes();
 
 bool		g_bRestoreBetween = false;
 
@@ -57,7 +57,7 @@ bool		g_bRestoreBetween = false;
  =======================================================================================================================
  =======================================================================================================================
  */
-void Map_SaveBetween( void )
+void Map_SaveBetween()
 {
 	if( g_pParentWnd->ActiveXY() )
 	{
@@ -73,7 +73,7 @@ void Map_SaveBetween( void )
  =======================================================================================================================
  =======================================================================================================================
  */
-void Map_RestoreBetween( void )
+void Map_RestoreBetween()
 {
 	if( g_pParentWnd->ActiveXY() && g_bRestoreBetween )
 	{
@@ -111,7 +111,7 @@ bool CheckForTinyBrush( idEditorBrush* b, int n, float fSize )
  =======================================================================================================================
  =======================================================================================================================
  */
-void Map_BuildBrushData( void )
+void Map_BuildBrushData()
 {
 	idEditorBrush* b, *next;
 
@@ -228,7 +228,7 @@ bool Entity_NameIsUnique( const char* name )
 	Map_Free
  =======================================================================================================================
  */
-void Map_Free( void )
+void Map_Free()
 {
 	g_bRestoreBetween = false;
 	if( selected_brushes.next && ( selected_brushes.next != &selected_brushes ) )
@@ -902,7 +902,7 @@ bool Map_SaveFile( const char* filename, bool use_region, bool autosave )
 	Map_New
  =======================================================================================================================
  */
-void Map_New( void )
+void Map_New()
 {
 	common->Printf( "Map_New\n" );
 	Map_Free();
@@ -942,7 +942,7 @@ idEditorBrush* region_sides[6];
 	AddRegionBrushes a regioned map will have temp walls put up at the region boundary
  =======================================================================================================================
  */
-void AddRegionBrushes( void )
+void AddRegionBrushes()
 {
 	idVec3		mins, maxs;
 	int			i;
@@ -1007,7 +1007,7 @@ void AddRegionBrushes( void )
  =======================================================================================================================
  =======================================================================================================================
  */
-void RemoveRegionBrushes( void )
+void RemoveRegionBrushes()
 {
 	int i;
 
@@ -1056,7 +1056,7 @@ bool Map_IsBrushFiltered( idEditorBrush* b )
 	Map_RegionOff Other filtering options may still be on
  =======================================================================================================================
  */
-void Map_RegionOff( void )
+void Map_RegionOff()
 {
 	idEditorBrush* b, *next;
 	int		i;
@@ -1093,7 +1093,7 @@ void Map_RegionOff( void )
  =======================================================================================================================
  =======================================================================================================================
  */
-void Map_ApplyRegion( void )
+void Map_ApplyRegion()
 {
 	idEditorBrush* b, *next;
 
@@ -1118,7 +1118,7 @@ void Map_ApplyRegion( void )
 	Map_RegionSelectedBrushes
  =======================================================================================================================
  */
-void Map_RegionSelectedBrushes( void )
+void Map_RegionSelectedBrushes()
 {
 	Map_RegionOff();
 
@@ -1155,7 +1155,7 @@ void Map_RegionSelectedBrushes( void )
 	Map_RegionXY
  =======================================================================================================================
  */
-void Map_RegionXY( void )
+void Map_RegionXY()
 {
 	Map_RegionOff();
 
@@ -1185,7 +1185,7 @@ void Map_RegionXY( void )
 	Map_RegionTallBrush
  =======================================================================================================================
  */
-void Map_RegionTallBrush( void )
+void Map_RegionTallBrush()
 {
 	idEditorBrush* b;
 
@@ -1212,7 +1212,7 @@ void Map_RegionTallBrush( void )
 	Map_RegionBrush
  =======================================================================================================================
  */
-void Map_RegionBrush( void )
+void Map_RegionBrush()
 {
 	idEditorBrush* b;
 

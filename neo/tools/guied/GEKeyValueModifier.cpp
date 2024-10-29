@@ -40,7 +40,7 @@ rvGEKeyValueModifier::rvGEKeyValueModifier( const char* name, idWindow* window, 
 	mUndoValue = mWrapper->GetStateDict().GetString( mKey );
 }
 
-bool rvGEKeyValueModifier::Apply( void )
+bool rvGEKeyValueModifier::Apply()
 {
 	if( mValue.Length( ) )
 	{
@@ -54,7 +54,7 @@ bool rvGEKeyValueModifier::Apply( void )
 	return true;
 }
 
-bool rvGEKeyValueModifier::Undo( void )
+bool rvGEKeyValueModifier::Undo()
 {
 	mWrapper->SetStateKey( mKey, mValue );
 

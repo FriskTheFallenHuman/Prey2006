@@ -57,7 +57,7 @@ MEOptions::~MEOptions()
 /**
 * Saves the material editor options to the registry.
 */
-bool MEOptions::Save( void )
+bool MEOptions::Save()
 {
 
 	registry.SetFloat( "materialTreeWidth", materialTreeWidth );
@@ -73,7 +73,7 @@ bool MEOptions::Save( void )
 /**
 * Loads the material editor options from the registry.
 */
-bool MEOptions::Load( void )
+bool MEOptions::Load()
 {
 
 	if( !registry.Load() )

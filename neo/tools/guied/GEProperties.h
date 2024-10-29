@@ -47,9 +47,9 @@ public:
 
 	void	SetWorkspace( rvGEWorkspace* workspace );
 
-	void	Update( void );
+	void	Update();
 
-	HWND	GetWindow( void );
+	HWND	GetWindow();
 
 protected:
 
@@ -63,7 +63,7 @@ protected:
 	rvGEWorkspace*		mWorkspace;
 };
 
-ID_INLINE HWND rvGEProperties::GetWindow( void )
+ID_INLINE HWND rvGEProperties::GetWindow()
 {
 	return mWnd;
 }

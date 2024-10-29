@@ -56,15 +56,15 @@ public:
 
 	static rvGEWindowWrapper*	GetWrapper( idWindow* window );
 
-	idWindow*			GetWindow( void );
-	idDict&				GetStateDict( void );
-	idDict&				GetVariableDict( void );
-	idDict&				GetScriptDict( void );
-	idRectangle&		GetClientRect( void );
-	idRectangle&		GetScreenRect( void );
-	EWindowType			GetWindowType( void );
-	int					GetChildCount( void );
-	int					GetDepth( void );
+	idWindow*			GetWindow();
+	idDict&				GetStateDict();
+	idDict&				GetVariableDict();
+	idDict&				GetScriptDict();
+	idRectangle&		GetClientRect();
+	idRectangle&		GetScreenRect();
+	EWindowType			GetWindowType();
+	int					GetChildCount();
+	int					GetDepth();
 	idWindow*			GetChild( int index );
 
 	void				SetRect( idRectangle& rect );
@@ -73,15 +73,15 @@ public:
 	void				DeleteStateKey( const char* key );
 	bool				VerfiyStateKey( const char* name, const char* value, idStr* result = NULL );
 
-	bool				IsFlippedHorz( void );
-	bool				IsFlippedVert( void );
-	bool				IsHidden( void );
-	bool				IsDeleted( void );
-	bool				IsSelected( void );
-	bool				IsExpanded( void );
+	bool				IsFlippedHorz();
+	bool				IsFlippedVert();
+	bool				IsHidden();
+	bool				IsDeleted();
+	bool				IsSelected();
+	bool				IsExpanded();
 
-	bool				CanHaveChildren( void );
-	bool				CanMoveAndSize( void );
+	bool				CanHaveChildren();
+	bool				CanMoveAndSize();
 
 	void				SetFlippedHorz( bool f );
 	void				SetFlippedVert( bool f );
@@ -90,23 +90,23 @@ public:
 	void				SetSelected( bool sel );
 	void				SetWindowType( EWindowType type );
 
-	bool				Expand( void );
-	bool				Collapse( void );
+	bool				Expand();
+	bool				Collapse();
 
 	bool				EnumChildren( PFNENUMCHILDRENPROC proc, void* data );
 
 	idWindow*			WindowFromPoint( float x, float y, bool visibleOnly = true );
 
-	void				Finish( void );
+	void				Finish();
 
 	static EWindowType	StringToWindowType( const char* string );
 	static const char*	WindowTypeToString( EWindowType type );
 
 protected:
 
-	void				CalcScreenRect( void );
-	void				UpdateRect( void );
-	void				UpdateWindowState( void );
+	void				CalcScreenRect();
+	void				UpdateRect();
+	void				UpdateWindowState();
 
 	idRectangle		mClientRect;
 	idRectangle		mScreenRect;
@@ -125,32 +125,32 @@ protected:
 	EWindowType		mType;
 };
 
-ID_INLINE idDict& rvGEWindowWrapper::GetStateDict( void )
+ID_INLINE idDict& rvGEWindowWrapper::GetStateDict()
 {
 	return mState;
 }
 
-ID_INLINE idDict& rvGEWindowWrapper::GetVariableDict( void )
+ID_INLINE idDict& rvGEWindowWrapper::GetVariableDict()
 {
 	return mVariables;
 }
 
-ID_INLINE idDict& rvGEWindowWrapper::GetScriptDict( void )
+ID_INLINE idDict& rvGEWindowWrapper::GetScriptDict()
 {
 	return mScripts;
 }
 
-ID_INLINE bool rvGEWindowWrapper::IsFlippedHorz( void )
+ID_INLINE bool rvGEWindowWrapper::IsFlippedHorz()
 {
 	return mFlippedHorz;
 }
 
-ID_INLINE bool rvGEWindowWrapper::IsFlippedVert( void )
+ID_INLINE bool rvGEWindowWrapper::IsFlippedVert()
 {
 	return mFlippedVert;
 }
 
-ID_INLINE bool rvGEWindowWrapper::IsExpanded( void )
+ID_INLINE bool rvGEWindowWrapper::IsExpanded()
 {
 	return mExpanded;
 }
@@ -165,27 +165,27 @@ ID_INLINE void rvGEWindowWrapper::SetFlippedVert( bool f )
 	mFlippedVert = f;
 }
 
-ID_INLINE idRectangle& rvGEWindowWrapper::GetClientRect( void )
+ID_INLINE idRectangle& rvGEWindowWrapper::GetClientRect()
 {
 	return mClientRect;
 }
 
-ID_INLINE idRectangle& rvGEWindowWrapper::GetScreenRect( void )
+ID_INLINE idRectangle& rvGEWindowWrapper::GetScreenRect()
 {
 	return mScreenRect;
 }
 
-ID_INLINE bool rvGEWindowWrapper::IsHidden( void )
+ID_INLINE bool rvGEWindowWrapper::IsHidden()
 {
 	return mHidden;
 }
 
-ID_INLINE bool rvGEWindowWrapper::IsDeleted( void )
+ID_INLINE bool rvGEWindowWrapper::IsDeleted()
 {
 	return mDeleted;
 }
 
-ID_INLINE bool rvGEWindowWrapper::IsSelected( void )
+ID_INLINE bool rvGEWindowWrapper::IsSelected()
 {
 	return mSelected;
 }
@@ -195,7 +195,7 @@ ID_INLINE void rvGEWindowWrapper::SetSelected( bool sel )
 	mSelected = sel;
 }
 
-ID_INLINE rvGEWindowWrapper::EWindowType rvGEWindowWrapper::GetWindowType( void )
+ID_INLINE rvGEWindowWrapper::EWindowType rvGEWindowWrapper::GetWindowType()
 {
 	return mType;
 }
@@ -210,12 +210,12 @@ ID_INLINE idWindow* rvGEWindowWrapper::GetChild( int index )
 	return mWindow->GetChild( index );
 }
 
-ID_INLINE idWindow* rvGEWindowWrapper::GetWindow( void )
+ID_INLINE idWindow* rvGEWindowWrapper::GetWindow()
 {
 	return mWindow;
 }
 
-ID_INLINE bool rvGEWindowWrapper::CanMoveAndSize( void )
+ID_INLINE bool rvGEWindowWrapper::CanMoveAndSize()
 {
 	return mMoveable;
 }

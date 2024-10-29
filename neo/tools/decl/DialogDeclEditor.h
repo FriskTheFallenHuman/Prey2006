@@ -101,7 +101,7 @@ private:
 
 private:
 	bool				TestDecl( const idStr& declText );
-	void				UpdateStatusBar( void );
+	void				UpdateStatusBar();
 };
 
 #endif /* !__DIALOGDECLEDITOR_H__ */

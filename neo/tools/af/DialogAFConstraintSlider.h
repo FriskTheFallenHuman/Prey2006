@@ -38,10 +38,10 @@ public:
 	DialogAFConstraintSlider( CWnd* pParent = NULL ); // standard constructor
 	virtual				~DialogAFConstraintSlider();
 	void				LoadFile( idDeclAF* af );
-	void				SaveFile( void );
+	void				SaveFile();
 	void				LoadConstraint( idDeclAF_Constraint* c );
-	void				SaveConstraint( void );
-	void				UpdateFile( void );
+	void				SaveConstraint();
+	void				UpdateFile();
 
 	enum { IDD = IDD_DIALOG_AF_CONSTRAINT_HINGE };
 
@@ -74,5 +74,5 @@ private:
 	static toolTip_t	toolTips[];
 
 private:
-	void				InitJointLists( void );
+	void				InitJointLists();
 };

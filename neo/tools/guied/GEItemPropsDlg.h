@@ -28,6 +28,38 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef GEITEMPROPSDLG_H_
 #define GEITEMPROPSDLG_H_
 
-bool GEItemPropsDlg_DoModal( HWND parent, idWindow* window, idDict& outDict );
+//bool GEItemPropsDlg_DoModal	( HWND parent, idWindow* window, idDict& outDict );
+
+class rvGEItemProps
+{
+public:
+	rvGEItemProps();
+	~rvGEItemProps();
+
+	bool	Create( HWND parent, bool visible );
+	void	Show( bool visible );
+	void	Update( void );
+
+	HWND	GetWindow( void );
+	void	SetWorkspace( rvGEWorkspace* workspace );
+
+protected:
+
+	static int CALLBACK WndProc( HWND hWnd, UINT msg, LPARAM lParam );
+
+	HWND				mWnd;
+	HWND				mDlg;
+	rvGEWindowWrapper*	mWrapper;
+	rvGEWorkspace*		mWorkspace;
+
+	idDict				mDict;
+	PROPSHEETHEADER		propsh;
+	PROPSHEETPAGE		propsp[4];
+};
+
+ID_INLINE HWND rvGEItemProps::GetWindow( void )
+{
+	return mWnd;
+}
 
 #endif // GEITEMPROPSDLG_H_

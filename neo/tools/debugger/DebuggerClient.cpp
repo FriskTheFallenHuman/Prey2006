@@ -61,7 +61,7 @@ rvDebuggerClient::Initialize
 Initialize the debugger client
 ================
 */
-bool rvDebuggerClient::Initialize( void )
+bool rvDebuggerClient::Initialize()
 {
 	// Nothing else can run with the debugger
 	com_editors = EDITOR_DEBUGGER;
@@ -91,7 +91,7 @@ Shutdown the debugger client and let the debugger server
 know we are shutting down
 ================
 */
-void rvDebuggerClient::Shutdown( void )
+void rvDebuggerClient::Shutdown()
 {
 	if( mConnected )
 	{
@@ -107,7 +107,7 @@ rvDebuggerClient::ProcessMessages
 Process all incomding messages from the debugger server
 ================
 */
-bool rvDebuggerClient::ProcessMessages( void )
+bool rvDebuggerClient::ProcessMessages()
 {
 	netadr_t adrFrom;
 	idBitMsg	 msg;
@@ -250,7 +250,7 @@ rvDebuggerClient::InspectScripts
 Instructs the client to inspect the loaded scripts
 ================
 */
-void rvDebuggerClient::InspectScripts( void )
+void rvDebuggerClient::InspectScripts()
 {
 	idBitMsg	msg;
 	byte		buffer[MAX_MSGLEN];
@@ -474,7 +474,7 @@ rvDebuggerClient::ClearBreakpoints
 Removes all breakpoints from the client and server
 ================
 */
-void rvDebuggerClient::ClearBreakpoints( void )
+void rvDebuggerClient::ClearBreakpoints()
 {
 	int i;
 
@@ -557,7 +557,7 @@ rvDebuggerClient::SendBreakpoints
 Send all breakpoints to the debugger server
 ================
 */
-void rvDebuggerClient::SendBreakpoints( void )
+void rvDebuggerClient::SendBreakpoints()
 {
 	int i;
 
@@ -633,7 +633,7 @@ rvDebuggerClient::ClearCallstack
 Clear all callstack entries
 ================
 */
-void rvDebuggerClient::ClearCallstack( void )
+void rvDebuggerClient::ClearCallstack()
 {
 	int depth;
 
@@ -652,7 +652,7 @@ rvDebuggerClient::ClearThreads
 Clear all thread entries
 ================
 */
-void rvDebuggerClient::ClearThreads( void )
+void rvDebuggerClient::ClearThreads()
 {
 	int i;
 

@@ -77,7 +77,7 @@ Apply the insert modifier by removing the child from its original parent and
 inserting it as a child of the new parent
 ================
 */
-bool rvGEInsertModifier::Apply( void )
+bool rvGEInsertModifier::Apply()
 {
 	if( mUndoParent )
 	{
@@ -98,7 +98,7 @@ Undo the insert modifier by removing the window from the parent it was
 added to and re-inserting it back into its original parent
 ================
 */
-bool rvGEInsertModifier::Undo( void )
+bool rvGEInsertModifier::Undo()
 {
 	mParent->RemoveChild( mWindow );
 

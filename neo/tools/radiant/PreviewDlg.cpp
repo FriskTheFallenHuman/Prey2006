@@ -67,6 +67,7 @@ BEGIN_MESSAGE_MAP( CPreviewDlg, CDialogEx )
 	ON_BN_CLICKED( IDC_BUTTON_RELOAD, OnBnClickedButtonReload )
 	ON_BN_CLICKED( IDC_BUTTON_ADD, OnBnClickedButtonAdd )
 	ON_BN_CLICKED( IDC_BUTTON_PLAY, OnBnClickedButtonPlay )
+	ON_BN_CLICKED( IDC_PREVIEW_GUI, OnBnClickedPreviewGui )
 END_MESSAGE_MAP()
 
 // CPreviewDlg message handlers
@@ -104,8 +105,31 @@ BOOL CPreviewDlg::OnInitDialog()
 		}
 	}
 	mediaName = "";
+
+	CButton* but = ( CButton* )GetDlgItem( IDC_PREVIEW_GUI );
+	but->SetCheck( 1 );
+	if( strOnlyFilter.Icmp( "particles/" ) == 0 )
+	{
+		but->SetWindowTextA( "Particles Only" );
+	}
+	else
+	{
+		but->SetWindowTextA( "Gui Only" );
+	}
+
 	return TRUE;  // return TRUE unless you set the focus to a control
 
+}
+
+void CPreviewDlg::OnBnClickedPreviewGui( void )
+{
+	onlyFilter = !onlyFilter;
+}
+
+void CPreviewDlg::SetOnlyFilter( bool gOnly, idStr filter )
+{
+	onlyFilter = gOnly;
+	strOnlyFilter = filter;
 }
 
 void CPreviewDlg::BuildTree()
@@ -652,6 +676,11 @@ void CPreviewDlg::SetMode( int mode, const char* preSelect )
 			{
 				wnd->ShowWindow( SW_SHOW );
 			}
+			wnd = GetDlgItem( IDC_PREVIEW_GUI );
+			if( wnd )
+			{
+				wnd->ShowWindow( SW_HIDE );
+			}
 			break;
 		case MATERIALS :
 			wndPreview.ShowWindow( SW_SHOW );
@@ -670,6 +699,11 @@ void CPreviewDlg::SetMode( int mode, const char* preSelect )
 			{
 				wnd->ShowWindow( SW_HIDE );
 			}
+			wnd = GetDlgItem( IDC_PREVIEW_GUI );
+			if( wnd )
+			{
+				wnd->ShowWindow( SW_SHOW );
+			}
 			break;
 		case SOUNDS :
 		case WAVES :
@@ -685,6 +719,11 @@ void CPreviewDlg::SetMode( int mode, const char* preSelect )
 				wnd->ShowWindow( SW_HIDE );
 			}
 			wnd = GetDlgItem( IDC_EDIT_INFO );
+			if( wnd )
+			{
+				wnd->ShowWindow( SW_HIDE );
+			}
+			wnd = GetDlgItem( IDC_PREVIEW_GUI );
 			if( wnd )
 			{
 				wnd->ShowWindow( SW_HIDE );
@@ -715,7 +754,18 @@ void CPreviewDlg::AddMaterials( bool rootItems )
 					continue;
 				}
 			}
-			list.Append( mat->GetName() );
+
+			if( onlyFilter )
+			{
+				if( strstr( mat->GetName(), strOnlyFilter.c_str() ) != 0 )
+				{
+					list.Append( mat->GetName() );
+				}
+			}
+			else
+			{
+				list.Append( mat->GetName() );
+			}
 		}
 		list.Sort();
 		AddStrList( "Materials", list, MATERIALS ); // FIXME: SteelStorm2 has a _v1 suffix here

@@ -98,7 +98,7 @@ void DialogAFConstraintSlider::DoDataExchange( CDataExchange* pDX )
 DialogAFConstraintSlider::InitJointLists
 ================
 */
-void DialogAFConstraintSlider::InitJointLists( void )
+void DialogAFConstraintSlider::InitJointLists()
 {
 	m_comboAxisJoint1.ResetContent();
 	m_comboAxisJoint2.ResetContent();
@@ -140,7 +140,7 @@ void DialogAFConstraintSlider::LoadFile( idDeclAF* af )
 DialogAFConstraintSlider::SaveFile
 ================
 */
-void DialogAFConstraintSlider::SaveFile( void )
+void DialogAFConstraintSlider::SaveFile()
 {
 	SaveConstraint();
 }
@@ -183,7 +183,7 @@ void DialogAFConstraintSlider::LoadConstraint( idDeclAF_Constraint* c )
 DialogAFConstraintSlider::SaveConstraint
 ================
 */
-void DialogAFConstraintSlider::SaveConstraint( void )
+void DialogAFConstraintSlider::SaveConstraint()
 {
 	int s1, s2;
 	CString str;
@@ -215,7 +215,7 @@ void DialogAFConstraintSlider::SaveConstraint( void )
 DialogAFConstraintSlider::UpdateFile
 ================
 */
-void DialogAFConstraintSlider::UpdateFile( void )
+void DialogAFConstraintSlider::UpdateFile()
 {
 	SaveConstraint();
 	if( file )

@@ -41,8 +41,8 @@ public:
 	MEOptions();
 	~MEOptions();
 
-	bool				Save( void );
-	bool				Load( void );
+	bool				Save();
+	bool				Load();
 
 	/**
 	* Sets the flag that determines if the settings need to be saved because

@@ -232,7 +232,7 @@ qertrace_t Test_Ray( const idVec3& origin, const idVec3& dir, int flags )
 
 extern void	AddSelectablePoint( idEditorBrush* b, idVec3 v, int type, bool priority );
 extern void	ClearSelectablePoints( idEditorBrush* b );
-extern idVec3 idEditorBrushransformedPoint( idEditorBrush* b, const idVec3& in );
+extern idVec3 Brush_TransformedPoint( idEditorBrush* b, const idVec3& in );
 
 /*
  =======================================================================================================================
@@ -309,18 +309,18 @@ singleselect:
 					// add center drag point if not at the origin
 					if( brush->lightCenter[0] || brush->lightCenter[1] || brush->lightCenter[2] )
 					{
-						AddSelectablePoint( brush, idEditorBrushransformedPoint( brush, brush->lightCenter ), LIGHT_CENTER, false );
+						AddSelectablePoint( brush, Brush_TransformedPoint( brush, brush->lightCenter ), LIGHT_CENTER, false );
 					}
 				}
 				else
 				{
-					AddSelectablePoint( brush, idEditorBrushransformedPoint( brush, brush->lightTarget ), LIGHT_TARGET, true );
-					AddSelectablePoint( brush, idEditorBrushransformedPoint( brush, brush->lightUp ), LIGHT_UP, false );
-					AddSelectablePoint( brush, idEditorBrushransformedPoint( brush, brush->lightRight ), LIGHT_RIGHT, false );
+					AddSelectablePoint( brush, Brush_TransformedPoint( brush, brush->lightTarget ), LIGHT_TARGET, true );
+					AddSelectablePoint( brush, Brush_TransformedPoint( brush, brush->lightUp ), LIGHT_UP, false );
+					AddSelectablePoint( brush, Brush_TransformedPoint( brush, brush->lightRight ), LIGHT_RIGHT, false );
 					if( brush->startEnd )
 					{
-						AddSelectablePoint( brush, idEditorBrushransformedPoint( brush, brush->lightStart ), LIGHT_START, false );
-						AddSelectablePoint( brush, idEditorBrushransformedPoint( brush, brush->lightEnd ), LIGHT_END, false );
+						AddSelectablePoint( brush, Brush_TransformedPoint( brush, brush->lightStart ), LIGHT_START, false );
+						AddSelectablePoint( brush, Brush_TransformedPoint( brush, brush->lightEnd ), LIGHT_END, false );
 					}
 				}
 				UpdateLightInspector();
@@ -462,7 +462,7 @@ void Select_Ray( idVec3 origin, idVec3 dir, int flags )
  =======================================================================================================================
  =======================================================================================================================
  */
-void Select_Delete( void )
+void Select_Delete()
 {
 	idEditorBrush* brush;
 
@@ -535,7 +535,7 @@ void Select_Deselect( bool bDeselectFaces )
 	if( b->mins[2] < b->maxs[2] )
 	{
 		g_qeglobals.d_new_brush_bottom = b->mins;
-		g_qeglobals.d_new_idEditorBrushop = b->maxs;
+		g_qeglobals.d_new_brush_top = b->maxs;
 	}
 
 	selected_brushes.next->prev = &active_brushes;
@@ -594,7 +594,7 @@ void Select_Move( idVec3 delta, bool bSnap )
 	positions
  =======================================================================================================================
  */
-void Select_Clone( void )
+void Select_Clone()
 {
 	ASSERT( g_pParentWnd->ActiveXY() );
 	g_bScreenUpdates = false;
@@ -1273,7 +1273,7 @@ void Select_Scale( float x, float y, float z )
 	GROUP SELECTIONS
  =======================================================================================================================
  */
-void Select_CompleteTall( void )
+void Select_CompleteTall()
 {
 	idEditorBrush* b, *next;
 
@@ -1326,7 +1326,7 @@ void Select_CompleteTall( void )
  =======================================================================================================================
  =======================================================================================================================
  */
-void Select_PartialTall( void )
+void Select_PartialTall()
 {
 	idEditorBrush* b, *next;
 
@@ -1393,7 +1393,7 @@ void Select_PartialTall( void )
  =======================================================================================================================
  =======================================================================================================================
  */
-void Select_Touching( void )
+void Select_Touching()
 {
 	idEditorBrush* b, *next;
 	int		i;
@@ -1440,7 +1440,7 @@ void Select_Touching( void )
  =======================================================================================================================
  =======================================================================================================================
  */
-void Select_Inside( void )
+void Select_Inside()
 {
 	idEditorBrush* b, *next;
 	int		i;
@@ -2002,7 +2002,7 @@ void Select_ShowAllHidden()
 	Select_Invert
  =======================================================================================================================
  */
-void Select_Invert( void )
+void Select_Invert()
 {
 	idEditorBrush* next, *prev;
 

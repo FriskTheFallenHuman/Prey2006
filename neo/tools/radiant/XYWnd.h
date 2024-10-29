@@ -197,7 +197,7 @@ public:
 	}
 	bool m_bActive;
 
-	void UpdateViewDependencies( void );
+	void UpdateViewDependencies();
 
 	void DrawPrecisionCrosshair();
 	void CyclePrecisionCrosshairMode();

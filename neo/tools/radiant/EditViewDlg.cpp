@@ -124,7 +124,7 @@ void CEditViewDlg::ShowFindDlg()
 
 void CEditViewDlg::OnBnClickedButtonOpen()
 {
-	CPreviewDlg* dlg = nullptr;
+	CPreviewDlg* dlg = NULL;
 	dlg = ( ( mode == MATERIALS ) ? CEntityDlg::ShowMaterialChooser() : CEntityDlg::ShowGuiChooser() );
 	if( dlg )
 	{
@@ -185,7 +185,7 @@ BOOL CEditViewDlg::OnInitDialog()
 	LONG lSize = sizeof( rct );
 	if( LoadRegistryInfo( "radiant_editviewwindow", &rct, &lSize ) )
 	{
-		SetWindowPos( nullptr, rct.left, rct.top, rct.Width(), rct.Height(), SWP_SHOWWINDOW );
+		SetWindowPos( NULL, rct.left, rct.top, rct.Width(), rct.Height(), SWP_SHOWWINDOW );
 	}
 
 	editInfo.SetTabStops();
@@ -193,7 +193,7 @@ BOOL CEditViewDlg::OnInitDialog()
 
 	UpdateEditPreview();
 
-	SetTimer( 1, 250, nullptr );
+	SetTimer( 1, 250, NULL );
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
@@ -241,7 +241,7 @@ void CEditViewDlg::SetGuiInfo( const char* name )
 	fileName = "";
 	line = 0;
 	void* buf;
-	int size = fileSystem->ReadFile( name, &buf, nullptr );
+	int size = fileSystem->ReadFile( name, &buf, NULL );
 	if( size > 0 )
 	{
 		fileName = name;
@@ -320,14 +320,14 @@ BOOL CEditViewDlg::PreTranslateMessage( MSG* pMsg )
 
 LRESULT CEditViewDlg::OnFindDialogMessage( WPARAM wParam, LPARAM lParam )
 {
-	if( findDlg == nullptr )
+	if( findDlg == NULL )
 	{
 		return 0;
 	}
 
 	if( findDlg->IsTerminating() )
 	{
-		findDlg = nullptr;
+		findDlg = NULL;
 		return 0;
 	}
 

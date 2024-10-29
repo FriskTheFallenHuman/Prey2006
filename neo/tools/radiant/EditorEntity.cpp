@@ -1385,7 +1385,7 @@ idEditorEntity* Entity_Create( eclass_t* entityClass, bool forceFixed )
 	{
 		if( b->owner != world_entity )
 		{
-			MessageBox( g_pParentWnd->GetSafeHwnd(), "Entity NOT created, brushes not all from world.", "Can't Create Entity", MB_OK | MB_ICONERROR );
+			MessageBoxA( g_pParentWnd->GetSafeHwnd(), "Entity NOT created, brushes not all from world.", "Can't Create Entity", MB_OK | MB_ICONERROR );
 			return NULL;
 		}
 	}

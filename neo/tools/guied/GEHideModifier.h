@@ -38,8 +38,8 @@ public:
 
 	rvGEHideModifier( const char* name, idWindow* window, bool hide );
 
-	virtual bool		Apply( void );
-	virtual bool		Undo( void );
+	virtual bool		Apply();
+	virtual bool		Undo();
 
 protected:
 

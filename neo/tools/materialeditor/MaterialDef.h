@@ -58,8 +58,8 @@ public:
 
 public:
 
-	MaterialDef( void );
-	virtual ~MaterialDef( void );
+	MaterialDef();
+	virtual ~MaterialDef();
 
 	DWORD	GetViewData( const char* viewName );
 	void	SetViewData( const char* viewName, DWORD value );

@@ -38,6 +38,7 @@ If you have questions concerning this license or the applicable additional terms
 #endif // GEMODIFIERSTACK_H_
 
 class rvGEApp;
+class rvGEModifierGroup;
 
 class rvGEClipboardItem
 {
@@ -46,6 +47,8 @@ public:
 	idDict	mStateDict;
 	idDict	mScriptDict;
 	idDict	mVarDict;
+
+	idList<rvGEClipboardItem*> mChildren;
 };
 
 class rvGEWorkspace
@@ -83,46 +86,46 @@ public:
 	bool					Attach( HWND wnd );
 
 	// Detach the workspace from the current win32 window
-	void					Detach( void );
+	void					Detach();
 
-	bool					NewFile( void );
+	bool					NewFile();
 	bool					LoadFile( const char* filename, idStr* error = NULL );
 	bool					SaveFile( const char* filename );
-	const char*				GetFilename( void );
+	const char*				GetFilename();
 
 	void					Render( HDC hDC );
 
-	rvGEApp*				GetApplication( void );
+	rvGEApp*				GetApplication();
 
-	void					HideSelected( void );
-	void					UnhideSelected( void );
-	void					DeleteSelected( void );
-	bool					EditSelectedProperties( void );
-	bool					EditSelectedScripts( void );
-	void					BringSelectedForward( void );
-	void					BringSelectedToFront( void );
-	void					SendSelectedBackward( void );
-	void					SendSelectedToBack( void );
+	void					HideSelected();
+	void					UnhideSelected();
+	void					DeleteSelected();
+	bool					EditSelectedProperties();
+	bool					EditSelectedScripts();
+	void					BringSelectedForward();
+	void					BringSelectedToFront();
+	void					SendSelectedBackward();
+	void					SendSelectedToBack();
 	void					AlignSelected( EItemAlign align );
 	void					MakeSelectedSameSize( bool width, bool height );
-	void					MakeSelectedAChild( void );
+	void					MakeSelectedAChild();
 
-	bool					CanHide( void );
-	void					ShowHidden( void );
+	bool					CanHide();
+	void					ShowHidden();
 	void					HideWindow( idWindow* window );
 	void					UnhideWindow( idWindow* window );
 
-	EZoomLevel				ZoomIn( void );
-	EZoomLevel				ZoomOut( void );
-	EZoomLevel				GetZoom( void );
-	float					GetZoomScale( void );
+	EZoomLevel				ZoomIn();
+	EZoomLevel				ZoomOut();
+	EZoomLevel				GetZoom();
+	float					GetZoomScale();
 
 	static rvGEWorkspace*		GetWorkspace( HWND wnd );
-	rvGEModifierStack&			GetModifierStack( void );
-	idUserInterfaceLocal*		GetInterface( void );
-	rvGESelectionMgr&			GetSelectionMgr( void );
-	idList<rvGEClipboardItem*>	GetClipboard( void );
-	HWND						GetWindow( void );
+	rvGEModifierStack&			GetModifierStack();
+	idUserInterfaceLocal*		GetInterface();
+	rvGESelectionMgr&			GetSelectionMgr();
+	idList<rvGEClipboardItem*>	GetClipboard();
+	HWND						GetWindow();
 
 	void					HandleMessage( UINT msg, WPARAM wParam, LPARAM lParam );
 
@@ -131,14 +134,15 @@ public:
 	idRectangle&			WindowToWorkspace( idRectangle& rect );
 	idRectangle&			WorkspaceToWindow( idRectangle& rect );
 
-	bool					IsModified( void );
-	bool					IsNew( void );
+	bool					IsModified();
+	bool					IsNew();
 
 	idWindow*				AddWindow( rvGEWindowWrapper::EWindowType type );
 
-//	void					Cut						( void );
-	void					Copy( void );
-	void					Paste( void );
+//	void					Cut						();
+	void					Duplicate( void );
+	void					Copy();
+	void					Paste();
 
 	void					AddModifierMove( const char* modName, float x, float y, bool snap );
 	void					AddModifierSize( const char* modName, float l, float t, float r, float b, bool snap );
@@ -160,11 +164,11 @@ protected:
 		MOD_BRING_FRONT,
 	};
 
-	bool					SetupPixelFormat( void );
-	void					UpdateSelections( void );
+	bool					SetupPixelFormat();
+	void					UpdateSelections();
 
 	// Additional rendering routines
-	void					RenderGrid( void );
+	void					RenderGrid();
 
 	// File related methods
 	void					WriteTabs( idFile* file, int depth );
@@ -183,19 +187,19 @@ protected:
 	int						HandleCommand( WPARAM wParam, LPARAM lParam );
 
 	// General protected functions
-	void					UpdateScrollbars( void );
+	void					UpdateScrollbars();
 	void					UpdateRectangle( bool useScroll = true );
-	void					UpdateCursor( void );
+	void					UpdateCursor();
 	void					UpdateCursor( float x, float y );
 	void					UpdateCursor( rvGESelectionMgr::EHitTest type );
-	void					UpdateTitle( void );
+	void					UpdateTitle();
 	idWindow*				NewWindow( idDict* state, rvGEWindowWrapper::EWindowType type );
 	void					Scroll( int scrollbar, int offset );
 
 	// Modifier methods
 	void					AddModifierMoveNudge( float x, float y, bool snap );
 	void					AddModifierSizeNudge( float w, float h, bool snap );
-	void					AddModifierShowAll( void );
+	void					AddModifierShowAll();
 
 	void					AddModifiers( EModifierType type, ... );
 	void					AddModifiers( idWindow* window, EModifierType type, ... );
@@ -233,6 +237,9 @@ protected:
 
 private:
 
+	void						PasteClipboardItem( rvGEClipboardItem* item, idWindow* parent, rvGEModifierGroup* group, idWindow* before = NULL );
+	static rvGEClipboardItem*	CreateClipboardItem( idWindow* window );
+
 	static bool				CleanupEnumProc( rvGEWindowWrapper* wrapper, void* data );
 	static bool				ShowAllEnumProc( rvGEWindowWrapper* wrapper, void* data );
 	static bool				BuildSelectMenuEnumProc( rvGEWindowWrapper* wrapper, void* data );
@@ -241,12 +248,13 @@ private:
 	bool					mModified;
 	bool					mNew;
 	bool					mDontAdd;
+	bool					mWasDuplicate;
 
 	// Resources
 	HCURSOR					mHandCursor;
 };
 
-ID_INLINE rvGEWorkspace::EZoomLevel rvGEWorkspace::GetZoom( void )
+ID_INLINE rvGEWorkspace::EZoomLevel rvGEWorkspace::GetZoom()
 {
 	return ( EZoomLevel )mZoom;
 }
@@ -256,32 +264,32 @@ ID_INLINE rvGEWorkspace* rvGEWorkspace::GetWorkspace( HWND wnd )
 	return ( rvGEWorkspace* ) GetWindowLongPtr( wnd, GWLP_USERDATA );
 }
 
-ID_INLINE const char* rvGEWorkspace::GetFilename( void )
+ID_INLINE const char* rvGEWorkspace::GetFilename()
 {
 	return mFilename;
 }
 
-ID_INLINE bool rvGEWorkspace::IsModified( void )
+ID_INLINE bool rvGEWorkspace::IsModified()
 {
 	return mModified;
 }
 
-ID_INLINE bool rvGEWorkspace::IsNew( void )
+ID_INLINE bool rvGEWorkspace::IsNew()
 {
 	return mNew;
 }
 
-ID_INLINE rvGEModifierStack& rvGEWorkspace::GetModifierStack( void )
+ID_INLINE rvGEModifierStack& rvGEWorkspace::GetModifierStack()
 {
 	return mModifiers;
 }
 
-ID_INLINE rvGESelectionMgr& rvGEWorkspace::GetSelectionMgr( void )
+ID_INLINE rvGESelectionMgr& rvGEWorkspace::GetSelectionMgr()
 {
 	return mSelections;
 }
 
-ID_INLINE void rvGEWorkspace::ShowHidden( void )
+ID_INLINE void rvGEWorkspace::ShowHidden()
 {
 	AddModifierShowAll( );
 }
@@ -296,22 +304,22 @@ ID_INLINE void rvGEWorkspace::AddModifierSizeNudge( float w, float h, bool snap 
 	AddModifierSize( "Nudge Size", 0, 0, w, h, snap );
 }
 
-ID_INLINE idUserInterfaceLocal* rvGEWorkspace::GetInterface( void )
+ID_INLINE idUserInterfaceLocal* rvGEWorkspace::GetInterface()
 {
 	return mInterface;
 }
 
-ID_INLINE rvGEApp* rvGEWorkspace::GetApplication( void )
+ID_INLINE rvGEApp* rvGEWorkspace::GetApplication()
 {
 	return mApplication;
 }
 
-ID_INLINE HWND rvGEWorkspace::GetWindow( void )
+ID_INLINE HWND rvGEWorkspace::GetWindow()
 {
 	return mWnd;
 }
 
-ID_INLINE idList<rvGEClipboardItem*> rvGEWorkspace::GetClipboard( void )
+ID_INLINE idList<rvGEClipboardItem*> rvGEWorkspace::GetClipboard()
 {
 	return mClipboard;
 }

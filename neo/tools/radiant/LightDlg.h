@@ -79,9 +79,9 @@ public:
 	CLightDlg( CWnd* pParent = NULL );   // standard constructor
 	~CLightDlg();
 
-	void			UpdateDialogFromLightInfo( void );
+	void			UpdateDialogFromLightInfo();
 	void			UpdateDialog( bool updateChecks );
-	void			UpdateLightInfoFromDialog( void );
+	void			UpdateLightInfoFromDialog();
 	void			UpdateColor( float r, float g, float b, float a );
 	void			SetSpecifics();
 	void			EnableControls();

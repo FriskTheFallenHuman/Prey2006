@@ -34,6 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "GEApp.h"
 #include "GESelectionMgr.h"
+#include "GEItemScriptsDlg.h"
 
 #define GUIED_GRABSIZE		7
 #define GUIED_CENTERSIZE	5
@@ -92,6 +93,8 @@ void rvGESelectionMgr::Add( idWindow* window, bool expand )
 	gApp.GetNavigator( ).Refresh( );
 	gApp.GetTransformer( ).Update( );
 	gApp.GetProperties().Update( );
+	gApp.GetItemProperties().Update( );
+	GEItescriptsDlg_Init( gApp.GetScriptWindow() );
 
 	UpdateExpression( );
 }
@@ -116,6 +119,8 @@ void rvGESelectionMgr::Remove( idWindow* window )
 		return;
 	}
 
+	GEItescriptsDlg_Apply( gApp.GetScriptWindow() );
+
 	wrapper->SetSelected( false );
 
 	mSelections.Remove( window );
@@ -124,6 +129,8 @@ void rvGESelectionMgr::Remove( idWindow* window )
 	gApp.GetNavigator( ).Refresh( );
 	gApp.GetTransformer( ).Update( );
 	gApp.GetProperties().Update( );
+	gApp.GetItemProperties().Update( );
+	GEItescriptsDlg_Init( gApp.GetScriptWindow() );
 
 	UpdateExpression( );
 }
@@ -135,9 +142,14 @@ rvGESelectionMgr::ClearSelections
 Remove all of the current selections
 ================
 */
-void rvGESelectionMgr::Clear( void )
+void rvGESelectionMgr::Clear()
 {
 	int i;
+
+	if( mSelections.Num() > 0 )
+	{
+		GEItescriptsDlg_Apply( gApp.GetScriptWindow() );
+	}
 
 	for( i = 0; i < mSelections.Num( ); i ++ )
 	{
@@ -150,6 +162,8 @@ void rvGESelectionMgr::Clear( void )
 	gApp.GetNavigator( ).Refresh( );
 	gApp.GetTransformer( ).Update( );
 	gApp.GetProperties().Update( );
+	gApp.GetItemProperties().Update( );
+	GEItescriptsDlg_Init( gApp.GetScriptWindow() );
 
 	mExpression = false;
 }
@@ -161,7 +175,7 @@ rvGESelectionMgr::Render
 Render the selections including the move/size bars
 ================
 */
-void rvGESelectionMgr::Render( void )
+void rvGESelectionMgr::Render()
 {
 	if( !mSelections.Num( ) )
 	{
@@ -296,7 +310,7 @@ rvGESelectionMgr::UpdateRectangle
 Update the selection rectangle from all the currently selected items.
 ================
 */
-void rvGESelectionMgr::UpdateRectangle( void )
+void rvGESelectionMgr::UpdateRectangle()
 {
 	int		i;
 	idVec2	point;
@@ -341,7 +355,7 @@ rvGESelectionMgr::UpdateExpression
 Update whether or not the selection has an expression in it
 ================
 */
-void rvGESelectionMgr::UpdateExpression( void )
+void rvGESelectionMgr::UpdateExpression()
 {
 	int i;
 
@@ -444,7 +458,7 @@ rvGESelectionMgr::GetBottomMost
 Returns the bottom most selected window.
 ================
 */
-idWindow* rvGESelectionMgr::GetBottomMost( void )
+idWindow* rvGESelectionMgr::GetBottomMost()
 {
 	idWindow*	bottom;
 	int			depth;

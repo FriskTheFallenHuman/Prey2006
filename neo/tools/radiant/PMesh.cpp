@@ -65,7 +65,7 @@ const int PATCH_STYLEMASK = 0xffff0000;    //
 
 // externs
 extern void MemFile_fprintf( CMemFile* pMemFile, const char* pText, ... );
-extern face_t* Face_Alloc( void );
+extern face_t* Face_Alloc();
 void _Write3DMatrix( FILE* f, int y, int x, int z, float* m );
 void _Write3DMatrix( CMemFile* f, int y, int x, int z, float* m );
 extern void SamplePatch( float ctrl[3][3][5], int baseCol, int baseRow, int width, int horzSub, int vertSub, idDrawVert* outVerts, idDrawVert* drawVerts );

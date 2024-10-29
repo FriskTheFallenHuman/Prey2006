@@ -80,7 +80,7 @@ rvGEStatusBar::Update
 Updates the status bar by setting up each part's width and text
 ================
 */
-void rvGEStatusBar::Update( void )
+void rvGEStatusBar::Update()
 {
 	RECT	rStatus;
 	SIZE	zoomSize;

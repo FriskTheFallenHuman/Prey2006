@@ -38,8 +38,8 @@ public:
 
 	rvGEStateModifier( const char* name, idWindow* window, idDict& dict );
 
-	virtual bool		Apply( void );
-	virtual bool		Undo( void );
+	virtual bool		Apply();
+	virtual bool		Undo();
 
 protected:
 

@@ -34,7 +34,7 @@ class CFindBrushDlg : public CDialogEx
 
 public:
 	CFindBrushDlg( CWnd* pParent = nullptr );   // standard constructor
-	virtual ~CFindBrushDlg( void );
+	virtual ~CFindBrushDlg();
 
 protected:
 	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support

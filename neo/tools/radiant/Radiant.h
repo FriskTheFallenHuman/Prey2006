@@ -43,7 +43,7 @@ public:
 	virtual int ExitInstance();
 
 	virtual BOOL OnIdle( LONG lCount );
-	virtual int Run( void );
+	virtual int Run();
 
 	afx_msg void OnAppHelp();
 	afx_msg void OnAppAbout();

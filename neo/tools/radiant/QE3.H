@@ -84,7 +84,6 @@ typedef struct
 {
 	int		iSize;
 	int		iTexMenu;		// nearest, linear, etc
-	char	szProject[256];	// last project loaded
 	idVec3	colors[COLOR_LAST];
 	bool	show_names;
 	bool	show_coordinates;
@@ -100,15 +99,15 @@ typedef struct
 // system functions
 //
 // TTimo NOTE: WINAPI funcs can be accessed by plugins
-void    Sys_UpdateStatusBar( void );
+void    Sys_UpdateStatusBar();
 void    Sys_UpdateWindows( int bits );
-double	Sys_DoubleTime( void );
+double	Sys_DoubleTime();
 void    Sys_GetCursorPos( int* x, int* y );
 void    Sys_SetCursorPos( int x, int y );
 void    Sys_SetTitle( const char* text );
-void    Sys_BeginWait( void );
+void    Sys_BeginWait();
 bool	Sys_Waiting();
-void    Sys_EndWait( void );
+void    Sys_EndWait();
 void    Sys_Status( const char* psz, int part = -1 );
 
 /*
@@ -125,7 +124,7 @@ typedef struct
 
 	int      d_num_entities;
 
-	idVec3	d_new_brush_bottom, d_new_idEditorBrushop;
+	idVec3	d_new_brush_bottom, d_new_brush_top;
 
 	HINSTANCE d_hInstance;
 
@@ -177,12 +176,12 @@ typedef struct
 //=========================
 // pointfile.cpp
 //========================
-void Pointfile_Delete( void );
-void Pointfile_Check( void );
-void Pointfile_Next( void );
-void Pointfile_Prev( void );
-void Pointfile_Clear( void );
-void Pointfile_Draw( void );
+void Pointfile_Delete();
+void Pointfile_Check();
+void Pointfile_Next();
+void Pointfile_Prev();
+void Pointfile_Clear();
+void Pointfile_Draw();
 
 //========================
 // drag.c
@@ -197,18 +196,18 @@ extern bool g_moveOnly;
 //========================
 // csg.c
 //========================
-void CSG_MakeHollow( void );
-void CSG_Subtract( void );
-void CSG_Merge( void );
+void CSG_MakeHollow();
+void CSG_Subtract();
+void CSG_Merge();
 
 //========================
 // vertsel.c
 //========================
-void SetupVertexSelection( void );
+void SetupVertexSelection();
 void SelectEdgeByRay( idVec3 org, idVec3 dir );
 void SelectVertexByRay( idVec3 org, idVec3 dir );
 
-void ConnectEntities( void );
+void ConnectEntities();
 
 //========================
 // win_main.c
@@ -240,17 +239,17 @@ bool TryDocking( HWND h, long side, LPRECT rect, int widthlimit );
 //========================
 // QE function declarations
 //========================
-void	QE_CheckAutoSave( void );
-void	QE_CountBrushesAndUpdateStatusBar( void );
-void	WINAPI QE_CheckOpenGLForErrors( void );
-void	QE_Init( void );
+void	QE_CheckAutoSave();
+void	QE_CountBrushesAndUpdateStatusBar();
+void	WINAPI QE_CheckOpenGLForErrors();
+void	QE_Init();
 bool	QE_SingleBrush( bool bQuiet = false, bool entityOK = false );
 
 
 //========================
 // sys stuff
 //========================
-void Sys_MarkMapModified( void );
+void Sys_MarkMapModified();
 
 //========================
 // QE Win32 function declarations
@@ -360,7 +359,7 @@ extern void SaveWindowPlacement( HWND hwnd, const char* pName );
 extern bool LoadWindowPlacement( HWND hwnd, const char* pName );
 
 void SaveDialogPlacement( CDialog* dlg, const char* pName );
-extern bool ConfirmModified( void );
+extern bool ConfirmModified();
 extern void DoPatchInspector();
 void UpdatePatchInspector();
 extern int g_nSmartX;

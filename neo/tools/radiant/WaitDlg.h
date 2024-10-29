@@ -37,7 +37,7 @@ public:
 	~CWaitDlg();
 	void SetText( const char* msg, float percent = 0.0f, bool append = false );
 	void AllowCancel( bool enable );
-	bool CancelPressed( void );
+	bool CancelPressed();
 
 	enum { IDD = IDD_DLG_WAIT };
 	CString	waitStr;

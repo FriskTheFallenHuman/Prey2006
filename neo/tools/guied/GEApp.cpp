@@ -37,14 +37,18 @@ If you have questions concerning this license or the applicable additional terms
 #include "GEApp.h"
 #include "GEOptionsDlg.h"
 #include "GEViewer.h"
+#include "GEStateModifier.h"
+#include "GEItemScriptsDlg.h"
 
 static const int IDM_WINDOWCHILD	= 1000;
 static const int ID_GUIED_FILE_MRU1 = 10000;
 
+static INT_PTR CALLBACK AboutDlg_WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
+
 class CAboutGEDlg : public CAboutDlg
 {
 public:
-	CAboutGEDlg( void );
+	CAboutGEDlg();
 	virtual BOOL OnInitDialog();
 };
 
@@ -101,6 +105,8 @@ static void ShowAboutDialog( HINSTANCE hInstance, HWND hParent )
 	DialogBoxParam( hInstance, MAKEINTRESOURCE( IDD_ABOUT ), hParent, AboutDlgProc, reinterpret_cast<LPARAM>( &aboutDlg ) );
 }
 
+bool rvGEApp::mDontExit = false;
+
 rvGEApp::rvGEApp( )
 {
 	mMDIFrame			 = NULL;
@@ -122,7 +128,7 @@ rvGEApp::Initialize
 Initialize the gui editor application
 ================
 */
-bool rvGEApp::Initialize( void )
+bool rvGEApp::Initialize()
 {
 	mOptions.Init();
 
@@ -202,6 +208,31 @@ bool rvGEApp::Initialize( void )
 	return true;
 }
 
+/*
+================
+rvGEApp::ApplyProperties
+
+Callback function performed when pressing the Apply button on the properties dialog.
+================
+*/
+bool rvGEApp::ApplyProperties( idDict* dict, bool keyShortcut )
+{
+	rvGEWorkspace* workspace = GetActiveWorkspace();
+
+	if( workspace != 0 )
+	{
+		workspace->GetModifierStack().Append( new rvGEStateModifier( "Item Properties", workspace->GetSelectionMgr()[0], *dict ) );
+		workspace->SetModified( true );
+
+		GetNavigator().Update();
+		GetTransformer().Update();
+		GetProperties().Update();
+
+		return true;
+	}
+
+	return false;
+}
 
 /*
 ================
@@ -250,6 +281,18 @@ bool rvGEApp::TranslateAccelerator( LPMSG msg )
 		msg->hwnd = GetMDIClient( );
 	}
 
+	if( msg->message == WM_KEYDOWN )
+	{
+		HWND hFocus = GetFocus();
+		if( hFocus == GetDlgItem( gApp.GetScriptWindow(), IDC_GUIED_SCRIPT ) )
+		{
+			if( rvGEWorkspace* ws = GetActiveWorkspace() )
+			{
+				ws->SetModified( true );
+			}
+		}
+	}
+
 	if( mViewer )
 	{
 		return false;
@@ -259,7 +302,7 @@ bool rvGEApp::TranslateAccelerator( LPMSG msg )
 
 	// Only use accelerators when on the main window or navigator window
 	if( focus == mMDIClient || focus == mMDIFrame ||
-			focus == GetNavigator().GetWindow( ) )
+			focus == GetNavigator().GetWindow( ) || focus == GetItemProperties().GetWindow() )
 	{
 		if( ::TranslateAccelerator( mMDIFrame, mAccelerators, msg ) )
 		{
@@ -282,7 +325,7 @@ rvGEApp::RunFrame
 Runs the current frame which causes the active window to be redrawn
 ================
 */
-void rvGEApp::RunFrame( void )
+void rvGEApp::RunFrame()
 {
 	HWND			wnd;
 	rvGEWorkspace*	workspace = GetActiveWorkspace( &wnd );
@@ -362,19 +405,57 @@ LRESULT CALLBACK rvGEApp::FrameWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 			break;
 
 		case WM_CLOSE:
-			while( app->mWorkspaces.Num( ) )
+
+			if( gApp.IsActive() )
 			{
-				SendMessage( app->mWorkspaces[0]->GetWindow( ), WM_CLOSE, 0, 0 );
+				if( gApp.GetActiveWorkspace() && gApp.GetActiveWorkspace()->IsModified() )
+				{
+					int res = gApp.MessageBox( va( "Save changes to the document \"%s\" before closing?", gApp.GetActiveWorkspace()->GetFilename() ), MB_YESNOCANCEL | MB_ICONQUESTION );
+					if( res == IDYES )
+					{
+						SendMessage( gApp.GetMDIFrame(), WM_COMMAND, MAKELONG( ID_GUIED_FILE_SAVE, 0 ), 0 );
+					}
+					else if( res == IDNO )
+					{
+						while( app->mWorkspaces.Num() )
+						{
+							SendMessage( app->mWorkspaces[0]->GetWindow(), WM_CLOSE, 0, 0 );
+						}
+					}
+					else if( res == IDCANCEL )
+					{
+						mDontExit = true;
+						return -1;
+					}
+				}
+				else
+				{
+					mDontExit = false;
+				}
+			}
+			else
+			{
+				mDontExit = false;
 			}
 			break;
 
 		case WM_DESTROY:
-			app->mOptions.SetWindowPlacement( "mdiframe", hWnd );
-			app->mOptions.Save( );
-			GUIEditorShutdown();
-			ExitProcess( 0 );
-			break;
-
+		{
+			if( !mDontExit )
+			{
+				app->mOptions.SetWindowPlacement( "mdiframe", hWnd );
+				app->mOptions.Save();
+				// foresthale 2014-05-29: added common->Shutdown() here to prevent a hang on idGameThread dtor
+				common->Shutdown();
+				ExitProcess( 0 );
+				break;
+			}
+			else
+			{
+				mDontExit = true;
+				return 1;
+			}
+		}
 		case WM_COMMAND:
 		{
 			int result;
@@ -406,17 +487,23 @@ LRESULT CALLBACK rvGEApp::FrameWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 			app->mTransformer.Create( hWnd, gApp.mOptions.GetTransformerVisible( ) );
 			app->mStatusBar.Create( hWnd, 9999, gApp.mOptions.GetStatusBarVisible( ) );
 			app->mProperties.Create( hWnd, gApp.mOptions.GetPropertiesVisible( ) );
+			app->mItemProperties.Create( hWnd, gApp.mOptions.GetItemPropertiesVisible() );
+			HWND mScripts = GEItemScriptsDlg_DoModal( hWnd, 0 );
+			app->SetScriptWindow( mScripts );
 
 			// add all the tool windows to the tool window array
 			app->mToolWindows.Append( app->mMDIFrame );
 			app->mToolWindows.Append( app->mNavigator.GetWindow( ) );
 			app->mToolWindows.Append( app->mProperties.GetWindow( ) );
 			app->mToolWindows.Append( app->mTransformer.GetWindow( ) );
+			app->mToolWindows.Append( app->mItemProperties.GetWindow( ) );
+			app->mToolWindows.Append( app->GetScriptWindow() );
 
 			SendMessage( app->mNavigator.GetWindow( ), WM_NCACTIVATE, true, ( LONG_PTR ) - 1 );
 			SendMessage( app->mProperties.GetWindow( ), WM_NCACTIVATE, true, ( LONG_PTR ) - 1 );
 			SendMessage( app->mTransformer.GetWindow( ), WM_NCACTIVATE, true, ( LONG_PTR ) - 1 );
-
+			SendMessage( app->mItemProperties.GetWindow( ), WM_NCACTIVATE, true, ( LONG_PTR ) - 1 );
+			SendMessage( app->GetScriptWindow(), WM_NCACTIVATE, true, ( LONG_PTR ) - 1 );
 			break;
 		}
 	}
@@ -444,9 +531,17 @@ LRESULT CALLBACK rvGEApp::MDIChildProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 	switch( uMsg )
 	{
 		case WM_CLOSE:
-			workspace->GetApplication( )->mWorkspaces.Remove( workspace );
-			break;
-
+		{
+			if( !mDontExit )
+			{
+				workspace->GetApplication()->mWorkspaces.Remove( workspace );
+				break;
+			}
+			else
+			{
+				mDontExit = false;
+			}
+		}
 		case WM_CREATE:
 		{
 			LPMDICREATESTRUCT	mdics;
@@ -470,9 +565,18 @@ LRESULT CALLBACK rvGEApp::MDIChildProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 			assert( workspace );
 			if( ( HWND )lParam == hWnd )
 			{
+				rvGEWorkspace* prev = workspace->GetApplication()->GetTransformer().GetWorkspace();
+				if( prev != 0 && prev != workspace )
+				{
+					GEItescriptsDlg_Apply( gApp.GetScriptWindow(), prev );
+				}
 				workspace->GetApplication( )->GetNavigator().SetWorkspace( workspace );
 				workspace->GetApplication( )->GetTransformer().SetWorkspace( workspace );
 				workspace->GetApplication( )->GetProperties().SetWorkspace( workspace );
+				workspace->GetApplication( )->GetItemProperties().SetWorkspace( workspace );
+
+				GEItemScriptsDlg_Clear( gApp.GetScriptWindow() );
+				GEItescriptsDlg_Init( gApp.GetScriptWindow(), workspace );
 				gApp.GetStatusBar( ).SetSimple( false );
 			}
 			else if( lParam == NULL )
@@ -567,6 +671,7 @@ void rvGEApp::HandleCommandSave( rvGEWorkspace* workspace, const char* filename 
 		realFilename = filename;
 	}
 
+	GEItescriptsDlg_Apply( gApp.GetScriptWindow() );
 	// Now performe the file save
 	if( workspace->SaveFile( realFilename ) )
 	{
@@ -610,6 +715,11 @@ int rvGEApp::HandleCommand( WPARAM wParam, LPARAM lParam )
 		case ID_GUIED_EDIT_COPY:
 			assert( workspace );
 			workspace->Copy( );
+			break;
+
+		case ID_GUIED_EDIT_DUPLICATE:
+			assert( workspace );
+			workspace->Duplicate();
 			break;
 
 		case ID_GUIED_EDIT_PASTE:
@@ -794,8 +904,17 @@ int rvGEApp::HandleCommand( WPARAM wParam, LPARAM lParam )
 			mProperties.Show( mOptions.GetPropertiesVisible() ? false : true );
 			break;
 
+		case ID_GUIED_WINDOW_SHOWITEMPROPERTIES:
+			mItemProperties.Show( mOptions.GetItemPropertiesVisible() ? false : true );
+			break;
+
 		case ID_GUIED_WINDOW_SHOWTRANSFORMER:
 			mTransformer.Show( mOptions.GetTransformerVisible() ? false : true );
+			break;
+
+		case ID_GUIED_WINDOW_SHOWSCRIPTS:
+			ShowWindow( mScripts, mOptions.GetScriptsVisible() ? false : true );
+			mOptions.SetScriptsVisible( mOptions.GetScriptsVisible() ? false : true );
 			break;
 
 		case ID_GUIED_EDIT_DELETE:
@@ -823,6 +942,7 @@ int rvGEApp::HandleCommand( WPARAM wParam, LPARAM lParam )
 			workspace->GetModifierStack().Undo( );
 			mNavigator.Update( );
 			mTransformer.Update( );
+			mItemProperties.Update( );
 			break;
 
 		case ID_GUIED_EDIT_REDO:
@@ -830,6 +950,7 @@ int rvGEApp::HandleCommand( WPARAM wParam, LPARAM lParam )
 			workspace->GetModifierStack().Redo( );
 			mNavigator.Update( );
 			mTransformer.Update( );
+			mItemProperties.Update( );
 			break;
 
 		case ID_GUIED_VIEW_OPTIONS:
@@ -855,15 +976,64 @@ int rvGEApp::HandleCommand( WPARAM wParam, LPARAM lParam )
 			break;
 
 		case ID_GUIED_FILE_EXIT:
-			DestroyWindow( mMDIFrame );
-			break;
+		{
+			if( active )
+			{
+				if( workspace->IsModified() )
+				{
+					int res = gApp.MessageBox( va( "Save changes to the document \"%s\" before closing?", workspace->GetFilename() ), MB_YESNOCANCEL | MB_ICONQUESTION );
+					if( res == IDYES )
+					{
+						SendMessage( gApp.GetMDIFrame(), WM_COMMAND, MAKELONG( ID_GUIED_FILE_SAVE, 0 ), 0 );
+					}
+					else if( res == IDNO )
+					{
+						gApp.GetOptions().SetWindowPlacement( "itemProperties", mItemProperties.GetWindow() );
+						DestroyWindow( mItemProperties.GetWindow() );
+						DestroyWindow( mScripts );
+						DestroyWindow( mMDIFrame );
+					}
+				}
+				else
+				{
+					gApp.GetOptions().SetWindowPlacement( "itemProperties", mItemProperties.GetWindow() );
+					DestroyWindow( mItemProperties.GetWindow() );
+					DestroyWindow( mScripts );
+					DestroyWindow( mMDIFrame );
+				}
+			}
+			else
+			{
+				gApp.GetOptions().SetWindowPlacement( "itemProperties", mItemProperties.GetWindow() );
+				DestroyWindow( mItemProperties.GetWindow() );
+				DestroyWindow( mScripts );
+				DestroyWindow( mMDIFrame );
+			}
 
+			break;
+		}
 		case ID_GUIED_FILE_CLOSE:
 			if( active )
 			{
 				assert( workspace );
-				SendMessage( active, WM_CLOSE, 0, 0 );
+				if( workspace->IsModified() )
+				{
+					int res = gApp.MessageBox( va( "Save changes to the document \"%s\" before closing?", workspace->GetFilename() ), MB_YESNOCANCEL | MB_ICONQUESTION );
+					if( res == IDYES )
+					{
+						SendMessage( gApp.GetMDIFrame(), WM_COMMAND, MAKELONG( ID_GUIED_FILE_SAVE, 0 ), 0 );
+					}
+					else if( res == IDNO )
+					{
+						SendMessage( active, WM_CLOSE, 0, 0 );
+					}
+				}
+				else
+				{
+					SendMessage( active, WM_CLOSE, 0, 0 );
+				}
 			}
+
 			break;
 
 		case ID_GUIED_FILE_NEW:
@@ -879,7 +1049,11 @@ int rvGEApp::HandleCommand( WPARAM wParam, LPARAM lParam )
 			assert( workspace );
 			HandleCommandSave( workspace, NULL );
 			break;
-
+		case ID_GUIED_APPLY_ITEM_PROPS:
+		{
+			SendMessage( mItemProperties.GetWindow(), PSM_APPLY, 0, 0 );
+			break;
+		}
 		case ID_GUIED_FILE_OPEN:
 		{
 			OPENFILENAME ofn;
@@ -965,8 +1139,18 @@ int rvGEApp::HandleInitMenu( WPARAM wParam, LPARAM lParam )
 				CheckMenuItem( hmenu, id, flags );
 				break;
 
+			case ID_GUIED_WINDOW_SHOWITEMPROPERTIES:
+				flags = MF_BYCOMMAND | ( mOptions.GetItemPropertiesVisible() ? MF_CHECKED : MF_UNCHECKED );
+				CheckMenuItem( hmenu, id, flags );
+				break;
+
 			case ID_GUIED_WINDOW_SHOWTRANSFORMER:
 				flags = MF_BYCOMMAND | ( mOptions.GetTransformerVisible() ? MF_CHECKED : MF_UNCHECKED );
+				CheckMenuItem( hmenu, id, flags );
+				break;
+
+			case ID_GUIED_WINDOW_SHOWSCRIPTS:
+				flags = MF_BYCOMMAND | ( mOptions.GetScriptsVisible() ? MF_CHECKED : MF_UNCHECKED );
 				CheckMenuItem( hmenu, id, flags );
 				break;
 		}
@@ -1009,6 +1193,7 @@ int rvGEApp::HandleInitMenu( WPARAM wParam, LPARAM lParam )
 				case ID_GUIED_FILE_SAVE:
 				case ID_GUIED_FILE_SAVEAS:
 				case ID_GUIED_EDIT_COPY:
+				case ID_GUIED_EDIT_DUPLICATE:
 				case ID_GUIED_EDIT_PASTE:
 				case ID_GUIED_ITEM_ARRANGEMAKECHILD:
 				case ID_GUIED_FILE_CLOSE:
@@ -1112,6 +1297,7 @@ int rvGEApp::HandleInitMenu( WPARAM wParam, LPARAM lParam )
 			case ID_GUIED_VIEW_UNHIDESELECTED:
 			case ID_GUIED_EDIT_DELETE:
 			case ID_GUIED_EDIT_COPY:
+			case ID_GUIED_EDIT_DUPLICATE:
 				EnableMenuItem( hmenu, nPos, MF_BYPOSITION | ( workspace->GetSelectionMgr().Num() > 0 ? MF_ENABLED : MF_GRAYED ) );
 				break;
 
@@ -1159,8 +1345,9 @@ rvGEApp::NewFile
 Creates a new file and opens a window for it
 ================
 */
-bool rvGEApp::NewFile( void )
+bool rvGEApp::NewFile()
 {
+	GEItescriptsDlg_Apply( gApp.GetScriptWindow() );
 	rvGEWorkspace* workspace = new rvGEWorkspace( this );
 	if( workspace->NewFile( ) )
 	{
@@ -1171,8 +1358,8 @@ bool rvGEApp::NewFile( void )
 								 WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_HSCROLL | WS_VSCROLL | WS_MAXIMIZE,
 								 CW_USEDEFAULT,
 								 CW_USEDEFAULT,
-								 640,
-								 480,
+								 SCREEN_WIDTH,
+								 SCREEN_HEIGHT,
 								 mMDIClient,
 								 mInstance,
 								 ( LONG_PTR )workspace );
@@ -1212,6 +1399,8 @@ bool rvGEApp::OpenFile( const char* filename )
 	// Setup the default error.
 	error = va( "Failed to parse '%s'", filename );
 
+	GEItescriptsDlg_Apply( gApp.GetScriptWindow() );
+
 	rvGEWorkspace* workspace = new rvGEWorkspace( this );
 	if( workspace->LoadFile( filename, &error ) )
 	{
@@ -1222,8 +1411,8 @@ bool rvGEApp::OpenFile( const char* filename )
 								 WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_HSCROLL | WS_VSCROLL | WS_MAXIMIZE,
 								 CW_USEDEFAULT,
 								 CW_USEDEFAULT,
-								 640,
-								 480,
+								 SCREEN_WIDTH,
+								 SCREEN_HEIGHT,
 								 mMDIClient,
 								 mInstance,
 								 ( LONG_PTR )workspace );
@@ -1253,7 +1442,7 @@ Finds the file menu and the location within it where the MRU should
 be added.
 ================
 */
-bool rvGEApp::InitRecentFiles( void )
+bool rvGEApp::InitRecentFiles()
 {
 	int	i;
 	int count;
@@ -1281,7 +1470,7 @@ rvGEApp::UpdateRecentFiles
 Updates the mru in the menu
 ================
 */
-void rvGEApp::UpdateRecentFiles( void )
+void rvGEApp::UpdateRecentFiles()
 {
 	int i;
 	int j;
@@ -1329,7 +1518,7 @@ rvGEApp::CloseViewer
 Closes the gui viewer
 ================
 */
-void rvGEApp::CloseViewer( void )
+void rvGEApp::CloseViewer()
 {
 	if( !mViewer )
 	{
@@ -1395,5 +1584,5 @@ Displays a modal message box
 */
 int rvGEApp::MessageBox( const char* text, int flags )
 {
-	return ::MessageBox( mMDIFrame, text, "Quake 4 GUI Editor", flags );
+	return ::MessageBoxA( mMDIFrame, text, "Quake 4 GUI Editor", flags );
 }

@@ -28,6 +28,9 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef GEITEMSCRIPTSDLG_H_
 #define GEITEMSCRIPTSDLG_H_
 
-bool GEItemScriptsDlg_DoModal( HWND parent, idWindow* window );
+bool GEItescriptsDlg_Init( HWND hwnd, rvGEWorkspace* newWorkspace = 0 );
+bool GEItescriptsDlg_Apply( HWND hwnd, rvGEWorkspace* newWorkspace = 0 );
+HWND GEItemScriptsDlg_DoModal( HWND parent, idWindow* window );
+void GEItemScriptsDlg_Clear( HWND hwnd );
 
 #endif // GEITEMSCRIPTSDLG_H_

@@ -37,14 +37,14 @@ public:
 	bool	Create( HWND parent, UINT id, bool visible = true );
 	void	Resize( int width, int height );
 
-	HWND	GetWindow( void );
+	HWND	GetWindow();
 
 	void	SetZoom( int zoom );
 	void	SetTriangles( int tris );
 	void	SetSimple( bool simple );
 
 	void	Show( bool state );
-	void	Update( void );
+	void	Update();
 
 protected:
 
@@ -54,7 +54,7 @@ protected:
 	int		mTriangles;
 };
 
-ID_INLINE HWND rvGEStatusBar::GetWindow( void )
+ID_INLINE HWND rvGEStatusBar::GetWindow()
 {
 	return mWnd;
 }

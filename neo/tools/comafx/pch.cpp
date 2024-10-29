@@ -50,7 +50,7 @@ bool afxInitialized = false;
 InitAfx
 ================
 */
-void InitAfx( void )
+void InitAfx()
 {
 	if( !afxInitialized )
 	{

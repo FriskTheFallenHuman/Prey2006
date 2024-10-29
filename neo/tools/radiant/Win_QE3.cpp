@@ -36,7 +36,7 @@ If you have questions concerning this license or the applicable additional terms
  =======================================================================================================================
  =======================================================================================================================
  */
-void Sys_MarkMapModified( void )
+void Sys_MarkMapModified()
 {
 	idStr title;
 
@@ -66,7 +66,7 @@ void Sys_SetTitle( const char* text )
  */
 HCURSOR waitcursor;
 
-void Sys_BeginWait( void )
+void Sys_BeginWait()
 {
 	waitcursor = SetCursor( LoadCursor( NULL, IDC_WAIT ) );
 }
@@ -76,7 +76,7 @@ bool Sys_Waiting()
 	return ( waitcursor != NULL );
 }
 
-void Sys_EndWait( void )
+void Sys_EndWait()
 {
 	if( waitcursor )
 	{
@@ -111,7 +111,7 @@ void Sys_SetCursorPos( int x, int y )
  =======================================================================================================================
  =======================================================================================================================
  */
-double Sys_DoubleTime( void )
+double Sys_DoubleTime()
 {
 	return clock() / 1000.0;
 }
@@ -143,7 +143,7 @@ int WINAPI QEW_SetupPixelFormat( HDC hDC, bool zbuffer )
 	FILE DIALOGS
  =======================================================================================================================
  */
-bool ConfirmModified( void )
+bool ConfirmModified()
 {
 	if( !mapModified )
 	{
@@ -167,7 +167,7 @@ static char			szFilter[260] =	"Map file (*.map, *.reg)\0*.map;*.reg\0";	/* filte
  =======================================================================================================================
  =======================================================================================================================
  */
-void OpenDialog( void )
+void OpenDialog()
 {
 	/* Place the terminating null character in the szFile. */
 	szFile[0] = '\0';

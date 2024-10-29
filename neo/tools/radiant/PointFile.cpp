@@ -36,7 +36,7 @@ static idVec3	s_pointvecs[MAX_POINTFILE];
 static int		s_num_points = 0;
 static int		s_check_point = 0;
 
-void Pointfile_Delete( void )
+void Pointfile_Delete()
 {
 	char	name[1024];
 
@@ -48,7 +48,7 @@ void Pointfile_Delete( void )
 }
 
 // advance camera to next point
-void Pointfile_Next( void )
+void Pointfile_Next()
 {
 	if( s_check_point >= s_num_points - 2 )
 	{
@@ -70,7 +70,7 @@ void Pointfile_Next( void )
 }
 
 // advance camera to previous point
-void Pointfile_Prev( void )
+void Pointfile_Prev()
 {
 	if( s_check_point == 0 )
 	{
@@ -91,7 +91,7 @@ void Pointfile_Prev( void )
 	Sys_UpdateWindows( W_ALL );
 }
 
-void Pointfile_Check( void )
+void Pointfile_Check()
 {
 	char	name[1024];
 	FILE*	f;
@@ -128,7 +128,7 @@ void Pointfile_Check( void )
 	fclose( f );
 }
 
-void Pointfile_Draw( void )
+void Pointfile_Draw()
 {
 	qglColor3f( 1.0F, 0.0F, 0.0F );
 	qglDisable( GL_TEXTURE_2D );
@@ -145,7 +145,7 @@ void Pointfile_Draw( void )
 	qglLineWidth( 0.5 );
 }
 
-void Pointfile_Clear( void )
+void Pointfile_Clear()
 {
 	s_num_points = 0;
 }

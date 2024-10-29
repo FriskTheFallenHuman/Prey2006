@@ -46,9 +46,9 @@ public:
 
 	rvGEZOrderModifier( const char* name, idWindow* window, EZOrderChange change );
 
-	virtual bool		Apply( void );
-	virtual bool		Undo( void );
-	virtual bool		IsValid( void );
+	virtual bool		Apply();
+	virtual bool		Undo();
+	virtual bool		IsValid();
 
 protected:
 

@@ -57,26 +57,26 @@ public:
 	void			Set( idWindow* );
 	void			Add( idWindow* window, bool expand = true );
 	void			Remove( idWindow* );
-	void			Clear( void );
+	void			Clear();
 
-	int				Num( void );
+	int				Num();
 
-	void			Render( void );
+	void			Render();
 
 	EHitTest		HitTest( float x, float y );
 
 	bool			IsSelected( idWindow* window );
-	bool			IsExpression( void );
+	bool			IsExpression();
 
-	idRectangle&	GetRect( void );
-	idWindow*		GetBottomMost( void );
+	idRectangle&	GetRect();
+	idWindow*		GetBottomMost();
 
 	idWindow*&		operator[]( int index );
 
 protected:
 
-	void		UpdateRectangle( void );
-	void		UpdateExpression( void );
+	void		UpdateRectangle();
+	void		UpdateExpression();
 
 	idList<idWindow*>	mSelections;
 	idRectangle			mRect;
@@ -84,7 +84,7 @@ protected:
 	bool				mExpression;
 };
 
-ID_INLINE int rvGESelectionMgr::Num( void )
+ID_INLINE int rvGESelectionMgr::Num()
 {
 	return mSelections.Num( );
 }
@@ -102,7 +102,7 @@ ID_INLINE void rvGESelectionMgr::SetWorkspace( rvGEWorkspace* workspace )
 	mWorkspace = workspace;
 }
 
-ID_INLINE idRectangle& rvGESelectionMgr::GetRect( void )
+ID_INLINE idRectangle& rvGESelectionMgr::GetRect()
 {
 	UpdateRectangle( );
 	return mRect;
@@ -113,7 +113,7 @@ ID_INLINE bool rvGESelectionMgr::IsSelected( idWindow* window )
 	return mSelections.FindIndex( window ) != -1 ? true : false;
 }
 
-ID_INLINE bool rvGESelectionMgr::IsExpression( void )
+ID_INLINE bool rvGESelectionMgr::IsExpression()
 {
 	return mExpression;
 }

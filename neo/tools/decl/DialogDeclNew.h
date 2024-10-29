@@ -59,7 +59,7 @@ public:
 	{
 		defaultFile = file;
 	}
-	idDecl* 			GetNewDecl( void ) const
+	idDecl* 			GetNewDecl() const
 	{
 		return newDecl;
 	}
@@ -103,7 +103,7 @@ private:
 	idDecl* 			newDecl;
 
 private:
-	void				InitTypeList( void );
+	void				InitTypeList();
 };
 
 #endif /* !__DIALOGDECLNEW_H__ */

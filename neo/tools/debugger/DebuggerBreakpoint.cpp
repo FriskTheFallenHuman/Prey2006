@@ -60,6 +60,6 @@ rvDebuggerBreakpoint::rvDebuggerBreakpoint( rvDebuggerBreakpoint& bp )
 	mLineNumber = bp.mLineNumber;
 }
 
-rvDebuggerBreakpoint::~rvDebuggerBreakpoint( void )
+rvDebuggerBreakpoint::~rvDebuggerBreakpoint()
 {
 }

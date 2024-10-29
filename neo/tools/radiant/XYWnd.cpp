@@ -394,7 +394,7 @@ static void RotateLight( idVec3& target, idVec3& up, idVec3& right, const idVec3
  =======================================================================================================================
  =======================================================================================================================
 */
-extern idVec3 idEditorBrushransformedPoint( idEditorBrush* b, const idVec3& in );
+extern idVec3 Brush_TransformedPoint( idEditorBrush* b, const idVec3& in );
 extern idMat3 Brush_RotationMatrix( idEditorBrush* b );
 bool UpdateActiveDragPoint( const idVec3& move )
 {
@@ -422,11 +422,11 @@ bool UpdateActiveDragPoint( const idVec3& move )
 			owner->SetKeyVec3( "light_up", up );
 			owner->SetKeyVec3( "light_right", right );
 			target += ( activeDrag->pBrush->trackLightOrigin ) ? activeDrag->pBrush->owner->lightOrigin : activeDrag->pBrush->owner->origin;
-			UpdateSelectablePoint( activeDrag->pBrush, idEditorBrushransformedPoint( activeDrag->pBrush, target ), LIGHT_TARGET );
+			UpdateSelectablePoint( activeDrag->pBrush, Brush_TransformedPoint( activeDrag->pBrush, target ), LIGHT_TARGET );
 			up += target;
-			UpdateSelectablePoint( activeDrag->pBrush, idEditorBrushransformedPoint( activeDrag->pBrush, up ), LIGHT_UP );
+			UpdateSelectablePoint( activeDrag->pBrush, Brush_TransformedPoint( activeDrag->pBrush, up ), LIGHT_UP );
 			right += target;
-			UpdateSelectablePoint( activeDrag->pBrush, idEditorBrushransformedPoint( activeDrag->pBrush, right ), LIGHT_RIGHT );
+			UpdateSelectablePoint( activeDrag->pBrush, Brush_TransformedPoint( activeDrag->pBrush, right ), LIGHT_RIGHT );
 		}
 		else if( activeDrag->nType == LIGHT_UP )
 		{
@@ -438,7 +438,7 @@ bool UpdateActiveDragPoint( const idVec3& move )
 			owner->GetVectorForKey( "light_target", target );
 			target += ( activeDrag->pBrush->trackLightOrigin ) ? activeDrag->pBrush->owner->lightOrigin : activeDrag->pBrush->owner->origin;
 			up += target;
-			UpdateSelectablePoint( activeDrag->pBrush, idEditorBrushransformedPoint( activeDrag->pBrush, up ), LIGHT_UP );
+			UpdateSelectablePoint( activeDrag->pBrush, Brush_TransformedPoint( activeDrag->pBrush, up ), LIGHT_UP );
 		}
 		else if( activeDrag->nType == LIGHT_RIGHT )
 		{
@@ -450,7 +450,7 @@ bool UpdateActiveDragPoint( const idVec3& move )
 			owner->GetVectorForKey( "light_target", target );
 			target += ( activeDrag->pBrush->trackLightOrigin ) ? activeDrag->pBrush->owner->lightOrigin : activeDrag->pBrush->owner->origin;
 			right += target;
-			UpdateSelectablePoint( activeDrag->pBrush, idEditorBrushransformedPoint( activeDrag->pBrush, right ), LIGHT_RIGHT );
+			UpdateSelectablePoint( activeDrag->pBrush, Brush_TransformedPoint( activeDrag->pBrush, right ), LIGHT_RIGHT );
 		}
 		else if( activeDrag->nType == LIGHT_START )
 		{
@@ -460,7 +460,7 @@ bool UpdateActiveDragPoint( const idVec3& move )
 			start *= invmat;
 			owner->SetKeyVec3( "light_start", start );
 			start += ( activeDrag->pBrush->trackLightOrigin ) ? activeDrag->pBrush->owner->lightOrigin : activeDrag->pBrush->owner->origin;
-			UpdateSelectablePoint( activeDrag->pBrush, idEditorBrushransformedPoint( activeDrag->pBrush, start ), LIGHT_START );
+			UpdateSelectablePoint( activeDrag->pBrush, Brush_TransformedPoint( activeDrag->pBrush, start ), LIGHT_START );
 		}
 		else if( activeDrag->nType == LIGHT_END )
 		{
@@ -470,7 +470,7 @@ bool UpdateActiveDragPoint( const idVec3& move )
 			end *= invmat;
 			owner->SetKeyVec3( "light_end", end );
 			end += ( activeDrag->pBrush->trackLightOrigin ) ? activeDrag->pBrush->owner->lightOrigin : activeDrag->pBrush->owner->origin;
-			UpdateSelectablePoint( activeDrag->pBrush, idEditorBrushransformedPoint( activeDrag->pBrush, end ), LIGHT_END );
+			UpdateSelectablePoint( activeDrag->pBrush, Brush_TransformedPoint( activeDrag->pBrush, end ), LIGHT_END );
 		}
 		else if( activeDrag->nType == LIGHT_CENTER )
 		{
@@ -480,7 +480,7 @@ bool UpdateActiveDragPoint( const idVec3& move )
 			end *= invmat;
 			owner->SetKeyVec3( "light_center", end );
 			end += ( activeDrag->pBrush->trackLightOrigin ) ? activeDrag->pBrush->owner->lightOrigin : activeDrag->pBrush->owner->origin;
-			UpdateSelectablePoint( activeDrag->pBrush, idEditorBrushransformedPoint( activeDrag->pBrush, end ), LIGHT_CENTER );
+			UpdateSelectablePoint( activeDrag->pBrush, Brush_TransformedPoint( activeDrag->pBrush, end ), LIGHT_CENTER );
 		}
 
 		// FIXME: just build the frustrum values
@@ -1843,7 +1843,7 @@ idEditorBrush* CreateEntityBrush( int x, int y, CXYWnd* pWnd )
 
 	int nDim = ( pWnd->GetViewType() == ViewType::XY ) ? 2 : ( pWnd->GetViewType() == ViewType::YZ ) ? 0 : 1;
 	mins[nDim] = g_qeglobals.d_gridsize * ( ( int )( g_qeglobals.d_new_brush_bottom[nDim] / g_qeglobals.d_gridsize ) );
-	maxs[nDim] = g_qeglobals.d_gridsize * ( ( int )( g_qeglobals.d_new_idEditorBrushop[nDim] / g_qeglobals.d_gridsize ) );
+	maxs[nDim] = g_qeglobals.d_gridsize * ( ( int )( g_qeglobals.d_new_brush_top[nDim] / g_qeglobals.d_gridsize ) );
 
 	if( maxs[nDim] <= mins[nDim] )
 	{
@@ -2756,7 +2756,7 @@ void CXYWnd::NewBrushDrag( int x, int y )
 
 	mins[nDim] = g_qeglobals.d_gridsize * ( ( int )( g_qeglobals.d_new_brush_bottom[nDim] / g_qeglobals.d_gridsize ) );
 	SnapToPoint( x, y, maxs );
-	maxs[nDim] = g_qeglobals.d_gridsize * ( ( int )( g_qeglobals.d_new_idEditorBrushop[nDim] / g_qeglobals.d_gridsize ) );
+	maxs[nDim] = g_qeglobals.d_gridsize * ( ( int )( g_qeglobals.d_new_brush_top[nDim] / g_qeglobals.d_gridsize ) );
 	if( maxs[nDim] <= mins[nDim] )
 	{
 		maxs[nDim] = mins[nDim] + g_qeglobals.d_gridsize;
@@ -3552,12 +3552,12 @@ bool FilterBrush( const idEditorBrush* pb )
 
 /*
  =======================================================================================================================
-	PATH LINES �
+	PATH LINES £
 	DrawPathLines Draws connections between entities. Needs to consider all entities, not just ones on screen, because
 	the lines can be visible when neither end is. Called for both camera view and xy view.
  =======================================================================================================================
  */
-void DrawPathLines( void )
+void DrawPathLines()
 {
 	int			i, k;
 	idVec3		mid, mid1;
@@ -4916,7 +4916,7 @@ BOOL CXYWnd::OnMouseWheel( UINT nFlags, short zDelta, CPoint pt )
 //		PRECISION_CURSOR_SNAP
 //		PRECISION_CURSOR_FREE
 //---------------------------------------------------------------------------
-void CXYWnd::CyclePrecisionCrosshairMode( void )
+void CXYWnd::CyclePrecisionCrosshairMode()
 {
 	common->Printf( "TODO: Make DrawPrecisionCrosshair work..." );
 
@@ -4939,7 +4939,7 @@ void CXYWnd::CyclePrecisionCrosshairMode( void )
 // PRECISION_CROSSHAIR_SNAP		Crosshair snaps to grid size.  Force refresh of XY view.
 // PRECISION_CROSSHAIR_FREE		Crosshair does not snap to grid.  Force refresh of XY view.
 //---------------------------------------------------------------------------
-void CXYWnd::DrawPrecisionCrosshair( void )
+void CXYWnd::DrawPrecisionCrosshair()
 {
 	// FIXME: m_mouseX, m_mouseY, m_axisHoriz, m_axisVert, etc... are never set
 #if 0

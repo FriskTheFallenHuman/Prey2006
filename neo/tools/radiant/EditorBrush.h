@@ -117,7 +117,7 @@ const char* Brush_GetKeyValue( idEditorBrush* b, const char* pKey );
 void		Brush_RebuildBrush( idEditorBrush* b, idVec3 vMins, idVec3 vMaxs, bool patch = true );
 void		Brush_GetBounds( idEditorBrush* b, idBounds& bo );
 
-face_t* 	Face_Alloc( void );
+face_t* 	Face_Alloc();
 void		Face_Free( face_t* f );
 face_t* 	Face_Clone( face_t* f );
 void		Face_MakePlane( face_t* f );

@@ -35,19 +35,19 @@ public:
 
 	rvGEPropertyPage( );
 
-	virtual bool	Init( void )
+	virtual bool	Init()
 	{
 		return true;
 	}
-	virtual bool	Apply( void )
+	virtual bool	Apply()
 	{
 		return true;
 	}
-	virtual bool	SetActive( void )
+	virtual bool	SetActive()
 	{
 		return true;
 	}
-	virtual bool	KillActive( void )
+	virtual bool	KillActive()
 	{
 		return true;
 	}

@@ -38,8 +38,8 @@ public:
 
 	rvGEDeleteModifier( const char* name, idWindow* window );
 
-	virtual bool		Apply( void );
-	virtual bool		Undo( void );
+	virtual bool		Apply();
+	virtual bool		Undo();
 };
 
 #endif // GEDELETEMODIFIER_H_

@@ -42,7 +42,7 @@ public:
 	DialogDeclBrowser( CWnd* pParent = NULL );   // standard constructor
 	virtual				~DialogDeclBrowser();
 
-	void				ReloadDeclarations( void );
+	void				ReloadDeclarations();
 	bool				CompareDecl( HTREEITEM item, const char* name ) const;
 
 	//{{AFX_VIRTUAL(DialogDeclBrowser)
@@ -103,12 +103,12 @@ private:
 	void				AddDeclTypeToTree( declType_t type, const char* root, CPathTreeCtrl& tree );
 	void				AddScriptsToTree( CPathTreeCtrl& tree );
 	void				AddGUIsToTree( CPathTreeCtrl& tree );
-	void				InitBaseDeclTree( void );
+	void				InitBaseDeclTree();
 
 	void				GetDeclName( HTREEITEM item, idStr& typeName, idStr& declName ) const;
 	const idDecl* 		GetDeclFromTreeItem( HTREEITEM item ) const;
-	const idDecl* 		GetSelectedDecl( void ) const;
-	void				EditSelected( void ) const;
+	const idDecl* 		GetSelectedDecl() const;
+	void				EditSelected() const;
 };
 
 #endif /* !__DIALOGDECLBROWSER_H__ */

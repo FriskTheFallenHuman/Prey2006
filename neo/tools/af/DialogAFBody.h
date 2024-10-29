@@ -38,10 +38,10 @@ public:
 	DialogAFBody( CWnd* pParent = NULL );   // standard constructor
 	virtual				~DialogAFBody();
 	void				LoadFile( idDeclAF* af );
-	void				SaveFile( void );
+	void				SaveFile();
 	void				LoadBody( const char* name );
-	void				SaveBody( void );
-	void				UpdateFile( void );
+	void				SaveBody();
+	void				UpdateFile();
 
 	DialogAFConstraint* constraintDlg;
 
@@ -148,11 +148,11 @@ private:
 	static toolTip_t	toolTips[];
 
 private:
-	void				InitBodyList( void );
-	void				InitJointLists( void );
-	void				InitCollisionModelType( void );
-	void				InitModifiedJointList( void );
-	void				InitNewRenameDeleteButtons( void );
+	void				InitBodyList();
+	void				InitJointLists();
+	void				InitCollisionModelType();
+	void				InitModifiedJointList();
+	void				InitNewRenameDeleteButtons();
 	void				ValidateCollisionModelLength( bool update );
 	void				ValidateCollisionModelHeight( bool update );
 	void				ValidateCollisionModelWidth( bool update );

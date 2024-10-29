@@ -115,7 +115,7 @@ void CWaitDlg::AllowCancel( bool enable )
 	}
 }
 
-bool CWaitDlg::CancelPressed( void )
+bool CWaitDlg::CancelPressed()
 {
 	MSG* msg = AfxGetCurrentMessage();			// TODO Robert fix me!!
 	while( ::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) )

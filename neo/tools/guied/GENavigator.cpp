@@ -248,7 +248,7 @@ LRESULT CALLBACK rvGENavigator::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPA
 
 				int colorIndex = ( ( dis->itemState & ODS_SELECTED ) ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT );
 				SetTextColor( dis->hDC, GetSysColor( colorIndex ) );
-				DrawText( dis->hDC, name, name.Length(), &rDraw, DT_LEFT | DT_VCENTER | DT_SINGLELINE );
+				DrawTextA( dis->hDC, name, name.Length(), &rDraw, DT_LEFT | DT_VCENTER | DT_SINGLELINE );
 
 				if( wrapper->GetVariableDict().GetNumKeyVals( ) || wrapper->GetScriptDict().GetNumKeyVals( ) )
 				{
@@ -518,7 +518,7 @@ rvGENavigator::Update
 Updates the contents of the navigator window from the current workspace
 ================
 */
-void rvGENavigator::Update( void )
+void rvGENavigator::Update()
 {
 	// Clear the list first
 	ListView_DeleteAllItems( mTree );
@@ -543,7 +543,7 @@ rvGENavigator::UpdateSelection
 Updates the currently selected items
 ================
 */
-void rvGENavigator::UpdateSelections( void )
+void rvGENavigator::UpdateSelections()
 {
 	int count = ListView_GetItemCount( mTree );
 	int i;
@@ -576,7 +576,7 @@ rvGENavigator::Refresh
 Repaints the navigator window
 ================
 */
-void rvGENavigator::Refresh( void )
+void rvGENavigator::Refresh()
 {
 	InvalidateRect( mTree, NULL, FALSE );
 //	UpdateWindow ( mTree );

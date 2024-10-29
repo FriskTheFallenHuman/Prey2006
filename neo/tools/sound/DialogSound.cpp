@@ -183,7 +183,7 @@ void SoundEditorInit( const idDict* spawnArgs )
 	}
 }
 
-void SoundEditorRun( void )
+void SoundEditorRun()
 {
 #if _MSC_VER >= 1300
 	MSG* msg = AfxGetCurrentMessage();			// TODO Robert fix me!!
@@ -200,7 +200,7 @@ void SoundEditorRun( void )
 	}
 }
 
-void SoundEditorShutdown( void )
+void SoundEditorShutdown()
 {
 	delete g_SoundDialog;
 	g_SoundDialog = NULL;

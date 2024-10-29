@@ -46,6 +46,7 @@ public:
 
 	CPreviewDlg( CWnd* pParent = NULL );   // standard constructor
 	virtual ~CPreviewDlg();
+	void SetOnlyFilter( bool gOnly, idStr filter );
 	void SetMode( int mode, const char* preSelect = NULL );
 	void RebuildTree( const char* data );
 	void SetDisablePreview( bool b )
@@ -79,6 +80,8 @@ private:
 	void AddCommentedItems();
 	idStr data;
 	bool disablePreview;
+	bool onlyFilter;
+	idStr strOnlyFilter;
 
 protected:
 	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
@@ -102,4 +105,5 @@ public:
 	afx_msg void OnBnClickedButtonReload();
 	afx_msg void OnBnClickedButtonAdd();
 	afx_msg void OnBnClickedButtonPlay();
+	afx_msg void OnBnClickedPreviewGui();
 };

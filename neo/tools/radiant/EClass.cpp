@@ -111,7 +111,7 @@ bool LoadModel( const char* pLocation, eclass_t* e, idVec3& vMin, idVec3& vMax, 
 	return false;
 }
 
-eclass_t* EClass_Alloc( void )
+eclass_t* EClass_Alloc()
 {
 	eclass_t* e = new eclass_t;
 	e->fixedsize = false;

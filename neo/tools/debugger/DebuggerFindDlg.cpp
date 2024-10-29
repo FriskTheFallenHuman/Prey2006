@@ -41,7 +41,7 @@ char rvDebuggerFindDlg::mFindText[ 256 ];
 rvDebuggerFindDlg::rvDebuggerFindDlg
 ================
 */
-rvDebuggerFindDlg::rvDebuggerFindDlg( void )
+rvDebuggerFindDlg::rvDebuggerFindDlg()
 {
 }
 

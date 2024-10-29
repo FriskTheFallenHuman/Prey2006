@@ -36,18 +36,18 @@ public:
 	rvGEViewer( );
 
 	bool				Create( HWND parent );
-	bool				Destroy( void );
+	bool				Destroy();
 	bool				OpenFile( const char* filename );
 
-	void				RunFrame( void );
+	void				RunFrame();
 
-	HWND				GetWindow( void );
+	HWND				GetWindow();
 
 protected:
 
 	void				Render( HDC dc );
-	void				Play( void );
-	void				Pause( void );
+	void				Play();
+	void				Pause();
 
 	HWND					mWnd;
 	int						mWindowWidth;
@@ -63,12 +63,12 @@ protected:
 
 private:
 
-	bool	SetupPixelFormat( void );
+	bool	SetupPixelFormat();
 
 	static LRESULT CALLBACK WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
 };
 
-ID_INLINE HWND rvGEViewer::GetWindow( void )
+ID_INLINE HWND rvGEViewer::GetWindow()
 {
 	return mWnd;
 }

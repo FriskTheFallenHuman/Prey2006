@@ -38,7 +38,7 @@ QEGlobals_t g_qeglobals;
  =======================================================================================================================
  =======================================================================================================================
  */
-void WINAPI QE_CheckOpenGLForErrors( void )
+void WINAPI QE_CheckOpenGLForErrors()
 {
 	CString strMsg;
 	int		i = qglGetError();
@@ -106,7 +106,7 @@ void Map_Snapshot()
 	QE_CheckAutoSave If five minutes have passed since making a change and the map hasn't been saved, save it out.
  =======================================================================================================================
  */
-void QE_CheckAutoSave( void )
+void QE_CheckAutoSave()
 {
 	static bool inAutoSave = false;
 	static bool autoToggle = false;
@@ -153,7 +153,7 @@ void QE_CheckAutoSave( void )
 	ConnectEntities Sets target / name on the two entities selected from the first selected to the secon
  =======================================================================================================================
  */
-void ConnectEntities( void )
+void ConnectEntities()
 {
 	idEditorEntity*	e1;
 	const char*		target;
@@ -162,7 +162,7 @@ void ConnectEntities( void )
 
 	if( g_qeglobals.d_select_count < 2 )
 	{
-		MessageBox( g_pParentWnd->GetSafeHwnd(), "Must have at least two brushes selected.", "Can't Connect Entity", MB_OK | MB_ICONINFORMATION );
+		MessageBoxA( g_pParentWnd->GetSafeHwnd(), "Must have at least two brushes selected.", "Can't Connect Entity", MB_OK | MB_ICONINFORMATION );
 		return;
 	}
 
@@ -172,7 +172,7 @@ void ConnectEntities( void )
 	{
 		if( g_qeglobals.d_select_order[i]->owner == world_entity )
 		{
-			MessageBox( g_pParentWnd->GetSafeHwnd(), "Can't connect to the world.", "Can't Connect Entity", MB_OK | MB_ICONWARNING );
+			MessageBoxA( g_pParentWnd->GetSafeHwnd(), "Can't connect to the world.", "Can't Connect Entity", MB_OK | MB_ICONWARNING );
 			return;
 		}
 	}
@@ -181,7 +181,7 @@ void ConnectEntities( void )
 	{
 		if( e1 == g_qeglobals.d_select_order[i]->owner )
 		{
-			MessageBox( g_pParentWnd->GetSafeHwnd(), "Brushes are from same entity.", "Can't Connect Entity", MB_OK | MB_ICONINFORMATION );
+			MessageBoxA( g_pParentWnd->GetSafeHwnd(), "Brushes are from same entity.", "Can't Connect Entity", MB_OK | MB_ICONINFORMATION );
 			return;
 		}
 	}
@@ -245,7 +245,7 @@ bool QE_SingleBrush( bool bQuiet, bool entityOK )
 	{
 		if( !bQuiet )
 		{
-			MessageBox( g_pParentWnd->GetSafeHwnd(), "You must have a single brush selected.", "Brush Manipulation", MB_OK | MB_ICONERROR );
+			MessageBoxA( g_pParentWnd->GetSafeHwnd(), "You must have a single brush selected.", "Brush Manipulation", MB_OK | MB_ICONERROR );
 		}
 
 		return false;
@@ -255,7 +255,7 @@ bool QE_SingleBrush( bool bQuiet, bool entityOK )
 	{
 		if( !bQuiet )
 		{
-			MessageBox( g_pParentWnd->GetSafeHwnd(), "You cannot manipulate fixed size entities.", "Brush Manipulation", MB_OK | MB_ICONERROR );
+			MessageBoxA( g_pParentWnd->GetSafeHwnd(), "You cannot manipulate fixed size entities.", "Brush Manipulation", MB_OK | MB_ICONERROR );
 		}
 
 		return false;
@@ -268,7 +268,7 @@ bool QE_SingleBrush( bool bQuiet, bool entityOK )
  =======================================================================================================================
  =======================================================================================================================
  */
-void QE_Init( void )
+void QE_Init()
 {
 	g_qeglobals.d_gridsize = 8;
 	g_qeglobals.d_showgrid = true;
@@ -292,7 +292,7 @@ int g_numbrushes, g_numentities;
  =======================================================================================================================
  =======================================================================================================================
  */
-void QE_CountBrushesAndUpdateStatusBar( void )
+void QE_CountBrushesAndUpdateStatusBar()
 {
 	static int	s_lastbrushcount, s_lastentitycount;
 	static bool s_didonce;

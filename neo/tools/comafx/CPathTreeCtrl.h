@@ -40,30 +40,30 @@ If you have questions concerning this license or the applicable additional terms
 class idPathTreeStack
 {
 public:
-	idPathTreeStack( void )
+	idPathTreeStack()
 	{
 		size = 0;
 	}
 
 	void				PushRoot( HTREEITEM root );
 	void				Push( HTREEITEM item, const char* name );
-	void				Pop( void )
+	void				Pop()
 	{
 		size--;
 	}
-	HTREEITEM			TopItem( void ) const
+	HTREEITEM			TopItem() const
 	{
 		return stackItem[size - 1];
 	}
-	const char* 		TopName( void ) const
+	const char* 		TopName() const
 	{
 		return stackName[size - 1];
 	}
-	int					TopNameLength( void ) const
+	int					TopNameLength() const
 	{
 		return stackName[size - 1].Length();
 	}
-	int					Num( void ) const
+	int					Num() const
 	{
 		return size;
 	}

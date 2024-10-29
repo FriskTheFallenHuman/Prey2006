@@ -35,268 +35,315 @@ If you have questions concerning this license or the applicable additional terms
 #include "GEApp.h"
 #include "GEPropertyPage.h"
 
-LRESULT CALLBACK GEScriptEdit_WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-	WNDPROC wndproc = ( WNDPROC ) GetWindowLongPtr( hwnd, GWLP_USERDATA );
-
-	switch( msg )
-	{
-		case WM_CHAR:
-			if( wParam == VK_ESCAPE )
-			{
-				SendMessage( GetParent( hwnd ), WM_CLOSE, 0, 0 );
-			}
-			break;
-
-		case WM_GETDLGCODE:
-			return DLGC_WANTALLKEYS;
-	}
-
-	return CallWindowProc( wndproc, hwnd, msg, wParam, lParam );
-}
-
-bool GEItescriptsDlg_Init( HWND hwnd )
+bool GEItescriptsDlg_Init( HWND hwnd, rvGEWorkspace* newWorkspace )
 {
 	idWindow*			window;
 	rvGEWindowWrapper*	wrapper;
 	HWND				script;
 
-	// Extract the window pointer from the win32 windows user data long
-	window = ( idWindow* )GetWindowLongPtr( hwnd, GWLP_USERDATA );
-	assert( window );
-
-	// Get the window wrapper of the script window
-	wrapper = rvGEWindowWrapper::GetWrapper( window );
-	assert( wrapper );
-
-	// Get the edit box used to edit the script
-	script = GetDlgItem( hwnd, IDC_GUIED_SCRIPT );
-
-	UINT tabsize = 16;
-	SendMessage( script, EM_SETTABSTOPS, 1, ( LPARAM )&tabsize );
-	SetWindowLongPtr( script, GWLP_USERDATA, GetWindowLongPtr( script, GWLP_WNDPROC ) );
-	SetWindowLongPtr( script, GWLP_WNDPROC, ( LONG_PTR ) GEScriptEdit_WndProc );
-
-	TEXTMETRIC tm;
-	HDC dc;
-	dc = GetDC( script );
-	GetTextMetrics( dc, &tm );
-	ReleaseDC( script, dc );
-
-	LOGFONT lf;
-	ZeroMemory( &lf, sizeof( lf ) );
-	lf.lfHeight = tm.tmHeight;
-	strcpy( lf.lfFaceName, "Courier New" );
-
-	SendMessage( script, WM_SETFONT, ( WPARAM )CreateFontIndirect( &lf ), 0 );
-
-	SendMessage( script, EM_SETMARGINS, EC_LEFTMARGIN | EC_RIGHTMARGIN, MAKELONG( 10, 10 ) );
-
-	int i;
-
-	for( i = 0; i < wrapper->GetVariableDict().GetNumKeyVals( ); i ++ )
+	rvGEWorkspace* workspace = 0;
+	if( newWorkspace == 0 )
 	{
-		const idKeyValue* key = wrapper->GetVariableDict().GetKeyVal( i );
-
-		SendMessage( script, EM_SETSEL, -1, -1 );
-		SendMessage( script, EM_REPLACESEL, FALSE, ( LPARAM )key->GetKey().c_str() );
-		SendMessage( script, EM_SETSEL, -1, -1 );
-		SendMessage( script, EM_REPLACESEL, FALSE, ( LPARAM )"\t" );
-		SendMessage( script, EM_SETSEL, -1, -1 );
-		SendMessage( script, EM_REPLACESEL, FALSE, ( LPARAM )key->GetValue().c_str() );
-		SendMessage( script, EM_SETSEL, -1, -1 );
-		SendMessage( script, EM_REPLACESEL, FALSE, ( LPARAM )"\r\n" );
+		workspace = gApp.GetActiveWorkspace();
+	}
+	else
+	{
+		workspace = newWorkspace;
 	}
 
-	if( i )
+	bool bSel = false;
+
+	if( workspace )
 	{
-		SendMessage( script, EM_SETSEL, -1, -1 );
-		SendMessage( script, EM_REPLACESEL, FALSE, ( LPARAM )"\r\n" );
+		if( workspace->GetSelectionMgr().Num() > 0 )
+		{
+			window = workspace->GetSelectionMgr()[0];
+
+			if( window )
+			{
+				bSel = true;
+				// Get the window wrapper of the script window
+				wrapper = rvGEWindowWrapper::GetWrapper( window );
+				assert( wrapper );
+
+				// Get the edit box used to edit the script
+				script = GetDlgItem( hwnd, IDC_GUIED_SCRIPT );
+
+				UINT tabsize = 16;
+				SendMessage( script, EM_SETTABSTOPS, 1, ( LPARAM )&tabsize );
+
+				TEXTMETRIC tm;
+				HDC dc;
+				dc = GetDC( script );
+				GetTextMetrics( dc, &tm );
+				ReleaseDC( script, dc );
+
+				LOGFONT lf;
+				ZeroMemory( &lf, sizeof( lf ) );
+				lf.lfHeight = tm.tmHeight;
+				strcpy( lf.lfFaceName, "Courier New" );
+
+				SendMessage( script, WM_SETFONT, ( WPARAM )CreateFontIndirect( &lf ), 0 );
+
+				SendMessage( script, EM_SETMARGINS, EC_LEFTMARGIN | EC_RIGHTMARGIN, MAKELONG( 10, 10 ) );
+
+				int i;
+
+				for( i = 0; i < wrapper->GetVariableDict().GetNumKeyVals(); i++ )
+				{
+					const idKeyValue* key = wrapper->GetVariableDict().GetKeyVal( i );
+
+					SendMessage( script, EM_SETSEL, -1, -1 );
+					SendMessage( script, EM_REPLACESEL, FALSE, ( LPARAM )key->GetKey().c_str() );
+					SendMessage( script, EM_SETSEL, -1, -1 );
+					SendMessage( script, EM_REPLACESEL, FALSE, ( LPARAM )"\t" );
+					SendMessage( script, EM_SETSEL, -1, -1 );
+					SendMessage( script, EM_REPLACESEL, FALSE, ( LPARAM )key->GetValue().c_str() );
+					SendMessage( script, EM_SETSEL, -1, -1 );
+					SendMessage( script, EM_REPLACESEL, FALSE, ( LPARAM )"\r\n" );
+				}
+
+				if( i )
+				{
+					SendMessage( script, EM_SETSEL, -1, -1 );
+					SendMessage( script, EM_REPLACESEL, FALSE, ( LPARAM )"\r\n" );
+				}
+
+				for( i = 0; i < wrapper->GetScriptDict().GetNumKeyVals(); i++ )
+				{
+					const idKeyValue* key = wrapper->GetScriptDict().GetKeyVal( i );
+
+					SendMessage( script, EM_SETSEL, -1, -1 );
+					SendMessage( script, EM_REPLACESEL, FALSE, ( LPARAM )va( "%s\r\n", key->GetKey().c_str() ) );
+					SendMessage( script, EM_SETSEL, -1, -1 );
+					SendMessage( script, EM_REPLACESEL, FALSE, ( LPARAM )key->GetValue().c_str() );
+					SendMessage( script, EM_SETSEL, -1, -1 );
+					SendMessage( script, EM_REPLACESEL, FALSE, ( LPARAM )"\r\n\r\n" );
+				}
+
+				SendMessage( script, EM_SETSEL, 0, 0 );
+				SendMessage( script, EM_SCROLLCARET, 0, 0 );
+			}
+		}
 	}
 
-	for( i = 0; i < wrapper->GetScriptDict().GetNumKeyVals( ); i ++ )
+
+	if( !bSel )
 	{
-		const idKeyValue* key = wrapper->GetScriptDict().GetKeyVal( i );
-
-		SendMessage( script, EM_SETSEL, -1, -1 );
-		SendMessage( script, EM_REPLACESEL, FALSE, ( LPARAM )va( "%s\r\n", key->GetKey().c_str() ) );
-		SendMessage( script, EM_SETSEL, -1, -1 );
-		SendMessage( script, EM_REPLACESEL, FALSE, ( LPARAM )key->GetValue().c_str() );
-		SendMessage( script, EM_SETSEL, -1, -1 );
-		SendMessage( script, EM_REPLACESEL, FALSE, ( LPARAM )"\r\n\r\n" );
+		script = GetDlgItem( hwnd, IDC_GUIED_SCRIPT );
+		SendMessage( script, WM_SETTEXT, 0, ( LPARAM )"\0" );
+		SendMessage( script, EM_SETSEL, 0, 0 );
+		SendMessage( script, EM_SCROLLCARET, 0, 0 );
 	}
-
-	SendMessage( script, EM_SETSEL, 0, 0 );
-	SendMessage( script, EM_SCROLLCARET, 0, 0 );
 
 	return true;
 }
 
-bool GEItescriptsDlg_Apply( HWND hwnd )
+void GEItemScriptsDlg_Clear( HWND hwnd )
+{
+	HWND script = GetDlgItem( hwnd, IDC_GUIED_SCRIPT );
+	SendMessage( script, WM_SETTEXT, 0, ( LPARAM )"\0" );
+	SendMessage( script, EM_SETSEL, 0, 0 );
+	SendMessage( script, EM_SCROLLCARET, 0, 0 );
+}
+
+bool GEItescriptsDlg_Apply( HWND hwnd, rvGEWorkspace* newWorkspace )
 {
 	idWindow*			window;
 	rvGEWindowWrapper*	wrapper;
 	HWND				script;
 
-	// Extract the window pointer from the win32 windows user data long
-	window = ( idWindow* )GetWindowLongPtr( hwnd, GWLP_USERDATA );
-	assert( window );
-
-	// Get the window wrapper of the script window
-	wrapper = rvGEWindowWrapper::GetWrapper( window );
-	assert( wrapper );
-
-	// Get the edit box used to edit the script
-	script = GetDlgItem( hwnd, IDC_GUIED_SCRIPT );
-
-	GETTEXTLENGTHEX textLen;
-	int				chars;
-	textLen.flags = GTL_DEFAULT | GTL_USECRLF;
-	textLen.codepage = CP_ACP;
-	chars = SendMessage( script, EM_GETTEXTLENGTHEX, ( WPARAM )&textLen, 0 );
-
-	char* text = new char[chars + 1];
-
-	GETTEXTEX getText;
-	getText.cb = chars + 1;
-	getText.codepage = CP_ACP;
-	getText.flags = GT_DEFAULT | GT_USECRLF;
-	getText.lpDefaultChar = NULL;
-	getText.lpUsedDefChar = NULL;
-	SendMessage( script, EM_GETTEXTEX, ( WPARAM )&getText, ( LPARAM )text );
-
-	idStr parse = text;
-	delete[] text;
-
-	try
+	rvGEWorkspace* pCurr = 0;
+	if( newWorkspace != 0 )
 	{
-		idParser src( parse, parse.Length(), "", LEXFL_ALLOWMULTICHARLITERALS | LEXFL_NOSTRINGCONCAT | LEXFL_ALLOWBACKSLASHSTRINGCONCAT );
-		idToken token;
+		pCurr = newWorkspace;
+	}
+	else
+	{
+		pCurr = gApp.GetActiveWorkspace();
+	}
 
-		wrapper->GetVariableDict().Clear( );
-		wrapper->GetScriptDict().Clear( );
+	if( pCurr )
+	{
 
-		while( src.ReadToken( &token ) )
+		if( pCurr->GetSelectionMgr().Num() > 0 )
 		{
-			idStr scriptName;
-			idStr out;
+			window = pCurr->GetSelectionMgr()[0];
 
-			if( !token.Icmp( "definevec4" ) )
+			if( window )
 			{
-				idToken token2;
-				idStr	result;
+				pCurr->SetModified( true );
+				// Get the window wrapper of the script window
+				wrapper = rvGEWindowWrapper::GetWrapper( window );
+				assert( wrapper );
 
-				if( !src.ReadToken( &token2 ) )
+				// Get the edit box used to edit the script
+				script = GetDlgItem( hwnd, IDC_GUIED_SCRIPT );
+
+				GETTEXTLENGTHEX textLen;
+				int				chars;
+				textLen.flags = GTL_DEFAULT | GTL_USECRLF;
+				textLen.codepage = CP_ACP;
+				chars = SendMessage( script, EM_GETTEXTLENGTHEX, ( WPARAM )&textLen, 0 );
+
+				char* text = new char[chars + 1];
+
+				GETTEXTEX getText;
+				getText.cb = chars + 1;
+				getText.codepage = CP_ACP;
+				getText.flags = GT_DEFAULT | GT_USECRLF;
+				getText.lpDefaultChar = NULL;
+				getText.lpUsedDefChar = NULL;
+				SendMessage( script, EM_GETTEXTEX, ( WPARAM )&getText, ( LPARAM )text );
+
+				idStr parse = text;
+				delete[] text;
+
+				try
 				{
-					src.Error( "expected define name" );
-					return false;
-				}
+					idParser src( parse, parse.Length(), "", LEXFL_ALLOWMULTICHARLITERALS | LEXFL_NOSTRINGCONCAT | LEXFL_ALLOWBACKSLASHSTRINGCONCAT );
+					idToken token;
 
-				idWinVec4				var;
-				idUserInterfaceLocal	ui;
-				idWindow				tempwin( &ui );
-				idStr					out;
-				int						i;
+					wrapper->GetVariableDict().Clear();
+					wrapper->GetScriptDict().Clear();
 
-				src.SetMarker( );
-				for( i = 0; i < 3; i ++ )
-				{
-					tempwin.ParseExpression( &src, &var );
-					src.ExpectTokenString( "," );
-				}
-
-				tempwin.ParseExpression( &src, &var );
-				src.GetStringFromMarker( out, true );
-
-				wrapper->GetVariableDict().Set( token + "\t\"" + token2 + "\"", out );
-
-				continue;
-			}
-			else if( !token.Icmp( "definefloat" ) || !token.Icmp( "float" ) )
-			{
-				idToken token2;
-				idStr	result;
-
-				if( !src.ReadToken( &token2 ) )
-				{
-					src.Error( "expected define name" );
-					return false;
-				}
-
-				idWinFloat				var;
-				idUserInterfaceLocal	ui;
-				idWindow				tempwin( &ui );
-				idStr					out;
-
-				src.SetMarker( );
-				tempwin.ParseExpression( &src, &var );
-				src.GetStringFromMarker( out, true );
-
-				wrapper->GetVariableDict().Set( token + "\t\"" + token2 + "\"", out );
-
-				continue;
-			}
-			// If the token is a scriptdef then just parse out the
-			// braced section and add it to the list.  Right now only
-			// one scriptdef per window is supported
-			else if( !token.Icmp( "scriptdef" ) )
-			{
-				scriptName = "scriptDef";
-			}
-			else if( !token.Icmp( "ontime" ) )
-			{
-				if( !src.ReadToken( &token ) )
-				{
-					src.Error( "expected time" );
-					return false;
-				}
-
-				scriptName = "onTime ";
-				scriptName.Append( token );
-			}
-			else if( !token.Icmp( "onevent" ) )
-			{
-				if( !src.ReadToken( &token ) )
-				{
-					src.Error( "expected time" );
-					return false;
-				}
-
-				scriptName = "onEvent ";
-				scriptName.Append( token );
-			}
-			else
-			{
-				int i;
-
-				for( i = 0; i < idWindow::SCRIPT_COUNT; i ++ )
-				{
-					if( idStr::Icmp( idWindow::ScriptNames[i], token ) == 0 )
+					while( src.ReadToken( &token ) )
 					{
-						scriptName = idWindow::ScriptNames[i];
-						break;
+						idStr scriptName;
+						idStr out;
+
+						if( !token.Icmp( "definevec4" ) )
+						{
+							idToken token2;
+							idStr	result;
+
+							if( !src.ReadToken( &token2 ) )
+							{
+								src.Error( "expected define name" );
+								return false;
+							}
+
+							idWinVec4				var;
+							idUserInterfaceLocal	ui;
+							idWindow				tempwin( &ui );
+							idStr					out;
+							int						i;
+
+							src.SetMarker();
+							for( i = 0; i < 3; i++ )
+							{
+								tempwin.ParseExpression( &src, &var );
+								src.ExpectTokenString( "," );
+							}
+
+							tempwin.ParseExpression( &src, &var );
+							src.GetStringFromMarker( out, true );
+
+							wrapper->GetVariableDict().Set( token + "\t\"" + token2 + "\"", out );
+
+							continue;
+						}
+						else if( !token.Icmp( "definefloat" ) || !token.Icmp( "float" ) )
+						{
+							idToken token2;
+							idStr	result;
+
+							if( !src.ReadToken( &token2 ) )
+							{
+								src.Error( "expected define name" );
+								return false;
+							}
+
+							idWinFloat				var;
+							idUserInterfaceLocal	ui;
+							idWindow				tempwin( &ui );
+							idStr					out;
+
+							src.SetMarker();
+							tempwin.ParseExpression( &src, &var );
+							src.GetStringFromMarker( out, true );
+
+							wrapper->GetVariableDict().Set( token + "\t\"" + token2 + "\"", out );
+
+							continue;
+						}
+
+						// If the token is a scriptdef then just parse out the
+						// braced section and add it to the list.  Right now only
+						// one scriptdef per window is supported
+						else if( !token.Icmp( "scriptdef" ) )
+						{
+							scriptName = "scriptDef";
+						}
+						else if( !token.Icmp( "ontime" ) )
+						{
+							if( !src.ReadToken( &token ) )
+							{
+								src.Error( "expected time" );
+								return false;
+							}
+
+							scriptName = "onTime ";
+							scriptName.Append( token );
+						}
+						else if( !token.Icmp( "onevent" ) )
+						{
+							/*if ( !src.ReadToken ( &token ) )
+							{
+							src.Error ( "expected time" );
+							return false;
+							}*/
+
+							scriptName = "onEvent ";
+							//scriptName.Append ( token );
+						}
+						else if( !token.Icmp( "onNamedEvent" ) )
+						{
+							if( !src.ReadToken( &token ) )
+							{
+								src.Error( "expected event name" );
+								return false;
+							}
+
+							scriptName = "onNamedEvent ";
+							scriptName.Append( token );
+						}
+						else
+						{
+
+							int i;
+
+							for( i = 0; i < idWindow::SCRIPT_COUNT; i++ )
+							{
+								if( idStr::Icmp( idWindow::ScriptNames[i], token ) == 0 )
+								{
+									scriptName = idWindow::ScriptNames[i];
+									break;
+								}
+							}
+
+							if( i >= idWindow::SCRIPT_COUNT )
+							{
+								src.Error( "expected script name" );
+								return false;
+							}
+						}
+
+						if( !src.ParseBracedSectionExact( out, 1 ) )
+						{
+							return false;
+						}
+
+						wrapper->GetScriptDict().Set( scriptName, out );
 					}
 				}
-
-				if( i >= idWindow::SCRIPT_COUNT )
+				catch( idException& e )
 				{
-					src.Error( "expected script name" );
+					MessageBoxA( hwnd, e.error, "Script Error", MB_OK | MB_ICONERROR );
 					return false;
 				}
 			}
-
-			if( !src.ParseBracedSectionExact( out, 1 ) )
-			{
-				return false;
-			}
-
-			wrapper->GetScriptDict().Set( scriptName, out );
 		}
-	}
-	catch( idException& e )
-	{
-		MessageBox( hwnd, e.error, "Script Error", MB_OK | MB_ICONERROR );
-		return false;
 	}
 
 	return true;
@@ -308,7 +355,7 @@ INT_PTR CALLBACK GEItescriptsDlg_WndProc( HWND hwnd, UINT msg, WPARAM wParam, LP
 	{
 		case WM_INITDIALOG:
 			SetWindowLongPtr( hwnd, GWLP_USERDATA, lParam );
-			GEItescriptsDlg_Init( hwnd );
+			GEItescriptsDlg_Init( hwnd , 0 );
 
 			gApp.GetOptions().GetWindowPlacement( "scripts", hwnd );
 
@@ -325,18 +372,12 @@ INT_PTR CALLBACK GEItescriptsDlg_WndProc( HWND hwnd, UINT msg, WPARAM wParam, LP
 						FALSE );
 			break;
 		}
-
 		case WM_ERASEBKGND:
 			return TRUE;
 
-
+		case WM_DESTROY:
 		case WM_CLOSE:
-			if( !GEItescriptsDlg_Apply( hwnd ) )
-			{
-				return TRUE;
-			}
-			gApp.GetOptions().SetWindowPlacement( "scripts", hwnd );
-			EndDialog( hwnd, 1 );
+			SendMessage( gApp.GetMDIFrame(), WM_COMMAND, MAKELONG( ID_GUIED_WINDOW_SHOWSCRIPTS, 0 ), 0 );
 			break;
 	}
 
@@ -350,14 +391,18 @@ GEItemScriptsDlg_DoModal
 Starts the item properties dialog
 ================
 */
-bool GEItemScriptsDlg_DoModal( HWND parent, idWindow* window )
+HWND GEItemScriptsDlg_DoModal( HWND parent, idWindow* window )
 {
 	LoadLibrary( "Riched20.dll" );
 
-	if( DialogBoxParam( gApp.GetInstance(), MAKEINTRESOURCE( IDD_GUIED_SCRIPTS ), parent, GEItescriptsDlg_WndProc, ( LPARAM ) window ) )
-	{
-		return true;
-	}
+	HWND hWnd = CreateDialog( gApp.GetInstance(), MAKEINTRESOURCE( IDD_GUIED_SCRIPTS ), parent, GEItescriptsDlg_WndProc );
 
-	return false;
+	//HWND script = GetDlgItem(hWnd, IDC_GUIED_SCRIPT);
+	//SetWindowLongPtr(script, GWLP_WNDPROC, (LONG_PTR)GEScriptEdit_WndProc);
+
+	gApp.GetOptions().GetWindowPlacement( "scripts", hWnd );
+
+	ShowWindow( hWnd, gApp.GetOptions().GetScriptsVisible() ? SW_SHOW : SW_HIDE );
+
+	return hWnd;
 }

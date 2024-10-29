@@ -43,7 +43,7 @@ rvGEModifierStack::~rvGEModifierStack( )
 	Reset( );
 }
 
-void rvGEModifierStack::Reset( void )
+void rvGEModifierStack::Reset()
 {
 	int i;
 
@@ -86,6 +86,7 @@ bool rvGEModifierStack::Append( rvGEModifier* modifier )
 
 				gApp.GetProperties().Update( );
 				gApp.GetTransformer().Update( );
+				gApp.GetItemProperties().Update( );
 
 				delete modifier;
 				return true;
@@ -102,11 +103,12 @@ bool rvGEModifierStack::Append( rvGEModifier* modifier )
 
 	gApp.GetProperties().Update( );
 	gApp.GetTransformer().Update( );
+	gApp.GetItemProperties().Update( );
 
 	return true;
 }
 
-bool rvGEModifierStack::Undo( void )
+bool rvGEModifierStack::Undo()
 {
 	if( mCurrentModifier < 0 )
 	{
@@ -117,12 +119,13 @@ bool rvGEModifierStack::Undo( void )
 	mCurrentModifier--;
 
 	gApp.GetProperties().Update( );
+	gApp.GetItemProperties().Update( );
 	gApp.GetTransformer().Update( );
 
 	return true;
 }
 
-bool rvGEModifierStack::Redo( void )
+bool rvGEModifierStack::Redo()
 {
 	if( mCurrentModifier + 1 < mModifiers.Num( ) )
 	{
@@ -131,6 +134,7 @@ bool rvGEModifierStack::Redo( void )
 	}
 
 	gApp.GetProperties().Update( );
+	gApp.GetItemProperties().Update( );
 	gApp.GetTransformer().Update( );
 
 	return true;

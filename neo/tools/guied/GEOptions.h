@@ -43,13 +43,13 @@ public:
 
 	rvGEOptions();
 
-	void			Init( void );
+	void			Init();
 
 	// Write the options to the registery
-	bool			Save( void );
+	bool			Save();
 
 	// Read the options from the registry
-	bool			Load( void );
+	bool			Load();
 
 	void			SetSelectionColor( idVec4& color );
 	void			SetSelectionColor( COLORREF color );
@@ -60,6 +60,8 @@ public:
 	void			SetGridVisible( bool vis );
 	void			SetGridSnap( bool snap );
 	void			SetLastOptionsPage( int page );
+	void			SetItemPropertiesVisible( bool vis );
+	void			SetScriptsVisible( bool vis );
 	void			SetNavigatorVisible( bool vis );
 	void			SetPropertiesVisible( bool vis );
 	void			SetTransformerVisible( bool vis );
@@ -67,23 +69,25 @@ public:
 	void			SetStatusBarVisible( bool vis );
 
 	void			AddRecentFile( const char* filename );
-	int				GetRecentFileCount( void );
+	int				GetRecentFileCount();
 	const char*		GetRecentFile( int index );
 
-	idVec4&			GetGridColor( void );
-	int				GetGridWidth( void );
-	int				GetGridHeight( void );
-	bool			GetGridVisible( void );
-	bool			GetGridSnap( void );
-	int				GetLastOptionsPage( void );
-	idVec4&			GetWorkspaceColor( void );
-	bool			GetNavigatorVisible( void );
-	bool			GetTransformerVisible( void );
-	bool			GetPropertiesVisible( void );
-	idVec4&			GetSelectionColor( void );
-	COLORREF*		GetCustomColors( void );
-	bool			GetIgnoreDesktopSelect( void );
-	bool			GetStatusBarVisible( void );
+	idVec4&			GetGridColor();
+	int				GetGridWidth();
+	int				GetGridHeight();
+	bool			GetGridVisible();
+	bool			GetGridSnap();
+	int				GetLastOptionsPage();
+	idVec4&			GetWorkspaceColor();
+	bool			GetNavigatorVisible();
+	bool			GetTransformerVisible();
+	bool			GetPropertiesVisible();
+	bool			GetItemPropertiesVisible();
+	bool			GetScriptsVisible();
+	idVec4&			GetSelectionColor();
+	COLORREF*		GetCustomColors();
+	bool			GetIgnoreDesktopSelect();
+	bool			GetStatusBarVisible();
 
 	void			SetWindowPlacement( const char* name, HWND hwnd );
 	bool			GetWindowPlacement( const char* name, HWND hwnd );
@@ -108,8 +112,10 @@ protected:
 	idVec4				mSelectionColor;
 
 	bool				mNavigatorVisible;
+	bool				mItemPropertiesVisible;
 	bool				mPropertiesVisible;
 	bool				mTransformerVisible;
+	bool				mScriptsVisible;
 	bool				mStatusBarVisible;
 	bool				mIgnoreDesktopSelect;
 
@@ -193,6 +199,18 @@ ID_INLINE void rvGEOptions::SetNavigatorVisible( bool vis )
 	SetModified( true );
 }
 
+ID_INLINE void rvGEOptions::SetScriptsVisible( bool vis )
+{
+	mScriptsVisible = vis;
+	SetModified( true );
+}
+
+ID_INLINE void rvGEOptions::SetItemPropertiesVisible( bool vis )
+{
+	mItemPropertiesVisible = vis;
+	SetModified( true );
+}
+
 ID_INLINE void rvGEOptions::SetPropertiesVisible( bool vis )
 {
 	mPropertiesVisible = vis;
@@ -205,37 +223,37 @@ ID_INLINE void rvGEOptions::SetTransformerVisible( bool vis )
 	SetModified( true );
 }
 
-ID_INLINE idVec4& rvGEOptions::GetGridColor( void )
+ID_INLINE idVec4& rvGEOptions::GetGridColor()
 {
 	return mGridColor;
 }
 
-ID_INLINE int rvGEOptions::GetGridWidth( void )
+ID_INLINE int rvGEOptions::GetGridWidth()
 {
 	return mGridWidth;
 }
 
-ID_INLINE int rvGEOptions::GetGridHeight( void )
+ID_INLINE int rvGEOptions::GetGridHeight()
 {
 	return mGridHeight;
 }
 
-ID_INLINE bool rvGEOptions::GetGridVisible( void )
+ID_INLINE bool rvGEOptions::GetGridVisible()
 {
 	return mGridVisible;
 }
 
-ID_INLINE bool rvGEOptions::GetGridSnap( void )
+ID_INLINE bool rvGEOptions::GetGridSnap()
 {
 	return mGridSnap;
 }
 
-ID_INLINE idVec4& rvGEOptions::GetWorkspaceColor( void )
+ID_INLINE idVec4& rvGEOptions::GetWorkspaceColor()
 {
 	return mWorkspaceColor;
 }
 
-ID_INLINE int rvGEOptions::GetLastOptionsPage( void )
+ID_INLINE int rvGEOptions::GetLastOptionsPage()
 {
 	return mLastOptionsPage;
 }
@@ -245,32 +263,42 @@ ID_INLINE void rvGEOptions::SetLastOptionsPage( int page )
 	mLastOptionsPage = page;
 }
 
-ID_INLINE bool rvGEOptions::GetNavigatorVisible( void )
+ID_INLINE bool rvGEOptions::GetNavigatorVisible()
 {
 	return mNavigatorVisible;
 }
 
-ID_INLINE bool rvGEOptions::GetPropertiesVisible( void )
+ID_INLINE bool rvGEOptions::GetPropertiesVisible()
 {
 	return mPropertiesVisible;
 }
 
-ID_INLINE bool rvGEOptions::GetTransformerVisible( void )
+ID_INLINE bool rvGEOptions::GetScriptsVisible()
+{
+	return mScriptsVisible;
+}
+
+ID_INLINE bool rvGEOptions::GetItemPropertiesVisible()
+{
+	return mItemPropertiesVisible;
+}
+
+ID_INLINE bool rvGEOptions::GetTransformerVisible()
 {
 	return mTransformerVisible;
 }
 
-ID_INLINE bool rvGEOptions::GetStatusBarVisible( void )
+ID_INLINE bool rvGEOptions::GetStatusBarVisible()
 {
 	return mStatusBarVisible;
 }
 
-ID_INLINE idVec4& rvGEOptions::GetSelectionColor( void )
+ID_INLINE idVec4& rvGEOptions::GetSelectionColor()
 {
 	return mSelectionColor;
 }
 
-ID_INLINE COLORREF* rvGEOptions::GetCustomColors( void )
+ID_INLINE COLORREF* rvGEOptions::GetCustomColors()
 {
 	return mCustomColors;
 }
@@ -280,7 +308,7 @@ ID_INLINE void rvGEOptions::SetIgnoreDesktopSelect( bool ignore )
 	mIgnoreDesktopSelect = ignore;
 }
 
-ID_INLINE bool rvGEOptions::GetIgnoreDesktopSelect( void )
+ID_INLINE bool rvGEOptions::GetIgnoreDesktopSelect()
 {
 	return mIgnoreDesktopSelect;
 }
@@ -300,7 +328,7 @@ ID_INLINE void rvGEOptions::AddRecentFile( const char* filename )
 	mRegistry.AddRecentFile( filename );
 }
 
-ID_INLINE int rvGEOptions::GetRecentFileCount( void )
+ID_INLINE int rvGEOptions::GetRecentFileCount()
 {
 	return mRegistry.GetRecentFileCount( );
 }

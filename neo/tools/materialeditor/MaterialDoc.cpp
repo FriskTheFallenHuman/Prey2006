@@ -34,7 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 /**
 * Constructor for MaterialDoc.
 */
-MaterialDoc::MaterialDoc( void )
+MaterialDoc::MaterialDoc()
 {
 	modified = false;
 	applyWaiting = false;
@@ -44,7 +44,7 @@ MaterialDoc::MaterialDoc( void )
 /**
 * Destructor for MaterialDoc.
 */
-MaterialDoc::~MaterialDoc( void )
+MaterialDoc::~MaterialDoc()
 {
 	ClearEditMaterial();
 }
@@ -707,7 +707,7 @@ void MaterialDoc::Save()
 	}
 	else
 	{
-		MessageBox( GetMaterialEditorWindow(), va( "Unable to save '%s'. It may be read-only", name.c_str() ), "Save Error", MB_OK | MB_ICONERROR );
+		MessageBoxA( GetMaterialEditorWindow(), va( "Unable to save '%s'. It may be read-only", name.c_str() ), "Save Error", MB_OK | MB_ICONERROR );
 	}
 }
 

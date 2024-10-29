@@ -95,10 +95,10 @@ typedef bool ( *toolTipCallback_t )( const char* name, CString& string );
 class CSyntaxRichEditCtrl : public CRichEditCtrl
 {
 public:
-	CSyntaxRichEditCtrl( void );
-	~CSyntaxRichEditCtrl( void );
+	CSyntaxRichEditCtrl();
+	~CSyntaxRichEditCtrl();
 
-	void					Init( void );
+	void					Init();
 
 	void					SetCaseSensitive( bool caseSensitive );
 	void					AllowPathNames( bool allow );
@@ -118,7 +118,7 @@ public:
 	COLORREF				GetBackColor( int charIndex ) const;
 
 	void					GetCursorPos( int& line, int& column, int& character ) const;
-	CHARRANGE				GetVisibleRange( void ) const;
+	CHARRANGE				GetVisibleRange() const;
 
 	void					GetText( idStr& text ) const;
 	void					GetText( idStr& text, int startCharIndex, int endCharIndex ) const;
@@ -206,34 +206,34 @@ protected:
 	WCHAR* 					m_pwchTip;
 
 protected:
-	void					InitFont( void );
-	void					InitSyntaxHighlighting( void );
+	void					InitFont();
+	void					InitSyntaxHighlighting();
 	void					SetCharType( int first, int last, int type );
 	void					SetDefaultFont( int startCharIndex, int endCharIndex );
 	void					SetColor( int startCharIndex, int endCharIndex, COLORREF foreColor, COLORREF backColor, bool bold );
 
-	void					FreeKeyWordsFromFile( void );
+	void					FreeKeyWordsFromFile();
 	int						FindKeyWord( const char* keyWord, int length ) const;
 
 	void					HighlightSyntax( int startCharIndex, int endCharIndex );
-	void					UpdateVisibleRange( void );
+	void					UpdateVisibleRange();
 
 	bool					GetNameBeforeCurrentSelection( CString& name, int& charIndex ) const;
 	bool					GetNameForMousePosition( idStr& name ) const;
 
-	void					AutoCompleteInsertText( void );
-	void					AutoCompleteUpdate( void );
+	void					AutoCompleteInsertText();
+	void					AutoCompleteUpdate();
 	void					AutoCompleteShow( int charIndex );
-	void					AutoCompleteHide( void );
+	void					AutoCompleteHide();
 
 	void					ToolTipShow( int charIndex, const char* string );
-	void					ToolTipHide( void );
+	void					ToolTipHide();
 
 	bool					BracedSectionStart( char braceStartChar, char braceEndChar );
 	bool					BracedSectionEnd( char braceStartChar, char braceEndChar );
-	void					BracedSectionAdjustEndTabs( void );
-	void					BracedSectionShow( void );
-	void					BracedSectionHide( void );
+	void					BracedSectionAdjustEndTabs();
+	void					BracedSectionShow();
+	void					BracedSectionHide();
 };
 
 #endif /* !__CSYNTAXRICHEDITCTR_H__ */

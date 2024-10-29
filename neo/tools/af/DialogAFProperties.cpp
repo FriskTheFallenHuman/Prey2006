@@ -180,7 +180,7 @@ void DialogAFProperties::LoadFile( idDeclAF* af )
 DialogAFProperties::SetFile
 ================
 */
-void DialogAFProperties::SaveFile( void )
+void DialogAFProperties::SaveFile()
 {
 	CString str;
 
@@ -221,7 +221,7 @@ void DialogAFProperties::SaveFile( void )
 DialogAFProperties::UpdateFile
 ================
 */
-void DialogAFProperties::UpdateFile( void )
+void DialogAFProperties::UpdateFile()
 {
 	SaveFile();
 	if( file )
@@ -235,7 +235,7 @@ void DialogAFProperties::UpdateFile( void )
 DialogAFProperties::ClearFile
 ================
 */
-void DialogAFProperties::ClearFile( void )
+void DialogAFProperties::ClearFile()
 {
 	m_editModel.SetWindowText( "" );
 	m_editSkin.SetWindowText( "" );

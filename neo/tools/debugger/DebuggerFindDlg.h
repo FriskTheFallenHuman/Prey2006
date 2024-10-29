@@ -38,7 +38,7 @@ public:
 
 	bool	DoModal( rvDebuggerWindow* window );
 
-	const char*		GetFindText( void );
+	const char*		GetFindText();
 
 protected:
 
@@ -51,7 +51,7 @@ private:
 	static INT_PTR	CALLBACK DlgProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam );
 };
 
-ID_INLINE const char* rvDebuggerFindDlg::GetFindText( void )
+ID_INLINE const char* rvDebuggerFindDlg::GetFindText()
 {
 	return mFindText;
 }

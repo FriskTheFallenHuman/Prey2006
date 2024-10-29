@@ -105,24 +105,33 @@ BOOL CRadiantApp::InitInstance()
 
 	qglEnableClientState( GL_VERTEX_ARRAY );
 
-	CMainFrame* pMainFrame = new CMainFrame;
-	if( !pMainFrame->LoadFrame( IDR_MAINFRAME ) )
+	InitContextMenuManager();
+
+	InitKeyboardManager();
+
+	InitTooltipManager();
+	CMFCToolTipInfo ttParams;
+	ttParams.m_bVislManagerTheme = TRUE;
+	theApp.GetTooltipManager()->SetTooltipParams( AFX_TOOLTIP_TYPE_ALL,
+			RUNTIME_CLASS( CMFCToolTipCtrl ), &ttParams );
+
+	// To create the main window, this code creates a new frame window
+	// object and then sets it as the application's main window object
+	CFrameWnd* pFrame = new CMainFrame;
+	if( !pFrame )
 	{
 		return FALSE;
 	}
 
-	if( pMainFrame->m_hAccelTable )
-	{
-		::DestroyAcceleratorTable( pMainFrame->m_hAccelTable );
-	}
+	m_pMainWnd = pFrame;
+	// create and load the frame with its resources
+	pFrame->LoadFrame( IDR_MAINFRAME,
+					   WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, nullptr,
+					   nullptr );
 
-	pMainFrame->LoadAccelTable( MAKEINTRESOURCE( IDR_MINIACCEL ) );
-
-	m_pMainWnd = pMainFrame;
-
-	// The main window has been initialized, so show and update it.
-	pMainFrame->ShowWindow( m_nCmdShow );
-	pMainFrame->UpdateWindow();
+	// The one and only window has been initialized, so show and update it
+	pFrame->ShowWindow( SW_SHOW );
+	pFrame->UpdateWindow();
 
 	return TRUE;
 }
@@ -170,7 +179,7 @@ void CRadiantApp::OnAppHelp()
 CRadiantApp::Run
 ================
 */
-int CRadiantApp::Run( void )
+int CRadiantApp::Run()
 {
 	BOOL bIdle = TRUE;
 	LONG lIdleCount = 0;
@@ -218,7 +227,7 @@ int CRadiantApp::Run( void )
 class CAboutRadiantDlg : public CAboutDlg
 {
 public:
-	CAboutRadiantDlg( void );
+	CAboutRadiantDlg();
 	virtual BOOL OnInitDialog();
 };
 

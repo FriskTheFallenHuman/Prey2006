@@ -59,7 +59,7 @@ If you have questions concerning this license or the applicable additional terms
 class CAboutDebuggerDlg : public CAboutDlg
 {
 public:
-	CAboutDebuggerDlg( void );
+	CAboutDebuggerDlg();
 	virtual BOOL OnInitDialog();
 };
 
@@ -175,7 +175,7 @@ Registers the window class used by the debugger window.  This is called when
 the window is created.
 ================
 */
-bool rvDebuggerWindow::RegisterClass( void )
+bool rvDebuggerWindow::RegisterClass()
 {
 	WNDCLASSEX wcex;
 
@@ -511,7 +511,7 @@ LRESULT CALLBACK rvDebuggerWindow::MarginWndProc( HWND wnd, UINT msg, WPARAM wpa
 				t.right -= s4; // a little space between text and "border" to code part of window
 
 				idStr lntxt( iFirstVisibleLine + i + 1 );
-				DrawText( dc, lntxt, lntxt.Length(), &t, DT_RIGHT );
+				DrawTextA( dc, lntxt, lntxt.Length(), &t, DT_RIGHT );
 			}
 			DeleteObject( hf );
 
@@ -588,7 +588,7 @@ rvDebuggerWindow::UpdateTitle
 Updates the window title of the script debugger to show a few states
 ================
 */
-void rvDebuggerWindow::UpdateTitle( void )
+void rvDebuggerWindow::UpdateTitle()
 {
 	idStr title;
 
@@ -634,7 +634,7 @@ rvDebuggerWindow::UpdateScript
 Updates the edit window to contain the current script
 ================
 */
-void rvDebuggerWindow::UpdateScript( void )
+void rvDebuggerWindow::UpdateScript()
 {
 	UpdateTitle( );
 
@@ -672,7 +672,7 @@ rvDebuggerWindow::UpdateWindowMenu
 Updates the windows displayed in the window menu
 ================
 */
-void rvDebuggerWindow::UpdateWindowMenu( void )
+void rvDebuggerWindow::UpdateWindowMenu()
 {
 	while( GetMenuItemCount( mWindowMenu ) > mWindowMenuPos )
 	{
@@ -702,7 +702,7 @@ rvDebuggerWindow::UpdateCallstack
 Updates the contents of teh callastack
 ================
 */
-void rvDebuggerWindow::UpdateCallstack( void )
+void rvDebuggerWindow::UpdateCallstack()
 {
 	LVITEM item;
 	ListView_DeleteAllItems( mWndCallstack );
@@ -723,7 +723,7 @@ void rvDebuggerWindow::UpdateCallstack( void )
 	}
 }
 
-void rvDebuggerWindow::UpdateScriptList( void )
+void rvDebuggerWindow::UpdateScriptList()
 {
 	LVITEM item;
 	ListView_DeleteAllItems( mWndScriptList );
@@ -751,7 +751,7 @@ void rvDebuggerWindow::UpdateScriptList( void )
 }
 
 
-void rvDebuggerWindow::UpdateBreakpointList( void )
+void rvDebuggerWindow::UpdateBreakpointList()
 {
 	LVITEM item;
 	ListView_DeleteAllItems( mWndBreakList );
@@ -780,7 +780,7 @@ rvDebuggerWindow::UpdateWatch
 Updates the contents of the watch window
 ================
 */
-void rvDebuggerWindow::UpdateWatch( void )
+void rvDebuggerWindow::UpdateWatch()
 {
 	int i;
 
@@ -948,7 +948,7 @@ void rvDebuggerWindow::ResizeImageList( int& widthOut, int& heightOut )
 	heightOut = height;
 }
 
-float rvDebuggerWindow::GetMarginWidth( void )
+float rvDebuggerWindow::GetMarginWidth()
 {
 	TEXTMETRIC	tm;
 	HDC			dc;
@@ -1221,7 +1221,7 @@ int rvDebuggerWindow::HandleCommand( WPARAM wparam, LPARAM lparam )
 		filename = gDebuggerApp.GetOptions().GetRecentFile( gDebuggerApp.GetOptions().GetRecentFileCount() - ( LOWORD( wparam ) - ID_DBG_FILE_MRU1 ) - 1 );
 		if( !OpenScript( filename ) )
 		{
-			MessageBox( mWnd, va( "Failed to open script '%s'", filename.c_str() ), "Quake 4 Script Debugger", MB_OK );
+			MessageBoxA( mWnd, va( "Failed to open script '%s'", filename.c_str() ), "Quake 4 Script Debugger", MB_OK );
 		}
 		return 0;
 	}
@@ -1929,7 +1929,7 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, L
 		case WM_CLOSE:
 			if( window->mClient->IsConnected( ) )
 			{
-				if( IDNO == MessageBox( wnd, "The debugger is currently connected to a running version of the game.  Are you sure you want to close now?", "Script Debugger", MB_YESNO | MB_ICONQUESTION ) )
+				if( IDNO == MessageBoxA( wnd, "The debugger is currently connected to a running version of the game.  Are you sure you want to close now?", "Script Debugger", MB_YESNO | MB_ICONQUESTION ) )
 				{
 					return 0;
 				}
@@ -1949,7 +1949,7 @@ Static method that will activate the currently running debugger.  If one is foun
 and activated then true will be returned.
 ================
 */
-bool rvDebuggerWindow::Activate( void )
+bool rvDebuggerWindow::Activate()
 {
 	HWND find;
 
@@ -2265,7 +2265,7 @@ rvDebuggerWindow::ToggleBreakpoint
 Toggles the breakpoint on the current script line
 ================
 */
-void rvDebuggerWindow::ToggleBreakpoint( void )
+void rvDebuggerWindow::ToggleBreakpoint()
 {
 	rvDebuggerBreakpoint* bp;
 	DWORD				  sel;
@@ -2326,7 +2326,7 @@ rvDebuggerWindow::CreateToolbar
 Create the toolbar and and all of its buttons
 ================
 */
-void rvDebuggerWindow::CreateToolbar( void )
+void rvDebuggerWindow::CreateToolbar()
 {
 	// Create the toolbar control
 	mWndToolbar = CreateWindowEx( 0, TOOLBARCLASSNAME, "", WS_CHILD | WS_VISIBLE, 0, 0, 0, 0, mWnd, ( HMENU )IDC_DBG_TOOLBAR, mInstance, NULL );
@@ -2352,6 +2352,7 @@ void rvDebuggerWindow::CreateToolbar( void )
 	// Add the buttons to the toolbar
 	// FIXME:  warning C4838: conversion from 'int' to 'BYTE' requires a narrowing conversion
 	// most probably because TBBUTTON has 4 more bytes in bReserved for alignment on _WIN64
+#pragma warning(disable:4838)
 	TBBUTTON tbb[] = { { 0, 0,					TBSTATE_ENABLED, BTNS_SEP,    0, 0, -1 },
 		{ 8, ID_DBG_FILE_OPEN,	TBSTATE_ENABLED, BTNS_BUTTON, 0, 0, -1 },
 		{ 0, 0,					TBSTATE_ENABLED, BTNS_SEP,    0, 0, -1 },
@@ -2363,7 +2364,7 @@ void rvDebuggerWindow::CreateToolbar( void )
 		{ 6, ID_DBG_DEBUG_STEPOUT, TBSTATE_ENABLED, BTNS_BUTTON, 0, 0, -1 },
 		{ 0, 0,					TBSTATE_ENABLED, BTNS_SEP,    0, 0, -1 }
 	};
-
+#pragma warning(default:4838)
 	SendMessage( mWndToolbar, TB_ADDBUTTONS, ( WPARAM )sizeof( tbb ) / sizeof( TBBUTTON ), ( LPARAM ) tbb );
 }
 
@@ -2441,7 +2442,7 @@ int rvDebuggerWindow::HandleActivate( WPARAM wparam, LPARAM lparam )
 	{
 		if( mScripts[i]->IsFileModified( true ) )
 		{
-			if( IDYES == MessageBox( mWnd, va( "%s\n\nThis file has been modified outside of the debugger.\nDo you want to reload it?", mScripts[i]->GetFilename() ), "Quake 4 Script Debugger", MB_YESNO | MB_ICONQUESTION ) )
+			if( IDYES == MessageBoxA( mWnd, va( "%s\n\nThis file has been modified outside of the debugger.\nDo you want to reload it?", mScripts[i]->GetFilename() ), "Quake 4 Script Debugger", MB_YESNO | MB_ICONQUESTION ) )
 			{
 				mScripts[i]->Reload( );
 
@@ -2532,7 +2533,7 @@ Finds the file menu and the location within it where the MRU should
 be added.
 ================
 */
-bool rvDebuggerWindow::InitRecentFiles( void )
+bool rvDebuggerWindow::InitRecentFiles()
 {
 	int	i;
 	int count;
@@ -2560,7 +2561,7 @@ rvDebuggerWindow::UpdateRecentFiles
 Updates the mru in the menu
 ================
 */
-void rvDebuggerWindow::UpdateRecentFiles( void )
+void rvDebuggerWindow::UpdateRecentFiles()
 {
 	int i;
 	int j;
@@ -2808,7 +2809,7 @@ int rvDebuggerWindow::HandleDrawItem( WPARAM wparam, LPARAM lparam )
 			{
 				case 0:
 					SetTextColor( dis->hDC, GetSysColor( selected ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT ) );
-					DrawText( dis->hDC, watch->mVariable, -1, &textrect, DT_LEFT | DT_VCENTER );
+					DrawTextA( dis->hDC, watch->mVariable, -1, &textrect, DT_LEFT | DT_VCENTER );
 					break;
 
 				case 1:
@@ -2820,7 +2821,7 @@ int rvDebuggerWindow::HandleDrawItem( WPARAM wparam, LPARAM lparam )
 					{
 						SetTextColor( dis->hDC, GetSysColor( selected ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT ) );
 					}
-					DrawText( dis->hDC, watch->mValue, -1, &textrect, DT_LEFT | DT_VCENTER );
+					DrawTextA( dis->hDC, watch->mValue, -1, &textrect, DT_LEFT | DT_VCENTER );
 					break;
 			}
 		}

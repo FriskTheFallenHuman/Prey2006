@@ -34,12 +34,12 @@ public:
 
 	rvDebuggerBreakpoint( const char* filename, int linenumber, int id = -1, bool onceOnly = false );
 	rvDebuggerBreakpoint( rvDebuggerBreakpoint& bp );
-	~rvDebuggerBreakpoint( void );
+	~rvDebuggerBreakpoint();
 
-	const char*		GetFilename( void );
-	int				GetLineNumber( void );
-	int				GetID( void );
-	bool			GetOnceOnly( void );
+	const char*		GetFilename();
+	int				GetLineNumber();
+	int				GetID();
+	bool			GetOnceOnly();
 
 protected:
 
@@ -53,22 +53,22 @@ private:
 	static int	mNextID;
 };
 
-ID_INLINE const char* rvDebuggerBreakpoint::GetFilename( void )
+ID_INLINE const char* rvDebuggerBreakpoint::GetFilename()
 {
 	return mFilename;
 }
 
-ID_INLINE int rvDebuggerBreakpoint::GetLineNumber( void )
+ID_INLINE int rvDebuggerBreakpoint::GetLineNumber()
 {
 	return mLineNumber;
 }
 
-ID_INLINE int rvDebuggerBreakpoint::GetID( void )
+ID_INLINE int rvDebuggerBreakpoint::GetID()
 {
 	return mID;
 }
 
-ID_INLINE bool rvDebuggerBreakpoint::GetOnceOnly( void )
+ID_INLINE bool rvDebuggerBreakpoint::GetOnceOnly()
 {
 	return mOnceOnly;
 }

@@ -34,7 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 /**
 * Constructor.
 */
-MaterialDef::MaterialDef( void )
+MaterialDef::MaterialDef()
 {
 	type = 0;
 	quotes = false;
@@ -43,7 +43,7 @@ MaterialDef::MaterialDef( void )
 /**
 * Destructor.
 */
-MaterialDef::~MaterialDef( void )
+MaterialDef::~MaterialDef()
 {
 }
 

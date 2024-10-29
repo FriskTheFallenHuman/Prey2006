@@ -307,7 +307,7 @@ void RadiantPrint( const char* text )
 RadiantShutdown
 ================
 */
-void RadiantShutdown( void )
+void RadiantShutdown()
 {
 	theApp.ExitInstance();
 }
@@ -319,7 +319,7 @@ RadiantInit
 This is also called when you 'quit' in doom
 =================
 */
-void RadiantInit( void )
+void RadiantInit()
 {
 
 	// make sure the renderer is initialized
@@ -389,7 +389,7 @@ void RadiantInit( void )
 RadiantRun
 ================
 */
-void RadiantRun( void )
+void RadiantRun()
 {
 	static bool exceptionErr = false;
 	int show = ::IsWindowVisible( win32.hWnd );
@@ -409,7 +409,7 @@ void RadiantRun( void )
 	}
 	catch( idException& ex )
 	{
-		::MessageBox( NULL, ex.error, "Exception error", MB_OK );
+		::MessageBoxA( NULL, ex.error, "Exception error", MB_OK );
 		RadiantShutdown();
 	}
 }
@@ -516,7 +516,7 @@ bool LoadWindowState( HWND hWnd, const char* pszName )
 Sys_UpdateStatusBar
 ================
 */
-void Sys_UpdateStatusBar( void )
+void Sys_UpdateStatusBar()
 {
 	extern int   g_numbrushes, g_numentities;
 

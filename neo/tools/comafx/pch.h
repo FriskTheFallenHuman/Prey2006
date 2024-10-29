@@ -29,7 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __PCH_H__
 #define __PCH_H__
 
-void InitAfx( void );
+void InitAfx();
 
 // tool tips
 typedef struct toolTip_s

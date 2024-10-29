@@ -83,7 +83,7 @@ Initialize the debugger server.  This function should be called before the
 debugger server is used.
 ================
 */
-bool rvDebuggerServer::Initialize( void )
+bool rvDebuggerServer::Initialize()
 {
 	// Initialize the network connection
 	if( !mPort.InitForPort( 27980 ) )
@@ -130,7 +130,7 @@ rvDebuggerServer::Shutdown
 Shutdown the debugger server.
 ================
 */
-void rvDebuggerServer::Shutdown( void )
+void rvDebuggerServer::Shutdown()
 {
 	// Let the debugger client know we are shutting down
 	if( mConnected )
@@ -160,7 +160,7 @@ rvDebuggerServer::ProcessMessages
 Process all incoming network messages from the debugger client
 ================
 */
-bool rvDebuggerServer::ProcessMessages( void )
+bool rvDebuggerServer::ProcessMessages()
 {
 	netadr_t adrFrom;
 	idBitMsg	 msg;
@@ -736,7 +736,7 @@ rvDebuggerServer::Resume
 Resume execution of the game.
 ================
 */
-void rvDebuggerServer::Resume( void )
+void rvDebuggerServer::Resume()
 {
 	// Cant resume if not paused
 	if( !mBreak )
@@ -758,7 +758,7 @@ rvDebuggerServer::ClearBreakpoints
 Remove all known breakpoints
 ================
 */
-void rvDebuggerServer::ClearBreakpoints( void )
+void rvDebuggerServer::ClearBreakpoints()
 {
 	int i;
 

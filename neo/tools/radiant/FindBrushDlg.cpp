@@ -150,7 +150,7 @@ CFindBrushDlg::CFindBrushDlg( CWnd* pParent )
 {
 }
 
-CFindBrushDlg::~CFindBrushDlg( void )
+CFindBrushDlg::~CFindBrushDlg()
 {
 }
 
@@ -166,7 +166,7 @@ BEGIN_MESSAGE_MAP( CFindBrushDlg, CDialogEx )
 	ON_BN_CLICKED( IDCANCEL, &CFindBrushDlg::OnBnClickedCancel )
 END_MESSAGE_MAP()
 
-BOOL CFindBrushDlg::OnInitDialog( void )
+BOOL CFindBrushDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -186,7 +186,7 @@ BOOL CFindBrushDlg::OnInitDialog( void )
 	return FALSE;  // return TRUE unless you set the focus to a control
 }
 
-void CFindBrushDlg::OnBnClickedOk( void )
+void CFindBrushDlg::OnBnClickedOk()
 {
 	CString entStr, brushStr;
 	m_editEntity.GetWindowText( entStr );

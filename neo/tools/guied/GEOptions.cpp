@@ -47,6 +47,8 @@ rvGEOptions::rvGEOptions()
 	mIgnoreDesktopSelect = true;
 	mStatusBarVisible = true;
 	mPropertiesVisible = true;
+	mItemPropertiesVisible = true;
+	mScriptsVisible = true;
 
 	mWorkspaceColor.Set( 0.0f, 0.0f, 0.0f, 1.0f );
 	mSelectionColor.Set( 0.5f, 0.5f, 1.0f, 1.0f );
@@ -59,7 +61,7 @@ rvGEOptions::rvGEOptions()
 rvGEOptions::Init
 ================
 */
-void rvGEOptions::Init( void )
+void rvGEOptions::Init()
 {
 	mRegistry.Init( "Software\\id Software\\DOOM3\\Tools\\GUIEditor" );
 }
@@ -71,7 +73,7 @@ rvGEOptions::Save
 Writes the options to the registry so they can later be read using the Load method
 ================
 */
-bool rvGEOptions::Save( void )
+bool rvGEOptions::Save()
 {
 	// Write the last page we visited
 	mRegistry.SetLong( "lastOptionsPage", mLastOptionsPage );
@@ -85,9 +87,11 @@ bool rvGEOptions::Save( void )
 
 	// Tool window states
 	mRegistry.SetBool( "navigatorVisible", mNavigatorVisible );
+	mRegistry.SetBool( "ItemPropertiesVisible", mItemPropertiesVisible );
 	mRegistry.SetBool( "PropertiesVisible", mPropertiesVisible );
 	mRegistry.SetBool( "transformerVisible", mTransformerVisible );
 	mRegistry.SetBool( "statusBarVisible", mStatusBarVisible );
+	mRegistry.SetBool( "scriptsVisible", mScriptsVisible );
 
 	// General stuff
 	mRegistry.SetVec4( "selectionColor", mSelectionColor );
@@ -110,7 +114,7 @@ rvGEOptions::Load
 Loads previsouly saved options from the registry
 ================
 */
-bool rvGEOptions::Load( void )
+bool rvGEOptions::Load()
 {
 	if( !mRegistry.Load( ) )
 	{
@@ -130,6 +134,7 @@ bool rvGEOptions::Load( void )
 	// Tool window states
 	mNavigatorVisible = mRegistry.GetBool( "navigatorVisible" );
 	mPropertiesVisible = mRegistry.GetBool( "PropertiesVisible" );
+	mItemPropertiesVisible = mRegistry.GetBool( "ItemPropertiesVisible" );
 	mTransformerVisible = mRegistry.GetBool( "transformerVisible" );
 	mStatusBarVisible = mRegistry.GetBool( "statusBarVisible" );
 

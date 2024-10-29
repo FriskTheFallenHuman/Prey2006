@@ -46,9 +46,9 @@ public:
 	DialogAF( CWnd* pParent = NULL );   // standard constructor
 	virtual				~DialogAF();
 	void				LoadFile( idDeclAF* af );
-	void				SaveFile( void );
-	void				ReloadFile( void );
-	void				SetFileModified( void );
+	void				SaveFile();
+	void				ReloadFile();
+	void				SetFileModified();
 
 	enum				{ IDD = IDD_DIALOG_AF };
 
@@ -89,11 +89,11 @@ private:
 	static toolTip_t	toolTips[];
 
 private:
-	void				InitAFList( void );
+	void				InitAFList();
 	void				AddTabItem( int id, const char* name );
 	void				SetTab( int id );
-	void				SetTabChildPos( void );
+	void				SetTabChildPos();
 };
 
-void AFDialogSetFileModified( void );
-void AFDialogReloadFile( void );
+void AFDialogSetFileModified();
+void AFDialogReloadFile();

@@ -38,8 +38,8 @@ public:
 
 	rvGEKeyValueModifier( const char* name, idWindow* window, const char* key, const char* value );
 
-	virtual bool		Apply( void );
-	virtual bool		Undo( void );
+	virtual bool		Apply();
+	virtual bool		Undo();
 
 	virtual bool		CanMerge( rvGEModifier* merge );
 	virtual bool		Merge( rvGEModifier* merge );

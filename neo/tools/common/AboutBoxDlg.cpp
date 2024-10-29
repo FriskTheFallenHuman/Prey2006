@@ -45,7 +45,7 @@ BEGIN_MESSAGE_MAP( CAboutDlg, CDialog )
 	ON_COMMAND( IDOK, &CAboutDlg::OnOK )
 END_MESSAGE_MAP()
 
-void CAboutDlg::OnOK( void )
+void CAboutDlg::OnOK()
 {
 	EndDialog( IDOK );
 }

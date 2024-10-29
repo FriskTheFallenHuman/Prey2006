@@ -51,8 +51,8 @@ public:
 	virtual void Dump( CDumpContext& dc ) const;
 #endif
 
-	void AddLight( void );
-	void InitializePropTree( void );
+	void AddLight();
+	void InitializePropTree();
 
 	void RegisterPreviewView( MaterialPreviewView* view );
 

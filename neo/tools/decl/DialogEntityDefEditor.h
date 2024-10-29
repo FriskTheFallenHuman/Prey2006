@@ -112,7 +112,7 @@ private:
 	void				SetInherit( idStr& inherit );
 	void				BuildDeclText( idStr& declText );
 	bool				TestDecl( const idStr& declText );
-	void				UpdateStatusBar( void );
+	void				UpdateStatusBar();
 };
 
 #endif /* !__DIALOGENTITYDEFEDITOR_H__ */

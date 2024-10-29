@@ -44,7 +44,7 @@ rvGEProperties::rvGEProperties
 constructor
 ================
 */
-rvGEProperties::rvGEProperties( void )
+rvGEProperties::rvGEProperties()
 {
 	mWrapper   = NULL;
 	mWnd	   = NULL;
@@ -125,7 +125,7 @@ rvGEProperties::Update
 Update the properties in the window
 ================
 */
-void rvGEProperties::Update( void )
+void rvGEProperties::Update()
 {
 	int i;
 
@@ -187,6 +187,7 @@ bool rvGEProperties::AddModifier( const char* name, const char* value )
 	mWorkspace->GetModifierStack().Append( new rvGEStateModifier( "Property Change", mWrapper->GetWindow(), tempstate ) );
 	mWorkspace->SetModified( true );
 	gApp.GetNavigator().Update( );
+	gApp.GetItemProperties().Update( );
 
 	return true;
 }

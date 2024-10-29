@@ -539,7 +539,7 @@ BOOL LoadMruInIni( LPMRUMENU lpMruMenu, LPSTR lpszSection, LPSTR lpszFile )
 
 #ifdef WIN32
 
-BOOL IsWin395OrHigher( void )
+BOOL IsWin395OrHigher()
 {
 	WORD wVer;
 

@@ -101,6 +101,15 @@ int rvGEPropertyPage::HandleMessage( UINT msg, WPARAM wParam, LPARAM lParam )
 				case PSN_KILLACTIVE:
 					KillActive( );
 					break;
+
+			}
+			break;
+		case WM_KEYDOWN:
+		case WM_KEYUP:
+		case WM_CHAR:
+			if( gApp.GetActiveWorkspace() )
+			{
+				return SendMessage( gApp.GetMDIFrame(), msg, wParam, lParam );
 			}
 			break;
 	}

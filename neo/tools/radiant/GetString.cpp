@@ -95,7 +95,7 @@ LPCSTR GetString( LPCSTR psPrompt )
 
 bool GetYesNo( const char* psQuery )
 {
-	if( MessageBox( g_pParentWnd->GetSafeHwnd(), psQuery, "Query", MB_YESNO | MB_ICONWARNING ) == IDYES )
+	if( MessageBoxA( g_pParentWnd->GetSafeHwnd(), psQuery, "Query", MB_YESNO | MB_ICONWARNING ) == IDYES )
 	{
 		return true;
 	}
@@ -114,15 +114,15 @@ void ErrorBox( const char* sString )
 			PlaySound( "k:\\util\\overlay.bin", NULL, SND_FILENAME | SND_ASYNC );
 		}
 	}
-	MessageBox( g_pParentWnd->GetSafeHwnd(), sString, "Error",		MB_OK | MB_ICONERROR | MB_TASKMODAL );
+	MessageBoxA( g_pParentWnd->GetSafeHwnd(), sString, "Error",		MB_OK | MB_ICONERROR | MB_TASKMODAL );
 }
 
 void InfoBox( const char* sString )
 {
-	MessageBox( g_pParentWnd->GetSafeHwnd(), sString, "Info",		MB_OK | MB_ICONINFORMATION | MB_TASKMODAL );
+	MessageBoxA( g_pParentWnd->GetSafeHwnd(), sString, "Info",		MB_OK | MB_ICONINFORMATION | MB_TASKMODAL );
 }
 
 void WarningBox( const char* sString )
 {
-	MessageBox( g_pParentWnd->GetSafeHwnd(), sString, "Warning",	MB_OK | MB_ICONWARNING | MB_TASKMODAL );
+	MessageBoxA( g_pParentWnd->GetSafeHwnd(), sString, "Warning",	MB_OK | MB_ICONWARNING | MB_TASKMODAL );
 }

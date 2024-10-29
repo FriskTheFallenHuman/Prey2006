@@ -45,10 +45,10 @@ public:
 	DialogAFConstraint( CWnd* pParent = NULL );   // standard constructor
 	virtual				~DialogAFConstraint();
 	void				LoadFile( idDeclAF* af );
-	void				SaveFile( void );
+	void				SaveFile();
 	void				LoadConstraint( const char* name );
-	void				SaveConstraint( void );
-	void				UpdateFile( void );
+	void				SaveConstraint();
+	void				UpdateFile();
 
 	enum				{ IDD = IDD_DIALOG_AF_CONSTRAINT };
 
@@ -92,8 +92,8 @@ private:
 	static toolTip_t	toolTips[];
 
 private:
-	void				InitConstraintList( void );
-	void				InitConstraintTypeDlg( void );
-	void				InitBodyLists( void );
-	void				InitNewRenameDeleteButtons( void );
+	void				InitConstraintList();
+	void				InitConstraintTypeDlg();
+	void				InitBodyLists();
+	void				InitNewRenameDeleteButtons();
 };

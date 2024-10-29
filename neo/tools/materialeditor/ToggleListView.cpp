@@ -315,7 +315,7 @@ void ToggleListView::DrawItem( LPDRAWITEMSTRUCT lpDrawItemStruct )
 
 	int colorIndex = ( ( lpDrawItemStruct->itemState & ODS_SELECTED ) ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT );
 	SetTextColor( lpDrawItemStruct->hDC, GetSysColor( colorIndex ) );
-	DrawText( lpDrawItemStruct->hDC, szBuff, strlen( szBuff ), &rDraw, DT_LEFT | DT_VCENTER | DT_SINGLELINE );
+	DrawTextA( lpDrawItemStruct->hDC, szBuff, strlen( szBuff ), &rDraw, DT_LEFT | DT_VCENTER | DT_SINGLELINE );
 
 }
 

@@ -68,9 +68,9 @@ Radiant "Editor" Implementation
 =================================
 */
 void RadiantPrint( const char* text );
-void RadiantShutdown( void );
-void RadiantInit( void );
-void RadiantRun( void );
+void RadiantShutdown();
+void RadiantInit();
+void RadiantRun();
 
 bool SaveRegistryInfo( const char* pszName, void* pvBuf, long lSize );
 bool LoadRegistryInfo( const char* pszName, void* pvBuf, long* plSize );
@@ -78,5 +78,5 @@ bool LoadRegistryInfo( const char* pszName, void* pvBuf, long* plSize );
 bool SaveWindowState( HWND hWnd, const char* pszName );
 bool LoadWindowState( HWND hWnd, const char* pszName );
 
-void Sys_UpdateStatusBar( void );
+void Sys_UpdateStatusBar();
 void Sys_Status( const char* psz, int part );

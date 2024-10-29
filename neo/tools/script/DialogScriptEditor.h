@@ -98,8 +98,8 @@ private:
 	int					firstLine;
 
 private:
-	void				InitScriptEvents( void );
-	void				UpdateStatusBar( void );
+	void				InitScriptEvents();
+	void				UpdateStatusBar();
 };
 
 #endif /* !__DIALOGSCRIPTEDITOR_H__ */

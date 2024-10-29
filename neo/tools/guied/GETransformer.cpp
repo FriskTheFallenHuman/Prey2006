@@ -61,7 +61,7 @@ bool rvGETransformer::Create( HWND parent, bool visible )
 						   "GUIEDITOR_TRANSFORMER_CLASS",
 						   "Transformer",
 						   WS_SYSMENU | WS_CAPTION | WS_POPUP | WS_OVERLAPPED | WS_BORDER | WS_CLIPSIBLINGS | WS_CHILD,
-						   0, 0, 200, 100,
+						   0, 0, 200, 192,
 						   parent,
 						   NULL,
 						   win32.hInstance,
@@ -107,7 +107,9 @@ LRESULT CALLBACK rvGETransformer::WndProc( HWND hWnd, UINT msg, WPARAM wParam, L
 		case WM_DESTROY:
 			gApp.GetOptions().SetWindowPlacement( "transformer", hWnd );
 			break;
-
+		case WM_CLOSE:
+			SendMessage( gApp.GetMDIFrame(), WM_COMMAND, MAKELONG( ID_GUIED_WINDOW_SHOWTRANSFORMER, 0 ), 0 );
+			break;
 		case WM_ERASEBKGND:
 			return TRUE;
 
@@ -197,6 +199,8 @@ INT_PTR CALLBACK rvGETransformer::DlgProc( HWND hWnd, UINT msg, WPARAM wParam, L
 					rect.y -= screenRect.y;
 				}
 
+				bool bLockAspect = trans->GetLockAspect();
+
 				switch( LOWORD( wParam ) )
 				{
 					case IDC_GUIED_ITEMRECTX:
@@ -216,14 +220,28 @@ INT_PTR CALLBACK rvGETransformer::DlgProc( HWND hWnd, UINT msg, WPARAM wParam, L
 					case IDC_GUIED_ITEMRECTW:
 						if( value - rect[2] )
 						{
-							trans->mWorkspace->AddModifierSize( "Transform Size", 0, 0, value - rect[2], 0, false );
+							if( bLockAspect )
+							{
+								trans->mWorkspace->AddModifierSize( "Transform Size", 0, 0, value - rect[2], value - rect[2], false );
+							}
+							else
+							{
+								trans->mWorkspace->AddModifierSize( "Transform Size", 0, 0, value - rect[2], 0, false );
+							}
 						}
 						break;
 
 					case IDC_GUIED_ITEMRECTH:
 						if( value - rect[3] )
 						{
-							trans->mWorkspace->AddModifierSize( "Transform Size", 0, 0, 0, value - rect[3], false );
+							if( bLockAspect )
+							{
+								trans->mWorkspace->AddModifierSize( "Transform Size", 0, 0, value - rect[3], value - rect[3], false );
+							}
+							else
+							{
+								trans->mWorkspace->AddModifierSize( "Transform Size", 0, 0, 0, value - rect[3], false );
+							}
 						}
 						break;
 				}
@@ -232,6 +250,18 @@ INT_PTR CALLBACK rvGETransformer::DlgProc( HWND hWnd, UINT msg, WPARAM wParam, L
 	}
 
 	return FALSE;
+}
+
+bool rvGETransformer::GetLockAspect( void )
+{
+	UINT retVal = IsDlgButtonChecked( mDlg, IDC_GUIED_LOCK_ASPECT );
+
+	if( retVal == BST_CHECKED )
+	{
+		return true;
+	}
+
+	return false;
 }
 
 /*
@@ -270,7 +300,7 @@ Update the enabled/disabled states based on the selections and update
 the rectangle coordinates
 ================
 */
-void rvGETransformer::Update( void )
+void rvGETransformer::Update()
 {
 	bool state = false;
 
@@ -311,6 +341,7 @@ void rvGETransformer::Update( void )
 	EnableWindow( GetDlgItem( mDlg, IDC_GUIED_ITEMRECTY ), state );
 	EnableWindow( GetDlgItem( mDlg, IDC_GUIED_ITEMRECTW ), state );
 	EnableWindow( GetDlgItem( mDlg, IDC_GUIED_ITEMRECTH ), state );
+	EnableWindow( GetDlgItem( mDlg, IDC_GUIED_LOCK_ASPECT ), state );
 }
 
 /*

@@ -292,7 +292,7 @@ void UpdateSurfaceDialog()
 
 bool ByeByeSurfaceDialog();
 
-void DoSurface( void )
+void DoSurface()
 {
 
 	g_bNewApplyHandling = ( g_PrefsDlg.m_bNewApplyHandling != FALSE );

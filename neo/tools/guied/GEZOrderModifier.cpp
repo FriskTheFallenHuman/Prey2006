@@ -94,7 +94,7 @@ rvGEZOrderModifier::rvGEZOrderModifier( const char* name, idWindow* window, EZOr
 	}
 }
 
-bool rvGEZOrderModifier::Apply( void )
+bool rvGEZOrderModifier::Apply()
 {
 	idWindow* parent;
 
@@ -106,7 +106,7 @@ bool rvGEZOrderModifier::Apply( void )
 	return true;
 }
 
-bool rvGEZOrderModifier::Undo( void )
+bool rvGEZOrderModifier::Undo()
 {
 	idWindow* parent;
 
@@ -118,7 +118,7 @@ bool rvGEZOrderModifier::Undo( void )
 	return true;
 }
 
-bool rvGEZOrderModifier::IsValid( void )
+bool rvGEZOrderModifier::IsValid()
 {
 	if( !mWindow->GetParent( ) )
 	{

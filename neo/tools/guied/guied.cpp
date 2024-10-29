@@ -46,8 +46,10 @@ GUIEditorInit
 Start the gui editor
 ================
 */
-void GUIEditorInit( void )
+void GUIEditorInit()
 {
+	InitAfx();
+
 	gApp.Initialize();
 }
 
@@ -56,7 +58,7 @@ void GUIEditorInit( void )
 GUIEditorShutdown
 ================
 */
-void GUIEditorShutdown( void )
+void GUIEditorShutdown()
 {
 }
 

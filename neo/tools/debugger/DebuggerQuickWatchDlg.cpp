@@ -39,7 +39,7 @@ If you have questions concerning this license or the applicable additional terms
 rvDebuggerQuickWatchDlg::rvDebuggerQuickWatchDlg
 ================
 */
-rvDebuggerQuickWatchDlg::rvDebuggerQuickWatchDlg( void )
+rvDebuggerQuickWatchDlg::rvDebuggerQuickWatchDlg()
 {
 }
 

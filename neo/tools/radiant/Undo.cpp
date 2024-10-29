@@ -77,7 +77,7 @@ int g_redoId = 1;						//current redo ID (zero is invalid id)
 Undo_MemorySize
 =============
 */
-int Undo_MemorySize( void )
+int Undo_MemorySize()
 {
 	/*
 	int size;
@@ -108,7 +108,7 @@ int Undo_MemorySize( void )
 Undo_ClearRedo
 =============
 */
-void Undo_ClearRedo( void )
+void Undo_ClearRedo()
 {
 	undo_t* redo, *nextredo;
 	idEditorBrush* pBrush, *pNextBrush;
@@ -141,7 +141,7 @@ Undo_Clear
   Clears the undo buffer.
 =============
 */
-void Undo_Clear( void )
+void Undo_Clear()
 {
 	undo_t* undo, *nextundo;
 	idEditorBrush* pBrush, *pNextBrush;
@@ -196,7 +196,7 @@ void Undo_SetMaxSize( int size )
 Undo_GetMaxSize
 =============
 */
-int Undo_GetMaxSize( void )
+int Undo_GetMaxSize()
 {
 	return g_undoMaxSize;
 }
@@ -224,7 +224,7 @@ void Undo_SetMaxMemorySize( int size )
 Undo_GetMaxMemorySize
 =============
 */
-int Undo_GetMaxMemorySize( void )
+int Undo_GetMaxMemorySize()
 {
 	return g_undoMaxMemorySize;
 }
@@ -234,7 +234,7 @@ int Undo_GetMaxMemorySize( void )
 Undo_FreeFirstUndo
 =============
 */
-void Undo_FreeFirstUndo( void )
+void Undo_FreeFirstUndo()
 {
 	undo_t* undo;
 	idEditorBrush* pBrush, *pNextBrush;
@@ -590,7 +590,7 @@ void Undo_EndEntity( idEditorEntity* entity )
 Undo_End
 =============
 */
-void Undo_End( void )
+void Undo_End()
 {
 	if( !g_lastundo )
 	{
@@ -623,7 +623,7 @@ void Undo_End( void )
 Undo_Undo
 =============
 */
-void Undo_Undo( void )
+void Undo_Undo()
 {
 	undo_t* undo, *redo;
 	idEditorBrush* pBrush, *pNextBrush;
@@ -825,7 +825,7 @@ void Undo_Undo( void )
 Undo_Redo
 =============
 */
-void Undo_Redo( void )
+void Undo_Redo()
 {
 	undo_t* redo;
 	idEditorBrush* pBrush, *pNextBrush;
@@ -957,7 +957,7 @@ void Undo_Redo( void )
 Undo_RedoAvailable
 =============
 */
-int Undo_RedoAvailable( void )
+int Undo_RedoAvailable()
 {
 	if( g_lastredo )
 	{
@@ -971,7 +971,7 @@ int Undo_RedoAvailable( void )
 Undo_UndoAvailable
 =============
 */
-int Undo_UndoAvailable( void )
+int Undo_UndoAvailable()
 {
 	if( g_lastundo )
 	{

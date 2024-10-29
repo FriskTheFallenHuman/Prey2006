@@ -37,10 +37,10 @@ public:
 	virtual bool		CanMerge( rvGEModifier* merge );
 	virtual bool		Merge( rvGEModifier* merge );
 
-	virtual bool		Apply( void );
-	virtual bool		Undo( void );
+	virtual bool		Apply();
+	virtual bool		Undo();
 
-	virtual bool		IsValid( void );
+	virtual bool		IsValid();
 
 protected:
 

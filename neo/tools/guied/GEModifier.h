@@ -38,16 +38,16 @@ public:
 	rvGEModifier( const char* name, idWindow* window );
 	virtual ~rvGEModifier( ) { }
 
-	virtual bool		Apply( void ) = 0;
-	virtual bool		Undo( void ) = 0;
-	virtual const char*	GetName( void );
+	virtual bool		Apply() = 0;
+	virtual bool		Undo() = 0;
+	virtual const char*	GetName();
 	virtual bool		CanMerge( rvGEModifier* merge );
 
-	virtual bool		IsValid( void );
+	virtual bool		IsValid();
 
 	virtual bool		Merge( rvGEModifier* merge );
 
-	idWindow*			GetWindow( void );
+	idWindow*			GetWindow();
 
 
 protected:
@@ -57,17 +57,17 @@ protected:
 	idStr				mName;
 };
 
-ID_INLINE bool rvGEModifier::IsValid( void )
+ID_INLINE bool rvGEModifier::IsValid()
 {
 	return true;
 }
 
-ID_INLINE idWindow* rvGEModifier::GetWindow( void )
+ID_INLINE idWindow* rvGEModifier::GetWindow()
 {
 	return mWindow;
 }
 
-ID_INLINE const char* rvGEModifier::GetName( void )
+ID_INLINE const char* rvGEModifier::GetName()
 {
 	return mName;
 }

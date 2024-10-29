@@ -65,12 +65,12 @@ public:
 	int		AddItem( const char* name, const char* value, EItemType type = PGIT_STRING );
 
 	void	RemoveItem( int index );
-	void	RemoveAllItems( void );
+	void	RemoveAllItems();
 
 	void	SetCurSel( int index );
-	int		GetCurSel( void );
+	int		GetCurSel();
 
-	HWND			GetWindow( void );
+	HWND			GetWindow();
 	const char*		GetItemName( int index );
 	const char*		GetItemValue( int index );
 
@@ -84,8 +84,8 @@ protected:
 	};
 
 	void			StartEdit( int item, bool label );
-	void			FinishEdit( void );
-	void			CancelEdit( void );
+	void			FinishEdit();
+	void			CancelEdit();
 
 	int				HandleDrawItem( WPARAM wParam, LPARAM lParam );
 
@@ -104,12 +104,12 @@ private:
 	static LRESULT CALLBACK WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
 };
 
-inline HWND rvPropertyGrid::GetWindow( void )
+inline HWND rvPropertyGrid::GetWindow()
 {
 	return mWindow;
 }
 
-inline int rvPropertyGrid::GetCurSel( void )
+inline int rvPropertyGrid::GetCurSel()
 {
 	return SendMessage( mWindow, LB_GETCURSEL, 0, 0 );
 }

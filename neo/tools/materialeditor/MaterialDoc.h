@@ -87,8 +87,8 @@ public:
 	SourceModifyOwner*		sourceModifyOwner;
 
 public:
-	MaterialDoc( void );
-	~MaterialDoc( void );
+	MaterialDoc();
+	~MaterialDoc();
 
 	/**
 	* Define the types of stages in a material.

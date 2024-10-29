@@ -50,14 +50,14 @@ extern	bool	region_active;
 
 void	Map_LoadFile( const char* filename );
 bool	Map_SaveFile( const char* filename, bool use_region, bool autosave = false );
-void	Map_New( void );
-void	Map_BuildBrushData( void );
+void	Map_New();
+void	Map_BuildBrushData();
 
-void	Map_RegionOff( void );
-void	Map_RegionXY( void );
-void	Map_RegionTallBrush( void );
-void	Map_RegionBrush( void );
-void	Map_RegionSelectedBrushes( void );
+void	Map_RegionOff();
+void	Map_RegionXY();
+void	Map_RegionTallBrush();
+void	Map_RegionBrush();
+void	Map_RegionSelectedBrushes();
 bool	Map_IsBrushFiltered( idEditorBrush* b );
 
 void	Map_SaveSelected( CMemFile* pMemFile, CMemFile* pPatchFile = NULL );

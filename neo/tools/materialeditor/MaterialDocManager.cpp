@@ -36,7 +36,7 @@ If you have questions concerning this license or the applicable additional terms
 /**
 * Constructor for MaterialDocManager.
 */
-MaterialDocManager::MaterialDocManager( void )
+MaterialDocManager::MaterialDocManager()
 {
 	currentMaterial = NULL;
 	cutMaterial = false;
@@ -45,7 +45,7 @@ MaterialDocManager::MaterialDocManager( void )
 /**
 * Destructor for MaterialDocManager.
 */
-MaterialDocManager::~MaterialDocManager( void )
+MaterialDocManager::~MaterialDocManager()
 {
 	UnRegisterAllMaterialViews();
 
