@@ -38,11 +38,11 @@ struct CommentedItem {
 	idStr Comments;
 };
 
-class CPreviewDlg : public CDialog
-{
+class CPreviewDlg : public CDialogEx {
 public:
-	enum {MODELS, GUIS, SOUNDS, MATERIALS, SCRIPTS, SOUNDPARENT, WAVES, PARTICLES, MODELPARENT, GUIPARENT, COMMENTED, SKINS};
-	CPreviewDlg(CWnd* pParent = NULL);   // standard constructor
+	enum { MODELS, GUIS, SOUNDS, MATERIALS, SCRIPTS, SOUNDPARENT, WAVES, PARTICLES, MODELPARENT, GUIPARENT, COMMENTED, SKINS };
+
+			CPreviewDlg( CWnd *pParent = NULL );   // standard constructor
 	virtual ~CPreviewDlg();
 	void SetMode( int mode, const char *preSelect = NULL );
 	void RebuildTree( const char *data );
@@ -55,15 +55,16 @@ public:
 
 	bool Waiting();
 	void SetModal();
-// Dialog Data
+
 	enum { IDD = IDD_DIALOG_PREVIEW };
 private:
-	DECLARE_DYNAMIC(CPreviewDlg)
+	DECLARE_DYNAMIC( CPreviewDlg )
 
 	CTreeCtrl treeMedia;
 	CEdit editInfo;
 	HTREEITEM commentItem;
 	CImageList m_image;
+	CBitmap m_bitmap;
 	idGLDrawable m_testDrawable;
 	idGLDrawableMaterial m_drawMaterial;
 	idGLDrawableModel m_drawModel;
@@ -77,7 +78,7 @@ private:
 	bool disablePreview;
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
 	void BuildTree();
 	void AddStrList(const char *root, const idStrList &list, int type);
 	void AddSounds(bool rootItems);
@@ -88,8 +89,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-	afx_msg void OnTvnSelchangedTreeMedia(NMHDR *pNMHDR, LRESULT *pResult);
-	virtual BOOL Create(LPCTSTR lpszTemplateName, CWnd* pParentWnd = NULL);
+	afx_msg void OnTvnSelchangedTreeMedia( NMHDR *pNMHDR, LRESULT *pResult );
+	virtual BOOL Create( LPCTSTR lpszTemplateName, CWnd* pParentWnd = NULL );
 protected:
 	virtual void OnCancel();
 	virtual void OnOK();

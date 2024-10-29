@@ -298,7 +298,7 @@ BOOL CZWnd::PreCreateWindow(CREATESTRUCT& cs)
 	wc.hCursor       = LoadCursor (NULL,IDC_ARROW);
 	wc.lpfnWndProc = ::DefWindowProc;
 	if (AfxRegisterClass(&wc) == FALSE)
-	  Error ("CZWnd RegisterClass: failed");
+	  idLib::Error ("CZWnd RegisterClass: failed");
   }
 
   cs.lpszClass = Z_WINDOW_CLASS;

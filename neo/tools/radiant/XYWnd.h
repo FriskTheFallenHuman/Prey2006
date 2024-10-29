@@ -25,16 +25,9 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
-#if !defined(AFX_XYWND_H__44B4BA04_781B_11D1_B53C_00AA00A410FC__INCLUDED_)
-#define AFX_XYWND_H__44B4BA04_781B_11D1_B53C_00AA00A410FC__INCLUDED_
 
-#if _MSC_VER >= 1000
 #pragma once
-#endif // _MSC_VER >= 1000
-// XYWnd.h : header file
-//
 
-/////////////////////////////////////////////////////////////////////////////
 // CXYWnd window
 
 #include "qe3.h"
@@ -67,40 +60,28 @@ public:
   operator float*() {return m_ptClip.ToFloatPtr();};
 };
 
-class CXYWnd : public CDialogEx
-{
+class CXYWnd : public CDialogEx {
   DECLARE_DYNCREATE(CXYWnd);
-// Construction
+
 public:
 	CXYWnd();
 
-// Attributes
-public:
-
-// Operations
-public:
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CXYWnd)
-	protected:
+protected:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-	//}}AFX_VIRTUAL
 
-// Implementation
 public:
-  bool AreaSelectOK();
-  idVec3& RotateOrigin();
-  idVec3& Rotation();
-  void UndoClear();
-  bool UndoAvailable();
-  void KillPathMode();
-  void Undo();
-  void UndoCopy();
-  void Copy();
-  void Paste();
-  void Redraw(unsigned int nBits);
-  void VectorCopyXY( const idVec3 &in, idVec3 &out );
+	bool AreaSelectOK();
+	idVec3& RotateOrigin();
+	idVec3& Rotation();
+	void UndoClear();
+	bool UndoAvailable();
+	void KillPathMode();
+	void Undo();
+	void UndoCopy();
+	void Copy();
+	void Paste();
+	void Redraw(unsigned int nBits);
+	void VectorCopyXY( const idVec3 &in, idVec3 &out );
 	void PositionView();
 	void FlipClip();
 	void SplitClip();
@@ -108,54 +89,53 @@ public:
 	idVec3& GetOrigin();
 	void SetOrigin(idVec3 org);		// PGM
 	void XY_Init();
-  void XY_Draw();
-  void DrawRotateIcon();
-  void DrawCameraIcon();
-  void XY_DrawBlockGrid();
-  void XY_DrawGrid();
-  bool XY_MouseMoved (int x, int y, int buttons);
-  void NewBrushDrag (int x, int y);
-  bool DragDelta (int x, int y, idVec3 &move);
-  void XY_MouseUp(int x, int y, int buttons);
-  void XY_MouseDown (int x, int y, int buttons);
-  void XY_ToGridPoint (int x, int y, idVec3 &point);
-  void XY_ToPoint (int x, int y, idVec3 &point);
-  void SnapToPoint (int x, int y, idVec3 &point);
-  void SetActive(bool b) {m_bActive = b;};
-  bool Active() {return m_bActive;};
-  void DropClipPoint(UINT nFlags, CPoint point);
+	void XY_Draw();
+	void DrawRotateIcon();
+	void DrawCameraIcon();
+	void XY_DrawBlockGrid();
+	void XY_DrawGrid();
+	bool XY_MouseMoved (int x, int y, int buttons);
+	void NewBrushDrag (int x, int y);
+	bool DragDelta (int x, int y, idVec3 &move);
+	void XY_MouseUp(int x, int y, int buttons);
+	void XY_MouseDown (int x, int y, int buttons);
+	void XY_ToGridPoint (int x, int y, idVec3 &point);
+	void XY_ToPoint (int x, int y, idVec3 &point);
+	void SnapToPoint (int x, int y, idVec3 &point);
+	void SetActive(bool b) {m_bActive = b;};
+	bool Active() {return m_bActive;};
+	void DropClipPoint(UINT nFlags, CPoint point);
 
 	int GetAxisHoriz() { return m_axisHoriz; };
 	int GetAxisVert() { return m_axisVert; };
 	void AnalogMouseZoom( int mouseDeltaY );
 
-
-  bool RogueClipMode();
+	bool RogueClipMode();
 	bool ClipMode();
 	void SetClipMode(bool bMode);
 	void RetainClipMode(bool bMode);
 
-  bool RotateMode();
-  bool SetRotateMode(bool bMode);
-  bool ScaleMode();
-  void SetScaleMode(bool bMode);
+	bool RotateMode();
+	bool SetRotateMode(bool bMode);
+	bool ScaleMode();
+	void SetScaleMode(bool bMode);
 
-  bool PathMode();
-  void DropPathPoint(UINT nFlags, CPoint point);
+	bool PathMode();
+	void DropPathPoint(UINT nFlags, CPoint point);
 
-  bool PointMode();
-  void AddPointPoint(UINT nFlags, idVec3* pVec);
-  void SetPointMode(bool b);
+	bool PointMode();
+	void AddPointPoint(UINT nFlags, idVec3* pVec);
+	void SetPointMode(bool b);
 
 
 	virtual ~CXYWnd();
-  void SetViewType(ViewType n);
-  ViewType GetViewType() {return  m_nViewType; };
-  void SetScale(float f) {m_fScale = f;};
-  float Scale() {return m_fScale;};
-  int Width() {return m_nWidth;}
-  int Height() {return m_nHeight;}
-  bool m_bActive;
+	void SetViewType(ViewType n);
+	ViewType GetViewType() { return  m_nViewType; };
+	void SetScale(float f) { m_fScale = f; };
+	float Scale() { return m_fScale; };
+	int Width() { return m_nWidth; }
+	int Height() { return m_nHeight; }
+	bool m_bActive;
 
 	void UpdateViewDependencies( void );
 
@@ -173,25 +153,24 @@ public:
 	int m_mouseX;
 	int m_mouseY;
 
-
 	// Generated message map functions
 protected:
 	int m_nUpdateBits;
 	int m_nWidth;
-  int m_nHeight;
+	int m_nHeight;
 	float	m_fScale;
 	float	m_TopClip;
-  float m_BottomClip;
-  bool m_bDirty;
+	float m_BottomClip;
+	bool m_bDirty;
 	idVec3 m_vOrigin;
 	CPoint m_ptCursor;
-  bool m_bRButtonDown;
+	bool m_bRButtonDown;
 
-  int	m_nButtonstate;
-  int m_nPressx;
-  int m_nPressy;
-  idVec3 m_vPressdelta;
-  bool m_bPress_selection;
+	int	m_nButtonstate;
+	int m_nPressx;
+	int m_nPressy;
+	idVec3 m_vPressdelta;
+	bool m_bPress_selection;
 
 	int m_axisHoriz; //  <axisHoriz> and <axisVert> are one of AXIS_X, AXIS_Y, AXIS_Z and
 	int m_axisVert;	 //  reflect which axes are represented horizontally and vertically in the 2d view (XY, XZ, etc)
@@ -205,30 +184,30 @@ protected:
 	float m_mcBottom;
 
 
-  friend CCamWnd;
-  //friend C3DFXCamWnd;
+	friend CCamWnd;
+	//friend C3DFXCamWnd;
 
-  CMenu m_mnuDrop;
-  ViewType m_nViewType;
-  const char* m_sViewName;
+	CMenu m_mnuDrop;
+	ViewType m_nViewType;
+	const char* m_sViewName;
 
-  unsigned int m_nTimerID;
-  int m_nScrollFlags;
-  CPoint m_ptDrag;
-  CPoint m_ptDragAdj;
-  CPoint m_ptDragTotal;
+	unsigned int m_nTimerID;
+	int m_nScrollFlags;
+	CPoint m_ptDrag;
+	CPoint m_ptDragAdj;
+	CPoint m_ptDragTotal;
 
 	void OriginalButtonUp(UINT nFlags, CPoint point);
 	void OriginalButtonDown(UINT nFlags, CPoint point);
-  void ProduceSplits(idEditorBrush** pFront, idEditorBrush** pBack);
-  void ProduceSplitLists();
-  void HandleDrop();
-  void PaintSizeInfo(int nDim1, int nDim2, idVec3 vMinBounds, idVec3 vMaxBounds);
+	void ProduceSplits(idEditorBrush** pFront, idEditorBrush** pBack);
+	void ProduceSplitLists();
+	void HandleDrop();
+	void PaintSizeInfo(int nDim1, int nDim2, idVec3 vMinBounds, idVec3 vMaxBounds);
 	void DrawSelectedCentroid( int nDim1, int nDim2, idVec3 vMinBounds, idVec3 vMaxBounds );
 
-  void OnEntityCreate(unsigned int nID);
-  CPoint m_ptDown;
-	//{{AFX_MSG(CXYWnd)
+	void OnEntityCreate(unsigned int nID);
+	CPoint m_ptDown;
+
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
@@ -254,13 +233,6 @@ protected:
 	afx_msg void OnDropNewmodel();
 	afx_msg BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint pt);
 	afx_msg BOOL OnCmdMsg( UINT nID, int nCode, void *pExtra, AFX_CMDHANDLERINFO *pHandlerInfo );
-	//}}AFX_MSG
+
 	DECLARE_MESSAGE_MAP()
 };
-
-/////////////////////////////////////////////////////////////////////////////
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Developer Studio will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_XYWND_H__44B4BA04_781B_11D1_B53C_00AA00A410FC__INCLUDED_)

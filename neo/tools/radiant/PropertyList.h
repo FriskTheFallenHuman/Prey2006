@@ -25,14 +25,8 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
-#if !defined(AFX_PROPERTYLIST_H__74205380_1B56_11D4_BC48_00105AA2186F__INCLUDED_)
-#define AFX_PROPERTYLIST_H__74205380_1B56_11D4_BC48_00105AA2186F__INCLUDED_
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
-// PropertyList.h : header file
-//
 
 #define PIT_COMBO		0	//PIT = property item type
 #define PIT_EDIT		1
@@ -51,11 +45,9 @@ If you have questions concerning this license or the applicable additional terms
 #define IDC_PROPBTNCTRL  714
 
 
-/////////////////////////////////////////////////////////////////////////////
 //CPropertyList Items
-class CPropertyItem
-{
-// Attributes
+
+class CPropertyItem {
 public:
 	CString m_propName;
 	CString m_curValue;
@@ -64,33 +56,25 @@ public:
 	int data;
 
 public:
-	CPropertyItem(CString propName, CString curValue,
-				  int nItemType, CString cmbItems)
-	{
+	CPropertyItem( CString propName, CString curValue,
+				  int nItemType, CString cmbItems ) {
 		m_propName = propName;
 		m_curValue = curValue;
 		m_nItemType = nItemType;
 		m_cmbItems = cmbItems;
 		data = -1;
 	}
-	void SetData(int d) {
+	void SetData( int d ) {
 		data = d;
 	}
 };
 
-/////////////////////////////////////////////////////////////////////////////
 // CPropertyList window
 
-class CPropertyList : public CListBox
-{
-// Construction
+class CPropertyList : public CListBox {
 public:
 	CPropertyList();
 
-// Attributes
-public:
-
-// Operations
 public:
 	int AddItem(CString txt);
 	int AddPropItem(CPropertyItem* pItem);
@@ -107,33 +91,26 @@ public:
 	afx_msg void OnKillfocusEditBox();
 	afx_msg void OnChangeEditBox();
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CPropertyList)
-	public:
+public:
 	virtual void MeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct);
 	virtual void DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct);
 	afx_msg void OnSelchange();
-	protected:
+
+protected:
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 	virtual void PreSubclassWindow();
-	//}}AFX_VIRTUAL
 
-// Implementation
 public:
 	virtual ~CPropertyList();
 
-	// Generated message map functions
 protected:
-	//{{AFX_MSG(CPropertyList)
+
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnKillFocus(CWnd* pNewWnd);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
-
-	//}}AFX_MSG
 	afx_msg void OnKillfocusCmbBox();
 	afx_msg void OnSelchangeCmbBox();
 	afx_msg void OnButton();
@@ -146,7 +123,7 @@ protected:
 	CComboBox m_cmbBox;
 	CEdit m_editBox;
 	CButton m_btnCtrl;
-	CFont m_SSerif8Font;
+	CFont m_SShellDlg8Font;
 
 	int m_curSel,m_prevSel;
 	int m_nDivider;
@@ -161,10 +138,3 @@ protected:
 	CPropertyItem *measureItem;
 	bool updateInspectors;
 };
-
-/////////////////////////////////////////////////////////////////////////////
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_PROPERTYLIST_H__74205380_1B56_11D4_BC48_00105AA2186F__INCLUDED_)

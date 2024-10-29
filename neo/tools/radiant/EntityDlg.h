@@ -25,26 +25,23 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 #pragma once
-#include "afxcmn.h"
-#include "afxwin.h"
+
 #include "PropertyList.h"
 #include "PreviewDlg.h"
 
 // CEntityDlg dialog
 
-
-
-class CEntityDlg : public CDialog
-{
-	DECLARE_DYNAMIC(CEntityDlg)
+class CEntityDlg : public CDialogEx {
+	DECLARE_DYNAMIC( CEntityDlg )
 public:
-	CEntityDlg(CWnd* pParent = NULL);   // standard constructor
+	CEntityDlg( CWnd *pParent = NULL );   // standard constructor
 	virtual ~CEntityDlg();
-	void SetDict(idDict *_dict) {
+	void SetDict( idDict *_dict ) {
 		dict = dict;
 	}
-	void SetEditEntity(idEditorEntity *ent) {
+	void SetEditEntity( idEditorEntity *ent ) {
 		editEntity = ent;
 	}
 	void CreateEntity();
@@ -70,9 +67,8 @@ public:
 	enum { IDD = IDD_DIALOG_ENTITY };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
 
-	//DECLARE_MESSAGE_MAP()
 public:
 
 	virtual BOOL OnInitDialog();

@@ -103,7 +103,7 @@ static char THIS_FILE[] = __FILE__;
 
 
 CPrefsDlg::CPrefsDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CPrefsDlg::IDD, pParent)
+	: CDialogEx(CPrefsDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CPrefsDlg)
 	m_bVertex = FALSE;
@@ -144,7 +144,7 @@ CPrefsDlg::CPrefsDlg(CWnd* pParent /*=NULL*/)
 
 void CPrefsDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+	CDialogEx::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CPrefsDlg)
 	DDX_Control(pDX, IDC_SPIN_UNDO, m_wndUndoSpin);
 	DDX_Control(pDX, IDC_SPIN_POINTSIZE, m_wndFontSpin);
@@ -173,7 +173,7 @@ void CPrefsDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CPrefsDlg, CDialog)
+BEGIN_MESSAGE_MAP(CPrefsDlg, CDialogEx)
 	//{{AFX_MSG_MAP(CPrefsDlg)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
@@ -183,7 +183,7 @@ END_MESSAGE_MAP()
 
 BOOL CPrefsDlg::OnInitDialog()
 {
-	CDialog::OnInitDialog();
+	CDialogEx::OnInitDialog();
 	m_wndSpin.SetRange(1,60);
 	m_wndCamSpeed.SetRange(10, 5000);
 	m_wndCamSpeed.SetPos(m_nMoveSpeed);
@@ -212,7 +212,7 @@ void CPrefsDlg::OnOK()
 	}
 	Sys_UpdateWindows(W_ALL);
 	Undo_SetMaxSize(m_nUndoLevels);
-	CDialog::OnOK();
+	CDialogEx::OnOK();
 }
 
 int GetCvarInt(const char *name, const int def) {

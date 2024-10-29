@@ -39,23 +39,21 @@ If you have questions concerning this license or the applicable additional terms
 CInspectorDialog *g_Inspectors = NULL;
 // CInspectorDialog dialog
 
-void InspectorsDockingCallback ( bool docked , int ID , CWnd* wnd )
-{
+void InspectorsDockingCallback ( bool docked, int ID, CWnd* wnd ) {
 	g_Inspectors->SetDockedTabs( docked , ID );
 }
 
-
 // CInspectorDialog dialog
+// 
 //IMPLEMENT_DYNAMIC(CInspectorDialog,CTabsDlg)
-CInspectorDialog::CInspectorDialog(CWnd* pParent /*=NULL*/)
-	: CTabsDlg(CInspectorDialog::IDD, pParent)
-{
+
+CInspectorDialog::CInspectorDialog( CWnd *pParent )
+	: CTabsDlg( CInspectorDialog::IDD, pParent ) {
 	initialized = false;
 	dockedTabs = W_CONSOLE | W_TEXTURE | W_MEDIA;
 }
 
-CInspectorDialog::~CInspectorDialog()
-{
+CInspectorDialog::~CInspectorDialog() {
 }
 
 
@@ -68,11 +66,9 @@ BEGIN_MESSAGE_MAP(CInspectorDialog, CTabsDlg)
 	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
-
 // CInspectorDialog message handlers
 
-BOOL CInspectorDialog::OnInitDialog()
-{
+BOOL CInspectorDialog::OnInitDialog() {
 	CTabsDlg::OnInitDialog();
 
 	ASSERT ( m_Tabs.GetSafeHwnd() );
@@ -95,8 +91,7 @@ BOOL CInspectorDialog::OnInitDialog()
 	initialized = true;
 	prevMode = W_CONSOLE;
 
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// EXCEPTION: OCX Property Pages should return FALSE
+	return TRUE;
 }
 
 void CInspectorDialog::SetMode(int mode, bool updateTabs) {
@@ -133,10 +128,7 @@ bool CInspectorDialog::GetSelectAllCriteria(idStr &key, idStr &val) {
 	return true;
 }
 
-
-
-void CInspectorDialog::OnSize(UINT nType, int cx, int cy)
-{
+void CInspectorDialog::OnSize(UINT nType, int cx, int cy) {
 	CTabsDlg::OnSize(nType, cx, cy);
 
 	DockedWindowInfo* info = NULL;
@@ -189,22 +181,19 @@ void CInspectorDialog::OnMoving( UINT nSide, LPRECT lpRect ) {
 	}
 }
 
-void CInspectorDialog::OnDestroy()
-{
+void CInspectorDialog::OnDestroy() {
 	::SaveWindowPlacement(GetSafeHwnd() , "radiant_InspectorsWindow" );
 	SetCvarInt("radiant_InspectorDockedDialogs" , dockedTabs );
 
 	CTabsDlg::OnDestroy();
 }
 
-void CInspectorDialog::OnClose()
-{
+void CInspectorDialog::OnClose() {
 	ShowWindow( 0 );
 	//	CTabsDlg::OnClose();
 }
 
-BOOL CInspectorDialog::PreTranslateMessage(MSG* pMsg)
-{
+BOOL CInspectorDialog::PreTranslateMessage(MSG* pMsg) {
 	/*
 	if ( pMsg->message == WM_LBUTTONDOWN || pMsg->message == WM_RBUTTONDOWN || pMsg->message == WM_MBUTTONDOWN ) {
 		g_Inspectors->BringWindowToTop();
@@ -218,8 +207,7 @@ BOOL CInspectorDialog::PreTranslateMessage(MSG* pMsg)
 	return CTabsDlg::PreTranslateMessage(pMsg);
 }
 
-void CInspectorDialog::SetDockedTabs ( bool docked , int ID )
-{
+void CInspectorDialog::SetDockedTabs ( bool docked , int ID ) {
 	if ( docked ) {
 		dockedTabs |= ID;
 	}
@@ -228,7 +216,6 @@ void CInspectorDialog::SetDockedTabs ( bool docked , int ID )
 	}
 }
 
-void CInspectorDialog::AssignModel ()
-{
+void CInspectorDialog::AssignModel() {
 	entityDlg.AssignModel();
 }

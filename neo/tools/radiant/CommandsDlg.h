@@ -25,49 +25,30 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
-#if !defined(AFX_COMMANDSDLG_H__C80F6E42_8531_11D1_B548_00AA00A410FC__INCLUDED_)
-#define AFX_COMMANDSDLG_H__C80F6E42_8531_11D1_B548_00AA00A410FC__INCLUDED_
 
-#if _MSC_VER >= 1000
 #pragma once
-#endif // _MSC_VER >= 1000
-// CommandsDlg.h : header file
-//
 
-/////////////////////////////////////////////////////////////////////////////
 // CCommandsDlg dialog
 
-class CCommandsDlg : public CDialog
-{
-// Construction
+class CCommandsDlg : public CDialogEx {
 public:
-	CCommandsDlg(CWnd* pParent = NULL);   // standard constructor
+    CCommandsDlg( CWnd *Parent = nullptr );   // standard constructor
 
-// Dialog Data
-	//{{AFX_DATA(CCommandsDlg)
-	enum { IDD = IDD_DLG_COMMANDLIST };
-	CListBox	m_lstCommands;
-	//}}AFX_DATA
+    // Dialog Data
+    enum { IDD = IDD_DLG_COMMANDLIST };
+    CListBox m_lstCommands;
 
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CCommandsDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
-
-// Implementation
 protected:
+    virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
 
-	// Generated message map functions
-	//{{AFX_MSG(CCommandsDlg)
-	virtual BOOL OnInitDialog();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    // Generated message map functions
+    virtual BOOL OnInitDialog();
+    DECLARE_MESSAGE_MAP()
+
+private:
+    void PopulateCommandList();
+    CString FormatCommandLine( int commandIndex );
+    CString GetCommandKeyString( int commandIndex );
+    CString GetCommandModifiersString( int commandIndex );
+    void WriteCommandToFile( CFile &fileout, const CString &strLine );
 };
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Developer Studio will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_COMMANDSDLG_H__C80F6E42_8531_11D1_B548_00AA00A410FC__INCLUDED_)

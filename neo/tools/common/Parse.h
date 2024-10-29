@@ -26,21 +26,14 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#ifndef __CMDLIB__
-#define __CMDLIB__
+#pragma once
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <ctype.h>
-#include <time.h>
-#include <stdarg.h>
+constexpr int MAXTOKEN = 256;
 
-int		LoadFile( const char *filename, void **bufferptr );
-void	DefaultExtension( char *path, char *extension );
-void	DefaultPath( char *path, char *basepath );
-void	StripFilename( char *path );
-void	StripExtension( char *path );
+extern	char	token[MAXTOKEN];
+extern	int		scriptline;
 
-#endif /* !__CMDLIB__ */
+void StartTokenParsing( const char *data );
+bool GetToken( bool crossline );
+void UngetToken( void );
+bool TokenAvailable( void );

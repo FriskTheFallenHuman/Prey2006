@@ -35,39 +35,23 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
 #endif
 
-/////////////////////////////////////////////////////////////////////////////
 // CDialogThick dialog
 
-
-CDialogThick::CDialogThick(CWnd* pParent /*=NULL*/)
-	: CDialog(CDialogThick::IDD, pParent)
-{
-	//{{AFX_DATA_INIT(CDialogThick)
+CDialogThick::CDialogThick( CWnd *pParent )
+	: CDialogEx( CDialogThick::IDD, pParent ) {
 	m_bSeams = TRUE;
 	m_nAmount = 8;
-	//}}AFX_DATA_INIT
 }
 
 
-void CDialogThick::DoDataExchange(CDataExchange* pDX)
-{
-	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CDialogThick)
+void CDialogThick::DoDataExchange( CDataExchange *pDX ) {
+	CDialogEx::DoDataExchange(pDX);
 	DDX_Check(pDX, IDC_CHECK_SEAMS, m_bSeams);
 	DDX_Text(pDX, IDC_EDIT_AMOUNT, m_nAmount);
-	//}}AFX_DATA_MAP
 }
 
 
-BEGIN_MESSAGE_MAP(CDialogThick, CDialog)
-	//{{AFX_MSG_MAP(CDialogThick)
-		// NOTE: the ClassWizard will add message map macros here
-	//}}AFX_MSG_MAP
+BEGIN_MESSAGE_MAP(CDialogThick, CDialogEx)
 END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// CDialogThick message handlers

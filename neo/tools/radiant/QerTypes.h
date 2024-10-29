@@ -154,7 +154,7 @@ struct sideVertex_t {
 
 struct idEditorBrush;
 
-typedef struct {
+struct patchMesh_t {
 	int			width, height;		// in control points, not patches
 	int			horzSubdivisions;
 	int			vertSubdivisions;
@@ -181,7 +181,7 @@ typedef struct {
 			return verts[row * width + col];
 		}
 	}
-} patchMesh_t;
+};
 
 enum {
 	LIGHT_TARGET,

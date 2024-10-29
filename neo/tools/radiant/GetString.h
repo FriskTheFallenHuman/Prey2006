@@ -26,20 +26,12 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#if !defined(__GETSTRING_H__)
-#define __GETSTRING_H__
-
-#if _MSC_VER >= 1000
 #pragma once
-#endif // _MSC_VER >= 1000
-
-// CGetString dialog
 
 // NOTE: already included in qe3.h but won't compile without including it again !?
 #include "../../sys/win32/rc/resource.h"
 
-class CGetString : public CDialog
-{
+class CGetString : public CDialogEx {
 public:
 	CGetString(LPCSTR pPrompt, CString *pFeedback, CWnd* pParent = NULL);   // standard constructor
 	virtual ~CGetString();
@@ -66,5 +58,3 @@ bool GetYesNo(const char *psQuery);
 void ErrorBox(const char *sString);
 void InfoBox(const char *sString);
 void WarningBox(const char *sString);
-
-#endif /* !__GETSTRING_H__ */

@@ -25,22 +25,16 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
-#if !defined(AFX_CAMWND_H__44B4BA03_781B_11D1_B53C_00AA00A410FC__INCLUDED_)
-#define AFX_CAMWND_H__44B4BA03_781B_11D1_B53C_00AA00A410FC__INCLUDED_
 
-#if _MSC_VER >= 1000
 #pragma once
-#endif // _MSC_VER >= 1000
 
-typedef enum
-{
+typedef enum {
 	cd_wire,
 	cd_solid,
 	cd_texture
 } camera_draw_mode;
 
-typedef struct
-{
+typedef struct {
 	int			width, height;
 
 	idVec3		origin;
@@ -54,39 +48,26 @@ typedef struct
 	idVec3		vup, vpn, vright;	// view matrix
 } camera_t;
 
-
-/////////////////////////////////////////////////////////////////////////////
-// CCamWnd window
 class CXYWnd;
 
-class CCamWnd : public CDialogEx
-{
-  DECLARE_DYNCREATE(CCamWnd);
-// Construction
+// CCamWnd window
+
+class CCamWnd : public CDialogEx {
+  DECLARE_DYNCREATE( CCamWnd );
 public:
 			CCamWnd();
 	virtual ~CCamWnd();
 
-// Attributes
-public:
+protected:
+	virtual BOOL PreCreateWindow( CREATESTRUCT &cs );
 
-// Operations
 public:
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CCamWnd)
-	protected:
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-	//}}AFX_VIRTUAL
-
-// Implementation
-public:
-	void ShiftTexture_BrushPrimit(face_t *f, int x, int y);
-	void SetXYFriend(CXYWnd* pWnd);
-	camera_t& Camera(){return m_Camera;};
-	void Cam_MouseControl(float dtime);
-	void Cam_ChangeFloor(bool up);
+	void OnCancel() {}
+	void ShiftTexture_BrushPrimit( face_t *f, int x, int y );
+	void SetXYFriend( CXYWnd *pWnd );
+	camera_t& Camera() { return m_Camera; };
+	void Cam_MouseControl( float dtime );
+	void Cam_ChangeFloor( bool up );
 	void BuildRendererState();
 	void ToggleRenderMode();
 	void ToggleRebuildMode();
@@ -98,25 +79,12 @@ public:
 	void UpdateCameraView();
 
 	void BuildEntityRenderState( idEditorEntity *ent, bool update );
-	bool GetRenderMode() {
-		return renderMode;
-	}
-	bool GetRebuildMode() {
-		return rebuildMode;
-	}
-	bool GetEntityMode() {
-		return entityMode;
-	}
-	bool GetAnimationMode() {
-		return animationMode;
-	}
-	bool GetSelectMode() {
-		return selectMode;
-	}
-	bool GetSoundMode() {
-		return soundMode;
-	}
-
+	bool GetRenderMode() { return renderMode; }
+	bool GetRebuildMode() { return rebuildMode; }
+	bool GetEntityMode() { return entityMode; }
+	bool GetAnimationMode() { return animationMode; }
+	bool GetSelectMode() { return selectMode; }
+	bool GetSoundMode() { return soundMode;	}
 
 	bool UpdateRenderEntities();
 	void MarkWorldDirty();
@@ -128,17 +96,17 @@ public:
 
 	void Cam_BuildMatrix();
 
-	CXYWnd* m_pXYFriend;
+	CXYWnd *m_pXYFriend;
 
 protected:
 	void Cam_Init();
 	void Cam_PositionDrag();
 	void Cam_MouseLook();
-	void Cam_MouseDown(int x, int y, int buttons);
-	void Cam_MouseUp (int x, int y, int buttons);
-	void Cam_MouseMoved (int x, int y, int buttons);
+	void Cam_MouseDown( int x, int y, int buttons );
+	void Cam_MouseUp( int x, int y, int buttons );
+	void Cam_MouseMoved( int x, int y, int buttons );
 	void InitCull();
-	bool CullBrush (idEditorBrush *b, bool cubicOnly);
+	bool CullBrush( idEditorBrush *b, bool cubicOnly );
 	void Cam_Draw();
 	void DrawGrid();
 	void Cam_Render();
@@ -146,7 +114,7 @@ protected:
 	// game renderer interaction
 	void	FreeRendererState();
 	void	UpdateCaption();
-	bool	BuildBrushRenderData(idEditorBrush *brush);
+	bool	BuildBrushRenderData( idEditorBrush *brush );
 	void	DrawEntityData();
 
 	qhandle_t	worldModelDef;
@@ -179,14 +147,13 @@ protected:
 	bool saveValid;
 	idVec3 m_vPressdelta;
 
-	// Generated message map functions
 protected:
 	void EnableMouseLook(bool enable);
 	void UpdateCameraOrientation(float dx, float dy);
 	void UpdateCameraPosition(float dx, float dy, float dz);
 	void OriginalMouseDown(UINT nFlags, CPoint point);
 	void OriginalMouseUp(UINT nFlags, CPoint point);
-	//{{AFX_MSG(CCamWnd)
+
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnPaint();
 	afx_msg void OnDestroy();
@@ -202,13 +169,6 @@ protected:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
-	//}}AFX_MSG
+
 	DECLARE_MESSAGE_MAP()
 };
-
-/////////////////////////////////////////////////////////////////////////////
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Developer Studio will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_CAMWND_H__44B4BA03_781B_11D1_B53C_00AA00A410FC__INCLUDED_)

@@ -58,39 +58,26 @@ const char *CDialogTextures::TypeNames[] = {
 	"Fx"
 };
 
-//
-// =======================================================================================================================
-//    CDialogTextures dialog
-// =======================================================================================================================
-//
-CDialogTextures::CDialogTextures(CWnd *pParent /* =NULL */ ) :
-	CDialog(CDialogTextures::IDD, pParent) {
-		setTexture  = true;
-		ignoreCollapse = false;
-		mode = TEXTURES;
-		editMaterial = NULL;
-		editGui = "";
-	//{{AFX_DATA_INIT(CDialogTextures)
-	//}}AFX_DATA_INIT
+CDialogTextures::CDialogTextures( CWnd *pParent ) :
+	CDialogEx( CDialogTextures::IDD, pParent ) {
+	setTexture  = true;
+	ignoreCollapse = false;
+	mode = TEXTURES;
+	editMaterial = NULL;
+	editGui = "";
 }
 
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
-void CDialogTextures::DoDataExchange(CDataExchange *pDX) {
-	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CDialogTextures)
+void CDialogTextures::DoDataExchange( CDataExchange *pDX ) {
+	CDialogEx::DoDataExchange(pDX);
+
 	DDX_Control(pDX, IDC_CHECK_HIDEROOT, m_chkHideRoot);
 	DDX_Control(pDX, IDC_REFRESH, m_btnRefresh);
 	DDX_Control(pDX, IDC_LOAD, m_btnLoad);
 	DDX_Control(pDX, IDC_PREVIEW, m_wndPreview);
 	DDX_Control(pDX, IDC_TREE_TEXTURES, m_treeTextures);
-	//}}AFX_DATA_MAP
 }
 
-BEGIN_MESSAGE_MAP(CDialogTextures, CDialog)
-//{{AFX_MSG_MAP(CDialogTextures)
+BEGIN_MESSAGE_MAP(CDialogTextures, CDialogEx)
 	ON_BN_CLICKED(IDC_LOAD, OnLoad)
 	ON_BN_CLICKED(IDC_REFRESH, OnRefresh)
 	ON_NOTIFY(NM_CLICK, IDC_TREE_TEXTURES, OnClickTreeTextures)
@@ -102,17 +89,12 @@ BEGIN_MESSAGE_MAP(CDialogTextures, CDialog)
 	ON_BN_CLICKED(IDC_CHECK_HIDEROOT, OnCheckHideroot)
 	ON_COMMAND(ID_MATERIAL_EDIT, OnMaterialEdit)
 	ON_COMMAND(ID_MATERIAL_INFO, OnMaterialInfo)
-	//}}AFX_MSG_MAP
 	ON_WM_SETFOCUS()
 	ON_NOTIFY(NM_RCLICK, IDC_TREE_TEXTURES, OnNMRclickTreeTextures)
 END_MESSAGE_MAP()
-//
-// =======================================================================================================================
-//    CDialogTextures message handlers
-// =======================================================================================================================
-//
+
 void CDialogTextures::OnOK() {
-	//CDialog::OnOK();
+	//CDialogEx::OnOK();
 }
 
 /*
@@ -120,37 +102,37 @@ void CDialogTextures::OnOK() {
  =======================================================================================================================
  */
 BOOL CDialogTextures::OnInitDialog() {
-	CDialog::OnInitDialog();
+	CDialogEx::OnInitDialog();
 
-	m_image.Create(IDB_BITMAP_MATERIAL, 16, 1, RGB(255, 255, 255));
-	m_treeTextures.SetImageList(&m_image, TVSIL_NORMAL);
+	m_treeimageList.Create(16, 16, ILC_COLOR32, 1, 1);
+
+	m_treebitmap.LoadBitmap(IDB_BITMAP_MATERIAL);
+	m_treeimageList.Add(&m_treebitmap, RGB(255, 0, 255));
+
+	m_treeTextures.SetImageList(&m_treeimageList, TVSIL_NORMAL);
 
 	// m_wndPreview.SubclassDlgItem(IDC_PREVIEW, this);
 	m_wndPreview.setDrawable(&m_testDrawable);
 	BuildTree();
 
-	return TRUE;	// return TRUE unless you set the focus to a control
-	// EXCEPTION: OCX Property Pages should return FALSE
+	return TRUE;
 }
 
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
 bool CDialogTextures::loadTree( HTREEITEM item, const idStr &name, CWaitDlg *dlg ) {
-
 	if ( item == NULL ) {
 		return true;
 	}
 
 	if ( m_treeTextures.ItemHasChildren( item ) ) {
 
+		float count = 0.0f;
 		idStr childName;
 		HTREEITEM nextItem;
 		HTREEITEM childItem = m_treeTextures.GetChildItem(item);
 
 		while ( childItem != NULL ) {
-
+			// Terrible hack i'm so sorry
+			count += 0.001f;
 			nextItem = m_treeTextures.GetNextItem( childItem, TVGN_NEXT );
 			childName = name + "/" + (const char *)m_treeTextures.GetItemText( childItem );
 
@@ -164,7 +146,7 @@ bool CDialogTextures::loadTree( HTREEITEM item, const idStr &name, CWaitDlg *dlg
 					if ( dw == TEXTURES ) {
 						childName = "textures/" + childName;
 					}
-					dlg->SetText( childName.c_str() );
+					dlg->SetText( childName.c_str(), count );
 					Texture_ForName( childName );
 				}
 			}
@@ -316,10 +298,7 @@ const char *CDialogTextures::buildItemName(HTREEITEM item, const char *rootName)
 	}
 	return itemName;
 }
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
+
 void CDialogTextures::OnRefresh() {
 	quickTree.Clear();
 
@@ -392,10 +371,6 @@ void CDialogTextures::OnRefresh() {
 	}
 }
 
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
 HTREEITEM FindTreeItem(CTreeCtrl *tree, HTREEITEM root, const char *text, HTREEITEM forceParent) {
 	HTREEITEM	theItem = NULL;
 	if (root) {
@@ -438,10 +413,6 @@ HTREEITEM FindTreeItem(CTreeCtrl *tree, HTREEITEM root, const char *text, HTREEI
 	return theItem;
 }
 
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
 void CDialogTextures::BuildTree() {
 	CWaitCursor cursor;
 	m_treeTextures.DeleteAllItems();
@@ -452,11 +423,11 @@ void CDialogTextures::BuildTree() {
 	timer.Start();
 
 	addMaterials( rootItems );
-	// _D3XP removed
-	//addModels( rootItems );
+	addModels( rootItems );
 	addScripts( rootItems );
 	addSounds( rootItems );
 	addGuis( rootItems );
+	addFXs( rootItems );
 	addParticles( rootItems );
 
 	timer.Stop();
@@ -464,10 +435,6 @@ void CDialogTextures::BuildTree() {
 	common->Printf( "CDialogTextures::BuildTree() took %.0f milliseconds\n", timer.Milliseconds() );
 }
 
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
 void CDialogTextures::OnClickTreeTextures(NMHDR *pNMHDR, LRESULT *pResult) {
 	*pResult = 0;
 
@@ -496,10 +463,6 @@ void CDialogTextures::OnClickTreeTextures(NMHDR *pNMHDR, LRESULT *pResult) {
 	}
 }
 
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
 void CDialogTextures::OnSelchangedTreeTextures(NMHDR *pNMHDR, LRESULT *pResult) {
 	*pResult = 0;
 
@@ -622,15 +585,36 @@ void CDialogTextures::OnSelchangedTreeTextures(NMHDR *pNMHDR, LRESULT *pResult) 
 			m_drawMaterial.setScale(4.4f);
 			m_wndPreview.setDrawable(&m_drawMaterial);
 			m_wndPreview.RedrawWindow();
+		} else if (dw == FX) {
+			idStr strParent;
+			idStr modelName = m_treeTextures.GetItemText(item);
+			// have to build the name back up
+			HTREEITEM parent = m_treeTextures.GetParentItem(item);
+			while (true) {
+				strParent = m_treeTextures.GetItemText(parent);
+				if ( idStr::Icmp(strParent, TypeNames[FX]) == 0 ) {
+					break;
+				}
+				strParent += "/";
+				strParent += modelName;
+				modelName = strParent;
+				parent = m_treeTextures.GetParentItem(parent);
+				if (parent == NULL) {
+					break;
+				}
+			}
+			strParent = modelName;
+			mediaName = strParent;
+			mediaName += ".fx";
+			m_drawModel.setMedia(mediaName);
+			m_drawModel.SetRealTime(50);
+			m_wndPreview.setDrawable(&m_drawModel);
+			m_wndPreview.RedrawWindow();
 		}
 	}
 
 }
 
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
 void CDialogTextures::addMaterials( bool rootItems ) {
 	idStrList textures(1024);
 	idStrList materials(1024);
@@ -661,10 +645,6 @@ void CDialogTextures::addMaterials( bool rootItems ) {
 	}
 }
 
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
 void CDialogTextures::addParticles( bool rootItems ) {
 	idStrList list(1024);
 	int count = declManager->GetNumDecls( DECL_PARTICLE );
@@ -683,10 +663,6 @@ void CDialogTextures::addParticles( bool rootItems ) {
 	}
 }
 
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
 void CDialogTextures::addSounds(bool rootItems) {
 	int i, j;
 	idStrList list(1024);
@@ -820,13 +796,9 @@ void CDialogTextures::addStrList( const char *root, const idStrList &list, int i
 
 }
 
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
 void CDialogTextures::addModels(bool rootItems) {
 	idFileList *files;
-	files = fileSystem->ListFilesTree("models", ".ase|.lwo", true);
+	files = fileSystem->ListFilesTree("models", ".ase|.lwo|.ma|.obj", true);
 	if ( files->GetNumFiles() ) {
 		addStrList( TypeNames[MODELS], files->GetList(), MODELS );
 	}
@@ -846,26 +818,36 @@ void CDialogTextures::addGuis( bool rootItems ) {
 	fileSystem->FreeFileList( files );
 }
 
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
-void CDialogTextures::addScripts(bool rootItems) {
-/*
-	idFileList *files;
-
-	files = fileSystem->ListFilesExt( "def", ".script" );
-
-	if ( files->GetNumFiles() ) {
-		addStrList("Scripts", files->GetList(), 3);
+void CDialogTextures::addFXs( bool rootItems ) {
+	idStrList list(1024);
+	int count = declManager->GetNumDecls( DECL_FX );
+	if (count > 0) {
+		for (int i = 0; i < count; i++) {
+			const idDecl *ips = declManager->DeclByIndex( DECL_FX, i, false );
+			if (!rootItems) {
+				if (strchr(ips->GetName(), '/') == NULL && strchr(ips->GetName(), '\\') == NULL) {
+					continue;
+				}
+			}
+			list.Append(ips->GetName());
+		}
+		idStrListSortPaths( list );
+		addStrList( TypeNames[FX], list, FX );
 	}
-*/
 }
 
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
+void CDialogTextures::addScripts(bool rootItems) {
+	idFileList *files;
+
+	files = fileSystem->ListFilesTree( "script", ".script", true );
+
+	if ( files->GetNumFiles() ) {
+		addStrList( TypeNames[SCRIPTS], files->GetList(), SCRIPTS );
+	}
+
+	fileSystem->FreeFileList( files );
+}
+
 void CDialogTextures::OnDblclkTreeTextures(NMHDR *pNMHDR, LRESULT *pResult) {
 	CPoint pt;
 	GetCursorPos(&pt);
@@ -896,10 +878,6 @@ void CDialogTextures::OnDblclkTreeTextures(NMHDR *pNMHDR, LRESULT *pResult) {
 	*pResult = 0;
 }
 
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
 void CDialogTextures::OnPreview() {
 	// TODO: Add your control notification handler code here
 }
@@ -916,9 +894,8 @@ void CDialogTextures::OnPreview() {
 */
 //}
 
-int CDialogTextures::OnCreate(LPCREATESTRUCT lpCreateStruct)
-{
-	if (CDialog::OnCreate(lpCreateStruct) == -1)
+int CDialogTextures::OnCreate(LPCREATESTRUCT lpCreateStruct) {
+	if (CDialogEx::OnCreate(lpCreateStruct) == -1)
 		return -1;
 
 	// TODO: Add your specialized creation code here
@@ -926,9 +903,8 @@ int CDialogTextures::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	return 0;
 }
 
-void CDialogTextures::OnSize(UINT nType, int cx, int cy)
-{
-	CDialog::OnSize(nType, cx, cy);
+void CDialogTextures::OnSize(UINT nType, int cx, int cy) {
+	CDialogEx::OnSize(nType, cx, cy);
 
 	if (m_btnLoad.GetSafeHwnd() == NULL) {
 		return;
@@ -964,13 +940,11 @@ void CDialogTextures::OnSize(UINT nType, int cx, int cy)
 	RedrawWindow();
 }
 
-BOOL CDialogTextures::PreCreateWindow(CREATESTRUCT& cs)
-{
-	return CDialog::PreCreateWindow(cs);
+BOOL CDialogTextures::PreCreateWindow(CREATESTRUCT& cs) {
+	return CDialogEx::PreCreateWindow(cs);
 }
 
-void CDialogTextures::OnCheckHideroot()
-{
+void CDialogTextures::OnCheckHideroot() {
 	BuildTree();
 }
 
@@ -984,8 +958,7 @@ void CDialogTextures::OnCancel() {
 }
 
 
-BOOL CDialogTextures::PreTranslateMessage(MSG* pMsg)
-{
+BOOL CDialogTextures::PreTranslateMessage(MSG* pMsg) {
 	if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_ESCAPE || pMsg->wParam == VK_RETURN)) {
 		if (pMsg->wParam == VK_ESCAPE) {
 			g_pParentWnd->GetCamera()->SetFocus();
@@ -994,17 +967,15 @@ BOOL CDialogTextures::PreTranslateMessage(MSG* pMsg)
 		return TRUE;
 	}
 
-	return CDialog::PreTranslateMessage(pMsg);
+	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
-void CDialogTextures::OnSetFocus(CWnd* pOldWnd)
-{
-	CDialog::OnSetFocus(pOldWnd);
+void CDialogTextures::OnSetFocus(CWnd* pOldWnd) {
+	CDialogEx::OnSetFocus(pOldWnd);
 	RedrawWindow();
 }
 
-void CDialogTextures::OnNMRclickTreeTextures(NMHDR *pNMHDR, LRESULT *pResult)
-{
+void CDialogTextures::OnNMRclickTreeTextures(NMHDR *pNMHDR, LRESULT *pResult) {
 	*pResult = 0;
 
 	CPoint pt;

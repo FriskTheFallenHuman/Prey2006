@@ -34,39 +34,22 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
 #endif
 
-/////////////////////////////////////////////////////////////////////////////
 // CDlgEvent dialog
 
-
-CDlgEvent::CDlgEvent(CWnd* pParent /*=NULL*/)
-	: CDialog(CDlgEvent::IDD, pParent)
-{
-	//{{AFX_DATA_INIT(CDlgEvent)
+CDlgEvent::CDlgEvent( CWnd *pParent )
+	: CDialogEx( CDlgEvent::IDD, pParent ) {
 	m_strParm = _T("");
 	m_event = 0;
-	//}}AFX_DATA_INIT
 }
 
 
-void CDlgEvent::DoDataExchange(CDataExchange* pDX)
-{
-	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CDlgEvent)
+void CDlgEvent::DoDataExchange( CDataExchange *pDX ) {
+	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_EDIT_PARAM, m_strParm);
 	DDX_Radio(pDX, IDC_RADIO_EVENT, m_event);
-	//}}AFX_DATA_MAP
 }
 
-
-BEGIN_MESSAGE_MAP(CDlgEvent, CDialog)
-	//{{AFX_MSG_MAP(CDlgEvent)
-		// NOTE: the ClassWizard will add message map macros here
-	//}}AFX_MSG_MAP
+BEGIN_MESSAGE_MAP( CDlgEvent, CDialogEx )
 END_MESSAGE_MAP()
-
-/////////////////////////////////////////////////////////////////////////////
-// CDlgEvent message handlers

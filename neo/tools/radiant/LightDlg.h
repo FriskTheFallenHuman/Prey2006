@@ -25,12 +25,8 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
-#if !defined(AFX_LIGHTDLG_H__9DF57520_ED11_4BD8_968A_F6A7E34167D2__INCLUDED_)
-#define AFX_LIGHTDLG_H__9DF57520_ED11_4BD8_968A_F6A7E34167D2__INCLUDED_
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
 #include "../common/GLWidget.h"
 
@@ -74,12 +70,11 @@ public:
 	void		ToDictWriteAllInfo( idDict *e );
 };
 
-/////////////////////////////////////////////////////////////////////////////
 // CLightDlg dialog
 
-class CLightDlg : public CDialog {
+class CLightDlg : public CDialogEx {
 public:
-					CLightDlg(CWnd* pParent = NULL);   // standard constructor
+					CLightDlg( CWnd *pParent = NULL );   // standard constructor
 					~CLightDlg();
 
 	void			UpdateDialogFromLightInfo( void );
@@ -92,8 +87,6 @@ public:
 	void			ColorButtons();
 	void			SaveLightInfo( const idDict *differences );
 
-// Dialog Data
-	//{{AFX_DATA(CLightDlg)
 	enum { IDD = IDD_DIALOG_LIGHT };
 	idGLWidget m_wndPreview;
 	CComboBox	m_wndLights;
@@ -132,23 +125,15 @@ public:
 	float	m_centerY;
 	float	m_centerZ;
 	BOOL    m_bIsParallel;
-	//}}AFX_DATA
 
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CLightDlg)
-	public:
+public:
 	virtual BOOL DestroyWindow();
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
 
-// Implementation
+protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+
 protected:
 
-	// Generated message map functions
-	//{{AFX_MSG(CLightDlg)
 	virtual BOOL OnInitDialog();
 	afx_msg void OnDestroy();
 	afx_msg void OnBtnTexture();
@@ -181,8 +166,3 @@ private:
 	idVec3					color;
 	idGLDrawableMaterial *	m_drawMaterial;
 };
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_LIGHTDLG_H__9DF57520_ED11_4BD8_968A_F6A7E34167D2__INCLUDED_)

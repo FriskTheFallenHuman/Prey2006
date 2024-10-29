@@ -35,14 +35,9 @@ If you have questions concerning this license or the applicable additional terms
 #define DEBUG_NEW new
 #endif
 
-#pragma comment (lib, "Msimg32")
-#include <Vsstyle.h>
-#include <uxtheme.h> 
-#pragma comment(lib, "UxTheme")
-
 #include "QerTypes.h"
-#include "CMDLib.h"
-#include "Parse.h"
+#include "../common/CMDLib.h"
+#include "../common/Parse.h"
 
 #include <commctrl.h>
 #include "afxres.h"
@@ -79,17 +74,12 @@ const float	HUGE_DISTANCE = 100000;
 #include "SplashScreen.h"
 #include "../common/AboutBoxDlg.h"
 
-void	Error (char *error, ...);
-void	Warning (char *error, ...);
-
-typedef struct
-{
+typedef struct {
 	int		p1, p2;
 	face_t	*f1, *f2;
 } pedge_t;
 
-typedef struct
-{
+typedef struct {
 	int		iSize;
 	int		iTexMenu;		// nearest, linear, etc
 	char	szProject[256];	// last project loaded
@@ -109,8 +99,7 @@ typedef struct
 //
 // TTimo NOTE: WINAPI funcs can be accessed by plugins
 void    Sys_UpdateStatusBar( void );
-void    WINAPI Sys_UpdateWindows (int bits);
-void    Sys_Beep (void);
+void    Sys_UpdateWindows (int bits);
 double	Sys_DoubleTime (void);
 void    Sys_GetCursorPos (int *x, int *y);
 void    Sys_SetCursorPos (int x, int y);
@@ -123,8 +112,7 @@ void    Sys_Status(const char *psz, int part = -1);
 /*
 ** most of the QE globals are stored in this structure
 */
-typedef struct
-{
+typedef struct {
 	bool d_showgrid;
 	float d_gridsize;
 	float d_selectedgridsize;

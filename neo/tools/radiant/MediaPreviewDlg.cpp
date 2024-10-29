@@ -99,8 +99,7 @@ BOOL CMediaPreviewDlg::OnInitDialog() {
     int h = ( mode == GUIS ) ? ( rct.Width() - 8 ) / 1.333333f : rct.Height() - 8;
     wndPreview.SetWindowPos( nullptr, 4, 4, rct.Width() - 8, h, SWP_SHOWWINDOW );
 
-    return TRUE;  // return TRUE unless you set the focus to a control
-                  // EXCEPTION: OCX Property Pages should return FALSE
+    return TRUE;
 }
 
 void CMediaPreviewDlg::OnSize( UINT nType, int cx, int cy ) {

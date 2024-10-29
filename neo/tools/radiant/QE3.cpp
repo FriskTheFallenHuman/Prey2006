@@ -143,8 +143,7 @@ void ConnectEntities(void) {
 	int i, t;
 
 	if (g_qeglobals.d_select_count < 2) {
-		Sys_Status("Must have at least two brushes selected.", 0);
-		Sys_Beep();
+		MessageBox( g_pParentWnd->GetSafeHwnd(), "Must have at least two brushes selected.", "Can't Connect Entity", MB_OK | MB_ICONINFORMATION );
 		return;
 	}
 
@@ -152,16 +151,14 @@ void ConnectEntities(void) {
 
 	for (i = 0; i < g_qeglobals.d_select_count; i++) {
 		if (g_qeglobals.d_select_order[i]->owner == world_entity) {
-			Sys_Status("Can't connect to the world.", 0);
-			Sys_Beep();
+			MessageBox( g_pParentWnd->GetSafeHwnd(), "Can't connect to the world.", "Can't Connect Entity", MB_OK | MB_ICONWARNING );
 			return;
 		}
 	}
 
 	for (i = 1; i < g_qeglobals.d_select_count; i++) {
 		if (e1 == g_qeglobals.d_select_order[i]->owner) {
-			Sys_Status("Brushes are from same entity.", 0);
-			Sys_Beep();
+			MessageBox( g_pParentWnd->GetSafeHwnd(), "Brushes are from same entity.", "Can't Connect Entity", MB_OK | MB_ICONINFORMATION );
 			return;
 		}
 	}
@@ -208,7 +205,7 @@ void ConnectEntities(void) {
 bool QE_SingleBrush(bool bQuiet, bool entityOK) {
 	if ((selected_brushes.next == &selected_brushes) || (selected_brushes.next->next != &selected_brushes)) {
 		if (!bQuiet) {
-			Sys_Status("Error: you must have a single brush selected\n");
+			MessageBox( g_pParentWnd->GetSafeHwnd(), "You must have a single brush selected.", "Brush Manipulation", MB_OK | MB_ICONERROR );
 		}
 
 		return false;
@@ -216,7 +213,7 @@ bool QE_SingleBrush(bool bQuiet, bool entityOK) {
 
 	if (!entityOK && selected_brushes.next->owner->eclass->fixedsize) {
 		if (!bQuiet) {
-			Sys_Status("Error: you cannot manipulate fixed size entities\n");
+			MessageBox( g_pParentWnd->GetSafeHwnd(), "You cannot manipulate fixed size entities.", "Brush Manipulation", MB_OK | MB_ICONERROR );
 		}
 
 		return false;

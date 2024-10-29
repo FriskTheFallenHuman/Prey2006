@@ -275,17 +275,13 @@ CLightInfo::CLightInfo() {
 }
 
 
-
-/////////////////////////////////////////////////////////////////////////////
 // CLightDlg dialog
 
 CLightDlg *g_LightDialog = NULL;
 
 
-CLightDlg::CLightDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CLightDlg::IDD, pParent)
-{
-	//{{AFX_DATA_INIT(CLightDlg)
+CLightDlg::CLightDlg( CWnd *pParent )
+	: CDialogEx( CLightDlg::IDD, pParent ) {
 	m_bEqualRadius = FALSE;
 	m_bExplicitFalloff = FALSE;
 	m_bPointLight = FALSE;
@@ -320,7 +316,7 @@ CLightDlg::CLightDlg(CWnd* pParent /*=NULL*/)
 	m_centerY = 0.0f;
 	m_centerZ = 0.0f;
 	m_bIsParallel = FALSE;
-	//}}AFX_DATA_INIT
+
 	m_drawMaterial = new idGLDrawableMaterial();
 }
 
@@ -328,13 +324,9 @@ CLightDlg::~CLightDlg() {
 	delete m_drawMaterial;
 }
 
-void CLightDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CLightDlg)
-	if ( InRadiant() ) {
-		DDX_Control(pDX, IDC_LIGHTPREVIEW, m_wndPreview);
-	}
+void CLightDlg::DoDataExchange( CDataExchange *pDX ) {
+	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_LIGHTPREVIEW, m_wndPreview);
 	DDX_Control(pDX, IDC_COMBO_TEXTURE, m_wndLights);
 	DDX_Check(pDX, IDC_CHECK_EQUALRADIUS, m_bEqualRadius);
 	DDX_Check(pDX, IDC_CHECK_EXPLICITFALLOFF, m_bExplicitFalloff);
@@ -367,12 +359,10 @@ void CLightDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_CENTERX, m_centerX);
 	DDX_Text(pDX, IDC_EDIT_CENTERY, m_centerY);
 	DDX_Text(pDX, IDC_EDIT_CENTERZ, m_centerZ);
-	//}}AFX_DATA_MAP
 }
 
 
-BEGIN_MESSAGE_MAP(CLightDlg, CDialog)
-	//{{AFX_MSG_MAP(CLightDlg)
+BEGIN_MESSAGE_MAP(CLightDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_TEXTURE, OnBtnTexture)
 	ON_BN_CLICKED(IDC_CHECK_EQUALRADIUS, OnCheckEqualradius)
 	ON_BN_CLICKED(IDC_CHECK_EXPLICITFALLOFF, OnCheckExplicitfalloff)
@@ -386,10 +376,8 @@ BEGIN_MESSAGE_MAP(CLightDlg, CDialog)
 	ON_CBN_SELCHANGE(IDC_COMBO_TEXTURE, OnSelchangeComboTexture)
 	ON_BN_CLICKED(IDC_CHECK_CENTER, OnCheckCenter)
 	ON_BN_CLICKED(IDC_CHECK_PARALLEL, OnCheckParallel)
-	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
 // CLightDlg message handlers
 
 void CLightDlg::SetSpecifics() {
@@ -575,7 +563,6 @@ void CLightDlg::UpdateLightInfoFromDialog( void ) {
 }
 
 void CLightDlg::SaveLightInfo( const idDict *differences ) {
-
 	if ( InRadiant() ) {
 
 		// used from Radiant
@@ -649,8 +636,7 @@ void CLightDlg::LoadLightTextures() {
 	}
 }
 
-BOOL CLightDlg::OnInitDialog()
-{
+BOOL CLightDlg::OnInitDialog() {
 	CDialog::OnInitDialog();
 
 	com_editors |= EDITOR_LIGHT;
@@ -659,12 +645,9 @@ BOOL CLightDlg::OnInitDialog()
 
 	LoadLightTextures();
 
-	if ( InRadiant() ) {
-		m_wndPreview.setDrawable(m_drawMaterial);
-	}
+	m_wndPreview.setDrawable(m_drawMaterial);
 
-	return TRUE;  // return TRUE unless you set the focus to a control
-				  // EXCEPTION: OCX Property Pages should return FALSE
+	return TRUE;
 }
 
 void CLightDlg::OnDestroy() {
@@ -674,47 +657,41 @@ void CLightDlg::OnDestroy() {
 	return CDialog::OnDestroy();
 }
 
-void CLightDlg::OnBtnTexture()
-{
+void CLightDlg::OnBtnTexture() {
 	// TODO: Add your control notification handler code here
 
 }
 
-void CLightDlg::OnCheckEqualradius()
-{
+void CLightDlg::OnCheckEqualradius() {
 	lightInfo.equalRadius = ( reinterpret_cast<CButton*>(GetDlgItem(IDC_CHECK_EQUALRADIUS))->GetCheck() != 0 );
 	SetSpecifics();
 }
 
-void CLightDlg::OnCheckExplicitfalloff()
-{
+void CLightDlg::OnCheckExplicitfalloff() {
 	lightInfo.explicitStartEnd = ( reinterpret_cast<CButton*>(GetDlgItem(IDC_CHECK_EXPLICITFALLOFF))->GetCheck() != 0 );
 	SetSpecifics();
 }
 
-void CLightDlg::OnCheckPoint()
-{
+void CLightDlg::OnCheckPoint() {
 	lightInfo.DefaultPoint();
 	UpdateDialogFromLightInfo();
 	EnableControls();
 }
 
-void CLightDlg::OnCheckProjected()
-{
+void CLightDlg::OnCheckProjected() {
 	lightInfo.DefaultProjected();
 	UpdateDialogFromLightInfo();
 	EnableControls();
 }
 
-void CLightDlg::OnRadioFalloff()
-{
+void CLightDlg::OnRadioFalloff() {
 }
 
 void CLightDlg::OnOK() {
 	UpdateLightInfoFromDialog();
 	SaveLightInfo( NULL );
 	Sys_UpdateWindows(W_ALL);
-	CDialog::OnOK();
+	CDialogEx::OnOK();
 }
 
 idEditorEntity *SingleLightSelected() {
@@ -727,8 +704,7 @@ idEditorEntity *SingleLightSelected() {
 	return NULL;
 }
 
-void CLightDlg::UpdateDialog( bool updateChecks )
-{
+void CLightDlg::UpdateDialog( bool updateChecks ) {
 	CString title;
 
 	lightInfo.Defaults();
@@ -801,7 +777,7 @@ void LightEditorInit( const idDict *spawnArgs ) {
 		g_LightDialog->Create( IDD_DIALOG_LIGHT );
 		CRect rct;
 		LONG lSize = sizeof( rct );
-		if ( LoadRegistryInfo( "Radiant::LightWindow", &rct, &lSize ) ) {
+		if ( LoadRegistryInfo( "radiant_lightwindow", &rct, &lSize ) ) {
 			g_LightDialog->SetWindowPos(NULL, rct.left, rct.top, 0,0, SWP_NOSIZE);
 		}
 	}
@@ -818,12 +794,7 @@ void LightEditorInit( const idDict *spawnArgs ) {
 }
 
 void LightEditorRun( void ) {
-#if _MSC_VER >= 1300
 	MSG *msg = AfxGetCurrentMessage();			// TODO Robert fix me!!
-#else
-	MSG *msg = &m_msgCur;
-#endif
-
 	while( ::PeekMessage(msg, NULL, NULL, NULL, PM_NOREMOVE) ) {
 		// pump message
 		if ( !AfxGetApp()->PumpMessage() ) {
@@ -878,44 +849,38 @@ void CLightDlg::OnBtnColor() {
 }
 
 void CLightDlg::OnCancel() {
-	CDialog::OnCancel();
+	CDialogEx::OnCancel();
 }
 
-HBRUSH CLightDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
-{
-	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+HBRUSH CLightDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor) {
+	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
 
 	return hbr;
 }
 
-BOOL CLightDlg::DestroyWindow()
-{
+BOOL CLightDlg::DestroyWindow() {
 	if (GetSafeHwnd())
 	{
 		CRect rct;
 		GetWindowRect(rct);
-		SaveRegistryInfo("Radiant::LightWindow", &rct, sizeof(rct));
+		SaveRegistryInfo("radiant_lightwindow", &rct, sizeof(rct));
 	}
-	return CDialog::DestroyWindow();
+	return CDialogEx::DestroyWindow();
 }
 
-void CLightDlg::OnSelchangeComboTexture()
-{
+void CLightDlg::OnSelchangeComboTexture() {
 	UpdateData(TRUE);
 	int sel = m_wndLights.GetCurSel();
 	CString str;
 	if (sel >= 0) {
 		m_wndLights.GetLBText(sel, str);
 		m_drawMaterial->setMedia(str);
-		if ( InRadiant() ) {
-			m_wndPreview.RedrawWindow();
-		}
+		m_wndPreview.RedrawWindow();
 	}
 	Sys_UpdateWindows(W_ALL);
 }
 
-void CLightDlg::OnCheckCenter()
-{
+void CLightDlg::OnCheckCenter() {
 	if (reinterpret_cast<CButton*>(GetDlgItem(IDC_CHECK_CENTER))->GetCheck()) {
 		lightInfo.hasCenter = true;
 		lightInfo.lightCenter.x = 0;

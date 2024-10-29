@@ -32,7 +32,6 @@ If you have questions concerning this license or the applicable additional terms
 #include <io.h>
 
 #include "../../sys/win32/rc/resource.h"
-#include "../../renderer/DeviceContext.h"
 #include "../Common/AboutBoxDlg.h"
 
 #include "GEApp.h"

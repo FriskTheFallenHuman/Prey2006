@@ -39,8 +39,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef _DEBUG
 	#define new DEBUG_NEW
-	#undef THIS_FILE
-static char		THIS_FILE[] = __FILE__;
 #endif
 
 const char		*g_pDimStrings[] = { "x:%.f", "y:%.f", "z:%.f" };
@@ -582,7 +580,7 @@ BOOL CXYWnd::PreCreateWindow(CREATESTRUCT &cs) {
 		wc.hCursor = NULL;	// LoadCursor (NULL,IDC_ARROW);
 		wc.lpfnWndProc = ::DefWindowProc;
 		if (AfxRegisterClass(&wc) == FALSE) {
-			Error("CCamWnd RegisterClass: failed");
+			idLib::Error("CCamWnd RegisterClass: failed");
 		}
 	}
 

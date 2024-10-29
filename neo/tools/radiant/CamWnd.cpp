@@ -44,8 +44,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef _DEBUG
 	#define new DEBUG_NEW
-	#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
 #endif
 extern void DrawPathLines();
 
@@ -70,7 +68,7 @@ void ValidateAxialPoints() {
 }
 
 // CCamWnd
-IMPLEMENT_DYNCREATE(CCamWnd, CWnd);
+IMPLEMENT_DYNCREATE(CCamWnd, CDialogEx);
 
 /*
  =======================================================================================================================
@@ -100,7 +98,7 @@ CCamWnd::CCamWnd() {
 CCamWnd::~CCamWnd() {
 }
 
-BEGIN_MESSAGE_MAP(CCamWnd, CWnd)
+BEGIN_MESSAGE_MAP(CCamWnd, CDialogEx)
 //{{AFX_MSG_MAP(CCamWnd)
 	ON_WM_KEYDOWN()
 	ON_WM_PAINT()
@@ -122,29 +120,6 @@ BEGIN_MESSAGE_MAP(CCamWnd, CWnd)
 	ON_WM_TIMER()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
-LONG_PTR WINAPI CamWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-	RECT	rect;
-
-	GetClientRect(hWnd, &rect);
-
-	switch (uMsg)
-	{
-		case WM_KILLFOCUS:
-		case WM_SETFOCUS:
-			SendMessage(hWnd, WM_NCACTIVATE, uMsg == WM_SETFOCUS, 0);
-			return 0;
-
-		case WM_NCCALCSIZE: // don't let windows copy pixels
-			DefWindowProc(hWnd, uMsg, wParam, lParam);
-			return WVR_REDRAW;
-	}
-
-	return DefWindowProc(hWnd, uMsg, wParam, lParam);
-}
 
 //
 // =======================================================================================================================
@@ -153,7 +128,7 @@ LONG_PTR WINAPI CamWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 //
 BOOL CCamWnd::PreCreateWindow(CREATESTRUCT &cs) {
 	cs.dwExStyle = WS_EX_TOOLWINDOW;
-	return CWnd::PreCreateWindow( cs );
+	return CDialogEx::PreCreateWindow( cs );
 }
 
 /*
@@ -206,7 +181,7 @@ void CCamWnd::SetXYFriend(CXYWnd *pWnd) {
  */
 void CCamWnd::OnDestroy() {
 	SaveDialogPlacement(this, "radiant_camerawindow");
-	CWnd::OnDestroy();
+	CDialogEx::OnDestroy();
 }
 
 /*
@@ -214,7 +189,7 @@ void CCamWnd::OnDestroy() {
  =======================================================================================================================
  */
 void CCamWnd::OnClose() {
-	CWnd::OnClose();
+	CDialogEx::OnClose();
 }
 
 extern void Select_RotateTexture(float amt, bool absolute);
@@ -292,7 +267,7 @@ void CCamWnd::OnMButtonUp(UINT nFlags, CPoint point) {
  */
 void CCamWnd::OnRButtonDown(UINT nFlags, CPoint point) {
 	EnableMouseLook( true );
-	CWnd::OnRButtonDown( nFlags, point );
+	CDialogEx::OnRButtonDown( nFlags, point );
 }
 
 /*
@@ -301,7 +276,7 @@ void CCamWnd::OnRButtonDown(UINT nFlags, CPoint point) {
  */
 void CCamWnd::OnRButtonUp(UINT nFlags, CPoint point) {
 	EnableMouseLook( false );
-	CWnd::OnRButtonUp( nFlags, point );
+	CDialogEx::OnRButtonUp( nFlags, point );
 }
 
 /*
@@ -309,7 +284,7 @@ void CCamWnd::OnRButtonUp(UINT nFlags, CPoint point) {
  =======================================================================================================================
  */
 int CCamWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
-	if (CWnd::OnCreate(lpCreateStruct) == -1) {
+	if (CDialogEx::OnCreate(lpCreateStruct) == -1) {
 		return -1;
 	}
 
@@ -332,11 +307,11 @@ int CCamWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 				0,	// clipping precision
 				0,	// output quality
 				FIXED_PITCH | FF_MODERN,	// pitch and family
-				"Lucida Console"	// pointer to typeface name string
+				"MS Shell Dlg"	// pointer to typeface name string
 				);
 
 	if (!hfont) {
-		Error("couldn't create font");
+		idLib::Error("couldn't create font");
 	}
 
 	HFONT hOldFont = (HFONT)SelectObject(hDC, hfont);
@@ -377,10 +352,12 @@ int CCamWnd::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	SetWindowTheme( GetSafeHwnd(), L"DarkMode_Explorer", NULL );
 
 	// report OpenGL information
+#ifdef _DEBUG
 	common->Printf("GL_VENDOR: %s\n", qglGetString(GL_VENDOR));
 	common->Printf("GL_RENDERER: %s\n", qglGetString(GL_RENDERER));
 	common->Printf("GL_VERSION: %s\n", qglGetString(GL_VERSION));
 	common->Printf("GL_EXTENSIONS: %s\n", qglGetString(GL_EXTENSIONS));
+#endif // _DEBUG
 
 	return 0;
 }
@@ -1188,7 +1165,6 @@ void CCamWnd::Cam_Draw() {
 		g_qeglobals.selectObject->drawSelection();
 	}
 
-	// draw pointfile
 	qglEnable(GL_DEPTH_TEST);
 
 	DrawPathLines();
@@ -1216,7 +1192,7 @@ void CCamWnd::Cam_Draw() {
  =======================================================================================================================
  */
 void CCamWnd::OnSize(UINT nType, int cx, int cy) {
-	CWnd::OnSize(nType, cx, cy);
+	CDialogEx::OnSize(nType, cx, cy);
 
 	CRect	rect;
 	GetClientRect(rect);

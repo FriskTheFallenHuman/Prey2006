@@ -32,13 +32,11 @@ If you have questions concerning this license or the applicable additional terms
 
 
 // CTabsDlg dialog
-class CTabsDlg : public CDialog
+class CTabsDlg : public CDialogEx
 {
-//	DECLARE_DYNAMIC ( CTabsDlg )
-	// Construction
 public:
 
-	CTabsDlg(UINT ID ,CWnd* pParent = NULL);	// standard constructor
+	CTabsDlg( UINT ID ,CWnd *pParent = NULL );	// standard constructor
 
 	typedef void (*pfnOnDockEvent)( bool , int , CWnd* );
 
@@ -68,20 +66,16 @@ protected:
 
 	//private struct that holds the info we need about each window
 	struct DockedWindowInfo {
-		DockedWindowInfo ( CWnd* wnd , int ID , int imageID , const CString& title = "" , pfnOnDockEvent dockCallback = NULL)
-		{
+		DockedWindowInfo ( CWnd* wnd , int ID , int imageID , const CString& title = "" , pfnOnDockEvent dockCallback = NULL ) {
 			ASSERT ( wnd );
 			m_Window = wnd;
 			m_ID = ID;
 			m_ImageID = imageID;
 			m_TabControlIndex = -1;
-			if ( title.GetLength() == 0 )
-			{
+			if ( title.GetLength() == 0 ) {
 				m_Window->GetWindowText( m_Title );
 
-			}
-			else
-			{
+			} else {
 				m_Title = title;
 			}
 			m_State = DOCKED;

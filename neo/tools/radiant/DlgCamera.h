@@ -25,29 +25,18 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
-#if !defined(AFX_DLGCAMERA_H__59C12359_E3EB_4081_9F28_01793D75CF20__INCLUDED_)
-#define AFX_DLGCAMERA_H__59C12359_E3EB_4081_9F28_01793D75CF20__INCLUDED_
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
-// DlgCamera.h : header file
-//
 
 extern void showCameraInspector();
 
-/////////////////////////////////////////////////////////////////////////////
 // CDlgCamera dialog
 
-class CDlgCamera : public CDialog
-{
-// Construction
+class CDlgCamera : public CDialogEx {
 public:
-	CDlgCamera(CWnd* pParent = NULL);   // standard constructor
+	CDlgCamera( CWnd *pParent = NULL );   // standard constructor
 	void setupFromCamera();
 
-// Dialog Data
-	//{{AFX_DATA(CDlgCamera)
 	enum { IDD = IDD_DLG_CAMERA };
 	CScrollBar	m_wndSegments;
 	CListBox	m_wndEvents;
@@ -59,20 +48,11 @@ public:
 	int		m_currentSegment;
 	CString	m_strType;
 	int		m_editPoints;
-	//}}AFX_DATA
 
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CDlgCamera)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
-
-// Implementation
 protected:
-	// Generated message map functions
-	//{{AFX_MSG(CDlgCamera)
+	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
+
+protected:
 	afx_msg void OnBtnAddevent();
 	afx_msg void OnBtnAddtarget();
 	afx_msg void OnBtnDelevent();
@@ -94,11 +74,6 @@ protected:
 	afx_msg void OnBtnSelectall();
 	afx_msg void OnRadioEditpoints();
 	afx_msg void OnRadioAddPoints();
-	//}}AFX_MSG
+
 	DECLARE_MESSAGE_MAP()
 };
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_DLGCAMERA_H__59C12359_E3EB_4081_9F28_01793D75CF20__INCLUDED_)

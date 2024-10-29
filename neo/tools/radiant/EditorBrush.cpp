@@ -1579,7 +1579,7 @@ idEditorBrush *Brush_Parse(idVec3 origin) {
 			}
 
 			if (b == NULL) {
-				Warning("parsing brush primitive");
+				idLib::Warning("parsing brush primitive");
 				return NULL;
 			}
 			else {
@@ -1593,7 +1593,7 @@ idEditorBrush *Brush_Parse(idVec3 origin) {
 			// double string compare but will go away soon
 			b = Patch_Parse( idStr::Icmp(token, "patchDef2") == 0 );
 			if (b == NULL) {
-				Warning("parsing patch/brush");
+				idLib::Warning("parsing patch/brush");
 				return NULL;
 			}
 			else {
@@ -1638,7 +1638,7 @@ idEditorBrush *Brush_Parse(idVec3 origin) {
 				}
 
 				if (strcmp(token, "(")) {
-					Warning("parsing brush");
+					idLib::Warning("parsing brush");
 					return NULL;
 				}
 
@@ -1649,7 +1649,7 @@ idEditorBrush *Brush_Parse(idVec3 origin) {
 
 				GetToken(false);
 				if (strcmp(token, ")")) {
-					Warning("parsing brush");
+					idLib::Warning("parsing brush");
 					return NULL;
 				}
 			}
@@ -1965,7 +1965,7 @@ idEditorBrush *Brush_Create(idVec3 mins, idVec3 maxs, texdef_t *texdef) {
 	//
 	for (i = 0; i < 3; i++) {
 		if (maxs[i] < mins[i]) {
-			Error("Brush_InitSolid: backwards");
+			idLib::Error("Brush_InitSolid: backwards");
 		}
 	}
 
@@ -2649,7 +2649,7 @@ Brush_AddToList
 */
 void Brush_AddToList(idEditorBrush *b, idEditorBrush *list) {
 	if (b->next || b->prev) {
-		Error("Brush_AddToList: already linked");
+		idLib::Error("Brush_AddToList: already linked");
 	}
 
 	if (list == &selected_brushes || list == &active_brushes) {
@@ -2673,7 +2673,7 @@ Brush_RemoveFromList
 */
 void Brush_RemoveFromList(idEditorBrush *b) {
 	if (!b->next || !b->prev) {
-		Error("Brush_RemoveFromList: not linked");
+		idLib::Error("Brush_RemoveFromList: not linked");
 	}
 
 	if (b->pPatch) {

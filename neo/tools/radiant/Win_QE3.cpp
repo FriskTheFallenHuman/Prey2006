@@ -102,14 +102,6 @@ void Sys_SetCursorPos(int x, int y) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void Sys_Beep(void) {
-	MessageBeep(MB_ICONASTERISK);
-}
-
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
 double Sys_DoubleTime(void) {
 	return clock() / 1000.0;
 }
@@ -118,70 +110,18 @@ double Sys_DoubleTime(void) {
  =======================================================================================================================
  =======================================================================================================================
  */
-int WINAPI QEW_SetupPixelFormat(HDC hDC, bool zbuffer)
-{
+int WINAPI QEW_SetupPixelFormat( HDC hDC, bool zbuffer ) {
 	int pixelFormat = Win_ChoosePixelFormat(hDC);
-	if (pixelFormat > 0) {
-		if (SetPixelFormat(hDC, pixelFormat, &win32.pfd) == NULL) {
-			Error("SetPixelFormat failed.");
+	if ( pixelFormat > 0 ) {
+		if ( SetPixelFormat( hDC, pixelFormat, &win32.pfd ) == NULL ) {
+			idLib::Error( "SetPixelFormat failed." );
 		}
 	}
 	else {
-		Error("ChoosePixelFormat failed.");
+		idLib::Error( "ChoosePixelFormat failed." );
 	}
 
 	return pixelFormat;
-}
-
-/*
- =======================================================================================================================
-	Error For abnormal program terminations
- =======================================================================================================================
- */
-void Error(char *error, ...) {
-	va_list argptr;
-	char	text[1024];
-	char	text2[1024];
-	int		err;
-
-	err = GetLastError();
-
-	int i = qglGetError();
-
-	va_start(argptr, error);
-	vsprintf(text, error, argptr);
-	va_end(argptr);
-
-	sprintf
-	(
-		text2,
-		"%s\nGetLastError() = %i - %i\nAn unrecoverable error has occured. Would you like to edit Preferences before exiting " EDITOR_WINDOWTEXT "?",
-		text,
-		err,
-		i
-	);
-
-	if (g_pParentWnd->MessageBox(text2, "Error", MB_YESNO) == IDYES) {
-		g_PrefsDlg.LoadPrefs();
-		g_PrefsDlg.DoModal();
-	}
-
-	common->FatalError( text );
-}
-
-/*
- =======================================================================================================================
- =======================================================================================================================
- */
-void Warning(char *error, ...) {
-	va_list argptr;
-	char	text[1024];
-
-	va_start(argptr, error);
-	vsprintf(text, error, argptr);
-	va_end(argptr);
-
-	common->Printf(text);
 }
 
 /*
@@ -194,7 +134,7 @@ bool ConfirmModified(void) {
 		return true;
 	}
 
-	if (g_pParentWnd->MessageBox("This will lose changes to the map", "warning", MB_OKCANCEL) == IDCANCEL) {
+	if ( g_pParentWnd->MessageBox( "This will lose changes to the map.", "Unsaved Changes", MB_OKCANCEL | MB_ICONWARNING ) == IDCANCEL ) {
 		return false;
 	}
 

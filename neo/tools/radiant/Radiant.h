@@ -34,7 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 
 class CRadiantApp : public CWinAppEx {
 public:
-	CRadiantApp();
+	CRadiantApp() noexcept;
 
 // Overrides
 public:

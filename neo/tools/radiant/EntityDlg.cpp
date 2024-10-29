@@ -43,22 +43,19 @@ void	Select_Ungroup();
 
 // CEntityDlg dialog
 
-IMPLEMENT_DYNAMIC(CEntityDlg, CDialog)
-CEntityDlg::CEntityDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CEntityDlg::IDD, pParent)
-{
+IMPLEMENT_DYNAMIC(CEntityDlg, CDialogEx)
+CEntityDlg::CEntityDlg( CWnd *pParent )
+	: CDialogEx( CEntityDlg::IDD, pParent ) {
 	editEntity = NULL;
 	multipleEntities = false;
 	currentAnimation = NULL;
 }
 
-CEntityDlg::~CEntityDlg()
-{
+CEntityDlg::~CEntityDlg() {
 }
 
-void CEntityDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialog::DoDataExchange(pDX);
+void CEntityDlg::DoDataExchange( CDataExchange *pDX ) {
+	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST_KEYVAL, listKeyVal);
 	DDX_Control(pDX, IDC_COMBO_CLASS, comboClass);
 	DDX_Control(pDX, IDC_EDIT_KEY, editKey);
@@ -94,9 +91,8 @@ void CEntityDlg::DoDataExchange(CDataExchange* pDX)
 
 
 
-BOOL CEntityDlg::OnInitDialog()
-{
-	CDialog::OnInitDialog();
+BOOL CEntityDlg::OnInitDialog() {
+	CDialogEx::OnInitDialog();
 	listKeyVal.SetUpdateInspectors(true);
 	listKeyVal.SetDivider(100);
 	listVars.SetDivider(100);
@@ -106,11 +102,10 @@ BOOL CEntityDlg::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-INT_PTR CEntityDlg::OnToolHitTest( CPoint point, TOOLINFO* pTI ) const
-{
+INT_PTR CEntityDlg::OnToolHitTest( CPoint point, TOOLINFO* pTI ) const {
 	// TODO: Add your specialized code here and/or call the base class
 
-	return CDialog::OnToolHitTest(point, pTI);
+	return CDialogEx::OnToolHitTest(point, pTI);
 }
 
 
@@ -122,7 +117,7 @@ void CEntityDlg::AddClassNames() {
 
 }
 
-BEGIN_MESSAGE_MAP(CEntityDlg, CDialog)
+BEGIN_MESSAGE_MAP(CEntityDlg, CDialogEx)
 	ON_WM_SIZE()
 	ON_CBN_SELCHANGE(IDC_COMBO_CLASS, OnCbnSelchangeComboClass)
 	ON_LBN_SELCHANGE(IDC_LIST_KEYVAL, OnLbnSelchangeListkeyval)
@@ -156,12 +151,11 @@ BEGIN_MESSAGE_MAP(CEntityDlg, CDialog)
 	ON_BN_CLICKED(IDOK, OnOK)
 END_MESSAGE_MAP()
 
-void CEntityDlg::OnSize(UINT nType, int cx, int cy)
-{
+void CEntityDlg::OnSize(UINT nType, int cx, int cy) {
 	if (staticTitle.GetSafeHwnd() == NULL) {
 		return;
 	}
-	CDialog::OnSize(nType, cx, cy);
+	CDialogEx::OnSize(nType, cx, cy);
 	CRect rect, crect, crect2;
 	GetClientRect(rect);
 	float scaling_factor = Win_GetWindowScalingFactor(staticTitle.GetSafeHwnd());
@@ -255,8 +249,7 @@ void CEntityDlg::OnSize(UINT nType, int cx, int cy)
 	Invalidate();
 }
 
-void CEntityDlg::OnCbnSelchangeComboClass()
-{
+void CEntityDlg::OnCbnSelchangeComboClass() {
 	int index = comboClass.GetCurSel();
 	if (index != LB_ERR) {
 		CString str;
@@ -423,8 +416,7 @@ void CEntityDlg::UpdateEntitySel(const eclass_t* ent) {
 	}
 }
 
-void CEntityDlg::OnLbnSelchangeListkeyval()
-{
+void CEntityDlg::OnLbnSelchangeListkeyval() {
 	int index = listKeyVal.GetCurSel();
 	if (index != LB_ERR) {
 		CString str;
@@ -496,8 +488,7 @@ void CEntityDlg::DelProp() {
 }
 
 
-BOOL CEntityDlg::PreTranslateMessage(MSG* pMsg)
-{
+BOOL CEntityDlg::PreTranslateMessage(MSG* pMsg) {
 	/*
 	if ( pMsg->message == WM_LBUTTONDOWN || pMsg->message == WM_RBUTTONDOWN || pMsg->message == WM_MBUTTONDOWN ) {
 		g_Inspectors->BringWindowToTop();
@@ -599,7 +590,7 @@ BOOL CEntityDlg::PreTranslateMessage(MSG* pMsg)
 		return TRUE;
 	}
 
-	return CDialog::PreTranslateMessage(pMsg);
+	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
 
@@ -683,8 +674,7 @@ const char *CEntityDlg::AngleKey() {
 }
 
 
-void CEntityDlg::OnBnClickedE135()
-{
+void CEntityDlg::OnBnClickedE135() {
 	if (editEntity == NULL) {
 		return;
 	}
@@ -693,8 +683,7 @@ void CEntityDlg::OnBnClickedE135()
 	AddProp();
 }
 
-void CEntityDlg::OnBnClickedE90()
-{
+void CEntityDlg::OnBnClickedE90() {
 	if (editEntity == NULL) {
 		return;
 	}
@@ -703,8 +692,7 @@ void CEntityDlg::OnBnClickedE90()
 	AddProp();
 }
 
-void CEntityDlg::OnBnClickedE45()
-{
+void CEntityDlg::OnBnClickedE45() {
 	if (editEntity == NULL) {
 		return;
 	}
@@ -713,8 +701,7 @@ void CEntityDlg::OnBnClickedE45()
 	AddProp();
 }
 
-void CEntityDlg::OnBnClickedE180()
-{
+void CEntityDlg::OnBnClickedE180() {
 	if (editEntity == NULL) {
 		return;
 	}
@@ -723,8 +710,7 @@ void CEntityDlg::OnBnClickedE180()
 	AddProp();
 }
 
-void CEntityDlg::OnBnClickedE0()
-{
+void CEntityDlg::OnBnClickedE0() {
 	if (editEntity == NULL) {
 		return;
 	}
@@ -733,8 +719,7 @@ void CEntityDlg::OnBnClickedE0()
 	AddProp();
 }
 
-void CEntityDlg::OnBnClickedE225()
-{
+void CEntityDlg::OnBnClickedE225() {
 	if (editEntity == NULL) {
 		return;
 	}
@@ -743,8 +728,7 @@ void CEntityDlg::OnBnClickedE225()
 	AddProp();
 }
 
-void CEntityDlg::OnBnClickedE270()
-{
+void CEntityDlg::OnBnClickedE270() {
 	if (editEntity == NULL) {
 		return;
 	}
@@ -753,8 +737,7 @@ void CEntityDlg::OnBnClickedE270()
 	AddProp();
 }
 
-void CEntityDlg::OnBnClickedE315()
-{
+void CEntityDlg::OnBnClickedE315() {
 	if (editEntity == NULL) {
 		return;
 	}
@@ -763,8 +746,7 @@ void CEntityDlg::OnBnClickedE315()
 	AddProp();
 }
 
-void CEntityDlg::OnBnClickedEUp()
-{
+void CEntityDlg::OnBnClickedEUp() {
 	if (editEntity == NULL) {
 		return;
 	}
@@ -773,8 +755,7 @@ void CEntityDlg::OnBnClickedEUp()
 	AddProp();
 }
 
-void CEntityDlg::OnBnClickedEDown()
-{
+void CEntityDlg::OnBnClickedEDown() {
 	if (editEntity == NULL) {
 		return;
 	}
@@ -867,10 +848,10 @@ CPreviewDlg *CEntityDlg::ShowMaterialChooser() {
 	return &matDlg;
 }
 
-void CEntityDlg::AssignModel ()
-{
+void CEntityDlg::AssignModel() {
 	OnBnClickedButtonModel();
 }
+
 void CEntityDlg::OnBnClickedButtonModel() {
 	CPreviewDlg *dlg = ShowModelChooser();
 	if (dlg->returnCode == IDOK) {
@@ -944,8 +925,7 @@ void CEntityDlg::OnBnClickedButtonBrowse() {
 	DelProp();
 }
 
-void CEntityDlg::OnCbnDblclkComboClass()
-{
+void CEntityDlg::OnCbnDblclkComboClass() {
 	// TODO: Add your control notification handler code here
 }
 
@@ -1035,13 +1015,11 @@ extern void Brush_CopyList(idEditorBrush *pFrom, idEditorBrush *pTo);
 	Sys_UpdateWindows(W_ALL);
 }
 
-void CEntityDlg::OnBnClickedButtonCreate()
-{
+void CEntityDlg::OnBnClickedButtonCreate() {
 	CreateEntity();
 }
 
-void CEntityDlg::OnLbnDblclkListkeyval()
-{
+void CEntityDlg::OnLbnDblclkListkeyval() {
 	CString Key, Value;
 	idStr work;
 	editKey.GetWindowText( Key );
@@ -1088,10 +1066,8 @@ void CEntityDlg::UpdateKeyVal(const char *key, const char *val) {
 }
 
 
-void CEntityDlg::OnNMReleasedcaptureSlider1(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	if ( !editEntity )
-	{
+void CEntityDlg::OnNMReleasedcaptureSlider1(NMHDR *pNMHDR, LRESULT *pResult) {
+	if ( !editEntity ) {
 		return;
 	}
 
@@ -1100,8 +1076,7 @@ void CEntityDlg::OnNMReleasedcaptureSlider1(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 }
 
-void CEntityDlg::UpdateFromAnimationFrame ( bool updateKeyValueDisplay )
-{
+void CEntityDlg::UpdateFromAnimationFrame ( bool updateKeyValueDisplay ) {
 	int frame = slFrameSlider.GetPos ();
 	editEntity->epairs.SetInt( "frame" , frame );
 	SetDlgItemText ( IDC_ENTITY_CURRENT_ANIM , va ( "%i" , frame));
@@ -1114,10 +1089,8 @@ void CEntityDlg::UpdateFromAnimationFrame ( bool updateKeyValueDisplay )
 
 }
 
-void CEntityDlg::OnCbnAnimationChange ()
-{
-	if ( !editEntity )
-	{
+void CEntityDlg::OnCbnAnimationChange () {
+	if ( !editEntity ) {
 		return;
 	}
 
@@ -1150,21 +1123,18 @@ void CEntityDlg::OnCbnAnimationChange ()
 	}
 }
 
-void CEntityDlg::OnBnClickedStartAnimation()
-{
+void CEntityDlg::OnBnClickedStartAnimation() {
 	if (!editEntity) {
 		return;
 	}
 	SetTimer ( 0 , 1000/24 , NULL );
 }
 
-void CEntityDlg::OnBnClickedStopAnimation()
-{
+void CEntityDlg::OnBnClickedStopAnimation() {
 	KillTimer ( 0 );
 }
 
-void CEntityDlg::OnTimer( UINT_PTR nIDEvent )
-{
+void CEntityDlg::OnTimer( UINT_PTR nIDEvent ) {
 	if ( !editEntity ) {
 		OnBnClickedStopAnimation ();
 		return;

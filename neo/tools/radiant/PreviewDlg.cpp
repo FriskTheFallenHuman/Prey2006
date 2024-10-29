@@ -41,43 +41,43 @@ extern HTREEITEM FindTreeItem(CTreeCtrl *tree, HTREEITEM root, const char *text,
 
 // CPreviewDlg dialog
 
-IMPLEMENT_DYNAMIC(CPreviewDlg, CDialog)
-CPreviewDlg::CPreviewDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CPreviewDlg::IDD, pParent)
-{
+IMPLEMENT_DYNAMIC( CPreviewDlg, CDialogEx )
+
+CPreviewDlg::CPreviewDlg( CWnd *pParent )
+	: CDialogEx( CPreviewDlg::IDD, pParent ) {
 	currentMode = MODELS;
 	disablePreview = false;
 }
 
-CPreviewDlg::~CPreviewDlg()
-{
+CPreviewDlg::~CPreviewDlg() {
 }
 
-void CPreviewDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialog::DoDataExchange(pDX);
+void CPreviewDlg::DoDataExchange( CDataExchange *pDX ) {
+	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TREE_MEDIA, treeMedia);
 	DDX_Control(pDX, IDC_EDIT_INFO, editInfo);
 	DDX_Control(pDX, IDC_PREVIEW, wndPreview);
 }
 
-
-BEGIN_MESSAGE_MAP(CPreviewDlg, CDialog)
+BEGIN_MESSAGE_MAP(CPreviewDlg, CDialogEx)
 	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_MEDIA, OnTvnSelchangedTreeMedia)
 	ON_BN_CLICKED(IDC_BUTTON_RELOAD, OnBnClickedButtonReload)
 	ON_BN_CLICKED(IDC_BUTTON_ADD, OnBnClickedButtonAdd)
 	ON_BN_CLICKED(IDC_BUTTON_PLAY, OnBnClickedButtonPlay)
 END_MESSAGE_MAP()
 
-
 // CPreviewDlg message handlers
 
-BOOL CPreviewDlg::OnInitDialog()
-{
-	CDialog::OnInitDialog();
+BOOL CPreviewDlg::OnInitDialog() {
+	CDialogEx::OnInitDialog();
 
-	m_image.Create(IDB_BITMAP_MATERIAL, 16, 1, RGB(255, 255, 255));
+	m_image.Create(16, 16, ILC_COLOR32, 1, 1);
+
+	m_bitmap.LoadBitmap(IDB_BITMAP_MATERIAL);
+	m_image.Add(&m_bitmap, RGB(255, 0, 255));
+
 	treeMedia.SetImageList(&m_image, TVSIL_NORMAL);
+
 	if ( disablePreview ) {
 		wndPreview.ShowWindow( SW_HIDE );
 	} else {
@@ -116,6 +116,12 @@ void CPreviewDlg::BuildTree() {
 		AddStrList( BASE_GAMEDIR, files->GetList(), MODELS );
 		fileSystem->FreeFileList( files );
 		files = fileSystem->ListFilesTree( "models", ".ase" );
+		AddStrList( BASE_GAMEDIR, files->GetList(), MODELS );
+		fileSystem->FreeFileList( files );
+		files = fileSystem->ListFilesTree( "models", ".ma" );
+		AddStrList( BASE_GAMEDIR, files->GetList(), MODELS );
+		fileSystem->FreeFileList( files );
+		files = fileSystem->ListFilesTree( "models", ".obj" );
 		AddStrList( BASE_GAMEDIR, files->GetList(), MODELS );
 		fileSystem->FreeFileList( files );
 	} else if ( currentMode == SOUNDS ) {
@@ -170,8 +176,6 @@ void CPreviewDlg::AddCommentedItems() {
 		}
 	}
 }
-
-
 
 void CPreviewDlg::AddStrList( const char *root, const idStrList &list, int id ) {
 	idStr		out, path;
@@ -273,8 +277,7 @@ void CPreviewDlg::AddStrList( const char *root, const idStrList &list, int id ) 
 
 }
 
-void CPreviewDlg::OnTvnSelchangedTreeMedia(NMHDR *pNMHDR, LRESULT *pResult)
-{
+void CPreviewDlg::OnTvnSelchangedTreeMedia( NMHDR *pNMHDR, LRESULT *pResult ) {
 	HTREEITEM item = treeMedia.GetSelectedItem();
 	mediaName = "";
 	CWnd *add = GetDlgItem(IDC_BUTTON_ADD);
@@ -396,21 +399,19 @@ void CPreviewDlg::OnTvnSelchangedTreeMedia(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 
-BOOL CPreviewDlg::Create(LPCTSTR lpszTemplateName, CWnd* pParentWnd)
-{
-	BOOL b =  CDialog::Create(lpszTemplateName, pParentWnd);
+BOOL CPreviewDlg::Create( LPCTSTR lpszTemplateName, CWnd *pParentWnd ) {
+	BOOL b =  CDialogEx::Create(lpszTemplateName, pParentWnd);
 	ShowWindow(SW_SHOW);
 	return b;
 }
 
-void CPreviewDlg::OnCancel()
-{
+void CPreviewDlg::OnCancel() {
 	if ( AfxGetApp()->GetMainWnd() == GetParent() && GetParent() ) {
 		GetParent()->EnableWindow(TRUE);
 		g_qeglobals.sw->StopAllSounds();
 		ShowWindow(SW_HIDE);
 	} else {
-		CDialog::OnCancel();
+		CDialogEx::OnCancel();
 	}
 	returnCode = IDCANCEL;
 }
@@ -422,7 +423,7 @@ void CPreviewDlg::OnOK()
 		g_qeglobals.sw->StopAllSounds();
 		ShowWindow(SW_HIDE);
 	} else {
-		CDialog::OnOK();
+		CDialogEx::OnOK();
 	}
 	returnCode = IDOK;
 }
@@ -442,8 +443,7 @@ void CPreviewDlg::OnBnClickedButtonReload()
 		g_qeglobals.sw->StopAllSounds();
 }
 
-void CPreviewDlg::OnBnClickedButtonAdd()
-{
+void CPreviewDlg::OnBnClickedButtonAdd() {
 	HTREEITEM item = treeMedia.GetSelectedItem();
 	if (treeMedia.ItemHasChildren(item) == FALSE && (treeMedia.GetItemData(item) == GUIS || treeMedia.GetItemData(item) == MODELS)) {
 		CCommentsDlg dlg;

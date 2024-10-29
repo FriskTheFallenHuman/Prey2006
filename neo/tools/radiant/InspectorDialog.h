@@ -25,8 +25,8 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
+
 #pragma once
-#include "afxcmn.h"
 
 #include "entitydlg.h"
 #include "ConsoleDlg.h"
@@ -35,15 +35,12 @@ If you have questions concerning this license or the applicable additional terms
 
 // CInspectorDialog dialog
 
-class CInspectorDialog : public CTabsDlg
-{
-	//DECLARE_DYNAMIC(CInspectorDialog)w
-
+class CInspectorDialog : public CTabsDlg {
+	//DECLARE_DYNAMIC(CInspectorDialog)
 public:
-	CInspectorDialog(CWnd* pParent = NULL);   // standard constructor
+			CInspectorDialog( CWnd *pParent = NULL );   // standard constructor
 	virtual ~CInspectorDialog();
 
-// Dialog Data
 	enum { IDD = IDD_DIALOG_INSPECTORS };
 
 protected:

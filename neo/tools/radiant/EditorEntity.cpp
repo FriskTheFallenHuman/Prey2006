@@ -428,7 +428,7 @@ void idEditorEntity::FreeEpairs() {
  */
 void idEditorEntity::AddToList(idEditorEntity *list) {
 	if (next || prev) {
-		Error("Entity_AddToList: allready linked");
+		idLib::Error("Entity_AddToList: allready linked");
 	}
 
 	next = list->next;
@@ -444,7 +444,7 @@ void idEditorEntity::AddToList(idEditorEntity *list) {
  */
 void idEditorEntity::RemoveFromList() {
 	if ( !next || !prev ) {
-		Error( "Entity_RemoveFromList: not linked" );
+		idLib::Error( "Entity_RemoveFromList: not linked" );
 	}
 
 	next->prev = prev;
@@ -925,7 +925,7 @@ idEditorEntity *Entity_Parse(bool onlypairs, idEditorBrush *pList) {
 	}
 
 	if (strcmp(token, "{")) {
-		Error("ParseEntity: { not found");
+		idLib::Error("ParseEntity: { not found");
 	}
 
 	ent = new idEditorEntity();
@@ -934,7 +934,7 @@ idEditorEntity *Entity_Parse(bool onlypairs, idEditorBrush *pList) {
 
 	do {
 		if (!GetToken(true)) {
-			Warning("ParseEntity: EOF without closing brace");
+			idLib::Warning("ParseEntity: EOF without closing brace");
 			return NULL;
 		}
 
@@ -1175,8 +1175,7 @@ idEditorEntity *Entity_Create(eclass_t *entityClass, bool forceFixed) {
 	// check to make sure the brushes are ok
 	for (b = selected_brushes.next; b != &selected_brushes; b = b->next) {
 		if (b->owner != world_entity) {
-			Sys_Status("Entity NOT created, brushes not all from world\n");
-			Sys_Beep();
+			MessageBox( g_pParentWnd->GetSafeHwnd(), "Entity NOT created, brushes not all from world.", "Can't Create Entity", MB_OK | MB_ICONERROR );
 			return NULL;
 		}
 	}
@@ -1273,7 +1272,7 @@ void Brush_MakeDirty(idEditorBrush *b) {
  */
 void Entity_LinkBrush(idEditorEntity *e, idEditorBrush *b) {
 	if (b->oprev || b->onext) {
-		Error("Entity_LinkBrush: Allready linked");
+		idLib::Error("Entity_LinkBrush: Allready linked");
 	}
 
 	Brush_MakeDirty(b);
@@ -1294,7 +1293,7 @@ void Entity_LinkBrush(idEditorEntity *e, idEditorBrush *b) {
 void Entity_UnlinkBrush(idEditorBrush *b) {
 	// if (!b->owner || !b->onext || !b->oprev)
 	if (!b->onext || !b->oprev) {
-		Error("Entity_UnlinkBrush: Not currently linked");
+		idLib::Error("Entity_UnlinkBrush: Not currently linked");
 	}
 
 	b->onext->oprev = b->oprev;

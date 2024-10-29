@@ -37,11 +37,8 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
 #endif
 
-/////////////////////////////////////////////////////////////////////////////
 // CPropertyList
 
 CPropertyList::CPropertyList() {
@@ -54,14 +51,12 @@ CPropertyList::~CPropertyList() {
 
 
 BEGIN_MESSAGE_MAP(CPropertyList, CListBox)
-	//{{AFX_MSG_MAP(CPropertyList)
 	ON_WM_CREATE()
 	ON_CONTROL_REFLECT(LBN_SELCHANGE, OnSelchange)
 	ON_WM_LBUTTONUP()
 	ON_WM_KILLFOCUS()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_MOUSEMOVE()
-	//}}AFX_MSG_MAP
 	ON_CBN_CLOSEUP(IDC_PROPCMBBOX, OnKillfocusCmbBox)
 	ON_CBN_SELCHANGE(IDC_PROPCMBBOX, OnSelchangeCmbBox)
 	ON_EN_KILLFOCUS(IDC_PROPEDITBOX, OnKillfocusEditBox)
@@ -69,7 +64,6 @@ BEGIN_MESSAGE_MAP(CPropertyList, CListBox)
 	ON_BN_CLICKED(IDC_PROPBTNCTRL, OnButton)
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
 // CPropertyList message handlers
 
 BOOL CPropertyList::PreCreateWindow(CREATESTRUCT& cs) {
@@ -106,7 +100,6 @@ void CPropertyList::MeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct) {
 		lpMeasureItemStruct->itemHeight = s20; //pixels
 	}
 }
-
 
 void CPropertyList::DrawItem(LPDRAWITEMSTRUCT lpDIS) {
 
@@ -183,7 +176,7 @@ int CPropertyList::OnCreate(LPCREATESTRUCT lpCreateStruct) {
 	m_hCursorSize = AfxGetApp()->LoadStandardCursor(IDC_SIZEWE);
 	m_hCursorArrow = AfxGetApp()->LoadStandardCursor(IDC_ARROW);
 
-	m_SSerif8Font.CreatePointFont(80,_T("MS Sans Serif"));
+	m_SShellDlg8Font.CreatePointFont(80,_T("MS Shell Dlg"));
 
 	return 0;
 }
@@ -219,7 +212,7 @@ void CPropertyList::OnSelchange() {
 		} else {
 			rect.bottom += (s3 * 100);
 			m_cmbBox.Create(CBS_DROPDOWNLIST | WS_VSCROLL | WS_VISIBLE | WS_CHILD | WS_BORDER,rect,this,IDC_PROPCMBBOX);
-			m_cmbBox.SetFont(&m_SSerif8Font);
+			m_cmbBox.SetFont(&m_SShellDlg8Font);
 		}
 
 		//add the choices for this particular property
@@ -256,7 +249,7 @@ void CPropertyList::OnSelchange() {
 			m_editBox.MoveWindow(rect);
 		} else {
 			m_editBox.Create(ES_LEFT | ES_AUTOHSCROLL | WS_VISIBLE | WS_CHILD | WS_BORDER,rect,this,IDC_PROPEDITBOX);
-			m_editBox.SetFont(&m_SSerif8Font);
+			m_editBox.SetFont(&m_SShellDlg8Font);
 		}
 
 		lBoxSelText = pItem->m_curValue;
@@ -289,7 +282,7 @@ void CPropertyList::DisplayButton(CRect region) {
 		m_btnCtrl.MoveWindow(region);
 	} else {
 		m_btnCtrl.Create("...",BS_PUSHBUTTON | WS_VISIBLE | WS_CHILD,region,this,IDC_PROPBTNCTRL);
-		m_btnCtrl.SetFont(&m_SSerif8Font);
+		m_btnCtrl.SetFont(&m_SShellDlg8Font);
 	}
 
 	m_btnCtrl.ShowWindow(SW_SHOW);
@@ -530,7 +523,7 @@ void CPropertyList::PreSubclassWindow() {
 	m_hCursorSize = AfxGetApp()->LoadStandardCursor(IDC_SIZEWE);
 	m_hCursorArrow = AfxGetApp()->LoadStandardCursor(IDC_ARROW);
 
-	m_SSerif8Font.CreatePointFont(80,_T("MS Sans Serif"));
+	m_SShellDlg8Font.CreatePointFont(80,_T("MS Shell Dlg"));
 }
 
 

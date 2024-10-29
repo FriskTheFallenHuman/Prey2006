@@ -616,7 +616,7 @@
 #define ID_PASTE                        9008
 #define ID_EDIT_DELETE                  9009
 #define ID_EDIT_SELECTALL               9010
-#define IDI_MAINFRAME_RADIANT           9013
+#define IDI_MAINFRAME_EDITOR           9013
 #define IDC_SPLITTER                    9200
 #define IDC_FPOINT                      9201
 #define IDD_FINDTEXTURE                 10000
@@ -1452,9 +1452,9 @@
 #define ID_TEXTUREBK                    30292
 #define ID_COLORS_XYBK                  30293
 #define ID_FILE_ABOUT                   30294
-#define ID_INSPECTOR_CONSOLE            30295
-#define ID_INSPECTOR_ENTITY             30296
-#define ID_INSPECTOR_TEXTURE            30297
+#define ID_VIEW_CONSOLE                 30295
+#define ID_VIEW_ENTITY                  30296
+#define ID_VIEW_TEXTURE                 30297
 #define ID_COLORS_MAJOR                 30298
 #define ID_COLORS_MINOR                 30299
 #define ID_SELECTION_CONNECT            30300

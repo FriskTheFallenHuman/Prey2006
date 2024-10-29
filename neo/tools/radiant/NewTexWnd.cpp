@@ -38,8 +38,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef _DEBUG
 	#define new DEBUG_NEW
-	#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
 #endif
 
 /*
@@ -108,7 +106,7 @@ BOOL CNewTexWnd::PreCreateWindow(CREATESTRUCT &cs) {
 		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 		wc.lpfnWndProc = ::DefWindowProc;
 		if (AfxRegisterClass(&wc) == FALSE) {
-			Error("CNewTexWnd RegisterClass: failed");
+			idLib::Error("CNewTexWnd RegisterClass: failed");
 		}
 	}
 

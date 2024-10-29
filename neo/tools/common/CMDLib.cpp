@@ -29,7 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "precompiled.h"
 #pragma hdrstop
 
-#include "qe3.h"
 #include "CMDLib.h"
 
 #define PATHSEPERATOR   '/'
@@ -77,7 +76,7 @@ int LoadFile (const char *filename, void **bufferptr)
 	buffer = Mem_ClearedAlloc( length+1 );
 	((char *)buffer)[length] = 0;
 	if ( (int)fread( buffer, 1, length, f ) != length ) {
-		Error( "File read failure" );
+		idLib::Error( "File read failure" );
 	}
 	fclose( f );
 

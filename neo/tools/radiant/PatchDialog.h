@@ -25,31 +25,21 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
-#if !defined(AFX_PATCHDIALOG_H__DE62DFB4_E9EC_11D2_A509_0020AFEB881A__INCLUDED_)
-#define AFX_PATCHDIALOG_H__DE62DFB4_E9EC_11D2_A509_0020AFEB881A__INCLUDED_
 
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
-// PatchDialog.h : header file
-//
 
-/////////////////////////////////////////////////////////////////////////////
 // CPatchDialog dialog
 
-class CPatchDialog : public CDialog
-{
+class CPatchDialog : public CDialogEx {
   patchMesh_t *m_Patch;
-// Construction
+
 public:
 	void UpdateInfo();
 	void SetPatchInfo();
 	void GetPatchInfo();
-	CPatchDialog(CWnd* pParent = NULL);   // standard constructor
-  void UpdateSpinners(bool bUp, int nID);
+	CPatchDialog( CWnd *pParent = NULL );   // standard constructor
+	void UpdateSpinners( bool bUp, int nID );
 
-// Dialog Data
-	//{{AFX_DATA(CPatchDialog)
 	enum { IDD = IDD_DIALOG_PATCH };
 	CSpinButtonCtrl	m_wndVShift;
 	CSpinButtonCtrl	m_wndVScale;
@@ -70,22 +60,13 @@ public:
 	float	m_fRotate;
 	float	m_fVScale;
 	float	m_fVShift;
-	//}}AFX_DATA
 
+protected:
+	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
 
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CPatchDialog)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
-
-// Implementation
 protected:
 	void UpdateRowColInfo();
 
-	// Generated message map functions
-	//{{AFX_MSG(CPatchDialog)
 	afx_msg void OnBtnPatchdetails();
 	afx_msg void OnBtnPatchfit();
 	afx_msg void OnBtnPatchnatural();
@@ -94,15 +75,10 @@ protected:
 	afx_msg void OnSelchangeComboRow();
 	afx_msg void OnSelchangeComboType();
 	virtual void OnOK();
-	afx_msg void OnDeltaposSpin(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnDeltaposSpin( NMHDR *pNMHDR, LRESULT *pResult );
 	virtual BOOL OnInitDialog();
 	afx_msg void OnDestroy();
 	afx_msg void OnApply();
-	//}}AFX_MSG
+
 	DECLARE_MESSAGE_MAP()
 };
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Visual C++ will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_PATCHDIALOG_H__DE62DFB4_E9EC_11D2_A509_0020AFEB881A__INCLUDED_)

@@ -36,10 +36,10 @@ If you have questions concerning this license or the applicable additional terms
 #include "BrushSidesDlg.h"
 #include "RadiantEditor.h"
 
-class CMainFrame : public CFrameWnd {
+class CMainFrame : public CFrameWndEx {
 	DECLARE_DYNAMIC( CMainFrame )
 public:
-				CMainFrame();
+				CMainFrame() noexcept;
 	virtual		~CMainFrame();
 
 	void HandleKey( UINT nChar, UINT nRepCnt, UINT nFlags, bool bDown = true )
@@ -52,6 +52,7 @@ public:
 
 protected:
 	virtual BOOL OnCreateClient( LPCREATESTRUCT lpcs, CCreateContext* pContext );
+	virtual BOOL PreCreateWindow( CREATESTRUCT &cs );
 
 public:
 	void UpdatePatchToolbarButtons();
@@ -94,11 +95,15 @@ public:
 		return m_pZWnd;
 	};
 	
-	CStatusBar* GetStatusbarWnd() {
+	CMFCStatusBar* GetStatusbarWnd() {
 		return &m_wndStatusBar;
 	};
 
-	CToolBar* GetToolbarWnd() {
+	CMFCMenuBar* GetMenuWnd() {
+		return &m_wndMenuBar;
+	};
+
+	CMFCToolBar* GetToolbarWnd() {
 		return &m_wndToolBar;
 	};
 
@@ -119,8 +124,9 @@ public:
 #endif
 
 protected:  // control bar embedded members
-	CStatusBar  m_wndStatusBar;
-	CToolBar m_wndToolBar;
+	CMFCStatusBar  m_wndStatusBar;
+	CMFCMenuBar m_wndMenuBar;
+	CMFCToolBar m_wndToolBar;
 	CXYWnd* m_pXYWnd;
 	CXYWnd* m_pYZWnd;
 	CXYWnd* m_pXZWnd;

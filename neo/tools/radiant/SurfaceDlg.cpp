@@ -36,19 +36,14 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
 #endif
 
-/////////////////////////////////////////////////////////////////////////////
 // CSurfaceDlg dialog
 
 CSurfaceDlg g_dlgSurface;
 
-
-CSurfaceDlg::CSurfaceDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CSurfaceDlg::IDD, pParent) {
-	//{{AFX_DATA_INIT(CSurfaceDlg)
+CSurfaceDlg::CSurfaceDlg( CWnd *pParent )
+	: CDialogEx( CSurfaceDlg::IDD, pParent ) {
 	m_nHorz = 3;
 	m_nVert = 3;
 	m_horzScale = 1.0f;
@@ -61,13 +56,10 @@ CSurfaceDlg::CSurfaceDlg(CWnd* pParent /*=NULL*/)
 	m_fHeight = 1.0f;
 	m_fWidth = 1.0f;
 	m_absolute = FALSE;
-	//}}AFX_DATA_INIT
 }
 
-
-void CSurfaceDlg::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CSurfaceDlg)
+void CSurfaceDlg::DoDataExchange( CDataExchange *pDX ) {
+	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_ROTATE, m_wndRotateEdit);
 	DDX_Control(pDX, IDC_EDIT_VERT, m_wndVert);
 	DDX_Control(pDX, IDC_EDIT_HORZ, m_wndHorz);
@@ -92,12 +84,10 @@ void CSurfaceDlg::DoDataExchange(CDataExchange* pDX) {
 	DDX_Text(pDX, IDC_EDIT_HEIGHT, m_fHeight);
 	DDX_Text(pDX, IDC_EDIT_WIDTH, m_fWidth);
 	DDX_Check(pDX, IDC_CHECK_ABSOLUTE, m_absolute);
-	//}}AFX_DATA_MAP
 }
 
 
-BEGIN_MESSAGE_MAP(CSurfaceDlg, CDialog)
-	//{{AFX_MSG_MAP(CSurfaceDlg)
+BEGIN_MESSAGE_MAP(CSurfaceDlg, CDialogEx)
 	ON_WM_HSCROLL()
 	ON_WM_KEYDOWN()
 	ON_WM_VSCROLL()
@@ -131,10 +121,8 @@ BEGIN_MESSAGE_MAP(CSurfaceDlg, CDialog)
 	ON_NOTIFY(UDN_DELTAPOS, IDC_SPIN_VSHIFT, OnDeltaPosSpin)
 	ON_EN_KILLFOCUS(IDC_ROTATE, OnKillfocusRotate)
 	ON_EN_SETFOCUS(IDC_ROTATE, OnSetfocusRotate)
-	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-/////////////////////////////////////////////////////////////////////////////
 // CSurfaceDlg message handlers
 
 
@@ -294,7 +282,7 @@ void DoSurface (void) {
 		g_dlgSurface.Create(IDD_SURFACE);
 		CRect rct;
 		LONG lSize = sizeof(rct);
-		if (LoadRegistryInfo("radiant_SurfaceWindow", &rct, &lSize))  {
+		if (LoadRegistryInfo("radiant_surfacewindow", &rct, &lSize))  {
 			g_dlgSurface.SetWindowPos( NULL, rct.left, rct.top, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW );
 		}
 		g_dlgSurface.ShowWindow(SW_SHOW);
@@ -320,10 +308,10 @@ bool ByeByeSurfaceDialog() {
 }
 
 BOOL CSurfaceDlg::OnInitDialog() {
-	CDialog::OnInitDialog();
+	CDialogEx::OnInitDialog();
 
 	g_surfwin = GetSafeHwnd();
-	SetTexMods ();
+	SetTexMods();
 
 	//m_wndHScale.SetRange(0, 100);
 	//m_wndVScale.SetRange(0, 100);
@@ -340,13 +328,12 @@ BOOL CSurfaceDlg::OnInitDialog() {
 	m_wndVerticalSubdivisions.SetPos(m_nVert);
 	m_wndHorzSubdivisions.SetPos(m_nHorz);
 
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// EXCEPTION: OCX Property Pages should return FALSE
+	return TRUE;
 }
 
-void CSurfaceDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) {
-	UpdateData(TRUE);
-	if (pScrollBar->IsKindOf(RUNTIME_CLASS(CSliderCtrl))) {
+void CSurfaceDlg::OnHScroll( UINT nSBCode, UINT nPos, CScrollBar* pScrollBar ) {
+	UpdateData( TRUE );
+	if ( pScrollBar->IsKindOf(RUNTIME_CLASS(CSliderCtrl ) ) ) {
 		CSliderCtrl *ctrl = reinterpret_cast<CSliderCtrl*>(pScrollBar);
 		assert(ctrl);
 		if (ctrl == &m_wndVerticalSubdivisions) {
@@ -364,15 +351,13 @@ void CSurfaceDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) {
 }
 
 void CSurfaceDlg::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
-
-	CDialog::OnKeyDown(nChar, nRepCnt, nFlags);
+	CDialogEx::OnKeyDown(nChar, nRepCnt, nFlags);
 }
 
 void CSurfaceDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) {
-	//UpdateSpinners(nSBCode, nPos, pScrollBar);
-	//Sys_UpdateWindows(W_CAMERA);
+	UpdateSpinners(nSBCode, nPos, pScrollBar);
+	Sys_UpdateWindows(W_CAMERA);
 }
-
 
 void CSurfaceDlg::OnOK() {
 	//GetTexMods();
@@ -382,13 +367,13 @@ void CSurfaceDlg::OnOK() {
 		Select_UpdateTextureName(m_strMaterial);
 	}
 	g_surfwin = NULL;
-	CDialog::OnOK();
+	CDialogEx::OnOK();
 	Sys_UpdateWindows(W_ALL);
 }
 
 void CSurfaceDlg::OnClose() {
 	g_surfwin = NULL;
-	CDialog::OnClose();
+	CDialogEx::OnClose();
 }
 
 void CSurfaceDlg::OnCancel() {
@@ -403,9 +388,9 @@ void CSurfaceDlg::OnDestroy() {
 	if (GetSafeHwnd()) {
 		CRect rct;
 		GetWindowRect(rct);
-		SaveRegistryInfo("radiant_SurfaceWindow", &rct, sizeof(rct));
+		SaveRegistryInfo( "radiant_surfacewindow", &rct, sizeof( rct ) );
 	}
-	CDialog::OnDestroy();
+	CDialogEx::OnDestroy();
 	g_surfwin = NULL;
 	Sys_UpdateWindows(W_ALL);
 }
@@ -420,21 +405,20 @@ void CSurfaceDlg::OnBtnColor() {
 }
 
 HBRUSH CSurfaceDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor) {
-	HBRUSH hbr = CDialog::OnCtlColor(pDC, pWnd, nCtlColor);
+	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
 	return hbr;
 }
 
 int CSurfaceDlg::OnCreate(LPCREATESTRUCT lpCreateStruct) {
-	if (CDialog::OnCreate(lpCreateStruct) == -1)
+	if ( CDialogEx::OnCreate( lpCreateStruct ) == -1 ) {
 		return -1;
+	}
 
 	return 0;
 }
 
-BOOL CSurfaceDlg::PreCreateWindow(CREATESTRUCT& cs) {
-	// TODO: Add your specialized code here and/or call the base class
-
-	return CDialog::PreCreateWindow(cs);
+BOOL CSurfaceDlg::PreCreateWindow( CREATESTRUCT &cs ) {
+	return CDialogEx::PreCreateWindow( cs );
 }
 
 
@@ -476,17 +460,17 @@ void CSurfaceDlg::OnBtnBrushfit() {
 
 void CSurfaceDlg::OnBtnFacefit() {
 	UpdateData(TRUE);
-/*
+
 	idEditorBrush *b;
-	for (b=selected_brushes.next ; b != &selected_brushes ; b=b->next) {
-		if (!b->patchBrush) {
-			for (face_t* pFace = b->brush_faces; pFace; pFace = pFace->next) {
+	for  (b = selected_brushes.next ; b != &selected_brushes ; b=b->next ) {
+		if ( !b->pPatch ) {
+			for ( face_t* pFace = b->brush_faces; pFace; pFace = pFace->next ) {
 				g_ptrSelectedFaces.Add(pFace);
 				g_ptrSelectedFaceBrushes.Add(b);
 			}
 		}
 	}
-*/
+
 	Select_FitTexture(m_fHeight, m_fWidth);
 	g_pParentWnd->GetCamera()->MarkWorldDirty ();
 	//SetTexMods();
@@ -503,29 +487,24 @@ void CSurfaceDlg::OnCheckSubdivide() {
 	Sys_UpdateWindows( W_CAMERA | W_XY );
 }
 
-void CSurfaceDlg::OnChangeEditHorz()
-{
+void CSurfaceDlg::OnChangeEditHorz() {
 	// TODO: If this is a RICHEDIT control, the control will not
-	// send this notification unless you override the CDialog::OnInitDialog()
+	// send this notification unless you override the CDialogEx::OnInitDialog()
 	// function and call CRichEditCtrl().SetEventMask()
 	// with the ENM_CHANGE flag ORed into the mask.
 
-	// TODO: Add your control notification handler code here
-	UpdateData(TRUE);
+	UpdateData( TRUE );
 	// turn any patches in explicit subdivides
 	Patch_SubdivideSelected( ( m_subdivide != FALSE ), m_nHorz, m_nVert );
 	Sys_UpdateWindows(W_CAMERA | W_XY);
-
 }
 
-void CSurfaceDlg::OnChangeEditVert()
-{
+void CSurfaceDlg::OnChangeEditVert() {
 	// TODO: If this is a RICHEDIT control, the control will not
-	// send this notification unless you override the CDialog::OnInitDialog()
+	// send this notification unless you override the CDialogEx::OnInitDialog()
 	// function and call CRichEditCtrl().SetEventMask()
 	// with the ENM_CHANGE flag ORed into the mask.
 
-	// TODO: Add your control notification handler code here
 	UpdateData(TRUE);
 	// turn any patches in explicit subdivides
 	Patch_SubdivideSelected( ( m_subdivide != FALSE ), m_nHorz, m_nVert );
@@ -552,65 +531,53 @@ BOOL CSurfaceDlg::PreTranslateMessage(MSG* pMsg)
 			return TRUE;
 		}
 	}
-	return CDialog::PreTranslateMessage(pMsg);
+	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
-void CSurfaceDlg::OnSetfocusHscale()
-{
+void CSurfaceDlg::OnSetfocusHscale() {
 	focusControl = &m_wndHScale;
 }
 
-void CSurfaceDlg::OnKillfocusHscale()
-{
+void CSurfaceDlg::OnKillfocusHscale() {
 	focusControl = NULL;
 }
 
-void CSurfaceDlg::OnKillfocusVscale()
-{
+void CSurfaceDlg::OnKillfocusVscale() {
 	focusControl = NULL;
 }
 
-void CSurfaceDlg::OnSetfocusVscale()
-{
+void CSurfaceDlg::OnSetfocusVscale() {
 	focusControl = &m_wndVScale;
 }
 
-void CSurfaceDlg::OnKillfocusEditWidth()
-{
+void CSurfaceDlg::OnKillfocusEditWidth() {
 	focusControl = NULL;
 }
 
-void CSurfaceDlg::OnSetfocusEditWidth()
-{
+void CSurfaceDlg::OnSetfocusEditWidth() {
 	focusControl = &m_wndWidth;
 }
 
-void CSurfaceDlg::OnKillfocusEditHeight()
-{
+void CSurfaceDlg::OnKillfocusEditHeight() {
 	focusControl = NULL;
 }
 
-void CSurfaceDlg::OnSetfocusEditHeight()
-{
+void CSurfaceDlg::OnSetfocusEditHeight() {
 	focusControl = &m_wndHeight;
 }
 
-void CSurfaceDlg::OnBtnFlipx()
-{
+void CSurfaceDlg::OnBtnFlipx() {
 	Select_FlipTexture(false);
 }
 
-void CSurfaceDlg::OnBtnFlipy()
-{
+void CSurfaceDlg::OnBtnFlipy() {
 	Select_FlipTexture(true);
 }
 
-void CSurfaceDlg::OnKillfocusRotate()
-{
+void CSurfaceDlg::OnKillfocusRotate() {
 	focusControl = NULL;
 }
 
-void CSurfaceDlg::OnSetfocusRotate()
-{
+void CSurfaceDlg::OnSetfocusRotate() {
 	focusControl = &m_wndRotateEdit;
 }

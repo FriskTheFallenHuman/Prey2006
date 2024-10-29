@@ -871,7 +871,7 @@ void Brush_RebuildBrush( idEditorBrush *b,idVec3 vMins,idVec3 vMaxs,bool patch )
 
 	for ( i = 0 ; i < 3 ; i++ ) {
 		if ( vMaxs[i] < vMins[i] ) {
-			Error("Brush_RebuildBrush: backwards");
+			idLib::Error("Brush_RebuildBrush: backwards");
 		}
 	}
 

@@ -43,8 +43,7 @@ If you have questions concerning this license or the applicable additional terms
 SelectBrush
 =================
 */
-void SelectBrush (int entitynum, int brushnum)
-{
+void SelectBrush ( int entitynum, int brushnum ) {
 	idEditorEntity	*e;
 	idEditorBrush		*b;
 	int			i;
@@ -136,8 +135,7 @@ void GetSelectionIndex (int *ent, int *brush)
 IMPLEMENT_DYNAMIC( CFindBrushDlg, CDialogEx )
 
 CFindBrushDlg::CFindBrushDlg( CWnd *pParent )
-	: CDialogEx( IDD_FINDBRUSH, pParent )
-{
+	: CDialogEx( IDD_FINDBRUSH, pParent ) {
 }
 
 CFindBrushDlg::~CFindBrushDlg( void ) {

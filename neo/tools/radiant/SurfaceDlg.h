@@ -25,30 +25,19 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
-#if !defined(AFX_SURFACEDLG_H__D84E0C22_9EEA_11D1_B570_00AA00A410FC__INCLUDED_)
-#define AFX_SURFACEDLG_H__D84E0C22_9EEA_11D1_B570_00AA00A410FC__INCLUDED_
 
-#if _MSC_VER >= 1000
 #pragma once
-#endif // _MSC_VER >= 1000
-// SurfaceDlg.h : header file
-//
 
-/////////////////////////////////////////////////////////////////////////////
 // CSurfaceDlg dialog
 
-class CSurfaceDlg : public CDialog
-{
+class CSurfaceDlg : public CDialogEx {
 	bool m_bPatchMode;
 	CWnd *focusControl;
 
-	// Construction
 public:
-	CSurfaceDlg(CWnd* pParent = NULL);   // standard constructor
-  void SetTexMods();
+	CSurfaceDlg( CWnd *pParent = NULL );   // standard constructor
+	void SetTexMods();
 
-// Dialog Data
-	//{{AFX_DATA(CSurfaceDlg)
 	enum { IDD = IDD_SURFACE };
 	CEdit	m_wndRotateEdit;
 	CEdit	m_wndVert;
@@ -74,26 +63,18 @@ public:
 	float	m_fHeight;
 	float	m_fWidth;
 	BOOL	m_absolute;
-	//}}AFX_DATA
 
-
-// Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CSurfaceDlg)
-	public:
+public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-	//}}AFX_VIRTUAL
 
-// Implementation
 protected:
 
-  void UpdateSpinners(int nScrollCode, int nPos, CScrollBar* pBar);
-  void UpdateSpinners(bool bUp, int nID);
-	// Generated message map functions
-	//{{AFX_MSG(CSurfaceDlg)
+	void UpdateSpinners(int nScrollCode, int nPos, CScrollBar* pBar);
+	void UpdateSpinners(bool bUp, int nID);
+
 	virtual BOOL OnInitDialog();
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
@@ -129,11 +110,6 @@ protected:
 	afx_msg void OnBtnFlipy();
 	afx_msg void OnKillfocusRotate();
 	afx_msg void OnSetfocusRotate();
-	//}}AFX_MSG
+
 	DECLARE_MESSAGE_MAP()
 };
-
-//{{AFX_INSERT_LOCATION}}
-// Microsoft Developer Studio will insert additional declarations immediately before the previous line.
-
-#endif // !defined(AFX_SURFACEDLG_H__D84E0C22_9EEA_11D1_B570_00AA00A410FC__INCLUDED_)

@@ -38,7 +38,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #define MAX_TEXTURE_QUALITY 3
 
-class CPrefsDlg : public CDialog
+class CPrefsDlg : public CDialogEx
 {
 // Construction
 public:

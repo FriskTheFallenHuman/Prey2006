@@ -25,25 +25,23 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
-#pragma once
-#include "afxwin.h"
 
+#pragma once
 
 // CCommentsDlg dialog
 
-class CCommentsDlg : public CDialog
-{
+class CCommentsDlg : public CDialogEx {
 	DECLARE_DYNAMIC(CCommentsDlg)
 
 public:
-	CCommentsDlg(CWnd* pParent = NULL);   // standard constructor
+	CCommentsDlg( CWnd *pParent = NULL );   // standard constructor
 	virtual ~CCommentsDlg();
 
 // Dialog Data
 	enum { IDD = IDD_DIALOG_COMMENTS };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange *pDX );    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 public:

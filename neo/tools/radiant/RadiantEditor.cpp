@@ -153,9 +153,9 @@ SCommandInfo	g_Commands[] = {
 	{ "CameraClip_ZoomIn",         VK_OEM_5,	RAD_CONTROL,			ID_VIEW_CUBEIN },
 	{ "CameraClip_Toggle",         VK_OEM_6,	RAD_CONTROL,			ID_VIEW_CUBICCLIPPING },
 
-	{ "ViewTab_EntityInfo",        'N',			0,						ID_INSPECTOR_ENTITY },
-	{ "ViewTab_Console",           'O',			0,						ID_INSPECTOR_CONSOLE },
-	{ "ViewTab_Textures",          'T',			0,						ID_INSPECTOR_TEXTURE },
+	{ "ViewTab_EntityInfo",        'N',			0,						ID_VIEW_ENTITY },
+	{ "ViewTab_Console",           'O',			0,						ID_VIEW_CONSOLE },
+	{ "ViewTab_Textures",          'T',			0,						ID_VIEW_TEXTURE },
 	{ "ViewTab_MediaBrowser",	   'B',			0,						ID_INSPECTOR_MEDIABROWSER },
 
 	{ "Window_SurfaceInspector",   'M',			0,						ID_TEXTURES_INSPECTOR },

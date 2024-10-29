@@ -26,13 +26,10 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#define	MAXTOKEN	1024
+#pragma once
 
-extern	char	token[MAXTOKEN];
-extern	int		scriptline;
-
-// NOTE: added WINAPI call syntax to export these for plugins in _QERScripLibTable
-void	StartTokenParsing (const char *data);
-bool WINAPI GetToken (bool crossline);
-void WINAPI UngetToken (void);
-bool TokenAvailable (void);
+int		LoadFile( const char *filename, void **bufferptr );
+void	DefaultExtension( char *path, char *extension );
+void	DefaultPath( char *path, char *basepath );
+void	StripFilename( char *path );
+void	StripExtension( char *path );

@@ -214,7 +214,7 @@ void BrushPrimit_Parse(idEditorBrush *b, bool newFormat, const idVec3 origin) {
 	int		i, j;
 	GetToken(true);
 	if (strcmp(token, "{")) {
-		Warning("parsing brush primitive");
+		idLib::Warning("parsing brush primitive");
 		return;
 	}
 
@@ -275,7 +275,7 @@ void BrushPrimit_Parse(idEditorBrush *b, bool newFormat, const idVec3 origin) {
 					}
 
 					if (strcmp(token, "(")) {
-						Warning("parsing brush");
+						idLib::Warning("parsing brush");
 						return;
 					}
 
@@ -286,7 +286,7 @@ void BrushPrimit_Parse(idEditorBrush *b, bool newFormat, const idVec3 origin) {
 
 					GetToken(false);
 					if (strcmp(token, ")")) {
-						Warning("parsing brush");
+						idLib::Warning("parsing brush");
 						return;
 					}
 				}
@@ -295,13 +295,13 @@ void BrushPrimit_Parse(idEditorBrush *b, bool newFormat, const idVec3 origin) {
 			// texture coordinates
 			GetToken(false);
 			if (strcmp(token, "(")) {
-				Warning("parsing brush primitive");
+				idLib::Warning("parsing brush primitive");
 				return;
 			}
 
 			GetToken(false);
 			if (strcmp(token, "(")) {
-				Warning("parsing brush primitive");
+				idLib::Warning("parsing brush primitive");
 				return;
 			}
 
@@ -312,13 +312,13 @@ void BrushPrimit_Parse(idEditorBrush *b, bool newFormat, const idVec3 origin) {
 
 			GetToken(false);
 			if (strcmp(token, ")")) {
-				Warning("parsing brush primitive");
+				idLib::Warning("parsing brush primitive");
 				return;
 			}
 
 			GetToken(false);
 			if (strcmp(token, "(")) {
-				Warning("parsing brush primitive");
+				idLib::Warning("parsing brush primitive");
 				return;
 			}
 
@@ -329,13 +329,13 @@ void BrushPrimit_Parse(idEditorBrush *b, bool newFormat, const idVec3 origin) {
 
 			GetToken(false);
 			if (strcmp(token, ")")) {
-				Warning("parsing brush primitive");
+				idLib::Warning("parsing brush primitive");
 				return;
 			}
 
 			GetToken(false);
 			if (strcmp(token, ")")) {
-				Warning("parsing brush primitive");
+				idLib::Warning("parsing brush primitive");
 				return;
 			}
 

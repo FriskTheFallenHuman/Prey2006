@@ -56,7 +56,8 @@ END_MESSAGE_MAP()
 CRadiantApp::CRadiantApp
 ================
 */
-CRadiantApp::CRadiantApp() {
+CRadiantApp::CRadiantApp() noexcept {
+	SetAppID( _T( "Radiant.AppID.NoVersion" ) );
 }
 
 CRadiantApp theApp;
@@ -72,7 +73,6 @@ BOOL CRadiantApp::InitInstance() {
 	// visual styles.  Otherwise, any window creation will fail.
 	INITCOMMONCONTROLSEX InitCtrls;
 	InitCtrls.dwSize = sizeof(InitCtrls);
-
 	// Set this to include all the common control classes you want to use
 	// in your application.
 	InitCtrls.dwICC = ICC_WIN95_CLASSES;
@@ -81,20 +81,21 @@ BOOL CRadiantApp::InitInstance() {
 	CWinAppEx::InitInstance();
 
 	// Initialize OLE libraries
-	if (!AfxOleInit())
-	{
+	if (!AfxOleInit()) {
 		return FALSE;
 	}
 
+	EnableTaskbarInteraction( FALSE );
+
 	AfxEnableControlContainer();
 
+	// AfxInitRichEdit2() is required to use RichEdit control
 	AfxInitRichEdit2();
 
 	// Change the registry key under which our settings are stored.
 	SetRegistryKey( EDITOR_REGISTRY_KEY );
 
 	LoadStdProfileSettings();  // Load standard INI file options (including MRU)
-
 
 	// create main MDI Frame window
 	g_PrefsDlg.LoadPrefs();
@@ -129,9 +130,8 @@ CRadiantApp::ExitInstance
 int CRadiantApp::ExitInstance() {
 	common->Shutdown();
 	g_pParentWnd = NULL;
-	int ret = CWinAppEx::ExitInstance();
 	ExitProcess(0);
-	return ret;
+	return CWinAppEx::ExitInstance();
 }
 
 /*
@@ -213,7 +213,7 @@ BOOL CAboutRadiantDlg::OnInitDialog() {
 	CAboutDlg::OnInitDialog();
 
 	CString buffer;
-	buffer.Format( "Prey Editor Build: %i\n%s\nCopyright �2006 Human Head, Inc.\n\n", BUILD_NUMBER, ID__DATE__ );
+	buffer.Format( "Prey Editor Build: %i\n%s\nCopyright ©2006 Human Head, Inc.\n\n", BUILD_NUMBER, ID__DATE__ );
 	SetDlgItemText( IDC_ABOUT_TEXT, buffer );
 
 	return TRUE;
