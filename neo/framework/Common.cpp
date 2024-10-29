@@ -35,6 +35,8 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "Session_local.h" // DG: For FT_IsDemo/isDemo() hack
 
+#include "../tools/compilers/dmap/dmap.h"
+
 #define	MAX_PRINT_MSG_SIZE	4096
 #define MAX_WARNING_LIST	256
 
@@ -134,6 +136,7 @@ public:
 	virtual void				Printf( const char *fmt, ... ) id_attribute((format(printf,2,3)));
 	virtual void				VPrintf( const char *fmt, va_list arg );
 	virtual void				DPrintf( const char *fmt, ... ) id_attribute((format(printf,2,3)));
+	virtual void				VerbosePrintf( const char *fmt, ... ) id_attribute((format(printf,2,3)));
 	virtual void				Warning( const char *fmt, ... ) id_attribute((format(printf,2,3)));
 	virtual void				DWarning( const char *fmt, ...) id_attribute((format(printf,2,3)));
 	virtual void				PrintWarnings( void );
@@ -440,6 +443,22 @@ A raw string should NEVER be passed as fmt, because of "%f" type crashers.
 ==================
 */
 void idCommonLocal::Printf( const char *fmt, ... ) {
+	va_list argptr;
+	va_start( argptr, fmt );
+	VPrintf( fmt, argptr );
+	va_end( argptr );
+}
+
+/*
+==================
+idCommonLocal::VerbosePrintf
+==================
+*/
+void idCommonLocal::VerbosePrintf( const char *fmt, ... ) {
+	if( !dmapGlobals.verbose ) {
+		return;
+	}
+
 	va_list argptr;
 	va_start( argptr, fmt );
 	VPrintf( fmt, argptr );

@@ -453,7 +453,7 @@ void CCamWnd::Cam_BuildMatrix() {
 	m_Camera.up.Normalize();
 
 	// This is used for selection.
-	glGetFloatv( GL_PROJECTION_MATRIX, &matrix[0][0] );
+	qglGetFloatv( GL_PROJECTION_MATRIX, &matrix[0][0] );
 
 	for ( int i = 0; i < 3; i++ ) {
 		m_Camera.vright[i] = matrix[i][0];
@@ -975,29 +975,29 @@ void CCamWnd::DrawGrid() {
 	float endY = startY + 2 * GRID_LINES * GRID_SPACING;
 
 	// Draw vertical grid lines
-	glBegin(GL_LINES);
+	qglBegin(GL_LINES);
 	for (float x = startX; x <= endX; x += GRID_SPACING) {
 		if (idMath::Fabs(x) < 0.01f) {
-			glColor4f( g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][0],g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][1],g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][2], 1.0f ); // Center line color
+			qglColor4f( g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][0],g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][1],g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][2], 1.0f ); // Center line color
 		}
 		else {
-			glColor4f( g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][0],g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][1],g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][2], 1.0f ); // Regular grid line color
+			qglColor4f( g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][0],g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][1],g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][2], 1.0f ); // Regular grid line color
 		}
-		glVertex3f(x, startY, 0);
-		glVertex3f(x, endY, 0);
+		qglVertex3f(x, startY, 0);
+		qglVertex3f(x, endY, 0);
 	}
 	// Draw horizontal grid lines
 	for (float y = startY; y <= endY; y += GRID_SPACING) {
 		if (idMath::Fabs(y) < 0.01f) {
-			glColor4f( g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][0],g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][1],g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][2], 1.0f ); // Center line color
+			qglColor4f( g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][0],g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][1],g_qeglobals.d_savedinfo.colors[COLOR_GRIDMAJOR][2], 1.0f ); // Center line color
 		}
 		else {
-			glColor4f(g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][0], g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][1], g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][2], 1.0f); // Regular grid line color
+			qglColor4f(g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][0], g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][1], g_qeglobals.d_savedinfo.colors[COLOR_GRIDBACK][2], 1.0f); // Regular grid line color
 		}
-		glVertex3f(startX, y, 0);
-		glVertex3f(endX, y, 0);
+		qglVertex3f(startX, y, 0);
+		qglVertex3f(endX, y, 0);
 	}
-	glEnd();
+	qglEnd();
 }
 
 

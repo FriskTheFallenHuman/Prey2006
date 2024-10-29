@@ -59,16 +59,16 @@ BOOL CAboutDlg::OnInitDialog() {
 	}
 
 	CString buffer;
-	buffer.Format( "Renderer:\t%s", glGetString( GL_RENDERER ) );
+	buffer.Format( "Renderer:\t%s", qglGetString( GL_RENDERER ) );
 	SetDlgItemText( IDC_ABOUT_GLRENDERER, buffer);
 
-	buffer.Format( "Version:\t\t%s", glGetString( GL_VERSION ) );
+	buffer.Format( "Version:\t\t%s", qglGetString( GL_VERSION ) );
 	SetDlgItemText( IDC_ABOUT_GLVERSION, buffer );
 
-	buffer.Format( "Vendor:\t\t%s", glGetString( GL_VENDOR ) );
+	buffer.Format( "Vendor:\t\t%s", qglGetString( GL_VENDOR ) );
 	SetDlgItemText( IDC_ABOUT_GLVENDOR, buffer );
 
-	const GLubyte *extensions = glGetString( GL_EXTENSIONS );
+	const GLubyte *extensions = qglGetString( GL_EXTENSIONS );
 	if ( extensions ) {
 		CString extStr = (char *)extensions;
 		CListBox *pListBox = (CListBox *)GetDlgItem( IDC_ABOUT_GLEXTENSIONS );
