@@ -427,7 +427,7 @@ void idUserInterfaceLocal::Redraw( int _time ) {
 
 void idUserInterfaceLocal::DrawCursor() {
 	if ( !desktop || desktop->GetFlags() & WIN_MENUGUI ) {
-		uiManagerLocal.dc.DrawCursor(&cursorX, &cursorY, 32.0f );
+		uiManagerLocal.dc.DrawCursor(&cursorX, &cursorY, 15.0f );
 	} else {
 		uiManagerLocal.dc.DrawCursor(&cursorX, &cursorY, 64.0f );
 	}

@@ -104,6 +104,7 @@ public:
 	enum {
 		CURSOR_ARROW,
 		CURSOR_HAND,
+		CURSOR_MENU,
 		CURSOR_COUNT
 	};
 

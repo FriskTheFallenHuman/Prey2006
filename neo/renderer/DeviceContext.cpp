@@ -111,6 +111,7 @@ void idDeviceContext::Init() {
 	colorNone = idVec4(0, 0, 0, 0);
 	cursorImages[CURSOR_ARROW] = declManager->FindMaterial("guis/assets/guicursor_arrow.tga");
 	cursorImages[CURSOR_HAND] = declManager->FindMaterial("guis/assets/guicursor_hand.tga");
+	cursorImages[CURSOR_MENU] = declManager->FindMaterial("guis/assets/guicursor_menu.tga");
 	scrollBarImages[SCROLLBAR_HBACK] = declManager->FindMaterial("ui/assets/scrollbarh.tga");
 	scrollBarImages[SCROLLBAR_VBACK] = declManager->FindMaterial("guis/assets/scrollbarv.tga");
 	scrollBarImages[SCROLLBAR_THUMB] = declManager->FindMaterial("guis/assets/scrollbar_thumb.tga");
@@ -120,6 +121,7 @@ void idDeviceContext::Init() {
 	scrollBarImages[SCROLLBAR_DOWN] = declManager->FindMaterial("ui/assets/scrollbar_down.tga");
 	cursorImages[CURSOR_ARROW]->SetSort( SS_GUI );
 	cursorImages[CURSOR_HAND]->SetSort( SS_GUI );
+	cursorImages[CURSOR_MENU]->SetSort( SS_GUI );
 	scrollBarImages[SCROLLBAR_HBACK]->SetSort( SS_GUI );
 	scrollBarImages[SCROLLBAR_VBACK]->SetSort( SS_GUI );
 	scrollBarImages[SCROLLBAR_THUMB]->SetSort( SS_GUI );
