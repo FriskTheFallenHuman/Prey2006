@@ -30,8 +30,6 @@ If you have questions concerning this license or the applicable additional terms
 #pragma hdrstop
 
 #include "Session_local.h"
-#include "../ui/Window.h"
-#include "../ui/UserInterfaceLocal.h"
 #include "../sound/snd_local.h"
 
 #define CDKEY_FILEPATH "../" BASE_GAMEDIR "/" CDKEY_FILE
@@ -371,18 +369,12 @@ idSessionLocal::idSessionLocal
 */
 idSessionLocal::idSessionLocal() {
 	guiInGame = guiMainMenu = guiIntro \
-		= guiRestartMenu = guiLoading = guiActive \
+		= guiRestartMenu = guiLoading = guiActive = guiSubtitles  \
 		= guiTest = guiMsg = guiMsgRestore = NULL;
 
 	menuSoundWorld = NULL;
 
 	demoversion=false;
-
-	guiSubtitles = NULL;
-	subtitleTextScaleInited = false;
-	for ( int m = 0; m < sizeof( subtitlesTextScale ) / sizeof( subtitlesTextScale[0] ); m++ ) {
-		subtitlesTextScale[m] = 0.0f;
-	}
 
 	Clear();
 }
@@ -1259,7 +1251,7 @@ void idSessionLocal::MoveToNewMap( const char *mapName ) {
 
 	ExecuteMapChange();
 
-	if ( !mapSpawnData.serverInfo.GetBool("devmap") ) {
+	if ( !mapSpawnData.serverInfo.GetBool( "devmap" ) ) {
 		// Autosave at the beginning of the level
 
 		// DG: set an explicit savename to avoid problems with autosave names
@@ -1632,7 +1624,6 @@ void idSessionLocal::ExecuteMapChange( bool noFadeWipe ) {
 			}
 		}
 	}
-	subtitleTextScaleInited = false; // reload subtitles's text scale
 
 	uiManager->BeginLevelLoad();
 	uiManager->Reload( true );
@@ -3014,25 +3005,6 @@ void idSessionLocal::Init() {
 	idAsyncNetwork::client.serverList.GUIConfig( guiMainMenu, "serverList" );
 	guiRestartMenu = uiManager->FindGui( "guis/restart.gui", true, false, true );
 	guiSubtitles = uiManager->FindGui( "guis/subtitles.gui", true, false, true );
-	if ( guiSubtitles ) {
-		idWindow *desktop = ( (idUserInterfaceLocal *)guiSubtitles )->GetDesktop();
-		if ( desktop ) {
-#define SUBTITLE_GET_TEXT_SCALE(name, index) \
-			{                              \
-				drawWin_t *dw = desktop->FindChildByName( name ); \
-				if ( dw && dw->win ) \
-				{ \
-					idWinVar *winvar = dw->win->GetWinVarByName( "textScale" ); \
-					if ( winvar ) \
-						subtitlesTextScale[index] = winvar->x(); \
-				} \
-			}
-			SUBTITLE_GET_TEXT_SCALE( "subtitles1", 0 )
-			SUBTITLE_GET_TEXT_SCALE( "subtitles2", 1 )
-			SUBTITLE_GET_TEXT_SCALE( "subtitles3", 2 )
-#undef SUBTITLE_GET_TEXT_SCALE
-		}
-	}
 	guiMsg = uiManager->FindGui( "guis/msg.gui", true, false, true );
 	guiIntro = uiManager->FindGui( "guis/intro.gui", true, false, true );
 
@@ -3433,28 +3405,6 @@ void idSessionLocal::ShowSubtitle( const idStrList &strList ) {
 
 	if ( !guiSubtitles ) {
 		return;
-	}
-
-	// setup subtitles's text scale
-	if(!subtitleTextScaleInited )
-	{
-		idWindow *desktop = ( (idUserInterfaceLocal *)guiSubtitles )->GetDesktop();
-		if( desktop ) {
-#define SUBTITLE_SET_TEXT_SCALE(name, index) \
-			{                              \
-				float f = subtitlesTextScale[index]; \
-				if( f > 0.0f ) \
-				{ \
-					sprintf( text, /*sizeof(text), */"%f", f ); \
-					desktop->SetChildWinVarVal( name, "textScale", text ); \
-				} \
-			}
-			SUBTITLE_SET_TEXT_SCALE( "subtitles1", 0 )
-			SUBTITLE_SET_TEXT_SCALE( "subtitles2", 1 )
-			SUBTITLE_SET_TEXT_SCALE( "subtitles3", 2 )
-#undef SUBTITLE_SET_TEXT_SCALE
-		}
-		subtitleTextScaleInited = true;
 	}
 
 	num = strList.Num();

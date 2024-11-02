@@ -1768,8 +1768,8 @@ void idPlayer::Restore( idRestoreGame *savefile ) {
 	//     yes, like so many scaling-related things this is a bit hacky
 	//     and note that this is special cased in StateChanged and you
 	//     can *not* generally set windowDef properties like this.
-	cursor->SetStateBool("scaleto43", true);
-	cursor->StateChanged(gameLocal.time); // DG end
+	cursor->SetStateBool( "scaleto43", true );
+	cursor->StateChanged( gameLocal.time ); // DG end
 
 	savefile->ReadInt( oldMouseX );
 	savefile->ReadInt( oldMouseY );

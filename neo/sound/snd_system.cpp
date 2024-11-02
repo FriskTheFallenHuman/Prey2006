@@ -35,12 +35,15 @@ If you have questions concerning this license or the applicable additional terms
 
 extern idCVar g_subtitles;
 
-//#define _DEBUG_SUBTITLE
+#ifdef _DEBUG
+#define _DEBUG_SUBTITLE
+#endif
+
 #ifdef _DEBUG_SUBTITLE
 #if !defined(_MSC_VER)
 #define SUBTITLE_DEBUG(fmt, args...) common->Printf(fmt, ##args)
 #else
-#define SUBTITLE_DEBUG(fmt, s...) common->Printf(fmt,__VA_ARGS__)
+#define SUBTITLE_DEBUG(fmt, ...) common->Printf(fmt,__VA_ARGS__)
 #endif
 #else
 #if !defined(_MSC_VER)

@@ -252,8 +252,6 @@ public:
 	idUserInterface *	guiIntro;
 	idUserInterface *	guiTest;
 	idUserInterface	*	guiSubtitles;
-	bool				subtitleTextScaleInited;
-	float 				subtitlesTextScale[3];
 	idUserInterface *	guiMsg;
 	idUserInterface *	guiMsgRestore;				// store the calling GUI for restore
 	idStr				msgFireBack[ 2 ];
