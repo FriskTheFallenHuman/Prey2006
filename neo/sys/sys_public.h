@@ -406,7 +406,7 @@ public:
 	virtual void			LGLCD_Shutdown(void) = 0;
 	virtual bool			LGLCD_Valid(void) = 0;
 	virtual void			LGLCD_UploadImage(unsigned char *pixels, int w, int h, bool highPriority, bool flipColor) = 0;
-	virtual bool			LGLCD_ReadSoftButtons(DWORD *out) = 0;
+	virtual bool			LGLCD_ReadSoftButtons(uint32_t *out) = 0;
 	virtual void			LGLCD_DrawBegin(void) = 0;
 	virtual void			LGLCD_DrawFinish(bool clearBuffer) = 0;
 	virtual void			LGLCD_DrawRaw(unsigned char *pixels, int x, int y, int w, int h, int pitch, bool flipColor, bool layered, int rotate) = 0;

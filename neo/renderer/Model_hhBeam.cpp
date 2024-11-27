@@ -1,8 +1,8 @@
 #include "precompiled.h"
 #pragma hdrstop
 
-#include "../../renderer/tr_local.h"
-#include "../../renderer/Model_local.h"
+#include "tr_local.h"
+#include "Model_local.h"
 
 // Simple beam model. different with idRenderModelBeam, the line's start point is not view origin.
 
