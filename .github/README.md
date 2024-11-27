@@ -1,5 +1,14 @@
 <p align="center"> <img src="https://cdn2.steamgriddb.com/logo_thumb/c5ab0bc60ac7929182aadd08703f1ec6.png">
 
+> [!IMPORTANT]
+> We are currently looking for contributors that wants to contribute into this project.
+
+> [!CAUTION]
+> This project is far from being completed, currently there is 2 major blockers that prevent this from being playable.
+> 1. Death Walk a key feature of Pre 2006 is missing meaning that in some parts you need to do noclip.
+> 2. Spirit Walk visual are broken.
+> The binaries are provide as-is.
+
 # Introduction
 Prey 2006 SDK integrated with Doom 3 GPL release
 
