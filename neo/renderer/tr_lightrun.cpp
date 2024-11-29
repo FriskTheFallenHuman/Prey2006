@@ -617,7 +617,6 @@ void R_FreeLightDefDerivedData( idRenderLightLocal *ldef ) {
 		// put it back on the free list for reuse
 		ldef->world->areaReferenceAllocator.Free( lref );
 	}
-
 	ldef->references = NULL;
 
 	R_FreeLightDefFrustum( ldef );

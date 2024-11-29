@@ -1168,7 +1168,7 @@ void R_AddDrawSurf( const srfTriangles_t *tri, const viewEntity_t *space, const 
 		}
 		tr.viewDef->drawSurfs = (drawSurf_t **)R_FrameAlloc( tr.viewDef->maxDrawSurfs * sizeof( tr.viewDef->drawSurfs[0] ) );
 		if(count > 0)
-			memcpy( tr.viewDef->drawSurfs, old, count ); // XXX null pointer passed as argument 2, which is declared to never be null
+			memcpy( tr.viewDef->drawSurfs, old, count );
 	}
 	tr.viewDef->drawSurfs[tr.viewDef->numDrawSurfs] = drawSurf;
 	tr.viewDef->numDrawSurfs++;

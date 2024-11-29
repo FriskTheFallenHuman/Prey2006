@@ -639,13 +639,13 @@ set(src_game
 	game/Player.cpp
 	game/PlayerIcon.cpp
 	game/PlayerView.cpp
-	game/Projectile.cpp
+	game/projectile.cpp
 	game/Pvs.cpp
 	game/SecurityCamera.cpp
 	game/SmokeParticles.cpp
 	game/Sound.cpp
 	game/Target.cpp
-	game/Trigger.cpp
+	game/trigger.cpp
 	game/Weapon.cpp
 	game/WorldSpawn.cpp
 	game/ai/AAS.cpp

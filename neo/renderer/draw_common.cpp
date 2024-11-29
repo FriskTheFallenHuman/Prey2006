@@ -606,7 +606,7 @@ void RB_SetProgramEnvironment( bool isPostProcess ) {
 			// (setting them to 1.0 makes them no-ops)
 			parm[0] = parm[1] = parm[2] = parm[3] = 1.0f;
 		}
-		qglProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 4, parm );
+		qglProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, PP_GAMMA_BRIGHTNESS, parm );
 	}
 
 	//

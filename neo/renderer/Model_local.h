@@ -98,8 +98,8 @@ public:
 	bool						LoadLWO( const char *fileName );
 	bool						LoadFLT( const char *fileName );
 	// HUMANHEAD mdc - added support for precomputed models
-	bool						LoadPPM( const char *fileName ) {}
-	bool						WritePPM( const char *fileName ) {}
+	bool						LoadPPM( const char *fileName ) { return false; }
+	bool						WritePPM( const char *fileName ) { return false; }
 	void						DeletePPM( const char *fileName ) {}
 	// HUMANHEAD END
 
