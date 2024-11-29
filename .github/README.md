@@ -5,7 +5,7 @@
 
 > [!CAUTION]
 > This project is far from being completed, currently there is ~~2~~ a lot of major blockers that prevent this from being playable.
-> 1. Death Walk a key feature of Pre 2006 is missing meaning that in some parts you need to do noclip.
+> 1. Death Walk a key feature of Prey is missing meaning that in some parts you need to do noclip.
 > 2. Spirit Walk visual are broken.
 > 3. Visuals are a major roadblock, Spirit walks is unsable due to the lack of visuals.
 > 4. Multiplayer may work but has not been tested
