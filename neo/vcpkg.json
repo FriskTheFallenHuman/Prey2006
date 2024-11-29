@@ -1,7 +1,8 @@
 {
 	"name": "prey06",
-	"version": "0.0.1",
+	"version": "1.5.0",
 	"dependencies": [
+		"curl",
 		"openal-soft",
 		"sdl2",
 		{
