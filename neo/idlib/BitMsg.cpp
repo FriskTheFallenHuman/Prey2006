@@ -732,7 +732,7 @@ void idBitMsgDelta::WriteBits( int value, int numBits ) {
 #endif
 #endif //HUMANHEAD END
 
-	assert(abs(value) < ((int64_t)1<<abs(numBits))); //HUMANHEAD rww
+	assert(abs(value) < ((__int64)1<<abs(numBits))); //HUMANHEAD rww
 
 	if ( newBase ) {
 		newBase->WriteBits( value, numBits );

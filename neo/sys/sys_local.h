@@ -56,7 +56,7 @@ public:
 	virtual void			LGLCD_Shutdown( void ) {}
 	virtual bool			LGLCD_Valid( void ) { return false; }
 	virtual void			LGLCD_UploadImage( unsigned char *pixels, int w, int h, bool highPriority, bool flipColor ) {}
-	virtual bool			LGLCD_ReadSoftButtons( uint32_t *out ) { return false; }
+	virtual bool			LGLCD_ReadSoftButtons( DWORD *out ) { return false; }
 	virtual void			LGLCD_DrawBegin( void ) {}
 	virtual void			LGLCD_DrawFinish( bool clearBuffer ) {}
 	virtual void			LGLCD_DrawRaw( unsigned char *pixels, int x, int y, int w, int h, int pitch, bool flipColor, bool layered, int rotate ) {}
