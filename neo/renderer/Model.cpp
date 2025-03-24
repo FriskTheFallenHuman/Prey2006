@@ -1240,10 +1240,10 @@ bool idRenderModelStatic::ConvertLWOToModelSurfaces( const struct st_lwObject *l
 				continue;
 			}
 
-			if ( poly->nverts != 3 ) {
-				common->Warning( "ConvertLWOToModelSurfaces: model %s has too many verts for a poly! Make sure you triplet it down", name.c_str() );
-				continue;
-			}
+			//if ( poly->nverts != 3 ) {
+			//	common->Warning( "ConvertLWOToModelSurfaces: model %s has too many verts for a poly! Make sure you triplet it down", name.c_str() );
+			//	continue;
+			//}
 
 			for ( k = 0; k < 3; k++ ) {
 
