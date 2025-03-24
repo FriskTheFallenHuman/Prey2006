@@ -144,6 +144,10 @@ idRenderWorldLocal::idRenderWorldLocal() {
 	interactionTableWidth = 0;
 	interactionTableHeight = 0;
 
+#if GAMEPORTAL_PVS
+	numMapInterAreaPortals = 0;
+#endif
+
 #if DEATHWALK_AUTOLOAD
 	numAppendPortalAreas = 0;
 #endif

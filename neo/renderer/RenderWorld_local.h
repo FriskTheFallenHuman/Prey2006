@@ -38,6 +38,9 @@ typedef struct portal_s {
 	idPlane					plane;			// view must be on the positive side of the plane to cross
 	struct portal_s *		next;			// next portal of the area
 	struct doublePortal_s *	doublePortal;
+#if GAMEPORTAL_PVS
+	bool                    isGamePortal;
+#endif
 } portal_t;
 
 
@@ -73,6 +76,24 @@ typedef struct {
 										// this is the area number, else CHILDREN_HAVE_MULTIPLE_AREAS
 } areaNode_t;
 
+#if GAMEPORTAL_PVS
+typedef struct gamePortalInfo_s {
+	idStr name;			// entity name
+	int srcArea;		// a1, portal in area num
+	int dstArea;		// a2, cameraTarget in area num
+	idVec3 srcPosition; // portal position
+	idVec3 dstPosition; // cameraTarget position
+} gamePortalInfo_t;
+
+typedef struct gamePortalSource_s {
+	idStr name;			// entity name
+	int srcArea;		// a1, portal in area num
+	int dstArea;		// a2, cameraTarget in area num
+	idVec3 srcPosition; // portal position
+	idVec3 dstPosition; // cameraTarget position
+	idVec3 points[4];	// 4 points of winding
+} gamePortalSource_t;
+#endif
 
 class idRenderWorldLocal : public idRenderWorld {
 public:
@@ -133,12 +154,12 @@ public:
 
 // HUMANHEAD pdm: game portal support
 #if GAMEPORTAL_PVS
-	virtual qhandle_t		FindGamePortal( const char *name ) { return 0; };
-	virtual void			RegisterGamePortals( idMapFile *mapFile ) {};
-	virtual void			DrawGamePortals( int mode, const idMat3 &viewAxis ) {};
-	virtual bool			IsGamePortal( qhandle_t handle ) { return false; };
-	virtual idVec3			GetGamePortalSrc( qhandle_t handle ) { return vec3_zero; };
-	virtual idVec3			GetGamePortalDst( qhandle_t handle ) { return vec3_zero; };
+	virtual qhandle_t		FindGamePortal( const char *name );
+	virtual void			RegisterGamePortals( idMapFile *mapFile );
+	virtual void			DrawGamePortals( int mode, const idMat3 &viewAxis );
+	virtual bool			IsGamePortal( qhandle_t handle );
+	virtual idVec3			GetGamePortalSrc( qhandle_t handle );
+	virtual idVec3			GetGamePortalDst( qhandle_t handle );
 #endif
 #if GAMEPORTAL_SOUND
 	virtual int				NumSoundPortalsInArea( int areaNum ) { return 0; };
@@ -237,6 +258,13 @@ public:
 	void					FloodConnectedAreas( portalArea_t *area, int portalAttributeIndex );
 	idScreenRect &			GetAreaScreenRect( int areaNum ) const { return areaScreenRect[areaNum]; }
 	void					ShowPortals();
+
+#if GAMEPORTAL_PVS
+	idList<gamePortalInfo_t> gamePortalInfos;	//karin: numMapInterAreaPortals + gamePortalInfos.Num() == numInterAreaPortals
+	int numMapInterAreaPortals; //karin: raw numInterAreaPortals
+
+	void					ClearGamePortalInfos();
+#endif
 
 	//--------------------------
 	// RenderWorld_demo.cpp

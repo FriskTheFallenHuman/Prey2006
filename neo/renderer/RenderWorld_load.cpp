@@ -78,6 +78,11 @@ void idRenderWorldLocal::FreeWorld() {
 		numInterAreaPortals = 0;
 	}
 
+#if GAMEPORTAL_PVS
+	ClearGamePortalInfos();
+	numMapInterAreaPortals = 0;
+#endif
+
 	if ( areaNodes ) {
 		R_StaticFree( areaNodes );
 		areaNodes = NULL;
@@ -298,6 +303,10 @@ void idRenderWorldLocal::ParseInterAreaPortals( idLexer *src ) {
 	SetupAreaRefs();
 
 	numInterAreaPortals = src->ParseInt();
+#if GAMEPORTAL_PVS
+	numMapInterAreaPortals = numInterAreaPortals;
+	ClearGamePortalInfos();
+#endif
 	if ( numInterAreaPortals < 0 ) {
 		src->Error(  "R_ParseInterAreaPortals: bad numInterAreaPortals" );
 		return;

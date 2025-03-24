@@ -390,7 +390,7 @@ public:
 
 	//-------------- Portal Area Information -----------------
 
-// HUMANHEAD pdm: game portal support
+	// HUMANHEAD pdm: game portal support
 #if GAMEPORTAL_PVS
 	virtual qhandle_t		FindGamePortal(const char *name) = 0;
 	virtual void			RegisterGamePortals(idMapFile *mapFile) = 0;

@@ -174,6 +174,13 @@ void idRenderWorldLocal::FloodViewThroughArea_r( const idVec3 origin, int areaNu
 
 	// go through all the portals
 	for ( p = area->portals; p; p = p->next ) {
+#if GAMEPORTAL_PVS
+		// karin: game portals not handle like original DOOM3
+		if ( p->isGamePortal ) {
+			continue;
+		}
+#endif
+
 		// an enclosing door may have sealed the portal off
 		if ( p->doublePortal->blockingBits & PS_BLOCK_VIEW ) {
 			continue;
@@ -344,6 +351,13 @@ void idRenderWorldLocal::FloodLightThroughArea_r( idRenderLightLocal *light, int
 
 	// go through all the portals
 	for ( p = area->portals; p; p = p->next ) {
+#if GAMEPORTAL_PVS
+		// karin: game portals not handle like original DOOM3
+		if ( p->isGamePortal ) {
+			continue;
+		}
+#endif
+
 		// make sure this portal is facing away from the view
 		d = p->plane.Distance( light->globalLightOrigin );
 		if ( d < -0.1f ) {
@@ -478,6 +492,12 @@ areaNumRef_t *idRenderWorldLocal::FloodFrustumAreas_r( const idFrustum &frustum,
 
 	// go through all the portals
 	for ( p = portalArea->portals; p; p = p->next ) {
+#if GAMEPORTAL_PVS
+		// karin: game portals not handle like original DOOM3
+		if ( p->isGamePortal ) {
+			continue;
+		}
+#endif
 
 		// check if we already visited the area the portal leads to
 		for ( a = areas; a; a = a->next ) {
@@ -804,6 +824,12 @@ void idRenderWorldLocal::BuildConnectedAreas_r( int areaNum ) {
 	// flood through all non-blocked portals
 	area = &portalAreas[ areaNum ];
 	for ( portal = area->portals ; portal ; portal = portal->next ) {
+#if GAMEPORTAL_PVS
+		// karin: game portals not handle like original DOOM3
+		if ( portal->isGamePortal ) {
+			continue;
+		}
+#endif
 		if ( !(portal->doublePortal->blockingBits & PS_BLOCK_VIEW) ) {
 			BuildConnectedAreas_r( portal->intoArea );
 		}
@@ -949,6 +975,13 @@ void	idRenderWorldLocal::FloodConnectedAreas( portalArea_t *area, int portalAttr
 	area->connectedAreaNum[portalAttributeIndex] = connectedAreaNum;
 
 	for ( portal_t *p = area->portals ; p ; p = p->next ) {
+#if GAMEPORTAL_PVS
+		// karin: game portals not handle like original DOOM3
+		if ( p->isGamePortal ) {
+			continue;
+		}
+#endif
+
 		if ( !(p->doublePortal->blockingBits & (1<<portalAttributeIndex) ) ) {
 			FloodConnectedAreas( &portalAreas[p->intoArea], portalAttributeIndex );
 		}
@@ -1008,12 +1041,19 @@ void		idRenderWorldLocal::SetPortalState( qhandle_t portal, int blockTypes ) {
 
 	// leave the connectedAreaGroup the same on one side,
 	// then flood fill from the other side with a new number for each changed attribute
+#if GAMEPORTAL_PVS
+	//karin: it is area portal if portals[1] not null, else is game portal
+	if ( doublePortals[portal-1].portals[1] ) {
+#endif
 	for ( int i = 0 ; i < NUM_PORTAL_ATTRIBUTES ; i++ ) {
 		if ( ( old ^ blockTypes ) & ( 1 << i ) ) {
 			connectedAreaNum++;
 			FloodConnectedAreas( &portalAreas[doublePortals[portal-1].portals[1]->intoArea], i );
 		}
 	}
+#if GAMEPORTAL_PVS
+	}
+#endif
 
 	if ( session->writeDemo ) {
 		session->writeDemo->WriteInt( DS_RENDER );
@@ -1081,3 +1121,373 @@ void idRenderWorldLocal::ShowPortals() {
 		}
 	}
 }
+
+#if GAMEPORTAL_PVS
+/*
+==============
+FindGamePortal
+==============
+*/
+qhandle_t idRenderWorldLocal::FindGamePortal( const char *name ) {
+	for ( int i = 0; i < gamePortalInfos.Num(); i++ ) {
+		if ( !idStr::Icmp( gamePortalInfos[i].name, name ) ) {
+			return i + numMapInterAreaPortals + 1;
+		}
+	}
+
+	return 0;
+}
+
+/*
+==============
+FindGamePortal
+
+karin: add game portals into doublePortals
+==============
+*/
+void idRenderWorldLocal::RegisterGamePortals( idMapFile *mapFile ) {
+	idMapEntity     *entity;
+	int             numEntities, i, a1, a2;
+	idWinding       *w;
+	portal_t        *p;
+	portalArea_t    *area;
+	const char      *classname, *spawnclass, *cameraTarget, *name;
+	const idDeclEntityDef *decl;
+	idMapEntity     *targetEntity;
+	idVec3          origin, src, targetOrigin, dst, size(0.0f, 0.0f, 0.0f);
+	idMat3          rotation;
+	idBounds        bounds;
+	idList<gamePortalSource_t> sources;
+	int             numGamePortals = 0;
+
+	ClearGamePortalInfos();
+
+	numEntities = mapFile->GetNumEntities();
+
+	// filter all map entities
+	for ( i = 0; i < numEntities; i++ ) {
+		entity = mapFile->GetEntity(i);
+
+		classname = entity->epairs.GetString("classname");
+		decl = (idDeclEntityDef *)declManager->FindType(DECL_ENTITYDEF, classname, false);
+		if ( !decl ) {
+			continue;
+		}
+
+		spawnclass = decl->dict.GetString("spawnclass");
+		if ( !spawnclass || !spawnclass[0] || idStr::Icmp("hhPortal", spawnclass) != 0 ) {
+			continue;
+		}
+
+		cameraTarget = entity->epairs.GetString("cameraTarget");
+		if ( !cameraTarget || !cameraTarget[0] ) {
+			continue;
+		}
+
+		targetEntity = mapFile->FindEntity(cameraTarget);
+		if ( !targetEntity ) {
+			continue;
+		}
+
+		origin = entity->epairs.GetVector("origin", "0 0 0");
+		src = origin;
+
+		targetOrigin = targetEntity->epairs.GetVector("origin", "0 0 0");
+		dst = targetOrigin;
+
+		int srcArea = PointInArea(src);
+		if ( srcArea < 0 ) {
+			continue;
+		}
+
+		int dstArea = PointInArea(dst);
+		if ( dstArea < 0 ) {
+			continue;
+		}
+
+		name = entity->epairs.GetString("name");
+
+		bounds.Clear();
+		if ( decl->dict.GetVector("mins", NULL, bounds[0]) && decl->dict.GetVector("maxs", NULL, bounds[1]) ) {
+			if ( bounds[0][0] > bounds[1][0] || bounds[0][1] > bounds[1][1] || bounds[0][2] > bounds[1][2] ) {
+				common->Printf("Invalid bounds '%s'-'%s' on entity '%s'\n", bounds[0].ToString(), bounds[1].ToString(), name);
+				continue;
+			}
+		} else if ( decl->dict.GetVector("size", NULL, size) ) {
+			if ( size.x < 0.0f || size.y < 0.0f || size.z < 0.0f ) {
+				common->Printf("Invalid size '%s' on entity '%s'\n", size.ToString(), name);
+				continue;
+			}
+			bounds[0].Set(size.x * -0.5f, size.y * -0.5f, 0.0f);
+			bounds[1].Set(size.x * 0.5f, size.y * 0.5f, size.z);
+		}
+
+		rotation.Identity();
+		if ( !entity->epairs.GetMatrix("rotation", "1 0 0 0 1 0 0 0 1", rotation) ) {
+			idAngles angles(ang_zero);
+			float angle = entity->epairs.GetFloat("angle");
+			if ( angle == -1 ) {
+				angles[0] = -90.0f;
+			} else if ( angle == -2 ) {
+				angles[0] = 90.0f;
+			} else {
+				angles[0] = entity->epairs.GetFloat("pitch");
+				angles[1] = angle;
+				angles[2] = entity->epairs.GetFloat("roll");
+			}
+			rotation = angles.ToMat3();
+		}
+
+		idVec3& mins = bounds[0];
+		idVec3& maxs = bounds[1];
+		maxs.x = mins.x;
+
+		idVec3 points[8];
+		bounds.ToPoints(points);
+
+		gamePortalSource_t gps;
+
+		float mat4[16];
+		R_AxisToModelMatrix(rotation, origin, mat4);
+		R_LocalPointToGlobal(mat4, points[0], gps.points[0]);
+		R_LocalPointToGlobal(mat4, points[3], gps.points[1]);
+		R_LocalPointToGlobal(mat4, points[7], gps.points[2]);
+		R_LocalPointToGlobal(mat4, points[4], gps.points[3]);
+
+		gps.name = name;
+		gps.srcArea = srcArea;
+		gps.dstArea = dstArea;
+		gps.srcPosition = src;
+		gps.dstPosition = dst;
+		sources.Append(gps);
+
+		//common->Printf("Read %d game portal: entity '%s', source area %d -> target area %d.\n", numGamePortals, name, gps.srcArea, gps.dstArea);
+
+		numGamePortals++;
+	}
+
+	common->Printf("%d game portals found.\n", numGamePortals);
+
+	if ( numGamePortals == 0 ) {
+		return;
+	}
+
+	doublePortal_t *gameDoublePortals = (doublePortal_t *)R_ClearedStaticAlloc((numInterAreaPortals + numGamePortals) * sizeof(gameDoublePortals[0]));
+	int start = numInterAreaPortals;
+
+	if ( numInterAreaPortals > 0 ) {
+		memcpy(gameDoublePortals, doublePortals, numInterAreaPortals * sizeof(doublePortals[0]));
+
+		for ( i = 0; i < numPortalAreas; i++ ) {
+			area = &portalAreas[i];
+			p = area->portals;
+			while ( p ) {
+				for ( int j = 0; j < numInterAreaPortals; j++ ) {
+					if ( p->doublePortal == &doublePortals[j] ) {
+						p->doublePortal = &gameDoublePortals[j];
+						break;
+					}
+				}
+				p = p->next;
+			}
+		}
+
+		numInterAreaPortals += numGamePortals;
+		R_StaticFree(doublePortals);
+	}
+
+	doublePortals = gameDoublePortals;
+
+	gamePortalInfos.Resize(numGamePortals);
+
+	for ( i = 0; i < numGamePortals; i++ ) {
+		const gamePortalSource_t &gps = sources[i];
+		gamePortalInfo_t &gpInfo = gamePortalInfos[i];
+		int index = start + i;
+
+		w = new idWinding(4);
+		w->SetNumPoints(4);
+
+		for ( int j = 0; j < 4; j++ ) {
+			const idVec3 &point = gps.points[j];
+			(*w)[j][0] = point[0];
+			(*w)[j][1] = point[1];
+			(*w)[j][2] = point[2];
+			(*w)[j][3] = 0;
+			(*w)[j][4] = 0;
+		}
+
+		a1 = gps.srcArea;
+		a2 = gps.dstArea;
+
+		p = (portal_t *)R_ClearedStaticAlloc(sizeof(*p));
+		p->intoArea = a2;
+		p->doublePortal = &doublePortals[index];
+		p->w = w;
+		p->w->GetPlane(p->plane);
+
+		p->next = portalAreas[a1].portals;
+		portalAreas[a1].portals = p;
+
+		p->isGamePortal = true;
+		doublePortals[index].portals[0] = p;
+		doublePortals[index].portals[1] = NULL;
+
+		gpInfo.name = gps.name;
+		gpInfo.srcArea = gps.srcArea;
+		gpInfo.dstArea = gps.dstArea;
+		gpInfo.srcPosition = gps.srcPosition;
+		gpInfo.dstPosition = gps.dstPosition;
+
+		idStr point0 = gps.points[0].ToString(6);
+		idStr point1 = gps.points[1].ToString(6);
+		idStr point2 = gps.points[2].ToString(6);
+		idStr point3 = gps.points[3].ToString(6);
+
+		//common->Printf("Add game portal: /* iap %d */ %d %d %d ( %s ) ( %s ) ( %s ) ( %s ) \n", i + numMapInterAreaPortals, 4, a1, a2, point0.c_str(), point1.c_str(), point2.c_str(), point3.c_str());
+	}
+
+	common->Printf("Finished adding game portals\n");
+}
+
+/*
+==============
+DrawGamePortals
+==============
+*/
+void idRenderWorldLocal::DrawGamePortals( int mode, const idMat3 &viewAxis ) {
+	if ( mode == 0 ) {
+		return; // Early exit if mode is 0
+	}
+
+	int             i, j, m;
+	portalArea_t    *area;
+	portal_t        *p;
+	idWinding       *w;
+	idVec4          color;
+
+	// Flood through portals, setting area viewCount
+	for ( i = 0; i < numPortalAreas; i++ ) {
+		area = &portalAreas[i];
+
+		if ( area->viewCount != tr.viewCount ) {
+			continue;
+		}
+
+		for ( p = area->portals; p; p = p->next ) {
+			w = p->w;
+
+			if ( !w || !p->isGamePortal ) {
+				continue;
+			}
+
+			for ( m = numMapInterAreaPortals; m < numInterAreaPortals; m++ ) {
+				const doublePortal_t *dp = &doublePortals[m];
+				if ( p->doublePortal == dp ) {
+					break;
+				}
+			}
+
+			if ( m >= numInterAreaPortals || ( mode > 0 && ( mode - 1 ) != m ) ) {
+				continue;
+			}
+
+			const gamePortalInfo_t *gpInfo = &gamePortalInfos[m - numMapInterAreaPortals];
+
+			if ( portalAreas[p->intoArea].viewCount != tr.viewCount ) {
+				color.Set( 1, 0, 0, 1 ); // Red = can't see
+			} else {
+				color.Set( 0, 1, 0, 1 ); // Green = see through
+			}
+
+			// Draw portal border
+			int numPoints = w->GetNumPoints();
+			for ( j = 0; j < numPoints; j++ ) {
+				const idVec5 &pointA = (*w)[j];
+				const idVec5 &pointB = (*w)[( j + 1 ) % numPoints];
+				DebugLine( color, pointA.ToVec3(), pointB.ToVec3() );
+			}
+
+			// Draw arrow to remote target
+			DebugArrow( color, gpInfo->srcPosition, gpInfo->dstPosition, 10 );
+
+			// Draw block bits
+			idBounds bounds;
+			w->GetBounds( bounds );
+			idVec3 pos = w->GetCenter();
+			pos[2] = bounds[1][2];
+			pos += tr.primaryView->renderView.viewaxis[2] * 6;
+
+			idStr bitsStr;
+			if ( p->doublePortal->blockingBits & PS_BLOCK_VIEW ) {
+				bitsStr.Append( "PS_BLOCK_VIEW " );
+			}
+			if ( p->doublePortal->blockingBits & PS_BLOCK_LOCATION ) {
+				bitsStr.Append( "PS_BLOCK_LOCATION " );
+			}
+			if ( p->doublePortal->blockingBits & PS_BLOCK_AIR ) {
+				bitsStr.Append( "PS_BLOCK_AIR " );
+			}
+			if ( p->doublePortal->blockingBits & PS_BLOCK_SOUND ) {
+				bitsStr.Append( "PS_BLOCK_SOUND " );
+			}
+			if ( bitsStr.IsEmpty() ) {
+				bitsStr.Append( "PS_BLOCK_NONE" );
+			} else {
+				bitsStr.StripTrailingWhitespace();
+			}
+			DrawText( bitsStr.c_str(), pos, 0.25f, color, viewAxis );
+		}
+	}
+}
+
+/*
+==============
+IsGamePortal
+==============
+*/
+bool idRenderWorldLocal::IsGamePortal( qhandle_t handle ) {
+	int index = handle - 1;
+	return index >= numAppendPortalAreas && index < numInterAreaPortals;
+}
+
+/*
+==============
+GetGamePortalSrc
+==============
+*/
+idVec3 idRenderWorldLocal::GetGamePortalSrc( qhandle_t handle ) {
+	int index = handle - 1;
+	if ( index < numMapInterAreaPortals || index >= numInterAreaPortals ) {
+		common->Error( "GetGamePortalSrc handle out of range: handle=%d, portals: map=%d, game=%d, all=%d\n",
+			handle, numMapInterAreaPortals, gamePortalInfos.Num(), numInterAreaPortals );
+		return idVec3();
+	}
+	return gamePortalInfos[index - numMapInterAreaPortals].srcPosition;
+}
+
+/*
+==============
+GetGamePortalDst
+==============
+*/
+idVec3 idRenderWorldLocal::GetGamePortalDst( qhandle_t handle ) {
+	int index = handle - 1;
+	if ( index < numMapInterAreaPortals || index >= numInterAreaPortals ) {
+		common->Error( "GetGamePortalDst handle out of range: handle=%d, portals: map=%d, game=%d, all=%d\n",
+			handle, numMapInterAreaPortals, gamePortalInfos.Num(), numInterAreaPortals );
+		return idVec3();
+	}
+	return gamePortalInfos[index - numMapInterAreaPortals].dstPosition;
+}
+
+/*
+==============
+ClearGamePortalInfos
+==============
+*/
+void idRenderWorldLocal::ClearGamePortalInfos() {
+	gamePortalInfos.Clear();
+}
+
+#endif

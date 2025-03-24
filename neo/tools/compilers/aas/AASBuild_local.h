@@ -29,7 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __AASBUILD_LOCAL_H__
 #define __AASBUILD_LOCAL_H__
 
-#include "../../tools/compilers/aas/AASFile_local.h"
+#include "tools/compilers/aas/AASFile_local.h"
 
 #include "Brush.h"
 #include "BrushBSP.h"

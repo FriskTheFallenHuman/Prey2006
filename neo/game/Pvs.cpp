@@ -165,9 +165,13 @@ void idPVS::CreatePVSData( void ) {
 			portal = gameRenderWorld->GetPortal( i, j );
 
 			p = &pvsPortals[cp++];
-			
+
 			//HUMANHEAD rww - check to see if this is a game portal
-			p->gamePortal = gameRenderWorld->IsGamePortal(portal.portalHandle);
+#if GAMEPORTAL_PVS
+			p->gamePortal = gameRenderWorld->IsGamePortal( portal.portalHandle );
+#else
+			p->gamePortal = false;
+#endif
 			p->mightSeeGamePortal = p->gamePortal;
 
 			// the winding goes counter clockwise seen from this area
@@ -752,7 +756,7 @@ void idPVS::CreatePassages( void ) const {
 
 					int portalIndex = (byteNum << 3) + bitNum;
 					p = &pvsPortals[portalIndex];
-	
+
 					if ( p->areaNum == source->areaNum ) {
 						continue;
 					}
