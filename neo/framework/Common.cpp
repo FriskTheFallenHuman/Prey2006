@@ -152,10 +152,7 @@ public:
 	virtual int					KeyState( int key );
 
 	virtual void				FixupKeyTranslations( const char *src, char *dst, int lengthAllocated) { (void) src; (void)dst; (void)lengthAllocated; }
-	virtual void				MaterialKeyForBinding (const char *binding, char *keyMaterial, char *key, bool &isBound ) {
-		(void)binding; (void)keyMaterial; (void)key;
-		isBound = false;
-	}
+	virtual void				MaterialKeyForBinding (const char *binding, char *keyMaterial, char *key, bool &isBound );
 	virtual void				SetGameSensitivityFactor( float factor ) { (void) factor; }
 
 	virtual void				APrintf( const char *fmt, ... ) {}	// Another print interface for animation module
@@ -3353,4 +3350,48 @@ void idGameCallbacks::Reset()
 {
 	reloadImagesCB = NULL;
 	reloadImagesUserArg = NULL;
+}
+
+extern const char * IN_FirstKeyFromBinding(const char *binding, int *keycode = NULL);
+void idCommonLocal::MaterialKeyForBinding(const char *binding, char *keyMaterial, char *key, bool &isBound)
+{
+    // 256 length see game/Prey/prey_game.cpp::GetTip
+#define MAX_KEY_MATERIAL_LENGTH 256
+#define MAX_KEY_NAME_LENGTH 256
+    const char *k;
+    int i = -1;
+
+    //karin: only get first binding key
+    k = IN_FirstKeyFromBinding(binding, &i);
+    isBound = false;
+
+    if(k && k[0])
+    {
+        if(i == K_MOUSE1)
+            idStr::Copynz(keyMaterial, "textures/interface/tips/mouse1", MAX_KEY_MATERIAL_LENGTH);
+        else if(i == K_MOUSE2)
+            idStr::Copynz(keyMaterial, "textures/interface/tips/mouse2", MAX_KEY_MATERIAL_LENGTH);
+        else if(i == K_MOUSE3)
+            idStr::Copynz(keyMaterial, "textures/interface/tips/mouse3", MAX_KEY_MATERIAL_LENGTH);
+        else if(i == K_MWHEELDOWN)
+            idStr::Copynz(keyMaterial, "textures/interface/tips/mousedn", MAX_KEY_MATERIAL_LENGTH);
+        else if(i == K_MWHEELUP)
+            idStr::Copynz(keyMaterial, "textures/interface/tips/mouseup", MAX_KEY_MATERIAL_LENGTH);
+        else
+        {
+            isBound = strlen(k) > 1;
+            idStr::Copynz(key, k, MAX_KEY_NAME_LENGTH);
+            idStr::ToLower(key);
+        }
+    }
+
+    if(!keyMaterial[0])
+    {
+        if(isBound)
+            idStr::Copynz(keyMaterial, "textures/interface/tips/keywide", MAX_KEY_MATERIAL_LENGTH);
+        else
+            idStr::Copynz(keyMaterial, "textures/interface/tips/key", MAX_KEY_MATERIAL_LENGTH);
+    }
+#undef MAX_KEY_MATERIAL_LENGTH
+#undef MAX_KEY_NAME_LENGTH
 }
