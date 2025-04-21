@@ -1448,7 +1448,7 @@ IsGamePortal
 */
 bool idRenderWorldLocal::IsGamePortal( qhandle_t handle ) {
 	int index = handle - 1;
-	return index >= numAppendPortalAreas && index < numInterAreaPortals;
+	return index >= numMapInterAreaPortals && index < numInterAreaPortals;
 }
 
 /*

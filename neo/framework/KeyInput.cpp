@@ -812,3 +812,19 @@ void idKeyInput::Shutdown( void ) {
 	delete [] keys;
 	keys = NULL;
 }
+
+const char * IN_FirstKeyFromBinding(const char *binding, int *keycode = NULL)
+{
+    int i;
+
+    if (binding && *binding) {
+        for (i = 0; i < MAX_KEYS; i++) {
+            if (keys[i].binding.Icmp(binding) == 0) {
+                if(keycode)
+                    *keycode = i;
+                return idKeyInput::KeyNumToString(i, true);
+            }
+        }
+    }
+    return NULL;
+}

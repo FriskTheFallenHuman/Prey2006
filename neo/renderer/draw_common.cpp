@@ -807,6 +807,8 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 
 			qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, newStage->vertexProgram );
 			qglEnable( GL_VERTEX_PROGRAM_ARB );
+            qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, newStage->fragmentProgram );
+            qglEnable( GL_FRAGMENT_PROGRAM_ARB );
 
 			// megaTextures bind a lot of images and set a lot of parameters
 			if ( newStage->megaTexture ) {
@@ -824,6 +826,14 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 				parm[3] = regs[ newStage->vertexParms[i][3] ];
 				qglProgramLocalParameter4fvARB( GL_VERTEX_PROGRAM_ARB, i, parm );
 			}
+            for ( int i = 0; i < newStage->numFragmentParms; i++ ) {
+                float	parm[4];
+                parm[0] = regs[ newStage->fragmentParms[i][0] ];
+                parm[1] = regs[ newStage->fragmentParms[i][1] ];
+                parm[2] = regs[ newStage->fragmentParms[i][2] ];
+                parm[3] = regs[ newStage->fragmentParms[i][3] ];
+                qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, i, parm );
+            }
 
 			for ( int i = 0 ; i < newStage->numFragmentProgramImages ; i++ ) {
 				if ( newStage->fragmentProgramImages[i] ) {
@@ -831,8 +841,6 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 					newStage->fragmentProgramImages[i]->Bind();
 				}
 			}
-			qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, newStage->fragmentProgram );
-			qglEnable( GL_FRAGMENT_PROGRAM_ARB );
 
 			// draw it
 			RB_DrawElementsWithCounters( tri );
@@ -989,7 +997,10 @@ int RB_STD_DrawShaderPasses( drawSurf_t **drawSurfs, int numDrawSurfs ) {
 		isPostProcess = true;
 
 		// only dump if in a 3d view
-		if ( backEnd.viewDef->viewEntitys ) {
+#if 0 //karin: 2D spiritwalk and deathwalk on Prey
+		if ( backEnd.viewDef->viewEntitys )
+#endif
+        {
 			globalImages->currentRenderImage->CopyFramebuffer( backEnd.viewDef->viewport.x1,
 				backEnd.viewDef->viewport.y1,  backEnd.viewDef->viewport.x2 -  backEnd.viewDef->viewport.x1 + 1,
 				backEnd.viewDef->viewport.y2 -  backEnd.viewDef->viewport.y1 + 1, true );
