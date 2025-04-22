@@ -5,9 +5,7 @@
 
 > [!CAUTION]
 > This project is far from being completed, currently there is ~~2~~ a lot of major blockers that prevent this from being playable.
-> 1. Death Walk a key feature of Prey is missing meaning that in some parts you need to do noclip.
-> 2. Visuals are a major roadblock, Spirit walks is unsable due to the lack of visuals.
-> 3. Multiplayer may work but has not been tested
+> 1. Multiplayer may work but has not been tested
 > 
 > The binaries are provide as-is, support may be limited due to my lack of knowledge,
 > This project was create due to the insatisfaction of some source ports barely fixing or improving 
