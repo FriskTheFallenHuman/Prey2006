@@ -753,7 +753,7 @@ typedef struct damageEffect_s {
 } damageEffect_t;
 
 //HUMANHEAD: aob - changed inheritance to hhRenderEntity
-#include "../prey/game_renderentity.h"
+#include "../Prey/game_renderentity.h"
 class idAnimatedEntity : public hhRenderEntity {
 public:
 	CLASS_PROTOTYPE( idAnimatedEntity );

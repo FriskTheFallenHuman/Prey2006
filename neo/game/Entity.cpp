@@ -39,11 +39,11 @@ If you have questions concerning this license or the applicable additional terms
 #include "Game_local.h"
 
 //HUMANHEAD: aob - needed for helper functions
-#include "../prey/ai_speech.h"
-#include "../prey/ai_reaction.h"
+#include "../Prey/ai_speech.h"
+#include "../Prey/ai_reaction.h"
 //Needed so we can store what zones we are in.  Player resurrection needs this.
-#include "../prey/game_trigger.h"
-#include "../prey/game_zone.h"
+#include "../Prey/game_trigger.h"
+#include "../Prey/game_zone.h"
 //HUMANHEAD END
 
 /*

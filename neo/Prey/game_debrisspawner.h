@@ -44,4 +44,4 @@ protected:
 	idEntity *			sourceEntity;
 };
 
-#endif __PREY_GAME_DEBRISMASS_H__
+#endif /* __PREY_GAME_DEBRISMASS_H__ */

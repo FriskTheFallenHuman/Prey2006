@@ -1,188 +1,190 @@
-cmake_minimum_required( VERSION 3.20 )
+cmake_minimum_required(VERSION 3.20)
 
-# Check if vcpkg exist in our source folder
-if ( EXISTS "${CMAKE_SOURCE_DIR}/../vcpkg/scripts/buildsystems/vcpkg.cmake" )
-	set( CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/../vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file" )
-else()
-	message( FATAL_ERROR "Vcpkg wasn't not found, aborting, make sure to git clone this with all submodules!")
-endif()
+# Only use vcpkg in win32 since there we dont have package managers
+if(WIN32)
+	# Check if vcpkg exist in our source folder
+	if (EXISTS "${CMAKE_SOURCE_DIR}/../vcpkg/scripts/buildsystems/vcpkg.cmake")
+		set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/../vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
+	else()
+		message(FATAL_ERROR "Vcpkg wasn't not found, aborting, make sure to git clone this with all submodules!")
+	endif()
+endif() # WIN32
 
 # Enable folder groups
-set_property( GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER  "" )
-set_property( GLOBAL PROPERTY USE_FOLDERS ON )
+set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER  "")
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-set( CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMakeModules" )
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMakeModules")
 
-project( prey06 CXX C)
+project(prey06 CXX C)
 
 # build type
-if( NOT CMAKE_BUILD_TYPE )
-	set( CMAKE_BUILD_TYPE "RelWithDebInfo" )
+if(NOT CMAKE_BUILD_TYPE)
+	set(CMAKE_BUILD_TYPE "RelWithDebInfo")
 endif()
 
-set( ENGINE_BINARY "PREY06" )
-set( DEDICATED_BINARY "PREY06Ded" )
+set(ENGINE_BINARY "PREY06")
+set(DEDICATED_BINARY "PREY06Ded")
 
-include( CheckCXXCompilerFlag )
-include( GNUInstallDirs OPTIONAL RESULT_VARIABLE GNUINSTALLDIRS )
-include( GlobbedHeaders )
+include(CheckCXXCompilerFlag)
+include(GNUInstallDirs OPTIONAL RESULT_VARIABLE GNUINSTALLDIRS)
+include(GlobbedHeaders)
 
-option( ENGINE						"Build the main executable." ON )
-option( DEDICATED					"Build the dedicated server executable." ON )
-option( TOOLS						"Build the include tools into the main executable." ON )
-option( BASE						"Build the base game code" ON )
-option( ONATIVE						"Optimize for the host CPU" OFF )
-option( REPRODUCIBLE_BUILD			"Replace __DATE__ and __TIME__ by hardcoded values for reproducible builds." OFF )
-option( LINUX_RELEASE_BINS			"Set RPATH to \$ORIGIN/libs/ for Linux binary releases" OFF )
-option( HARDLINK_GAME				"Compile gamecode into executable (no game DLLs)" OFF )
+option(ENGINE						"Build the main executable." ON)
+option(DEDICATED					"Build the dedicated server executable." ON)
+option(TOOLS						"Build the include tools into the main executable." ON)
+option(BASE						"Build the base game code" ON)
+option(ONATIVE						"Optimize for the host CPU" OFF)
+option(REPRODUCIBLE_BUILD			"Replace __DATE__ and __TIME__ by hardcoded values for reproducible builds." OFF)
+option(LINUX_RELEASE_BINS			"Set RPATH to \$ORIGIN/libs/ for Linux binary releases" OFF)
+option(HARDLINK_GAME				"Compile gamecode into executable (no game DLLs)" OFF)
 
-if( NOT MSVC ) # GCC/clang or compatible, hopefully
-	option( FORCE_COLORED_OUTPUT	"Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF )
-	option( ASAN					"Enable GCC/Clang Adress Sanitizer (ASan)" OFF) # TODO: MSVC might also support this, somehow?
-	option( UBSAN					"Enable GCC/Clang Undefined Behavior Sanitizer (UBSan), implies HARDLINK_GAME" OFF )
+if(NOT MSVC) # GCC/clang or compatible, hopefully
+	option(FORCE_COLORED_OUTPUT	"Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
+	option(ASAN					"Enable GCC/Clang Adress Sanitizer (ASan)" OFF) # TODO: MSVC might also support this, somehow?
+	option(UBSAN					"Enable GCC/Clang Undefined Behavior Sanitizer (UBSan), implies HARDLINK_GAME" OFF)
 
-	if( UBSAN AND NOT HARDLINK_GAME )
-		message( STATUS "UBSAN requires linking the gamecode into the executable, will enable HARDLINK_GAME" )
-		set( HARDLINK_GAME ON )
+	if(UBSAN AND NOT HARDLINK_GAME)
+		message(STATUS "UBSAN requires linking the gamecode into the executable, will enable HARDLINK_GAME")
+		set(HARDLINK_GAME ON)
 	endif()
 endif()
 
-if ( LINUX_RELEASE_BINS )
-	message( STATUS "Setting RPATH to \$ORIGIN/libs/ so you can put dependencies in there" )
-	set( CMAKE_SKIP_RPATH OFF CACHE BOOL "Skip RPATH" FORCE )
-	set( CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE )
-	set( CMAKE_BUILD_WITH_INSTALL_RPATH TRUE )
-	set( CMAKE_INSTALL_RPATH "$ORIGIN/libs" )
-	set( ldflags "${ldflags} -Wl,--large-address-aware,-z,origin" ) # not sure this is even needed, but shouldn't hurt
+if (LINUX_RELEASE_BINS)
+	message(STATUS "Setting RPATH to \$ORIGIN/libs/ so you can put dependencies in there")
+	set(CMAKE_SKIP_RPATH OFF CACHE BOOL "Skip RPATH" FORCE)
+	set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
+	set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+	set(CMAKE_INSTALL_RPATH "$ORIGIN/libs")
+	set(ldflags "${ldflags} -Wl,--large-address-aware,-z,origin") # not sure this is even needed, but shouldn't hurt
 else()
-	set( CMAKE_SKIP_RPATH ON CACHE BOOL "Skip RPATH" FORCE )
+	set(CMAKE_SKIP_RPATH ON CACHE BOOL "Skip RPATH" FORCE)
 endif()
 
-if( REPRODUCIBLE_BUILD )
+if(REPRODUCIBLE_BUILD)
 	# don't use __DATE__ and __TIME__ macros so builds are reproducible
-	add_definitions( -DID_REPRODUCIBLE_BUILD )
+	add_definitions(-DID_REPRODUCIBLE_BUILD)
 endif()
 
 # Set these if we found either MFC or any UI toolkit, turn off TOOLS if we didn't found neither of theses
-set( MFC_TOOLS OFF ) # (Visual Studio + SDL2 only)
+set(MFC_TOOLS OFF) # (Visual Studio + SDL2 only)
 
 # Define our cpu variable
-include( CPUDefine )
+include(CPUDefine)
 
 # Nicely tied our thirdparty libraries here
-set( sys_thirdparty_libs )
+set(sys_thirdparty_libs)
 
 # libs
-find_package( Stb REQUIRED )
-include_directories( ${Stb_INCLUDE_DIR} )
+find_package(OpenAL REQUIRED)
+include_directories(${OPENAL_INCLUDE_DIR})
+list(APPEND sys_thirdparty_libs ${OPENAL_LIBRARY})
 
-find_package( OpenAL REQUIRED )
-include_directories( ${OPENAL_INCLUDE_DIR} )
-list( APPEND sys_thirdparty_libs ${OPENAL_LIBRARY} )
-
-find_package( SDL2 REQUIRED )
-include_directories( ${SDL2_INCLUDE_DIR} )
-list( APPEND sys_thirdparty_libs SDL2::SDL2 )
+find_package(SDL2 REQUIRED)
+include_directories(${SDL2_INCLUDE_DIR})
+list(APPEND sys_thirdparty_libs ${SDL2_LIBRARY})
 
 # Curl
-find_package( CURL QUIET )
-if( CURL_FOUND )
-	set( ID_ENABLE_CURL ON )
-	include_directories( ${CURL_INCLUDE_DIR} )
-	message( STATUS "libcurl found and enabled" )
-	list( APPEND sys_thirdparty_libs ${CURL_LIBRARY} )
+find_package(CURL QUIET)
+if(CURL_FOUND)
+	set(ID_ENABLE_CURL ON)
+	include_directories(${CURL_INCLUDE_DIR})
+	message(STATUS "libcurl found and enabled")
+	list(APPEND sys_thirdparty_libs ${CURL_LIBRARY})
 else()
-	message( WARNING "libcurl not found, server downloads won't be available (apart from that the engine will work)" )
-	set( ID_ENABLE_CURL OFF )
-	set( CURL_LIBRARY "" )
+	message(WARNING "libcurl not found, server downloads won't be available (apart from that the engine will work)")
+	set(ID_ENABLE_CURL OFF)
+	set(CURL_LIBRARY "")
 endif()
 
-if( TOOLS )
-	if( MSVC )
+if(TOOLS)
+	if(MSVC)
 		# This is required for tools on windows.
-		find_package( MFC )
-		if( NOT MFC_FOUND )
-			message( WARNING "MFC ('Microsoft Foundation Classes for C++') couldn't be found, but is needed for TOOLS!" )
-			message( WARNING "If you're using VS2013, you'll also need the 'Multibyte MFC Library for Visual Studio 2013': https://www.microsoft.com/en-us/download/details.aspx?id=40770 (VS2015 and 2017 include that in the default MFC package)" )
+		find_package(MFC)
+		if(NOT MFC_FOUND)
+			message(WARNING "MFC ('Microsoft Foundation Classes for C++') couldn't be found, but is needed for TOOLS!")
+			message(WARNING "If you're using VS2013, you'll also need the 'Multibyte MFC Library for Visual Studio 2013': https://www.microsoft.com/en-us/download/details.aspx?id=40770 (VS2015 and 2017 include that in the default MFC package)")
 		else()
-			set( MFC_TOOLS ON )
+			set(MFC_TOOLS ON)
 		endif()
 	endif()
 endif()
 
-set( D3_COMPILER_IS_CLANG FALSE )
-set( D3_COMPILER_IS_GCC_OR_CLANG FALSE )
+set(D3_COMPILER_IS_CLANG FALSE)
+set(D3_COMPILER_IS_GCC_OR_CLANG FALSE)
 
-if( NOT MSVC )
-	if( NOT WIN32 )
+if(NOT MSVC)
+	if(NOT WIN32)
 		# libbacktrace support - TODO: might work with MinGW? we don't have a crash handler for win32 though..
-		include( CheckCSourceCompiles )
-		set( CMAKE_REQUIRED_LIBRARIES backtrace )
-		check_c_source_compiles( "#include <backtrace.h>
-		int main() { backtrace_create_state(NULL, 0, NULL, NULL); return 0; }" HAVE_LIBBACKTRACE )
-		unset( CMAKE_REQUIRED_LIBRARIES )
+		include(CheckCSourceCompiles)
+		set(CMAKE_REQUIRED_LIBRARIES backtrace)
+		check_c_source_compiles("#include <backtrace.h>
+		int main() { backtrace_create_state(NULL, 0, NULL, NULL); return 0; }" HAVE_LIBBACKTRACE)
+		unset(CMAKE_REQUIRED_LIBRARIES)
 
-		if( HAVE_LIBBACKTRACE )
-			set( sys_libs ${sys_libs} backtrace )
-			add_definitions( -DD3_HAVE_LIBBACKTRACE )
-			message( STATUS "Using libbacktrace" )
+		if(HAVE_LIBBACKTRACE)
+			set(sys_libs ${sys_libs} backtrace)
+			add_definitions(-DD3_HAVE_LIBBACKTRACE)
+			message(STATUS "Using libbacktrace")
 		else()
-			message( WARNING "libbacktrace wasn't found. It's not required but recommended, because it provides useful backtraces if engine/game crashes" )
+			message(WARNING "libbacktrace wasn't found. It's not required but recommended, because it provides useful backtraces if engine/game crashes")
 		endif()
 	endif() # NOT WIN32
 
 	# check if our SDL2 supports X11 in SDL_syswm so we can use it for DPI scaling
-	set( CMAKE_REQUIRED_LIBRARIES SDL2 )
-	check_c_source_compiles( "#include <SDL_syswm.h>
-		int main() { SDL_SysWMinfo wmInfo = {}; wmInfo.info.x11.display = NULL; return 0; }" HAVE_SDL_X11 )
-	unset( CMAKE_REQUIRED_LIBRARIES )
+	set(CMAKE_REQUIRED_LIBRARIES SDL2)
+	check_c_source_compiles("#include <SDL_syswm.h>
+		int main() { SDL_SysWMinfo wmInfo = {}; wmInfo.info.x11.display = NULL; return 0; }" HAVE_SDL_X11)
+	unset(CMAKE_REQUIRED_LIBRARIES)
 		
-	if ( HAVE_SDL_X11 )
-		message( STATUS "This SDL2 has X11 support" )
-		add_definitions( -DD3_SDL_X11 )
+	if (HAVE_SDL_X11)
+		message(STATUS "This SDL2 has X11 support")
+		add_definitions(-DD3_SDL_X11)
 	endif()
 
 	# check if this is some kind of clang (Clang, whatever)
 	# (convert compiler ID to lowercase so we match Clang, clang, etc, regardless of case)
-	string( TOLOWER ${CMAKE_CXX_COMPILER_ID} compiler_id_lower )
-	if( compiler_id_lower MATCHES ".*clang.*" )
-		message( STATUS "Compiler \"${CMAKE_CXX_COMPILER_ID}\" detected as some kind of clang" )
-		set( D3_COMPILER_IS_CLANG TRUE )
-		set( D3_COMPILER_IS_GCC_OR_CLANG TRUE )
-	elseif( CMAKE_COMPILER_IS_GNUCC )
-		set( D3_COMPILER_IS_GCC_OR_CLANG TRUE )
+	string(TOLOWER ${CMAKE_CXX_COMPILER_ID} compiler_id_lower)
+	if(compiler_id_lower MATCHES ".*clang.*")
+		message(STATUS "Compiler \"${CMAKE_CXX_COMPILER_ID}\" detected as some kind of clang")
+		set(D3_COMPILER_IS_CLANG TRUE)
+		set(D3_COMPILER_IS_GCC_OR_CLANG TRUE)
+	elseif(CMAKE_COMPILER_IS_GNUCC)
+		set(D3_COMPILER_IS_GCC_OR_CLANG TRUE)
 	endif()
-	unset( compiler_id_lower )
+	unset(compiler_id_lower)
 endif() # not MSVC
 
 # compiler specific flags
-if( D3_COMPILER_IS_GCC_OR_CLANG )
-	add_compile_options( -pipe )
-	add_compile_options( -Wall )
+if(D3_COMPILER_IS_GCC_OR_CLANG)
+	add_compile_options(-pipe)
+	add_compile_options(-Wall)
+	add_compile_options(-Wno-unknown-pragmas)
+	add_compile_options(-Wno-narrowing)
 
-	if( NOT CMAKE_CROSSCOMPILING AND ONATIVE )
-		add_compile_options( -march=native)
-	elseif( cpu STREQUAL "x86" )
-		add_compile_options( -march=pentium3 )
+	if(NOT CMAKE_CROSSCOMPILING AND ONATIVE)
+		add_compile_options(-march=native)
+	elseif(cpu STREQUAL "x86")
+		add_compile_options(-march=pentium3)
 	endif()
 
-	if( FORCE_COLORED_OUTPUT)
-		if( CMAKE_COMPILER_IS_GNUCC )
-		   add_compile_options ( -fdiagnostics-color=always )
-		elseif ( D3_COMPILER_IS_CLANG )
-		   add_compile_options ( -fcolor-diagnostics )
+	if(FORCE_COLORED_OUTPUT)
+		if(CMAKE_COMPILER_IS_GNUCC)
+		   add_compile_options (-fdiagnostics-color=always)
+		elseif (D3_COMPILER_IS_CLANG)
+		   add_compile_options (-fcolor-diagnostics)
 		endif ()
 	endif ()
 
-	set( CMAKE_C_FLAGS_DEBUG "-g -ggdb -D_DEBUG -O0" )
-	set( CMAKE_C_FLAGS_DEBUGALL "-g -ggdb -D_DEBUG" )
-	set( CMAKE_C_FLAGS_PROFILE "-g -ggdb -D_DEBUG -O1 -fno-omit-frame-pointer" )
-	set( CMAKE_C_FLAGS_RELEASE "-O2 -fno-math-errno -fno-trapping-math  -ffinite-math-only -fomit-frame-pointer" )
-	set( CMAKE_C_FLAGS_RELWITHDEBINFO "-g -ggdb -O2 -fno-math-errno -fno-trapping-math  -ffinite-math-only -fno-omit-frame-pointer" )
-	set( CMAKE_C_FLAGS_MINSIZEREL "-Os -fno-math-errno -fno-trapping-math  -ffinite-math-only -fomit-frame-pointer" )
+	set(CMAKE_C_FLAGS_DEBUG "-g -ggdb -D_DEBUG -O0")
+	set(CMAKE_C_FLAGS_DEBUGALL "-g -ggdb -D_DEBUG")
+	set(CMAKE_C_FLAGS_PROFILE "-g -ggdb -D_DEBUG -O1 -fno-omit-frame-pointer")
+	set(CMAKE_C_FLAGS_RELEASE "-O2 -fno-math-errno -fno-trapping-math  -ffinite-math-only -fomit-frame-pointer")
+	set(CMAKE_C_FLAGS_RELWITHDEBINFO "-g -ggdb -O2 -fno-math-errno -fno-trapping-math  -ffinite-math-only -fno-omit-frame-pointer")
+	set(CMAKE_C_FLAGS_MINSIZEREL "-Os -fno-math-errno -fno-trapping-math  -ffinite-math-only -fomit-frame-pointer")
 
-	set( CMAKE_CXX_FLAGS_DEBUGALL ${CMAKE_C_FLAGS_DEBUGALL} )
-	set( CMAKE_CXX_FLAGS_PROFILE ${CMAKE_C_FLAGS_PROFILE} )
+	set(CMAKE_CXX_FLAGS_DEBUGALL ${CMAKE_C_FLAGS_DEBUGALL})
+	set(CMAKE_CXX_FLAGS_PROFILE ${CMAKE_C_FLAGS_PROFILE})
 
 	add_compile_options(-fno-strict-aliasing)
 
@@ -193,126 +195,126 @@ if( D3_COMPILER_IS_GCC_OR_CLANG )
 		add_compile_options(-ffp-contract=off)
 	endif()
 	
-	if( ASAN )
+	if(ASAN)
 		# if this doesn't work, ASan might not be available on your platform, don't set ASAN then..
-		add_compile_options( -fsanitize=address )
-		set( sys_libs ${sys_libs} -fsanitize=address )
+		add_compile_options(-fsanitize=address)
+		set(sys_libs ${sys_libs} -fsanitize=address)
 	endif()
 
-	if( UBSAN )
+	if(UBSAN)
 		# if this doesn't work, UBSan might not be available on your platform, don't set UBSAN then..
-		add_compile_options( -fsanitize=undefined )
-		set( sys_libs ${sys_libs} -fsanitize=undefined )
+		add_compile_options(-fsanitize=undefined)
+		set(sys_libs ${sys_libs} -fsanitize=undefined)
 	endif()
 
-	CHECK_CXX_COMPILER_FLAG( "-fvisibility=hidden" cxx_has_fvisibility )
-	if( NOT cxx_has_fvisibility )
-		message( FATAL_ERROR "Compiler does not support -fvisibility" )
+	CHECK_CXX_COMPILER_FLAG("-fvisibility=hidden" cxx_has_fvisibility)
+	if(NOT cxx_has_fvisibility)
+		message(FATAL_ERROR "Compiler does not support -fvisibility")
 	endif()
-	add_compile_options( -fvisibility=hidden )
+	add_compile_options(-fvisibility=hidden)
 
 	# TODO fix these warnings
-	add_compile_options( -Wno-sign-compare )
-	add_compile_options( -Wno-switch )
+	add_compile_options(-Wno-sign-compare)
+	add_compile_options(-Wno-switch)
 
-	CHECK_CXX_COMPILER_FLAG( "-Woverloaded-virtual" cxx_has_Woverload_virtual )
-	if( cxx_has_Woverload_virtual )
-		set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Woverloaded-virtual" )
+	CHECK_CXX_COMPILER_FLAG("-Woverloaded-virtual" cxx_has_Woverload_virtual)
+	if(cxx_has_Woverload_virtual)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Woverloaded-virtual")
 	endif()
 	
 	# shut up about using memcpy() on classes, in the cases doom3 uses it it seems to be fine
-	CHECK_CXX_COMPILER_FLAG( "-Wno-class-memaccess" cxx_has_Wno-class-memaccess )
-	if( cxx_has_Wno-class-memaccess )
-		set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-class-memaccess" )
+	CHECK_CXX_COMPILER_FLAG("-Wno-class-memaccess" cxx_has_Wno-class-memaccess)
+	if(cxx_has_Wno-class-memaccess)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-class-memaccess")
 	endif()
 
 	# ignore warnings about variables named "requires" for now (in C++20 it's a keyword,
 	#  but currently we don't even use C++11 features)
-	CHECK_CXX_COMPILER_FLAG( "-Wno-c++20-compat" cxx_has_Wno-cpp20-compat )
-	if( cxx_has_Wno-cpp20-compat )
-		set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++20-compat" )
+	CHECK_CXX_COMPILER_FLAG("-Wno-c++20-compat" cxx_has_Wno-cpp20-compat)
+	if(cxx_has_Wno-cpp20-compat)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++20-compat")
 	endif()
 	
-	#if ( NOT MSVC )
-	#	find_package( OpenSSL REQUIRED )
+	#if (NOT MSVC)
+	#	find_package(OpenSSL REQUIRED)
 	#endif()
 
-	if( WIN32 )
+	if(WIN32)
 		# use 8MB stack instead of 1MB, so big models don't overflow it with _alloca()
-		set( ldflags "${ldflags} -static-libgcc -static-libstdc++ -Wl, --large-address-aware --stack,8388608" )
-	elseif( os STREQUAL "linux" )
-		#set( sys_libs ${sys_libs} dl OpenSSL::SSL OpenSSL::Crypto rt )
-		set( sys_libs ${sys_libs} dl rt )
-	elseif( os STREQUAL "freebsd" )
-		find_library( EXECINFO_LIBRARIES execinfo /usr/lib /usr/local/lib )
-		#set( sys_libs ${sys_libs} OpenSSL::SSL OpenSSL::Crypto rt ${EXECINFO_LIBRARIES} )
-		set( sys_libs ${sys_libs} rt ${EXECINFO_LIBRARIES} )
+		set(ldflags "${ldflags} -static-libgcc -static-libstdc++ -Wl, --large-address-aware --stack,8388608")
+	elseif(os STREQUAL "linux")
+		#set(sys_libs ${sys_libs} dl OpenSSL::SSL OpenSSL::Crypto rt)
+		set(sys_libs ${sys_libs} dl rt)
+	elseif(os STREQUAL "freebsd")
+		find_library(EXECINFO_LIBRARIES execinfo /usr/lib /usr/local/lib)
+		#set(sys_libs ${sys_libs} OpenSSL::SSL OpenSSL::Crypto rt ${EXECINFO_LIBRARIES})
+		set(sys_libs ${sys_libs} rt ${EXECINFO_LIBRARIES})
 	endif()
-elseif( MSVC )
-	add_compile_options( /MP ) # parallel build (use all cores, or as many as configured in VS)
-	add_compile_options( /W3 ) # TODO: was /W4, caused trouble with VS2019 (and/or its integrated CMake? or only HarrieVG's setup?)
+elseif(MSVC)
+	add_compile_options(/MP) # parallel build (use all cores, or as many as configured in VS)
+	add_compile_options(/W3) # TODO: was /W4, caused trouble with VS2019 (and/or its integrated CMake? or only HarrieVG's setup?)
 
-	add_compile_options( /we4840 ) # treat as error when passing a class to a vararg-function (probably printf-like)
-	add_compile_options( /we4306 /we4311 /we4312 /we4302 )	# treat several kinds of truncating int<->pointer conversions as errors (for more 64bit-safety)
+	add_compile_options(/we4840) # treat as error when passing a class to a vararg-function (probably printf-like)
+	add_compile_options(/we4306 /we4311 /we4312 /we4302)	# treat several kinds of truncating int<->pointer conversions as errors (for more 64bit-safety)
 	# ignore the following warnings:
-	add_compile_options( /wd4100 ) # unreferenced formal parameter
-	add_compile_options( /wd4127 ) # conditional expression is constant
-	add_compile_options( /wd4244 ) # possible loss of data
-	add_compile_options( /wd4245 ) # signed/unsigned mismatch
-	add_compile_options( /wd4267 ) # possible loss of data
-	add_compile_options( /wd4714 ) # 'function' marked as __forceinline not inlined
-	add_compile_options( /wd4996 ) # 'function': was declared deprecated
-	add_compile_options( /wd4068 ) # unknown pragma
-	add_compile_options( /wd4458 ) # declaration of 'variable' hides class member
-	add_compile_options( /wd4018 ) # 'math symbol': signed/unsigned mismatch
-	add_compile_options( /wd4018 ) # 'math symbol': signed/unsigned mismatch
-	add_compile_options( /wd26495 ) # variable 'variable' is uninitialized. Always initialize a member variable (type.6).
-	add_compile_options( /wd4146 ) # unary minus operator applied to unsigned type, result still unsigned
-	add_compile_options( /wd4805 ) # 'symbol' unsafe mix of type 'type a' and type 'type b' in operation
-	add_compile_options( /wd4273 ) # 'function': inconsistent dll linkage
-	add_compile_options( /wd4838 ) # conversion from 'type' to 'type' requires a narrowing conversion
+	add_compile_options(/wd4100) # unreferenced formal parameter
+	add_compile_options(/wd4127) # conditional expression is constant
+	add_compile_options(/wd4244) # possible loss of data
+	add_compile_options(/wd4245) # signed/unsigned mismatch
+	add_compile_options(/wd4267) # possible loss of data
+	add_compile_options(/wd4714) # 'function' marked as __forceinline not inlined
+	add_compile_options(/wd4996) # 'function': was declared deprecated
+	add_compile_options(/wd4068) # unknown pragma
+	add_compile_options(/wd4458) # declaration of 'variable' hides class member
+	add_compile_options(/wd4018) # 'math symbol': signed/unsigned mismatch
+	add_compile_options(/wd4018) # 'math symbol': signed/unsigned mismatch
+	add_compile_options(/wd26495) # variable 'variable' is uninitialized. Always initialize a member variable (type.6).
+	add_compile_options(/wd4146) # unary minus operator applied to unsigned type, result still unsigned
+	add_compile_options(/wd4805) # 'symbol' unsafe mix of type 'type a' and type 'type b' in operation
+	add_compile_options(/wd4273) # 'function': inconsistent dll linkage
+	add_compile_options(/wd4838) # conversion from 'type' to 'type' requires a narrowing conversion
 
 	# Ignore warnings for Dedicate server build
-	set( CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ignore:4286 /ignore:4217" )
-	set( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /ignore:4286 /ignore:4217" )
-	set( CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} /ignore:4286 /ignore:4217" )
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ignore:4286 /ignore:4217")
+	set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /ignore:4286 /ignore:4217")
+	set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} /ignore:4286 /ignore:4217")
 
 	
-	add_definitions( -D_ALLOW_KEYWORD_MACROS ) # because of the "#define private public" and "#define protected public" in TypeInfo.cpp
+	add_definitions(-D_ALLOW_KEYWORD_MACROS) # because of the "#define private public" and "#define protected public" in TypeInfo.cpp
 	
-	set( CMAKE_C_FLAGS_DEBUG "-D_DEBUG /Od /Zi /MDd" )
-	set( CMAKE_C_FLAGS_RELEASE "/Ox /Oy /MD" )
-	set( CMAKE_C_FLAGS_RELWITHDEBINFO "/Ox /Oy /Zi /MD" )
-	set( CMAKE_C_FLAGS_MINSIZEREL "/Ox /Oy /Os /MD" )
+	set(CMAKE_C_FLAGS_DEBUG "-D_DEBUG /Od /Zi /MDd")
+	set(CMAKE_C_FLAGS_RELEASE "/Ox /Oy /MD")
+	set(CMAKE_C_FLAGS_RELWITHDEBINFO "/Ox /Oy /Zi /MD")
+	set(CMAKE_C_FLAGS_MINSIZEREL "/Ox /Oy /Os /MD")
 	
 	# use 8MB stack instead of 1MB, so big models don't overflow it with _alloca()
-	set( ldflags "${ldflags} /STACK:8388608" )
+	set(ldflags "${ldflags} /STACK:8388608")
 	
 	# let the 32bit app use more than 2gb of ram
-	set( ldflags "${ldflags} /LARGEADDRESSAWARE" )
+	set(ldflags "${ldflags} /LARGEADDRESSAWARE")
 	
 	# Don't let the linker generate manifest files for shared dlls
-	set( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /MANIFEST:NO" )
+	set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /MANIFEST:NO")
 else()
-	message( FATAL_ERROR "Unsupported compiler" )
+	message(FATAL_ERROR "Unsupported compiler")
 endif()
 
 # Drop the binaries in the output/${os} folder
-set( OUTPUT_FOLDER ${CMAKE_SOURCE_DIR}/../output/${os} )
+set(OUTPUT_FOLDER ${CMAKE_SOURCE_DIR}/../output/${os})
 
-set( CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG} )
-set( CMAKE_CXX_FLAGS_RELWITHDEBINFO ${CMAKE_C_FLAGS_RELWITHDEBINFO} )
+set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO ${CMAKE_C_FLAGS_RELWITHDEBINFO})
 
 # disable assertions in release builds
-set( CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG ${CMAKE_C_FLAGS_RELEASE}" )
-set( CMAKE_CXX_FLAGS_MINSIZEREL "-DNDEBUG ${CMAKE_C_FLAGS_MINSIZEREL}" )
+set(CMAKE_CXX_FLAGS_RELEASE "-DNDEBUG ${CMAKE_C_FLAGS_RELEASE}")
+set(CMAKE_CXX_FLAGS_MINSIZEREL "-DNDEBUG ${CMAKE_C_FLAGS_MINSIZEREL}")
 
 # mingw and msvc
-if( WIN32 )
-	add_definitions( -DWINVER=0x0501 )
-	add_definitions( -D_WIN32_WINNT=0x0501 )
+if(WIN32)
+	add_definitions(-DWINVER=0x0501)
+	add_definitions(-D_WIN32_WINNT=0x0501)
 
-	set( sys_libs ${sys_libs}
+	set(sys_libs ${sys_libs}
 		winmm
 		iphlpapi
 		wsock32
@@ -322,7 +324,7 @@ endif()
 
 # optimize this source file even in debug builds, to make speed (esp. loading times) more bearable
 # used for libs integrated here like stb_* and miniz(ip)
-if(CMAKE_MAJOR_VERSION LESS 3 OR ( CMAKE_MAJOR_VERSION EQUAL 3 AND CMAKE_MINOR_VERSION LESS 11 ))
+if(CMAKE_MAJOR_VERSION LESS 3 OR (CMAKE_MAJOR_VERSION EQUAL 3 AND CMAKE_MINOR_VERSION LESS 11))
 	function(always_optimize_sourcefile srcfilename)
 		if(MSVC)
 			set_source_files_properties(${srcfilename} PROPERTIES COMPILE_FLAGS "/Ox")
@@ -340,24 +342,24 @@ else()
 	endfunction()
 endif()
 
-set( bindir		"${CMAKE_INSTALL_FULL_BINDIR}" )
-set( libdir		"${CMAKE_INSTALL_FULL_LIBDIR}/prey06" )
-set( datadir	"${CMAKE_INSTALL_FULL_DATADIR}/prey06" )
+set(bindir		"${CMAKE_INSTALL_FULL_BINDIR}")
+set(libdir		"${CMAKE_INSTALL_FULL_LIBDIR}/prey06")
+set(datadir	"${CMAKE_INSTALL_FULL_DATADIR}/prey06")
 
 configure_file(
 	"${CMAKE_SOURCE_DIR}/config.h.in"
 	"${CMAKE_BINARY_DIR}/config.h"
 )
 
-if( NOT MSVC )
-	message( STATUS "Building ${CMAKE_BUILD_TYPE} for ${os}-${cpu}" )
+if(NOT MSVC)
+	message(STATUS "Building ${CMAKE_BUILD_TYPE} for ${os}-${cpu}")
 endif()
 
-if( NOT WIN32 )
-	message( STATUS "The install target will use the following directories:" )
-	message( STATUS "  Binary directory:  ${bindir}" )
-	message( STATUS "  Library directory: ${libdir}" )
-	message( STATUS "  Data directory:    ${datadir}" )
+if(NOT WIN32)
+	message(STATUS "The install target will use the following directories:")
+	message(STATUS "  Binary directory:  ${bindir}")
+	message(STATUS "  Library directory: ${libdir}")
+	message(STATUS "  Data directory:    ${datadir}")
 endif()
 
 set(src_renderer
@@ -395,6 +397,7 @@ set(src_renderer
 	renderer/VertexCache.cpp
 	renderer/draw_arb2.cpp
 	renderer/draw_common.cpp
+	renderer/stblib_impls.c
 	renderer/tr_backend.cpp
 	renderer/tr_deform.cpp
 	renderer/tr_font.cpp
@@ -413,6 +416,16 @@ set(src_renderer
 	renderer/tr_trisurf.cpp
 	renderer/tr_turboshadow.cpp
 )
+
+# Don't use precompiled headers for renderer/stblib_impls.c source.
+set_source_files_properties(
+	renderer/stblib_impls.c
+	PROPERTIES
+	SKIP_PRECOMPILE_HEADERS ON
+	LANGUAGE C
+)
+
+always_optimize_sourcefile(renderer/stblib_impls.c)
 
 add_globbed_headers(src_renderer "renderer")
 
@@ -537,7 +550,18 @@ set(src_snd
 	sound/snd_system.cpp
 	sound/snd_wavefile.cpp
 	sound/snd_world.cpp
+	sound/stbvorbis_impl.c
 )
+
+# Don't use precompiled headers for sound/stbvorbis_impl.c source.
+set_source_files_properties(
+	sound/stbvorbis_impl.c
+	PROPERTIES
+	SKIP_PRECOMPILE_HEADERS ON
+	LANGUAGE C
+)
+
+always_optimize_sourcefile(sound/stbvorbis_impl.c)
 
 add_globbed_headers(src_snd "sound")
 
@@ -641,13 +665,13 @@ set(src_game
 	game/Player.cpp
 	game/PlayerIcon.cpp
 	game/PlayerView.cpp
-	game/projectile.cpp
+	game/Projectile.cpp
 	game/Pvs.cpp
 	game/SecurityCamera.cpp
 	game/SmokeParticles.cpp
 	game/Sound.cpp
 	game/Target.cpp
-	game/trigger.cpp
+	game/Trigger.cpp
 	game/Weapon.cpp
 	game/WorldSpawn.cpp
 	game/ai/AAS.cpp
@@ -897,7 +921,7 @@ set(src_tools
 # TODO: add_globbed_headers(src_tools "tools/guied")
 
 # Begin normal (MFC) tools code
-if ( TOOLS AND MFC_TOOLS AND MSVC )
+if (TOOLS AND MFC_TOOLS AND MSVC)
 	set(ALLOWRESOURCES ON)
 	# Common files.
 	file(GLOB src_comafx "tools/comafx/*.cpp")
@@ -925,7 +949,7 @@ if ( TOOLS AND MFC_TOOLS AND MSVC )
 	# Particle Editor
 	file(GLOB src_particleeditor "tools/particle/*.cpp")
 	add_globbed_headers(src_particleeditor "tools/particle")
-	# Radiant ( Map editor )
+	# Radiant (Map editor)
 	file(GLOB src_map_editor "tools/radiant/*.cpp")
 	add_globbed_headers(src_map_editor "tools/radiant")
 	# Script editor
@@ -972,7 +996,7 @@ if ( TOOLS AND MFC_TOOLS AND MSVC )
 	SET(CMAKE_MFC_FLAG 2)
 	set(TOOLS_DEFINES "ID_ALLOW_TOOLS;_AFXDLL")
 else()
-	set(src_editor_tools "tools/edit_stub.cpp" "tools/edit_public.h" )
+	set(src_editor_tools "tools/edit_stub.cpp" "tools/edit_public.h")
 	list(APPEND src_editor_tools
 		${src_debuggerServer}
 	)
@@ -1054,69 +1078,69 @@ include_directories(${CMAKE_SOURCE_DIR})
 
 # ================================= Idlib ======================================
 
-add_library( idlib STATIC ${src_idlib} )
-if( D3_COMPILER_IS_GCC_OR_CLANG AND NOT MINGW )
-	set_target_properties( idlib PROPERTIES COMPILE_FLAGS "-fPIC" )
+add_library(idlib STATIC ${src_idlib})
+if(D3_COMPILER_IS_GCC_OR_CLANG AND NOT MINGW)
+	set_target_properties(idlib PROPERTIES COMPILE_FLAGS "-fPIC")
 endif()
 
-if ( MSVC )
-	source_group( TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_idlib} )
+if (MSVC)
+	source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_idlib})
 endif()
 
-target_include_directories( idlib PRIVATE "${CMAKE_SOURCE_DIR}/idlib" )
-target_precompile_headers( idlib PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h" )
+target_include_directories(idlib PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
+target_precompile_headers(idlib PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
 
-set_target_properties( idlib PROPERTIES FOLDER "libs" )
+set_target_properties(idlib PROPERTIES FOLDER "libs")
 
 # ================================= Engine ======================================
 
-if( HARDLINK_GAME )
-	if( BASE )
-		set( src_core ${src_core} ${src_game} ${src_prey} )
-		set( game_includes "${CMAKE_SOURCE_DIR}/game" "${CMAKE_SOURCE_DIR}/Prey" )
+if(HARDLINK_GAME)
+	if(BASE)
+		set(src_core ${src_core} ${src_game} ${src_prey})
+		set(game_includes "${CMAKE_SOURCE_DIR}/game" "${CMAKE_SOURCE_DIR}/Prey")
 	endif()
 endif()
 
-if( ENGINE )
-	add_executable( ${ENGINE_BINARY} WIN32
+if(ENGINE)
+	add_executable(${ENGINE_BINARY} WIN32
 		${src_core}
 		${src_sys_base}
 		${src_sys_core}
 		${src_editor_tools}
 	)
 	
-	if( MSVC )
+	if(MSVC)
 		# set MSVC default debug directory on executable	
-		set_target_properties( ${ENGINE_BINARY} PROPERTIES VS_STARTUP_PROJECT ${ENGINE_BINARY} )
-		set_target_properties( ${ENGINE_BINARY} PROPERTIES VS_DEBUGGER_COMMAND "${OUTPUT_FOLDER}/${ENGINE_BINARY}.exe" )
-		set_target_properties( ${ENGINE_BINARY} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${OUTPUT_FOLDER}" )
-		set_target_properties( ${ENGINE_BINARY} PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "+set developer 1" )
+		set_target_properties(${ENGINE_BINARY} PROPERTIES VS_STARTUP_PROJECT ${ENGINE_BINARY})
+		set_target_properties(${ENGINE_BINARY} PROPERTIES VS_DEBUGGER_COMMAND "${OUTPUT_FOLDER}/${ENGINE_BINARY}.exe")
+		set_target_properties(${ENGINE_BINARY} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${OUTPUT_FOLDER}")
+		set_target_properties(${ENGINE_BINARY} PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "+set developer 1")
 
-		source_group( TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_core} ${src_sys_base} ${src_sys_core} ${src_editor_tools} )
+		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_core} ${src_sys_base} ${src_sys_core} ${src_editor_tools})
 	endif()
 
-	target_precompile_headers( ${ENGINE_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h" )
+	target_precompile_headers(${ENGINE_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
 	
-	target_include_directories( ${ENGINE_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib" )
+	target_include_directories(${ENGINE_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
 
-	if( HARDLINK_GAME )
-		set_target_properties( ${ENGINE_BINARY} PROPERTIES COMPILE_DEFINITIONS "HUMANHEAD;${TOOLS_DEFINES}" )
-		target_include_directories( ${ENGINE_BINARY} PRIVATE ${game_includes} )
+	if(HARDLINK_GAME)
+		set_target_properties(${ENGINE_BINARY} PROPERTIES COMPILE_DEFINITIONS "HUMANHEAD;${TOOLS_DEFINES}")
+		target_include_directories(${ENGINE_BINARY} PRIVATE ${game_includes})
 	else()
-		set_target_properties( ${ENGINE_BINARY} PROPERTIES COMPILE_DEFINITIONS "HUMANHEAD;__DOOM_DLL__;${TOOLS_DEFINES}" )
+		set_target_properties(${ENGINE_BINARY} PROPERTIES COMPILE_DEFINITIONS "HUMANHEAD;__DOOM_DLL__;${TOOLS_DEFINES}")
 	endif()
 
-	set_target_properties( ${ENGINE_BINARY} PROPERTIES LINK_FLAGS "${ldflags}" )
-	set_target_properties( ${ENGINE_BINARY} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER} )
-	set_target_properties( ${ENGINE_BINARY} PROPERTIES FOLDER "exes" )
+	set_target_properties(${ENGINE_BINARY} PROPERTIES LINK_FLAGS "${ldflags}")
+	set_target_properties(${ENGINE_BINARY} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
+	set_target_properties(${ENGINE_BINARY} PROPERTIES FOLDER "exes")
 
-	target_link_libraries( ${ENGINE_BINARY}
+	target_link_libraries(${ENGINE_BINARY}
 		idlib
 		${sys_thirdparty_libs}
 		${sys_libs}
 	)
 
-	if( NOT WIN32 )
+	if(NOT WIN32)
 		install(TARGETS ${ENGINE_BINARY}
 				RUNTIME DESTINATION "${bindir}"
 				LIBRARY DESTINATION "${libdir}"
@@ -1127,8 +1151,8 @@ endif()
 
 # ============================== Dedicate Server ================================
 
-if( DEDICATED )
-	add_executable( ${DEDICATED_BINARY} WIN32
+if(DEDICATED)
+	add_executable(${DEDICATED_BINARY} WIN32
 		${src_core}
 		${src_stub_openal}
 		${src_stub_gl}
@@ -1136,35 +1160,35 @@ if( DEDICATED )
 		${src_debuggerServer}
 	)
 	
-	if( MSVC )
-		source_group( TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_core} ${src_sys_base} ${src_stub_openal} ${src_stub_gl} ${src_debuggerServer} )
+	if(MSVC)
+		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_core} ${src_sys_base} ${src_stub_openal} ${src_stub_gl} ${src_debuggerServer})
 	endif()
 	
-	target_precompile_headers( ${DEDICATED_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h" )
+	target_precompile_headers(${DEDICATED_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
 	
-	target_include_directories( ${DEDICATED_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib" )
+	target_include_directories(${DEDICATED_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
 
-	if( HARDLINK_GAME )
-		set_target_properties( ${DEDICATED_BINARY} PROPERTIES COMPILE_DEFINITIONS "HUMANHEAD;ID_DEDICATED" )
-		target_include_directories( ${DEDICATED_BINARY} PRIVATE ${game_includes} )
+	if(HARDLINK_GAME)
+		set_target_properties(${DEDICATED_BINARY} PROPERTIES COMPILE_DEFINITIONS "HUMANHEAD;ID_DEDICATED")
+		target_include_directories(${DEDICATED_BINARY} PRIVATE ${game_includes})
 	else()
-		set_target_properties( ${DEDICATED_BINARY} PROPERTIES COMPILE_DEFINITIONS "HUMANHEAD;ID_DEDICATED;__DOOM_DLL__" )
+		set_target_properties(${DEDICATED_BINARY} PROPERTIES COMPILE_DEFINITIONS "HUMANHEAD;ID_DEDICATED;__DOOM_DLL__")
 	endif()
 
-	set_target_properties( ${DEDICATED_BINARY} PROPERTIES LINK_FLAGS "${ldflags}" )
-	set_target_properties( ${DEDICATED_BINARY} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER} )
-	set_target_properties( ${DEDICATED_BINARY} PROPERTIES FOLDER "exes" )
+	set_target_properties(${DEDICATED_BINARY} PROPERTIES LINK_FLAGS "${ldflags}")
+	set_target_properties(${DEDICATED_BINARY} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
+	set_target_properties(${DEDICATED_BINARY} PROPERTIES FOLDER "exes")
 	
-	list( REMOVE_ITEM sys_thirdparty_libs ${OPENAL_LIBRARY} )
+	list(REMOVE_ITEM sys_thirdparty_libs ${OPENAL_LIBRARY})
 
-	target_link_libraries( ${DEDICATED_BINARY}
+	target_link_libraries(${DEDICATED_BINARY}
 		idlib
 		${sys_thirdparty_libs}
 		${sys_libs}
 	)
 
-	if( NOT WIN32 )
-		install( TARGETS ${DEDICATED_BINARY}
+	if(NOT WIN32)
+		install(TARGETS ${DEDICATED_BINARY}
 				RUNTIME DESTINATION "${bindir}"
 				LIBRARY DESTINATION "${libdir}"
 				ARCHIVE DESTINATION "${libdir}"
@@ -1174,27 +1198,27 @@ endif()
 
 # ============================== Prey ================================
 
-if( BASE AND NOT HARDLINK_GAME )
-	add_library( base SHARED ${src_game} ${src_prey} )
+if(BASE AND NOT HARDLINK_GAME)
+	add_library(base SHARED ${src_game} ${src_prey})
 	
-	if ( MSVC )
-		source_group( TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_game} ${src_prey} )
+	if (MSVC)
+		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_game} ${src_prey})
 	endif()
 	
-	target_precompile_headers( base PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h" )
+	target_precompile_headers(base PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
 	
-	target_include_directories( base PRIVATE "${CMAKE_SOURCE_DIR}/idlib" )
+	target_include_directories(base PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
 	
-	set_target_properties( base PROPERTIES PREFIX "" )
-	set_target_properties( base PROPERTIES COMPILE_DEFINITIONS "GAME_DLL;HUMANHEAD" )
-	target_include_directories( base PRIVATE "${CMAKE_SOURCE_DIR}/game" "${CMAKE_SOURCE_DIR}/Prey" )
-	set_target_properties( base PROPERTIES LINK_FLAGS "${ldflags}" )
-	set_target_properties( base PROPERTIES INSTALL_NAME_DIR "@executable_path" )
-	target_link_libraries( base idlib )
-	set_target_properties( base PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER} LIBRARY_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER} )
-	set_target_properties( base PROPERTIES FOLDER "dlls" )
+	set_target_properties(base PROPERTIES PREFIX "")
+	set_target_properties(base PROPERTIES COMPILE_DEFINITIONS "GAME_DLL;HUMANHEAD")
+	target_include_directories(base PRIVATE "${CMAKE_SOURCE_DIR}/game" "${CMAKE_SOURCE_DIR}/Prey")
+	set_target_properties(base PROPERTIES LINK_FLAGS "${ldflags}")
+	set_target_properties(base PROPERTIES INSTALL_NAME_DIR "@executable_path")
+	target_link_libraries(base idlib)
+	set_target_properties(base PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER} LIBRARY_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
+	set_target_properties(base PROPERTIES FOLDER "dlls")
 
-	if( NOT WIN32 )
+	if(NOT WIN32)
 		install(TARGETS base
 				RUNTIME DESTINATION "${bindir}"
 				LIBRARY DESTINATION "${libdir}"

@@ -30,7 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 #pragma hdrstop
 
 #include "../Game_local.h"
-#include "../../prey/game_portal.h" // HUMANHEAD
+#include "../../Prey/game_portal.h" // HUMANHEAD
 
 static const char *moveCommandString[ NUM_MOVE_COMMANDS ] = {
 	"MOVE_NONE",

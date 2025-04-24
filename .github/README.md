@@ -6,30 +6,41 @@
 > [!CAUTION]
 > This project is far from being completed, currently there is ~~2~~ a lot of major blockers that prevent this from being playable.
 > 1. Multiplayer may work but has not been tested
-> 
+>
 > The binaries are provide as-is, support may be limited due to my lack of knowledge,
-> This project was create due to the insatisfaction of some source ports barely fixing or improving 
+> This project was create due to the insatisfaction of some source ports barely fixing or improving
 > and or sacrificing features for other platforms.
-> I hope you guys understand, but contributions are welcome :) 
+> I hope you guys understand, but contributions are welcome :)
 
 # Introduction
+
 Prey 2006 SDK integrated with Doom 3 GPL release
 
 ## About
 
-This project is a code integration of the Prey 2006 SDK against the Doom 3 GPL codebase. 
+This project is a code integration of the Prey 2006 SDK against the Doom 3 GPL codebase.
 This means this includes new engine side features that were in the Prey 2006 engine,
 and some adjustments to the Prey 2006 SDK code.
 
 This runs in a semi vanilla Dhewm3 v1.5.4 fork that specifically removes imgui, soft particles and joystick support for the time being.
 
 ## Compiling
-For Windows:
-  - Visual Studio 2019 or 2022
-  - CMake
-  - Run either cmake_msvc2019.cmd or cmake_msvc2022.cmd
 
-For Linux: At the moment compiling for linux is not supported.
+For Windows:
+
+- Clone the repo with submodules
+- Install [Visual Studio 2019](https://visualstudio.microsoft.com/vs/older-downloads/) or Visual [Visual Studio 2022](https://visualstudio.microsoft.com/vs/)
+- [CMake](https://cmake.org/download/)
+- Run either **cmake_msvc2019.cmd** or **cmake_msvc2022.cmd**
+
+For Debian/Ubuntu
+
+- Intall the dependencies
+  - ```sudo apt install libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build stb```
+- Make **cmake_linux.sh** a executable and execute with
+  - ```.\cmake_linux.sh gcc release```
+
+For other Linux Distros: It should compile just fine in theory.
 
 ## Credits
 

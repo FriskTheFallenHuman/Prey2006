@@ -222,6 +222,12 @@ typedef unsigned long			ulong;
 
 typedef int						qhandle_t;
 
+#ifndef _WIN32
+typedef intptr_t      INT_PTR;
+typedef unsigned int  DWORD;
+typedef bool          BOOL;
+#endif
+
 #ifndef NULL
 #define NULL					((void *)0)
 #endif
@@ -230,7 +236,25 @@ typedef int						qhandle_t;
 #define BIT( num )				( 1 << ( num ) )
 #endif
 
+#ifndef _WIN32
+
+#ifndef TRUE
+#define TRUE true
+#endif
+
+#ifndef FALSE
+#define FALSE false
+#endif
+
+#ifndef max
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+#endif
+
+#endif
+
 #define	MAX_STRING_CHARS		1024		// max length of a string
+
+#define round_up(x, y)	(((x) + ((y)-1)) & ~((y)-1))
 
 // maximum world size
 #define MAX_WORLD_COORD			( 128 * 1024 )

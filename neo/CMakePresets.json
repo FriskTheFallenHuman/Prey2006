@@ -8,11 +8,18 @@
     "configurePresets": [
         {
             "name": "ninja-multi-vcpkg",
-            "displayName": "Ninja Multi-Config",
+            "displayName": "Ninja Multi-Config With VCPKG",
             "description": "Configure with vcpkg toolchain and generate Ninja project files for all configurations",
             "binaryDir": "${sourceDir}/builds/${presetName}",
             "generator": "Ninja Multi-Config",
             "toolchainFile": "${sourceDir}/../vcpkg/scripts/buildsystems/vcpkg.cmake"
+        },
+        {
+            "name": "ninja-multi",
+            "displayName": "Ninja Multi-Config",
+            "description": "Generate a Ninja project files for all configurations",
+            "binaryDir": "${sourceDir}/builds/${presetName}",
+            "generator": "Ninja Multi-Config"
         }
     ],
     "buildPresets": [
@@ -24,6 +31,13 @@
             "configuration": "Debug"
         },
         {
+            "name": "ninja-debug",
+            "configurePreset": "ninja-multi",
+            "displayName": "Build (Debug)",
+            "description": "Build with Ninja (Debug)",
+            "configuration": "Debug"
+        },
+        {
             "name": "ninja-vcpkg-release",
             "configurePreset": "ninja-multi-vcpkg",
             "displayName": "Build (Release)",
@@ -31,10 +45,23 @@
             "configuration": "Release"
         },
         {
+            "name": "ninja-release",
+            "configurePreset": "ninja-multi-vcpkg",
+            "displayName": "Build (Release)",
+            "description": "Build with Ninja (Release)",
+            "configuration": "Release"
+        },
+        {
             "name": "ninja-vcpkg",
             "configurePreset": "ninja-multi-vcpkg",
             "displayName": "Build",
             "description": "Build with Ninja/vcpkg"
+        },
+        {
+            "name": "ninja-vcpkg",
+            "configurePreset": "ninja-multi",
+            "displayName": "Build",
+            "description": "Build with Ninja"
         }
     ]
 }

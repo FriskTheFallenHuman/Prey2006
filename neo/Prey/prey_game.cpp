@@ -2,7 +2,7 @@
 #pragma hdrstop
 
 #include "prey_local.h"
-//#include "../prey/win32/fxdlg.h"
+//#include "../Prey/win32/fxdlg.h"
 
 extern idCVar com_forceGenericSIMD;
 
