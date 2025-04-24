@@ -1,0 +1,6 @@
+If you put libraries that Prey 2006 uses (like libopenal.so.1 or libcurl.so.4
+or libSDL2-2.0.so.0) in here, they will be used.
+
+So you can use it if you don't have one (or multiple) of the required
+libraries installed system-wide, or if you want Prey 2006 to use a newer
+version of a lib.
