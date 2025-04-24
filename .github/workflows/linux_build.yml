@@ -1,5 +1,4 @@
 name: Linux Auto-Builds
-run-name: testbuild_linux
 on:
   push:
     branches:
