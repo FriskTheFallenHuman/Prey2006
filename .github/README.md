@@ -36,7 +36,7 @@ For Windows:
 For Debian/Ubuntu
 
 - Intall the dependencies
-  - ```sudo apt install libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build stb```
+  - ```sudo apt install libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build```
 - Make **cmake_linux.sh** a executable and execute with
   - ```.\cmake_linux.sh gcc release```
 

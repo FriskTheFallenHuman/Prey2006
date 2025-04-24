@@ -58,7 +58,7 @@
             "description": "Build with Ninja/vcpkg"
         },
         {
-            "name": "ninja-vcpkg",
+            "name": "ninja",
             "configurePreset": "ninja-multi",
             "displayName": "Build",
             "description": "Build with Ninja"

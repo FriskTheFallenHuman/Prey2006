@@ -27,7 +27,7 @@ jobs:
           submodules: true
 
       - name: Download dependencies
-        run: sudo apt install libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build stb
+        run: sudo apt install libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build
 
       - name: Get latest CMake if possible
         uses: lukka/get-cmake@latest
