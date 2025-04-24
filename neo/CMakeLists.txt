@@ -94,6 +94,7 @@ if(UNIX)
 else()
 	find_package(SDL2 REQUIRED)
 	include_directories(${SDL2_INCLUDE_DIR})
+	set(SDL2_LIBRARY SDL2::SDL2)
 endif()
 list(APPEND sys_thirdparty_libs ${SDL2_LIBRARY})
 
