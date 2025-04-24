@@ -8,7 +8,6 @@
 		{
 			"name": "libbacktrace",
 			"platform": "!windows"
-		},
-		"stb"
+		}
 	]
 }

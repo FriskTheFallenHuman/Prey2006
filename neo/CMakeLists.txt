@@ -82,12 +82,18 @@ list(APPEND sys_thirdparty_libs ${OPENAL_LIBRARY})
 
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIR})
+if(WIN32)
+	set(SDL2_LIBRARY SDL2::SDL2)
+endif()
 list(APPEND sys_thirdparty_libs ${SDL2_LIBRARY})
 
 # Curl
 find_package(CURL QUIET)
 if(CURL_FOUND)
 	set(ID_ENABLE_CURL ON)
+	if(WIN32)
+		set(CURL_INCLUDE_DIR ${CURL_INCLUDE_DIRS})
+	endif()
 	include_directories(${CURL_INCLUDE_DIR})
 	message(STATUS "libcurl found and enabled")
 	list(APPEND sys_thirdparty_libs ${CURL_LIBRARY})
@@ -136,7 +142,7 @@ if(NOT MSVC)
 	check_c_source_compiles("#include <SDL_syswm.h>
 		int main() { SDL_SysWMinfo wmInfo = {}; wmInfo.info.x11.display = NULL; return 0; }" HAVE_SDL_X11)
 	unset(CMAKE_REQUIRED_LIBRARIES)
-		
+
 	if (HAVE_SDL_X11)
 		message(STATUS "This SDL2 has X11 support")
 		add_definitions(-DD3_SDL_X11)
@@ -194,7 +200,7 @@ if(D3_COMPILER_IS_GCC_OR_CLANG)
 	if(cxx_has_fp-contract)
 		add_compile_options(-ffp-contract=off)
 	endif()
-	
+
 	if(ASAN)
 		# if this doesn't work, ASan might not be available on your platform, don't set ASAN then..
 		add_compile_options(-fsanitize=address)
@@ -221,7 +227,7 @@ if(D3_COMPILER_IS_GCC_OR_CLANG)
 	if(cxx_has_Woverload_virtual)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Woverloaded-virtual")
 	endif()
-	
+
 	# shut up about using memcpy() on classes, in the cases doom3 uses it it seems to be fine
 	CHECK_CXX_COMPILER_FLAG("-Wno-class-memaccess" cxx_has_Wno-class-memaccess)
 	if(cxx_has_Wno-class-memaccess)
@@ -234,7 +240,7 @@ if(D3_COMPILER_IS_GCC_OR_CLANG)
 	if(cxx_has_Wno-cpp20-compat)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++20-compat")
 	endif()
-	
+
 	#if (NOT MSVC)
 	#	find_package(OpenSSL REQUIRED)
 	#endif()
@@ -279,20 +285,20 @@ elseif(MSVC)
 	set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /ignore:4286 /ignore:4217")
 	set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} /ignore:4286 /ignore:4217")
 
-	
+
 	add_definitions(-D_ALLOW_KEYWORD_MACROS) # because of the "#define private public" and "#define protected public" in TypeInfo.cpp
-	
+
 	set(CMAKE_C_FLAGS_DEBUG "-D_DEBUG /Od /Zi /MDd")
 	set(CMAKE_C_FLAGS_RELEASE "/Ox /Oy /MD")
 	set(CMAKE_C_FLAGS_RELWITHDEBINFO "/Ox /Oy /Zi /MD")
 	set(CMAKE_C_FLAGS_MINSIZEREL "/Ox /Oy /Os /MD")
-	
+
 	# use 8MB stack instead of 1MB, so big models don't overflow it with _alloca()
 	set(ldflags "${ldflags} /STACK:8388608")
-	
+
 	# let the 32bit app use more than 2gb of ram
 	set(ldflags "${ldflags} /LARGEADDRESSAWARE")
-	
+
 	# Don't let the linker generate manifest files for shared dlls
 	set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /MANIFEST:NO")
 else()
@@ -975,7 +981,7 @@ if (TOOLS AND MFC_TOOLS AND MSVC)
 	# sound editor?
 	file(GLOB src_sound_editor "tools/sound/*.cpp")
 	add_globbed_headers(src_sound_editor "tools/sound")
-	
+
 
 	# The numerous tools in a nice list.
 	list(APPEND src_editor_tools
@@ -1016,7 +1022,7 @@ if(WIN32)
 		sys/win32/win_syscon.cpp
 		sys/win32/SDL_win32_main.c
 	)
-	
+
 	# Don't use precompiled headers for our SDL Win32 c sources.
 	set_source_files_properties(
 		sys/win32/SDL_win32_main.c
@@ -1108,9 +1114,9 @@ if(ENGINE)
 		${src_sys_core}
 		${src_editor_tools}
 	)
-	
+
 	if(MSVC)
-		# set MSVC default debug directory on executable	
+		# set MSVC default debug directory on executable
 		set_target_properties(${ENGINE_BINARY} PROPERTIES VS_STARTUP_PROJECT ${ENGINE_BINARY})
 		set_target_properties(${ENGINE_BINARY} PROPERTIES VS_DEBUGGER_COMMAND "${OUTPUT_FOLDER}/${ENGINE_BINARY}.exe")
 		set_target_properties(${ENGINE_BINARY} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${OUTPUT_FOLDER}")
@@ -1120,7 +1126,7 @@ if(ENGINE)
 	endif()
 
 	target_precompile_headers(${ENGINE_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
-	
+
 	target_include_directories(${ENGINE_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
 
 	if(HARDLINK_GAME)
@@ -1159,13 +1165,13 @@ if(DEDICATED)
 		${src_sys_base}
 		${src_debuggerServer}
 	)
-	
+
 	if(MSVC)
 		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_core} ${src_sys_base} ${src_stub_openal} ${src_stub_gl} ${src_debuggerServer})
 	endif()
-	
+
 	target_precompile_headers(${DEDICATED_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
-	
+
 	target_include_directories(${DEDICATED_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
 
 	if(HARDLINK_GAME)
@@ -1178,7 +1184,7 @@ if(DEDICATED)
 	set_target_properties(${DEDICATED_BINARY} PROPERTIES LINK_FLAGS "${ldflags}")
 	set_target_properties(${DEDICATED_BINARY} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
 	set_target_properties(${DEDICATED_BINARY} PROPERTIES FOLDER "exes")
-	
+
 	list(REMOVE_ITEM sys_thirdparty_libs ${OPENAL_LIBRARY})
 
 	target_link_libraries(${DEDICATED_BINARY}
@@ -1200,15 +1206,15 @@ endif()
 
 if(BASE AND NOT HARDLINK_GAME)
 	add_library(base SHARED ${src_game} ${src_prey})
-	
+
 	if (MSVC)
 		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_game} ${src_prey})
 	endif()
-	
+
 	target_precompile_headers(base PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
-	
+
 	target_include_directories(base PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
-	
+
 	set_target_properties(base PROPERTIES PREFIX "")
 	set_target_properties(base PROPERTIES COMPILE_DEFINITIONS "GAME_DLL;HUMANHEAD")
 	target_include_directories(base PRIVATE "${CMAKE_SOURCE_DIR}/game" "${CMAKE_SOURCE_DIR}/Prey")
