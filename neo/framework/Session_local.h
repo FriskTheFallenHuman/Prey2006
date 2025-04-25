@@ -249,9 +249,9 @@ public:
 	idListGUI *			guiMainMenu_MapList;		// easy map list handling
 	idUserInterface *	guiRestartMenu;
 	idUserInterface *	guiLoading;
-	idUserInterface *	guiIntro;
 	idUserInterface *	guiTest;
 	idUserInterface	*	guiSubtitles;
+	idUserInterface	*	guiGameStatus;				// displays save game status
 	idUserInterface *	guiMsg;
 	idUserInterface *	guiMsgRestore;				// store the calling GUI for restore
 	idStr				msgFireBack[ 2 ];
@@ -271,6 +271,11 @@ public:
 #if ID_CONSOLE_LOCK
 	int					emptyDrawCount;				// watchdog to force the main menu to restart
 #endif
+
+	int					postSaveTimer;
+	bool				reallyWantsLoad;
+
+	static const int	SAVE_TIME_BAIL = 4000;
 
 	//=====================================
 	void				Clear();
@@ -328,7 +333,6 @@ public:
 	void				HandleInGameCommands( const char *menuCommand );
 	void				HandleMainMenuCommands( const char *menuCommand );
 	void				HandleChatMenuCommands( const char *menuCommand );
-	void				HandleIntroMenuCommands( const char *menuCommand );
 	void				HandleRestartMenuCommands( const char *menuCommand );
 	void				HandleMsgCommands( const char *menuCommand );
 	void				GetSaveGameList( idStrList &fileList, idList<fileTIME_T> &fileTimes );

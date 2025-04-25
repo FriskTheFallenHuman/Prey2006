@@ -385,7 +385,7 @@ void idCommonLocal::VPrintf( const char *fmt, va_list args ) {
 		if ( com_editors & EDITOR_DEBUGGER )
 			DebuggerServerPrint( msg );
 		else
-			// only echo to dedicated console and early console when debugger is not running so no 
+			// only echo to dedicated console and early console when debugger is not running so no
 			// deadlocks occur if engine functions called from the debuggerthread trace stuff..
 			Sys_Printf( "%s", msg );
 	} else {
@@ -1152,7 +1152,7 @@ Com_ScriptDebugger_f
 static void Com_ScriptDebugger_f( const idCmdArgs &args ) {
 	// Make sure it wasnt on the command line
 	if ( !( com_editors & EDITOR_DEBUGGER ) ) {
-		
+
 		//start debugger server if needed
 		if ( !com_enableDebuggerServer.GetBool() )
 			com_enableDebuggerServer.SetBool( true );
@@ -3228,7 +3228,7 @@ void idCommonLocal::ShutdownGame( bool reloading ) {
 	}
 
 	// shutdown the script debugger
-	if ( com_enableDebuggerServer.GetBool() )	
+	if ( com_enableDebuggerServer.GetBool() )
 		DebuggerServerShutdown();
 
 	idAsyncNetwork::client.Shutdown();
@@ -3299,7 +3299,7 @@ static bool isDemo( void )
 
 static bool updateDebugger( idInterpreter *interpreter, idProgram *program, int instructionPointer )
 {
-	if (com_editors & EDITOR_DEBUGGER) 
+	if (com_editors & EDITOR_DEBUGGER)
 	{
 		DebuggerServerCheckBreakpoint( interpreter, program, instructionPointer );
 		return true;
@@ -3352,46 +3352,48 @@ void idGameCallbacks::Reset()
 	reloadImagesUserArg = NULL;
 }
 
-extern const char * IN_FirstKeyFromBinding(const char *binding, int *keycode = NULL);
-void idCommonLocal::MaterialKeyForBinding(const char *binding, char *keyMaterial, char *key, bool &isBound)
-{
-    // 256 length see game/Prey/prey_game.cpp::GetTip
+/*
+===================
+idCommonLocal::MaterialKeyForBinding
+===================
+*/
+extern const char * IN_FirstKeyFromBinding( const char *binding, int *keycode = NULL );
+void idCommonLocal::MaterialKeyForBinding( const char *binding, char *keyMaterial, char *key, bool &isBound ) {
+	// 256 length see game/Prey/prey_game.cpp::GetTip
 #define MAX_KEY_MATERIAL_LENGTH 256
 #define MAX_KEY_NAME_LENGTH 256
-    const char *k;
-    int i = -1;
+	const char *k;
+	int i = -1;
 
-    //karin: only get first binding key
-    k = IN_FirstKeyFromBinding(binding, &i);
-    isBound = false;
+	//karin: only get first binding key
+	k = IN_FirstKeyFromBinding( binding, &i );
+	isBound = false;
 
-    if(k && k[0])
-    {
-        if(i == K_MOUSE1)
-            idStr::Copynz(keyMaterial, "textures/interface/tips/mouse1", MAX_KEY_MATERIAL_LENGTH);
-        else if(i == K_MOUSE2)
-            idStr::Copynz(keyMaterial, "textures/interface/tips/mouse2", MAX_KEY_MATERIAL_LENGTH);
-        else if(i == K_MOUSE3)
-            idStr::Copynz(keyMaterial, "textures/interface/tips/mouse3", MAX_KEY_MATERIAL_LENGTH);
-        else if(i == K_MWHEELDOWN)
-            idStr::Copynz(keyMaterial, "textures/interface/tips/mousedn", MAX_KEY_MATERIAL_LENGTH);
-        else if(i == K_MWHEELUP)
-            idStr::Copynz(keyMaterial, "textures/interface/tips/mouseup", MAX_KEY_MATERIAL_LENGTH);
-        else
-        {
-            isBound = strlen(k) > 1;
-            idStr::Copynz(key, k, MAX_KEY_NAME_LENGTH);
-            idStr::ToLower(key);
-        }
-    }
+	if ( k && k[0] ) {
+		if ( i == K_MOUSE1 ) {
+			idStr::Copynz( keyMaterial, "textures/interface/tips/mouse1", MAX_KEY_MATERIAL_LENGTH );
+		} else if ( i == K_MOUSE2 ) {
+			idStr::Copynz( keyMaterial, "textures/interface/tips/mouse2", MAX_KEY_MATERIAL_LENGTH );
+		} else if ( i == K_MOUSE3 ) {
+			idStr::Copynz( keyMaterial, "textures/interface/tips/mouse3", MAX_KEY_MATERIAL_LENGTH );
+		} else if ( i == K_MWHEELDOWN ) {
+			idStr::Copynz( keyMaterial, "textures/interface/tips/mousedn", MAX_KEY_MATERIAL_LENGTH );
+		} else if ( i == K_MWHEELUP ) {
+			idStr::Copynz( keyMaterial, "textures/interface/tips/mouseup", MAX_KEY_MATERIAL_LENGTH );
+		} else {
+			isBound = strlen( k ) > 1;
+			idStr::Copynz( key, k, MAX_KEY_NAME_LENGTH );
+			idStr::ToLower( key );
+		}
+	}
 
-    if(!keyMaterial[0])
-    {
-        if(isBound)
-            idStr::Copynz(keyMaterial, "textures/interface/tips/keywide", MAX_KEY_MATERIAL_LENGTH);
-        else
-            idStr::Copynz(keyMaterial, "textures/interface/tips/key", MAX_KEY_MATERIAL_LENGTH);
-    }
+	if ( !keyMaterial[0] ) {
+		if ( isBound ) {
+			idStr::Copynz( keyMaterial, "textures/interface/tips/keywide", MAX_KEY_MATERIAL_LENGTH );
+		} else {
+			idStr::Copynz( keyMaterial, "textures/interface/tips/key", MAX_KEY_MATERIAL_LENGTH );
+		}
+	}
 #undef MAX_KEY_MATERIAL_LENGTH
 #undef MAX_KEY_NAME_LENGTH
 }

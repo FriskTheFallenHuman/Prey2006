@@ -360,6 +360,9 @@ void idSessionLocal::Clear() {
 	authWaitBox = false;
 
 	authMsg.Clear();
+
+	postSaveTimer = 0;
+	reallyWantsLoad = false;
 }
 
 /*
@@ -368,9 +371,9 @@ idSessionLocal::idSessionLocal
 ===============
 */
 idSessionLocal::idSessionLocal() {
-	guiInGame = guiMainMenu = guiIntro \
+	guiInGame = guiMainMenu \
 		= guiRestartMenu = guiLoading = guiActive = guiSubtitles  \
-		= guiTest = guiMsg = guiMsgRestore = NULL;
+		= guiGameStatus = guiTest = guiMsg = guiMsgRestore = NULL;
 
 	menuSoundWorld = NULL;
 
@@ -1486,7 +1489,7 @@ void idSessionLocal::LoadLoadingGui( const char *mapName ) {
 		// title
 		const idDecl *mapDecl = declManager->FindType( DECL_MAPDEF, mapName, false );
 		const idDeclEntityDef *mapDef = static_cast<const idDeclEntityDef *>( mapDecl );
-		guiLoading->SetStateString( "friendlyname", mapDef ? 
+		guiLoading->SetStateString( "friendlyname", mapDef ?
 			//mapSpawnData.serverInfo.GetBool( "devmap" ) ? mapDef->dict.GetString( "devname" )
 			cvarSystem->GetCVarBool( "developer" ) ? mapDef->dict.GetString( "devname" )
 			: ( common->GetLanguageDict()->GetString( mapDef->dict.GetString( "name" ) ) )
@@ -2037,6 +2040,12 @@ bool idSessionLocal::LoadGame( const char *saveName ) {
 	//Hide the dialog box if it is up.
 	StopBox();
 
+	// Force the dialog to be close, we dont want this thing to carry over!
+	if ( guiGameStatus ) {
+		guiGameStatus->SetStateInt( "messagetype", 0 );
+		guiGameStatus->StateChanged( ::game->GetTimeGroupTime( 1 ) );
+	}
+
 	loadFile = saveName;
 	ScrubSaveGameFileName( loadFile );
 	loadFile.SetFileExtension( ".save" );
@@ -2132,8 +2141,7 @@ bool idSessionLocal::LoadGame( const char *saveName ) {
 #endif
 }
 
-bool idSessionLocal::QuickSave()
-{
+bool idSessionLocal::QuickSave() {
 	idStr saveName = common->GetLanguageDict()->GetString( "#str_07178" );
 
 	idStr saveFilePathBase = saveName;
@@ -2180,13 +2188,44 @@ bool idSessionLocal::QuickSave()
 
 	if ( SaveGame( saveName ) ) {
 		common->Printf( "%s\n", saveName.c_str() );
+		if ( guiGameStatus ) {
+			guiGameStatus->SetStateInt( "messagetype", 1 );
+			guiGameStatus->StateChanged( ::game->GetTimeGroupTime( 1 ) );
+
+			// Start counting for our internal timer
+			postSaveTimer = Sys_Milliseconds() + SAVE_TIME_BAIL;
+		}
 		return true;
 	}
 	return false;
 }
 
-bool idSessionLocal::QuickLoad()
-{
+bool idSessionLocal::QuickLoad() {
+
+	// Dont load rigth away, ask the user if they want to load the quick save!
+	if ( guiGameStatus && !reallyWantsLoad ) {
+		char keyMaterial[256];
+		char key[256];
+		const char *material = NULL;
+		keyMaterial[0] = '\0';
+		key[0] = '\0';
+		bool keywide;
+		common->MaterialKeyForBinding( "loadgame", keyMaterial, key, keywide ); // FIXME: this should work but it doesnt!
+		material = keyMaterial;
+		guiGameStatus->SetStateInt( "messagetype", 2 );
+		if ( material ) {
+			guiGameStatus->SetStateBool( "keywide", keywide );
+			guiGameStatus->SetStateString( "saveKey", key ? key : "" );
+			guiGameStatus->SetStateString( "keymaterial", keyMaterial ? keyMaterial : "" );
+		}
+		guiGameStatus->StateChanged( ::game->GetTimeGroupTime( 1 ) );
+
+		// Start counting for our internal timer
+		postSaveTimer = Sys_Milliseconds() + SAVE_TIME_BAIL;
+		reallyWantsLoad = true;
+		return false;
+	}
+
 	idStr saveName = common->GetLanguageDict()->GetString( "#str_07178" );
 
 	idStr saveFilePathBase = saveName;
@@ -2226,6 +2265,10 @@ bool idSessionLocal::QuickLoad()
 	if ( indexToUse > 1 ) {
 		saveName += indexToUse;
 	}
+
+	// Set it again to false
+	reallyWantsLoad = false;
+	postSaveTimer = 0; // Reset our timer back to 0, we dont want this to carry over!
 
 	return sessLocal.LoadGame( saveName );
 }
@@ -2486,6 +2529,9 @@ void idSessionLocal::Draw() {
 			if ( guiSubtitles ) {
 				guiSubtitles->Redraw( com_frameTime );
 			}
+			if ( guiGameStatus ) {
+				guiGameStatus->Redraw( com_frameTime );
+			}
 		}
 
 		guiActive->Redraw( com_frameTime );
@@ -2501,6 +2547,9 @@ void idSessionLocal::Draw() {
 			gameDraw = game->Draw( GetLocalClientNum() );
 			if ( guiSubtitles ) {
 				guiSubtitles->Redraw( com_frameTime );
+			}
+			if ( guiGameStatus ) {
+				guiGameStatus->Redraw( com_frameTime );
 			}
 			int end = Sys_Milliseconds();
 			time_gameDraw += ( end - start );	// note time used for com_speeds
@@ -2810,6 +2859,16 @@ void idSessionLocal::Frame() {
 
 	soundSystemLocal.SF_ShowSubtitle();
 
+	// Time has passed since our last save, we can hide our dialog
+	if ( postSaveTimer ) {
+		if ( Sys_Milliseconds() > postSaveTimer ) {
+			guiGameStatus->SetStateInt( "messagetype", 0 );
+			guiGameStatus->StateChanged( ::game->GetTimeGroupTime( 1 ) );
+			postSaveTimer = 0;
+			reallyWantsLoad = false;
+		}
+	}
+
 	for ( i = 0 ; i < gameTicsToRun ; i++ ) {
 		RunGameTic();
 		if ( !mapSpawned ) {
@@ -3006,7 +3065,7 @@ void idSessionLocal::Init() {
 	guiRestartMenu = uiManager->FindGui( "guis/restart.gui", true, false, true );
 	guiSubtitles = uiManager->FindGui( "guis/subtitles.gui", true, false, true );
 	guiMsg = uiManager->FindGui( "guis/msg.gui", true, false, true );
-	guiIntro = uiManager->FindGui( "guis/intro.gui", true, false, true );
+	guiGameStatus = uiManager->FindGui( "guis/save.gui", true, false, true );
 
 	whiteMaterial = declManager->FindMaterial( "_white" );
 
@@ -3046,7 +3105,7 @@ idSessionLocal::SetPlayingSoundWorld
 ===============
 */
 void idSessionLocal::SetPlayingSoundWorld() {
-	if ( guiActive && ( guiActive == guiMainMenu || guiActive == guiIntro || guiActive == guiLoading || ( guiActive == guiMsg && !mapSpawned ) ) ) {
+	if ( guiActive && ( guiActive == guiMainMenu || guiActive == guiLoading || ( guiActive == guiMsg && !mapSpawned ) ) ) {
 		soundSystem->SetPlayingSoundWorld( menuSoundWorld );
 	} else {
 		soundSystem->SetPlayingSoundWorld( sw );
