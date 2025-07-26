@@ -8,6 +8,7 @@ on:
       - edited
       - opened
       - synchronize
+  workflow_dispatch:
 concurrency:
   # Cancel concurrent workflows for the same PR or commit hash.
   group: ${{github.workflow}}-${{github.event_name == 'pull_request' && github.head_ref || github.sha}}
