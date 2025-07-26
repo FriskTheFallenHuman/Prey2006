@@ -33,3 +33,19 @@ jobs:
           cmake -G Ninja -DDEDICATED=ON ../neo/
           ninja
           ls -la
+
+    - name: Copy base files to freebsd/
+      shell: pwsh
+      run: |
+        cd ${{github.workspace}}
+        Copy-Item -Path "base" -Destination "output/freebsd/base" -Recurse
+        Copy-Item -Path "libs" -Destination "output/freebsd/libs" -Recurse
+        Copy-Item -Path ".github/Changelog.md" -Destination "output/freebsd"
+        Copy-Item -Path ".github/Configuration.md" -Destination "output/freebsd"
+        Copy-Item -Path ".github/README.md" -Destination "output/freebsd"
+
+    - name: Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: prey2006-freebsd
+        path: output/freebsd/
