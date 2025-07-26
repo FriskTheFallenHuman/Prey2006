@@ -3,11 +3,17 @@ on:
   push:
     branches:
       - 'main'
+    paths-ignore:
+      - .github/workflows/freebsd_build.yml
+      - .github/workflows/windows_build.yml
   pull_request:
     types:
       - edited
       - opened
       - synchronize
+    paths-ignore:
+      - .github/workflows/freebsd_build.yml
+      - .github/workflows/windows_build.yml
 concurrency:
   # Cancel concurrent workflows for the same PR or commit hash.
   group: ${{github.workflow}}-${{github.event_name == 'pull_request' && github.head_ref || github.sha}}
