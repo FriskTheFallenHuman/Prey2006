@@ -1,0 +1,34 @@
+name: freebsd
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    types:
+      - edited
+      - opened
+      - synchronize
+concurrency:
+  # Cancel concurrent workflows for the same PR or commit hash.
+  group: ${{github.workflow}}-${{github.event_name == 'pull_request' && github.head_ref || github.sha}}
+  cancel-in-progress: true
+
+jobs:
+  job:
+    name: Build freebsd
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: actions/checkout@v4
+    - name: Try and build
+      uses: vmactions/freebsd-vm@966989c456d41351f095a421f60e71342d3bce41
+      with:
+        release: "15.0"
+        prepare: |
+          pkg install -y sdl2 ninja cmake openal-soft 
+        run: |
+          mkdir build
+          cd build
+          cmake -G Ninja -DDEDICATED=ON ../neo/
+          ninja
+          ls -la
