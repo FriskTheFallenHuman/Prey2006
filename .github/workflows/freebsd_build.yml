@@ -3,11 +3,17 @@ on:
   push:
     branches:
       - 'main'
+    paths-ignore:
+      - .github/workflows/linux_build.yml
+      - .github/workflows/windows_build.yml
   pull_request:
     types:
       - edited
       - opened
       - synchronize
+    paths-ignore:
+      - .github/workflows/linux_build.yml
+      - .github/workflows/windows_build.yml
   workflow_dispatch:
 concurrency:
   # Cancel concurrent workflows for the same PR or commit hash.
