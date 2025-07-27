@@ -62,6 +62,10 @@ typedef struct {
 
 
 typedef struct {
+	// if lightTris == LIGHT_TRIS_DEFERRED, then the calculation of the
+	// lightTris has been deferred, and must be done if ambientTris is visible
+	srfTriangles_t *		lightTris;
+
 	// shadow volume triangle surface
 	srfTriangles_t *		shadowTris;
 
