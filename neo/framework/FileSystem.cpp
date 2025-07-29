@@ -795,7 +795,7 @@ const char *idFileSystemLocal::BuildOSPath( const char *base, const char *game, 
 
 		if ( testPath.HasUpper() ) {
 
-			common->DPrintf( "Non-portable: path contains uppercase characters: %s\n", testPath.c_str() );
+			//common->DPrintf( "Non-portable: path contains uppercase characters: %s\n", testPath.c_str() );	// Too noisy
 
 			// attempt a fixup on the fly
 			if ( fs_caseSensitiveOS.GetBool() ) {
