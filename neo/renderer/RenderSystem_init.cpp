@@ -45,12 +45,12 @@ glconfig_t	glConfig;
 idCVar r_inhibitFragmentProgram( "r_inhibitFragmentProgram", "0", CVAR_RENDERER | CVAR_BOOL, "ignore the fragment program extension" );
 idCVar r_useLightPortalFlow( "r_useLightPortalFlow", "1", CVAR_RENDERER | CVAR_BOOL, "use a more precise area reference determination" );
 idCVar r_multiSamples( "r_multiSamples", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "number of antialiasing samples" );
-idCVar r_mode( "r_mode", "5", CVAR_ARCHIVE | CVAR_RENDERER | CVAR_INTEGER, "video mode number" );
+idCVar r_mode( "r_mode", "-1", CVAR_ARCHIVE | CVAR_RENDERER | CVAR_INTEGER, "video mode number" );
 idCVar r_displayRefresh( "r_displayRefresh", "0", CVAR_RENDERER | CVAR_INTEGER | CVAR_NOCHEAT, "optional display refresh rate option for vid mode", 0.0f, 200.0f );
 idCVar r_fullscreen( "r_fullscreen", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "0 = windowed, 1 = full screen" );
 idCVar r_fullscreenDesktop( "r_fullscreenDesktop", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "0: 'real' fullscreen mode 1: keep resolution 'desktop' fullscreen mode" );
-idCVar r_customWidth( "r_customWidth", "720", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "custom screen width. set r_mode to -1 to activate" );
-idCVar r_customHeight( "r_customHeight", "486", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "custom screen height. set r_mode to -1 to activate" );
+idCVar r_customWidth( "r_customWidth", "1280", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "custom screen width. set r_mode to -1 to activate" );
+idCVar r_customHeight( "r_customHeight", "720", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "custom screen height. set r_mode to -1 to activate" );
 idCVar r_singleTriangle( "r_singleTriangle", "0", CVAR_RENDERER | CVAR_BOOL, "only draw a single triangle per primitive" );
 idCVar r_checkBounds( "r_checkBounds", "0", CVAR_RENDERER | CVAR_BOOL, "compare all surface bounds with precalculated ones" );
 
@@ -1011,7 +1011,7 @@ void R_TestVideo_f( const idCmdArgs &args ) {
 
 	tr.testImage = globalImages->ImageFromFile( "_scratch", TF_DEFAULT, false, TR_REPEAT, TD_DEFAULT );
 	tr.testVideo = idCinematic::Alloc();
-	tr.testVideo->InitFromFile( args.Argv( 1 ), true );
+	tr.testVideo->InitFromFile( args.Argv( 1 ), true, true );
 
 	cinData_t	cin;
 	cin = tr.testVideo->ImageForTime( 0 );
@@ -1030,10 +1030,10 @@ void R_TestVideo_f( const idCmdArgs &args ) {
 	tr.testVideoStartTime = tr.primaryRenderView.time * 0.001;
 
 	// try to play the matching wav file
-	idStr	wavString = args.Argv( ( args.Argc() == 2 ) ? 1 : 2 );
-	wavString.StripFileExtension();
-	wavString = wavString + ".wav";
-	session->sw->PlayShaderDirectly( wavString.c_str() );
+	//idStr	wavString = args.Argv( ( args.Argc() == 2 ) ? 1 : 2 );
+	//wavString.StripFileExtension();
+	//wavString = wavString + ".wav";
+	//session->sw->PlayShaderDirectly( wavString.c_str() );
 }
 
 static int R_QsortSurfaceAreas( const void *a, const void *b ) {

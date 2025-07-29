@@ -1207,22 +1207,32 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 		}
 
 		if ( !token.Icmp( "videomap" ) ) {
-			// note that videomaps will always be in clamp mode, so texture
-			// coordinates had better be in the 0 to 1 range
-			if ( !src.ReadToken( &token ) ) {
-				common->Warning( "missing parameter for 'videoMap' keyword in material '%s'", GetName() );
-				continue;
-			}
+			bool withAudio = false;
 			bool loop = false;
-			if ( !token.Icmp( "loop" ) ) {
-				loop = true;
+			bool error = false;
+			while ( true ) {
+				// note that videomaps will always be in clamp mode, so texture
+				// coordinates had better be in the 0 to 1 range
 				if ( !src.ReadToken( &token ) ) {
 					common->Warning( "missing parameter for 'videoMap' keyword in material '%s'", GetName() );
-					continue;
+					error = true;
+					break;
 				}
+				if ( !token.Icmp( "loop" ) )
+					loop = true;
+				else if ( !token.Icmp( "withAudio" ) )
+					withAudio = true;
+				else
+					break;
 			}
-			ts->cinematic = idCinematic::Alloc();
-			ts->cinematic->InitFromFile( token.c_str(), loop );
+			if ( loop && withAudio ) {
+					common->Warning( "Enabling both 'loop' and 'withAudio' for 'videoMap' is not implemented (material '%s')", GetName() );
+					loop = false;
+			}
+			if ( !error ) {
+				ts->cinematic = idCinematic::Alloc();
+				ts->cinematic->InitFromFile( token.c_str(), loop, withAudio );
+			}
 			continue;
 		}
 
@@ -1232,7 +1242,7 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 				continue;
 			}
 			ts->cinematic = new idSndWindow();
-			ts->cinematic->InitFromFile( token.c_str(), true );
+			ts->cinematic->InitFromFile( token.c_str(), true, false );
 			continue;
 		}
 
@@ -2822,6 +2832,33 @@ void idMaterial::ResetCinematicTime( int time ) const {
 			stages[i].texture.cinematic->ResetTime( time );
 		}
 	}
+}
+
+/*
+=============
+idMaterial::GetCinematicStartTime
+=============
+*/
+int idMaterial::GetCinematicStartTime( void ) const {
+	for( int i = 0; i < numStages; i++ ) {
+		if ( stages[i].texture.cinematic ) {
+			return stages[i].texture.cinematic->GetStartTime();
+		}
+	}
+	return -1;
+}
+
+/*
+=============
+idMaterial::CinematicIsPlaying
+=============
+*/
+bool idMaterial::CinematicIsPlaying( void ) const {
+	if ( !stages || !stages[0].texture.cinematic ) {
+		return 0;
+	}
+
+	return stages[0].texture.cinematic->IsPlaying();
 }
 
 /*

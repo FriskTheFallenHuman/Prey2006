@@ -79,7 +79,8 @@ idCVar com_timestampPrints( "com_timestampPrints", "0", CVAR_SYSTEM, "print time
 idCVar com_timescale( "timescale", "1", CVAR_SYSTEM | CVAR_FLOAT, "scales the time", 0.1f, 10.0f );
 idCVar com_makingBuild( "com_makingBuild", "0", CVAR_BOOL | CVAR_SYSTEM, "1 when making a build" );
 idCVar com_updateLoadSize( "com_updateLoadSize", "0", CVAR_BOOL | CVAR_SYSTEM | CVAR_NOCHEAT, "update the load size after loading a map" );
-
+idCVar com_skipIntroVideos( "com_skipIntroVideos", "0", CVAR_BOOL , "skips intro videos" );
+idCVar com_skipIntroSplashes( "com_skipIntroSplashes", "0", CVAR_BOOL , "skips intro splash images" );
 idCVar com_enableDebuggerServer( "com_enableDebuggerServer", "0", CVAR_BOOL | CVAR_SYSTEM, "toggle debugger server and try to connect to com_dbgClientAdr" );
 idCVar com_dbgClientAdr( "com_dbgClientAdr", "localhost", CVAR_SYSTEM | CVAR_ARCHIVE, "debuggerApp client address" );
 idCVar com_dbgServerAdr( "com_dbgServerAdr", "localhost", CVAR_SYSTEM | CVAR_ARCHIVE, "debugger server address" );
@@ -99,6 +100,8 @@ int				com_editors;			// currently opened editor(s)
 bool			com_editorActive;		//  true if an editor has focus
 
 bool			com_debuggerSupported;	// only set to true when the updateDebugger function is set. see GetAdditionalFunction()
+
+bool			com_skipondemand;	//	Skips intro videos
 
 #ifdef _WIN32
 HWND			com_hwndMsg = NULL;
@@ -202,7 +205,8 @@ private:
 	void						LoadGameDLL( void );
 	void						LoadGameDLLbyName( const char *dll, idStr& s );
 	void						UnloadGameDLL( void );
-	void						PrintLoadingMessage( const char *msg );
+	void						RenderSplash( bool photsensitivity = false );
+	void						RenderRoQ( const char *path );
 	void						FilterLangList( idStrList* list, idStr lang );
 
 	bool						com_fullyInitialized;
@@ -820,7 +824,11 @@ void idCommonLocal::ParseCommandLine( int argc, char **argv ) {
 	com_numConsoleLines = 0;
 	// API says no program path
 	for ( i = 0; i < argc; i++ ) {
-		if ( argv[ i ][ 0 ] == '+' ) {
+		com_skipondemand;
+		if( idStr::Icmp( argv[ i ], "+disconnect" ) == 0 ) {
+			// If we are using disconnect, skip the intro videos rigth away
+			com_skipondemand = true;
+		} else if ( argv[ i ][ 0 ] == '+' ) {
 			com_numConsoleLines++;
 			com_consoleLines[ com_numConsoleLines-1 ].AppendArg( argv[ i ] + 1 );
 		} else {
@@ -2353,23 +2361,111 @@ void idCommonLocal::InitRenderSystem( void ) {
 	}
 
 	renderSystem->InitOpenGL();
-	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04343" ) );
 }
 
 /*
 =================
-idCommonLocal::PrintLoadingMessage
+idCommonLocal::RenderSplash
 =================
 */
-void idCommonLocal::PrintLoadingMessage( const char *msg ) {
-	if ( !( msg && *msg ) ) {
-		return;
-	}
+void idCommonLocal::RenderSplash( bool photsensitivity ) {
 	renderSystem->BeginFrame( renderSystem->GetScreenWidth(), renderSystem->GetScreenHeight() );
-	renderSystem->DrawStretchPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 1, 1, declManager->FindMaterial( "splashScreen" ) );
-	int len = strlen( msg );
-	renderSystem->DrawSmallStringExt( ( 640 - len * SMALLCHAR_WIDTH ) / 2, 410, msg, idVec4( 0.0f, 0.81f, 0.94f, 1.0f ), true, declManager->FindMaterial( "textures/bigchars" ) );
+	renderSystem->DrawStretchPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 1, 1, photsensitivity ? declManager->FindMaterial( "photsensitivityScreen" ) : declManager->FindMaterial( "splashScreen" ) );
 	renderSystem->EndFrame( NULL, NULL );
+}
+
+/*
+=================
+idCommonLocal::RenderRoQ
+=================
+*/
+void idCommonLocal::RenderRoQ( const char *path ) {
+	idStr materialText;
+	materialText = va( "{ { videoMap withAudio %s } }", path );
+
+	idMaterial* material = const_cast<idMaterial*>( declManager->FindMaterial( "splashroq" ) );
+	material->FreeData();
+	material->Parse( materialText.c_str(), materialText.Length() );
+	material->ResetCinematicTime( Sys_Milliseconds() );
+
+	int cinematicLength = material->CinematicLength();
+
+	bool escapeEvent = false;
+	while( ( Sys_Milliseconds() <= ( material->GetCinematicStartTime() + cinematicLength ) ) && material->CinematicIsPlaying() ) {
+		renderSystem->BeginFrame( renderSystem->GetScreenWidth(), renderSystem->GetScreenHeight() );
+
+		renderSystem->DrawStretchPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 1, 1, material );
+
+		Sys_GenerateEvents();
+
+		// queue system events ready for polling
+		Sys_GetEvent();
+
+		// RB: allow to escape video by pressing anything
+		int numKeyEvents = Sys_PollKeyboardInputEvents();
+		if ( numKeyEvents > 0 ) {
+			for ( int i = 0; i < numKeyEvents; i++ ) {
+				int key;
+				bool state;
+
+				if ( Sys_ReturnKeyboardInputEvent( i, key, state ) ) {
+					if ( key == K_ESCAPE && state == true ) {
+						escapeEvent = true;
+					}
+					break;
+				}
+			}
+
+			Sys_EndKeyboardInputEvents();
+		}
+
+		int numMouseEvents = Sys_PollMouseInputEvents();
+		if ( numMouseEvents ) {
+			for( int i = 0; i < numMouseEvents; i++ ) {
+				int action, value;
+				if ( Sys_ReturnMouseInputEvent( i, action, value ) ) {
+					if ( action >= M_ACTION1 && action <= M_ACTION8 ) {
+						if ( value != 0 ) {
+							escapeEvent = true;
+							break;
+						}
+					}
+				}
+			}
+
+			Sys_EndMouseInputEvents();
+		}
+
+#if 0
+		int numJoystickEvents = Sys_PollJoystickInputEvents( 0 );
+		if ( numJoystickEvents > 0 ) {
+			for( int i = 0; i < numJoystickEvents; i++ ) {
+				int action;
+				int value;
+
+				if ( Sys_ReturnJoystickInputEvent( i, action, value ) ) {
+					if ( action >= J_ACTION1 && action <= J_ACTION_MAX ) {
+						if ( value != 0 ) {
+							escapeEvent = true;
+							break;
+						}
+					}
+				}
+			}
+
+			Sys_EndJoystickInputEvents();
+		}
+#endif
+		if ( escapeEvent ) {
+			break;
+		}
+
+		Sys_Sleep( 10 );
+
+		renderSystem->EndFrame( NULL, NULL );
+	}
+
+	material->MakeDefault();
 }
 
 /*
@@ -3000,6 +3096,21 @@ void idCommonLocal::Init( int argc, char **argv ) {
 			session->StartMenu( true );
 		}
 
+#ifndef	ID_DEDICATED
+		if ( ( !com_skipIntroSplashes.GetBool() || com_skipondemand ) ) {
+			const int legalMinTime = 8000;
+			int legalStartTime = Sys_Milliseconds();
+			while( Sys_Milliseconds() - legalStartTime < legalMinTime ) {
+				if ( ( Sys_Milliseconds() - legalStartTime ) >= legalMinTime / 2.0 ) {
+					RenderSplash( true );
+				} else {
+					RenderSplash();
+				}
+				Sys_GenerateEvents();
+				Sys_Sleep( 10 );
+			}
+		}
+#endif
 		// print all warnings queued during initialization
 		PrintWarnings();
 
@@ -3124,15 +3235,11 @@ void idCommonLocal::InitGame( void ) {
 	// initialize string database right off so we can use it for loading messages
 	InitLanguageDict();
 
-	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04344" ) );
-
 	// load the font, etc
 	console->LoadGraphics();
 
 	// init journalling, etc
 	eventLoop->Init();
-
-	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04345" ) );
 
 	// exec the startup scripts
 	cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "exec editor.cfg\n" );
@@ -3159,12 +3266,8 @@ void idCommonLocal::InitGame( void ) {
 	// init the user command input code
 	usercmdGen->Init();
 
-	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04346" ) );
-
 	// start the sound system, but don't do any hardware operations yet
 	soundSystem->Init();
-
-	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04347" ) );
 
 	// init async network
 	idAsyncNetwork::Init();
@@ -3178,17 +3281,12 @@ void idCommonLocal::InitGame( void ) {
 		cvarSystem->SetCVarBool( "s_noSound", true );
 	} else {
 		// init OpenGL, which will open a window and connect sound and input hardware
-		PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04348" ) );
 		InitRenderSystem();
 	}
 #endif
 
-	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04349" ) );
-
 	// initialize the user interfaces
 	uiManager->Init();
-
-	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04350" ) );
 
 	// load the game dll
 	LoadGameDLL();
@@ -3197,10 +3295,26 @@ void idCommonLocal::InitGame( void ) {
 	if ( com_enableDebuggerServer.GetBool( ) )
 		DebuggerServerInit( );
 
-	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04351" ) );
-
 	// init the session
 	session->Init();
+
+#ifndef	ID_DEDICATED
+	const bool showVideo = ( !com_skipIntroVideos.GetBool() || com_skipondemand );
+	const bool showSplash = ( !com_skipIntroSplashes.GetBool() || com_skipondemand );
+	if( showVideo ) {
+		RenderRoQ( "video\\2kgames.roq" );
+		RenderRoQ( "video\\3drealms.roq" );
+		RenderRoQ( "video\\humanhead.roq" );
+		RenderSplash();
+		RenderSplash();
+	} else if( showSplash ) {
+		common->Printf( "Skipping Intro Videos!\n" );
+		// display the legal splash screen
+		// No clue why we have to render this twice to show up...
+		RenderSplash();
+		RenderSplash();
+	}
+#endif
 
 	// have to do this twice.. first one sets the correct r_mode for the renderer init
 	// this time around the backend is all setup correct.. a bit fugly but do not want

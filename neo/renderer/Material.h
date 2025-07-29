@@ -640,6 +640,10 @@ public:
 
 	void				UpdateCinematic( int time ) const;
 
+	int					GetCinematicStartTime( void ) const;
+
+	bool                CinematicIsPlaying( void ) const;
+
 	//------------------------------------------------------------------
 
 						// gets an image for the editor to use
