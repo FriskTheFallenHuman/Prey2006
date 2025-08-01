@@ -1,0 +1,81 @@
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//  Boss/Progress Bar
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+	onNamedEvent ShowProgressBar {
+		transition "ProgressbgL::matcolor" "1 1 1 0" "1 1 1 0.8" "2000" ;
+		transition "ProgressbgR::matcolor" "1 1 1 0" "1 1 1 0.8" "2000" ;
+		transition "ProgressBar::matcolor" "1 1 1 0" "1 1 1 0.8" "1600" ;
+		
+		set "WholeProgressBar::rect" "0, -15, 640, 480" ;
+		transition "WholeProgressBar::rect" "0 -15 640 480" "0 60 640 480" "800";
+	}
+	onNamedEvent HideProgressBar {
+		transition "ProgressbgL::matcolor" "1 1 1 0.8" "1 1 1 0" "2000" ;
+		transition "ProgressbgR::matcolor" "1 1 1 0.8" "1 1 1 0" "2000" ;
+		transition "ProgressBar::matcolor" "1 1 1 1" "1 1 1 0" "200" ;
+		transition "WholeProgressBar::rect" "0 60 640 480" "0 -15 640 480" "800";
+	}
+	onNamedEvent ProgressNone {
+		set "ProgressText::text" "" ;
+	}
+	onNamedEvent ProgressVictory {
+		// flash & scale up
+		set "ProgressText::text" "#str_20011" ;
+	}
+	onNamedEvent ProgressFailure {
+		// dim and shrink out
+		set "ProgressText::text" "#str_20012" ;
+	}
+	onNamedEvent ProgressRechargeIn {
+		transition "ProgressbgL::matcolor" "1 1 1 0.8" "1 0 0 1" "500" ;
+		transition "ProgressbgR::matcolor" "1 1 1 0.8" "1 0 0 1" "500" ;
+		transition "ProgressBar::matcolor" "1 1 1 0.8" "1 0 0 1" "1" ;
+	}
+	onNamedEvent ProgressRechargeOut {
+		transition "ProgressbgL::matcolor" "0 0 0 1" "1 1 1 0.8" "500" ;
+		transition "ProgressbgR::matcolor" "0 0 0 1" "1 1 1 0.8" "500" ;
+		transition "ProgressBar::matcolor" "1 1 1 0.8" "1 0 0 1" "1" ;		
+	}
+	onNamedEvent ProgressRechargeDone {
+		transition "ProgressbgL::matcolor" "1 1 1 0.8" "1 1 1 0.8" "1" ;
+		transition "ProgressbgR::matcolor" "1 1 1 0.8" "1 1 1 0.8" "1" ;
+		transition "ProgressBar::matcolor" "1 1 1 0.8" "1 1 1 0.8" "1" ;
+	}
+
+	windowDef WholeProgressBar {
+		anchor			ANCHOR_TOP_CENTER
+		rect			0, -15, 640, 480
+		visible			"gui::allowprogress"
+
+		windowDef ProgressbgL{
+			rect			210, 10, 115, -36
+			matcolor		1, 1, 1, 0
+			background		"guis/assets/hud/bossbarbg"
+		}
+		windowDef ProgressbgR {
+			rect			325, 10, -115, -36
+			matcolor		1, 1, 1, 0
+			background		"guis/assets/hud/bossbarbg"
+		}
+		windowDef ProgressBarClip {
+			rect	220, 22, "gui::progress" * 210, 20
+			
+			windowDef ProgressBar {
+				rect		0, 0, 210, 20
+				background	"guis/assets/hud/bossbar"
+				matcolor	1, 1, 1, 0
+			}
+		}
+		windowDef ProgressText {
+			rect			220, 90, 200, 15
+			backcolor		0, 0, 0, 0
+			forecolor		1, 1, 1, 1
+			textscale		0.3
+			textalign		1
+			textaligny		-3
+			text			""
+			font			"fonts/alien"		//This needs to be here for text to show up on the vehicle huds
+		}
+	}
+

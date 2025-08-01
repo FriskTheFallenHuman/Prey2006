@@ -1,0 +1,326 @@
+/*
+	onTime 0 {
+		set "gui::timelimit" "1";
+		set "gui::fraglimit" "1";
+		set "gui::ismultiplayer" "1";
+		set "gui::self_rankstring" "5/8";
+		set "gui::vote" "vote";
+		set "gui::frags" "99";
+		set "gui::timer" "1:00";
+		set "gui::gamestatetext" "game state text";
+		set "gui::player1" "Teacher";
+		set "gui::player1_score" "212";
+		set "gui::player1_portrait" "guis/assets/menu/players/tommy.tga";
+		set "gui::player2" "Roy McDonohughlipshitzowskiwitz";
+		set "gui::player2_score" "7";
+		set "gui::player2_portrait" "guis/assets/menu/players/tommy.tga";
+		set "gui::player3" "Roy McDonohughlipshitzowskiwitz";
+		set "gui::player3_score" "5";
+		set "gui::player3_portrait" "guis/assets/menu/players/tommy.tga";
+		set "gui::player4" "Roy McDonohughlipshitzowskiwitz";
+		set "gui::player4_score" "-12";
+		set "gui::player4_portrait" "guis/assets/menu/players/tommy.tga";
+	}
+*/
+
+// Misc multiplayer components
+	windowDef MultiplayerElements {
+		rect		0, 0, 640, 480
+		visible		"gui::ismultiplayer"
+
+		windowDef VoteWin {
+			rect		0, 50, 320, 30
+			text		"gui::vote"
+			forecolor	1, 1, 1, 0.8
+			textscale	0.31
+			textalign	0
+		}
+
+		windowDef TopFourArea {
+			rect		0, 0, 640, 480
+			visible		"gui::gameon"
+			
+			windowDef TopFourBG_team {
+				rect		505, 5, 146, 64
+				visible		"gui::teamdm"
+				
+				windowDef TopFourDividerA_team {
+					rect		17, 16, 110, 31
+					backcolor	0, 0, 0, 0.5
+					bordercolor	0.4, 0.45, 0.55, 1
+					bordersize	1
+				}
+				windowDef TopFourDividerB_team {
+					rect		17, 31, 110, 16
+					bordercolor	0.4, 0.45, 0.55, 1
+					bordersize	1
+				}
+				windowDef TopFourDividerC_team {
+					rect		101, 16, 26, 31
+					bordercolor	0.4, 0.45, 0.55, 1
+					bordersize	1
+				}
+				windowDef TopFourName1_Red_team {
+					rect		18, 16, 83, 16
+					backcolor	0, 0, 0, 0
+					forecolor	0.8, 0.2, 0.2, 1
+					text		"gui::player1"
+					textscale	0.3
+					textaligny	-4
+					visible		("gui::player1_team" == 1)
+				}
+				windowDef TopFourName1_Blue_team {
+					rect		18, 16, 83, 16
+					backcolor	0, 0, 0, 0
+					forecolor	0.2, 0.2, 0.8, 1
+					text		"gui::player1"
+					textscale	0.3
+					textaligny	-4
+					visible		("gui::player1_team" != 1)
+				}
+				windowDef TopFourScore1_team {
+					rect		101, 16, 26, 16
+					backcolor	0, 0, 0, 0
+					forecolor	1, 1, 1, 1
+					text		"gui::player1_score"
+					textscale	0.3
+					textalign	1
+					textaligny	-4
+				}
+				windowDef TopFourName2_Red_team {
+					rect		18, 32, 83, 16
+					backcolor	0, 0, 0, 0
+					forecolor	0.8, 0.2, 0.2, 1
+					text		"gui::player2"
+					textscale	0.3
+					textaligny	-4
+					visible		("gui::player2_team" == 1)
+				}
+				windowDef TopFourName2_Blue_team {
+					rect		18, 32, 83, 16
+					backcolor	0, 0, 0, 0
+					forecolor	0.2, 0.2, 0.8, 1
+					text		"gui::player2"
+					textscale	0.3
+					textaligny	-4
+					visible		("gui::player2_team" != 1)
+				}
+				windowDef TopFourScore2_team {
+					rect		101, 32, 26, 16
+					backcolor	0, 0, 0, 0
+					forecolor	1, 1, 1, 1
+					text		"gui::player2_score"
+					textscale	0.3
+					textalign	1
+					textaligny	-4
+				}
+			}
+			
+			windowDef TopFourBG {
+				rect		505, 5, 146, 64
+				visible		("gui::teamdm" == 0)
+				
+				windowDef TopFourDividerD {
+					rect		17, 0, 110, 64
+					backcolor	0, 0, 0, 0.5
+					bordercolor	0.4, 0.45, 0.55, 1
+					bordersize	1
+				}
+				windowDef TopFourDividerA {
+					rect		17, 16, 110, 16
+					bordercolor	0.4, 0.45, 0.55, 1
+					bordersize	1
+				}
+				windowDef TopFourDividerB {
+					rect		17, 31, 110, 16
+					bordercolor	0.4, 0.45, 0.55, 1
+					bordersize	1
+				}
+				windowDef TopFourDividerC {
+					rect		101, 0, 26, 64
+					bordercolor	0.4, 0.45, 0.55, 1
+					bordersize	1
+				}
+				
+				windowDef TopFourIcon1 {
+					rect		0, 0, 16, 15
+					background	"gui::player1_portrait"
+				}
+				windowDef TopFourName1 {
+					rect		18, 0, 83, 16
+					backcolor	0, 0, 0, 0
+					forecolor	1, 1, 1, 1
+					text		"gui::player1"
+					textscale	0.3
+					textaligny	-4
+				}
+				windowDef TopFourScore1 {
+					rect		101, 0, 26, 16
+					backcolor	0, 0, 0, 0
+					forecolor	1, 1, 1, 1
+					text		"gui::player1_score"
+					textscale	0.3
+					textalign	1
+					textaligny	-4
+				}
+				windowDef TopFourIcon2 {
+					rect		0, 16, 16, 15
+					background	"gui::player2_portrait"
+				}
+				windowDef TopFourName2 {
+					rect		18, 16, 83, 16
+					backcolor	0, 0, 0, 0
+					forecolor	1, 1, 1, 1
+					text		"gui::player2"
+					textscale	0.3
+					textaligny	-4
+				}
+				windowDef TopFourScore2 {
+					rect		101, 16, 26, 16
+					backcolor	0, 0, 0, 0
+					forecolor	1, 1, 1, 1
+					text		"gui::player2_score"
+					textscale	0.3
+					textalign	1
+					textaligny	-4
+				}
+				windowDef TopFourIcon3 {
+					rect		0, 32, 16, 15
+					background	"gui::player3_portrait"
+				}
+				windowDef TopFourName3 {
+					rect		18, 32, 83, 16
+					backcolor	0, 0, 0, 0
+					forecolor	1, 1, 1, 1
+					text		"gui::player3"
+					textscale	0.3
+					textaligny	-4
+				}
+				windowDef TopFourScore3 {
+					rect		101, 32, 26, 16
+					backcolor	0, 0, 0, 0
+					forecolor	1, 1, 1, 1
+					text		"gui::player3_score"
+					textscale	0.3
+					textalign	1
+					textaligny	-4
+				}
+				windowDef TopFourIcon4 {
+					rect		0, 48, 16, 15
+					background	"gui::player4_portrait"
+				}
+				windowDef TopFourName4 {
+					rect		18, 48, 83, 16
+					backcolor	0, 0, 0, 0
+					forecolor	1, 1, 1, 1
+					text		"gui::player4"
+					textscale	0.3
+					textaligny	-4
+				}
+				windowDef TopFourScore4 {
+					rect		101, 48, 26, 16
+					backcolor	0, 0, 0, 0
+					forecolor	1, 1, 1, 1
+					text		"gui::player4_score"
+					textscale	0.3
+					textalign	1
+					textaligny	-4
+				}
+			}
+
+//			windowDef SelfRank {
+//				rect		510, 72, 40, 25
+//				text		"gui::self_rankstring"
+//				textscale	0.53
+//				textalign	2
+//				textaligny	-5
+//				forecolor	0.7, 0.8, 0.9, 0.7
+//			}
+
+			windowDef FragStuff {
+				rect		0, 0, 640, 480
+				visible		("gui::fraglimit" && "gui::gameon")
+
+				windowDef FragIcon {
+					rect		565, 70, 28, 28
+					background	"guis/assets/hud/frag.tga"
+				}
+
+				windowDef FragWin {
+					rect		560, 96, 35, 20
+					text		"gui::frags"
+					shadow		1
+					forecolor	0.7, 0.8, 0.9, 0.7
+					visible		1
+					textscale	0.4
+					textaligny	-5
+					textalign	1
+				}
+			}
+
+			windowDef TimerStuff {
+				rect		0, 0, 640, 480
+				visible		("gui::timelimit" && "gui::gameon")
+				
+				windowDef TimerIcon {
+					rect		608, 70, 26, 26
+					background	"guis/assets/hud/timer.tga"
+				}
+
+				windowDef TimerWin {
+					rect		594, 96, 40, 20
+					text		"gui::timer"
+					shadow		1
+					forecolor	0.7, 0.8, 0.9, 0.7
+					visible		1
+					textscale	0.4
+					textaligny	-5
+					textalign	2
+				}
+			}
+		}
+
+		windowDef GameStateText {
+			rect		0, 23, 640, 480
+			forecolor	1, 1, 1, 1
+			text		"gui::gamestatetext"
+			textscale	0.40
+			textalign	1
+			textaligny	40
+		}
+
+/*		windowDef WarmupParent {
+			rect		0, 0, 640, 480
+			visible		"gui::warmup"
+
+			windowDef PressReady {	// Press ready key when ready
+				text		"#str_20010"
+				rect		0, 440, 640, 25
+				shadow		1
+				textalign	1
+				forecolor	0.8, 0.1, 0.1, 1
+				textscale	0.4
+				visible		("gui::ready_self" == 0)
+			}
+		}
+*/
+
+		windowDef Lag {
+			rect		15, 15, 32, 32
+			matcolor	1, 1, 1, 1
+			background	"textures/gfx/plug"
+			visible		"gui::hudLag"
+		}
+
+		//rww - TEMPORARY - print the health for testing the spirit pipe in mp stuff	
+/*		windowDef health {
+			rect		10, 400, 80, 80
+			text		"gui::player_health"
+			shadow		1
+			textalign	1
+			forecolor	1.0, 1.0, 1.0, 1.0
+			textscale	0.8
+			visible		("gui::player_maxhealth" > 100)
+		}
+*/
+	}

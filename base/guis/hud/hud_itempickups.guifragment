@@ -1,0 +1,110 @@
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//  Display inventory pickups
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+
+	/*	How it works:
+			pickup			events called
+			---------		-------------------------
+			ammo			ammoPulse
+			weapon			weaponPulse, ammoPulse
+			item			invPickup
+			health			healthpulse
+			spiritpower		spiritPulse
+			maxhealth		maxHealthPulse
+
+			the itemX events come in depending on the time since you last picked up an item.
+	*/
+	
+	onNamedEvent healthPulse {
+		resetTime "healthTommyOutline" "0" ;
+	}
+	onNamedEvent spiritPulse {
+		if ("gui::spiritwalking" != 0 || "gui::deathwalking" != 0) {
+			resetTime "spiritTommyOutlineFront" "0" ;
+		}
+		else {
+			resetTime "spiritTommyOutlineBack" "0" ;
+		}
+	}
+	onNamedEvent maxHealthPulse {
+		resetTime "Anim_TommyMaxHealth" "0";
+	}
+	onNamedEvent ammoPulse {
+	}
+	onNamedEvent weaponPulse {
+	}	
+	onNamedEvent invPickup {
+	}
+
+	// Game calls named events to pulse these pickup icons
+	#define AMMO_XPOS		600
+	#define AMMO_YPOS		36
+
+	windowDef PickupContainer {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		AMMO_XPOS, AMMO_YPOS, 32, 32*10
+		noclip		1
+		visible		("gui::invehicle" == 0)
+		
+		windowDef PickupIcon0 {
+			rect		0-32*"gui::itemwide0", 9*32, 32+32*"gui::itemwide0", 32
+			background	"gui::itemicon0"
+			matcolor	"gui::itemalpha0", "gui::itemalpha0", "gui::itemalpha0", "gui::itemalpha0"
+			shear		0, -0.22+0.22*"gui::itemwide0"
+		}
+		windowDef PickupIcon1 {
+			rect		0-32*"gui::itemwide1", 8*32, 32+32*"gui::itemwide1", 32
+			background	"gui::itemicon1"
+			matcolor	"gui::itemalpha1", "gui::itemalpha1", "gui::itemalpha1", "gui::itemalpha1"
+			shear		0, -0.22+0.22*"gui::itemwide1"
+		}
+		windowDef PickupIcon2 {
+			rect		0-32*"gui::itemwide2", 7*32, 32+32*"gui::itemwide2", 32
+			background	"gui::itemicon2"
+			matcolor	"gui::itemalpha2", "gui::itemalpha2", "gui::itemalpha2", "gui::itemalpha2"
+			shear		0, -0.22+0.22*"gui::itemwide2"
+		}
+		windowDef PickupIcon3 {
+			rect		0-32*"gui::itemwide3", 6*32, 32+32*"gui::itemwide3", 32
+			background	"gui::itemicon3"
+			matcolor	"gui::itemalpha3", "gui::itemalpha3", "gui::itemalpha3", "gui::itemalpha3"
+			shear		0, -0.22+0.22*"gui::itemwide3"
+		}
+		windowDef PickupIcon4 {
+			rect		0-32*"gui::itemwide4", 5*32, 32+32*"gui::itemwide4", 32
+			background	"gui::itemicon4"
+			matcolor	"gui::itemalpha4", "gui::itemalpha4", "gui::itemalpha4", "gui::itemalpha4"
+			shear		0, -0.22+0.22*"gui::itemwide4"
+		}
+		windowDef PickupIcon5 {
+			rect		0-32*"gui::itemwide5", 4*32, 32+32*"gui::itemwide5", 32
+			background	"gui::itemicon5"
+			matcolor	"gui::itemalpha5", "gui::itemalpha5", "gui::itemalpha5", "gui::itemalpha5"
+			shear		0, -0.22+0.22*"gui::itemwide5"
+		}
+		windowDef PickupIcon6 {
+			rect		0-32*"gui::itemwide6", 3*32, 32+32*"gui::itemwide6", 32
+			background	"gui::itemicon6"
+			matcolor	"gui::itemalpha6", "gui::itemalpha6", "gui::itemalpha6", "gui::itemalpha6"
+			shear		0, -0.22+0.22*"gui::itemwide6"
+		}
+		windowDef PickupIcon7 {
+			rect		0-32*"gui::itemwide7", 2*32, 32+32*"gui::itemwide7", 32
+			background	"gui::itemicon7"
+			matcolor	"gui::itemalpha7", "gui::itemalpha7", "gui::itemalpha7", "gui::itemalpha7"
+			shear		0, -0.22+0.22*"gui::itemwide7"
+		}
+		windowDef PickupIcon8 {
+			rect		0-32*"gui::itemwide8", 1*32, 32+32*"gui::itemwide8", 32
+			background	"gui::itemicon8"
+			matcolor	"gui::itemalpha8", "gui::itemalpha8", "gui::itemalpha8", "gui::itemalpha8"
+			shear		0, -0.22+0.22*"gui::itemwide8"
+		}
+		windowDef PickupIcon9 {
+			rect		0-32*"gui::itemwide9", 0*32, 32+32*"gui::itemwide9", 32
+			background	"gui::itemicon9"
+			matcolor	"gui::itemalpha9", "gui::itemalpha9", "gui::itemalpha9", "gui::itemalpha9"
+			shear		0, -0.22+0.22*"gui::itemwide9"
+		}
+	}

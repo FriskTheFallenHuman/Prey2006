@@ -33,7 +33,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "../sound/snd_local.h"
 
 #define CDKEY_FILEPATH "../" BASE_GAMEDIR "/" CDKEY_FILE
-#define XPKEY_FILEPATH "../" BASE_GAMEDIR "/" XPKEY_FILE
 
 idCVar	idSessionLocal::com_showAngles( "com_showAngles", "0", CVAR_SYSTEM | CVAR_BOOL, "" );
 idCVar	idSessionLocal::com_minTics( "com_minTics", "1", CVAR_SYSTEM, "" );

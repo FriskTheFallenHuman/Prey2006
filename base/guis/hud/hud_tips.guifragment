@@ -1,0 +1,102 @@
+#define TIP_TEXT_COLOR		0.627, 0.698, 0.792, 1
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//  Tips
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	onNamedEvent tipWindowUp {
+		resetTime "TipWindowShow" "0";
+	}
+	
+	onNamedEvent tipWindowDown {
+		resetTime "TipWindowHide" "0";
+	}
+
+	windowDef TipWindowShow {		// Show anim
+		anchor		ANCHOR_CENTER_CENTER
+		rect	0, 0, 0, 0
+		noTime	1
+		onTime 0 {
+			set "TipWindow::showing" "1";
+			set "TipTop::matcolor" "0 0 0 0" ;
+			set "TipKey::matcolor" "0 0 0 0" ;
+			set "TipKeyText::forecolor" "1 1 1 0" ;
+			set "TipKeyTextWide::forecolor" "1 1 1 0" ;
+			set "TipText::forecolor" "1 1 1 0" ;
+			set "TipWindow::visible" "1";
+			transition "TipTop::matcolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "TipKey::matcolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "TipKeyText::forecolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "TipKeyTextWide::forecolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "TipText::forecolor" "1 1 1 0" "1 1 1 1" "300" ;
+		}
+	}
+	windowDef TipWindowHide {		// Hide anim
+		anchor		ANCHOR_CENTER_CENTER
+		rect	0, 0, 0, 0
+		noTime	1
+		onTime 0 {
+			set "TipWindow::showing" "0";
+			transition "TipTop::matcolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "TipKey::matcolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "TipKeyText::forecolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "TipKeyTextWide::forecolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "TipText::forecolor" "1 1 1 1" "1 1 1 0" "300" ;
+		}
+		onTime 300 {
+			if ("TipWindow::showing" == 0) {
+				set "TipWindow::visible" "0";
+			}
+		}
+	}
+
+	windowDef TipWindow {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		220+"gui::tipOffsetX", 200+"gui::tipOffsetY", 420, 164
+		float		showing 0
+		visible		0
+
+		windowDef TipTop {
+			rect		68, 60, 64, 32
+			matcolor	1, 1, 1, 1
+			background	"gui::topmaterial"
+		}
+		windowDef TipKey {
+			rect		0, 100, 96, 48
+			matcolor	1, 1, 1, 1
+			background	"gui::keymaterial"
+		}
+		windowDef TipKeyTextWide {
+			rect		10, 108, 80, 30
+			backcolor	0, 0, 0, 0
+			forecolor	1, 1, 1, 1
+			textscale	0.3
+			textalign	1
+			textaligny	-2
+			shear		0, 0.22
+			text		"gui::key"
+			shadow		1
+			visible		"gui::keywide"
+		}
+		windowDef TipKeyText {
+			rect		54, 104, 34, 32
+			backcolor	0, 0, 0, 0
+			forecolor	1, 1, 1, 1
+			textscale	0.3
+			textalign	1
+			textaligny	2
+			shear		0, 0.22
+			text		"gui::key"
+			shadow		1
+			visible		("gui::keywide" == 0)
+		}
+
+		windowDef TipText {
+			rect		100, 108, 1200, 40
+			forecolor	TIP_TEXT_COLOR
+			textscale	0.4
+			textalign	0
+			textaligny	0
+			shadow		1
+			text		"gui::tip"
+		}
+	}

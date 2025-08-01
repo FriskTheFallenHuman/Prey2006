@@ -96,6 +96,12 @@ protected:
 	idWindow *		mParent;
 
 	idWinBool	hideCursor;
+
+	// Anchor system - from cstDoom3
+	idWinInt	anchor;
+	idWinInt	anchorTo;		// for anchor transitions
+	idWinFloat	anchorFactor;	// for anchor transitions
+	bool		noClipBackground;
 };
 
 #endif /* !__SIMPLEWIN_H__ */

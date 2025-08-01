@@ -78,6 +78,11 @@ idSimpleWindow::idSimpleWindow(idWindow *win) {
 
 	hideCursor = win->hideCursor;
 
+	anchor = win->anchor;
+	anchorTo = win->anchorTo;
+	anchorFactor = win->anchorFactor;
+	noClipBackground = win->noClipBackground;
+
 	idWindow *parent = win->GetParent();
 	if (parent) {
 		if (text.NeedsUpdate()) {
@@ -112,6 +117,15 @@ idSimpleWindow::idSimpleWindow(idWindow *win) {
 		}
 		if (backGroundName.NeedsUpdate()) {
 			parent->AddUpdateVar(&backGroundName);
+		}
+		if (anchor.NeedsUpdate()) {
+			parent->AddUpdateVar(&anchor);
+		}
+		if (anchorTo.NeedsUpdate()) {
+			parent->AddUpdateVar(&anchorTo);
+		}
+		if (anchorFactor.NeedsUpdate()) {
+			parent->AddUpdateVar(&anchorFactor);
 		}
 	}
 }
@@ -161,8 +175,10 @@ void idSimpleWindow::DrawBackground(const idRectangle &drawRect) {
 		if (matColor.w() > 0) {
 			float scalex, scaley;
 			if ( flags & WIN_NATURALMAT ) {
-				scalex = drawRect.w / background->GetImageWidth();
-				scaley = drawRect.h / background->GetImageHeight();
+				// DG: now also multiplied with matScalex/y, don't see a reason not to support that
+				//     (it allows scaling a tiled background image)
+				scalex = ( drawRect.w / background->GetImageWidth() ) * matScalex;
+				scaley = ( drawRect.h / background->GetImageHeight() ) * matScaley;
 			} else {
 				scalex = matScalex;
 				scaley = matScaley;
@@ -224,14 +240,38 @@ void idSimpleWindow::Redraw(float x, float y) {
 
 	CalcClientRect(0, 0);
 	dc->SetFont(fontNum);
+
+	if (mParent && mParent->anchor != idDeviceContext::ANCHOR_NONE) {
+		anchor = mParent->anchor;
+		anchorTo = mParent->anchorTo;
+		anchorFactor = mParent->anchorFactor;
+	}
+
+	extern idCVar gui_hudAdjustAspect;
+	if ( !gui_hudAdjustAspect.GetBool() || anchor == idDeviceContext::ANCHOR_NONE ) {
+		if ( mParent ) {
+			dc->SetSize(mParent->forceAspectWidth, mParent->forceAspectHeight);
+		} else {
+			dc->SetSize(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
+		}
+	} else {
+		dc->SetAnchorSize(anchor, anchorTo, anchorFactor);
+	}
+
 	drawRect.Offset(x, y);
 	clientRect.Offset(x, y);
 	textRect.Offset(x, y);
 	SetupTransforms(x, y);
-	if ( flags & WIN_NOCLIP ) {
-		dc->EnableClipping( false );
+
+	if ( ( flags & WIN_NOCLIP ) || noClipBackground ) {
+		dc->EnableClipping(false);
 	}
 	DrawBackground(drawRect);
+
+	if ( !( flags & WIN_NOCLIP ) && noClipBackground ) {
+		dc->EnableClipping(true);
+	}
+
 	DrawBorderAndCaption(drawRect);
 	if ( textShadow ) {
 		idStr shadowText = text;
@@ -284,6 +324,10 @@ intptr_t idSimpleWindow::GetWinVarOffset( idWinVar *wv, drawWin_t* owner) {
 		ret = (ptrdiff_t)&this->rotate - (ptrdiff_t)this;
 	}
 
+	if ( wv == &anchorFactor ) {
+		ret = (ptrdiff_t)&this->anchorFactor - (ptrdiff_t)this;
+	}
+
 	if ( ret != -1 ) {
 		owner->simp = this;
 	}
@@ -325,6 +369,15 @@ idWinVar *idSimpleWindow::GetWinVarByName(const char *_name) {
 	if (idStr::Icmp(_name, "text") == 0) {
 		retVar = &text;
 	}
+
+	if (idStr::Icmp(_name, "anchor") == 0) {
+		retVar = &anchor;
+	} else if (idStr::Icmp(_name, "anchorTo") == 0) {
+		retVar = &anchorTo;
+	} else if (idStr::Icmp(_name, "anchorFactor") == 0) {
+		retVar = &anchorFactor;
+	}
+
 	return retVar;
 }
 
@@ -360,6 +413,12 @@ void idSimpleWindow::WriteToSaveGame( idFile *savefile ) {
 	rotate.WriteToSaveGame( savefile );
 	shear.WriteToSaveGame( savefile );
 	backGroundName.WriteToSaveGame( savefile );
+	
+	// FIXME: savegame version?
+	anchor.WriteToSaveGame( savefile );
+	anchorTo.WriteToSaveGame( savefile );
+	anchorFactor.WriteToSaveGame( savefile );
+	savefile->Write( &noClipBackground, sizeof( noClipBackground ) );
 
 	int stringLen;
 
@@ -406,6 +465,14 @@ void idSimpleWindow::ReadFromSaveGame( idFile *savefile ) {
 	rotate.ReadFromSaveGame( savefile );
 	shear.ReadFromSaveGame( savefile );
 	backGroundName.ReadFromSaveGame( savefile );
+
+	// TODO: why does this have to be read from the savegame anyway, does it change?
+	if ( session->GetSaveGameVersion() >= 18 ) {
+		anchor.ReadFromSaveGame( savefile );
+		anchorTo.ReadFromSaveGame( savefile );
+		anchorFactor.ReadFromSaveGame( savefile );
+		savefile->Read( &noClipBackground, sizeof( noClipBackground ) );
+	}
 
 	int stringLen;
 

@@ -56,6 +56,7 @@ bool idWindow::registerIsTemporary[MAX_EXPRESSION_REGISTERS];		// statics to ass
 
 idCVar idWindow::gui_debug( "gui_debug", "0", CVAR_GUI | CVAR_INTEGER, "" );
 idCVar idWindow::gui_edit( "gui_edit", "0", CVAR_GUI | CVAR_BOOL, "" );
+idCVar gui_hudAdjustAspect( "gui_hudAdjustAspect", "1", CVAR_GUI | CVAR_BOOL | CVAR_ARCHIVE, "adjust the HUD's aspect when the screen aspect ratio isn't 4:3" );
 
 extern idCVar r_skipGuiShaders;		// 1 = don't render any gui elements on surfaces
 extern idCVar r_scaleMenusTo43;
@@ -82,6 +83,13 @@ const idRegEntry idWindow::RegisterVars[] = {
 	{ "choices", idRegister::STRING },
 	{ "choiceVar", idRegister::STRING },
 	{ "bind", idRegister::STRING },
+	{ "layer", idRegister::INT },
+	{ "pseudoBit", idRegister::INT },
+	{ "resetScrollbar", idRegister::BOOL },
+	{ "writeTop", idRegister::BOOL },
+	{ "anchor", idRegister::INT },
+	{ "anchorTo", idRegister::INT },
+	{ "anchorFactor", idRegister::FLOAT },
 	{ "modelRotate", idRegister::VEC4 },
 	{ "modelOrigin", idRegister::VEC4 },
 	{ "lightOrigin", idRegister::VEC4 },
@@ -174,6 +182,11 @@ void idWindow::CommonInit() {
 	}
 
 	hideCursor = false;
+
+	anchor = idDeviceContext::ANCHOR_NONE;
+	anchorTo = idDeviceContext::ANCHOR_NONE;
+	anchorFactor = 0.0f;
+	noClipBackground = false;
 }
 
 /*
@@ -695,6 +708,18 @@ bool idWindow::Contains(const idRectangle &sr, float x, float y) {
 	idRectangle r = sr;
 	r.x += actualX - drawRect.x;
 	r.y += actualY - drawRect.y;
+	// DG: if anchor is used, the coordinates must adjusted
+	if ( anchor != idDeviceContext::ANCHOR_NONE ) {
+		// adjust r like idDeviceContext does for drawing
+		idVec2 scale, offset;
+		if ( idDeviceContext::GetScreenParams( anchor, anchorTo, anchorFactor, scale, offset ) ) {
+			r.x = r.x * scale.x + offset.x;
+			r.y = r.y * scale.y + offset.y;
+			r.w *= scale.x;
+			r.h *= scale.y;
+		}
+	}
+
 	return r.Contains(x, y);
 }
 
@@ -707,6 +732,18 @@ bool idWindow::Contains(float x, float y) {
 	idRectangle r = drawRect;
 	r.x = actualX;
 	r.y = actualY;
+	// DG: if anchor is used, the coordinates must adjusted
+	if ( anchor != idDeviceContext::ANCHOR_NONE ) {
+		// adjust r like idDeviceContext does for drawing
+		idVec2 scale, offset;
+		if ( idDeviceContext::GetScreenParams( anchor, anchorTo, anchorFactor, scale, offset ) ) {
+			r.x = r.x * scale.x + offset.x;
+			r.y = r.y * scale.y + offset.y;
+			r.w *= scale.x;
+			r.h *= scale.y;
+		}
+	}
+
 	return r.Contains(x, y);
 }
 
@@ -1141,8 +1178,10 @@ void idWindow::DrawBackground(const idRectangle &drawRect) {
 	if ( background && matColor.w() ) {
 		float scalex, scaley;
 		if ( flags & WIN_NATURALMAT ) {
-			scalex = drawRect.w / background->GetImageWidth();
-			scaley = drawRect.h / background->GetImageHeight();
+			// DG: now also multiplied with matScalex/y, don't see a reason not to support that
+			//     (it allows scaling a tiled background image)
+			scalex = ( drawRect.w / background->GetImageWidth() ) * matScalex;
+			scaley = ( drawRect.h / background->GetImageHeight() ) * matScaley;
 		} else {
 			scalex = matScalex;
 			scaley = matScaley;
@@ -1243,7 +1282,7 @@ void idWindow::Redraw(float x, float y) {
 		// only scale desktop windows (will automatically scale its sub-windows)
 		// that EITHER have the scaleto43 flag set OR are fullscreen menus and r_scaleMenusTo43 is 1
 		if( (flags & WIN_SCALETO43) ||
-			((flags & WIN_MENUGUI) && r_scaleMenusTo43.GetBool()) )
+			( ( flags & WIN_MENUGUI ) && r_scaleMenusTo43.GetBool() && !( flags & WIN_NO_SCALETO43 ) ) )
 		{
 			fixupFor43 = true;
 			dc->SetMenuScaleFix(true);
@@ -1271,10 +1310,22 @@ void idWindow::Redraw(float x, float y) {
 	CalcClientRect(0, 0);
 
 	SetFont();
-	//if (flags & WIN_DESKTOP) {
-		// see if this window forces a new aspect ratio
-		dc->SetSize(forceAspectWidth, forceAspectHeight);
-	//}
+
+	if ( parent && parent->anchor != idDeviceContext::ANCHOR_NONE ) {
+		anchor = parent->anchor;
+		anchorTo = parent->anchorTo;
+		anchorFactor = parent->anchorFactor;
+	}
+
+	if ( !gui_hudAdjustAspect.GetBool() || anchor == idDeviceContext::ANCHOR_NONE ) {
+		dc->SetSize( forceAspectWidth, forceAspectHeight );
+	} else {
+		// DG: if this Window uses anchors, it already is aspect-ratio-aware
+		//     so a potentially active menuscalefix must be disabled
+		//    (else it's "fixed" twice => wrong ratio in other direction)
+		dc->SetMenuScaleFix( false );
+		dc->SetAnchorSize( anchor, anchorTo, anchorFactor );
+	}
 
 	//FIXME: go to screen coord tracking
 	drawRect.Offset(x, y);
@@ -1289,7 +1340,17 @@ void idWindow::Redraw(float x, float y) {
 	dc->GetTransformInfo( oldOrg, oldTrans );
 
 	SetupTransforms(x, y);
+
+	if ( noClipBackground ) {
+		dc->EnableClipping( false );
+	}
+
 	DrawBackground(drawRect);
+
+	if ( noClipBackground ) {
+		dc->EnableClipping( true );
+	}
+
 	DrawBorderAndCaption(drawRect);
 
 	if ( !( flags & WIN_NOCLIP) ) {
@@ -1356,6 +1417,13 @@ void idWindow::SetDC(idDeviceContext *d) {
 	//if (flags & WIN_DESKTOP) {
 		dc->SetSize(forceAspectWidth, forceAspectHeight);
 	//}
+
+	if ( parent && parent->anchor != idDeviceContext::ANCHOR_NONE ) {
+		anchor = parent->anchor;
+		anchorTo = parent->anchorTo;
+		anchorFactor = parent->anchorFactor;
+	}
+
 	int c = children.Num();
 	for (int i = 0; i < c; i++) {
 		children[i]->SetDC(d);
@@ -1802,6 +1870,10 @@ intptr_t idWindow::GetWinVarOffset( idWinVar *wv, drawWin_t* owner) {
 		ret = (ptrdiff_t)&this->rotate - (ptrdiff_t)this;
 	}
 
+	if ( wv == &anchorFactor ) {
+		ret = (ptrdiff_t)&this->anchorFactor - (ptrdiff_t)this;
+	}
+
 	if ( ret != -1 ) {
 		owner->win = this;
 		return ret;
@@ -1835,7 +1907,7 @@ idWinVar *idWindow::GetWinVarByName(const char *_name, bool fixup, drawWin_t** o
 
 	if (idStr::Icmp(_name, "notime") == 0) {
 		retVar = &noTime;
-	}
+	} // FIXME: why does all this code not use "else if"?!
 	if (idStr::Icmp(_name, "background") == 0) {
 		retVar = &backGroundName;
 	}
@@ -1919,6 +1991,14 @@ idWinVar *idWindow::GetWinVarByName(const char *_name, bool fixup, drawWin_t** o
 	}
 	if (idStr::Icmp(_name, "splineIn") == 0) {
 		retVar = &splineIn;
+	}
+
+	if (idStr::Icmp(_name, "anchor") == 0) {
+		retVar = &anchor;
+	} else if (idStr::Icmp(_name, "anchorTo") == 0) {
+		retVar = &anchorTo;
+	} else if (idStr::Icmp(_name, "anchorFactor") == 0) {
+		retVar = &anchorFactor;
 	}
 
 	idStr key = _name;
@@ -2024,8 +2104,11 @@ bool idWindow::ParseInternalVar(const char *_name, idParser *src) {
 	// DG: added this window flag for Windows that should be scaled to 4:3
 	//     (with "empty" bars left/right or above/below)
 	if (idStr::Icmp(_name, "scaleto43") == 0) {
-		if ( src->ParseBool() ) {
+		int scaleTo43 = src->ParseInt();
+		if( scaleTo43 > 0 ) {
 			flags |= WIN_SCALETO43;
+		} else if( scaleTo43 == 0 ) {
+			flags |= WIN_NO_SCALETO43;
 		}
 		return true;
 	}
@@ -2162,6 +2245,12 @@ bool idWindow::ParseInternalVar(const char *_name, idParser *src) {
 		fontNum = dc->FindFont( fontStr );
 		return true;
 	}
+
+	if ( idStr::Icmp( _name, "noClipBackground" ) == 0 ) {
+		noClipBackground = src->ParseBool();
+		return true;
+	}
+
 	return false;
 }
 
@@ -3622,6 +3711,12 @@ void idWindow::WriteToSaveGame( idFile *savefile ) {
 	backGroundName.WriteToSaveGame( savefile );
 	hideCursor.WriteToSaveGame(savefile);
 
+	// FIXME: savegame version?
+	anchor.WriteToSaveGame( savefile );
+	anchorTo.WriteToSaveGame( savefile );
+	anchorFactor.WriteToSaveGame( savefile );
+	savefile->Write( &noClipBackground, sizeof( noClipBackground ) );
+
 	// Defined Vars
 	for ( i = 0; i < definedVars.Num(); i++ ) {
 		definedVars[i]->WriteToSaveGame( savefile );
@@ -3772,6 +3867,15 @@ void idWindow::ReadFromSaveGame( idFile *savefile ) {
 		hideCursor = false;
 	}
 
+
+	// TODO: why does this have to be read from the savegame anyway, does it change?
+	if ( session->GetSaveGameVersion() >= 18 ) {
+		anchor.ReadFromSaveGame( savefile );
+		anchorTo.ReadFromSaveGame( savefile );
+		anchorFactor.ReadFromSaveGame( savefile );
+		savefile->Read( &noClipBackground, sizeof( noClipBackground ) );
+	} // else keep default values, I guess
+
 	// Defined Vars
 	for ( i = 0; i < definedVars.Num(); i++ ) {
 		definedVars[i]->ReadFromSaveGame( savefile );
@@ -3903,6 +4007,8 @@ void idWindow::FixupTransitions() {
 					transitions[i].data = &dw->win->textScale;
 				} else if ( transitions[i].offset == (ptrdiff_t)&this->rotate - (ptrdiff_t)this ) {
 					transitions[i].data = &dw->win->rotate;
+				} else if ( transitions[i].offset == (ptrdiff_t)&this->anchorFactor - (ptrdiff_t)this ) {
+					transitions[i].data = &dw->win->anchorFactor;
 				}
 			} else {
 				if ( transitions[i].offset == (ptrdiff_t)&this->rect - (ptrdiff_t)this ) {
@@ -3919,6 +4025,8 @@ void idWindow::FixupTransitions() {
 					transitions[i].data = &dw->simp->textScale;
 				} else if ( transitions[i].offset == (ptrdiff_t)&this->rotate - (ptrdiff_t)this ) {
 					transitions[i].data = &dw->simp->rotate;
+				} else if ( transitions[i].offset == (ptrdiff_t)&this->anchorFactor - (ptrdiff_t)this ) {
+					transitions[i].data = &dw->simp->anchorFactor;
 				}
 			}
 		}

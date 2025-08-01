@@ -1,0 +1,57 @@
+// hud_damageindictor.guifragment
+
+windowDef WholeDamageIndicator {
+	rect		0, 0, 640, 480
+	visible		(("gui::deathwalking" == 0) && "gui::displayDamageIndicators" != 0)
+
+	windowDef damageIndicatorRotator0 {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		80, 0, 480, 480					// 320-240, 240-240, 480, 480
+		rotate		"gui::yawToEnemy0"
+
+		windowDef LastDamage0 {
+			rect		176, 70, 128, 64				// 240-64, 0, 128, 16
+			backcolor	0, 0, 0, 0
+			matcolor	1, 1, 1, 0
+			background	"guis/assets/hud/damagefeedback"
+
+			onNamedEvent Attacked0 {
+				transition "matcolor" "1 1 1 1" "1 1 1 0" "1000" ;
+			}
+		}
+	}
+
+	windowDef damageIndicatorRotator1 {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		80, 0, 480, 480					// 320-240, 240-240, 480, 480
+		rotate		"gui::yawToEnemy1"
+
+		windowDef LastDamage1 {
+			rect		176, 70, 128, 64				// 240-64, 0, 128, 16
+			backcolor	0, 0, 0, 0
+			matcolor	1, 1, 1, 0
+			background	"guis/assets/hud/damagefeedback"
+
+			onNamedEvent Attacked1 {
+				transition "matcolor" "1 1 1 1" "1 1 1 0" "1000" ;
+			}
+		}
+	}
+
+	windowDef damageIndicatorRotator2 {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		80, 0, 480, 480					// 320-240, 240-240, 480, 480
+		rotate		"gui::yawToEnemy2"
+
+		windowDef LastDamage2 {
+			rect		176, 70, 128, 64				// 240-64, 0, 128, 16
+			backcolor	0, 0, 0, 0
+			matcolor	1, 1, 1, 0
+			background	"guis/assets/hud/damagefeedback"
+
+			onNamedEvent Attacked2 {
+				transition "matcolor" "1 1 1 1" "1 1 1 0" "1000" ;
+			}
+		}
+	}
+}

@@ -1,0 +1,47 @@
+
+//---------------------------------------------
+// Lighter
+//---------------------------------------------
+	#define THERMOMETER_WIDTH	14
+	#define THERMOMETER_HEIGHT	60
+	windowDef lighterThermometer {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		74, 402, THERMOMETER_WIDTH, THERMOMETER_HEIGHT
+		visible		("gui::lightertemp" > 0)
+
+		windowDef lighterThermometerWhite {
+			rect		3.5, 5, 6, 39
+			matcolor	1, 1, 1, 0.35
+			background	"guis/assets/hud/ammo_bar"
+		}
+		windowDef temp_crop {
+			rect		3.5, 5 + 39 * (1 - "gui::lightertemp"), 12, 39
+			
+			windowDef temp_bar {
+				rect		6, 39 * ("gui::lightertemp"), 6, 39
+				matcolor	1, 1, 1, 0.85
+				background	"guis/assets/hud/lighter_bar"
+				invertrect	1
+			}
+		}
+		windowDef lighterThermometerOverlay {
+			rect		0, 0, -THERMOMETER_WIDTH, THERMOMETER_HEIGHT
+			matcolor	1, 1, 1, 0.7
+			background	"guis/assets/hud/lighter_meter_bar"
+		}
+		
+
+	}
+	windowDef lighter {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		85, 432, 30, 30
+		background	"guis/assets/hud/zippo"
+		matcolor	1, 1, 1, 0.85
+		visible		"gui::lighter"
+	}
+	windowDef lighterflame {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		85, 418, 40, 40
+		background	"guis/assets/hud/lighter"
+		visible		"gui::lighter"
+	}

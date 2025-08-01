@@ -304,7 +304,8 @@ void idSessionLocal::SetMainMenuGuiVars( void ) {
 
 	SetCDKeyGuiVars( );
 	guiMainMenu->SetStateString( "nightmare", cvarSystem->GetCVarBool( "g_nightmare" ) ? "1" : "0" );
-	guiMainMenu->SetStateString( "browser_levelshot", "guis/assets/splash/pdtempa" );
+	guiMainMenu->SetStateString( "browser_levelshot", "guis/assets/blankLevelShot" );
+	guiMainMenu->SetStateString( "current_levelshot", "guis/assets/blankLevelShot" );
 
 	SetMainMenuSkin();
 	// Mods Menu
@@ -480,6 +481,18 @@ void idSessionLocal::HandleRestartMenuCommands( const char *menuCommand ) {
 		if ( !idStr::Icmp( cmd, "quit" ) ) {
 			ExitMenu();
 			common->Quit();
+			return;
+		}
+
+		if ( !idStr::Icmp( cmd, "loadlastsave" ) ) {
+			cmdSystem->BufferCommandText( CMD_EXEC_NOW, "loadGame quick" ); // FIXME: this is not rigth, we should load AutoSave__%chaptername%.sav!
+			return;
+		}
+
+		if ( !idStr::Icmp( cmd, "mainmenu" ) ) {
+			//cmdSystem->BufferCommandText( CMD_EXEC_NOW, "exitMenu" );
+			ExitMenu();
+			session->StartMenu( true );
 			return;
 		}
 
