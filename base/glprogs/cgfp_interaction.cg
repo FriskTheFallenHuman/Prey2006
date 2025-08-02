@@ -1,0 +1,348 @@
+
+// Doom3 interaction fragment shader
+// Cass Everitt
+// Modified by KennShade for vanilla textures, with bugfixes and new features
+
+float2 CenterScale( float2 inTC, float2 centerScale ) {
+	float scaleX = centerScale.x;
+	float scaleY = centerScale.y;
+	float4 tc0 = float4( scaleX, 0, 0, 0.5 - ( 0.5f * scaleX ) );
+	float4 tc1 = float4( 0, scaleY, 0, 0.5 - ( 0.5f * scaleY ) );
+
+	float2 finalTC;
+	finalTC.x = dot4( inTC, tc0 );
+	finalTC.y = dot4( inTC, tc1 );
+	return finalTC;
+}
+
+float2 Rotate2D( float2 inTC, float2 cs ) {
+	float sinValue = cs.y;
+	float cosValue = cs.x;
+
+	float4 tc0 = float4( cosValue, -sinValue, 0, ( -0.5f * cosValue ) + ( 0.5f * sinValue ) + 0.5f );
+	float4 tc1 = float4( sinValue, cosValue, 0, ( -0.5f * sinValue ) + ( -0.5f * cosValue ) + 0.5f );
+
+	float2 finalTC;
+	finalTC.x = dot4( inTC, tc0 );
+	finalTC.y = dot4( inTC, tc1 );
+	return finalTC;
+}
+
+// better noise function available at https://github.com/ashima/webgl-noise
+float rand( float2 co ) {
+	return fract( sin( dot( co.xy, float2( 12.9898, 78.233 ) ) ) * 43758.5453 );
+}
+
+static const float3 LUMINANCE_SRGB = {0.2126, 0.7152, 0.0722};
+
+//#define GAMMAOFF
+//#define GAMMAFAST
+//#define GAMMAFASTER
+
+float gammaIN( float sRGB ) {
+	float linear;
+	
+#ifdef GAMMAOFF
+	linear = sRGB;
+#else
+#ifdef GAMMAFASTER
+	linear = sRGB*sRGB;
+#else
+#ifdef GAMMAFAST
+	linear = pow(sRGB, 2.2);
+#else
+	if (sRGB <= 0.04045)
+		linear = sRGB / 12.92;
+	else
+		linear = pow((sRGB + 0.055) / 1.055, 2.4);
+#endif
+#endif
+#endif
+
+	return linear;
+}
+
+float3 gammaIN( float3 sRGB ) {
+	float3 linear;
+	linear.r = gammaIN(sRGB.r);
+	linear.g = gammaIN(sRGB.g);
+	linear.b = gammaIN(sRGB.b);
+	return linear;
+}
+
+float4 gammaIN( float4 sRGB ) {
+	float4 linear;
+	linear.rgb = gammaIN(sRGB.rgb);
+	linear.a = sRGB.a;
+	return linear;
+}
+
+float gammaOUT( float linear ) {
+	float sRGB;
+	
+#ifdef GAMMAOFF
+	sRGB = linear;
+#else
+#ifdef GAMMAFASTER
+	sRGB = sqrt(linear);
+#else
+#ifdef GAMMAFAST
+	sRGB = pow(linear, 1.0/2.2);
+#else
+	if (linear <= 0.0031308)
+		sRGB = linear * 12.92;
+	else
+		sRGB = 1.055 * pow(linear, 1.0 / 2.4) - 0.055;
+#endif
+#endif
+#endif
+	
+	return sRGB;
+}
+
+float3 gammaOUT( float3 linear ) {
+	float3 sRGB;
+	sRGB.r = gammaOUT(linear.r);
+	sRGB.g = gammaOUT(linear.g);
+	sRGB.b = gammaOUT(linear.b);
+	return sRGB;
+}
+
+float4 gammaOUT( float4 linear ) {
+	float4 sRGB;
+	sRGB.rgb = gammaOUT(linear.rgb);
+	sRGB.a = linear.a;
+	return sRGB;
+}
+
+float DistributionGGX(float NdotH, float roughness)
+{
+	float a2 = roughness*roughness;
+	float NdotH2 = NdotH*NdotH;
+	//float PI = 3.14159265359;
+
+	float num = a2;
+	float denom = (NdotH2 * (a2 - 1.0) + 1.0);
+	denom =  denom * denom; //* PI; //not using phyical light units, don't bother with PI
+	
+	return num / denom;
+}
+
+float VisibilitySmith(float NdotL, float NdotV, float roughness)
+{
+	float k = roughness*0.5;
+	
+	float ggx2 = NdotV * (1.0 - k) + k;
+	float ggx1 = NdotL * (1.0 - k) + k;
+	
+	return 0.25/max(0.001, ggx1*ggx2);
+}
+
+float DisneyDiffuse(float NdotV, float NdotL, float HdotV, float roughness)
+{
+	float FV = pow(1-NdotV, 5);
+	float FL = pow(1-NdotL, 5);
+	//float F90 = 0.5 + 2 * HdotV*HdotV * roughness;
+	float F90 = (roughness * 0.5) + (2 * HdotV*HdotV * roughness); //smooth goes to 0 at edges
+	return lerp(1.0, F90, FL) * lerp(1.0, F90, FV);
+}
+
+float3 fresnelSchlick(float cosTheta, float3 F0)
+{
+	return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
+} 
+
+float min3( float3 rgb)
+{
+	return min(rgb.r, min(rgb.g, rgb.b));
+}
+
+float max3( float3 rgb)
+{
+	return max(rgb.r, max(rgb.g, rgb.b));
+}
+
+//takes gamma-space diffuse and specular textures
+//outputs albedo color, F0 color and roughness for PBR
+void PBRFromSpecmap( in float3 diffMap, in float3 specMap, out float3 albedo, out float3 F0, out float roughness)
+{	
+	// controls
+	float specularGlossBalance = 1.0;
+	float specularAmount = 1.0;
+	float glossAmount = 1.0;
+	
+	// desaturate textures
+	//float diffLum = max3(diffMap);
+	//float diffLum = dot(LUMINANCE_SRGB, diffMap);
+	float diffLum = dot(float3(0.333), diffMap);
+	//float specLum = max3(specMap);
+	//float specLum = dot(LUMINANCE_SRGB, specMap);
+	float specLum = dot(float3(0.333), specMap);
+	
+	// linear textures
+	float3 diffLin = gammaIN(diffMap);
+	float3 specLin = gammaIN(specMap);
+	float diffLumLin = gammaIN(diffLum);
+	float specLumLin = gammaIN(specLum);
+	
+	// albedo base
+	albedo = diffLin;
+
+	// fresnel base
+	F0 = float3(0.04); 
+	
+	// fresnel contrast (will tighten low spec and broaden high spec, stops specular looking too flat or shiny)
+	float contrastMid = 0.214;
+	float contrastAmount = 2.0;
+	float contrast = 0.0;
+	contrast += saturate((specLum-contrastMid)/(1-contrastMid)); //high spec
+	contrast += saturate(specLum/contrastMid)-1.0; //low spec
+	contrast = exp2(contrastAmount * contrast);
+	F0 *= contrast;
+	
+	// target brightness for specular
+	float specularBrightness = 2.0; //vanilla specular brightness
+	float linearBrightness = gammaIN(specularBrightness * specLum);
+	
+	// reverse blinn BRDF to perfectly match vanilla specular brightness
+	// fresnel is affected when specPow is 0, experimentation is desmos showed that happens at F0/4
+	float F0Max = max3(F0 + 0.001);
+	float specPow = max(0.0, ((8.0 * linearBrightness) / F0Max) - 2.0);
+	F0 *= min(1.0, linearBrightness / (F0Max * 0.25));
+	
+	//controls
+	F0 *= specularGlossBalance;
+	specPow /= specularGlossBalance;
+	F0 *= specularAmount;
+	specPow *= glossAmount;
+	
+	// specular power to roughness
+	roughness = sqrt(2.0 / (specPow + 2.0));
+	
+	// UE4/Disney roughness
+	//roughness = sqrt(roughness);
+}
+
+//takes roughness, unnormalized 0-1 normalmap texture and the distance to the camera
+//returns roughness
+void ApplySpecularAA( inout float roughness, float3 bumpMap, float3 cameraVector)
+{
+	float normLen = saturate(length(bumpMap.xyz * 2.0 - 1.0));
+	float camDist = length(cameraVector);
+	
+	// fade out AA close to the camera to prevent dull highlights close up
+	float distMax = 500.0;
+	float disMin = 5.0;
+	//float lengthFade = smoothstep(distMax, disMin, camDist);
+	float lengthFade = 1.0/(dot(cameraVector,cameraVector) * 0.0001 + 1.0);
+	lengthFade = saturate(lengthFade);
+	normLen = lerp(normLen, 1.0, lengthFade);
+	
+	// roughness to specular power
+	float specPow = (2.0 / (roughness*roughness)) - 2.0;
+	
+	// toksvig AA to prevent speckles from sharp normal edges
+	float specAA = 1.0/(1.0 + specPow * ((1.0/normLen ) - 1.0));
+	
+	//apply AA
+	specPow *= specAA;
+	
+	// specular power to roughness
+	roughness = sqrt(2.0 / (specPow + 2.0));
+}
+
+void main( 
+		float4 primaryColor : COLOR0,
+		float3 lightVector : TEXCOORD0,
+		float2 bumpST : TEXCOORD1,
+		float2 lightFalloff : TEXCOORD2,
+		float3 lightProjection : TEXCOORD3,
+		float2 diffuseST : TEXCOORD4,
+		float2 specularST : TEXCOORD5,
+		float3 halfAngleVector	: TEXCOORD6,
+		float3 cameraVector : TEXCOORD7,
+		uniform float4 diffuse : ENV0,
+		uniform float4 specular : ENV1,
+		uniform sampler2D bumpImage : TEXUNIT1,
+		uniform sampler2D lightFalloffImage  : TEXUNIT2,
+		uniform sampler2D lightImage  : TEXUNIT3,
+		uniform sampler2D diffuseImage  : TEXUNIT4,
+		uniform sampler2D specularImage  : TEXUNIT5,
+		uniform samplerCUBE normalCubeMapImage : TEXUNIT0,
+		uniform sampler2D specularTableImage : TEXUNIT6,
+		out float4 color : COLOR)
+{
+	color = float4(0.0);
+	
+	// vectors
+	float3 L = normalize(lightVector);
+	float3 V = normalize(cameraVector);
+	float3 H = normalize(L+V);
+	
+	// textures
+	float4 diffTex = tex2D(diffuseImage, diffuseST);
+	float4 specTex = tex2D(specularImage, specularST);
+	float4 bumpTex = tex2D(bumpImage, bumpST);
+	bumpTex.xyz = bumpTex.yzw; //swap compressed channels
+		
+	//calculate normal and length
+	float3 N = bumpTex.xyz * 2 - 1;
+	bumpTex.w = saturate(length(N));
+	N = normalize(N);
+	
+	// dot products
+	float NdotL = saturate(dot(N, L));
+	float NdotH = saturate(dot(N, H));
+	float NdotV = saturate(dot(N, V)+0.001);
+	float HdotV = saturate(dot(H, V));
+	
+	//if(!NdotL) return; //early exit
+
+	// albedo, specular color and roughness
+	float4 albedo = diffTex; float3 F0 = 0.04; float roughness = 0.5;
+	PBRFromSpecmap( diffTex.rgb, specTex.rgb, albedo.rgb, F0, roughness);
+	ApplySpecularAA( roughness, bumpTex.xyz, cameraVector);
+	
+	// specular cook-torrance brdf (visibility, geo and denom in one)
+	float D = DistributionGGX(NdotH, roughness);		 
+	float Vis = VisibilitySmith(NdotL, NdotV, roughness);
+	float3 F = fresnelSchlick(HdotV, F0); 
+	float3 Cs = D * Vis * F;
+
+	// horizon occlusion to prevent reflections from unrealistic angles
+	float horizon = 1.0;
+	horizon = saturate(reflect(-V,N).y * horizon + 1.0);
+	horizon *= horizon;
+	Cs *= horizon;
+	
+	// diffuse brdf
+	float4 Cd = albedo * DisneyDiffuse(NdotV, NdotL, HdotV, roughness); 
+	
+	// light color
+	float4 Kd = gammaIN(diffuse);
+	float4 Ks = gammaIN(specular);
+	
+	// force specular on all materials
+	// breaks particles and decals
+	//Kd = max(Kd,Ks);
+	//Ks = max(Kd,Ks);
+
+	// vertex color and  light falloff
+	float4 Cl = gammaIN(primaryColor * tex2Dproj( lightImage, lightProjection ) * tex2D( lightFalloffImage, lightFalloff));
+	/*
+	Cl = gammaIN(primaryColor);
+	Cl *= gammaIN(tex2Dproj( lightImage, lightProjection ));
+	Cl *= gammaIN(tex2D( lightFalloffImage, lightFalloff));
+	*/
+	// final color
+	color = Cl * NdotL * (Kd*Cd + Ks*float4(Cs.rgb, 0.0));
+	color = gammaOUT(color);
+	
+	/*
+	// vanilla Doom 3 lighting (with per pixel vectors)
+	color = float4(0.0, 0.0, 0.0, 1.0);
+	color = primaryColor * tex2Dproj( lightImage, lightProjection ) * tex2D( lightFalloffImage, lightFalloff);
+	color *= NdotL * ((diffuse * diffTex) + (specular * tex2D(specularTableImage,NdotH.xx).x * specTex * 2));
+	*/
+}
+
