@@ -2,7 +2,7 @@
 Comment=Fork of dhewm 3 that makes Prey 2006 run on Doom 3 GPL
 Categories=Game;Shooter;
 Exec=Prey06 "\\$@"
-Icon=org.dhewm3.Dhewm3
+Icon=org.humanhead.Prey06
 Name=Prey06
 StartupNotify=true
 Terminal=false

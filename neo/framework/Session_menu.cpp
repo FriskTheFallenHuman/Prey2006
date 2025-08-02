@@ -304,17 +304,14 @@ void idSessionLocal::SetMainMenuGuiVars( void ) {
 
 	SetCDKeyGuiVars( );
 	guiMainMenu->SetStateString( "nightmare", cvarSystem->GetCVarBool( "g_nightmare" ) ? "1" : "0" );
-	guiMainMenu->SetStateString( "browser_levelshot", "guis/assets/blankLevelShot" );
-	guiMainMenu->SetStateString( "current_levelshot", "guis/assets/blankLevelShot" );
+	guiMainMenu->SetStateString( "roadhouseCompleted", cvarSystem->GetCVarBool( "g_roadhouseCompleted" ) ? "1" : "0" );
+	guiMainMenu->SetStateString( "browser_levelshot", "guis/assets/loading/thumbs/nothing" );
 
 	SetMainMenuSkin();
 	// Mods Menu
 	SetModsMenuGuiVars();
 
 	guiMainMenu->SetStateString( "driver_prompt", "0" );
-
-	guiMainMenu->SetStateString( "nightmare", cvarSystem->GetCVarBool( "g_nightmare" ) ? "1" : "0" );
-	guiMainMenu->SetStateInt( "roadhouseCompleted", cvarSystem->GetCVarInteger( "g_roadhouseCompleted" ) );
 
 	SetPbMenuGuiVars();
 }
