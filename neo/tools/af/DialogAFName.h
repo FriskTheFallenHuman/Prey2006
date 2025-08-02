@@ -29,8 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFName dialog
 
-class DialogAFName : public CDialog
-{
+class DialogAFName : public CDialog {
 
 	DECLARE_DYNAMIC( DialogAFName )
 
@@ -53,5 +52,5 @@ protected:
 
 private:
 	CString				m_editName;
-	CComboBox* 			m_combo;
+	CComboBox 	*		m_combo;
 };

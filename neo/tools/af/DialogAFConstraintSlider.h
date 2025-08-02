@@ -29,8 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFConstraintSlider dialog
 
-class DialogAFConstraintSlider : public CDialog
-{
+class DialogAFConstraintSlider : public CDialog {
 
 	DECLARE_DYNAMIC( DialogAFConstraintSlider )
 
@@ -61,8 +60,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	idDeclAF* 			file;
-	idDeclAF_Constraint* constraint;
+	idDeclAF 	*		file;
+	idDeclAF_Constraint * constraint;
 
 	//{{AFX_DATA(DialogAFConstraintSlider)
 	CComboBox			m_comboAxisJoint1;

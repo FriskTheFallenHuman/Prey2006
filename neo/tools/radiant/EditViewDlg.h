@@ -31,8 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // CEditViewDlg dialog
 
-class CEditViewDlg : public CDialogEx
-{
+class CEditViewDlg : public CDialogEx {
 
 	DECLARE_DYNAMIC( CEditViewDlg )
 
@@ -41,20 +40,19 @@ public:
 	CEditViewDlg( CWnd* pParent = nullptr );   // standard constructor
 	virtual ~CEditViewDlg();
 
-	void SetMode( int _mode )
-	{
+	void SetMode( int _mode ) {
 		mode = _mode;
 	}
 
-	void SetMaterialInfo( const char* name, const char* file, int line );
-	void SetGuiInfo( const char* name );
+	void SetMaterialInfo( const char * name, const char * file, int line );
+	void SetGuiInfo( const char * name );
 	void UpdateEditPreview();
 
 	// Dialog Data
 	enum { IDD = IDD_DIALOG_EDITVIEW };
 
 protected:
-	CFindReplaceDialog* findDlg;
+	CFindReplaceDialog * findDlg;
 	CMediaPreviewDlg mediaPreview;
 	int mode;
 	idStr fileName;

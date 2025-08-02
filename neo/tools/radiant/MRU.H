@@ -33,13 +33,12 @@ If you have questions concerning this license or the applicable additional terms
 #define NBMRUMENU       9       // Default number of MRU stored
 #define IDMRU           8000    // Default First ID of MRU
 #ifdef  OFS_MAXPATHNAME
-	#define MAXSIZEMRUITEM  OFS_MAXPATHNAME
+#define MAXSIZEMRUITEM  OFS_MAXPATHNAME
 #else
-	#define MAXSIZEMRUITEM  128     // Default max size of an entry
+#define MAXSIZEMRUITEM  128     // Default max size of an entry
 #endif
 
-typedef struct
-{
+typedef struct {
 	WORD wNbItemFill;
 	WORD wNbLruShow;
 	WORD wNbLruMenu;
@@ -48,7 +47,7 @@ typedef struct
 	LPSTR lpMRU;
 } MRUMENU;
 
-typedef MRUMENU FAR* LPMRUMENU;
+typedef MRUMENU FAR * LPMRUMENU;
 
 #ifdef __cplusplus
 LPMRUMENU       CreateMruMenu( WORD wNbLruShowInit = NBMRUMENUSHOW,
@@ -77,8 +76,8 @@ void            PlaceMenuMRUItem( LPMRUMENU lpMruMenu, HMENU hMenu, UINT uiItem 
 BOOL            SaveMruInIni( LPMRUMENU lpMruMenu, LPSTR lpszSection, LPSTR lpszFile );
 BOOL            LoadMruInIni( LPMRUMENU lpMruMenu, LPSTR lpszSection, LPSTR lpszFile );
 #ifdef WIN32
-	BOOL            SaveMruInReg( LPMRUMENU lpMruMenu, LPSTR lpszKey );
-	BOOL            LoadMruInReg( LPMRUMENU lpMruMenu, LPSTR lpszKey );
+BOOL            SaveMruInReg( LPMRUMENU lpMruMenu, LPSTR lpszKey );
+BOOL            LoadMruInReg( LPMRUMENU lpMruMenu, LPSTR lpszKey );
 #endif
 
 

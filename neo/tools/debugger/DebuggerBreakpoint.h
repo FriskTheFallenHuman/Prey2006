@@ -28,15 +28,14 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef DEBUGGERBREAKPOINT_H_
 #define DEBUGGERBREAKPOINT_H_
 
-class rvDebuggerBreakpoint
-{
+class rvDebuggerBreakpoint {
 public:
 
-	rvDebuggerBreakpoint( const char* filename, int linenumber, int id = -1, bool onceOnly = false );
+	rvDebuggerBreakpoint( const char * filename, int linenumber, int id = -1, bool onceOnly = false );
 	rvDebuggerBreakpoint( rvDebuggerBreakpoint& bp );
 	~rvDebuggerBreakpoint();
 
-	const char*		GetFilename();
+	const char	*	GetFilename();
 	int				GetLineNumber();
 	int				GetID();
 	bool			GetOnceOnly();
@@ -53,23 +52,19 @@ private:
 	static int	mNextID;
 };
 
-ID_INLINE const char* rvDebuggerBreakpoint::GetFilename()
-{
+ID_INLINE const char * rvDebuggerBreakpoint::GetFilename() {
 	return mFilename;
 }
 
-ID_INLINE int rvDebuggerBreakpoint::GetLineNumber()
-{
+ID_INLINE int rvDebuggerBreakpoint::GetLineNumber() {
 	return mLineNumber;
 }
 
-ID_INLINE int rvDebuggerBreakpoint::GetID()
-{
+ID_INLINE int rvDebuggerBreakpoint::GetID() {
 	return mID;
 }
 
-ID_INLINE bool rvDebuggerBreakpoint::GetOnceOnly()
-{
+ID_INLINE bool rvDebuggerBreakpoint::GetOnceOnly() {
 	return mOnceOnly;
 }
 

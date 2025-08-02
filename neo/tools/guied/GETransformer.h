@@ -29,8 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef GETRANSFORMER_H_
 #define GETRANSFORMER_H_
 
-class rvGETransformer
-{
+class rvGETransformer {
 public:
 
 	rvGETransformer( );
@@ -43,16 +42,15 @@ public:
 
 	bool		GetLockAspect();
 	HWND		GetWindow();
-	rvGEWorkspace* 	GetWorkspace()
-	{
+	rvGEWorkspace *	GetWorkspace() {
 		return mWorkspace;
 	}
 protected:
 
 	HWND			mWnd;
 	HWND			mDlg;
-	rvGEWorkspace*	mWorkspace;
-	idWindow*		mRelative;
+	rvGEWorkspace	* mWorkspace;
+	idWindow	*	mRelative;
 
 private:
 
@@ -61,8 +59,7 @@ private:
 	static LRESULT FAR PASCAL	GetMsgProc( int nCode, WPARAM wParam, LPARAM lParam );
 };
 
-ID_INLINE HWND rvGETransformer::GetWindow()
-{
+ID_INLINE HWND rvGETransformer::GetWindow() {
 	return mWnd;
 }
 

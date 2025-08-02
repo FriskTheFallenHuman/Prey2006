@@ -33,14 +33,14 @@ extern	idEditorBrush	active_brushes;	// brushes currently being displayed
 extern	idEditorBrush	selected_brushes;	// highlighted
 
 
-extern CPtrArray& g_ptrSelectedFaces;
-extern CPtrArray& g_ptrSelectedFaceBrushes;
+extern CPtrArray & g_ptrSelectedFaces;
+extern CPtrArray & g_ptrSelectedFaceBrushes;
 //extern	face_t	*selected_face;
 //extern	idEditorBrush	*selected_face_brush;
 extern	idEditorBrush	filtered_brushes;	// brushes that have been filtered or regioned
 
 extern	idEditorEntity	entities;
-extern	idEditorEntity*	world_entity;	// the world entity is NOT included in
+extern	idEditorEntity	* world_entity;	// the world entity is NOT included in
 // the entities chain
 
 extern	int modified;		// for quit confirmations
@@ -48,8 +48,8 @@ extern	int modified;		// for quit confirmations
 extern	idVec3	region_mins, region_maxs;
 extern	bool	region_active;
 
-void	Map_LoadFile( const char* filename );
-bool	Map_SaveFile( const char* filename, bool use_region, bool autosave = false );
+void	Map_LoadFile( const char * filename );
+bool	Map_SaveFile( const char * filename, bool use_region, bool autosave = false );
 void	Map_New();
 void	Map_BuildBrushData();
 
@@ -61,7 +61,7 @@ void	Map_RegionSelectedBrushes();
 bool	Map_IsBrushFiltered( idEditorBrush* b );
 
 void	Map_SaveSelected( CMemFile* pMemFile, CMemFile* pPatchFile = NULL );
-void	Map_ImportBuffer( char* buf, bool renameEntities = true );
-int		Map_GetUniqueEntityID( const char* prefix, const char* eclass );
+void	Map_ImportBuffer( char * buf, bool renameEntities = true );
+int		Map_GetUniqueEntityID( const char * prefix, const char * eclass );
 
-idMapPrimitive* BrushToMapPrimitive( const idEditorBrush* b, const idVec3& origin );
+idMapPrimitive * BrushToMapPrimitive( const idEditorBrush* b, const idVec3& origin );

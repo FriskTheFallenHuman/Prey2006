@@ -37,8 +37,7 @@ class MEMainFrame;
 * the parameters of a search. These parameters include: text string, search
 * scope and search only name flag.
 */
-class FindDialog : public CDialog
-{
+class FindDialog : public CDialog {
 
 public:
 	enum { IDD = IDD_FIND };
@@ -66,7 +65,7 @@ protected:
 	void					SaveFindSettings();
 
 protected:
-	MEMainFrame*			parent;
+	MEMainFrame		*	parent;
 	MaterialSearchData_t	searchData;
 	rvRegistryOptions		registry;
 };

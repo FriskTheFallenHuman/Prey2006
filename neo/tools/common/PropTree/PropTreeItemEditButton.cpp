@@ -24,9 +24,9 @@
 #include "PropTreeItemEditButton.h"
 
 #ifdef _DEBUG
-	#define new DEBUG_NEW
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 #define BUTTON_SIZE 17
@@ -38,13 +38,11 @@ CPropTreeItemEditButton::CPropTreeItemEditButton() :
 	m_sEdit( _T( "" ) ),
 	m_nFormat( ValueFormatText ),
 	m_bPassword( FALSE ),
-	m_fValue( 0.0f )
-{
+	m_fValue( 0.0f ) {
 	mouseDown = false;
 }
 
-CPropTreeItemEditButton::~CPropTreeItemEditButton()
-{
+CPropTreeItemEditButton::~CPropTreeItemEditButton() {
 }
 
 
@@ -59,8 +57,7 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeItemEditButton message handlers
 
-LONG CPropTreeItemEditButton::DrawItem( CDC* pDC, const RECT& rc, LONG x, LONG y )
-{
+LONG CPropTreeItemEditButton::DrawItem( CDC* pDC, const RECT& rc, LONG x, LONG y ) {
 	CSize	textSize;
 	CRect	textRect;
 	LONG	nTotal = 0;
@@ -76,12 +73,9 @@ LONG CPropTreeItemEditButton::DrawItem( CDC* pDC, const RECT& rc, LONG x, LONG y
 
 	UINT buttonStyle;
 
-	if( ( m_dwState & TreeItemChecked ) )
-	{
+	if ( ( m_dwState & TreeItemChecked ) ) {
 		buttonStyle = DFCS_BUTTONPUSH | DFCS_PUSHED;
-	}
-	else
-	{
+	} else {
 		buttonStyle = DFCS_BUTTONPUSH;
 	}
 	pDC->DrawFrameControl( &buttonRect, DFC_BUTTON, buttonStyle );
@@ -98,8 +92,7 @@ LONG CPropTreeItemEditButton::DrawItem( CDC* pDC, const RECT& rc, LONG x, LONG y
 	return nTotal;
 }
 
-void CPropTreeItemEditButton::DrawAttribute( CDC* pDC, const RECT& rc )
-{
+void CPropTreeItemEditButton::DrawAttribute( CDC* pDC, const RECT& rc ) {
 	ASSERT( m_pProp != NULL );
 
 	pDC->SelectObject( IsReadOnly() ? m_pProp->GetNormalFont() : m_pProp->GetBoldFont() );
@@ -114,42 +107,33 @@ void CPropTreeItemEditButton::DrawAttribute( CDC* pDC, const RECT& rc )
 	// can't use GetPasswordChar(), because window may not be created yet
 	ch = ( m_bPassword ) ? '*' : '\0';
 
-	if( ch )
-	{
+	if ( ch ) {
 		CString s;
 
 		s = m_sEdit;
-		for( LONG i = 0; i < s.GetLength(); i++ )
-		{
+		for ( LONG i = 0; i < s.GetLength(); i++ ) {
 			s.SetAt( i, ch );
 		}
 
 		pDC->DrawText( s, r, DT_SINGLELINE | DT_VCENTER );
-	}
-	else
-	{
+	} else {
 		pDC->DrawText( m_sEdit, r, DT_SINGLELINE | DT_VCENTER );
 	}
 }
 
 
-
-void CPropTreeItemEditButton::SetAsPassword( BOOL bPassword )
-{
+void CPropTreeItemEditButton::SetAsPassword( BOOL bPassword ) {
 	m_bPassword = bPassword;
 }
 
 
-void CPropTreeItemEditButton::SetValueFormat( ValueFormat nFormat )
-{
+void CPropTreeItemEditButton::SetValueFormat( ValueFormat nFormat ) {
 	m_nFormat = nFormat;
 }
 
 
-LPARAM CPropTreeItemEditButton::GetItemValue()
-{
-	switch( m_nFormat )
-	{
+LPARAM CPropTreeItemEditButton::GetItemValue() {
+	switch ( m_nFormat ) {
 		case ValueFormatNumber:
 			return _ttoi( m_sEdit );
 
@@ -162,26 +146,22 @@ LPARAM CPropTreeItemEditButton::GetItemValue()
 }
 
 
-void CPropTreeItemEditButton::SetItemValue( LPARAM lParam )
-{
-	switch( m_nFormat )
-	{
+void CPropTreeItemEditButton::SetItemValue( LPARAM lParam ) {
+	switch ( m_nFormat ) {
 		case ValueFormatNumber:
 			m_sEdit.Format( _T( "%d" ), lParam );
 			return;
 
-		case ValueFormatFloatPointer:
-		{
+		case ValueFormatFloatPointer: {
 			TCHAR tmp[MAX_PATH];
-			m_fValue = *( float* )lParam;
+			m_fValue = *( float * )lParam;
 			_stprintf( tmp, _T( "%f" ), m_fValue );
 			m_sEdit = tmp;
 		}
 		return;
 	}
 
-	if( lParam == 0L )
-	{
+	if ( lParam == 0L ) {
 		TRACE0( "CPropTreeItemEditButton::SetItemValue - Invalid lParam value\n" );
 		return;
 	}
@@ -190,26 +170,21 @@ void CPropTreeItemEditButton::SetItemValue( LPARAM lParam )
 }
 
 
-void CPropTreeItemEditButton::OnMove()
-{
-	if( IsWindow( m_hWnd ) )
-	{
+void CPropTreeItemEditButton::OnMove() {
+	if ( IsWindow( m_hWnd ) ) {
 		SetWindowPos( NULL, m_rc.left, m_rc.top, m_rc.Width(), m_rc.Height(), SWP_NOZORDER | SWP_NOACTIVATE );
 	}
 }
 
 
-void CPropTreeItemEditButton::OnRefresh()
-{
-	if( IsWindow( m_hWnd ) )
-	{
+void CPropTreeItemEditButton::OnRefresh() {
+	if ( IsWindow( m_hWnd ) ) {
 		SetWindowText( m_sEdit );
 	}
 }
 
 
-void CPropTreeItemEditButton::OnCommit()
-{
+void CPropTreeItemEditButton::OnCommit() {
 	// hide edit control
 	ShowWindow( SW_HIDE );
 
@@ -218,11 +193,9 @@ void CPropTreeItemEditButton::OnCommit()
 }
 
 
-void CPropTreeItemEditButton::OnActivate( int activateType, CPoint point )
-{
+void CPropTreeItemEditButton::OnActivate( int activateType, CPoint point ) {
 	// Check if the edit control needs creation
-	if( !IsWindow( m_hWnd ) )
-	{
+	if ( !IsWindow( m_hWnd ) ) {
 		DWORD dwStyle;
 
 		dwStyle = WS_CHILD | ES_AUTOHSCROLL;
@@ -239,16 +212,13 @@ void CPropTreeItemEditButton::OnActivate( int activateType, CPoint point )
 }
 
 
-UINT CPropTreeItemEditButton::OnGetDlgCode()
-{
+UINT CPropTreeItemEditButton::OnGetDlgCode() {
 	return CEdit::OnGetDlgCode() | DLGC_WANTALLKEYS;
 }
 
 
-void CPropTreeItemEditButton::OnKeyDown( UINT nChar, UINT nRepCnt, UINT nFlags )
-{
-	if( nChar == VK_RETURN )
-	{
+void CPropTreeItemEditButton::OnKeyDown( UINT nChar, UINT nRepCnt, UINT nFlags ) {
+	if ( nChar == VK_RETURN ) {
 		CommitChanges();
 	}
 
@@ -256,17 +226,14 @@ void CPropTreeItemEditButton::OnKeyDown( UINT nChar, UINT nRepCnt, UINT nFlags )
 }
 
 
-void CPropTreeItemEditButton::OnKillfocus()
-{
+void CPropTreeItemEditButton::OnKillfocus() {
 	CommitChanges();
 }
 
-BOOL CPropTreeItemEditButton::HitButton( const POINT& pt )
-{
+BOOL CPropTreeItemEditButton::HitButton( const POINT& pt ) {
 	return hitTestRect.PtInRect( pt );
 }
 
-void CPropTreeItemEditButton::SetButtonText( LPCSTR text )
-{
+void CPropTreeItemEditButton::SetButtonText( LPCSTR text ) {
 	buttonText = text;
 }

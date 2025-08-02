@@ -38,9 +38,8 @@ dmapGlobals_t	dmapGlobals;
 ProcessModel
 ============
 */
-bool ProcessModel( uEntity_t* e, bool floodFill )
-{
-	bspface_t*	faces;
+bool ProcessModel( uEntity_t * e, bool floodFill ) {
+	bspface_t	* faces;
 
 	// build a bsp tree using all of the sides
 	// of all of the structural brushes
@@ -62,15 +61,11 @@ bool ProcessModel( uEntity_t* e, bool floodFill )
 
 	// see if the bsp is completely enclosed
 	dmapGlobals.timingFloodAndFill.Start();
-	if( floodFill && !dmapGlobals.noFlood )
-	{
-		if( FloodEntities( e->tree ) )
-		{
+	if ( floodFill && !dmapGlobals.noFlood ) {
+		if ( FloodEntities( e->tree ) ) {
 			// set the outside leafs to opaque
 			FillOutside( e );
-		}
-		else
-		{
+		} else {
 			common->Printf( "**********************\n" );
 			common->Printf( "**********************\n" );
 			common->Warning( "**** L E A K E D *****" );
@@ -114,12 +109,9 @@ bool ProcessModel( uEntity_t* e, bool floodFill )
 
 	// optimizing is a superset of fixing tjunctions
 	dmapGlobals.timingOptimize.Start();
-	if( !dmapGlobals.noOptimize )
-	{
+	if ( !dmapGlobals.noOptimize ) {
 		OptimizeEntity( e );
-	}
-	else  if( !dmapGlobals.noTJunc )
-	{
+	} else  if ( !dmapGlobals.noTJunc ) {
 		FixEntityTjunctions( e );
 	}
 	dmapGlobals.timingOptimize.Stop();
@@ -137,40 +129,32 @@ bool ProcessModel( uEntity_t* e, bool floodFill )
 ProcessModels
 ============
 */
-bool ProcessModels( void )
-{
+bool ProcessModels( void ) {
 	bool	oldVerbose = dmapGlobals.verbose;
 
-	for( dmapGlobals.entityNum = 0 ; dmapGlobals.entityNum < dmapGlobals.num_entities ; dmapGlobals.entityNum++ )
-	{
+	for ( dmapGlobals.entityNum = 0 ; dmapGlobals.entityNum < dmapGlobals.num_entities ; dmapGlobals.entityNum++ ) {
 
-		uEntity_t* entity = &dmapGlobals.uEntities[dmapGlobals.entityNum];
-		if( !entity->primitives )
-		{
+		uEntity_t * entity = &dmapGlobals.uEntities[dmapGlobals.entityNum];
+		if ( !entity->primitives ) {
 			continue;
 		}
 
-		if( dmapGlobals.entityNum == 0 )
-		{
+		if ( dmapGlobals.entityNum == 0 ) {
 			common->Printf( "Current entity : worldspawn\n" );
-		}
-		else
-		{
+		} else {
 			common->Printf( "Current entity : %s\n", entity->mapEntity->epairs.GetString( "name" ) );
 		}
 
 		common->VerbosePrintf( "############### entity %i ###############\n", dmapGlobals.entityNum );
 
 		// if we leaked, stop without any more processing
-		if( !ProcessModel( entity, ( bool )( dmapGlobals.entityNum == 0 ) ) )
-		{
+		if ( !ProcessModel( entity, ( bool )( dmapGlobals.entityNum == 0 ) ) ) {
 			return false;
 		}
 
 		// we usually don't want to see output for submodels unless
 		// something strange is going on
-		if( !dmapGlobals.verboseentities )
-		{
+		if ( !dmapGlobals.verboseentities ) {
 			dmapGlobals.verbose = false;
 		}
 	}
@@ -185,8 +169,7 @@ bool ProcessModels( void )
 DmapHelp
 ============
 */
-void DmapHelp( void )
-{
+void DmapHelp( void ) {
 	common->Printf(
 
 		"Usage: dmap [options] mapfile\n"
@@ -203,8 +186,7 @@ void DmapHelp( void )
 ResetDmapGlobals
 ============
 */
-void ResetDmapGlobals( void )
-{
+void ResetDmapGlobals( void ) {
 	dmapGlobals.mapFileBase[0] = '\0';
 	dmapGlobals.dmapFile = NULL;
 	dmapGlobals.mapPlanes.Clear();
@@ -239,8 +221,7 @@ void ResetDmapGlobals( void )
 Dmap
 ============
 */
-void Dmap( const idCmdArgs& args )
-{
+void Dmap( const idCmdArgs& args ) {
 	int			i;
 	int			start, end;
 	char		path[1024];
@@ -249,8 +230,7 @@ void Dmap( const idCmdArgs& args )
 
 	ResetDmapGlobals();
 
-	if( args.Argc() < 2 )
-	{
+	if ( args.Argc() < 2 ) {
 		DmapHelp();
 		return;
 	}
@@ -265,125 +245,85 @@ void Dmap( const idCmdArgs& args )
 
 	dmapGlobals.noLightCarve = true;
 
-	for( i = 1 ; i < args.Argc() ; i++ )
-	{
-		const char* s;
+	for ( i = 1 ; i < args.Argc() ; i++ ) {
+		const char * s;
 
 		s = args.Argv( i );
-		if( s[0] == '-' )
-		{
+		if ( s[0] == '-' ) {
 			s++;
-			if( s[0] == '\0' )
-			{
+			if ( s[0] == '\0' ) {
 				continue;
 			}
 		}
 
-		if( !idStr::Icmp( s, "v" ) || !idStr::Icmp( s, "verbose" ) )
-		{
+		if ( !idStr::Icmp( s, "v" ) || !idStr::Icmp( s, "verbose" ) ) {
 			common->Printf( "verbose = true\n" );
 			dmapGlobals.verbose = true;
-		}
-		else if( !idStr::Icmp( s, "draw" ) )
-		{
+		} else if ( !idStr::Icmp( s, "draw" ) ) {
 			common->Printf( "drawflag = true\n" );
 			dmapGlobals.drawflag = true;
-		}
-		else if( !idStr::Icmp( s, "noFlood" ) )
-		{
+		} else if ( !idStr::Icmp( s, "noFlood" ) ) {
 			common->Printf( "noFlood = true\n" );
 			dmapGlobals.noFlood = true;
-		}
-		else if( !idStr::Icmp( s, "noLightCarve" ) )
-		{
+		} else if ( !idStr::Icmp( s, "noLightCarve" ) ) {
 			common->Printf( "noLightCarve = true\n" );
 			dmapGlobals.noLightCarve = true;
-		}
-		else if( !idStr::Icmp( s, "lightCarve" ) )
-		{
+		} else if ( !idStr::Icmp( s, "lightCarve" ) ) {
 			common->Printf( "noLightCarve = false\n" );
 			dmapGlobals.noLightCarve = false;
-		}
-		else if( !idStr::Icmp( s, "noOpt" ) )
-		{
+		} else if ( !idStr::Icmp( s, "noOpt" ) ) {
 			common->Printf( "noOptimize = true\n" );
 			dmapGlobals.noOptimize = true;
-		}
-		else if( !idStr::Icmp( s, "verboseentities" ) )
-		{
+		} else if ( !idStr::Icmp( s, "verboseentities" ) ) {
 			common->Printf( "verboseentities = true\n" );
 			dmapGlobals.verboseentities = true;
-		}
-		else if( !idStr::Icmp( s, "noCurves" ) )
-		{
+		} else if ( !idStr::Icmp( s, "noCurves" ) ) {
 			common->Printf( "noCurves = true\n" );
 			dmapGlobals.noCurves = true;
-		}
-		else if( !idStr::Icmp( s, "noModels" ) )
-		{
+		} else if ( !idStr::Icmp( s, "noModels" ) ) {
 			common->Printf( "noModels = true\n" );
 			dmapGlobals.noModelBrushes = true;
-		}
-		else if( !idStr::Icmp( s, "noClipSides" ) )
-		{
+		} else if ( !idStr::Icmp( s, "noClipSides" ) ) {
 			common->Printf( "noClipSides = true\n" );
 			dmapGlobals.noClipSides = true;
-		}
-		else if( !idStr::Icmp( s, "noCarve" ) )
-		{
+		} else if ( !idStr::Icmp( s, "noCarve" ) ) {
 			common->Printf( "noCarve = true\n" );
 			dmapGlobals.fullCarve = false;
-		}
-		else if( !idStr::Icmp( s, "shadowOpt" ) )
-		{
+		} else if ( !idStr::Icmp( s, "shadowOpt" ) ) {
 			dmapGlobals.shadowOptLevel = ( shadowOptLevel_t )atoi( args.Argv( i + 1 ) );
 			common->Printf( "shadowOpt = %i\n", dmapGlobals.shadowOptLevel );
 			i += 1;
-		}
-		else if( !idStr::Icmp( s, "noTjunc" ) )
-		{
+		} else if ( !idStr::Icmp( s, "noTjunc" ) ) {
 			// triangle optimization won't work properly without tjunction fixing
 			common->Printf( "noTJunc = true\n" );
 			dmapGlobals.noTJunc = true;
 			dmapGlobals.noOptimize = true;
 			common->Printf( "forcing noOptimize = true\n" );
-		}
-		else if( !idStr::Icmp( s, "noCM" ) )
-		{
+		} else if ( !idStr::Icmp( s, "noCM" ) ) {
 			dmapGlobals.noCM = true;
 			common->Printf( "noCM = true\n" );
-		}
-		else if( !idStr::Icmp( s, "noAAS" ) )
-		{
+		} else if ( !idStr::Icmp( s, "noAAS" ) ) {
 			dmapGlobals.noAAS = true;
 			common->Printf( "noAAS = true\n" );
-		}
-		else if( !idStr::Icmp( s, "noStats" ) )
-		{
+		} else if ( !idStr::Icmp( s, "noStats" ) ) {
 			dmapGlobals.noStats = true;
 			common->Printf( "noStats = true\n" );
-		}
-		else if( !idStr::Icmp( s, "editorOutput" ) )
-		{
+		} else if ( !idStr::Icmp( s, "editorOutput" ) ) {
 #ifdef _WIN32
 			com_outputMsg = true;
 #endif
-		}
-		else
-		{
+		} else {
 			break;
 		}
 	}
 
-	if( i >= args.Argc() )
-	{
+	if ( i >= args.Argc() ) {
 		common->Error( "usage: dmap [options] mapfile" );
 	}
 
 	passedName = args.Argv( i );		// may have an extension
 	passedName.BackSlashesToSlashes();
-	if( passedName.Icmpn( "maps/", 4 ) != 0 )
-	{
+	if ( passedName.Icmpn( "maps/", 4 ) != 0 ) {
 		passedName = "maps/" + passedName;
 	}
 
@@ -393,13 +333,10 @@ void Dmap( const idCmdArgs& args )
 
 	bool region = false;
 	// if this isn't a regioned map, delete the last saved region map
-	if( passedName.Right( 4 ) != ".reg" )
-	{
+	if ( passedName.Right( 4 ) != ".reg" ) {
 		sprintf( path, "%s.reg", dmapGlobals.mapFileBase );
 		fileSystem->RemoveFile( path );
-	}
-	else
-	{
+	} else {
 		region = true;
 	}
 
@@ -416,17 +353,13 @@ void Dmap( const idCmdArgs& args )
 	//
 	start = Sys_Milliseconds();
 
-	if( !LoadDMapFile( passedName ) )
-	{
+	if ( !LoadDMapFile( passedName ) ) {
 		return;
 	}
 
-	if( ProcessModels() )
-	{
+	if ( ProcessModels() ) {
 		WriteOutputFile();
-	}
-	else
-	{
+	} else {
 		leaked = true;
 	}
 
@@ -439,11 +372,9 @@ void Dmap( const idCmdArgs& args )
 	common->Printf( "-----------------------\n" );
 	common->Printf( "%5.0f seconds for dmap\n", ( end - start ) * 0.001f );
 
-	if( !leaked )
-	{
+	if ( !leaked ) {
 
-		if( !dmapGlobals.noCM )
-		{
+		if ( !dmapGlobals.noCM ) {
 
 			// make sure the collision model manager is not used by the game
 			cmdSystem->BufferCommandText( CMD_EXEC_NOW, "disconnect" );
@@ -459,8 +390,7 @@ void Dmap( const idCmdArgs& args )
 			common->Printf( "%5.0f seconds to create collision map\n", ( end - start ) * 0.001f );
 		}
 
-		if( !dmapGlobals.noAAS && !region )
-		{
+		if ( !dmapGlobals.noAAS && !region ) {
 			// create AAS files
 			RunAAS_f( args );
 		}
@@ -478,8 +408,7 @@ void Dmap( const idCmdArgs& args )
 printTimingsStats
 ============
 */
-static void printTimingsStats( const dmapTimingStats& stats, const char* name )
-{
+static void printTimingsStats( const dmapTimingStats& stats, const char * name ) {
 	common->Printf( "%s: %i %i %f %i %i\n", name, stats.Sum(), stats.Min(), stats.Avg(), stats.Max(), stats.Num() );
 }
 
@@ -488,11 +417,9 @@ static void printTimingsStats( const dmapTimingStats& stats, const char* name )
 Dmap_f
 ============
 */
-void Dmap_f( const idCmdArgs& args )
-{
+void Dmap_f( const idCmdArgs& args ) {
 
-	if( !dmapGlobals.noStats )
-	{
+	if ( !dmapGlobals.noStats ) {
 		// Reset the timers
 		dmapGlobals.timingMakeStructural.Reset();
 		dmapGlobals.timingMakeTreePortals.Reset();
@@ -516,8 +443,7 @@ void Dmap_f( const idCmdArgs& args )
 
 	common->PrintWarnings();
 
-	if( !dmapGlobals.noStats )
-	{
+	if ( !dmapGlobals.noStats ) {
 		// Print the timing stats
 		printTimingsStats( dmapGlobals.timingMakeStructural,        "Make Structural  " );
 		printTimingsStats( dmapGlobals.timingMakeTreePortals,       "Make Tree Portals" );

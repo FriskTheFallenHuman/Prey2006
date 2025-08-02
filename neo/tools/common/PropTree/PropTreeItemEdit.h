@@ -2,7 +2,7 @@
 #define AFX_PROPTREEITEMEDIT_H__642536B1_1162_4F99_B09D_9B1BD2CF88B6__INCLUDED_
 
 #if _MSC_VER > 1000
-	#pragma once
+#pragma once
 #endif // _MSC_VER > 1000
 // PropTreeItemEdit.h : header file
 //
@@ -27,8 +27,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeItemEdit window
 
-class PROPTREE_API CPropTreeItemEdit : public CEdit, public CPropTreeItem
-{
+class PROPTREE_API CPropTreeItemEdit : public CEdit, public CPropTreeItem {
 // Construction
 public:
 	CPropTreeItemEdit();
@@ -58,8 +57,7 @@ public:
 	virtual void OnActivate( int activateType, CPoint point );
 
 
-	enum ValueFormat
-	{
+	enum ValueFormat {
 		ValueFormatText,
 		ValueFormatNumber,
 		ValueFormatFloatPointer

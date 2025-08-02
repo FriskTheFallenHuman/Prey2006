@@ -44,8 +44,7 @@ rvGEProperties::rvGEProperties
 constructor
 ================
 */
-rvGEProperties::rvGEProperties()
-{
+rvGEProperties::rvGEProperties() {
 	mWrapper   = NULL;
 	mWnd	   = NULL;
 	mWorkspace = NULL;
@@ -58,8 +57,7 @@ rvGEProperties::Create
 Create the property window as a child of the given window
 ================
 */
-bool rvGEProperties::Create( HWND parent, bool visible )
-{
+bool rvGEProperties::Create( HWND parent, bool visible ) {
 	WNDCLASSEX wndClass;
 	memset( &wndClass, 0, sizeof( wndClass ) );
 	wndClass.cbSize = sizeof( WNDCLASSEX );
@@ -81,13 +79,11 @@ bool rvGEProperties::Create( HWND parent, bool visible )
 						   win32.hInstance,
 						   this );
 
-	if( !mWnd )
-	{
+	if ( !mWnd ) {
 		return false;
 	}
 
-	if( !gApp.GetOptions().GetWindowPlacement( "properties", mWnd ) )
-	{
+	if ( !gApp.GetOptions().GetWindowPlacement( "properties", mWnd ) ) {
 		RECT rParent;
 		RECT rClient;
 
@@ -112,8 +108,7 @@ rvGEProperties::Show
 Show/Hide the properties window
 ================
 */
-void rvGEProperties::Show( bool visible )
-{
+void rvGEProperties::Show( bool visible ) {
 	gApp.GetOptions().SetPropertiesVisible( visible );
 	ShowWindow( mWnd, visible ? SW_SHOW : SW_HIDE );
 }
@@ -125,16 +120,12 @@ rvGEProperties::Update
 Update the properties in the window
 ================
 */
-void rvGEProperties::Update()
-{
+void rvGEProperties::Update() {
 	int i;
 
-	if( mWorkspace && mWorkspace->GetSelectionMgr( ).Num( ) == 1 )
-	{
+	if ( mWorkspace && mWorkspace->GetSelectionMgr( ).Num( ) == 1 ) {
 		mWrapper = rvGEWindowWrapper::GetWrapper( mWorkspace->GetSelectionMgr()[0] );
-	}
-	else
-	{
+	} else {
 		mWrapper = NULL;
 	}
 
@@ -142,10 +133,8 @@ void rvGEProperties::Update()
 
 	mGrid.RemoveAllItems( );
 
-	if( mWrapper )
-	{
-		for( i = 0; i < ( int )mWrapper->GetStateDict().GetNumKeyVals( ); i ++ )
-		{
+	if ( mWrapper ) {
+		for ( i = 0; i < ( int )mWrapper->GetStateDict().GetNumKeyVals( ); i ++ ) {
 			const idKeyValue* kv = mWrapper->GetStateDict().GetKeyVal( i );
 			idStr temp;
 			temp = kv->GetValue();
@@ -162,19 +151,16 @@ rvGEProperties::AddModifier
 Add a state modifier for the given key / value pair
 ================
 */
-bool rvGEProperties::AddModifier( const char* name, const char* value )
-{
+bool rvGEProperties::AddModifier( const char * name, const char * value ) {
 	idDict tempstate;
 	idStr  tempvalue;
 
 	tempvalue = value;
-	if( !mWrapper->VerfiyStateKey( name, tempvalue ) )
-	{
+	if ( !mWrapper->VerfiyStateKey( name, tempvalue ) ) {
 		tempvalue = "\"";
 		tempvalue += value;
 		tempvalue += "\"";
-		if( !mWrapper->VerfiyStateKey( name, tempvalue ) )
-		{
+		if ( !mWrapper->VerfiyStateKey( name, tempvalue ) ) {
 			gApp.MessageBox( va( "Invalid property value '%s' for property '%s'", value, name ), MB_OK );
 			return false;
 		}
@@ -199,30 +185,24 @@ rvGEProperties::WndProc
 Window Procedure for the properties window
 ================
 */
-LRESULT CALLBACK rvGEProperties::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-	rvGEProperties* kv = ( rvGEProperties* ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
+LRESULT CALLBACK rvGEProperties::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam ) {
+	rvGEProperties* kv = ( rvGEProperties * ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
 
-	if( kv && kv->mGrid.ReflectMessage( hWnd, msg, wParam, lParam ) )
-	{
+	if ( kv && kv->mGrid.ReflectMessage( hWnd, msg, wParam, lParam ) ) {
 		return 0;
 	}
 
-	switch( msg )
-	{
+	switch ( msg ) {
 		case WM_ACTIVATE:
 			common->ActivateTool( LOWORD( wParam ) != WA_INACTIVE );
 			break;
 
-		case WM_NOTIFY:
-		{
+		case WM_NOTIFY: {
 			NMHDR* hdr;
-			hdr = ( NMHDR* )lParam;
-			if( hdr->idFrom == 999 )
-			{
-				NMPROPGRID* nmpg = ( NMPROPGRID* )hdr;
-				switch( hdr->code )
-				{
+			hdr = ( NMHDR * )lParam;
+			if ( hdr->idFrom == 999 ) {
+				NMPROPGRID* nmpg = ( NMPROPGRID * )hdr;
+				switch ( hdr->code ) {
 					case PGN_ITEMCHANGED:
 						return ( int )kv->AddModifier( nmpg->mName, nmpg->mValue );
 						/*
@@ -266,13 +246,12 @@ LRESULT CALLBACK rvGEProperties::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LP
 			break;
 		}
 
-		case WM_CREATE:
-		{
+		case WM_CREATE: {
 			LPCREATESTRUCT	cs;
 
 			// Attach the class to the window first
 			cs = ( LPCREATESTRUCT ) lParam;
-			kv = ( rvGEProperties* ) cs->lpCreateParams;
+			kv = ( rvGEProperties * ) cs->lpCreateParams;
 			SetWindowLongPtr( hWnd, GWLP_USERDATA, ( LONG_PTR )kv );
 
 			kv->mGrid.Create( hWnd, 999, PGS_ALLOWINSERT );
@@ -284,8 +263,7 @@ LRESULT CALLBACK rvGEProperties::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LP
 		}
 
 		case WM_ERASEBKGND:
-			if( kv->mWrapper )
-			{
+			if ( kv->mWrapper ) {
 				return FALSE;
 			}
 			break;

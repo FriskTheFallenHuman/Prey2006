@@ -55,11 +55,9 @@ CVectorCtl::CVectorCtl() :
 	m_bFrontVector( FALSE ),
 	m_dSensitivity( 20.0 ),
 	m_procVectorChanging( NULL ),
-	m_procVectorChanged( NULL )
-{
+	m_procVectorChanged( NULL ) {
 	double DefaultVec[3] = DEFAULT_VEC;
-	for( int i = 0; i < 3; i++ )
-	{
+	for ( int i = 0; i < 3; i++ ) {
 		m_dVec[i] = DefaultVec[i];
 		pCtl[i] = NULL;
 	}
@@ -70,28 +68,23 @@ CVectorCtl::CVectorCtl() :
 }
 
 
-CVectorCtl::~CVectorCtl()
-{
-	if( m_bBmpCreated )
-	{
+CVectorCtl::~CVectorCtl() {
+	if ( m_bBmpCreated ) {
 		m_dcMem.SelectObject( m_pOldBitmap );
 	}
 	ClearBackgroundBitmap();
 }
 
 // Owner-drawn control service function:
-void CVectorCtl::DrawItem( LPDRAWITEMSTRUCT lpDrawItemStruct )
-{
+void CVectorCtl::DrawItem( LPDRAWITEMSTRUCT lpDrawItemStruct ) {
 	CDC* pDC = CDC::FromHandle( lpDrawItemStruct->hDC ); // Get CDC to draw
 
-	if( !m_bSelected && lpDrawItemStruct->itemState & ODS_SELECTED )
-	{
+	if ( !m_bSelected && lpDrawItemStruct->itemState & ODS_SELECTED ) {
 		// Just got re-selected (user starts a new mouse dragging session)
-	}
-	else if( m_bSelected &&   // Last state was selected
-			 !( lpDrawItemStruct->itemState & ODS_SELECTED ) &&   // New state is NOT selected
-			 ( lpDrawItemStruct->itemState & ODS_FOCUS ) &&       // New state is still in focus
-			 m_procVectorChanged )    // User asked for a callback
+	} else if ( m_bSelected && // Last state was selected
+				!( lpDrawItemStruct->itemState & ODS_SELECTED ) &&   // New state is NOT selected
+				( lpDrawItemStruct->itemState & ODS_FOCUS ) &&       // New state is still in focus
+				m_procVectorChanged )    // User asked for a callback
 		// User has left the track-ball and asked for a callback.
 	{
 		m_procVectorChanged( rotationQuat );
@@ -100,14 +93,11 @@ void CVectorCtl::DrawItem( LPDRAWITEMSTRUCT lpDrawItemStruct )
 	m_bHasFocus = lpDrawItemStruct->itemState & ODS_FOCUS;      // Update focus status
 	m_bSelected = lpDrawItemStruct->itemState & ODS_SELECTED;   // Update selection status
 
-	if( !m_bBmpCreated ) // 1st time
-	{
+	if ( !m_bBmpCreated ) { // 1st time
 		InitBitmap( lpDrawItemStruct, pDC );
 	}
-	if( m_bImageChange )    // Image has changes - recalc it!
-	{
-		if( m_procVectorChanging )  // User has specified a callback
-		{
+	if ( m_bImageChange ) { // Image has changes - recalc it!
+		if ( m_procVectorChanging ) { // User has specified a callback
 			m_procVectorChanging( rotationQuat );    // Call it!
 		}
 		BuildImage( lpDrawItemStruct );
@@ -117,24 +107,20 @@ void CVectorCtl::DrawItem( LPDRAWITEMSTRUCT lpDrawItemStruct )
 }
 
 // Mouse was dragged
-void CVectorCtl::OnMouseDrag( int ixMove, int iyMove )
-{
+void CVectorCtl::OnMouseDrag( int ixMove, int iyMove ) {
 	RotateByXandY( double( -iyMove ) / m_dSensitivity,
 				   double( ixMove ) / m_dSensitivity );
 }
 
 // Recalc ball image
-void CVectorCtl::BuildImage( LPDRAWITEMSTRUCT lpDrawItemStruct )
-{
+void CVectorCtl::BuildImage( LPDRAWITEMSTRUCT lpDrawItemStruct ) {
 	int xf, yf;
 
-	for( int x = 0; x < m_iWidth; x++ ) // Scan all columns
-		for( int y = 0; y < m_iHeight; y++ ) // Scan all rows
-		{
+	for ( int x = 0; x < m_iWidth; x++ ) // Scan all columns
+		for ( int y = 0; y < m_iHeight; y++ ) { // Scan all rows
 			xf = x - m_iXCenter; // Find distance from center
 			yf = y - m_iYCenter;
-			if( xf * xf + yf * yf <= m_iSqrRadius ) // Point on ball surface
-			{
+			if ( xf * xf + yf * yf <= m_iSqrRadius ) { // Point on ball surface
 				double vx = double( xf ) / double( m_iRadius ),
 					   vy = double( yf ) / double( m_iRadius ),
 					   vz = sqrt( 1.0 - vx * vx - vy * vy ); // Find ball's normal
@@ -144,23 +130,18 @@ void CVectorCtl::BuildImage( LPDRAWITEMSTRUCT lpDrawItemStruct )
 }
 
 // Normalize a vector to unit size
-BOOL CVectorCtl::Normalize()
-{
+BOOL CVectorCtl::Normalize() {
 	double Norm = m_dVec[0] * m_dVec[0] + m_dVec[1] * m_dVec[1] + m_dVec[2] * m_dVec[2];
 
-	if( Norm > EPS )
-	{
+	if ( Norm > EPS ) {
 		Norm = sqrt( Norm );
 		m_dVec[0] /= Norm;
 		m_dVec[1] /= Norm;
 		m_dVec[2] /= Norm;
 		return TRUE;
-	}
-	else        // Reset to defualt vector
-	{
+	} else {    // Reset to defualt vector
 		double DefaultVec[3] = DEFAULT_VEC;
-		for( int i = 0; i < 3; i++ )
-		{
+		for ( int i = 0; i < 3; i++ ) {
 			m_dVec[i] = DefaultVec[i];
 		}
 		return FALSE;
@@ -168,16 +149,14 @@ BOOL CVectorCtl::Normalize()
 }
 
 // Calculate lightning effect for specific pixel on ball's surface
-COLORREF CVectorCtl::CalcLight( double dx, double dy, double dz )
-{
+COLORREF CVectorCtl::CalcLight( double dx, double dy, double dz ) {
 	double NL = dx * m_dVec[0] + dy * m_dVec[1] + dz * m_dVec[2],
 		   RV = 2.0 * NL,
 		   //rx = m_dVec[0] - (dx * RV),
 		   //ry = m_dVec[1] - (dy * RV),
 		   rz = m_dVec[2] - ( dz * RV );
 
-	if( NL < 0.0 )  // Diffuse coefficient
-	{
+	if ( NL < 0.0 ) { // Diffuse coefficient
 		NL = 0.0;
 	}
 
@@ -204,8 +183,7 @@ COLORREF CVectorCtl::CalcLight( double dx, double dy, double dz )
 
 
 // Start memory buffer bitmap and measure it
-void CVectorCtl::InitBitmap( LPDRAWITEMSTRUCT lpDrawItemStruct, CDC* pDC )
-{
+void CVectorCtl::InitBitmap( LPDRAWITEMSTRUCT lpDrawItemStruct, CDC* pDC ) {
 	m_iWidth = lpDrawItemStruct->rcItem.right - lpDrawItemStruct->rcItem.left;
 	m_iHeight = lpDrawItemStruct->rcItem.bottom - lpDrawItemStruct->rcItem.top;
 	m_bmpBuffer.CreateCompatibleBitmap( pDC, m_iWidth, m_iHeight );
@@ -218,10 +196,8 @@ void CVectorCtl::InitBitmap( LPDRAWITEMSTRUCT lpDrawItemStruct, CDC* pDC )
 }
 
 // Set new specular intensity
-BOOL CVectorCtl::SetSpecularExponent( double dExp )
-{
-	if( dExp < 1.0 || dExp > 200.0 )
-	{
+BOOL CVectorCtl::SetSpecularExponent( double dExp ) {
+	if ( dExp < 1.0 || dExp > 200.0 ) {
 		return FALSE;
 	}
 	m_dSpecularExponent = dExp;
@@ -230,12 +206,10 @@ BOOL CVectorCtl::SetSpecularExponent( double dExp )
 }
 
 // Rotate our vector around the X and Y axis
-void CVectorCtl::RotateByXandY( double XRot, double YRot )
-{
+void CVectorCtl::RotateByXandY( double XRot, double YRot ) {
 	// Angles are in radians
 
-	if( XRot == 0.0 && YRot == 0.0 )
-	{
+	if ( XRot == 0.0 && YRot == 0.0 ) {
 		return;
 	}
 
@@ -247,14 +221,11 @@ void CVectorCtl::RotateByXandY( double XRot, double YRot )
 		   dy = m_dVec[1] * cx - m_dVec[2] * sx,
 		   dz = -m_dVec[0] * sy + m_dVec[1] * sx * cy + m_dVec[2] * cx * cy;
 
-	if( !m_bFrontVector || dz >= 0.0 )  // Vector is bounds free
-	{
+	if ( !m_bFrontVector || dz >= 0.0 ) { // Vector is bounds free
 		m_dVec[0] = dx;
 		m_dVec[1] = dy;
 		m_dVec[2] = dz;
-	}
-	else        // Otherwise, do not allow Z to be negative (light shines from behind)
-	{
+	} else {    // Otherwise, do not allow Z to be negative (light shines from behind)
 		m_dVec[2] = 0.0;
 		m_dVec[0] = dx;
 		m_dVec[1] = dy;
@@ -264,26 +235,22 @@ void CVectorCtl::RotateByXandY( double XRot, double YRot )
 }
 
 
-void CVectorCtl::UpdateAxisControls()
-{
+void CVectorCtl::UpdateAxisControls() {
 	CString cs;
-	for( int i = 0; i < 3; i++ )
-		if( pCtl[i] )
-		{
+	for ( int i = 0; i < 3; i++ )
+		if ( pCtl[i] ) {
 			cs.Format( "%+1.5f", m_dVec[i] );
 			pCtl[i]->SetWindowText( cs );
 		}
 }
 
-void CVectorCtl::SetAxisControl( int nXCtl, int nYCtl, int nZCtl )
-{
+void CVectorCtl::SetAxisControl( int nXCtl, int nYCtl, int nZCtl ) {
 	pCtl[0] = GetParent()->GetDlgItem( nXCtl );
 	pCtl[1] = GetParent()->GetDlgItem( nYCtl );
 	pCtl[2] = GetParent()->GetDlgItem( nZCtl );
 }
 
-void CVectorCtl::SetRadius( UINT uRadius )
-{
+void CVectorCtl::SetRadius( UINT uRadius ) {
 	m_iRadius = uRadius;
 	m_iSqrRadius = m_iRadius * m_iRadius;
 	CreateBackground();
@@ -291,8 +258,7 @@ void CVectorCtl::SetRadius( UINT uRadius )
 }
 
 
-void CVectorCtl::SetCenter( UINT uHorizPos, UINT uVertPos )
-{
+void CVectorCtl::SetCenter( UINT uHorizPos, UINT uVertPos ) {
 	m_iXCenter = uHorizPos;
 	m_iYCenter = uVertPos;
 	CreateBackground();
@@ -300,10 +266,8 @@ void CVectorCtl::SetCenter( UINT uHorizPos, UINT uVertPos )
 }
 
 
-void CVectorCtl::SetAxis( double d, int nAxis )
-{
-	if( fabs( d ) >= 1.0 )
-	{
+void CVectorCtl::SetAxis( double d, int nAxis ) {
+	if ( fabs( d ) >= 1.0 ) {
 		m_dVec[nAxis] = d > 1.0 ? 1.0 : -1.0;
 		m_dVec[( nAxis + 1 ) % 3] = m_dVec[( nAxis + 2 ) % 3] = 0.0;
 		Redraw();
@@ -314,8 +278,7 @@ void CVectorCtl::SetAxis( double d, int nAxis )
 	Redraw();
 }
 
-void CVectorCtl::SetVector( double dx, double dy, double dz )
-{
+void CVectorCtl::SetVector( double dx, double dy, double dz ) {
 	m_dVec[0] = dx;
 	m_dVec[1] = dy;
 	m_dVec[2] = dz;
@@ -323,8 +286,7 @@ void CVectorCtl::SetVector( double dx, double dy, double dz )
 	Redraw();
 }
 
-void CVectorCtl::SetBackgroundColor( COLORREF clrStart, COLORREF clrEnd )
-{
+void CVectorCtl::SetBackgroundColor( COLORREF clrStart, COLORREF clrEnd ) {
 	ClearBackgroundBitmap();
 	m_clrBackgroundStart = clrStart;
 	m_clrBackgroundEnd = clrEnd;
@@ -332,15 +294,12 @@ void CVectorCtl::SetBackgroundColor( COLORREF clrStart, COLORREF clrEnd )
 }
 
 
-BOOL CVectorCtl::SetBackgroundImage( UINT uBackgroundBitmapID )
-{
-	if( m_bBackgroundBitmapUsed )
-	{
+BOOL CVectorCtl::SetBackgroundImage( UINT uBackgroundBitmapID ) {
+	if ( m_bBackgroundBitmapUsed ) {
 		ClearBackgroundBitmap();
 		CreateBackground();
 	}
-	if( !m_bmpBack.LoadBitmap( uBackgroundBitmapID ) )
-	{
+	if ( !m_bmpBack.LoadBitmap( uBackgroundBitmapID ) ) {
 		return FALSE;
 	}
 	m_bBackgroundBitmapUsed = TRUE;
@@ -348,24 +307,19 @@ BOOL CVectorCtl::SetBackgroundImage( UINT uBackgroundBitmapID )
 	return TRUE;
 }
 
-void CVectorCtl::CreateBackground()
-{
-	if( !m_bBmpCreated )
-	{
+void CVectorCtl::CreateBackground() {
+	if ( !m_bBmpCreated ) {
 		return;    //  No image yet
 	}
-	if( !m_bBackgroundBitmapUsed )  // No background used - fill with gradient color
-	{
+	if ( !m_bBackgroundBitmapUsed ) { // No background used - fill with gradient color
 		double r = GetRValue( m_clrBackgroundStart ),
 			   g = GetGValue( m_clrBackgroundStart ),
 			   b = GetBValue( m_clrBackgroundStart ),
 			   rd = double ( GetRValue( m_clrBackgroundEnd ) - r ) / double ( m_iHeight ),
 			   gd = double ( GetGValue( m_clrBackgroundEnd ) - g ) / double ( m_iHeight ),
 			   bd = double ( GetBValue( m_clrBackgroundEnd ) - b ) / double ( m_iHeight );
-		for( int j = 0; j < m_iHeight; j++ )
-		{
-			for( int i = 0; i < m_iWidth; i++ )
-			{
+		for ( int j = 0; j < m_iHeight; j++ ) {
+			for ( int i = 0; i < m_iWidth; i++ ) {
 				m_dcMem.SetPixelV( i, j, RGB( BYTE( r ), BYTE( g ), BYTE( b ) ) );
 			}
 			r += rd;
@@ -386,9 +340,8 @@ void CVectorCtl::CreateBackground()
 	DCtmp.CreateCompatibleDC( &m_dcMem );
 	m_pOldBitmap = DCtmp.SelectObject( &m_bmpBack );
 
-	for( int i = 0; i < m_iWidth; i++ )
-		for( int j = 0; j < m_iHeight; j++ )
-		{
+	for ( int i = 0; i < m_iWidth; i++ )
+		for ( int j = 0; j < m_iHeight; j++ ) {
 			m_dcMem.SetPixelV( i, j, DCtmp.GetPixel( i % iTmpWidth, j % iTmpHeight ) );
 		}
 	DCtmp.SelectObject( m_pOldBitmap );
@@ -396,38 +349,31 @@ void CVectorCtl::CreateBackground()
 }
 
 
-void CVectorCtl::ClearBackgroundBitmap()
-{
-	if( !m_bBackgroundBitmapUsed )
-	{
+void CVectorCtl::ClearBackgroundBitmap() {
+	if ( !m_bBackgroundBitmapUsed ) {
 		return;
 	}
 	m_bmpBack.DeleteObject();
 	m_bBackgroundBitmapUsed = FALSE;
 }
 
-BOOL CVectorCtl::SetSensitivity( UINT uSens )
-{
-	if( uSens == 0 )
-	{
+BOOL CVectorCtl::SetSensitivity( UINT uSens ) {
+	if ( uSens == 0 ) {
 		return FALSE;
 	}
 	m_dSensitivity = double( uSens );
 	return TRUE;
 }
 
-void CVectorCtl::Redraw( BOOL bErase )
-{
+void CVectorCtl::Redraw( BOOL bErase ) {
 	m_bImageChange = TRUE;
 	UpdateAxisControls();
 	Invalidate( bErase );
 }
 
-void CVectorCtl::OnMouseMove( UINT nFlags, CPoint point )
-{
+void CVectorCtl::OnMouseMove( UINT nFlags, CPoint point ) {
 
-	if( CWnd::GetCapture() != this )
-	{
+	if ( CWnd::GetCapture() != this ) {
 		return;
 	}
 
@@ -460,15 +406,13 @@ void CVectorCtl::OnMouseMove( UINT nFlags, CPoint point )
 	Redraw();
 }
 
-void CVectorCtl::OnLButtonDown( UINT nFlags, CPoint point )
-{
+void CVectorCtl::OnLButtonDown( UINT nFlags, CPoint point ) {
 	float curX = ( float )( 2 * point.x - 64 ) / 64;
 	float curY = ( float )( 2 * point.y - 64 ) / 64;
 	lastPress.Set( -curX, -curY, 0.0f );
 	SetCapture();
 }
 
-void CVectorCtl::OnLButtonUp( UINT nFlags, CPoint point )
-{
+void CVectorCtl::OnLButtonUp( UINT nFlags, CPoint point ) {
 	ReleaseCapture();
 }

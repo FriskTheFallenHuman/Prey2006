@@ -26,18 +26,15 @@
 
 
 CPropTreeItemStatic::CPropTreeItemStatic() :
-	m_sAttribute( _T( "" ) )
-{
+	m_sAttribute( _T( "" ) ) {
 }
 
 
-CPropTreeItemStatic::~CPropTreeItemStatic()
-{
+CPropTreeItemStatic::~CPropTreeItemStatic() {
 }
 
 
-void CPropTreeItemStatic::DrawAttribute( CDC* pDC, const RECT& rc )
-{
+void CPropTreeItemStatic::DrawAttribute( CDC* pDC, const RECT& rc ) {
 	ASSERT( m_pProp != NULL );
 
 	pDC->SelectObject( m_pProp->GetNormalFont() );
@@ -49,16 +46,13 @@ void CPropTreeItemStatic::DrawAttribute( CDC* pDC, const RECT& rc )
 }
 
 
-LPARAM CPropTreeItemStatic::GetItemValue()
-{
+LPARAM CPropTreeItemStatic::GetItemValue() {
 	return ( LPARAM )( LPCTSTR )m_sAttribute;
 }
 
 
-void CPropTreeItemStatic::SetItemValue( LPARAM lParam )
-{
-	if( lParam == 0L )
-	{
+void CPropTreeItemStatic::SetItemValue( LPARAM lParam ) {
+	if ( lParam == 0L ) {
 		TRACE0( "CPropTreeItemStatic::SetItemValue() - Invalid lParam value\n" );
 		return;
 	}

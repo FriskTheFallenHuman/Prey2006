@@ -39,8 +39,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFConstraintUniversal dialog
 
-toolTip_t DialogAFConstraintUniversal::toolTips[] =
-{
+toolTip_t DialogAFConstraintUniversal::toolTips[] = {
 	{ IDC_RADIO_ANCHOR_JOINT, "use the position of a joint for the anchor" },
 	{ IDC_COMBO_ANCHOR_JOINT, "anchor joint name" },
 	{ IDC_RADIO_ANCHOR_COORDINATES, "use absolute coordinates for the anchor" },
@@ -98,8 +97,7 @@ DialogAFConstraintUniversal::DialogAFConstraintUniversal( CWnd* pParent /*=NULL*
 	, m_limitYaw( 0 )
 	, m_limitRoll( 0 )
 	, constraint( NULL )
-	, file( NULL )
-{
+	, file( NULL ) {
 	Create( IDD_DIALOG_AF_CONSTRAINT_UNIVERSAL, pParent );
 	EnableToolTips( TRUE );
 }
@@ -109,8 +107,7 @@ DialogAFConstraintUniversal::DialogAFConstraintUniversal( CWnd* pParent /*=NULL*
 DialogAFConstraintUniversal::~DialogAFConstraintUniversal
 ================
 */
-DialogAFConstraintUniversal::~DialogAFConstraintUniversal()
-{
+DialogAFConstraintUniversal::~DialogAFConstraintUniversal() {
 }
 
 /*
@@ -118,8 +115,7 @@ DialogAFConstraintUniversal::~DialogAFConstraintUniversal()
 DialogAFConstraintUniversal::DoDataExchange
 ================
 */
-void DialogAFConstraintUniversal::DoDataExchange( CDataExchange* pDX )
-{
+void DialogAFConstraintUniversal::DoDataExchange( CDataExchange* pDX ) {
 	CDialog::DoDataExchange( pDX );
 	//{{AFX_DATA_MAP(DialogAFConstraintUniversal)
 	DDX_Control( pDX, IDC_COMBO_ANCHOR_JOINT, m_comboAnchorJoint );
@@ -150,8 +146,7 @@ void DialogAFConstraintUniversal::DoDataExchange( CDataExchange* pDX )
 DialogAFConstraintUniversal::InitJointLists
 ================
 */
-void DialogAFConstraintUniversal::InitJointLists()
-{
+void DialogAFConstraintUniversal::InitJointLists() {
 	m_comboAnchorJoint.ResetContent();
 	m_comboJoint1Shaft1.ResetContent();
 	m_comboJoint2Shaft1.ResetContent();
@@ -160,21 +155,18 @@ void DialogAFConstraintUniversal::InitJointLists()
 	m_comboLimitJoint1.ResetContent();
 	m_comboLimitJoint2.ResetContent();
 
-	if( !file )
-	{
+	if ( !file ) {
 		return;
 	}
 
 	const idRenderModel* model = gameEdit->ANIM_GetModelFromName( file->model );
-	if( !model )
-	{
+	if ( !model ) {
 		return;
 	}
 
 	int numJoints = model->NumJoints();
-	for( int i = 0; i < numJoints; i++ )
-	{
-		const char* jointName = model->GetJointName( ( jointHandle_t ) i );
+	for ( int i = 0; i < numJoints; i++ ) {
+		const char * jointName = model->GetJointName( ( jointHandle_t ) i );
 		m_comboAnchorJoint.AddString( jointName );
 		m_comboJoint1Shaft1.AddString( jointName );
 		m_comboJoint2Shaft1.AddString( jointName );
@@ -190,8 +182,7 @@ void DialogAFConstraintUniversal::InitJointLists()
 DialogAFConstraintUniversal::LoadFile
 ================
 */
-void DialogAFConstraintUniversal::LoadFile( idDeclAF* af )
-{
+void DialogAFConstraintUniversal::LoadFile( idDeclAF* af ) {
 	file = af;
 	constraint = NULL;
 	InitJointLists();
@@ -202,8 +193,7 @@ void DialogAFConstraintUniversal::LoadFile( idDeclAF* af )
 DialogAFConstraintUniversal::SaveFile
 ================
 */
-void DialogAFConstraintUniversal::SaveFile()
-{
+void DialogAFConstraintUniversal::SaveFile() {
 	SaveConstraint();
 }
 
@@ -212,8 +202,7 @@ void DialogAFConstraintUniversal::SaveFile()
 DialogAFConstraintUniversal::LoadConstraint
 ================
 */
-void DialogAFConstraintUniversal::LoadConstraint( idDeclAF_Constraint* c )
-{
+void DialogAFConstraintUniversal::LoadConstraint( idDeclAF_Constraint* c ) {
 	int i, s1, s2;
 	idAngles angles;
 
@@ -224,12 +213,9 @@ void DialogAFConstraintUniversal::LoadConstraint( idDeclAF_Constraint* c )
 	m_anchor_x = constraint->anchor.ToVec3().x;
 	m_anchor_y = constraint->anchor.ToVec3().y;
 	m_anchor_z = constraint->anchor.ToVec3().z;
-	if( constraint->anchor.type == idAFVector::VEC_JOINT )
-	{
+	if ( constraint->anchor.type == idAFVector::VEC_JOINT ) {
 		i = IDC_RADIO_ANCHOR_JOINT;
-	}
-	else
-	{
+	} else {
 		i = IDC_RADIO_ANCHOR_COORDINATES;
 	}
 	CheckRadioButton( IDC_RADIO_ANCHOR_JOINT, IDC_RADIO_ANCHOR_COORDINATES, i );
@@ -240,12 +226,9 @@ void DialogAFConstraintUniversal::LoadConstraint( idDeclAF_Constraint* c )
 	angles = constraint->shaft[0].ToVec3().ToAngles();
 	m_pitchShaft1 = angles.pitch;
 	m_yawShaft1 = angles.yaw;
-	if( constraint->shaft[0].type == idAFVector::VEC_BONEDIR )
-	{
+	if ( constraint->shaft[0].type == idAFVector::VEC_BONEDIR ) {
 		i = IDC_RADIO_UNIVERSAL_BONE_SHAFT1;
-	}
-	else
-	{
+	} else {
 		i = IDC_RADIO_UNIVERSAL_ANGLES_SHAFT1;
 		constraint->shaft[0].type = idAFVector::VEC_COORDS;
 	}
@@ -257,28 +240,20 @@ void DialogAFConstraintUniversal::LoadConstraint( idDeclAF_Constraint* c )
 	angles = constraint->shaft[1].ToVec3().ToAngles();
 	m_pitchShaft2 = angles.pitch;
 	m_yawShaft2 = angles.yaw;
-	if( constraint->shaft[1].type == idAFVector::VEC_BONEDIR )
-	{
+	if ( constraint->shaft[1].type == idAFVector::VEC_BONEDIR ) {
 		i = IDC_RADIO_UNIVERSAL_BONE_SHAFT2;
-	}
-	else
-	{
+	} else {
 		i = IDC_RADIO_UNIVERSAL_ANGLES_SHAFT2;
 		constraint->shaft[1].type = idAFVector::VEC_COORDS;
 	}
 	CheckRadioButton( IDC_RADIO_UNIVERSAL_BONE_SHAFT2, IDC_RADIO_UNIVERSAL_ANGLES_SHAFT2, i );
 
 	// limit
-	if( constraint->limit == idDeclAF_Constraint::LIMIT_CONE )
-	{
+	if ( constraint->limit == idDeclAF_Constraint::LIMIT_CONE ) {
 		i = IDC_RADIO_UNIVERSAL_LIMIT_CONE;
-	}
-	else if( constraint->limit == idDeclAF_Constraint::LIMIT_PYRAMID )
-	{
+	} else if ( constraint->limit == idDeclAF_Constraint::LIMIT_PYRAMID ) {
 		i = IDC_RADIO_UNIVERSAL_LIMIT_PYRAMID;
-	}
-	else
-	{
+	} else {
 		i = IDC_RADIO_UNIVERSAL_LIMIT_NONE;
 	}
 	CheckRadioButton( IDC_RADIO_UNIVERSAL_LIMIT_NONE, IDC_RADIO_UNIVERSAL_LIMIT_PYRAMID, i );
@@ -291,12 +266,9 @@ void DialogAFConstraintUniversal::LoadConstraint( idDeclAF_Constraint* c )
 	m_limitPitch = angles.pitch;
 	m_limitYaw = angles.yaw;
 
-	if( constraint->limitAxis.type == idAFVector::VEC_BONEDIR )
-	{
+	if ( constraint->limitAxis.type == idAFVector::VEC_BONEDIR ) {
 		i = IDC_RADIO_UNIVERSAL_LIMIT_BONE;
-	}
-	else
-	{
+	} else {
 		i = IDC_RADIO_UNIVERSAL_LIMIT_ANGLES;
 	}
 	CheckRadioButton( IDC_RADIO_UNIVERSAL_LIMIT_BONE, IDC_RADIO_UNIVERSAL_LIMIT_ANGLES, i );
@@ -312,14 +284,12 @@ void DialogAFConstraintUniversal::LoadConstraint( idDeclAF_Constraint* c )
 DialogAFConstraintUniversal::SaveConstraint
 ================
 */
-void DialogAFConstraintUniversal::SaveConstraint()
-{
+void DialogAFConstraintUniversal::SaveConstraint() {
 	int s1, s2;
 	CString str;
 	idAngles angles;
 
-	if( !file || !constraint )
-	{
+	if ( !file || !constraint ) {
 		return;
 	}
 	UpdateData( TRUE );
@@ -332,38 +302,29 @@ void DialogAFConstraintUniversal::SaveConstraint()
 	constraint->anchor.ToVec3().z = m_anchor_z;
 
 	// shaft 1
-	if( constraint->shaft[0].type == idAFVector::VEC_BONEDIR )
-	{
+	if ( constraint->shaft[0].type == idAFVector::VEC_BONEDIR ) {
 		s1 = GetSafeComboBoxSelection( &m_comboJoint1Shaft1, str, -1 );
 		constraint->shaft[0].joint1 = str;
 		s2 = GetSafeComboBoxSelection( &m_comboJoint2Shaft1, str, s1 );
 		constraint->shaft[0].joint2 = str;
-	}
-	else
-	{
+	} else {
 		constraint->shaft[0].ToVec3() = idAngles( m_pitchShaft1, m_yawShaft1, 0.0f ).ToForward();
 	}
 
 	// shaft 2
-	if( constraint->shaft[1].type == idAFVector::VEC_BONEDIR )
-	{
+	if ( constraint->shaft[1].type == idAFVector::VEC_BONEDIR ) {
 		s1 = GetSafeComboBoxSelection( &m_comboJoint1Shaft2, str, -1 );
 		constraint->shaft[1].joint1 = str;
 		s2 = GetSafeComboBoxSelection( &m_comboJoint2Shaft2, str, s1 );
 		constraint->shaft[1].joint2 = str;
-	}
-	else
-	{
+	} else {
 		constraint->shaft[1].ToVec3() = idAngles( m_pitchShaft2, m_yawShaft2, 0.0f ).ToForward();
 	}
 
 	// limit
-	if( constraint->limit == idDeclAF_Constraint::LIMIT_CONE )
-	{
+	if ( constraint->limit == idDeclAF_Constraint::LIMIT_CONE ) {
 		constraint->limitAngles[0] = m_coneAngle;
-	}
-	else
-	{
+	} else {
 		constraint->limitAngles[0] = m_pyramidAngle1;
 	}
 	constraint->limitAngles[1] = m_pyramidAngle2;
@@ -385,11 +346,9 @@ void DialogAFConstraintUniversal::SaveConstraint()
 DialogAFConstraintUniversal::UpdateFile
 ================
 */
-void DialogAFConstraintUniversal::UpdateFile()
-{
+void DialogAFConstraintUniversal::UpdateFile() {
 	SaveConstraint();
-	if( file )
-	{
+	if ( file ) {
 		gameEdit->AF_UpdateEntities( file->GetName() );
 	}
 }
@@ -399,8 +358,7 @@ void DialogAFConstraintUniversal::UpdateFile()
 DialogAFConstraintUniversal::OnToolHitTest
 ================
 */
-INT_PTR DialogAFConstraintUniversal::OnToolHitTest( CPoint point, TOOLINFO* pTI ) const
-{
+INT_PTR DialogAFConstraintUniversal::OnToolHitTest( CPoint point, TOOLINFO* pTI ) const {
 	CDialog::OnToolHitTest( point, pTI );
 	return DefaultOnToolHitTest( toolTips, this, point, pTI );
 }
@@ -458,85 +416,61 @@ END_MESSAGE_MAP()
 
 // DialogAFConstraintUniversal message handlers
 
-BOOL DialogAFConstraintUniversal::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult )
-{
+BOOL DialogAFConstraintUniversal::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult ) {
 	return DefaultOnToolTipNotify( toolTips, id, pNMHDR, pResult );
 }
 
-void DialogAFConstraintUniversal::OnBnClickedRadioAnchorJoint()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_ANCHOR_JOINT ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintUniversal::OnBnClickedRadioAnchorJoint() {
+	if ( IsDlgButtonChecked( IDC_RADIO_ANCHOR_JOINT ) ) {
+		if ( constraint ) {
 			constraint->anchor.type = idAFVector::VEC_JOINT;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintUniversal::OnBnClickedRadioAnchorCoordinates()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_ANCHOR_COORDINATES ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintUniversal::OnBnClickedRadioAnchorCoordinates() {
+	if ( IsDlgButtonChecked( IDC_RADIO_ANCHOR_COORDINATES ) ) {
+		if ( constraint ) {
 			constraint->anchor.type = idAFVector::VEC_COORDS;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintUniversal::OnCbnSelchangeComboAnchorJoint()
-{
+void DialogAFConstraintUniversal::OnCbnSelchangeComboAnchorJoint() {
 	UpdateFile();
 }
 
-void DialogAFConstraintUniversal::OnEnChangeEditAnchorX()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_ANCHOR_X ) ) )
-	{
+void DialogAFConstraintUniversal::OnEnChangeEditAnchorX() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_ANCHOR_X ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_anchor_x = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_ANCHOR_X ) );
+	} else {
+		m_anchor_x = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_ANCHOR_X ) );
 	}
 }
 
-void DialogAFConstraintUniversal::OnEnChangeEditAnchorY()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_ANCHOR_Y ) ) )
-	{
+void DialogAFConstraintUniversal::OnEnChangeEditAnchorY() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_ANCHOR_Y ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_anchor_y = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_ANCHOR_Y ) );
+	} else {
+		m_anchor_y = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_ANCHOR_Y ) );
 	}
 }
 
-void DialogAFConstraintUniversal::OnEnChangeEditAnchorZ()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_ANCHOR_Z ) ) )
-	{
+void DialogAFConstraintUniversal::OnEnChangeEditAnchorZ() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_ANCHOR_Z ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_anchor_z = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_ANCHOR_Z ) );
+	} else {
+		m_anchor_z = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_ANCHOR_Z ) );
 	}
 }
 
-void DialogAFConstraintUniversal::OnDeltaposSpinAnchorX( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintUniversal::OnDeltaposSpinAnchorX( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_anchor_x += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_anchor_x -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -544,15 +478,11 @@ void DialogAFConstraintUniversal::OnDeltaposSpinAnchorX( NMHDR* pNMHDR, LRESULT*
 	*pResult = 0;
 }
 
-void DialogAFConstraintUniversal::OnDeltaposSpinAnchorY( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintUniversal::OnDeltaposSpinAnchorY( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_anchor_y += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_anchor_y -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -560,15 +490,11 @@ void DialogAFConstraintUniversal::OnDeltaposSpinAnchorY( NMHDR* pNMHDR, LRESULT*
 	*pResult = 0;
 }
 
-void DialogAFConstraintUniversal::OnDeltaposSpinAnchorZ( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintUniversal::OnDeltaposSpinAnchorZ( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_anchor_z += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_anchor_z -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -576,67 +502,51 @@ void DialogAFConstraintUniversal::OnDeltaposSpinAnchorZ( NMHDR* pNMHDR, LRESULT*
 	*pResult = 0;
 }
 
-void DialogAFConstraintUniversal::OnBnClickedRadioUniversalBoneShaft1()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_UNIVERSAL_BONE_SHAFT1 ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintUniversal::OnBnClickedRadioUniversalBoneShaft1() {
+	if ( IsDlgButtonChecked( IDC_RADIO_UNIVERSAL_BONE_SHAFT1 ) ) {
+		if ( constraint ) {
 			constraint->shaft[0].type = idAFVector::VEC_BONEDIR;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintUniversal::OnBnClickedRadioUniversalAnglesShaft1()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_UNIVERSAL_ANGLES_SHAFT1 ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintUniversal::OnBnClickedRadioUniversalAnglesShaft1() {
+	if ( IsDlgButtonChecked( IDC_RADIO_UNIVERSAL_ANGLES_SHAFT1 ) ) {
+		if ( constraint ) {
 			constraint->shaft[0].type = idAFVector::VEC_COORDS;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintUniversal::OnCbnSelchangeComboUniversalJoint1Shaft1()
-{
+void DialogAFConstraintUniversal::OnCbnSelchangeComboUniversalJoint1Shaft1() {
 	CString str;
 	GetSafeComboBoxSelection( &m_comboJoint1Shaft1, str, -1 );
 	UnsetSafeComboBoxSelection( &m_comboJoint2Shaft1, str );
 	UpdateFile();
 }
 
-void DialogAFConstraintUniversal::OnCbnSelchangeComboUniversalJoint2Shaft1()
-{
+void DialogAFConstraintUniversal::OnCbnSelchangeComboUniversalJoint2Shaft1() {
 	CString str;
 	GetSafeComboBoxSelection( &m_comboJoint2Shaft1, str, -1 );
 	UnsetSafeComboBoxSelection( &m_comboJoint1Shaft1, str );
 	UpdateFile();
 }
 
-void DialogAFConstraintUniversal::OnEnChangeEditUniversalPitchShaft1()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_PITCH_SHAFT1 ) ) )
-	{
+void DialogAFConstraintUniversal::OnEnChangeEditUniversalPitchShaft1() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_PITCH_SHAFT1 ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_pitchShaft1 = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_PITCH_SHAFT1 ) );
+	} else {
+		m_pitchShaft1 = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_PITCH_SHAFT1 ) );
 	}
 }
 
-void DialogAFConstraintUniversal::OnDeltaposSpinUniversalPitchShaft1( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintUniversal::OnDeltaposSpinUniversalPitchShaft1( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_pitchShaft1 += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_pitchShaft1 -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -644,27 +554,19 @@ void DialogAFConstraintUniversal::OnDeltaposSpinUniversalPitchShaft1( NMHDR* pNM
 	*pResult = 0;
 }
 
-void DialogAFConstraintUniversal::OnEnChangeEditUniversalYawShaft1()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_YAW_SHAFT1 ) ) )
-	{
+void DialogAFConstraintUniversal::OnEnChangeEditUniversalYawShaft1() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_YAW_SHAFT1 ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_yawShaft1 = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_YAW_SHAFT1 ) );
+	} else {
+		m_yawShaft1 = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_YAW_SHAFT1 ) );
 	}
 }
 
-void DialogAFConstraintUniversal::OnDeltaposSpinUniversalYawShaft1( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintUniversal::OnDeltaposSpinUniversalYawShaft1( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_yawShaft1 += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_yawShaft1 -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -672,67 +574,51 @@ void DialogAFConstraintUniversal::OnDeltaposSpinUniversalYawShaft1( NMHDR* pNMHD
 	*pResult = 0;
 }
 
-void DialogAFConstraintUniversal::OnBnClickedRadioUniversalBoneShaft2()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_UNIVERSAL_BONE_SHAFT2 ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintUniversal::OnBnClickedRadioUniversalBoneShaft2() {
+	if ( IsDlgButtonChecked( IDC_RADIO_UNIVERSAL_BONE_SHAFT2 ) ) {
+		if ( constraint ) {
 			constraint->shaft[1].type = idAFVector::VEC_BONEDIR;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintUniversal::OnBnClickedRadioUniversalAnglesShaft2()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_UNIVERSAL_ANGLES_SHAFT2 ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintUniversal::OnBnClickedRadioUniversalAnglesShaft2() {
+	if ( IsDlgButtonChecked( IDC_RADIO_UNIVERSAL_ANGLES_SHAFT2 ) ) {
+		if ( constraint ) {
 			constraint->shaft[1].type = idAFVector::VEC_COORDS;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintUniversal::OnCbnSelchangeComboUniversalJoint1Shaft2()
-{
+void DialogAFConstraintUniversal::OnCbnSelchangeComboUniversalJoint1Shaft2() {
 	CString str;
 	GetSafeComboBoxSelection( &m_comboJoint1Shaft2, str, -1 );
 	UnsetSafeComboBoxSelection( &m_comboJoint2Shaft2, str );
 	UpdateFile();
 }
 
-void DialogAFConstraintUniversal::OnCbnSelchangeComboUniversalJoint2Shaft2()
-{
+void DialogAFConstraintUniversal::OnCbnSelchangeComboUniversalJoint2Shaft2() {
 	CString str;
 	GetSafeComboBoxSelection( &m_comboJoint2Shaft2, str, -1 );
 	UnsetSafeComboBoxSelection( &m_comboJoint1Shaft2, str );
 	UpdateFile();
 }
 
-void DialogAFConstraintUniversal::OnEnChangeEditUniversalPitchShaft2()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_PITCH_SHAFT2 ) ) )
-	{
+void DialogAFConstraintUniversal::OnEnChangeEditUniversalPitchShaft2() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_PITCH_SHAFT2 ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_pitchShaft2 = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_PITCH_SHAFT2 ) );
+	} else {
+		m_pitchShaft2 = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_PITCH_SHAFT2 ) );
 	}
 }
 
-void DialogAFConstraintUniversal::OnDeltaposSpinUniversalPitchShaft2( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintUniversal::OnDeltaposSpinUniversalPitchShaft2( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_pitchShaft2 += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_pitchShaft2 -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -740,27 +626,19 @@ void DialogAFConstraintUniversal::OnDeltaposSpinUniversalPitchShaft2( NMHDR* pNM
 	*pResult = 0;
 }
 
-void DialogAFConstraintUniversal::OnEnChangeEditUniversalYawShaft2()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_YAW_SHAFT2 ) ) )
-	{
+void DialogAFConstraintUniversal::OnEnChangeEditUniversalYawShaft2() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_YAW_SHAFT2 ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_yawShaft2 = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_YAW_SHAFT2 ) );
+	} else {
+		m_yawShaft2 = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_YAW_SHAFT2 ) );
 	}
 }
 
-void DialogAFConstraintUniversal::OnDeltaposSpinUniversalYawShaft2( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintUniversal::OnDeltaposSpinUniversalYawShaft2( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_yawShaft2 += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_yawShaft2 -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -768,63 +646,46 @@ void DialogAFConstraintUniversal::OnDeltaposSpinUniversalYawShaft2( NMHDR* pNMHD
 	*pResult = 0;
 }
 
-void DialogAFConstraintUniversal::OnBnClickedRadioUniversalLimitNone()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_UNIVERSAL_LIMIT_NONE ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintUniversal::OnBnClickedRadioUniversalLimitNone() {
+	if ( IsDlgButtonChecked( IDC_RADIO_UNIVERSAL_LIMIT_NONE ) ) {
+		if ( constraint ) {
 			constraint->limit = idDeclAF_Constraint::LIMIT_NONE;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintUniversal::OnBnClickedRadioUniversalLimitCone()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_UNIVERSAL_LIMIT_CONE ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintUniversal::OnBnClickedRadioUniversalLimitCone() {
+	if ( IsDlgButtonChecked( IDC_RADIO_UNIVERSAL_LIMIT_CONE ) ) {
+		if ( constraint ) {
 			constraint->limit = idDeclAF_Constraint::LIMIT_CONE;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintUniversal::OnBnClickedRadioUniversalLimitPyramid()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_UNIVERSAL_LIMIT_PYRAMID ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintUniversal::OnBnClickedRadioUniversalLimitPyramid() {
+	if ( IsDlgButtonChecked( IDC_RADIO_UNIVERSAL_LIMIT_PYRAMID ) ) {
+		if ( constraint ) {
 			constraint->limit = idDeclAF_Constraint::LIMIT_PYRAMID;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintUniversal::OnEnChangeEditUniversalLimitConeAngle()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_CONE_ANGLE ) ) )
-	{
+void DialogAFConstraintUniversal::OnEnChangeEditUniversalLimitConeAngle() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_CONE_ANGLE ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_coneAngle = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_CONE_ANGLE ), false );
+	} else {
+		m_coneAngle = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_CONE_ANGLE ), false );
 	}
 }
 
-void DialogAFConstraintUniversal::OnDeltaposSpinUniversalLimitConeAngle( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintUniversal::OnDeltaposSpinUniversalLimitConeAngle( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_coneAngle += 1.0f;
-	}
-	else if( m_coneAngle > 0.0f )
-	{
+	} else if ( m_coneAngle > 0.0f ) {
 		m_coneAngle -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -832,27 +693,19 @@ void DialogAFConstraintUniversal::OnDeltaposSpinUniversalLimitConeAngle( NMHDR* 
 	*pResult = 0;
 }
 
-void DialogAFConstraintUniversal::OnEnChangeEditUniversalLimitPyramidAngle1()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_PYRAMID_ANGLE1 ) ) )
-	{
+void DialogAFConstraintUniversal::OnEnChangeEditUniversalLimitPyramidAngle1() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_PYRAMID_ANGLE1 ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_pyramidAngle1 = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_PYRAMID_ANGLE1 ), false );
+	} else {
+		m_pyramidAngle1 = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_PYRAMID_ANGLE1 ), false );
 	}
 }
 
-void DialogAFConstraintUniversal::OnDeltaposSpinUniversalLimitPyramidAngle1( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintUniversal::OnDeltaposSpinUniversalLimitPyramidAngle1( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_pyramidAngle1 += 1.0f;
-	}
-	else if( m_pyramidAngle1 > 0.0f )
-	{
+	} else if ( m_pyramidAngle1 > 0.0f ) {
 		m_pyramidAngle1 -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -860,27 +713,19 @@ void DialogAFConstraintUniversal::OnDeltaposSpinUniversalLimitPyramidAngle1( NMH
 	*pResult = 0;
 }
 
-void DialogAFConstraintUniversal::OnEnChangeEditUniversalLimitPyramidAngle2()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_PYRAMID_ANGLE2 ) ) )
-	{
+void DialogAFConstraintUniversal::OnEnChangeEditUniversalLimitPyramidAngle2() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_PYRAMID_ANGLE2 ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_pyramidAngle2 = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_PYRAMID_ANGLE2 ), false );
+	} else {
+		m_pyramidAngle2 = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_PYRAMID_ANGLE2 ), false );
 	}
 }
 
-void DialogAFConstraintUniversal::OnDeltaposSpinUniversalLimitPyramidAngle2( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintUniversal::OnDeltaposSpinUniversalLimitPyramidAngle2( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_pyramidAngle2 += 1.0f;
-	}
-	else if( m_pyramidAngle2 > 0.0f )
-	{
+	} else if ( m_pyramidAngle2 > 0.0f ) {
 		m_pyramidAngle2 -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -888,27 +733,19 @@ void DialogAFConstraintUniversal::OnDeltaposSpinUniversalLimitPyramidAngle2( NMH
 	*pResult = 0;
 }
 
-void DialogAFConstraintUniversal::OnEnChangeEditUniversalLimitRoll()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_ROLL ) ) )
-	{
+void DialogAFConstraintUniversal::OnEnChangeEditUniversalLimitRoll() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_ROLL ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_limitRoll = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_ROLL ) );
+	} else {
+		m_limitRoll = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_ROLL ) );
 	}
 }
 
-void DialogAFConstraintUniversal::OnDeltaposSpinUniversalLimitRoll( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintUniversal::OnDeltaposSpinUniversalLimitRoll( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_limitRoll += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_limitRoll -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -916,67 +753,51 @@ void DialogAFConstraintUniversal::OnDeltaposSpinUniversalLimitRoll( NMHDR* pNMHD
 	*pResult = 0;
 }
 
-void DialogAFConstraintUniversal::OnBnClickedRadioUniversalLimitBone()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_UNIVERSAL_LIMIT_BONE ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintUniversal::OnBnClickedRadioUniversalLimitBone() {
+	if ( IsDlgButtonChecked( IDC_RADIO_UNIVERSAL_LIMIT_BONE ) ) {
+		if ( constraint ) {
 			constraint->limitAxis.type = idAFVector::VEC_BONEDIR;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintUniversal::OnBnClickedRadioUniversalLimitAngles()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_UNIVERSAL_LIMIT_ANGLES ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintUniversal::OnBnClickedRadioUniversalLimitAngles() {
+	if ( IsDlgButtonChecked( IDC_RADIO_UNIVERSAL_LIMIT_ANGLES ) ) {
+		if ( constraint ) {
 			constraint->limitAxis.type = idAFVector::VEC_COORDS;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintUniversal::OnCbnSelchangeComboUniversalLimitJoint1()
-{
+void DialogAFConstraintUniversal::OnCbnSelchangeComboUniversalLimitJoint1() {
 	CString str;
 	GetSafeComboBoxSelection( &m_comboLimitJoint1, str, -1 );
 	UnsetSafeComboBoxSelection( &m_comboLimitJoint2, str );
 	UpdateFile();
 }
 
-void DialogAFConstraintUniversal::OnCbnSelchangeComboUniversalLimitJoint2()
-{
+void DialogAFConstraintUniversal::OnCbnSelchangeComboUniversalLimitJoint2() {
 	CString str;
 	GetSafeComboBoxSelection( &m_comboLimitJoint2, str, -1 );
 	UnsetSafeComboBoxSelection( &m_comboLimitJoint1, str );
 	UpdateFile();
 }
 
-void DialogAFConstraintUniversal::OnEnChangeEditUniversalLimitPitch()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_PITCH ) ) )
-	{
+void DialogAFConstraintUniversal::OnEnChangeEditUniversalLimitPitch() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_PITCH ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_limitPitch = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_PITCH ) );
+	} else {
+		m_limitPitch = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_PITCH ) );
 	}
 }
 
-void DialogAFConstraintUniversal::OnDeltaposSpinUniversalLimitPitch( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintUniversal::OnDeltaposSpinUniversalLimitPitch( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_limitPitch += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_limitPitch -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -984,27 +805,19 @@ void DialogAFConstraintUniversal::OnDeltaposSpinUniversalLimitPitch( NMHDR* pNMH
 	*pResult = 0;
 }
 
-void DialogAFConstraintUniversal::OnEnChangeEditUniversalLimitYaw()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_YAW ) ) )
-	{
+void DialogAFConstraintUniversal::OnEnChangeEditUniversalLimitYaw() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_YAW ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_limitYaw = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_YAW ) );
+	} else {
+		m_limitYaw = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_UNIVERSAL_LIMIT_YAW ) );
 	}
 }
 
-void DialogAFConstraintUniversal::OnDeltaposSpinUniversalLimitYaw( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintUniversal::OnDeltaposSpinUniversalLimitYaw( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_limitYaw += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_limitYaw -= 1.0f;
 	}
 	UpdateData( FALSE );

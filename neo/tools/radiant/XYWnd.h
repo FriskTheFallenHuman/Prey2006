@@ -42,58 +42,46 @@ bool FilterBrush( const idEditorBrush* pb );
 typedef void ( PFNPathCallback )( bool, int );
 // as i didn't really encapsulate anything this
 // should really be a struct..
-class CClipPoint
-{
+class CClipPoint {
 public:
-	CClipPoint()
-	{
+	CClipPoint() {
 		Reset();
 	};
-	void Reset()
-	{
+	void Reset() {
 		m_ptClip[0] = m_ptClip[1] = m_ptClip[2] = 0.0;
 		m_bSet = false;
 		m_pVec3 = NULL;
 	};
-	bool Set()
-	{
+	bool Set() {
 		return m_bSet;
 	};
-	void Set( bool b )
-	{
+	void Set( bool b ) {
 		m_bSet = b;
 	};
-	void UpdatePointPtr()
-	{
-		if( m_pVec3 )
-		{
+	void UpdatePointPtr() {
+		if ( m_pVec3 ) {
 			VectorCopy( m_ptClip, *m_pVec3 );
 		}
 	};
-	void SetPointPtr( idVec3* p )
-	{
+	void SetPointPtr( idVec3* p ) {
 		m_pVec3 = p;
 	};
 	idVec3 m_ptClip;      // the 3d point
-	idVec3* m_pVec3;      // optional ptr for 3rd party updates
+	idVec3 * m_pVec3;     // optional ptr for 3rd party updates
 	CPoint m_ptScreen;    // the onscreen xy point (for mousability)
 	bool m_bSet;
-	operator idVec3& ()
-	{
+	operator idVec3 & () {
 		return m_ptClip;
 	};
-	operator idVec3* ()
-	{
+	operator idVec3* () {
 		return &m_ptClip;
 	};
-	operator float* ()
-	{
+	operator float* () {
 		return m_ptClip.ToFloatPtr();
 	};
 };
 
-class CXYWnd : public CDialogEx
-{
+class CXYWnd : public CDialogEx {
 	DECLARE_DYNCREATE( CXYWnd );
 
 public:
@@ -104,8 +92,8 @@ protected:
 
 public:
 	bool AreaSelectOK();
-	idVec3& RotateOrigin();
-	idVec3& Rotation();
+	idVec3 & RotateOrigin();
+	idVec3 & Rotation();
 	void UndoClear();
 	bool UndoAvailable();
 	void KillPathMode();
@@ -119,7 +107,7 @@ public:
 	void FlipClip();
 	void SplitClip();
 	void Clip();
-	idVec3& GetOrigin();
+	idVec3 & GetOrigin();
 	void SetOrigin( idVec3 org );		// PGM
 	void XY_Init();
 	void XY_Draw();
@@ -135,22 +123,18 @@ public:
 	void XY_ToGridPoint( int x, int y, idVec3& point );
 	void XY_ToPoint( int x, int y, idVec3& point );
 	void SnapToPoint( int x, int y, idVec3& point );
-	void SetActive( bool b )
-	{
+	void SetActive( bool b ) {
 		m_bActive = b;
 	};
-	bool Active()
-	{
+	bool Active() {
 		return m_bActive;
 	};
 	void DropClipPoint( UINT nFlags, CPoint point );
 
-	int GetAxisHoriz()
-	{
+	int GetAxisHoriz() {
 		return m_axisHoriz;
 	};
-	int GetAxisVert()
-	{
+	int GetAxisVert() {
 		return m_axisVert;
 	};
 	void AnalogMouseZoom( int mouseDeltaY );
@@ -175,24 +159,19 @@ public:
 
 	virtual ~CXYWnd();
 	void SetViewType( ViewType n );
-	ViewType GetViewType()
-	{
+	ViewType GetViewType() {
 		return  m_nViewType;
 	};
-	void SetScale( float f )
-	{
+	void SetScale( float f ) {
 		m_fScale = f;
 	};
-	float Scale()
-	{
+	float Scale() {
 		return m_fScale;
 	};
-	int Width()
-	{
+	int Width() {
 		return m_nWidth;
 	}
-	int Height()
-	{
+	int Height() {
 		return m_nHeight;
 	}
 	bool m_bActive;
@@ -201,8 +180,7 @@ public:
 
 	void DrawPrecisionCrosshair();
 	void CyclePrecisionCrosshairMode();
-	enum
-	{
+	enum {
 		PRECISION_CROSSHAIR_NONE = 0,
 		PRECISION_CROSSHAIR_SNAP = 1,
 		PRECISION_CROSSHAIR_FREE = 2,
@@ -249,7 +227,7 @@ protected:
 
 	CMenu m_mnuDrop;
 	ViewType m_nViewType;
-	const char* m_sViewName;
+	const char * m_sViewName;
 
 	unsigned int m_nTimerID;
 	int m_nScrollFlags;
@@ -259,7 +237,7 @@ protected:
 
 	void OriginalButtonUp( UINT nFlags, CPoint point );
 	void OriginalButtonDown( UINT nFlags, CPoint point );
-	void ProduceSplits( idEditorBrush** pFront, idEditorBrush** pBack );
+	void ProduceSplits( idEditorBrush ** pFront, idEditorBrush ** pBack );
 	void ProduceSplitLists();
 	void HandleDrop();
 	void PaintSizeInfo( int nDim1, int nDim2, idVec3 vMinBounds, idVec3 vMaxBounds );
@@ -292,7 +270,7 @@ protected:
 	afx_msg BOOL OnEraseBkgnd( CDC* pDC );
 	afx_msg void OnDropNewmodel();
 	afx_msg BOOL OnMouseWheel( UINT nFlags, short zDelta, CPoint pt );
-	afx_msg BOOL OnCmdMsg( UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo );
+	afx_msg BOOL OnCmdMsg( UINT nID, int nCode, void * pExtra, AFX_CMDHANDLERINFO* pHandlerInfo );
 
 	DECLARE_MESSAGE_MAP()
 };

@@ -29,8 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFConstraintHinge dialog
 
-class DialogAFConstraintHinge : public CDialog
-{
+class DialogAFConstraintHinge : public CDialog {
 
 	DECLARE_DYNAMIC( DialogAFConstraintHinge )
 
@@ -78,8 +77,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	idDeclAF* 			file;
-	idDeclAF_Constraint* constraint;
+	idDeclAF 	*		file;
+	idDeclAF_Constraint * constraint;
 
 	//{{AFX_DATA(DialogAFConstraintHinge)
 	CComboBox			m_comboAnchorJoint;

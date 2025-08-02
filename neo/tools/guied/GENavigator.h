@@ -31,8 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 class rvGEWorkspace;
 class idWindow;
 
-class rvGENavigator
-{
+class rvGENavigator {
 public:
 
 	rvGENavigator( );
@@ -65,12 +64,11 @@ protected:
 	HICON			mScriptsLightIcon;
 	HICON			mCollapseIcon;
 	HICON			mExpandIcon;
-	rvGEWorkspace*	mWorkspace;
+	rvGEWorkspace	* mWorkspace;
 	WNDPROC			mListWndProc;
 };
 
-ID_INLINE HWND rvGENavigator::GetWindow()
-{
+ID_INLINE HWND rvGENavigator::GetWindow() {
 	return mWnd;
 }
 

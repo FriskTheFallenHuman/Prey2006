@@ -38,7 +38,7 @@ If you have questions concerning this license or the applicable additional terms
 #include <ddeml.h>  // for MSGF_DDEMGR
 
 #ifdef _DEBUG
-	#define new DEBUG_NEW
+#define new DEBUG_NEW
 #endif
 
 idCVar radiant_entityMode( "radiant_entityMode", "0", CVAR_TOOL | CVAR_ARCHIVE, "" );
@@ -56,8 +56,7 @@ END_MESSAGE_MAP()
 CRadiantApp::CRadiantApp
 ================
 */
-CRadiantApp::CRadiantApp() noexcept
-{
+CRadiantApp::CRadiantApp() noexcept {
 	SetAppID( _T( "Radiant.AppID.NoVersion" ) );
 }
 
@@ -68,8 +67,7 @@ CRadiantApp theApp;
 CRadiantApp::InitInstance
 ================
 */
-BOOL CRadiantApp::InitInstance()
-{
+BOOL CRadiantApp::InitInstance() {
 	// InitCommonControlsEx() is required on Windows XP if an application
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable
 	// visual styles.  Otherwise, any window creation will fail.
@@ -83,8 +81,7 @@ BOOL CRadiantApp::InitInstance()
 	CWinAppEx::InitInstance();
 
 	// Initialize OLE libraries
-	if( !AfxOleInit() )
-	{
+	if ( !AfxOleInit() ) {
 		return FALSE;
 	}
 
@@ -118,8 +115,7 @@ BOOL CRadiantApp::InitInstance()
 	// To create the main window, this code creates a new frame window
 	// object and then sets it as the application's main window object
 	CFrameWnd* pFrame = new CMainFrame;
-	if( !pFrame )
-	{
+	if ( !pFrame ) {
 		return FALSE;
 	}
 
@@ -141,8 +137,7 @@ BOOL CRadiantApp::InitInstance()
 CRadiantApp::ExitInstance
 ================
 */
-int CRadiantApp::ExitInstance()
-{
+int CRadiantApp::ExitInstance() {
 	common->Shutdown();
 	g_pParentWnd = NULL;
 	ExitProcess( 0 );
@@ -154,10 +149,8 @@ int CRadiantApp::ExitInstance()
 CRadiantApp::OnIdle
 ================
 */
-BOOL CRadiantApp::OnIdle( LONG lCount )
-{
-	if( g_pParentWnd )
-	{
+BOOL CRadiantApp::OnIdle( LONG lCount ) {
+	if ( g_pParentWnd ) {
 		g_pParentWnd->RoutineProcessing();
 	}
 	return FALSE;
@@ -169,8 +162,7 @@ BOOL CRadiantApp::OnIdle( LONG lCount )
 CRadiantApp::OnAppHelp
 ================
 */
-void CRadiantApp::OnAppHelp()
-{
+void CRadiantApp::OnAppHelp() {
 	ShellExecute( m_pMainWnd->GetSafeHwnd(), "open", "https://iddevnet.dhewm3.org/doom3/index.html", NULL, NULL, SW_SHOW );
 }
 
@@ -179,8 +171,7 @@ void CRadiantApp::OnAppHelp()
 CRadiantApp::Run
 ================
 */
-int CRadiantApp::Run()
-{
+int CRadiantApp::Run() {
 	BOOL bIdle = TRUE;
 	LONG lIdleCount = 0;
 
@@ -193,51 +184,42 @@ int CRadiantApp::Run()
 #endif
 
 	// phase1: check to see if we can do idle work
-	while( bIdle &&	!::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) )
-	{
+	while ( bIdle &&	!::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) ) {
 		// call OnIdle while in bIdle state
-		if( !OnIdle( lIdleCount++ ) )
-		{
+		if ( !OnIdle( lIdleCount++ ) ) {
 			bIdle = FALSE; // assume "no idle" state
 		}
 	}
 
 	// phase2: pump messages while available
-	do
-	{
+	do {
 		// pump message, but quit on WM_QUIT
-		if( !PumpMessage() )
-		{
+		if ( !PumpMessage() ) {
 			return ExitInstance();
 		}
 
 		// reset "no idle" state after pumping "normal" message
-		if( IsIdleMessage( msg ) )
-		{
+		if ( IsIdleMessage( msg ) ) {
 			bIdle = TRUE;
 			lIdleCount = 0;
 		}
 
-	}
-	while( ::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) );
+	} while ( ::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) );
 
 	return 0;
 }
 
-class CAboutRadiantDlg : public CAboutDlg
-{
+class CAboutRadiantDlg : public CAboutDlg {
 public:
 	CAboutRadiantDlg();
 	virtual BOOL OnInitDialog();
 };
 
-CAboutRadiantDlg::CAboutRadiantDlg() : CAboutDlg( IDD_ABOUT )
-{
+CAboutRadiantDlg::CAboutRadiantDlg() : CAboutDlg( IDD_ABOUT ) {
 	SetDialogTitle( _T( "About Prey Editor" ) );
 }
 
-BOOL CAboutRadiantDlg::OnInitDialog()
-{
+BOOL CAboutRadiantDlg::OnInitDialog() {
 	CAboutDlg::OnInitDialog();
 
 	CString buffer;
@@ -252,8 +234,7 @@ BOOL CAboutRadiantDlg::OnInitDialog()
 CRadiantApp::OnAppAbout
 ================
 */
-void CRadiantApp::OnAppAbout()
-{
+void CRadiantApp::OnAppAbout() {
 	CAboutRadiantDlg aboutDlg;
 	aboutDlg.DoModal();
 }

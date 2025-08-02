@@ -36,8 +36,7 @@ class DialogAFConstraintSpring;
 
 // DialogAFConstraint dialog
 
-class DialogAFConstraint : public CDialog
-{
+class DialogAFConstraint : public CDialog {
 
 	DECLARE_DYNAMIC( DialogAFConstraint )
 
@@ -46,7 +45,7 @@ public:
 	virtual				~DialogAFConstraint();
 	void				LoadFile( idDeclAF* af );
 	void				SaveFile();
-	void				LoadConstraint( const char* name );
+	void				LoadConstraint( const char * name );
 	void				SaveConstraint();
 	void				UpdateFile();
 
@@ -71,15 +70,15 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	idDeclAF* 			file;
-	idDeclAF_Constraint* constraint;
-	CDialog* 			constraintDlg;
-	DialogAFConstraintFixed* fixedDlg;
-	DialogAFConstraintBallAndSocket* ballAndSocketDlg;
-	DialogAFConstraintUniversal* universalDlg;
-	DialogAFConstraintHinge* hingeDlg;
-	DialogAFConstraintSlider* sliderDlg;
-	DialogAFConstraintSpring* springDlg;
+	idDeclAF 	*		file;
+	idDeclAF_Constraint * constraint;
+	CDialog 	*		constraintDlg;
+	DialogAFConstraintFixed * fixedDlg;
+	DialogAFConstraintBallAndSocket * ballAndSocketDlg;
+	DialogAFConstraintUniversal * universalDlg;
+	DialogAFConstraintHinge * hingeDlg;
+	DialogAFConstraintSlider * sliderDlg;
+	DialogAFConstraintSpring * springDlg;
 
 	//{{AFX_DATA(DialogAFConstraint)
 	CComboBox			m_comboConstraintList;			// list with constraints

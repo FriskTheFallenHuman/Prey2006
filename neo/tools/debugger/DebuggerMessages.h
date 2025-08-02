@@ -28,8 +28,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef DEBUGGERMESSAGES_H_
 #define DEBUGGERMESSAGES_H_
 
-enum EDebuggerMessage
-{
+enum EDebuggerMessage {
 	DBMSG_UNKNOWN,
 	DBMSG_CONNECT,
 	DBMSG_CONNECTED,

@@ -38,22 +38,18 @@ If you have questions concerning this license or the applicable additional terms
 
 IMPLEMENT_DYNAMIC( CCurveDlg, CDialogEx )
 CCurveDlg::CCurveDlg( CWnd* pParent )
-	: CDialogEx( CCurveDlg::IDD, pParent )
-{
+	: CDialogEx( CCurveDlg::IDD, pParent ) {
 }
 
-CCurveDlg::~CCurveDlg()
-{
+CCurveDlg::~CCurveDlg() {
 }
 
-void CCurveDlg::DoDataExchange( CDataExchange* pDX )
-{
+void CCurveDlg::DoDataExchange( CDataExchange* pDX ) {
 	CDialogEx::DoDataExchange( pDX );
 	DDX_Control( pDX, IDC_COMBO_CURVES, comboCurve );
 }
 
-void CCurveDlg::OnOK()
-{
+void CCurveDlg::OnOK() {
 	UpdateData( TRUE );
 	CString str;
 	comboCurve.GetWindowText( str );

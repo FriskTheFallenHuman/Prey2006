@@ -37,14 +37,13 @@ If you have questions concerning this license or the applicable additional terms
 #include "DialogDeclNew.h"
 
 #ifdef ID_DEBUG_MEMORY
-	#undef new
-	#undef DEBUG_NEW
-	#define DEBUG_NEW new
+#undef new
+#undef DEBUG_NEW
+#define DEBUG_NEW new
 #endif
 
 
-toolTip_t DialogDeclNew::toolTips[] =
-{
+toolTip_t DialogDeclNew::toolTips[] = {
 	{ IDC_DECLNEW_COMBO_NEW_TYPE, "select the declaration type to create" },
 	{ IDC_DECLNEW_EDIT_NEW_NAME, "enter a name for the new declaration" },
 	{ IDC_DECLNEW_EDIT_NEW_FILE, "enter the name of the file to add the declaration to" },
@@ -65,8 +64,7 @@ DialogDeclNew::DialogDeclNew
 DialogDeclNew::DialogDeclNew( CWnd* pParent /*=NULL*/ )
 	: CDialog( DialogDeclNew::IDD, pParent )
 	, declTree( NULL )
-	, newDecl( NULL )
-{
+	, newDecl( NULL ) {
 }
 
 /*
@@ -74,8 +72,7 @@ DialogDeclNew::DialogDeclNew( CWnd* pParent /*=NULL*/ )
 DialogDeclNew::~DialogDeclNew
 ================
 */
-DialogDeclNew::~DialogDeclNew()
-{
+DialogDeclNew::~DialogDeclNew() {
 }
 
 /*
@@ -83,8 +80,7 @@ DialogDeclNew::~DialogDeclNew()
 DialogDeclNew::DoDataExchange
 ================
 */
-void DialogDeclNew::DoDataExchange( CDataExchange* pDX )
-{
+void DialogDeclNew::DoDataExchange( CDataExchange* pDX ) {
 	CDialog::DoDataExchange( pDX );
 	//{{AFX_DATA_MAP(DialogDeclNew)
 	DDX_Control( pDX, IDC_DECLNEW_COMBO_NEW_TYPE, typeList );
@@ -101,13 +97,11 @@ void DialogDeclNew::DoDataExchange( CDataExchange* pDX )
 DialogDeclNew::InitTypeList
 ================
 */
-void DialogDeclNew::InitTypeList()
-{
+void DialogDeclNew::InitTypeList() {
 	int i;
 
 	typeList.ResetContent();
-	for( i = 0; i < declManager->GetNumDeclTypes(); i++ )
-	{
+	for ( i = 0; i < declManager->GetNumDeclTypes(); i++ ) {
 		typeList.AddString( declManager->GetDeclNameFromType( ( declType_t )i ) );
 	}
 }
@@ -117,8 +111,7 @@ void DialogDeclNew::InitTypeList()
 DialogDeclNew::OnInitDialog
 ================
 */
-BOOL DialogDeclNew::OnInitDialog()
-{
+BOOL DialogDeclNew::OnInitDialog() {
 
 	CDialog::OnInitDialog();
 
@@ -154,8 +147,7 @@ END_MESSAGE_MAP()
 DialogDeclNew::OnActivate
 ================
 */
-void DialogDeclNew::OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized )
-{
+void DialogDeclNew::OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized ) {
 	CDialog::OnActivate( nState, pWndOther, bMinimized );
 }
 
@@ -164,8 +156,7 @@ void DialogDeclNew::OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized )
 DialogDeclNew::OnToolTipNotify
 ================
 */
-BOOL DialogDeclNew::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult )
-{
+BOOL DialogDeclNew::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult ) {
 	return DefaultOnToolTipNotify( toolTips, id, pNMHDR, pResult );
 }
 
@@ -174,8 +165,7 @@ BOOL DialogDeclNew::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult )
 DialogDeclNew::OnSetFocus
 ================
 */
-void DialogDeclNew::OnSetFocus( CWnd* pOldWnd )
-{
+void DialogDeclNew::OnSetFocus( CWnd* pOldWnd ) {
 	CDialog::OnSetFocus( pOldWnd );
 }
 
@@ -184,8 +174,7 @@ void DialogDeclNew::OnSetFocus( CWnd* pOldWnd )
 DialogDeclNew::OnDestroy
 ================
 */
-void DialogDeclNew::OnDestroy()
-{
+void DialogDeclNew::OnDestroy() {
 	return CDialog::OnDestroy();
 }
 
@@ -194,27 +183,23 @@ void DialogDeclNew::OnDestroy()
 DialogDeclNew::OnBnClickedFile
 ================
 */
-void DialogDeclNew::OnBnClickedFile()
-{
+void DialogDeclNew::OnBnClickedFile() {
 	CString typeName, folder, ext;
 	idStr path;
-	const char* errorTitle = "Error selecting file.";
+	const char * errorTitle = "Error selecting file.";
 
-	if( GetSafeComboBoxSelection( &typeList, typeName, -1 ) == -1 )
-	{
+	if ( GetSafeComboBoxSelection( &typeList, typeName, -1 ) == -1 ) {
 		MessageBox( "Select a declaration type first.", errorTitle, MB_OK );
 		return;
 	}
 
 	declType_t type = declManager->GetDeclTypeFromName( typeName );
-	if( type >= declManager->GetNumDeclTypes() )
-	{
+	if ( type >= declManager->GetNumDeclTypes() ) {
 		MessageBox( "Unknown declaration type.", errorTitle, MB_OK | MB_ICONERROR );
 		return;
 	}
 
-	switch( type )
-	{
+	switch ( type ) {
 		// FIXME: SteelStorm2 has a _v1 suffix for materials, def and fx - why?
 		case DECL_TABLE:
 			folder = "materials";
@@ -262,8 +247,7 @@ void DialogDeclNew::OnBnClickedFile()
 	path += "\\*";
 
 	CFileDialog dlgFile( TRUE, "decl", path, 0, ext, this );
-	if( dlgFile.DoModal() == IDOK )
-	{
+	if ( dlgFile.DoModal() == IDOK ) {
 		path = fileSystem->OSPathToRelativePath( dlgFile.m_ofn.lpstrFile );
 		fileEdit.SetWindowText( path );
 	}
@@ -274,46 +258,39 @@ void DialogDeclNew::OnBnClickedFile()
 DialogDeclNew::OnBnClickedOk
 ================
 */
-void DialogDeclNew::OnBnClickedOk()
-{
+void DialogDeclNew::OnBnClickedOk() {
 	CString typeName, declName, fileName;
-	const char* errorTitle = "Error creating declaration.";
+	const char * errorTitle = "Error creating declaration.";
 
-	if( !declTree )
-	{
+	if ( !declTree ) {
 		MessageBox( "No declaration tree available.", errorTitle, MB_OK | MB_ICONERROR );
 		return;
 	}
 
-	if( GetSafeComboBoxSelection( &typeList, typeName, -1 ) == -1 )
-	{
+	if ( GetSafeComboBoxSelection( &typeList, typeName, -1 ) == -1 ) {
 		MessageBox( "No declaration type selected.", errorTitle, MB_OK | MB_ICONERROR );
 		return;
 	}
 
 	nameEdit.GetWindowText( declName );
-	if( declName.GetLength() == 0 )
-	{
+	if ( declName.GetLength() == 0 ) {
 		MessageBox( "No declaration name specified.", errorTitle, MB_OK | MB_ICONERROR );
 		return;
 	}
 
 	fileEdit.GetWindowText( fileName );
-	if( fileName.GetLength() == 0 )
-	{
+	if ( fileName.GetLength() == 0 ) {
 		MessageBox( "No file name specified.", errorTitle, MB_OK | MB_ICONERROR );
 		return;
 	}
 
-	if( declTree->FindItem( idStr( typeName + "/" + declName ) ) )
-	{
+	if ( declTree->FindItem( idStr( typeName + "/" + declName ) ) ) {
 		MessageBox( "Declaration already exists.", errorTitle, MB_OK | MB_ICONERROR );
 		return;
 	}
 
 	declType_t type = declManager->GetDeclTypeFromName( typeName );
-	if( type >= declManager->GetNumDeclTypes() )
-	{
+	if ( type >= declManager->GetNumDeclTypes() ) {
 		MessageBox( "Unknown declaration type.", errorTitle, MB_OK | MB_ICONERROR );
 		return;
 	}
@@ -328,7 +305,6 @@ void DialogDeclNew::OnBnClickedOk()
 DialogDeclNew::OnBnClickedCancel
 ================
 */
-void DialogDeclNew::OnBnClickedCancel()
-{
+void DialogDeclNew::OnBnClickedCancel() {
 	OnCancel();
 }

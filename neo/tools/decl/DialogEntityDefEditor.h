@@ -35,8 +35,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogEntityDefEditor dialog
 
-class DialogEntityDefEditor : public CDialog
-{
+class DialogEntityDefEditor : public CDialog {
 
 	DECLARE_DYNAMIC( DialogEntityDefEditor )
 
@@ -104,7 +103,7 @@ private:
 
 	HACCEL				m_hAccel;
 	CRect				initialRect;
-	idDeclEntityDef* 	decl;
+	idDeclEntityDef *	decl;
 	int					firstLine;
 
 private:

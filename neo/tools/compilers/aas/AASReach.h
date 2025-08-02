@@ -37,15 +37,14 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 */
 
-class idAASReach
-{
+class idAASReach {
 
 public:
 	bool					Build( const idMapFile* mapFile, idAASFileLocal* file );
 
 private:
-	const idMapFile* 		mapFile;
-	idAASFileLocal* 		file;
+	const idMapFile 	*	mapFile;
+	idAASFileLocal 	*	file;
 	int						numReachabilities;
 	bool					allowSwimReachabilities;
 	bool					allowFlyReachabilities;

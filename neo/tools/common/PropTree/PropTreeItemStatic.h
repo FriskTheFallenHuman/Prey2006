@@ -21,8 +21,7 @@
 
 #include "PropTreeItem.h"
 
-class PROPTREE_API CPropTreeItemStatic : public CPropTreeItem
-{
+class PROPTREE_API CPropTreeItemStatic : public CPropTreeItem {
 public:
 	CPropTreeItemStatic();
 	virtual ~CPropTreeItemStatic();

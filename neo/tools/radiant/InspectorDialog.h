@@ -35,8 +35,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // CInspectorDialog dialog
 
-class CInspectorDialog : public CTabsDlg
-{
+class CInspectorDialog : public CTabsDlg {
 	//DECLARE_DYNAMIC(CInspectorDialog)
 public:
 	CInspectorDialog( CWnd* pParent = NULL );   // standard constructor
@@ -53,7 +52,7 @@ public:
 	virtual BOOL OnInitDialog();
 	void AssignModel();
 	void SetMode( int mode, bool updateTabs = true );
-	void UpdateEntitySel( const eclass_t* ent );
+	void UpdateEntitySel( const eclass_t * ent );
 	void UpdateSelectedEntity();
 	void FillClassList();
 	bool GetSelectAllCriteria( idStr& key, idStr& val );
@@ -76,4 +75,4 @@ public:
 	int prevMode;
 };
 
-extern CInspectorDialog* g_Inspectors;
+extern CInspectorDialog * g_Inspectors;

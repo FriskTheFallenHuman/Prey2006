@@ -29,8 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFBody dialog
 
-class DialogAFBody : public CDialog
-{
+class DialogAFBody : public CDialog {
 
 	DECLARE_DYNAMIC( DialogAFBody )
 
@@ -39,11 +38,11 @@ public:
 	virtual				~DialogAFBody();
 	void				LoadFile( idDeclAF* af );
 	void				SaveFile();
-	void				LoadBody( const char* name );
+	void				LoadBody( const char * name );
 	void				SaveBody();
 	void				UpdateFile();
 
-	DialogAFConstraint* constraintDlg;
+	DialogAFConstraint * constraintDlg;
 
 	enum				{ IDD = IDD_DIALOG_AF_BODY };
 
@@ -109,8 +108,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	idDeclAF* 			file;
-	idDeclAF_Body* 		body;
+	idDeclAF 	*		file;
+	idDeclAF_Body 	*	body;
 	int					numJoints;
 
 	//{{AFX_DATA(DialogAFBody)

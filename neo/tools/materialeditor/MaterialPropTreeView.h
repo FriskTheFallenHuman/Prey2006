@@ -37,8 +37,7 @@ If you have questions concerning this license or the applicable additional terms
 /**
 * View that displays material and stage properties and allows the user to edit the properties.
 */
-class MaterialPropTreeView : public CPropTreeView, public MaterialView
-{
+class MaterialPropTreeView : public CPropTreeView, public MaterialView {
 
 public:
 	virtual				~MaterialPropTreeView();
@@ -59,15 +58,15 @@ protected:
 	afx_msg void		OnPropertyItemExpanding( NMHDR* nmhdr, LRESULT* lresult );
 	DECLARE_MESSAGE_MAP()
 
-	MaterialDef*		FindDefForTreeID( UINT treeID );
+	MaterialDef	*	FindDefForTreeID( UINT treeID );
 	void				RefreshProperties();
 
 protected:
 
-	MaterialDoc*		currentMaterial;
+	MaterialDoc	*	currentMaterial;
 	int					currentListType;
 	int					currentStage;
-	MaterialDefList*	currentPropDefs;
+	MaterialDefList	* currentPropDefs;
 	rvRegistryOptions	registry;
 	bool				internalChange;
 };

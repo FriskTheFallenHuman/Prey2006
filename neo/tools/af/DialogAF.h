@@ -37,8 +37,7 @@ class DialogAFConstraint;
 
 // DialogAF dialog
 
-class DialogAF : public CDialog
-{
+class DialogAF : public CDialog {
 
 	DECLARE_DYNAMIC( DialogAF )
 
@@ -73,14 +72,14 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	CTabCtrl* 			wndTabs;
-	CWnd* 				wndTabDisplay;
-	DialogAFView* 		viewDlg;
-	DialogAFProperties* propertiesDlg;
-	DialogAFBody* 		bodyDlg;
-	DialogAFConstraint* constraintDlg;
+	CTabCtrl 	*		wndTabs;
+	CWnd 		*		wndTabDisplay;
+	DialogAFView 	*	viewDlg;
+	DialogAFProperties * propertiesDlg;
+	DialogAFBody 	*	bodyDlg;
+	DialogAFConstraint * constraintDlg;
 
-	idDeclAF* 			file;				// file being edited
+	idDeclAF 	*		file;				// file being edited
 
 	//{{AFX_DATA(DialogAF)
 	CComboBox			AFList;				// list with .af files
@@ -90,7 +89,7 @@ private:
 
 private:
 	void				InitAFList();
-	void				AddTabItem( int id, const char* name );
+	void				AddTabItem( int id, const char * name );
 	void				SetTab( int id );
 	void				SetTabChildPos();
 };

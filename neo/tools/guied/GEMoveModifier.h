@@ -28,11 +28,10 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef GEMOVEMODIFIER_H_
 #define GEMOVEMODIFIER_H_
 
-class rvGEMoveModifier : public rvGEModifier
-{
+class rvGEMoveModifier : public rvGEModifier {
 public:
 
-	rvGEMoveModifier( const char* name, idWindow* window, float x, float y );
+	rvGEMoveModifier( const char * name, idWindow* window, float x, float y );
 
 	virtual bool		CanMerge( rvGEModifier* merge );
 	virtual bool		Merge( rvGEModifier* merge );
@@ -48,8 +47,7 @@ protected:
 	idRectangle		mOldRect;
 };
 
-ID_INLINE bool rvGEMoveModifier::CanMerge( rvGEModifier* merge )
-{
+ID_INLINE bool rvGEMoveModifier::CanMerge( rvGEModifier* merge ) {
 	return true;
 }
 

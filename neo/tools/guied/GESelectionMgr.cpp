@@ -39,8 +39,7 @@ If you have questions concerning this license or the applicable additional terms
 #define GUIED_GRABSIZE		7
 #define GUIED_CENTERSIZE	5
 
-rvGESelectionMgr::rvGESelectionMgr( )
-{
+rvGESelectionMgr::rvGESelectionMgr( ) {
 	mWorkspace = NULL;
 }
 
@@ -51,8 +50,7 @@ rvGESelectionMgr::SetSelection
 Sets the only selection for the workspace to the given window
 ================
 */
-void rvGESelectionMgr::Set( idWindow* window )
-{
+void rvGESelectionMgr::Set( idWindow* window ) {
 	// Get rid of any current selections
 	Clear( );
 
@@ -67,16 +65,14 @@ rvGESelectionMgr::Add
 Adds the given window to the selection list
 ================
 */
-void rvGESelectionMgr::Add( idWindow* window, bool expand )
-{
+void rvGESelectionMgr::Add( idWindow* window, bool expand ) {
 	rvGEWindowWrapper* wrapper;
 
 	wrapper = rvGEWindowWrapper::GetWrapper( window );
 	assert( wrapper );
 
 	// If the window is already selected then dont add the selection
-	if( wrapper->IsSelected( ) )
-	{
+	if ( wrapper->IsSelected( ) ) {
 		return;
 	}
 
@@ -84,8 +80,7 @@ void rvGESelectionMgr::Add( idWindow* window, bool expand )
 
 	mSelections.Append( window );
 
-	if( expand && wrapper->Expand( ) )
-	{
+	if ( expand && wrapper->Expand( ) ) {
 		gApp.GetNavigator( ).Update( );
 	}
 
@@ -106,16 +101,14 @@ rvGESelectionMgr::RemoveSelection
 Removes the selection from the current workspace
 ================
 */
-void rvGESelectionMgr::Remove( idWindow* window )
-{
+void rvGESelectionMgr::Remove( idWindow* window ) {
 	rvGEWindowWrapper* wrapper;
 
 	wrapper = rvGEWindowWrapper::GetWrapper( window );
 	assert( wrapper );
 
 	// Dont bother if the window isnt selectd already
-	if( !wrapper->IsSelected( ) )
-	{
+	if ( !wrapper->IsSelected( ) ) {
 		return;
 	}
 
@@ -142,17 +135,14 @@ rvGESelectionMgr::ClearSelections
 Remove all of the current selections
 ================
 */
-void rvGESelectionMgr::Clear()
-{
+void rvGESelectionMgr::Clear() {
 	int i;
 
-	if( mSelections.Num() > 0 )
-	{
+	if ( mSelections.Num() > 0 ) {
 		GEItescriptsDlg_Apply( gApp.GetScriptWindow() );
 	}
 
-	for( i = 0; i < mSelections.Num( ); i ++ )
-	{
+	for ( i = 0; i < mSelections.Num( ); i ++ ) {
 		rvGEWindowWrapper::GetWrapper( mSelections[i] )->SetSelected( false );
 	}
 
@@ -175,10 +165,8 @@ rvGESelectionMgr::Render
 Render the selections including the move/size bars
 ================
 */
-void rvGESelectionMgr::Render()
-{
-	if( !mSelections.Num( ) )
-	{
+void rvGESelectionMgr::Render() {
+	if ( !mSelections.Num( ) ) {
 		return;
 	}
 
@@ -202,8 +190,7 @@ void rvGESelectionMgr::Render()
 	qglColor4f( color[0], color[1], color[2], 0.75f );
 
 	int i;
-	for( i = 0; i < mSelections.Num(); i ++ )
-	{
+	for ( i = 0; i < mSelections.Num(); i ++ ) {
 		rvGEWindowWrapper*	wrapper;
 		idRectangle			rect;
 
@@ -213,8 +200,7 @@ void rvGESelectionMgr::Render()
 		rect = wrapper->GetScreenRect( );
 		mWorkspace->WorkspaceToWindow( rect );
 
-		if( i == 0 )
-		{
+		if ( i == 0 ) {
 			qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 			qglBegin( GL_TRIANGLES );
 			qglVertex2f( rect.x, rect.y );
@@ -240,8 +226,7 @@ void rvGESelectionMgr::Render()
 		qglEnd( );
 	}
 
-	if( mExpression )
-	{
+	if ( mExpression ) {
 		return;
 	}
 
@@ -310,15 +295,13 @@ rvGESelectionMgr::UpdateRectangle
 Update the selection rectangle from all the currently selected items.
 ================
 */
-void rvGESelectionMgr::UpdateRectangle()
-{
+void rvGESelectionMgr::UpdateRectangle() {
 	int		i;
 	idVec2	point;
 
 	assert( mWorkspace );
 
-	if( mSelections.Num( ) <= 0 )
-	{
+	if ( mSelections.Num( ) <= 0 ) {
 		return;
 	}
 
@@ -331,8 +314,7 @@ void rvGESelectionMgr::UpdateRectangle()
 	mRect.h += mRect.y;
 
 	// Merge all the rest of the rectangles to make the actual selection rectangle
-	for( i = 1; i < mSelections.Num(); i ++ )
-	{
+	for ( i = 1; i < mSelections.Num(); i ++ ) {
 		idRectangle selRect;
 		selRect = rvGEWindowWrapper::GetWrapper( mSelections[i] )->GetScreenRect( );
 
@@ -355,17 +337,14 @@ rvGESelectionMgr::UpdateExpression
 Update whether or not the selection has an expression in it
 ================
 */
-void rvGESelectionMgr::UpdateExpression()
-{
+void rvGESelectionMgr::UpdateExpression() {
 	int i;
 
 	mExpression = false;
-	for( i = 0; i < mSelections.Num(); i ++ )
-	{
+	for ( i = 0; i < mSelections.Num(); i ++ ) {
 		rvGEWindowWrapper* wrapper;
 		wrapper = rvGEWindowWrapper::GetWrapper( mSelections[i] );
-		if( wrapper && !wrapper->CanMoveAndSize( ) )
-		{
+		if ( wrapper && !wrapper->CanMoveAndSize( ) ) {
 			mExpression = true;
 			break;
 		}
@@ -380,71 +359,59 @@ Test to see if the given coordinate is within the selection rectangle and if it 
 see what its over.
 ================
 */
-rvGESelectionMgr::EHitTest rvGESelectionMgr::HitTest( float x, float y )
-{
-	if( !mSelections.Num( ) )
-	{
+rvGESelectionMgr::EHitTest rvGESelectionMgr::HitTest( float x, float y ) {
+	if ( !mSelections.Num( ) ) {
 		return HT_NONE;
 	}
 
 	UpdateRectangle( );
 
 	// Inside the rectangle is moving
-	if( mRect.Contains( x, y ) )
-	{
+	if ( mRect.Contains( x, y ) ) {
 		return mExpression ? HT_SELECT : HT_MOVE;
 	}
 
-	if( mExpression )
-	{
+	if ( mExpression ) {
 		return HT_NONE;
 	}
 
 	// Check for top left sizing
-	if( idRectangle( mRect.x - GUIED_GRABSIZE, mRect.y - GUIED_GRABSIZE, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) )
-	{
+	if ( idRectangle( mRect.x - GUIED_GRABSIZE, mRect.y - GUIED_GRABSIZE, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) ) {
 		return HT_SIZE_TOPLEFT;
 	}
 
 	// Check for left sizing
-	if( idRectangle( mRect.x - GUIED_GRABSIZE, mRect.y + mRect.h / 2 - GUIED_GRABSIZE / 2, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) )
-	{
+	if ( idRectangle( mRect.x - GUIED_GRABSIZE, mRect.y + mRect.h / 2 - GUIED_GRABSIZE / 2, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) ) {
 		return HT_SIZE_LEFT;
 	}
 
 	// Check for bottom left sizing
-	if( idRectangle( mRect.x - GUIED_GRABSIZE, mRect.y + mRect.h, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) )
-	{
+	if ( idRectangle( mRect.x - GUIED_GRABSIZE, mRect.y + mRect.h, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) ) {
 		return HT_SIZE_BOTTOMLEFT;
 	}
 
 	// Check for bottom sizing
-	if( idRectangle( mRect.x + mRect.w / 2 - GUIED_GRABSIZE / 2, mRect.y + mRect.h, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) )
-	{
+	if ( idRectangle( mRect.x + mRect.w / 2 - GUIED_GRABSIZE / 2, mRect.y + mRect.h, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) ) {
 		return HT_SIZE_BOTTOM;
 	}
 
 	// Check for bottom right sizing
-	if( idRectangle( mRect.x + mRect.w, mRect.y + mRect.h, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) )
-	{
+	if ( idRectangle( mRect.x + mRect.w, mRect.y + mRect.h, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) ) {
 		return HT_SIZE_BOTTOMRIGHT;
 	}
 
 	// Check for right sizing
-	if( idRectangle( mRect.x + mRect.w, mRect.y + mRect.h / 2 - GUIED_GRABSIZE / 2, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) )
-	{
+	if ( idRectangle( mRect.x + mRect.w, mRect.y + mRect.h / 2 - GUIED_GRABSIZE / 2, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) ) {
 		return HT_SIZE_RIGHT;
 	}
 
 	// Check for top right sizing
-	if( idRectangle( mRect.x + mRect.w, mRect.y - GUIED_GRABSIZE, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) )
-	{
+	if ( idRectangle( mRect.x + mRect.w, mRect.y - GUIED_GRABSIZE, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) ) {
 		return HT_SIZE_TOPRIGHT;
 	}
 
 	// Check for top sizing
-	if( idRectangle( mRect.x + mRect.w / 2 - GUIED_GRABSIZE / 2, mRect.y - GUIED_GRABSIZE, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) )
-	{
+	if ( idRectangle( mRect.x + mRect.w / 2 - GUIED_GRABSIZE / 2, mRect.y - GUIED_GRABSIZE, GUIED_GRABSIZE, GUIED_GRABSIZE ).Contains( x, y ) ) {
 		return HT_SIZE_TOP;
 	}
 
@@ -458,8 +425,7 @@ rvGESelectionMgr::GetBottomMost
 Returns the bottom most selected window.
 ================
 */
-idWindow* rvGESelectionMgr::GetBottomMost()
-{
+idWindow * rvGESelectionMgr::GetBottomMost() {
 	idWindow*	bottom;
 	int			depth;
 	int			i;
@@ -468,17 +434,15 @@ idWindow* rvGESelectionMgr::GetBottomMost()
 	bottom = NULL;
 
 	// Loop through all the selections and find the bottom most window
-	for( i = 0; i < mSelections.Num(); i ++ )
-	{
+	for ( i = 0; i < mSelections.Num(); i ++ ) {
 		idWindow* parent;
 		int		  tempDepth;
 
 		// Calculate the depth of the window by iterating back through the windows parents
-		for( tempDepth = 0, parent = mSelections[i]; parent; parent = parent->GetParent( ), tempDepth++ );
+		for ( tempDepth = 0, parent = mSelections[i]; parent; parent = parent->GetParent( ), tempDepth++ );
 
 		// If the new depth is less than the current depth then this window is below
-		if( tempDepth < depth )
-		{
+		if ( tempDepth < depth ) {
 			depth  = tempDepth;
 			bottom = mSelections[i];
 		}

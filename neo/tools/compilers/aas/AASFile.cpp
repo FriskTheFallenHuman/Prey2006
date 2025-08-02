@@ -45,8 +45,7 @@ If you have questions concerning this license or the applicable additional terms
 Reachability_Write
 ================
 */
-bool Reachability_Write( idFile* fp, idReachability* reach )
-{
+bool Reachability_Write( idFile* fp, idReachability* reach ) {
 	fp->WriteFloatString( "\t\t%d %d (%f %f %f) (%f %f %f) %d %d",
 						  ( int ) reach->travelType, ( int ) reach->toAreaNum, reach->start.x, reach->start.y, reach->start.z,
 						  reach->end.x, reach->end.y, reach->end.z, reach->edgeNum, ( int ) reach->travelTime );
@@ -58,8 +57,7 @@ bool Reachability_Write( idFile* fp, idReachability* reach )
 Reachability_Read
 ================
 */
-bool Reachability_Read( idLexer& src, idReachability* reach )
-{
+bool Reachability_Read( idLexer& src, idReachability* reach ) {
 	reach->travelType = src.ParseInt();
 	reach->toAreaNum = src.ParseInt();
 	src.Parse1DMatrix( 3, reach->start.ToFloatPtr() );
@@ -74,8 +72,7 @@ bool Reachability_Read( idLexer& src, idReachability* reach )
 idReachability::CopyBase
 ================
 */
-void idReachability::CopyBase( idReachability& reach )
-{
+void idReachability::CopyBase( idReachability& reach ) {
 	travelType = reach.travelType;
 	toAreaNum = reach.toAreaNum;
 	start = reach.start;
@@ -98,14 +95,12 @@ void idReachability::CopyBase( idReachability& reach )
 Reachability_Special_Write
 ================
 */
-bool Reachability_Special_Write( idFile* fp, idReachability_Special* reach )
-{
+bool Reachability_Special_Write( idFile* fp, idReachability_Special* reach ) {
 	int i;
 	const idKeyValue* keyValue;
 
 	fp->WriteFloatString( "\n\t\t{\n" );
-	for( i = 0; i < reach->dict.GetNumKeyVals(); i++ )
-	{
+	for ( i = 0; i < reach->dict.GetNumKeyVals(); i++ ) {
 		keyValue = reach->dict.GetKeyVal( i );
 		fp->WriteFloatString( "\t\t\t\"%s\" \"%s\"\n", keyValue->GetKey().c_str(), keyValue->GetValue().c_str() );
 	}
@@ -119,15 +114,12 @@ bool Reachability_Special_Write( idFile* fp, idReachability_Special* reach )
 Reachability_Special_Read
 ================
 */
-bool Reachability_Special_Read( idLexer& src, idReachability_Special* reach )
-{
+bool Reachability_Special_Read( idLexer& src, idReachability_Special* reach ) {
 	idToken key, value;
 
 	src.ExpectTokenString( "{" );
-	while( src.ReadToken( &key ) )
-	{
-		if( key == "}" )
-		{
+	while ( src.ReadToken( &key ) ) {
+		if ( key == "}" ) {
 			return true;
 		}
 		src.ExpectTokenType( TT_STRING, 0, &value );
@@ -149,8 +141,7 @@ bool Reachability_Special_Read( idLexer& src, idReachability_Special* reach )
 idAASSettings::idAASSettings
 ============
 */
-idAASSettings::idAASSettings( void )
-{
+idAASSettings::idAASSettings( void ) {
 	numBoundingBoxes = 1;
 	boundingBoxes[0] = idBounds( idVec3( -16, -16, 0 ), idVec3( 16, 16, 72 ) );
 	usePatches = false;
@@ -182,10 +173,8 @@ idAASSettings::idAASSettings( void )
 idAASSettings::ParseBool
 ============
 */
-bool idAASSettings::ParseBool( idLexer& src, bool& b )
-{
-	if( !src.ExpectTokenString( "=" ) )
-	{
+bool idAASSettings::ParseBool( idLexer& src, bool& b ) {
+	if ( !src.ExpectTokenString( "=" ) ) {
 		return false;
 	}
 	b = src.ParseBool();
@@ -197,10 +186,8 @@ bool idAASSettings::ParseBool( idLexer& src, bool& b )
 idAASSettings::ParseInt
 ============
 */
-bool idAASSettings::ParseInt( idLexer& src, int& i )
-{
-	if( !src.ExpectTokenString( "=" ) )
-	{
+bool idAASSettings::ParseInt( idLexer& src, int & i ) {
+	if ( !src.ExpectTokenString( "=" ) ) {
 		return false;
 	}
 	i = src.ParseInt();
@@ -212,10 +199,8 @@ bool idAASSettings::ParseInt( idLexer& src, int& i )
 idAASSettings::ParseFloat
 ============
 */
-bool idAASSettings::ParseFloat( idLexer& src, float& f )
-{
-	if( !src.ExpectTokenString( "=" ) )
-	{
+bool idAASSettings::ParseFloat( idLexer& src, float & f ) {
+	if ( !src.ExpectTokenString( "=" ) ) {
 		return false;
 	}
 	f = src.ParseFloat();
@@ -227,10 +212,8 @@ bool idAASSettings::ParseFloat( idLexer& src, float& f )
 idAASSettings::ParseVector
 ============
 */
-bool idAASSettings::ParseVector( idLexer& src, idVec3& vec )
-{
-	if( !src.ExpectTokenString( "=" ) )
-	{
+bool idAASSettings::ParseVector( idLexer& src, idVec3& vec ) {
+	if ( !src.ExpectTokenString( "=" ) ) {
 		return false;
 	}
 	return ( src.Parse1DMatrix( 3, vec.ToFloatPtr() ) != 0 );
@@ -241,27 +224,22 @@ bool idAASSettings::ParseVector( idLexer& src, idVec3& vec )
 idAASSettings::ParseBBoxes
 ============
 */
-bool idAASSettings::ParseBBoxes( idLexer& src )
-{
+bool idAASSettings::ParseBBoxes( idLexer& src ) {
 	idToken token;
 	idBounds bounds;
 
 	numBoundingBoxes = 0;
 
-	if( !src.ExpectTokenString( "{" ) )
-	{
+	if ( !src.ExpectTokenString( "{" ) ) {
 		return false;
 	}
-	while( src.ReadToken( &token ) )
-	{
-		if( token == "}" )
-		{
+	while ( src.ReadToken( &token ) ) {
+		if ( token == "}" ) {
 			return true;
 		}
 		src.UnreadToken( &token );
 		src.Parse1DMatrix( 3, bounds[0].ToFloatPtr() );
-		if( !src.ExpectTokenString( "-" ) )
-		{
+		if ( !src.ExpectTokenString( "-" ) ) {
 			return false;
 		}
 		src.Parse1DMatrix( 3, bounds[1].ToFloatPtr() );
@@ -276,154 +254,98 @@ bool idAASSettings::ParseBBoxes( idLexer& src )
 idAASSettings::FromParser
 ============
 */
-bool idAASSettings::FromParser( idLexer& src )
-{
+bool idAASSettings::FromParser( idLexer& src ) {
 	idToken token;
 
-	if( !src.ExpectTokenString( "{" ) )
-	{
+	if ( !src.ExpectTokenString( "{" ) ) {
 		return false;
 	}
 
 	// parse the file
-	while( 1 )
-	{
-		if( !src.ReadToken( &token ) )
-		{
+	while ( 1 ) {
+		if ( !src.ReadToken( &token ) ) {
 			break;
 		}
 
-		if( token == "}" )
-		{
+		if ( token == "}" ) {
 			break;
 		}
 
-		if( token == "bboxes" )
-		{
-			if( !ParseBBoxes( src ) )
-			{
+		if ( token == "bboxes" ) {
+			if ( !ParseBBoxes( src ) ) {
 				return false;
 			}
-		}
-		else if( token == "usePatches" )
-		{
-			if( !ParseBool( src, usePatches ) )
-			{
+		} else if ( token == "usePatches" ) {
+			if ( !ParseBool( src, usePatches ) ) {
 				return false;
 			}
-		}
-		else if( token == "writeBrushMap" )
-		{
-			if( !ParseBool( src, writeBrushMap ) )
-			{
+		} else if ( token == "writeBrushMap" ) {
+			if ( !ParseBool( src, writeBrushMap ) ) {
 				return false;
 			}
-		}
-		else if( token == "playerFlood" )
-		{
-			if( !ParseBool( src, playerFlood ) )
-			{
+		} else if ( token == "playerFlood" ) {
+			if ( !ParseBool( src, playerFlood ) ) {
 				return false;
 			}
-		}
-		else if( token == "allowSwimReachabilities" )
-		{
-			if( !ParseBool( src, allowSwimReachabilities ) )
-			{
+		} else if ( token == "allowSwimReachabilities" ) {
+			if ( !ParseBool( src, allowSwimReachabilities ) ) {
 				return false;
 			}
-		}
-		else if( token == "allowFlyReachabilities" )
-		{
-			if( !ParseBool( src, allowFlyReachabilities ) )
-			{
+		} else if ( token == "allowFlyReachabilities" ) {
+			if ( !ParseBool( src, allowFlyReachabilities ) ) {
 				return false;
 			}
-		}
-		else if( token == "fileExtension" )
-		{
+		} else if ( token == "fileExtension" ) {
 			src.ExpectTokenString( "=" );
 			src.ExpectTokenType( TT_STRING, 0, &token );
 			fileExtension = token;
-		}
-		else if( token == "gravity" )
-		{
+		} else if ( token == "gravity" ) {
 			ParseVector( src, gravity );
 			gravityDir = gravity;
 			gravityValue = gravityDir.Normalize();
 			invGravityDir = -gravityDir;
-		}
-		else if( token == "maxStepHeight" )
-		{
-			if( !ParseFloat( src, maxStepHeight ) )
-			{
+		} else if ( token == "maxStepHeight" ) {
+			if ( !ParseFloat( src, maxStepHeight ) ) {
 				return false;
 			}
-		}
-		else if( token == "maxBarrierHeight" )
-		{
-			if( !ParseFloat( src, maxBarrierHeight ) )
-			{
+		} else if ( token == "maxBarrierHeight" ) {
+			if ( !ParseFloat( src, maxBarrierHeight ) ) {
 				return false;
 			}
-		}
-		else if( token == "maxWaterJumpHeight" )
-		{
-			if( !ParseFloat( src, maxWaterJumpHeight ) )
-			{
+		} else if ( token == "maxWaterJumpHeight" ) {
+			if ( !ParseFloat( src, maxWaterJumpHeight ) ) {
 				return false;
 			}
-		}
-		else if( token == "maxFallHeight" )
-		{
-			if( !ParseFloat( src, maxFallHeight ) )
-			{
+		} else if ( token == "maxFallHeight" ) {
+			if ( !ParseFloat( src, maxFallHeight ) ) {
 				return false;
 			}
-		}
-		else if( token == "minFloorCos" )
-		{
-			if( !ParseFloat( src, minFloorCos ) )
-			{
+		} else if ( token == "minFloorCos" ) {
+			if ( !ParseFloat( src, minFloorCos ) ) {
 				return false;
 			}
-		}
-		else if( token == "tt_barrierJump" )
-		{
-			if( !ParseInt( src, tt_barrierJump ) )
-			{
+		} else if ( token == "tt_barrierJump" ) {
+			if ( !ParseInt( src, tt_barrierJump ) ) {
 				return false;
 			}
-		}
-		else if( token == "tt_startCrouching" )
-		{
-			if( !ParseInt( src, tt_startCrouching ) )
-			{
+		} else if ( token == "tt_startCrouching" ) {
+			if ( !ParseInt( src, tt_startCrouching ) ) {
 				return false;
 			}
-		}
-		else if( token == "tt_waterJump" )
-		{
-			if( !ParseInt( src, tt_waterJump ) )
-			{
+		} else if ( token == "tt_waterJump" ) {
+			if ( !ParseInt( src, tt_waterJump ) ) {
 				return false;
 			}
-		}
-		else if( token == "tt_startWalkOffLedge" )
-		{
-			if( !ParseInt( src, tt_startWalkOffLedge ) )
-			{
+		} else if ( token == "tt_startWalkOffLedge" ) {
+			if ( !ParseInt( src, tt_startWalkOffLedge ) ) {
 				return false;
 			}
-		}
-		else
-		{
+		} else {
 			src.Error( "invalid token '%s'", token.c_str() );
 		}
 	}
 
-	if( numBoundingBoxes <= 0 )
-	{
+	if ( numBoundingBoxes <= 0 ) {
 		src.Error( "no valid bounding box" );
 	}
 
@@ -435,8 +357,7 @@ bool idAASSettings::FromParser( idLexer& src )
 idAASSettings::FromFile
 ============
 */
-bool idAASSettings::FromFile( const idStr& fileName )
-{
+bool idAASSettings::FromFile( const idStr& fileName ) {
 	idLexer src( LEXFL_ALLOWPATHNAMES | LEXFL_NOSTRINGESCAPECHARS | LEXFL_NOSTRINGCONCAT );
 	idStr name;
 
@@ -444,20 +365,17 @@ bool idAASSettings::FromFile( const idStr& fileName )
 
 	common->Printf( "loading %s\n", name.c_str() );
 
-	if( !src.LoadFile( name ) )
-	{
+	if ( !src.LoadFile( name ) ) {
 		common->Error( "WARNING: couldn't load %s\n", name.c_str() );
 		return false;
 	}
 
-	if( !src.ExpectTokenString( "settings" ) )
-	{
+	if ( !src.ExpectTokenString( "settings" ) ) {
 		common->Error( "%s is not a settings file", name.c_str() );
 		return false;
 	}
 
-	if( !FromParser( src ) )
-	{
+	if ( !FromParser( src ) ) {
 		common->Error( "failed to parse %s", name.c_str() );
 		return false;
 	}
@@ -470,102 +388,83 @@ bool idAASSettings::FromFile( const idStr& fileName )
 idAASSettings::FromDict
 ============
 */
-bool idAASSettings::FromDict( const char* name, const idDict* dict )
-{
+bool idAASSettings::FromDict( const char * name, const idDict* dict ) {
 	idBounds bounds;
 
-	if( !dict->GetVector( "mins", "0 0 0", bounds[ 0 ] ) )
-	{
+	if ( !dict->GetVector( "mins", "0 0 0", bounds[ 0 ] ) ) {
 		common->Error( "Missing 'mins' in entityDef '%s'", name );
 	}
-	if( !dict->GetVector( "maxs", "0 0 0", bounds[ 1 ] ) )
-	{
+	if ( !dict->GetVector( "maxs", "0 0 0", bounds[ 1 ] ) ) {
 		common->Error( "Missing 'maxs' in entityDef '%s'", name );
 	}
 
 	numBoundingBoxes = 1;
 	boundingBoxes[0] = bounds;
 
-	if( !dict->GetBool( "usePatches", "0", usePatches ) )
-	{
+	if ( !dict->GetBool( "usePatches", "0", usePatches ) ) {
 		common->Error( "Missing 'usePatches' in entityDef '%s'", name );
 	}
 
-	if( !dict->GetBool( "writeBrushMap", "0", writeBrushMap ) )
-	{
+	if ( !dict->GetBool( "writeBrushMap", "0", writeBrushMap ) ) {
 		common->Error( "Missing 'writeBrushMap' in entityDef '%s'", name );
 	}
 
-	if( !dict->GetBool( "playerFlood", "0", playerFlood ) )
-	{
+	if ( !dict->GetBool( "playerFlood", "0", playerFlood ) ) {
 		common->Error( "Missing 'playerFlood' in entityDef '%s'", name );
 	}
 
-	if( !dict->GetBool( "allowSwimReachabilities", "0", allowSwimReachabilities ) )
-	{
+	if ( !dict->GetBool( "allowSwimReachabilities", "0", allowSwimReachabilities ) ) {
 		common->Error( "Missing 'allowSwimReachabilities' in entityDef '%s'", name );
 	}
 
-	if( !dict->GetBool( "allowFlyReachabilities", "0", allowFlyReachabilities ) )
-	{
+	if ( !dict->GetBool( "allowFlyReachabilities", "0", allowFlyReachabilities ) ) {
 		common->Error( "Missing 'allowFlyReachabilities' in entityDef '%s'", name );
 	}
 
-	if( !dict->GetString( "fileExtension", "", fileExtension ) )
-	{
+	if ( !dict->GetString( "fileExtension", "", fileExtension ) ) {
 		common->Error( "Missing 'fileExtension' in entityDef '%s'", name );
 	}
 
-	if( !dict->GetVector( "gravity", "0 0 -1066", gravity ) )
-	{
+	if ( !dict->GetVector( "gravity", "0 0 -1066", gravity ) ) {
 		common->Error( "Missing 'gravity' in entityDef '%s'", name );
 	}
 	gravityDir = gravity;
 	gravityValue = gravityDir.Normalize();
 	invGravityDir = -gravityDir;
 
-	if( !dict->GetFloat( "maxStepHeight", "0", maxStepHeight ) )
-	{
+	if ( !dict->GetFloat( "maxStepHeight", "0", maxStepHeight ) ) {
 		common->Error( "Missing 'maxStepHeight' in entityDef '%s'", name );
 	}
 
-	if( !dict->GetFloat( "maxBarrierHeight", "0", maxBarrierHeight ) )
-	{
+	if ( !dict->GetFloat( "maxBarrierHeight", "0", maxBarrierHeight ) ) {
 		common->Error( "Missing 'maxBarrierHeight' in entityDef '%s'", name );
 	}
 
-	if( !dict->GetFloat( "maxWaterJumpHeight", "0", maxWaterJumpHeight ) )
-	{
+	if ( !dict->GetFloat( "maxWaterJumpHeight", "0", maxWaterJumpHeight ) ) {
 		common->Error( "Missing 'maxWaterJumpHeight' in entityDef '%s'", name );
 	}
 
-	if( !dict->GetFloat( "maxFallHeight", "0", maxFallHeight ) )
-	{
+	if ( !dict->GetFloat( "maxFallHeight", "0", maxFallHeight ) ) {
 		common->Error( "Missing 'maxFallHeight' in entityDef '%s'", name );
 	}
 
-	if( !dict->GetFloat( "minFloorCos", "0", minFloorCos ) )
-	{
+	if ( !dict->GetFloat( "minFloorCos", "0", minFloorCos ) ) {
 		common->Error( "Missing 'minFloorCos' in entityDef '%s'", name );
 	}
 
-	if( !dict->GetInt( "tt_barrierJump", "0", tt_barrierJump ) )
-	{
+	if ( !dict->GetInt( "tt_barrierJump", "0", tt_barrierJump ) ) {
 		common->Error( "Missing 'tt_barrierJump' in entityDef '%s'", name );
 	}
 
-	if( !dict->GetInt( "tt_startCrouching", "0", tt_startCrouching ) )
-	{
+	if ( !dict->GetInt( "tt_startCrouching", "0", tt_startCrouching ) ) {
 		common->Error( "Missing 'tt_startCrouching' in entityDef '%s'", name );
 	}
 
-	if( !dict->GetInt( "tt_waterJump", "0", tt_waterJump ) )
-	{
+	if ( !dict->GetInt( "tt_waterJump", "0", tt_waterJump ) ) {
 		common->Error( "Missing 'tt_waterJump' in entityDef '%s'", name );
 	}
 
-	if( !dict->GetInt( "tt_startWalkOffLedge", "0", tt_startWalkOffLedge ) )
-	{
+	if ( !dict->GetInt( "tt_startWalkOffLedge", "0", tt_startWalkOffLedge ) ) {
 		common->Error( "Missing 'tt_startWalkOffLedge' in entityDef '%s'", name );
 	}
 
@@ -578,14 +477,12 @@ bool idAASSettings::FromDict( const char* name, const idDict* dict )
 idAASSettings::WriteToFile
 ============
 */
-bool idAASSettings::WriteToFile( idFile* fp ) const
-{
+bool idAASSettings::WriteToFile( idFile* fp ) const {
 	int i;
 
 	fp->WriteFloatString( "{\n" );
 	fp->WriteFloatString( "\tbboxes\n\t{\n" );
-	for( i = 0; i < numBoundingBoxes; i++ )
-	{
+	for ( i = 0; i < numBoundingBoxes; i++ ) {
 		fp->WriteFloatString( "\t\t(%f %f %f)-(%f %f %f)\n", boundingBoxes[i][0].x, boundingBoxes[i][0].y,
 							  boundingBoxes[i][0].z, boundingBoxes[i][1].x, boundingBoxes[i][1].y, boundingBoxes[i][1].z );
 	}
@@ -615,18 +512,14 @@ bool idAASSettings::WriteToFile( idFile* fp ) const
 idAASSettings::ValidForBounds
 ============
 */
-bool idAASSettings::ValidForBounds( const idBounds& bounds ) const
-{
+bool idAASSettings::ValidForBounds( const idBounds& bounds ) const {
 	int i;
 
-	for( i = 0; i < 3; i++ )
-	{
-		if( bounds[0][i] < boundingBoxes[0][0][i] )
-		{
+	for ( i = 0; i < 3; i++ ) {
+		if ( bounds[0][i] < boundingBoxes[0][0][i] ) {
 			return false;
 		}
-		if( bounds[1][i] > boundingBoxes[0][1][i] )
-		{
+		if ( bounds[1][i] > boundingBoxes[0][1][i] ) {
 			return false;
 		}
 	}
@@ -638,35 +531,27 @@ bool idAASSettings::ValidForBounds( const idBounds& bounds ) const
 idAASSettings::ValidEntity
 ============
 */
-bool idAASSettings::ValidEntity( const char* classname ) const
-{
+bool idAASSettings::ValidEntity( const char * classname ) const {
 	idStr			use_aas;
 	idVec3			size;
 	idBounds		bounds;
 
-	if( playerFlood )
-	{
-		if( !strcmp( classname, "info_player_start" ) || !strcmp( classname , "info_player_deathmatch" ) || !strcmp( classname, "func_teleporter" ) )
-		{
+	if ( playerFlood ) {
+		if ( !strcmp( classname, "info_player_start" ) || !strcmp( classname, "info_player_deathmatch" ) || !strcmp( classname, "func_teleporter" ) ) {
 			return true;
 		}
 	}
 
-	const idDeclEntityDef* decl = static_cast<const idDeclEntityDef*>( declManager->FindType( DECL_ENTITYDEF, classname, false ) );
-	if( decl && decl->dict.GetString( "use_aas", NULL, use_aas ) && !fileExtension.Icmp( use_aas ) )
-	{
-		if( decl->dict.GetVector( "mins", NULL, bounds[0] ) )
-		{
+	const idDeclEntityDef* decl = static_cast<const idDeclEntityDef *>( declManager->FindType( DECL_ENTITYDEF, classname, false ) );
+	if ( decl && decl->dict.GetString( "use_aas", NULL, use_aas ) && !fileExtension.Icmp( use_aas ) ) {
+		if ( decl->dict.GetVector( "mins", NULL, bounds[0] ) ) {
 			decl->dict.GetVector( "maxs", NULL, bounds[1] );
-		}
-		else if( decl->dict.GetVector( "size", NULL, size ) )
-		{
+		} else if ( decl->dict.GetVector( "size", NULL, size ) ) {
 			bounds[ 0 ].Set( size.x * -0.5f, size.y * -0.5f, 0.0f );
 			bounds[ 1 ].Set( size.x * 0.5f, size.y * 0.5f, size.z );
 		}
 
-		if( !ValidForBounds( bounds ) )
-		{
+		if ( !ValidForBounds( bounds ) ) {
 			common->Error( "%s cannot use %s\n", classname, fileExtension.c_str() );
 		}
 
@@ -696,8 +581,7 @@ bool idAASSettings::ValidEntity( const char* classname ) const
 idAASFileLocal::idAASFileLocal
 ================
 */
-idAASFileLocal::idAASFileLocal( void )
-{
+idAASFileLocal::idAASFileLocal( void ) {
 	planeList.SetGranularity( AAS_PLANE_GRANULARITY );
 	vertices.SetGranularity( AAS_VERTEX_GRANULARITY );
 	edges.SetGranularity( AAS_EDGE_GRANULARITY );
@@ -716,15 +600,12 @@ idAASFileLocal::idAASFileLocal( void )
 idAASFileLocal::~idAASFileLocal
 ================
 */
-idAASFileLocal::~idAASFileLocal( void )
-{
+idAASFileLocal::~idAASFileLocal( void ) {
 	int i;
-	idReachability* reach, *next;
+	idReachability* reach, * next;
 
-	for( i = 0; i < areas.Num(); i++ )
-	{
-		for( reach = areas[i].reach; reach; reach = next )
-		{
+	for ( i = 0; i < areas.Num(); i++ ) {
+		for ( reach = areas[i].reach; reach; reach = next ) {
 			next = reach->next;
 			delete reach;
 		}
@@ -736,8 +617,7 @@ idAASFileLocal::~idAASFileLocal( void )
 idAASFileLocal::Clear
 ================
 */
-void idAASFileLocal::Clear( void )
-{
+void idAASFileLocal::Clear( void ) {
 	planeList.Clear();
 	vertices.Clear();
 	edges.Clear();
@@ -756,8 +636,7 @@ void idAASFileLocal::Clear( void )
 idAASFileLocal::Write
 ================
 */
-bool idAASFileLocal::Write( const idStr& fileName, unsigned int mapFileCRC )
-{
+bool idAASFileLocal::Write( const idStr& fileName, unsigned int mapFileCRC ) {
 	int i, num;
 	idFile* aasFile;
 	idReachability* reach;
@@ -769,8 +648,7 @@ bool idAASFileLocal::Write( const idStr& fileName, unsigned int mapFileCRC )
 	crc = mapFileCRC;
 
 	aasFile = fileSystem->OpenFileWrite( fileName, "fs_devpath" );
-	if( !aasFile )
-	{
+	if ( !aasFile ) {
 		common->Error( "Error opening %s", fileName.c_str() );
 		return false;
 	}
@@ -784,8 +662,7 @@ bool idAASFileLocal::Write( const idStr& fileName, unsigned int mapFileCRC )
 
 	// write out planes
 	aasFile->WriteFloatString( "planes %d {\n", planeList.Num() );
-	for( i = 0; i < planeList.Num(); i++ )
-	{
+	for ( i = 0; i < planeList.Num(); i++ ) {
 		aasFile->WriteFloatString( "\t%d ( %f %f %f %f )\n", i,
 								   planeList[i].Normal().x, planeList[i].Normal().y, planeList[i].Normal().z, planeList[i].Dist() );
 	}
@@ -793,32 +670,28 @@ bool idAASFileLocal::Write( const idStr& fileName, unsigned int mapFileCRC )
 
 	// write out vertices
 	aasFile->WriteFloatString( "vertices %d {\n", vertices.Num() );
-	for( i = 0; i < vertices.Num(); i++ )
-	{
+	for ( i = 0; i < vertices.Num(); i++ ) {
 		aasFile->WriteFloatString( "\t%d ( %f %f %f )\n", i, vertices[i].x, vertices[i].y, vertices[i].z );
 	}
 	aasFile->WriteFloatString( "}\n" );
 
 	// write out edges
 	aasFile->WriteFloatString( "edges %d {\n", edges.Num() );
-	for( i = 0; i < edges.Num(); i++ )
-	{
+	for ( i = 0; i < edges.Num(); i++ ) {
 		aasFile->WriteFloatString( "\t%d ( %d %d )\n", i, edges[i].vertexNum[0], edges[i].vertexNum[1] );
 	}
 	aasFile->WriteFloatString( "}\n" );
 
 	// write out edgeIndex
 	aasFile->WriteFloatString( "edgeIndex %d {\n", edgeIndex.Num() );
-	for( i = 0; i < edgeIndex.Num(); i++ )
-	{
+	for ( i = 0; i < edgeIndex.Num(); i++ ) {
 		aasFile->WriteFloatString( "\t%d ( %d )\n", i, edgeIndex[i] );
 	}
 	aasFile->WriteFloatString( "}\n" );
 
 	// write out faces
 	aasFile->WriteFloatString( "faces %d {\n", faces.Num() );
-	for( i = 0; i < faces.Num(); i++ )
-	{
+	for ( i = 0; i < faces.Num(); i++ ) {
 		aasFile->WriteFloatString( "\t%d ( %d %d %d %d %d %d )\n", i, faces[i].planeNum, faces[i].flags,
 								   faces[i].areas[0], faces[i].areas[1], faces[i].firstEdge, faces[i].numEdges );
 	}
@@ -826,29 +699,24 @@ bool idAASFileLocal::Write( const idStr& fileName, unsigned int mapFileCRC )
 
 	// write out faceIndex
 	aasFile->WriteFloatString( "faceIndex %d {\n", faceIndex.Num() );
-	for( i = 0; i < faceIndex.Num(); i++ )
-	{
+	for ( i = 0; i < faceIndex.Num(); i++ ) {
 		aasFile->WriteFloatString( "\t%d ( %d )\n", i, faceIndex[i] );
 	}
 	aasFile->WriteFloatString( "}\n" );
 
 	// write out areas
 	aasFile->WriteFloatString( "areas %d {\n", areas.Num() );
-	for( i = 0; i < areas.Num(); i++ )
-	{
-		for( num = 0, reach = areas[i].reach; reach; reach = reach->next )
-		{
+	for ( i = 0; i < areas.Num(); i++ ) {
+		for ( num = 0, reach = areas[i].reach; reach; reach = reach->next ) {
 			num++;
 		}
 		aasFile->WriteFloatString( "\t%d ( %d %d %d %d %d %d ) %d {\n", i, areas[i].flags, areas[i].contents,
 								   areas[i].firstFace, areas[i].numFaces, areas[i].cluster, areas[i].clusterAreaNum, num );
-		for( reach = areas[i].reach; reach; reach = reach->next )
-		{
+		for ( reach = areas[i].reach; reach; reach = reach->next ) {
 			Reachability_Write( aasFile, reach );
-			switch( reach->travelType )
-			{
+			switch ( reach->travelType ) {
 				case TFL_SPECIAL:
-					Reachability_Special_Write( aasFile, static_cast<idReachability_Special*>( reach ) );
+					Reachability_Special_Write( aasFile, static_cast<idReachability_Special *>( reach ) );
 					break;
 			}
 			aasFile->WriteFloatString( "\n" );
@@ -859,16 +727,14 @@ bool idAASFileLocal::Write( const idStr& fileName, unsigned int mapFileCRC )
 
 	// write out nodes
 	aasFile->WriteFloatString( "nodes %d {\n", nodes.Num() );
-	for( i = 0; i < nodes.Num(); i++ )
-	{
+	for ( i = 0; i < nodes.Num(); i++ ) {
 		aasFile->WriteFloatString( "\t%d ( %d %d %d )\n", i, nodes[i].planeNum, nodes[i].children[0], nodes[i].children[1] );
 	}
 	aasFile->WriteFloatString( "}\n" );
 
 	// write out portals
 	aasFile->WriteFloatString( "portals %d {\n", portals.Num() );
-	for( i = 0; i < portals.Num(); i++ )
-	{
+	for ( i = 0; i < portals.Num(); i++ ) {
 		aasFile->WriteFloatString( "\t%d ( %d %d %d %d %d )\n", i, portals[i].areaNum, portals[i].clusters[0],
 								   portals[i].clusters[1], portals[i].clusterAreaNum[0], portals[i].clusterAreaNum[1] );
 	}
@@ -876,16 +742,14 @@ bool idAASFileLocal::Write( const idStr& fileName, unsigned int mapFileCRC )
 
 	// write out portalIndex
 	aasFile->WriteFloatString( "portalIndex %d {\n", portalIndex.Num() );
-	for( i = 0; i < portalIndex.Num(); i++ )
-	{
+	for ( i = 0; i < portalIndex.Num(); i++ ) {
 		aasFile->WriteFloatString( "\t%d ( %d )\n", i, portalIndex[i] );
 	}
 	aasFile->WriteFloatString( "}\n" );
 
 	// write out clusters
 	aasFile->WriteFloatString( "clusters %d {\n", clusters.Num() );
-	for( i = 0; i < clusters.Num(); i++ )
-	{
+	for ( i = 0; i < clusters.Num(); i++ ) {
 		aasFile->WriteFloatString( "\t%d ( %d %d %d %d )\n", i, clusters[i].numAreas, clusters[i].numReachableAreas,
 								   clusters[i].firstPortal, clusters[i].numPortals );
 	}
@@ -904,27 +768,23 @@ bool idAASFileLocal::Write( const idStr& fileName, unsigned int mapFileCRC )
 idAASFileLocal::ParseIndex
 ================
 */
-bool idAASFileLocal::ParseIndex( idLexer& src, idList<aasIndex_t>& indexes )
-{
+bool idAASFileLocal::ParseIndex( idLexer& src, idList<aasIndex_t> & indexes ) {
 	int numIndexes, i;
 	aasIndex_t index;
 
 	numIndexes = src.ParseInt();
 	indexes.Resize( numIndexes );
-	if( !src.ExpectTokenString( "{" ) )
-	{
+	if ( !src.ExpectTokenString( "{" ) ) {
 		return false;
 	}
-	for( i = 0; i < numIndexes; i++ )
-	{
+	for ( i = 0; i < numIndexes; i++ ) {
 		src.ParseInt();
 		src.ExpectTokenString( "(" );
 		index = src.ParseInt();
 		src.ExpectTokenString( ")" );
 		indexes.Append( index );
 	}
-	if( !src.ExpectTokenString( "}" ) )
-	{
+	if ( !src.ExpectTokenString( "}" ) ) {
 		return false;
 	}
 	return true;
@@ -935,31 +795,26 @@ bool idAASFileLocal::ParseIndex( idLexer& src, idList<aasIndex_t>& indexes )
 idAASFileLocal::ParsePlanes
 ================
 */
-bool idAASFileLocal::ParsePlanes( idLexer& src )
-{
+bool idAASFileLocal::ParsePlanes( idLexer& src ) {
 	int numPlanes, i;
 	idPlane plane;
 	idVec4 vec;
 
 	numPlanes = src.ParseInt();
 	planeList.Resize( numPlanes );
-	if( !src.ExpectTokenString( "{" ) )
-	{
+	if ( !src.ExpectTokenString( "{" ) ) {
 		return false;
 	}
-	for( i = 0; i < numPlanes; i++ )
-	{
+	for ( i = 0; i < numPlanes; i++ ) {
 		src.ParseInt();
-		if( !src.Parse1DMatrix( 4, vec.ToFloatPtr() ) )
-		{
+		if ( !src.Parse1DMatrix( 4, vec.ToFloatPtr() ) ) {
 			return false;
 		}
 		plane.SetNormal( vec.ToVec3() );
 		plane.SetDist( vec[3] );
 		planeList.Append( plane );
 	}
-	if( !src.ExpectTokenString( "}" ) )
-	{
+	if ( !src.ExpectTokenString( "}" ) ) {
 		return false;
 	}
 	return true;
@@ -970,28 +825,23 @@ bool idAASFileLocal::ParsePlanes( idLexer& src )
 idAASFileLocal::ParseVertices
 ================
 */
-bool idAASFileLocal::ParseVertices( idLexer& src )
-{
+bool idAASFileLocal::ParseVertices( idLexer& src ) {
 	int numVertices, i;
 	idVec3 vec;
 
 	numVertices = src.ParseInt();
 	vertices.Resize( numVertices );
-	if( !src.ExpectTokenString( "{" ) )
-	{
+	if ( !src.ExpectTokenString( "{" ) ) {
 		return false;
 	}
-	for( i = 0; i < numVertices; i++ )
-	{
+	for ( i = 0; i < numVertices; i++ ) {
 		src.ParseInt();
-		if( !src.Parse1DMatrix( 3, vec.ToFloatPtr() ) )
-		{
+		if ( !src.Parse1DMatrix( 3, vec.ToFloatPtr() ) ) {
 			return false;
 		}
 		vertices.Append( vec );
 	}
-	if( !src.ExpectTokenString( "}" ) )
-	{
+	if ( !src.ExpectTokenString( "}" ) ) {
 		return false;
 	}
 	return true;
@@ -1002,19 +852,16 @@ bool idAASFileLocal::ParseVertices( idLexer& src )
 idAASFileLocal::ParseEdges
 ================
 */
-bool idAASFileLocal::ParseEdges( idLexer& src )
-{
+bool idAASFileLocal::ParseEdges( idLexer& src ) {
 	int numEdges, i;
 	aasEdge_t edge;
 
 	numEdges = src.ParseInt();
 	edges.Resize( numEdges );
-	if( !src.ExpectTokenString( "{" ) )
-	{
+	if ( !src.ExpectTokenString( "{" ) ) {
 		return false;
 	}
-	for( i = 0; i < numEdges; i++ )
-	{
+	for ( i = 0; i < numEdges; i++ ) {
 		src.ParseInt();
 		src.ExpectTokenString( "(" );
 		edge.vertexNum[0] = src.ParseInt();
@@ -1022,8 +869,7 @@ bool idAASFileLocal::ParseEdges( idLexer& src )
 		src.ExpectTokenString( ")" );
 		edges.Append( edge );
 	}
-	if( !src.ExpectTokenString( "}" ) )
-	{
+	if ( !src.ExpectTokenString( "}" ) ) {
 		return false;
 	}
 	return true;
@@ -1034,19 +880,16 @@ bool idAASFileLocal::ParseEdges( idLexer& src )
 idAASFileLocal::ParseFaces
 ================
 */
-bool idAASFileLocal::ParseFaces( idLexer& src )
-{
+bool idAASFileLocal::ParseFaces( idLexer& src ) {
 	int numFaces, i;
 	aasFace_t face;
 
 	numFaces = src.ParseInt();
 	faces.Resize( numFaces );
-	if( !src.ExpectTokenString( "{" ) )
-	{
+	if ( !src.ExpectTokenString( "{" ) ) {
 		return false;
 	}
-	for( i = 0; i < numFaces; i++ )
-	{
+	for ( i = 0; i < numFaces; i++ ) {
 		src.ParseInt();
 		src.ExpectTokenString( "(" );
 		face.planeNum = src.ParseInt();
@@ -1058,8 +901,7 @@ bool idAASFileLocal::ParseFaces( idLexer& src )
 		src.ExpectTokenString( ")" );
 		faces.Append( face );
 	}
-	if( !src.ExpectTokenString( "}" ) )
-	{
+	if ( !src.ExpectTokenString( "}" ) ) {
 		return false;
 	}
 	return true;
@@ -1070,11 +912,10 @@ bool idAASFileLocal::ParseFaces( idLexer& src )
 idAASFileLocal::ParseReachabilities
 ================
 */
-bool idAASFileLocal::ParseReachabilities( idLexer& src, int areaNum )
-{
+bool idAASFileLocal::ParseReachabilities( idLexer& src, int areaNum ) {
 	int num, j;
-	aasArea_t* area;
-	idReachability reach, *newReach;
+	aasArea_t * area;
+	idReachability reach, * newReach;
 	idReachability_Special* special;
 
 	area = &areas[areaNum];
@@ -1084,11 +925,9 @@ bool idAASFileLocal::ParseReachabilities( idLexer& src, int areaNum )
 	area->reach = NULL;
 	area->rev_reach = NULL;
 	area->travelFlags = AreaContentsTravelFlags( areaNum );
-	for( j = 0; j < num; j++ )
-	{
+	for ( j = 0; j < num; j++ ) {
 		Reachability_Read( src, &reach );
-		switch( reach.travelType )
-		{
+		switch ( reach.travelType ) {
 			case TFL_SPECIAL:
 				newReach = special = new idReachability_Special();
 				Reachability_Special_Read( src, special );
@@ -1111,16 +950,13 @@ bool idAASFileLocal::ParseReachabilities( idLexer& src, int areaNum )
 idAASFileLocal::LinkReversedReachability
 ================
 */
-void idAASFileLocal::LinkReversedReachability( void )
-{
+void idAASFileLocal::LinkReversedReachability( void ) {
 	int i;
 	idReachability* reach;
 
 	// link reversed reachabilities
-	for( i = 0; i < areas.Num(); i++ )
-	{
-		for( reach = areas[i].reach; reach; reach = reach->next )
-		{
+	for ( i = 0; i < areas.Num(); i++ ) {
+		for ( reach = areas[i].reach; reach; reach = reach->next ) {
 			reach->rev_next = areas[reach->toAreaNum].rev_reach;
 			areas[reach->toAreaNum].rev_reach = reach;
 		}
@@ -1132,19 +968,16 @@ void idAASFileLocal::LinkReversedReachability( void )
 idAASFileLocal::ParseAreas
 ================
 */
-bool idAASFileLocal::ParseAreas( idLexer& src )
-{
+bool idAASFileLocal::ParseAreas( idLexer& src ) {
 	int numAreas, i;
 	aasArea_t area;
 
 	numAreas = src.ParseInt();
 	areas.Resize( numAreas );
-	if( !src.ExpectTokenString( "{" ) )
-	{
+	if ( !src.ExpectTokenString( "{" ) ) {
 		return false;
 	}
-	for( i = 0; i < numAreas; i++ )
-	{
+	for ( i = 0; i < numAreas; i++ ) {
 		src.ParseInt();
 		src.ExpectTokenString( "(" );
 		area.flags = src.ParseInt();
@@ -1162,8 +995,7 @@ bool idAASFileLocal::ParseAreas( idLexer& src )
 		areas.Append( area );
 		ParseReachabilities( src, i );
 	}
-	if( !src.ExpectTokenString( "}" ) )
-	{
+	if ( !src.ExpectTokenString( "}" ) ) {
 		return false;
 	}
 
@@ -1177,19 +1009,16 @@ bool idAASFileLocal::ParseAreas( idLexer& src )
 idAASFileLocal::ParseNodes
 ================
 */
-bool idAASFileLocal::ParseNodes( idLexer& src )
-{
+bool idAASFileLocal::ParseNodes( idLexer& src ) {
 	int numNodes, i;
 	aasNode_t node;
 
 	numNodes = src.ParseInt();
 	nodes.Resize( numNodes );
-	if( !src.ExpectTokenString( "{" ) )
-	{
+	if ( !src.ExpectTokenString( "{" ) ) {
 		return false;
 	}
-	for( i = 0; i < numNodes; i++ )
-	{
+	for ( i = 0; i < numNodes; i++ ) {
 		src.ParseInt();
 		src.ExpectTokenString( "(" );
 		node.planeNum = src.ParseInt();
@@ -1198,8 +1027,7 @@ bool idAASFileLocal::ParseNodes( idLexer& src )
 		src.ExpectTokenString( ")" );
 		nodes.Append( node );
 	}
-	if( !src.ExpectTokenString( "}" ) )
-	{
+	if ( !src.ExpectTokenString( "}" ) ) {
 		return false;
 	}
 	return true;
@@ -1210,19 +1038,16 @@ bool idAASFileLocal::ParseNodes( idLexer& src )
 idAASFileLocal::ParsePortals
 ================
 */
-bool idAASFileLocal::ParsePortals( idLexer& src )
-{
+bool idAASFileLocal::ParsePortals( idLexer& src ) {
 	int numPortals, i;
 	aasPortal_t portal;
 
 	numPortals = src.ParseInt();
 	portals.Resize( numPortals );
-	if( !src.ExpectTokenString( "{" ) )
-	{
+	if ( !src.ExpectTokenString( "{" ) ) {
 		return false;
 	}
-	for( i = 0; i < numPortals; i++ )
-	{
+	for ( i = 0; i < numPortals; i++ ) {
 		src.ParseInt();
 		src.ExpectTokenString( "(" );
 		portal.areaNum = src.ParseInt();
@@ -1233,8 +1058,7 @@ bool idAASFileLocal::ParsePortals( idLexer& src )
 		src.ExpectTokenString( ")" );
 		portals.Append( portal );
 	}
-	if( !src.ExpectTokenString( "}" ) )
-	{
+	if ( !src.ExpectTokenString( "}" ) ) {
 		return false;
 	}
 	return true;
@@ -1245,19 +1069,16 @@ bool idAASFileLocal::ParsePortals( idLexer& src )
 idAASFileLocal::ParseClusters
 ================
 */
-bool idAASFileLocal::ParseClusters( idLexer& src )
-{
+bool idAASFileLocal::ParseClusters( idLexer& src ) {
 	int numClusters, i;
 	aasCluster_t cluster;
 
 	numClusters = src.ParseInt();
 	clusters.Resize( numClusters );
-	if( !src.ExpectTokenString( "{" ) )
-	{
+	if ( !src.ExpectTokenString( "{" ) ) {
 		return false;
 	}
-	for( i = 0; i < numClusters; i++ )
-	{
+	for ( i = 0; i < numClusters; i++ ) {
 		src.ParseInt();
 		src.ExpectTokenString( "(" );
 		cluster.numAreas = src.ParseInt();
@@ -1267,8 +1088,7 @@ bool idAASFileLocal::ParseClusters( idLexer& src )
 		src.ExpectTokenString( ")" );
 		clusters.Append( cluster );
 	}
-	if( !src.ExpectTokenString( "}" ) )
-	{
+	if ( !src.ExpectTokenString( "}" ) ) {
 		return false;
 	}
 	return true;
@@ -1279,12 +1099,10 @@ bool idAASFileLocal::ParseClusters( idLexer& src )
 idAASFileLocal::FinishAreas
 ================
 */
-void idAASFileLocal::FinishAreas( void )
-{
+void idAASFileLocal::FinishAreas( void ) {
 	int i;
 
-	for( i = 0; i < areas.Num(); i++ )
-	{
+	for ( i = 0; i < areas.Num(); i++ ) {
 		areas[i].center = AreaReachableGoal( i );
 		areas[i].bounds = AreaBounds( i );
 	}
@@ -1295,8 +1113,7 @@ void idAASFileLocal::FinishAreas( void )
 idAASFileLocal::Load
 ================
 */
-bool idAASFileLocal::Load( const idStr& fileName, unsigned int mapFileCRC )
-{
+bool idAASFileLocal::Load( const idStr& fileName, unsigned int mapFileCRC ) {
 	idLexer src( LEXFL_NOFATALERRORS | LEXFL_NOSTRINGESCAPECHARS | LEXFL_NOSTRINGCONCAT | LEXFL_ALLOWPATHNAMES );
 	idToken token;
 	int depth;
@@ -1308,32 +1125,27 @@ bool idAASFileLocal::Load( const idStr& fileName, unsigned int mapFileCRC )
 	common->Printf( "[Load AAS]\n" );
 	common->Printf( "loading %s\n", name.c_str() );
 
-	if( !src.LoadFile( name ) )
-	{
+	if ( !src.LoadFile( name ) ) {
 		return false;
 	}
 
-	if( !src.ExpectTokenString( AAS_FILEID ) )
-	{
+	if ( !src.ExpectTokenString( AAS_FILEID ) ) {
 		common->Warning( "Not an AAS file: '%s'", name.c_str() );
 		return false;
 	}
 
-	if( !src.ReadToken( &token ) || token != AAS_FILEVERSION )
-	{
+	if ( !src.ReadToken( &token ) || token != AAS_FILEVERSION ) {
 		common->Warning( "AAS file '%s' has version %s instead of %s", name.c_str(), token.c_str(), AAS_FILEVERSION );
 		return false;
 	}
 
-	if( !src.ExpectTokenType( TT_NUMBER, TT_INTEGER, &token ) )
-	{
+	if ( !src.ExpectTokenType( TT_NUMBER, TT_INTEGER, &token ) ) {
 		common->Warning( "AAS file '%s' has no map file CRC", name.c_str() );
 		return false;
 	}
 
 	c = token.GetUnsignedIntValue();
-	if( mapFileCRC && c != mapFileCRC )
-	{
+	if ( mapFileCRC && c != mapFileCRC ) {
 		common->Warning( "AAS file '%s' is out of date", name.c_str() );
 		return false;
 	}
@@ -1342,99 +1154,60 @@ bool idAASFileLocal::Load( const idStr& fileName, unsigned int mapFileCRC )
 	Clear();
 
 	// parse the file
-	while( 1 )
-	{
-		if( !src.ReadToken( &token ) )
-		{
+	while ( 1 ) {
+		if ( !src.ReadToken( &token ) ) {
 			break;
 		}
 
-		if( token == "settings" )
-		{
-			if( !settings.FromParser( src ) )
-			{
+		if ( token == "settings" ) {
+			if ( !settings.FromParser( src ) ) {
 				return false;
 			}
-		}
-		else if( token == "planes" )
-		{
-			if( !ParsePlanes( src ) )
-			{
+		} else if ( token == "planes" ) {
+			if ( !ParsePlanes( src ) ) {
 				return false;
 			}
-		}
-		else if( token == "vertices" )
-		{
-			if( !ParseVertices( src ) )
-			{
+		} else if ( token == "vertices" ) {
+			if ( !ParseVertices( src ) ) {
 				return false;
 			}
-		}
-		else if( token == "edges" )
-		{
-			if( !ParseEdges( src ) )
-			{
+		} else if ( token == "edges" ) {
+			if ( !ParseEdges( src ) ) {
 				return false;
 			}
-		}
-		else if( token == "edgeIndex" )
-		{
-			if( !ParseIndex( src, edgeIndex ) )
-			{
+		} else if ( token == "edgeIndex" ) {
+			if ( !ParseIndex( src, edgeIndex ) ) {
 				return false;
 			}
-		}
-		else if( token == "faces" )
-		{
-			if( !ParseFaces( src ) )
-			{
+		} else if ( token == "faces" ) {
+			if ( !ParseFaces( src ) ) {
 				return false;
 			}
-		}
-		else if( token == "faceIndex" )
-		{
-			if( !ParseIndex( src, faceIndex ) )
-			{
+		} else if ( token == "faceIndex" ) {
+			if ( !ParseIndex( src, faceIndex ) ) {
 				return false;
 			}
-		}
-		else if( token == "areas" )
-		{
-			if( !ParseAreas( src ) )
-			{
+		} else if ( token == "areas" ) {
+			if ( !ParseAreas( src ) ) {
 				return false;
 			}
-		}
-		else if( token == "nodes" )
-		{
-			if( !ParseNodes( src ) )
-			{
+		} else if ( token == "nodes" ) {
+			if ( !ParseNodes( src ) ) {
 				return false;
 			}
-		}
-		else if( token == "portals" )
-		{
-			if( !ParsePortals( src ) )
-			{
+		} else if ( token == "portals" ) {
+			if ( !ParsePortals( src ) ) {
 				return false;
 			}
-		}
-		else if( token == "portalIndex" )
-		{
-			if( !ParseIndex( src, portalIndex ) )
-			{
+		} else if ( token == "portalIndex" ) {
+			if ( !ParseIndex( src, portalIndex ) ) {
 				return false;
 			}
-		}
-		else if( token == "clusters" )
-		{
-			if( !ParseClusters( src ) )
-			{
+		} else if ( token == "clusters" ) {
+			if ( !ParseClusters( src ) ) {
 				return false;
 			}
-		}
-		else
-		{
+		} else {
 			src.Error( "idAASFileLocal::Load: bad token \"%s\"", token.c_str() );
 			return false;
 		}
@@ -1443,8 +1216,7 @@ bool idAASFileLocal::Load( const idStr& fileName, unsigned int mapFileCRC )
 	FinishAreas();
 
 	depth = MaxTreeDepth();
-	if( depth > MAX_AAS_TREE_DEPTH )
-	{
+	if ( depth > MAX_AAS_TREE_DEPTH ) {
 		src.Error( "idAASFileLocal::Load: tree depth = %d", depth );
 	}
 
@@ -1458,8 +1230,7 @@ bool idAASFileLocal::Load( const idStr& fileName, unsigned int mapFileCRC )
 idAASFileLocal::MemorySize
 ================
 */
-int idAASFileLocal::MemorySize( void ) const
-{
+int idAASFileLocal::MemorySize( void ) const {
 	int size;
 
 	size = planeList.Size();
@@ -1483,8 +1254,7 @@ int idAASFileLocal::MemorySize( void ) const
 idAASFileLocal::PrintInfo
 ================
 */
-void idAASFileLocal::PrintInfo( void ) const
-{
+void idAASFileLocal::PrintInfo( void ) const {
 	common->Printf( "%6d KB file size\n", MemorySize() >> 10 );
 	common->Printf( "%6d areas\n", areas.Num() );
 	common->Printf( "%6d max tree depth\n", MaxTreeDepth() );
@@ -1496,16 +1266,13 @@ void idAASFileLocal::PrintInfo( void ) const
 idAASFileLocal::NumReachabilities
 ================
 */
-int idAASFileLocal::NumReachabilities( void ) const
-{
+int idAASFileLocal::NumReachabilities( void ) const {
 	int i, num;
 	idReachability* reach;
 
 	num = 0;
-	for( i = 0; i < areas.Num(); i++ )
-	{
-		for( reach = areas[i].reach; reach; reach = reach->next )
-		{
+	for ( i = 0; i < areas.Num(); i++ ) {
+		for ( reach = areas[i].reach; reach; reach = reach->next ) {
 			num++;
 		}
 	}
@@ -1517,14 +1284,12 @@ int idAASFileLocal::NumReachabilities( void ) const
 idAASFileLocal::ReportRoutingEfficiency
 ================
 */
-void idAASFileLocal::ReportRoutingEfficiency( void ) const
-{
+void idAASFileLocal::ReportRoutingEfficiency( void ) const {
 	int numReachableAreas, total, i, n;
 
 	numReachableAreas = 0;
 	total = 0;
-	for( i = 0; i < clusters.Num(); i++ )
-	{
+	for ( i = 0; i < clusters.Num(); i++ ) {
 		n = clusters[i].numReachableAreas;
 		numReachableAreas += n;
 		total += n * n;
@@ -1541,15 +1306,12 @@ void idAASFileLocal::ReportRoutingEfficiency( void ) const
 idAASFileLocal::DeleteReachabilities
 ================
 */
-void idAASFileLocal::DeleteReachabilities( void )
-{
+void idAASFileLocal::DeleteReachabilities( void ) {
 	int i;
-	idReachability* reach, *nextReach;
+	idReachability* reach, * nextReach;
 
-	for( i = 0; i < areas.Num(); i++ )
-	{
-		for( reach = areas[i].reach; reach; reach = nextReach )
-		{
+	for ( i = 0; i < areas.Num(); i++ ) {
+		for ( reach = areas[i].reach; reach; reach = nextReach ) {
 			nextReach = reach->next;
 			delete reach;
 		}
@@ -1563,8 +1325,7 @@ void idAASFileLocal::DeleteReachabilities( void )
 idAASFileLocal::DeleteClusters
 ================
 */
-void idAASFileLocal::DeleteClusters( void )
-{
+void idAASFileLocal::DeleteClusters( void ) {
 	aasPortal_t portal;
 	aasCluster_t cluster;
 

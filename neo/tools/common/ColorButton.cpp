@@ -41,25 +41,21 @@ ColorButton_SetColor
 Sets the current color button color
 ================
 */
-void ColorButton_SetColor( HWND hWnd, COLORREF color )
-{
-	if( NULL == hWnd )
-	{
+void ColorButton_SetColor( HWND hWnd, COLORREF color ) {
+	if ( NULL == hWnd ) {
 		return;
 	}
 	SetWindowLongPtr( hWnd, GWLP_USERDATA, color );
 	InvalidateRect( hWnd, NULL, FALSE );
 }
 
-void ColorButton_SetColor( HWND hWnd, const char* color )
-{
+void ColorButton_SetColor( HWND hWnd, const char * color ) {
 	float red;
 	float green;
 	float blue;
 	float alpha;
 
-	if( NULL == hWnd )
-	{
+	if ( NULL == hWnd ) {
 		return;
 	}
 
@@ -68,15 +64,13 @@ void ColorButton_SetColor( HWND hWnd, const char* color )
 	ColorButton_SetColor( hWnd, RGB( red * 255.0f, green * 255.0f, blue * 255.0f ) );
 }
 
-void AlphaButton_SetColor( HWND hWnd, const char* color )
-{
+void AlphaButton_SetColor( HWND hWnd, const char * color ) {
 	float red;
 	float green;
 	float blue;
 	float alpha;
 
-	if( NULL == hWnd )
-	{
+	if ( NULL == hWnd ) {
 		return;
 	}
 
@@ -92,8 +86,7 @@ ColorButton_GetColor
 Retrieves the current color button color
 ================
 */
-COLORREF ColorButton_GetColor( HWND hWnd )
-{
+COLORREF ColorButton_GetColor( HWND hWnd ) {
 	return ( COLORREF ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
 }
 
@@ -104,8 +97,7 @@ ColorButton_DrawArrow
 Draws the arrow on the color button
 ================
 */
-static void ColorButton_DrawArrow( HDC hDC, RECT* pRect, COLORREF color )
-{
+static void ColorButton_DrawArrow( HDC hDC, RECT* pRect, COLORREF color ) {
 	POINT ptsArrow[3];
 
 	ptsArrow[0].x = pRect->left;
@@ -138,8 +130,7 @@ ColorButton_DrawItem
 Draws the actual color button as as reponse to a WM_DRAWITEM message
 ================
 */
-void ColorButton_DrawItem( HWND hWnd, LPDRAWITEMSTRUCT dis )
-{
+void ColorButton_DrawItem( HWND hWnd, LPDRAWITEMSTRUCT dis ) {
 	assert( dis );
 
 	HDC		hDC		 = dis->hDC;
@@ -150,26 +141,22 @@ void ColorButton_DrawItem( HWND hWnd, LPDRAWITEMSTRUCT dis )
 	// Draw outter edge
 	UINT uFrameState = DFCS_BUTTONPUSH | DFCS_ADJUSTRECT;
 
-	if( state & ODS_SELECTED )
-	{
+	if ( state & ODS_SELECTED ) {
 		uFrameState |= DFCS_PUSHED;
 	}
 
-	if( state & ODS_DISABLED )
-	{
+	if ( state & ODS_DISABLED ) {
 		uFrameState |= DFCS_INACTIVE;
 	}
 
 	DrawFrameControl( hDC, &rDraw, DFC_BUTTON, uFrameState );
 
 	// Draw Focus
-	if( state & ODS_SELECTED )
-	{
+	if ( state & ODS_SELECTED ) {
 		OffsetRect( &rDraw, 1, 1 );
 	}
 
-	if( state & ODS_FOCUS )
-	{
+	if ( state & ODS_FOCUS ) {
 		RECT rFocus = {rDraw.left,
 					   rDraw.top,
 					   rDraw.right - 1,
@@ -197,8 +184,7 @@ void ColorButton_DrawItem( HWND hWnd, LPDRAWITEMSTRUCT dis )
 	rDraw.right -= ( GetSystemMetrics( SM_CXEDGE ) * 2 ) + 1 ;
 
 	// Draw Color
-	if( ( state & ODS_DISABLED ) == 0 )
-	{
+	if ( ( state & ODS_DISABLED ) == 0 ) {
 		HBRUSH color = CreateSolidBrush( ( COLORREF )GetWindowLongPtr( hWnd, GWLP_USERDATA ) );
 		FillRect( hDC, &rDraw, color );
 		FrameRect( hDC, &rDraw, ( HBRUSH )::GetStockObject( BLACK_BRUSH ) );

@@ -44,16 +44,13 @@ If you have questions concerning this license or the applicable additional terms
 idAASReach::ReachabilityExists
 ================
 */
-bool idAASReach::ReachabilityExists( int fromAreaNum, int toAreaNum )
-{
-	aasArea_t* area;
+bool idAASReach::ReachabilityExists( int fromAreaNum, int toAreaNum ) {
+	aasArea_t * area;
 	idReachability* reach;
 
 	area = &file->areas[fromAreaNum];
-	for( reach = area->reach; reach; reach = reach->next )
-	{
-		if( reach->toAreaNum == toAreaNum )
-		{
+	for ( reach = area->reach; reach; reach = reach->next ) {
+		if ( reach->toAreaNum == toAreaNum ) {
 			return true;
 		}
 	}
@@ -65,8 +62,7 @@ bool idAASReach::ReachabilityExists( int fromAreaNum, int toAreaNum )
 idAASReach::CanSwimInArea
 ================
 */
-ID_INLINE bool idAASReach::CanSwimInArea( int areaNum )
-{
+ID_INLINE bool idAASReach::CanSwimInArea( int areaNum ) {
 	return ( file->areas[areaNum].contents & AREACONTENTS_WATER ) != 0;
 }
 
@@ -75,8 +71,7 @@ ID_INLINE bool idAASReach::CanSwimInArea( int areaNum )
 idAASReach::AreaHasFloor
 ================
 */
-ID_INLINE bool idAASReach::AreaHasFloor( int areaNum )
-{
+ID_INLINE bool idAASReach::AreaHasFloor( int areaNum ) {
 	return ( file->areas[areaNum].flags & AREA_FLOOR ) != 0;
 }
 
@@ -85,8 +80,7 @@ ID_INLINE bool idAASReach::AreaHasFloor( int areaNum )
 idAASReach::AreaIsClusterPortal
 ================
 */
-ID_INLINE bool idAASReach::AreaIsClusterPortal( int areaNum )
-{
+ID_INLINE bool idAASReach::AreaIsClusterPortal( int areaNum ) {
 	return ( file->areas[areaNum].contents & AREACONTENTS_CLUSTERPORTAL ) != 0;
 }
 
@@ -95,9 +89,8 @@ ID_INLINE bool idAASReach::AreaIsClusterPortal( int areaNum )
 idAASReach::AddReachabilityToArea
 ================
 */
-void idAASReach::AddReachabilityToArea( idReachability* reach, int areaNum )
-{
-	aasArea_t* area;
+void idAASReach::AddReachabilityToArea( idReachability* reach, int areaNum ) {
+	aasArea_t * area;
 
 	area = &file->areas[areaNum];
 	reach->next = area->reach;
@@ -110,29 +103,25 @@ void idAASReach::AddReachabilityToArea( idReachability* reach, int areaNum )
 idAASReach::Reachability_Fly
 ================
 */
-void idAASReach::Reachability_Fly( int areaNum )
-{
+void idAASReach::Reachability_Fly( int areaNum ) {
 	int i, faceNum, otherAreaNum;
-	aasArea_t* area;
-	aasFace_t* face;
+	aasArea_t * area;
+	aasFace_t * face;
 	idReachability_Fly* reach;
 
 	area = &file->areas[areaNum];
 
-	for( i = 0; i < area->numFaces; i++ )
-	{
+	for ( i = 0; i < area->numFaces; i++ ) {
 		faceNum = file->faceIndex[area->firstFace + i];
 		face = &file->faces[abs( faceNum )];
 
 		otherAreaNum = face->areas[INTSIGNBITNOTSET( faceNum )];
 
-		if( otherAreaNum == 0 )
-		{
+		if ( otherAreaNum == 0 ) {
 			continue;
 		}
 
-		if( ReachabilityExists( areaNum, otherAreaNum ) )
-		{
+		if ( ReachabilityExists( areaNum, otherAreaNum ) ) {
 			continue;
 		}
 
@@ -144,12 +133,9 @@ void idAASReach::Reachability_Fly( int areaNum )
 		reach->edgeNum = 0;
 		reach->travelTime = 1;
 		reach->start = file->FaceCenter( abs( faceNum ) );
-		if( faceNum < 0 )
-		{
+		if ( faceNum < 0 ) {
 			reach->end = reach->start + file->planeList[face->planeNum].Normal() * INSIDEUNITS_FLYEND;
-		}
-		else
-		{
+		} else {
 			reach->end = reach->start - file->planeList[face->planeNum].Normal() * INSIDEUNITS_FLYEND;
 		}
 		AddReachabilityToArea( reach, areaNum );
@@ -161,39 +147,33 @@ void idAASReach::Reachability_Fly( int areaNum )
 idAASReach::Reachability_Swim
 ================
 */
-void idAASReach::Reachability_Swim( int areaNum )
-{
+void idAASReach::Reachability_Swim( int areaNum ) {
 	int i, faceNum, otherAreaNum;
-	aasArea_t* area;
-	aasFace_t* face;
+	aasArea_t * area;
+	aasFace_t * face;
 	idReachability_Swim* reach;
 
-	if( !CanSwimInArea( areaNum ) )
-	{
+	if ( !CanSwimInArea( areaNum ) ) {
 		return;
 	}
 
 	area = &file->areas[areaNum];
 
-	for( i = 0; i < area->numFaces; i++ )
-	{
+	for ( i = 0; i < area->numFaces; i++ ) {
 		faceNum = file->faceIndex[area->firstFace + i];
 		face = &file->faces[abs( faceNum )];
 
 		otherAreaNum = face->areas[INTSIGNBITNOTSET( faceNum )];
 
-		if( otherAreaNum == 0 )
-		{
+		if ( otherAreaNum == 0 ) {
 			continue;
 		}
 
-		if( !CanSwimInArea( otherAreaNum ) )
-		{
+		if ( !CanSwimInArea( otherAreaNum ) ) {
 			continue;
 		}
 
-		if( ReachabilityExists( areaNum, otherAreaNum ) )
-		{
+		if ( ReachabilityExists( areaNum, otherAreaNum ) ) {
 			continue;
 		}
 
@@ -205,12 +185,9 @@ void idAASReach::Reachability_Swim( int areaNum )
 		reach->edgeNum = 0;
 		reach->travelTime = 1;
 		reach->start = file->FaceCenter( abs( faceNum ) );
-		if( faceNum < 0 )
-		{
+		if ( faceNum < 0 ) {
 			reach->end = reach->start + file->planeList[face->planeNum].Normal() * INSIDEUNITS_SWIMEND;
-		}
-		else
-		{
+		} else {
 			reach->end = reach->start - file->planeList[face->planeNum].Normal() * INSIDEUNITS_SWIMEND;
 		}
 		AddReachabilityToArea( reach, areaNum );
@@ -222,80 +199,65 @@ void idAASReach::Reachability_Swim( int areaNum )
 idAASReach::Reachability_EqualFloorHeight
 ================
 */
-void idAASReach::Reachability_EqualFloorHeight( int areaNum )
-{
+void idAASReach::Reachability_EqualFloorHeight( int areaNum ) {
 	int i, k, l, m, n, faceNum, face1Num, face2Num, otherAreaNum, edge1Num, edge2Num;
-	aasArea_t* area, *otherArea;
-	aasFace_t* face, *face1, *face2;
+	aasArea_t * area, * otherArea;
+	aasFace_t * face, * face1, * face2;
 	idReachability_Walk* reach;
 
-	if( !AreaHasFloor( areaNum ) )
-	{
+	if ( !AreaHasFloor( areaNum ) ) {
 		return;
 	}
 
 	area = &file->areas[areaNum];
 
-	for( i = 0; i < area->numFaces; i++ )
-	{
+	for ( i = 0; i < area->numFaces; i++ ) {
 		faceNum = file->faceIndex[area->firstFace + i];
 		face = &file->faces[abs( faceNum )];
 
 		otherAreaNum = face->areas[INTSIGNBITNOTSET( faceNum )];
-		if( !AreaHasFloor( otherAreaNum ) )
-		{
+		if ( !AreaHasFloor( otherAreaNum ) ) {
 			continue;
 		}
 
 		otherArea = &file->areas[otherAreaNum];
 
-		for( k = 0; k < area->numFaces; k++ )
-		{
+		for ( k = 0; k < area->numFaces; k++ ) {
 			face1Num = file->faceIndex[area->firstFace + k];
 			face1 = &file->faces[abs( face1Num )];
 
-			if( !( face1->flags & FACE_FLOOR ) )
-			{
+			if ( !( face1->flags & FACE_FLOOR ) ) {
 				continue;
 			}
-			for( l = 0; l < otherArea->numFaces; l++ )
-			{
+			for ( l = 0; l < otherArea->numFaces; l++ ) {
 				face2Num = file->faceIndex[otherArea->firstFace + l];
 				face2 = &file->faces[abs( face2Num )];
 
-				if( !( face2->flags & FACE_FLOOR ) )
-				{
+				if ( !( face2->flags & FACE_FLOOR ) ) {
 					continue;
 				}
 
-				for( m = 0; m < face1->numEdges; m++ )
-				{
+				for ( m = 0; m < face1->numEdges; m++ ) {
 					edge1Num = abs( file->edgeIndex[face1->firstEdge + m] );
-					for( n = 0; n < face2->numEdges; n++ )
-					{
+					for ( n = 0; n < face2->numEdges; n++ ) {
 						edge2Num = abs( file->edgeIndex[face2->firstEdge + n] );
-						if( edge1Num == edge2Num )
-						{
+						if ( edge1Num == edge2Num ) {
 							break;
 						}
 					}
-					if( n < face2->numEdges )
-					{
+					if ( n < face2->numEdges ) {
 						break;
 					}
 				}
-				if( m < face1->numEdges )
-				{
+				if ( m < face1->numEdges ) {
 					break;
 				}
 			}
-			if( l < otherArea->numFaces )
-			{
+			if ( l < otherArea->numFaces ) {
 				break;
 			}
 		}
-		if( k < area->numFaces )
-		{
+		if ( k < area->numFaces ) {
 			// create reachability
 			reach = new idReachability_Walk();
 			reach->travelType = TFL_WALK;
@@ -304,12 +266,9 @@ void idAASReach::Reachability_EqualFloorHeight( int areaNum )
 			reach->edgeNum = abs( edge1Num );
 			reach->travelTime = 1;
 			reach->start = file->EdgeCenter( edge1Num );
-			if( faceNum < 0 )
-			{
+			if ( faceNum < 0 ) {
 				reach->end = reach->start + file->planeList[face->planeNum].Normal() * INSIDEUNITS_WALKEND;
-			}
-			else
-			{
+			} else {
 				reach->end = reach->start - file->planeList[face->planeNum].Normal() * INSIDEUNITS_WALKEND;
 			}
 			AddReachabilityToArea( reach, areaNum );
@@ -322,8 +281,7 @@ void idAASReach::Reachability_EqualFloorHeight( int areaNum )
 idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge
 ================
 */
-bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num, int area2num )
-{
+bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num, int area2num ) {
 	int i, j, k, l, edge1Num, edge2Num, areas[10];
 	int floor_bestArea1FloorEdgeNum, floor_foundReach;
 	int water_foundReach;
@@ -337,9 +295,9 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 	idVec3 water_bestStart, water_bestEnd, water_bestNormal;
 	idVec3 testPoint;
 	idPlane* plane;
-	aasArea_t* area1, *area2;
-	aasFace_t* floorFace1, *floorFace2;
-	aasEdge_t* edge1, *edge2;
+	aasArea_t * area1, * area2;
+	aasFace_t * floorFace1, * floorFace2;
+	aasEdge_t * edge1, * edge2;
 	idReachability_Walk* walkReach;
 	idReachability_BarrierJump* barrierJumpReach;
 	idReachability_WaterJump* waterJumpReach;
@@ -347,13 +305,11 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 	aasTrace_t trace;
 
 	// must be able to walk or swim in the first area
-	if( !AreaHasFloor( area1num ) && !CanSwimInArea( area1num ) )
-	{
+	if ( !AreaHasFloor( area1num ) && !CanSwimInArea( area1num ) ) {
 		return false;
 	}
 
-	if( !AreaHasFloor( area2num ) && !CanSwimInArea( area2num ) )
-	{
+	if ( !AreaHasFloor( area2num ) && !CanSwimInArea( area2num ) ) {
 		return false;
 	}
 
@@ -361,14 +317,11 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 	area2 = &file->areas[area2num];
 
 	// if the areas are not near anough in the x-y direction
-	for( i = 0; i < 2; i++ )
-	{
-		if( area1->bounds[0][i] > area2->bounds[1][i] + 2.0f )
-		{
+	for ( i = 0; i < 2; i++ ) {
+		if ( area1->bounds[0][i] > area2->bounds[1][i] + 2.0f ) {
 			return false;
 		}
-		if( area1->bounds[1][i] < area2->bounds[0][i] - 2.0f )
-		{
+		if ( area1->bounds[1][i] < area2->bounds[0][i] - 2.0f ) {
 			return false;
 		}
 	}
@@ -390,42 +343,34 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 	water_bestDist = 99999;
 	water_bestLength = 0;
 
-	for( i = 0; i < area1->numFaces; i++ )
-	{
+	for ( i = 0; i < area1->numFaces; i++ ) {
 		floorFace1Num = file->faceIndex[area1->firstFace + i];
 		faceSide1 = floorFace1Num < 0;
 		floorFace1 = &file->faces[abs( floorFace1Num )];
 
 		// if this isn't a floor face
-		if( !( floorFace1->flags & FACE_FLOOR ) )
-		{
+		if ( !( floorFace1->flags & FACE_FLOOR ) ) {
 
 			// if we can swim in the first area
-			if( CanSwimInArea( area1num ) )
-			{
+			if ( CanSwimInArea( area1num ) ) {
 
 				// face plane must be more or less horizontal
 				plane = &file->planeList[ floorFace1->planeNum ^ ( !faceSide1 ) ];
-				if( plane->Normal() * file->settings.invGravityDir < file->settings.minFloorCos )
-				{
+				if ( plane->Normal() * file->settings.invGravityDir < file->settings.minFloorCos ) {
 					continue;
 				}
-			}
-			else
-			{
+			} else {
 				// if we can't swim in the area it must be a ground face
 				continue;
 			}
 		}
 
-		for( k = 0; k < floorFace1->numEdges; k++ )
-		{
+		for ( k = 0; k < floorFace1->numEdges; k++ ) {
 			edge1Num = file->edgeIndex[floorFace1->firstEdge + k];
 			side1 = ( edge1Num < 0 );
 			// NOTE: for water faces we must take the side area 1 is on into
 			// account because the face is shared and doesn't have to be oriented correctly
-			if( !( floorFace1->flags & FACE_FLOOR ) )
-			{
+			if ( !( floorFace1->flags & FACE_FLOOR ) ) {
 				side1 = ( side1 == faceSide1 );
 			}
 			edge1Num = abs( edge1Num );
@@ -441,17 +386,14 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 			dist = normal * v1;
 
 			// check the faces from the second area
-			for( j = 0; j < area2->numFaces; j++ )
-			{
+			for ( j = 0; j < area2->numFaces; j++ ) {
 				floorFace2 = &file->faces[abs( file->faceIndex[area2->firstFace + j] )];
 				// must be a ground face
-				if( !( floorFace2->flags & FACE_FLOOR ) )
-				{
+				if ( !( floorFace2->flags & FACE_FLOOR ) ) {
 					continue;
 				}
 				// check the edges of this ground face
-				for( l = 0; l < floorFace2->numEdges; l++ )
-				{
+				for ( l = 0; l < floorFace2->numEdges; l++ ) {
 					edge2Num = abs( file->edgeIndex[floorFace2->firstEdge + l] );
 					edge2 = &file->edges[edge2Num];
 					// vertices of the edge
@@ -459,13 +401,11 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 					v4 = file->vertices[edge2->vertexNum[1]];
 					// check the distance between the two points and the vertical plane through the edge of area1
 					diff = normal * v3 - dist;
-					if( diff < -0.2f || diff > 0.2f )
-					{
+					if ( diff < -0.2f || diff > 0.2f ) {
 						continue;
 					}
 					diff = normal * v4 - dist;
-					if( diff < -0.2f || diff > 0.2f )
-					{
+					if ( diff < -0.2f || diff > 0.2f ) {
 						continue;
 					}
 
@@ -488,8 +428,7 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 					x3 = ( v3 * orthogonal ) / orthogonalDot;
 					x4 = ( v4 * orthogonal ) / orthogonalDot;
 
-					if( x1 > x2 )
-					{
+					if ( x1 > x2 ) {
 						tmp = x1;
 						x1 = x2;
 						x2 = tmp;
@@ -500,8 +439,7 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 						v1 = v2;
 						v2 = tmpv;
 					}
-					if( x3 > x4 )
-					{
+					if ( x3 > x4 ) {
 						tmp = x3;
 						x3 = x4;
 						x4 = tmp;
@@ -513,39 +451,30 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 						v4 = tmpv;
 					}
 					// if the two projected edge lines have no overlap
-					if( x2 <= x3 || x4 <= x1 )
-					{
+					if ( x2 <= x3 || x4 <= x1 ) {
 						continue;
 					}
 					// if the two lines fully overlap
-					if( ( x1 - 0.5f < x3 && x4 < x2 + 0.5f ) && ( x3 - 0.5f < x1 && x2 < x4 + 0.5f ) )
-					{
+					if ( ( x1 - 0.5f < x3 && x4 < x2 + 0.5f ) && ( x3 - 0.5f < x1 && x2 < x4 + 0.5f ) ) {
 						dist1 = y3 - y1;
 						dist2 = y4 - y2;
 						p1area1 = v1;
 						p2area1 = v2;
 						p1area2 = v3;
 						p2area2 = v4;
-					}
-					else
-					{
+					} else {
 						// if the points are equal
-						if( x1 > x3 - 0.1f && x1 < x3 + 0.1f )
-						{
+						if ( x1 > x3 - 0.1f && x1 < x3 + 0.1f ) {
 							dist1 = y3 - y1;
 							p1area1 = v1;
 							p1area2 = v3;
-						}
-						else if( x1 < x3 )
-						{
+						} else if ( x1 < x3 ) {
 							y = y1 + ( x3 - x1 ) * ( y2 - y1 ) / ( x2 - x1 );
 							dist1 = y3 - y;
 							p1area1 = v3;
 							p1area1[2] = y;
 							p1area2 = v3;
-						}
-						else
-						{
+						} else {
 							y = y3 + ( x1 - x3 ) * ( y4 - y3 ) / ( x4 - x3 );
 							dist1 = y - y1;
 							p1area1 = v1;
@@ -553,22 +482,17 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 							p1area2[2] = y;
 						}
 						// if the points are equal
-						if( x2 > x4 - 0.1f && x2 < x4 + 0.1f )
-						{
+						if ( x2 > x4 - 0.1f && x2 < x4 + 0.1f ) {
 							dist2 = y4 - y2;
 							p2area1 = v2;
 							p2area2 = v4;
-						}
-						else if( x2 < x4 )
-						{
+						} else if ( x2 < x4 ) {
 							y = y3 + ( x2 - x3 ) * ( y4 - y3 ) / ( x4 - x3 );
 							dist2 = y - y2;
 							p2area1 = v2;
 							p2area2 = v2;
 							p2area2[2] = y;
-						}
-						else
-						{
+						} else {
 							y = y1 + ( x4 - x1 ) * ( y2 - y1 ) / ( x2 - x1 );
 							dist2 = y4 - y;
 							p2area1 = v4;
@@ -578,20 +502,15 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 					}
 
 					// if both distances are pretty much equal then we take the middle of the points
-					if( dist1 > dist2 - 1.0f && dist1 < dist2 + 1.0f )
-					{
+					if ( dist1 > dist2 - 1.0f && dist1 < dist2 + 1.0f ) {
 						dist = dist1;
 						start = ( p1area1 + p2area1 ) * 0.5f;
 						end = ( p1area2 + p2area2 ) * 0.5f;
-					}
-					else if( dist1 < dist2 )
-					{
+					} else if ( dist1 < dist2 ) {
 						dist = dist1;
 						start = p1area1;
 						end = p1area2;
-					}
-					else
-					{
+					} else {
 						dist = dist2;
 						start = p2area1;
 						end = p2area2;
@@ -600,14 +519,12 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 					// get the length of the overlapping part of the edges of the two areas
 					length = ( p2area2 - p1area2 ).Length();
 
-					if( floorFace1->flags & FACE_FLOOR )
-					{
+					if ( floorFace1->flags & FACE_FLOOR ) {
 						// if the vertical distance is smaller
-						if( dist < floor_bestDist ||
+						if ( dist < floor_bestDist ||
 								// or the vertical distance is pretty much the same
 								// but the overlapping part of the edges is longer
-								( dist < floor_bestDist + 1.0f && length > floor_bestLength ) )
-						{
+								( dist < floor_bestDist + 1.0f && length > floor_bestLength ) ) {
 							floor_bestDist = dist;
 							floor_bestLength = length;
 							floor_foundReach = true;
@@ -616,15 +533,12 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 							floor_bestNormal = normal;
 							floor_bestEnd = end;
 						}
-					}
-					else
-					{
+					} else {
 						// if the vertical distance is smaller
-						if( dist < water_bestDist ||
+						if ( dist < water_bestDist ||
 								//or the vertical distance is pretty much the same
 								//but the overlapping part of the edges is longer
-								( dist < water_bestDist + 1.0f && length > water_bestLength ) )
-						{
+								( dist < water_bestDist + 1.0f && length > water_bestLength ) ) {
 							water_bestDist = dist;
 							water_bestLength = length;
 							water_foundReach = true;
@@ -656,12 +570,10 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 	// --------|
 	//
 	// check for a step reachability
-	if( floor_foundReach )
-	{
+	if ( floor_foundReach ) {
 		// if area2 is higher but lower than the maximum step height
 		// NOTE: floor_bestDist >= 0 also catches equal floor reachabilities
-		if( floor_bestDist >= 0 && floor_bestDist < file->settings.maxStepHeight )
-		{
+		if ( floor_bestDist >= 0 && floor_bestDist < file->settings.maxStepHeight ) {
 			// create walk reachability from area1 to area2
 			walkReach = new idReachability_Walk();
 			walkReach->travelType = TFL_WALK;
@@ -671,8 +583,7 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 			walkReach->end = floor_bestEnd + INSIDEUNITS_WALKEND * floor_bestNormal;
 			walkReach->edgeNum = abs( floor_bestArea1FloorEdgeNum );
 			walkReach->travelTime = 0;
-			if( area2->flags & AREA_CROUCH )
-			{
+			if ( area2->flags & AREA_CROUCH ) {
 				walkReach->travelTime += file->settings.tt_startCrouching;
 			}
 			AddReachabilityToArea( walkReach, area1num );
@@ -698,21 +609,17 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 	// --------|
 	//
 	// check for a waterjump reachability
-	if( water_foundReach )
-	{
+	if ( water_foundReach ) {
 		// get a test point a little bit towards area1
 		testPoint = water_bestEnd - INSIDEUNITS * water_bestNormal;
 		// go down the maximum waterjump height
 		testPoint[2] -= file->settings.maxWaterJumpHeight;
 		// if there IS water the sv_maxwaterjump height below the bestend point
-		if( area1->flags & AREA_LIQUID )
-		{
+		if ( area1->flags & AREA_LIQUID ) {
 			// don't create rediculous water jump reachabilities from areas very far below the water surface
-			if( water_bestDist < file->settings.maxWaterJumpHeight + 24 )
-			{
+			if ( water_bestDist < file->settings.maxWaterJumpHeight + 24 ) {
 				// water jumping from or towards a crouch only areas is not possible
-				if( !( area1->flags & AREA_CROUCH ) && !( area2->flags & AREA_CROUCH ) )
-				{
+				if ( !( area1->flags & AREA_CROUCH ) && !( area2->flags & AREA_CROUCH ) ) {
 					// create water jump reachability from area1 to area2
 					waterJumpReach = new idReachability_WaterJump();
 					waterJumpReach->travelType = TFL_WATERJUMP;
@@ -746,17 +653,13 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 	// --------|         and a thin layer of water in the area to jump from -> TFL_BARRIERJUMP
 	//
 	// check for a barrier jump reachability
-	if( floor_foundReach )
-	{
+	if ( floor_foundReach ) {
 		//if area2 is higher but lower than the maximum barrier jump height
-		if( floor_bestDist > 0 && floor_bestDist < file->settings.maxBarrierHeight )
-		{
+		if ( floor_bestDist > 0 && floor_bestDist < file->settings.maxBarrierHeight ) {
 			//if no water in area1 or a very thin layer of water on the ground
-			if( !water_foundReach || ( floor_bestDist - water_bestDist < 16 ) )
-			{
+			if ( !water_foundReach || ( floor_bestDist - water_bestDist < 16 ) ) {
 				// cannot perform a barrier jump towards or from a crouch area
-				if( !( area1->flags & AREA_CROUCH ) && !( area2->flags & AREA_CROUCH ) )
-				{
+				if ( !( area1->flags & AREA_CROUCH ) && !( area2->flags & AREA_CROUCH ) ) {
 					// create barrier jump reachability from area1 to area2
 					barrierJumpReach = new idReachability_BarrierJump();
 					barrierJumpReach->travelType = TFL_BARRIERJUMP;
@@ -794,12 +697,9 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 	//         ---------  FIXME: create TFL_WALK reach??
 	//
 	// check for a walk or walk off ledge reachability
-	if( floor_foundReach )
-	{
-		if( floor_bestDist < 0 )
-		{
-			if( floor_bestDist > -file->settings.maxStepHeight )
-			{
+	if ( floor_foundReach ) {
+		if ( floor_bestDist < 0 ) {
+			if ( floor_bestDist > -file->settings.maxStepHeight ) {
 				// create walk reachability from area1 to area2
 				walkReach = new idReachability_Walk();
 				walkReach->travelType = TFL_WALK;
@@ -813,8 +713,7 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 				return true;
 			}
 			// if no maximum fall height set or less than the max
-			if( !file->settings.maxFallHeight || idMath::Fabs( floor_bestDist ) < file->settings.maxFallHeight )
-			{
+			if ( !file->settings.maxFallHeight || idMath::Fabs( floor_bestDist ) < file->settings.maxFallHeight ) {
 				// trace a bounding box vertically to check for solids
 				floor_bestEnd += INSIDEUNITS * floor_bestNormal;
 				start = floor_bestEnd;
@@ -825,21 +724,16 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 				trace.maxAreas = sizeof( areas ) / sizeof( int );
 				file->Trace( trace, start, end );
 				// if the trace didn't start in solid and nothing was hit
-				if( trace.lastAreaNum && trace.fraction >= 1.0f )
-				{
+				if ( trace.lastAreaNum && trace.fraction >= 1.0f ) {
 					// the trace end point must be in the goal area
-					if( trace.lastAreaNum == area2num )
-					{
+					if ( trace.lastAreaNum == area2num ) {
 						// don't create reachability if going through a cluster portal
-						for( i = 0; i < trace.numAreas; i++ )
-						{
-							if( AreaIsClusterPortal( trace.areas[i] ) )
-							{
+						for ( i = 0; i < trace.numAreas; i++ ) {
+							if ( AreaIsClusterPortal( trace.areas[i] ) ) {
 								break;
 							}
 						}
-						if( i >= trace.numAreas )
-						{
+						if ( i >= trace.numAreas ) {
 							// create a walk off ledge reachability from area1 to area2
 							walkOffLedgeReach = new idReachability_WalkOffLedge();
 							walkOffLedgeReach->travelType = TFL_WALKOFFLEDGE;
@@ -865,37 +759,32 @@ bool idAASReach::Reachability_Step_Barrier_WaterJump_WalkOffLedge( int area1num,
 idAASReach::Reachability_WalkOffLedge
 ================
 */
-void idAASReach::Reachability_WalkOffLedge( int areaNum )
-{
+void idAASReach::Reachability_WalkOffLedge( int areaNum ) {
 	int i, j, faceNum, edgeNum, side, reachAreaNum, p, areas[10];
-	aasArea_t* area;
-	aasFace_t* face;
-	aasEdge_t* edge;
+	aasArea_t * area;
+	aasFace_t * face;
+	aasEdge_t * edge;
 	idPlane* plane;
 	idVec3 v1, v2, mid, dir, testEnd;
 	idReachability_WalkOffLedge* reach;
 	aasTrace_t trace;
 
-	if( !AreaHasFloor( areaNum ) || CanSwimInArea( areaNum ) )
-	{
+	if ( !AreaHasFloor( areaNum ) || CanSwimInArea( areaNum ) ) {
 		return;
 	}
 
 	area = &file->areas[areaNum];
 
-	for( i = 0; i < area->numFaces; i++ )
-	{
+	for ( i = 0; i < area->numFaces; i++ ) {
 		faceNum = file->faceIndex[area->firstFace + i];
 		face = &file->faces[abs( faceNum )];
 
 		// face must be a floor face
-		if( !( face->flags & FACE_FLOOR ) )
-		{
+		if ( !( face->flags & FACE_FLOOR ) ) {
 			continue;
 		}
 
-		for( j = 0; j < face->numEdges; j++ )
-		{
+		for ( j = 0; j < face->numEdges; j++ ) {
 
 			edgeNum = file->edgeIndex[face->firstEdge + j];
 			edge = &file->edges[abs( edgeNum )];
@@ -923,32 +812,25 @@ void idAASReach::Reachability_WalkOffLedge( int areaNum )
 			file->Trace( trace, mid, testEnd );
 
 			reachAreaNum = trace.lastAreaNum;
-			if( !reachAreaNum || reachAreaNum == areaNum )
-			{
+			if ( !reachAreaNum || reachAreaNum == areaNum ) {
 				continue;
 			}
-			if( idMath::Fabs( mid[2] - trace.endpos[2] ) > file->settings.maxFallHeight )
-			{
+			if ( idMath::Fabs( mid[2] - trace.endpos[2] ) > file->settings.maxFallHeight ) {
 				continue;
 			}
-			if( !AreaHasFloor( reachAreaNum ) && !CanSwimInArea( reachAreaNum ) )
-			{
+			if ( !AreaHasFloor( reachAreaNum ) && !CanSwimInArea( reachAreaNum ) ) {
 				continue;
 			}
-			if( ReachabilityExists( areaNum, reachAreaNum ) )
-			{
+			if ( ReachabilityExists( areaNum, reachAreaNum ) ) {
 				continue;
 			}
 			// if not going through a cluster portal
-			for( p = 0; p < trace.numAreas; p++ )
-			{
-				if( AreaIsClusterPortal( trace.areas[p] ) )
-				{
+			for ( p = 0; p < trace.numAreas; p++ ) {
+				if ( AreaIsClusterPortal( trace.areas[p] ) ) {
 					break;
 				}
 			}
-			if( p < trace.numAreas )
-			{
+			if ( p < trace.numAreas ) {
 				continue;
 			}
 
@@ -970,21 +852,17 @@ void idAASReach::Reachability_WalkOffLedge( int areaNum )
 idAASReach::FlagReachableAreas
 ================
 */
-void idAASReach::FlagReachableAreas( idAASFileLocal* file )
-{
+void idAASReach::FlagReachableAreas( idAASFileLocal* file ) {
 	int i, numReachableAreas;
 
 	numReachableAreas = 0;
-	for( i = 1; i < file->areas.Num(); i++ )
-	{
+	for ( i = 1; i < file->areas.Num(); i++ ) {
 
-		if( ( file->areas[i].flags & ( AREA_FLOOR | AREA_LADDER ) ) ||
-				( file->areas[i].contents & AREACONTENTS_WATER ) )
-		{
+		if ( ( file->areas[i].flags & ( AREA_FLOOR | AREA_LADDER ) ) ||
+				( file->areas[i].contents & AREACONTENTS_WATER ) ) {
 			file->areas[i].flags |= AREA_REACHABLE_WALK;
 		}
-		if( file->GetSettings().allowFlyReachabilities )
-		{
+		if ( file->GetSettings().allowFlyReachabilities ) {
 			file->areas[i].flags |= AREA_REACHABLE_FLY;
 		}
 		numReachableAreas++;
@@ -998,8 +876,7 @@ void idAASReach::FlagReachableAreas( idAASFileLocal* file )
 idAASReach::Build
 ================
 */
-bool idAASReach::Build( const idMapFile* mapFile, idAASFileLocal* file )
-{
+bool idAASReach::Build( const idMapFile* mapFile, idAASFileLocal* file ) {
 	int i, j, lastPercent, percent;
 
 	this->mapFile = mapFile;
@@ -1013,46 +890,36 @@ bool idAASReach::Build( const idMapFile* mapFile, idAASFileLocal* file )
 
 	FlagReachableAreas( file );
 
-	for( i = 1; i < file->areas.Num(); i++ )
-	{
-		if( !( file->areas[i].flags & AREA_REACHABLE_WALK ) )
-		{
+	for ( i = 1; i < file->areas.Num(); i++ ) {
+		if ( !( file->areas[i].flags & AREA_REACHABLE_WALK ) ) {
 			continue;
 		}
-		if( file->GetSettings().allowSwimReachabilities )
-		{
+		if ( file->GetSettings().allowSwimReachabilities ) {
 			Reachability_Swim( i );
 		}
 		Reachability_EqualFloorHeight( i );
 	}
 
 	lastPercent = -1;
-	for( i = 1; i < file->areas.Num(); i++ )
-	{
+	for ( i = 1; i < file->areas.Num(); i++ ) {
 
-		if( !( file->areas[i].flags & AREA_REACHABLE_WALK ) )
-		{
+		if ( !( file->areas[i].flags & AREA_REACHABLE_WALK ) ) {
 			continue;
 		}
 
-		for( j = 0; j < file->areas.Num(); j++ )
-		{
-			if( i == j )
-			{
+		for ( j = 0; j < file->areas.Num(); j++ ) {
+			if ( i == j ) {
 				continue;
 			}
 
-			if( !( file->areas[j].flags & AREA_REACHABLE_WALK ) )
-			{
+			if ( !( file->areas[j].flags & AREA_REACHABLE_WALK ) ) {
 				continue;
 			}
 
-			if( ReachabilityExists( i, j ) )
-			{
+			if ( ReachabilityExists( i, j ) ) {
 				continue;
 			}
-			if( Reachability_Step_Barrier_WaterJump_WalkOffLedge( i, j ) )
-			{
+			if ( Reachability_Step_Barrier_WaterJump_WalkOffLedge( i, j ) ) {
 				continue;
 			}
 		}
@@ -1060,17 +927,14 @@ bool idAASReach::Build( const idMapFile* mapFile, idAASFileLocal* file )
 		//Reachability_WalkOffLedge( i );
 
 		percent = 100 * i / file->areas.Num();
-		if( percent > lastPercent )
-		{
+		if ( percent > lastPercent ) {
 			common->Printf( "\r%6d%%", percent );
 			lastPercent = percent;
 		}
 	}
 
-	if( file->GetSettings().allowFlyReachabilities )
-	{
-		for( i = 1; i < file->areas.Num(); i++ )
-		{
+	if ( file->GetSettings().allowFlyReachabilities ) {
+		for ( i = 1; i < file->areas.Num(); i++ ) {
 			Reachability_Fly( i );
 		}
 	}

@@ -31,11 +31,11 @@ If you have questions concerning this license or the applicable additional terms
 #include <SDL.h>
 
 #ifndef DEBUGGERMESSAGES_H_
-	#include "DebuggerMessages.h"
+#include "DebuggerMessages.h"
 #endif
 
 #ifndef DEBUGGERBREAKPOINT_H_
-	#include "DebuggerBreakpoint.h"
+#include "DebuggerBreakpoint.h"
 #endif
 
 #include "../framework/Game.h"
@@ -45,8 +45,7 @@ class idProgram;
 class function_t;
 typedef struct prstack_s prstack_t;
 
-class rvDebuggerServer
-{
+class rvDebuggerServer {
 public:
 
 	rvDebuggerServer( );
@@ -61,9 +60,9 @@ public:
 
 	void		CheckBreakpoints( idInterpreter* interpreter, idProgram* program, int instructionPointer );
 
-	void		Print( const char* text );
+	void		Print( const char * text );
 
-	void		OSPathToRelativePath( const char* osPath, idStr& qpath );
+	void		OSPathToRelativePath( const char * osPath, idStr& qpath );
 
 	bool		GameSuspended();
 private:
@@ -74,7 +73,7 @@ private:
 	void		Resume();
 
 	void		SendMessage( EDebuggerMessage dbmsg );
-	void		SendPacket( void* data, int datasize );
+	void		SendPacket( void * data, int datasize );
 
 	// Message handlers
 	void		HandleAddBreakpoint( idBitMsg* msg );
@@ -90,23 +89,23 @@ private:
 	bool							mConnected;
 	netadr_t						mClientAdr;
 	idPort							mPort;
-	idList<rvDebuggerBreakpoint*>	mBreakpoints;
-	SDL_mutex*						mCriticalSection;
+	idList < rvDebuggerBreakpoint * >	mBreakpoints;
+	SDL_mutex			*			mCriticalSection;
 
 
-	SDL_cond*						mGameThreadBreakCond;
-	SDL_mutex*						mGameThreadBreakLock;
+	SDL_cond			*			mGameThreadBreakCond;
+	SDL_mutex			*			mGameThreadBreakLock;
 	bool							mBreak;
 
 	bool							mBreakNext;
 	bool							mBreakStepOver;
 	bool							mBreakStepInto;
 	int								mBreakStepOverDepth;
-	const function_t*				mBreakStepOverFunc1;
-	const function_t*				mBreakStepOverFunc2;
-	idProgram*						mBreakProgram;
+	const function_t		*		mBreakStepOverFunc1;
+	const function_t		*		mBreakStepOverFunc2;
+	idProgram			*			mBreakProgram;
 	int								mBreakInstructionPointer;
-	idInterpreter*					mBreakInterpreter;
+	idInterpreter			*		mBreakInterpreter;
 
 	idStr							mLastStatementFile;
 	int								mLastStatementLine;
@@ -120,8 +119,7 @@ private:
 rvDebuggerServer::IsConnected
 ================
 */
-ID_INLINE bool rvDebuggerServer::IsConnected()
-{
+ID_INLINE bool rvDebuggerServer::IsConnected() {
 	return mConnected;
 }
 
@@ -130,8 +128,7 @@ ID_INLINE bool rvDebuggerServer::IsConnected()
 rvDebuggerServer::SendPacket
 ================
 */
-ID_INLINE void rvDebuggerServer::SendPacket( void* data, int size )
-{
+ID_INLINE void rvDebuggerServer::SendPacket( void * data, int size ) {
 	mPort.SendPacket( mClientAdr, data, size );
 }
 
@@ -140,8 +137,7 @@ ID_INLINE void rvDebuggerServer::SendPacket( void* data, int size )
 rvDebuggerServer::GameSuspended
 ================
 */
-ID_INLINE bool rvDebuggerServer::GameSuspended()
-{
+ID_INLINE bool rvDebuggerServer::GameSuspended() {
 	return mBreak;
 }
 

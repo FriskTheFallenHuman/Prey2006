@@ -36,8 +36,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #define	GENAV_ITEMHEIGHT	22
 
-rvGENavigator::rvGENavigator( )
-{
+rvGENavigator::rvGENavigator( ) {
 	mWnd = NULL;
 	mWorkspace = NULL;
 	mVisibleIcon = NULL;
@@ -53,8 +52,7 @@ rvGENavigator::Create
 Creates the navigator window
 ================
 */
-bool rvGENavigator::Create( HWND parent, bool visible )
-{
+bool rvGENavigator::Create( HWND parent, bool visible ) {
 	WNDCLASSEX wndClass;
 	memset( &wndClass, 0, sizeof( wndClass ) );
 	wndClass.cbSize = sizeof( WNDCLASSEX );
@@ -83,13 +81,11 @@ bool rvGENavigator::Create( HWND parent, bool visible )
 						   win32.hInstance,
 						   this );
 
-	if( !mWnd )
-	{
+	if ( !mWnd ) {
 		return false;
 	}
 
-	if( !gApp.GetOptions().GetWindowPlacement( "navigator", mWnd ) )
-	{
+	if ( !gApp.GetOptions().GetWindowPlacement( "navigator", mWnd ) ) {
 		RECT rParent;
 		RECT rNav;
 
@@ -114,8 +110,7 @@ Draw3dRect
 Draws a 3d rectangle using the given brushes
 ================
 */
-void Draw3dRect( HDC hDC, RECT* rect, HBRUSH topLeft, HBRUSH bottomRight )
-{
+void Draw3dRect( HDC hDC, RECT* rect, HBRUSH topLeft, HBRUSH bottomRight ) {
 	RECT rOut;
 
 	SetRect( &rOut, rect->left, rect->top, rect->right - 1, rect->top + 1 );
@@ -138,12 +133,10 @@ rvGENavigator::WndProc
 Window Procedure
 ================
 */
-LRESULT CALLBACK rvGENavigator::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-	rvGENavigator* nav = ( rvGENavigator* ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
+LRESULT CALLBACK rvGENavigator::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam ) {
+	rvGENavigator* nav = ( rvGENavigator * ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
 
-	switch( msg )
-	{
+	switch ( msg ) {
 		case WM_INITMENUPOPUP:
 			return SendMessage( gApp.GetMDIFrame( ), msg, wParam, lParam );
 
@@ -163,13 +156,11 @@ LRESULT CALLBACK rvGENavigator::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPA
 			nav->Show( false );
 			return 0;
 
-		case WM_DRAWITEM:
-		{
-			DRAWITEMSTRUCT*	dis = ( DRAWITEMSTRUCT* ) lParam;
-			idWindow*		window = ( idWindow* )dis->itemData;
+		case WM_DRAWITEM: {
+			DRAWITEMSTRUCT*	dis = ( DRAWITEMSTRUCT * ) lParam;
+			idWindow*		window = ( idWindow * )dis->itemData;
 
-			if( window )
-			{
+			if ( window ) {
 				rvGEWindowWrapper*	wrapper	= rvGEWindowWrapper::GetWrapper( window );
 				idStr				name    = window->GetName();
 				RECT				rDraw;
@@ -179,10 +170,8 @@ LRESULT CALLBACK rvGENavigator::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPA
 				idWindow* parent = window;
 				offset = 1;
 				disabled = false;
-				while( parent = parent->GetParent( ) )
-				{
-					if( rvGEWindowWrapper::GetWrapper( parent )->IsHidden( ) )
-					{
+				while ( parent = parent->GetParent( ) ) {
+					if ( rvGEWindowWrapper::GetWrapper( parent )->IsHidden( ) ) {
 						disabled = true;
 					}
 
@@ -204,8 +193,7 @@ LRESULT CALLBACK rvGENavigator::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPA
 				InflateRect( &rDraw, -3, -3 );
 				Draw3dRect( dis->hDC, &rDraw, GetSysColorBrush( COLOR_3DSHADOW ), GetSysColorBrush( COLOR_3DHILIGHT ) );
 
-				if( !wrapper->IsHidden( ) )
-				{
+				if ( !wrapper->IsHidden( ) ) {
 					DrawIconEx( dis->hDC, rDraw.left, rDraw.top, disabled ? nav->mVisibleIconDisabled : nav->mVisibleIcon, 16, 16, 0, NULL, DI_NORMAL );
 				}
 
@@ -213,23 +201,16 @@ LRESULT CALLBACK rvGENavigator::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPA
 				rDraw.left += GENAV_ITEMHEIGHT;
 				rDraw.left += 1;
 
-				if( dis->itemState & ODS_SELECTED )
-				{
+				if ( dis->itemState & ODS_SELECTED ) {
 					FillRect( dis->hDC, &rDraw, GetSysColorBrush( COLOR_HIGHLIGHT ) );
-				}
-				else
-				{
+				} else {
 					FillRect( dis->hDC, &rDraw, GetSysColorBrush( COLOR_WINDOW ) );
 				}
 
-				if( wrapper->CanHaveChildren( ) && window->GetChildCount( ) )
-				{
-					if( wrapper->IsExpanded( ) )
-					{
+				if ( wrapper->CanHaveChildren( ) && window->GetChildCount( ) ) {
+					if ( wrapper->IsExpanded( ) ) {
 						DrawIconEx( dis->hDC, rDraw.left + offset, rDraw.top + 3, nav->mCollapseIcon, 16, 16, 0, NULL, DI_NORMAL );
-					}
-					else
-					{
+					} else {
 						DrawIconEx( dis->hDC, rDraw.left + offset, rDraw.top + 3, nav->mExpandIcon, 16, 16, 0, NULL, DI_NORMAL );
 					}
 				}
@@ -250,8 +231,7 @@ LRESULT CALLBACK rvGENavigator::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPA
 				SetTextColor( dis->hDC, GetSysColor( colorIndex ) );
 				DrawTextA( dis->hDC, name, name.Length(), &rDraw, DT_LEFT | DT_VCENTER | DT_SINGLELINE );
 
-				if( wrapper->GetVariableDict().GetNumKeyVals( ) || wrapper->GetScriptDict().GetNumKeyVals( ) )
-				{
+				if ( wrapper->GetVariableDict().GetNumKeyVals( ) || wrapper->GetScriptDict().GetNumKeyVals( ) ) {
 					DrawIconEx( dis->hDC, dis->rcItem.right - 16, ( dis->rcItem.bottom + dis->rcItem.top ) / 2 - 6, ( dis->itemState & ODS_SELECTED ) ? nav->mScriptsLightIcon : nav->mScriptsIcon, 13, 13, 0, NULL, DI_NORMAL );
 				}
 			}
@@ -259,21 +239,19 @@ LRESULT CALLBACK rvGENavigator::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPA
 			break;
 		}
 
-		case WM_MEASUREITEM:
-		{
-			MEASUREITEMSTRUCT* mis = ( MEASUREITEMSTRUCT* ) lParam;
+		case WM_MEASUREITEM: {
+			MEASUREITEMSTRUCT* mis = ( MEASUREITEMSTRUCT * ) lParam;
 			mis->itemHeight = 22;
 			break;
 		}
 
-		case WM_CREATE:
-		{
+		case WM_CREATE: {
 			LPCREATESTRUCT	cs;
 			LVCOLUMN		col;
 
 			// Attach the class to the window first
 			cs = ( LPCREATESTRUCT ) lParam;
-			nav = ( rvGENavigator* ) cs->lpCreateParams;
+			nav = ( rvGENavigator * ) cs->lpCreateParams;
 			SetWindowLongPtr( hWnd, GWLP_USERDATA, ( LONG_PTR )nav );
 
 			// Create the List view
@@ -292,8 +270,7 @@ LRESULT CALLBACK rvGENavigator::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPA
 			break;
 		}
 
-		case WM_SIZE:
-		{
+		case WM_SIZE: {
 			RECT rClient;
 			MoveWindow( nav->mTree, 0, 0, LOWORD( lParam ), HIWORD( lParam ), TRUE );
 			GetClientRect( nav->mTree, &rClient );
@@ -304,25 +281,21 @@ LRESULT CALLBACK rvGENavigator::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPA
 		case WM_NCACTIVATE:
 			return gApp.ToolWindowActivate( gApp.GetMDIFrame(), msg, wParam, lParam );
 
-		case WM_NOTIFY:
-		{
+		case WM_NOTIFY: {
 			LPNMHDR nh;
 
 			nh = ( LPNMHDR ) lParam;
 
-			switch( nh->code )
-			{
+			switch ( nh->code ) {
 				case NM_CLICK:
-				case NM_DBLCLK:
-				{
+				case NM_DBLCLK: {
 					DWORD dwpos = GetMessagePos();
 					LVHITTESTINFO info;
 					info.pt.x = LOWORD( dwpos );
 					info.pt.y = HIWORD( dwpos );
 					MapWindowPoints( HWND_DESKTOP, nh->hwndFrom, &info.pt, 1 );
 					int index = ListView_HitTest( nav->mTree, &info );
-					if( index != -1 )
-					{
+					if ( index != -1 ) {
 						RECT	rItem;
 						int		offset;
 						ListView_GetItemRect( nav->mTree, index, &rItem, LVIR_BOUNDS );
@@ -330,40 +303,28 @@ LRESULT CALLBACK rvGENavigator::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPA
 						item.mask = LVIF_PARAM;
 						item.iItem = index;
 						ListView_GetItem( nav->mTree, &item );
-						idWindow* window = ( idWindow* )item.lParam;
+						idWindow* window = ( idWindow * )item.lParam;
 						rvGEWindowWrapper* wrapper = rvGEWindowWrapper::GetWrapper( window );
 
 						offset = wrapper->GetDepth( ) * 10 + 1;
 
-						if( info.pt.x < GENAV_ITEMHEIGHT )
-						{
-							if( !rvGEWindowWrapper::GetWrapper( window )->IsHidden( ) )
-							{
+						if ( info.pt.x < GENAV_ITEMHEIGHT ) {
+							if ( !rvGEWindowWrapper::GetWrapper( window )->IsHidden( ) ) {
 								nav->mWorkspace->HideWindow( window );
-							}
-							else
-							{
+							} else {
 								nav->mWorkspace->UnhideWindow( window );
 							}
-						}
-						else if( info.pt.x > GENAV_ITEMHEIGHT + offset && info.pt.x < GENAV_ITEMHEIGHT + offset + 16 )
-						{
-							if( wrapper->CanHaveChildren( ) && window->GetChildCount( ) )
-							{
-								if( wrapper->IsExpanded( ) )
-								{
+						} else if ( info.pt.x > GENAV_ITEMHEIGHT + offset && info.pt.x < GENAV_ITEMHEIGHT + offset + 16 ) {
+							if ( wrapper->CanHaveChildren( ) && window->GetChildCount( ) ) {
+								if ( wrapper->IsExpanded( ) ) {
 									wrapper->Collapse( );
 									nav->Update( );
-								}
-								else
-								{
+								} else {
 									wrapper->Expand( );
 									nav->Update( );
 								}
 							}
-						}
-						else if( nh->code == NM_DBLCLK )
-						{
+						} else if ( nh->code == NM_DBLCLK ) {
 							SendMessage( gApp.GetMDIFrame( ), WM_COMMAND, MAKELONG( ID_GUIED_ITEM_PROPERTIES, 0 ), 0 );
 						}
 					}
@@ -371,8 +332,7 @@ LRESULT CALLBACK rvGENavigator::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPA
 					break;
 				}
 
-				case NM_RCLICK:
-				{
+				case NM_RCLICK: {
 					DWORD dwpos = GetMessagePos();
 					LVHITTESTINFO info;
 					info.pt.x = LOWORD( dwpos );
@@ -380,8 +340,7 @@ LRESULT CALLBACK rvGENavigator::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPA
 					MapWindowPoints( HWND_DESKTOP, nh->hwndFrom, &info.pt, 1 );
 					int index = ListView_HitTest( nav->mTree, &info );
 
-					if( index != -1 )
-					{
+					if ( index != -1 ) {
 						ClientToScreen( hWnd, &info.pt );
 						HMENU menu = GetSubMenu( LoadMenu( gApp.GetInstance(), MAKEINTRESOURCE( IDR_GUIED_ITEM_POPUP ) ), 0 );
 						TrackPopupMenu( menu, TPM_RIGHTBUTTON | TPM_LEFTALIGN, info.pt.x, info.pt.y, 0, gApp.GetMDIFrame( ), NULL );
@@ -391,23 +350,18 @@ LRESULT CALLBACK rvGENavigator::WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPA
 					break;
 				}
 
-				case LVN_ITEMCHANGED:
-				{
-					NMLISTVIEW* nml = ( NMLISTVIEW* ) nh;
-					if( ( nml->uNewState & LVIS_SELECTED ) != ( nml->uOldState & LVIS_SELECTED ) )
-					{
+				case LVN_ITEMCHANGED: {
+					NMLISTVIEW* nml = ( NMLISTVIEW * ) nh;
+					if ( ( nml->uNewState & LVIS_SELECTED ) != ( nml->uOldState & LVIS_SELECTED ) ) {
 						LVITEM item;
 						item.iItem = nml->iItem;
 						item.mask = LVIF_PARAM;
 						ListView_GetItem( nav->mTree, &item );
 
-						if( nml->uNewState & LVIS_SELECTED )
-						{
-							nav->mWorkspace->GetSelectionMgr().Add( ( idWindow* )item.lParam, false );
-						}
-						else
-						{
-							nav->mWorkspace->GetSelectionMgr().Remove( ( idWindow* )item.lParam );
+						if ( nml->uNewState & LVIS_SELECTED ) {
+							nav->mWorkspace->GetSelectionMgr().Add( ( idWindow * )item.lParam, false );
+						} else {
+							nav->mWorkspace->GetSelectionMgr().Remove( ( idWindow * )item.lParam );
 						}
 					}
 					break;
@@ -428,18 +382,15 @@ rvGENavigator::ListWndProc
 Window Procedure for the embedded list control
 ================
 */
-LRESULT CALLBACK rvGENavigator::ListWndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-	rvGENavigator* nav = ( rvGENavigator* ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
+LRESULT CALLBACK rvGENavigator::ListWndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam ) {
+	rvGENavigator* nav = ( rvGENavigator * ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
 	assert( nav );
 
-	switch( msg )
-	{
+	switch ( msg ) {
 		case WM_KEYDOWN:
 		case WM_KEYUP:
 		case WM_CHAR:
-			if( nav->mWorkspace )
-			{
+			if ( nav->mWorkspace ) {
 				return SendMessage( nav->mWorkspace->GetWindow(), msg, wParam, lParam );
 			}
 			break;
@@ -455,8 +406,7 @@ rvGENavigator::AddWindow
 Adds a new window to the navigator
 ================
 */
-void rvGENavigator::AddWindow( idWindow* window )
-{
+void rvGENavigator::AddWindow( idWindow* window ) {
 	int					index;
 	LVITEM				item;
 	rvGEWindowWrapper*	wrapper;
@@ -464,8 +414,7 @@ void rvGENavigator::AddWindow( idWindow* window )
 	wrapper = rvGEWindowWrapper::GetWrapper( window );
 
 	// Dont add deleted windows
-	if( !wrapper || wrapper->IsDeleted( ) )
-	{
+	if ( !wrapper || wrapper->IsDeleted( ) ) {
 		return;
 	}
 
@@ -479,20 +428,17 @@ void rvGENavigator::AddWindow( idWindow* window )
 	item.stateMask = LVIS_SELECTED;
 	ListView_InsertItem( mTree, &item );
 
-	if( item.state & LVIS_SELECTED )
-	{
+	if ( item.state & LVIS_SELECTED ) {
 		ListView_EnsureVisible( mTree, item.iItem, false );
 	}
 
 	// Dont continue if not expanded.
-	if( !wrapper->IsExpanded( ) )
-	{
+	if ( !wrapper->IsExpanded( ) ) {
 		return;
 	}
 
 	// Insert all the child windows into the tree
-	for( index = 0; index < wrapper->GetChildCount(); index ++ )
-	{
+	for ( index = 0; index < wrapper->GetChildCount(); index ++ ) {
 		AddWindow( wrapper->GetChild( index ) );
 	}
 }
@@ -504,8 +450,7 @@ rvGENavigator::SetWorkspace
 Sets a new workspace for the navigator window
 ================
 */
-void rvGENavigator::SetWorkspace( rvGEWorkspace* workspace )
-{
+void rvGENavigator::SetWorkspace( rvGEWorkspace* workspace ) {
 	mWorkspace = workspace;
 
 	Update( );
@@ -518,14 +463,12 @@ rvGENavigator::Update
 Updates the contents of the navigator window from the current workspace
 ================
 */
-void rvGENavigator::Update()
-{
+void rvGENavigator::Update() {
 	// Clear the list first
 	ListView_DeleteAllItems( mTree );
 
 	// Add starting with the desktop window
-	if( mWorkspace )
-	{
+	if ( mWorkspace ) {
 		AddWindow( mWorkspace->GetInterface( )->GetDesktop( ) );
 	}
 
@@ -543,13 +486,11 @@ rvGENavigator::UpdateSelection
 Updates the currently selected items
 ================
 */
-void rvGENavigator::UpdateSelections()
-{
+void rvGENavigator::UpdateSelections() {
 	int count = ListView_GetItemCount( mTree );
 	int i;
 
-	for( i = 0; i < count; i++ )
-	{
+	for ( i = 0; i < count; i++ ) {
 		LVITEM				item;
 		idWindow*			window;
 		rvGEWindowWrapper*	wrapper;
@@ -557,13 +498,12 @@ void rvGENavigator::UpdateSelections()
 		item.iItem = i;
 		item.mask = LVIF_PARAM;
 		ListView_GetItem( mTree, &item );
-		window = ( idWindow* ) item.lParam;
+		window = ( idWindow * ) item.lParam;
 		wrapper = rvGEWindowWrapper::GetWrapper( window );
 
 		ListView_SetItemState( mTree, i, wrapper->IsSelected( ) ? LVIS_SELECTED : 0, LVIS_SELECTED );
 
-		if( wrapper->IsSelected( ) )
-		{
+		if ( wrapper->IsSelected( ) ) {
 			ListView_EnsureVisible( mTree, i, false );
 		}
 	}
@@ -576,8 +516,7 @@ rvGENavigator::Refresh
 Repaints the navigator window
 ================
 */
-void rvGENavigator::Refresh()
-{
+void rvGENavigator::Refresh() {
 	InvalidateRect( mTree, NULL, FALSE );
 //	UpdateWindow ( mTree );
 }
@@ -589,8 +528,7 @@ rvGENavigator::Show
 Shows and hides the navigator window
 ================
 */
-void rvGENavigator::Show( bool visible )
-{
+void rvGENavigator::Show( bool visible ) {
 	gApp.GetOptions().SetNavigatorVisible( visible );
 	ShowWindow( mWnd, visible ? SW_SHOW : SW_HIDE );
 }

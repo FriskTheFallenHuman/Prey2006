@@ -29,8 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFConstraintBallAndSocket dialog
 
-class DialogAFConstraintBallAndSocket : public CDialog
-{
+class DialogAFConstraintBallAndSocket : public CDialog {
 
 	DECLARE_DYNAMIC( DialogAFConstraintBallAndSocket )
 
@@ -89,8 +88,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	idDeclAF* 			file;
-	idDeclAF_Constraint* constraint;
+	idDeclAF 	*		file;
+	idDeclAF_Constraint * constraint;
 
 	//{{AFX_DATA(DialogAFConstraintBallAndSocket)
 	CComboBox			m_comboAnchorJoint;

@@ -30,8 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // CScaleDialog dialog
 
-class CScaleDialog : public CDialogEx
-{
+class CScaleDialog : public CDialogEx {
 public:
 	CScaleDialog( CWnd* pParent = NULL );   // standard constructor
 	enum { IDD = IDD_DIALOG_SCALE };

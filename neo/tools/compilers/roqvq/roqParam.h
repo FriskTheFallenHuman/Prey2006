@@ -30,15 +30,14 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "gdefs.h"
 
-class roqParam
-{
+class roqParam {
 public:
 
-	const char*		RoqFilename( void );
-	const char*		RoqTempFilename( void );
-	const char*		GetNextImageFilename( void );
-	const char*		SoundFilename( void );
-	void			InitFromFile( const char* fileName );
+	const char	*	RoqFilename( void );
+	const char	*	RoqTempFilename( void );
+	const char	*	GetNextImageFilename( void );
+	const char	*	SoundFilename( void );
+	void			InitFromFile( const char * fileName );
 	void			GetNthInputFileName( idStr& fileName, int n );
 	bool			MoreFrames( void );
 	bool			OutputVectors( void );
@@ -57,8 +56,8 @@ public:
 	idStr			outputFilename;
 	int				numInputFiles;
 private:
-	int*				range;
-	bool*			padding, *padding2;
+	int		*		range;
+	bool		*	padding, * padding2;
 	idStrList		file;
 	idStrList		file2;
 	idStr			soundfile;
@@ -67,11 +66,11 @@ private:
 	idStr			startPal;
 	idStr			endPal;
 	idStr			currentFile;
-	int*				skipnum, *skipnum2;
-	int*				startnum, *startnum2;
-	int*				endnum, *endnum2;
-	int*				numpadding, *numpadding2;
-	int*				numfiles;
+	int		*		skipnum, * skipnum2;
+	int		*		startnum, * startnum2;
+	int		*		endnum, * endnum2;
+	int		*		numpadding, * numpadding2;
+	int		*		numfiles;
 	byte			keyR, keyG, keyB;
 	int				field;
 	int				realnum;

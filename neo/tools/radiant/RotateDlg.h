@@ -30,8 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // CRotateDlg dialog
 
-class CRotateDlg : public CDialogEx
-{
+class CRotateDlg : public CDialogEx {
 public:
 	CRotateDlg( CWnd* pParent = NULL );   // standard constructor
 

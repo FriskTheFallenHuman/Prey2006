@@ -32,14 +32,12 @@ If you have questions concerning this license or the applicable additional terms
 class idWindow;
 class rvGEWindowWrapper;
 
-typedef bool ( *PFNENUMCHILDRENPROC )( rvGEWindowWrapper* wrapper, void* data );
+typedef bool ( *PFNENUMCHILDRENPROC )( rvGEWindowWrapper* wrapper, void * data );
 
-class rvGEWindowWrapper
-{
+class rvGEWindowWrapper {
 public:
 
-	enum EWindowType
-	{
+	enum EWindowType {
 		WT_UNKNOWN,
 		WT_NORMAL,
 		WT_EDIT,
@@ -54,24 +52,24 @@ public:
 
 	rvGEWindowWrapper( idWindow* window, EWindowType type );
 
-	static rvGEWindowWrapper*	GetWrapper( idWindow* window );
+	static rvGEWindowWrapper	* GetWrapper( idWindow* window );
 
-	idWindow*			GetWindow();
-	idDict&				GetStateDict();
-	idDict&				GetVariableDict();
-	idDict&				GetScriptDict();
-	idRectangle&		GetClientRect();
-	idRectangle&		GetScreenRect();
+	idWindow		*	GetWindow();
+	idDict		&		GetStateDict();
+	idDict		&		GetVariableDict();
+	idDict		&		GetScriptDict();
+	idRectangle	&	GetClientRect();
+	idRectangle	&	GetScreenRect();
 	EWindowType			GetWindowType();
 	int					GetChildCount();
 	int					GetDepth();
-	idWindow*			GetChild( int index );
+	idWindow		*	GetChild( int index );
 
 	void				SetRect( idRectangle& rect );
 	void				SetState( const idDict& dict );
-	void				SetStateKey( const char* key, const char* value, bool update = true );
-	void				DeleteStateKey( const char* key );
-	bool				VerfiyStateKey( const char* name, const char* value, idStr* result = NULL );
+	void				SetStateKey( const char * key, const char * value, bool update = true );
+	void				DeleteStateKey( const char * key );
+	bool				VerfiyStateKey( const char * name, const char * value, idStr* result = NULL );
 
 	bool				IsFlippedHorz();
 	bool				IsFlippedVert();
@@ -93,14 +91,14 @@ public:
 	bool				Expand();
 	bool				Collapse();
 
-	bool				EnumChildren( PFNENUMCHILDRENPROC proc, void* data );
+	bool				EnumChildren( PFNENUMCHILDRENPROC proc, void * data );
 
-	idWindow*			WindowFromPoint( float x, float y, bool visibleOnly = true );
+	idWindow		*	WindowFromPoint( float x, float y, bool visibleOnly = true );
 
 	void				Finish();
 
-	static EWindowType	StringToWindowType( const char* string );
-	static const char*	WindowTypeToString( EWindowType type );
+	static EWindowType	StringToWindowType( const char * string );
+	static const char	* WindowTypeToString( EWindowType type );
 
 protected:
 
@@ -110,7 +108,7 @@ protected:
 
 	idRectangle		mClientRect;
 	idRectangle		mScreenRect;
-	idWindow*		mWindow;
+	idWindow	*	mWindow;
 	idDict			mState;
 	idDict			mVariables;
 	idDict			mScripts;
@@ -125,98 +123,79 @@ protected:
 	EWindowType		mType;
 };
 
-ID_INLINE idDict& rvGEWindowWrapper::GetStateDict()
-{
+ID_INLINE idDict & rvGEWindowWrapper::GetStateDict() {
 	return mState;
 }
 
-ID_INLINE idDict& rvGEWindowWrapper::GetVariableDict()
-{
+ID_INLINE idDict & rvGEWindowWrapper::GetVariableDict() {
 	return mVariables;
 }
 
-ID_INLINE idDict& rvGEWindowWrapper::GetScriptDict()
-{
+ID_INLINE idDict & rvGEWindowWrapper::GetScriptDict() {
 	return mScripts;
 }
 
-ID_INLINE bool rvGEWindowWrapper::IsFlippedHorz()
-{
+ID_INLINE bool rvGEWindowWrapper::IsFlippedHorz() {
 	return mFlippedHorz;
 }
 
-ID_INLINE bool rvGEWindowWrapper::IsFlippedVert()
-{
+ID_INLINE bool rvGEWindowWrapper::IsFlippedVert() {
 	return mFlippedVert;
 }
 
-ID_INLINE bool rvGEWindowWrapper::IsExpanded()
-{
+ID_INLINE bool rvGEWindowWrapper::IsExpanded() {
 	return mExpanded;
 }
 
-ID_INLINE void rvGEWindowWrapper::SetFlippedHorz( bool f )
-{
+ID_INLINE void rvGEWindowWrapper::SetFlippedHorz( bool f ) {
 	mFlippedHorz = f;
 }
 
-ID_INLINE void rvGEWindowWrapper::SetFlippedVert( bool f )
-{
+ID_INLINE void rvGEWindowWrapper::SetFlippedVert( bool f ) {
 	mFlippedVert = f;
 }
 
-ID_INLINE idRectangle& rvGEWindowWrapper::GetClientRect()
-{
+ID_INLINE idRectangle & rvGEWindowWrapper::GetClientRect() {
 	return mClientRect;
 }
 
-ID_INLINE idRectangle& rvGEWindowWrapper::GetScreenRect()
-{
+ID_INLINE idRectangle & rvGEWindowWrapper::GetScreenRect() {
 	return mScreenRect;
 }
 
-ID_INLINE bool rvGEWindowWrapper::IsHidden()
-{
+ID_INLINE bool rvGEWindowWrapper::IsHidden() {
 	return mHidden;
 }
 
-ID_INLINE bool rvGEWindowWrapper::IsDeleted()
-{
+ID_INLINE bool rvGEWindowWrapper::IsDeleted() {
 	return mDeleted;
 }
 
-ID_INLINE bool rvGEWindowWrapper::IsSelected()
-{
+ID_INLINE bool rvGEWindowWrapper::IsSelected() {
 	return mSelected;
 }
 
-ID_INLINE void rvGEWindowWrapper::SetSelected( bool sel )
-{
+ID_INLINE void rvGEWindowWrapper::SetSelected( bool sel ) {
 	mSelected = sel;
 }
 
-ID_INLINE rvGEWindowWrapper::EWindowType rvGEWindowWrapper::GetWindowType()
-{
+ID_INLINE rvGEWindowWrapper::EWindowType rvGEWindowWrapper::GetWindowType() {
 	return mType;
 }
 
-ID_INLINE void rvGEWindowWrapper::SetWindowType( rvGEWindowWrapper::EWindowType type )
-{
+ID_INLINE void rvGEWindowWrapper::SetWindowType( rvGEWindowWrapper::EWindowType type ) {
 	mType = type;
 }
 
-ID_INLINE idWindow* rvGEWindowWrapper::GetChild( int index )
-{
+ID_INLINE idWindow * rvGEWindowWrapper::GetChild( int index ) {
 	return mWindow->GetChild( index );
 }
 
-ID_INLINE idWindow* rvGEWindowWrapper::GetWindow()
-{
+ID_INLINE idWindow * rvGEWindowWrapper::GetWindow() {
 	return mWindow;
 }
 
-ID_INLINE bool rvGEWindowWrapper::CanMoveAndSize()
-{
+ID_INLINE bool rvGEWindowWrapper::CanMoveAndSize() {
 	return mMoveable;
 }
 

@@ -33,8 +33,7 @@ If you have questions concerning this license or the applicable additional terms
 /**
 * Constructor for MEOptions.
 */
-MEOptions::MEOptions( )
-{
+MEOptions::MEOptions( ) {
 
 	registry.Init( TOOLS_REGISTRY_PATH "MaterialEditor" );
 
@@ -50,15 +49,13 @@ MEOptions::MEOptions( )
 /**
 * Destructor for MEOptions.
 */
-MEOptions::~MEOptions()
-{
+MEOptions::~MEOptions() {
 }
 
 /**
 * Saves the material editor options to the registry.
 */
-bool MEOptions::Save()
-{
+bool MEOptions::Save() {
 
 	registry.SetFloat( "materialTreeWidth", materialTreeWidth );
 	registry.SetFloat( "stageWidth", stageWidth );
@@ -73,11 +70,9 @@ bool MEOptions::Save()
 /**
 * Loads the material editor options from the registry.
 */
-bool MEOptions::Load()
-{
+bool MEOptions::Load() {
 
-	if( !registry.Load() )
-	{
+	if ( !registry.Load() ) {
 		return false;
 	}
 

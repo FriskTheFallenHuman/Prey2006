@@ -36,8 +36,7 @@ If you have questions concerning this license or the applicable additional terms
 #define ZCLIP_COLOUR_DIM	0.8f, 0.0f, 0.8f
 
 
-class CZClip
-{
+class CZClip {
 public:
 	CZClip();
 	~CZClip();

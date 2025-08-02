@@ -36,8 +36,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // CEntKeyFindReplace dialog
 
-class CEntKeyFindReplace : public CDialogEx
-{
+class CEntKeyFindReplace : public CDialogEx {
 // Construction
 public:
 	CEntKeyFindReplace( CString* p_strFindKey,
@@ -69,12 +68,12 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 
-	CString* m_pStrFindKey;
-	CString* m_pStrFindValue;
-	CString* m_pStrReplaceKey;
-	CString* m_pStrReplaceValue;
-	bool* 	 m_pbWholeStringMatchOnly;
-	bool* 	 m_pbSelectAllMatchingEnts;
+	CString * m_pStrFindKey;
+	CString * m_pStrFindValue;
+	CString * m_pStrReplaceKey;
+	CString * m_pStrReplaceValue;
+	bool 	* m_pbWholeStringMatchOnly;
+	bool 	* m_pbSelectAllMatchingEnts;
 
 	void CopyFields();
 };

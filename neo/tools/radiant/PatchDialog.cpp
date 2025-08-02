@@ -34,7 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "PatchDialog.h"
 
 #ifdef _DEBUG
-	#define new DEBUG_NEW
+#define new DEBUG_NEW
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
@@ -43,8 +43,7 @@ If you have questions concerning this license or the applicable additional terms
 CPatchDialog g_PatchDialog;
 
 CPatchDialog::CPatchDialog( CWnd* pParent )
-	: CDialogEx( CPatchDialog::IDD, pParent )
-{
+	: CDialogEx( CPatchDialog::IDD, pParent ) {
 	m_strName = _T( "" );
 	m_fS = 0.0f;
 	m_fT = 0.0f;
@@ -60,8 +59,7 @@ CPatchDialog::CPatchDialog( CWnd* pParent )
 }
 
 
-void CPatchDialog::DoDataExchange( CDataExchange* pDX )
-{
+void CPatchDialog::DoDataExchange( CDataExchange* pDX ) {
 	CDialogEx::DoDataExchange( pDX );
 	DDX_Control( pDX, IDC_SPIN_VSHIFT, m_wndVShift );
 	DDX_Control( pDX, IDC_SPIN_VSCALE, m_wndVScale );
@@ -103,26 +101,22 @@ END_MESSAGE_MAP()
 
 // CPatchDialog message handlers
 
-void CPatchDialog::OnBtnPatchdetails()
-{
+void CPatchDialog::OnBtnPatchdetails() {
 	Patch_NaturalizeSelected( true );
 	Sys_UpdateWindows( W_ALL );
 }
 
-void CPatchDialog::OnBtnPatchfit()
-{
+void CPatchDialog::OnBtnPatchfit() {
 	Patch_FitTexturing();
 	Sys_UpdateWindows( W_ALL );
 }
 
-void CPatchDialog::OnBtnPatchnatural()
-{
+void CPatchDialog::OnBtnPatchnatural() {
 	Patch_NaturalizeSelected();
 	Sys_UpdateWindows( W_ALL );
 }
 
-void CPatchDialog::OnBtnPatchreset()
-{
+void CPatchDialog::OnBtnPatchreset() {
 	//CTextureLayout dlg;
 	//if (dlg.DoModal() == IDOK)
 	//{
@@ -131,36 +125,30 @@ void CPatchDialog::OnBtnPatchreset()
 	//Sys_UpdateWindows(W_ALL);
 }
 
-void CPatchDialog::OnSelchangeComboCol()
-{
+void CPatchDialog::OnSelchangeComboCol() {
 	UpdateRowColInfo();
 }
 
-void CPatchDialog::OnSelchangeComboRow()
-{
+void CPatchDialog::OnSelchangeComboRow() {
 	UpdateRowColInfo();
 }
 
-void CPatchDialog::OnSelchangeComboType()
-{
+void CPatchDialog::OnSelchangeComboType() {
 	// TODO: Add your control notification handler code here
 }
 
-void CPatchDialog::OnOK()
-{
+void CPatchDialog::OnOK() {
 	m_Patch = NULL;
 	CDialogEx::OnOK();
 }
 
-void CPatchDialog::OnDeltaposSpin( NMHDR* pNMHDR, LRESULT* pResult )
-{
-	NM_UPDOWN* pNMUpDown = ( NM_UPDOWN* )pNMHDR;
+void CPatchDialog::OnDeltaposSpin( NMHDR* pNMHDR, LRESULT* pResult ) {
+	NM_UPDOWN* pNMUpDown = ( NM_UPDOWN * )pNMHDR;
 	UpdateSpinners( ( pNMUpDown->iDelta > 0 ), pNMUpDown->hdr.idFrom );
 	*pResult = 0;
 }
 
-BOOL CPatchDialog::OnInitDialog()
-{
+BOOL CPatchDialog::OnInitDialog() {
 	CDialogEx::OnInitDialog();
 
 	m_wndHScale.SetRange( 0, 1000 );
@@ -174,22 +162,18 @@ BOOL CPatchDialog::OnInitDialog()
 	return TRUE;
 }
 
-void CPatchDialog::GetPatchInfo()
-{
+void CPatchDialog::GetPatchInfo() {
 	m_Patch = SinglePatchSelected();
-	if( m_Patch != NULL )
-	{
+	if ( m_Patch != NULL ) {
 		CString str;
 		m_wndRows.ResetContent();
-		for( int i = 0; i < m_Patch->height; i++ )
-		{
+		for ( int i = 0; i < m_Patch->height; i++ ) {
 			str.Format( "%i", i );
 			m_wndRows.AddString( str );
 		}
 		m_wndRows.SetCurSel( 0 );
 		m_wndCols.ResetContent();
-		for( int i = 0; i < m_Patch->width; i++ )
-		{
+		for ( int i = 0; i < m_Patch->width; i++ ) {
 			str.Format( "%i", i );
 			m_wndCols.AddString( str );
 		}
@@ -198,20 +182,16 @@ void CPatchDialog::GetPatchInfo()
 	UpdateRowColInfo();
 }
 
-void CPatchDialog::SetPatchInfo()
-{
+void CPatchDialog::SetPatchInfo() {
 
 }
 
-void DoPatchInspector()
-{
-	if( g_PatchDialog.GetSafeHwnd() == NULL )
-	{
+void DoPatchInspector() {
+	if ( g_PatchDialog.GetSafeHwnd() == NULL ) {
 		g_PatchDialog.Create( IDD_DIALOG_PATCH );
 		CRect rct;
 		LONG lSize = sizeof( rct );
-		if( LoadRegistryInfo( "radiant_patchwindow", &rct, &lSize ) )
-		{
+		if ( LoadRegistryInfo( "radiant_patchwindow", &rct, &lSize ) ) {
 			g_PatchDialog.SetWindowPos( NULL, rct.left, rct.top, 0, 0, SWP_NOSIZE );
 		}
 	}
@@ -219,18 +199,14 @@ void DoPatchInspector()
 	g_PatchDialog.GetPatchInfo();
 }
 
-void UpdatePatchInspector()
-{
-	if( g_PatchDialog.GetSafeHwnd() != NULL )
-	{
+void UpdatePatchInspector() {
+	if ( g_PatchDialog.GetSafeHwnd() != NULL ) {
 		g_PatchDialog.UpdateInfo();
 	}
 }
 
-void CPatchDialog::OnDestroy()
-{
-	if( GetSafeHwnd() )
-	{
+void CPatchDialog::OnDestroy() {
+	if ( GetSafeHwnd() ) {
 		CRect rct;
 		GetWindowRect( rct );
 		SaveRegistryInfo( "radiant_patchwindow", &rct, sizeof( rct ) );
@@ -238,15 +214,12 @@ void CPatchDialog::OnDestroy()
 	CDialog::OnDestroy();
 }
 
-void CPatchDialog::UpdateRowColInfo()
-{
+void CPatchDialog::UpdateRowColInfo() {
 	m_fX = m_fY = m_fZ = m_fS = m_fT = 0.0;
-	if( m_Patch != NULL )
-	{
+	if ( m_Patch != NULL ) {
 		int r = m_wndRows.GetCurSel();
 		int c = m_wndCols.GetCurSel();
-		if( r >= 0 && r < m_Patch->height && c >= 0 && c < m_Patch->width )
-		{
+		if ( r >= 0 && r < m_Patch->height && c >= 0 && c < m_Patch->width ) {
 			m_fX = m_Patch->ctrl( c, r ).xyz[0];
 			m_fY = m_Patch->ctrl( c, r ).xyz[1];
 			m_fZ = m_Patch->ctrl( c, r ).xyz[2];
@@ -257,20 +230,16 @@ void CPatchDialog::UpdateRowColInfo()
 	UpdateData( FALSE );
 }
 
-void CPatchDialog::UpdateInfo()
-{
+void CPatchDialog::UpdateInfo() {
 	GetPatchInfo();
 }
 
-void CPatchDialog::OnApply()
-{
+void CPatchDialog::OnApply() {
 	UpdateData( TRUE );
-	if( m_Patch != NULL )
-	{
+	if ( m_Patch != NULL ) {
 		int r = m_wndRows.GetCurSel();
 		int c = m_wndCols.GetCurSel();
-		if( r >= 0 && r < m_Patch->height && c >= 0 && c < m_Patch->width )
-		{
+		if ( r >= 0 && r < m_Patch->height && c >= 0 && c < m_Patch->width ) {
 			m_Patch->ctrl( c, r ).xyz[0] = m_fX;
 			m_Patch->ctrl( c, r ).xyz[1] = m_fY;
 			m_Patch->ctrl( c, r ).xyz[2] = m_fZ;
@@ -282,8 +251,7 @@ void CPatchDialog::OnApply()
 	}
 }
 
-void CPatchDialog::UpdateSpinners( bool bUp, int nID )
-{
+void CPatchDialog::UpdateSpinners( bool bUp, int nID ) {
 	texdef_t td;
 
 	td.rotate = 0.0;
@@ -293,58 +261,34 @@ void CPatchDialog::UpdateSpinners( bool bUp, int nID )
 
 	UpdateData( TRUE );
 
-	if( nID == IDC_SPIN_ROTATE )
-	{
-		if( bUp )
-		{
+	if ( nID == IDC_SPIN_ROTATE ) {
+		if ( bUp ) {
 			td.rotate = m_fRotate;
-		}
-		else
-		{
+		} else {
 			td.rotate = -m_fRotate;
 		}
-	}
-	else if( nID == IDC_SPIN_HSCALE )
-	{
-		if( bUp )
-		{
+	} else if ( nID == IDC_SPIN_HSCALE ) {
+		if ( bUp ) {
 			td.scale[0] = 1 - m_fHScale;
-		}
-		else
-		{
+		} else {
 			td.scale[0] = 1 + m_fHScale;
 		}
-	}
-	else if( nID == IDC_SPIN_VSCALE )
-	{
-		if( bUp )
-		{
+	} else if ( nID == IDC_SPIN_VSCALE ) {
+		if ( bUp ) {
 			td.scale[1] = 1 - m_fVScale;
-		}
-		else
-		{
+		} else {
 			td.scale[1] = 1 + m_fVScale;
 		}
-	}
-	else if( nID == IDC_SPIN_HSHIFT )
-	{
-		if( bUp )
-		{
+	} else if ( nID == IDC_SPIN_HSHIFT ) {
+		if ( bUp ) {
 			td.shift[0] = m_fHShift;
-		}
-		else
-		{
+		} else {
 			td.shift[0] = -m_fHShift;
 		}
-	}
-	else if( nID == IDC_SPIN_VSHIFT )
-	{
-		if( bUp )
-		{
+	} else if ( nID == IDC_SPIN_VSHIFT ) {
+		if ( bUp ) {
 			td.shift[1] = m_fVShift;
-		}
-		else
-		{
+		} else {
 			td.shift[1] = -m_fVShift;
 		}
 	}

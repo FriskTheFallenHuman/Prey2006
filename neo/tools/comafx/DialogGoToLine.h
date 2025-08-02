@@ -31,8 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogGoToLine dialog
 
-class DialogGoToLine : public CDialog
-{
+class DialogGoToLine : public CDialog {
 
 	DECLARE_DYNAMIC( DialogGoToLine )
 

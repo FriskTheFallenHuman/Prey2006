@@ -29,11 +29,10 @@ If you have questions concerning this license or the applicable additional terms
 #define GEMODIFIERGROUP_H_
 
 #ifndef GEMODIFIER_H_
-	#include "GEModifier.h"
+#include "GEModifier.h"
 #endif
 
-class rvGEModifierGroup : public rvGEModifier
-{
+class rvGEModifierGroup : public rvGEModifier {
 public:
 
 	rvGEModifierGroup( );
@@ -54,12 +53,11 @@ public:
 
 protected:
 
-	idList<rvGEModifier*>	mModifiers;
+	idList<rvGEModifier *>	mModifiers;
 
 };
 
-ID_INLINE int rvGEModifierGroup::GetCount()
-{
+ID_INLINE int rvGEModifierGroup::GetCount() {
 	return mModifiers.Num( );
 }
 

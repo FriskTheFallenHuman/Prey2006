@@ -37,34 +37,27 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 */
 
-class idPathTreeStack
-{
+class idPathTreeStack {
 public:
-	idPathTreeStack()
-	{
+	idPathTreeStack() {
 		size = 0;
 	}
 
 	void				PushRoot( HTREEITEM root );
-	void				Push( HTREEITEM item, const char* name );
-	void				Pop()
-	{
+	void				Push( HTREEITEM item, const char * name );
+	void				Pop() {
 		size--;
 	}
-	HTREEITEM			TopItem() const
-	{
+	HTREEITEM			TopItem() const {
 		return stackItem[size - 1];
 	}
-	const char* 		TopName() const
-	{
+	const char 	*	TopName() const {
 		return stackName[size - 1];
 	}
-	int					TopNameLength() const
-	{
+	int					TopNameLength() const {
 		return stackName[size - 1].Length();
 	}
-	int					Num() const
-	{
+	int					Num() const {
 		return size;
 	}
 
@@ -74,27 +67,24 @@ private:
 	idStr				stackName[128];
 };
 
-ID_INLINE void idPathTreeStack::PushRoot( HTREEITEM root )
-{
+ID_INLINE void idPathTreeStack::PushRoot( HTREEITEM root ) {
 	assert( size == 0 );
 	stackItem[size] = root;
 	stackName[size] = "";
 	size++;
 }
 
-ID_INLINE void idPathTreeStack::Push( HTREEITEM item, const char* name )
-{
+ID_INLINE void idPathTreeStack::Push( HTREEITEM item, const char * name ) {
 	assert( size < 127 );
 	stackItem[size] = item;
 	stackName[size] = stackName[size - 1] + name + "/";
 	size++;
 }
 
-typedef bool ( *treeItemCompare_t )( void* data, HTREEITEM item, const char* name );
+typedef bool ( *treeItemCompare_t )( void * data, HTREEITEM item, const char * name );
 
 
-class CPathTreeCtrl : public CTreeCtrl
-{
+class CPathTreeCtrl : public CTreeCtrl {
 public:
 	CPathTreeCtrl();
 	~CPathTreeCtrl();
@@ -102,7 +92,7 @@ public:
 	HTREEITEM			FindItem( const idStr& pathName );
 	HTREEITEM			InsertPathIntoTree( const idStr& pathName, const int id );
 	HTREEITEM			AddPathToTree( const idStr& pathName, const int id, idPathTreeStack& stack );
-	int					SearchTree( treeItemCompare_t compare, void* data, CPathTreeCtrl& result );
+	int					SearchTree( treeItemCompare_t compare, void * data, CPathTreeCtrl& result );
 
 protected:
 	virtual void		PreSubclassWindow();

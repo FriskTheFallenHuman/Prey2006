@@ -37,8 +37,7 @@ If you have questions concerning this license or the applicable additional terms
 * View that contains the material edit controls. These controls include
 * the stage view, the properties view and the source view.
 */
-class MaterialEditView : public CFormView, public MaterialView, SourceModifyOwner
-{
+class MaterialEditView : public CFormView, public MaterialView, SourceModifyOwner {
 
 public:
 	enum { IDD = IDD_MATERIALEDIT_FORM };
@@ -46,8 +45,8 @@ public:
 	CEdit						m_nameEdit;
 	CSplitterWnd				m_editSplitter;
 
-	StageView*					m_stageView;
-	MaterialPropTreeView*		m_materialPropertyView;
+	StageView			*		m_stageView;
+	MaterialPropTreeView	*	m_materialPropertyView;
 	CTabCtrl					m_tabs;
 	CSyntaxRichEditCtrl			m_textView;
 
@@ -56,7 +55,7 @@ public:
 
 	//MaterialView Interface
 	virtual void	MV_OnMaterialSelectionChange( MaterialDoc* pMaterial );
-	virtual void	MV_OnMaterialNameChanged( MaterialDoc* pMaterial, const char* oldName );
+	virtual void	MV_OnMaterialNameChanged( MaterialDoc* pMaterial, const char * oldName );
 
 	//SourceModifyOwner Interface
 	virtual idStr GetSourceText();

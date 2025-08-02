@@ -36,15 +36,13 @@ If you have questions concerning this license or the applicable additional terms
 * so users of this class should not attempt to use the data field for storage. lparam can
 * be used instead.
 */
-class ToggleListView : public CListView
-{
+class ToggleListView : public CListView {
 
 public:
 	/**
 	* Enumeration that defines the possible states of the toggle button.
 	*/
-	enum
-	{
+	enum {
 		TOGGLE_STATE_DISABLED = 0,
 		TOGGLE_STATE_ON,
 		TOGGLE_STATE_OFF

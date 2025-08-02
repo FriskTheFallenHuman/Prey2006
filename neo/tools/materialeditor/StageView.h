@@ -38,8 +38,7 @@ If you have questions concerning this license or the applicable additional terms
 /**
 * View that handles managing the material stages.
 */
-class StageView : public ToggleListView, public MaterialView
-{
+class StageView : public ToggleListView, public MaterialView {
 
 public:
 	virtual ~StageView();
@@ -47,16 +46,14 @@ public:
 	/**
 	* Defines the type of stages
 	*/
-	enum
-	{
+	enum {
 		STAGE_TYPE_MATERIAL,
 		STAGE_TYPE_STAGE,
 		STAGE_TYPE_SPECIAL_MAP_STAGE
 	};
 
 	//Associates a property view with this stage view
-	void					SetMaterialPropertyView( MaterialPropTreeView* propView )
-	{
+	void					SetMaterialPropertyView( MaterialPropTreeView* propView ) {
 		m_propView = propView;
 	};
 
@@ -65,7 +62,7 @@ public:
 	virtual void			MV_OnMaterialStageAdd( MaterialDoc* pMaterial, int stageNum );
 	virtual void			MV_OnMaterialStageDelete( MaterialDoc* pMaterial, int stageNum );
 	virtual void			MV_OnMaterialStageMove( MaterialDoc* pMaterial, int from, int to );
-	virtual void			MV_OnMaterialAttributeChanged( MaterialDoc* pMaterial, int stage, const char* attribName );
+	virtual void			MV_OnMaterialAttributeChanged( MaterialDoc* pMaterial, int stage, const char * attribName );
 	virtual void			MV_OnMaterialSaved( MaterialDoc* pMaterial );
 
 	//Edit Operation Tests
@@ -119,15 +116,15 @@ protected:
 
 protected:
 
-	MaterialPropTreeView*	m_propView;
-	MaterialDoc*			currentMaterial;
+	MaterialPropTreeView	* m_propView;
+	MaterialDoc		*	currentMaterial;
 
 	//Manual handing of the row dragging
-	CImageList*				dragImage;
+	CImageList		*		dragImage;
 	bool					bDragging;
 	int						dragIndex;
 	int						dropIndex;
-	CWnd*					dropWnd;
+	CWnd			*		dropWnd;
 	CPoint					dropPoint;
 
 	bool					internalChange;

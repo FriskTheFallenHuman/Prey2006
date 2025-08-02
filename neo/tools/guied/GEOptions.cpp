@@ -34,8 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "GEOptions.h"
 
-rvGEOptions::rvGEOptions()
-{
+rvGEOptions::rvGEOptions() {
 	// Grid options
 	mGridColor.Set( 0.2f, 0.2f, 1.0f, 1.0f );
 	mGridWidth = 10;
@@ -61,8 +60,7 @@ rvGEOptions::rvGEOptions()
 rvGEOptions::Init
 ================
 */
-void rvGEOptions::Init()
-{
+void rvGEOptions::Init() {
 	mRegistry.Init( TOOLS_REGISTRY_PATH "GUIEditor" );
 }
 
@@ -73,8 +71,7 @@ rvGEOptions::Save
 Writes the options to the registry so they can later be read using the Load method
 ================
 */
-bool rvGEOptions::Save()
-{
+bool rvGEOptions::Save() {
 	// Write the last page we visited
 	mRegistry.SetLong( "lastOptionsPage", mLastOptionsPage );
 
@@ -99,8 +96,7 @@ bool rvGEOptions::Save()
 
 	// Custom colors
 	int i;
-	for( i = 0; i < 16; i ++ )
-	{
+	for ( i = 0; i < 16; i ++ ) {
 		mRegistry.SetLong( va( "customcol%d", i ), mCustomColors[i] );
 	}
 
@@ -114,10 +110,8 @@ rvGEOptions::Load
 Loads previsouly saved options from the registry
 ================
 */
-bool rvGEOptions::Load()
-{
-	if( !mRegistry.Load( ) )
-	{
+bool rvGEOptions::Load() {
+	if ( !mRegistry.Load( ) ) {
 		return false;
 	}
 
@@ -144,8 +138,7 @@ bool rvGEOptions::Load()
 
 	// Custom colors
 	int i;
-	for( i = 0; i < 16; i ++ )
-	{
+	for ( i = 0; i < 16; i ++ ) {
 		mCustomColors[i] = mRegistry.GetLong( va( "customcol%d", i ) );
 	}
 
@@ -159,34 +152,29 @@ rvGEOptions::SnapRectToGrid
 Snap the rectangle to the grid
 ================
 */
-void rvGEOptions::SnapRectToGrid( idRectangle& rect, bool snapLeft, bool snapTop, bool snapWidth, bool snapHeight )
-{
-	if( snapLeft )
-	{
+void rvGEOptions::SnapRectToGrid( idRectangle& rect, bool snapLeft, bool snapTop, bool snapWidth, bool snapHeight ) {
+	if ( snapLeft ) {
 		float offset = ( int )( rect.x + GetGridWidth() / 2 ) / GetGridWidth() * GetGridWidth();
 		offset -= rect.x;
 		rect.x += offset;
 		rect.w -= offset;
 	}
 
-	if( snapWidth )
-	{
+	if ( snapWidth ) {
 		float offset = ( int )( rect.x + rect.w + GetGridWidth() / 2 ) / GetGridWidth() * GetGridWidth();
 		offset -= rect.x;
 		offset -= rect.w;
 		rect.w += offset;
 	}
 
-	if( snapTop )
-	{
+	if ( snapTop ) {
 		float offset = ( int )( rect.y + GetGridHeight() / 2 ) / GetGridHeight() * GetGridHeight();
 		offset -= rect.y;
 		rect.y += offset;
 		rect.h -= offset;
 	}
 
-	if( snapHeight )
-	{
+	if ( snapHeight ) {
 		float offset = ( int )( rect.y + rect.h + GetGridHeight() / 2 ) / GetGridHeight() * GetGridHeight();
 		offset -= rect.y;
 		offset -= rect.h;

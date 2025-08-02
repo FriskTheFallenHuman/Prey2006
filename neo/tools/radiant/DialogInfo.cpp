@@ -34,21 +34,17 @@ If you have questions concerning this license or the applicable additional terms
 #include "DialogInfo.h"
 
 #ifdef _DEBUG
-	#define new DEBUG_NEW
+#define new DEBUG_NEW
 #endif
 
 // CDialogInfo dialog
 CDialogInfo g_dlgInfo;
 
-void ShowInfoDialog( const char* pText )
-{
-	if( g_dlgInfo.GetSafeHwnd() )
-	{
+void ShowInfoDialog( const char * pText ) {
+	if ( g_dlgInfo.GetSafeHwnd() ) {
 		g_dlgInfo.m_wndInfo.SetWindowText( pText );
 		g_dlgInfo.ShowWindow( SW_SHOW );
-	}
-	else
-	{
+	} else {
 		g_dlgInfo.Create( IDD_DLG_INFORMATION );
 		g_dlgInfo.m_wndInfo.SetWindowText( pText );
 		g_dlgInfo.ShowWindow( SW_SHOW );
@@ -56,23 +52,19 @@ void ShowInfoDialog( const char* pText )
 	g_pParentWnd->SetFocus();
 }
 
-void HideInfoDialog()
-{
-	if( g_dlgInfo.GetSafeHwnd() )
-	{
+void HideInfoDialog() {
+	if ( g_dlgInfo.GetSafeHwnd() ) {
 		g_dlgInfo.ShowWindow( SW_HIDE );
 	}
 }
 
 
 CDialogInfo::CDialogInfo( CWnd* pParent )
-	: CDialogEx( CDialogInfo::IDD, pParent )
-{
+	: CDialogEx( CDialogInfo::IDD, pParent ) {
 }
 
 
-void CDialogInfo::DoDataExchange( CDataExchange* pDX )
-{
+void CDialogInfo::DoDataExchange( CDataExchange* pDX ) {
 	CDialogEx::DoDataExchange( pDX );
 	DDX_Control( pDX, IDC_EDIT1, m_wndInfo );
 }
@@ -82,8 +74,7 @@ END_MESSAGE_MAP()
 
 // CDialogInfo message handlers
 
-BOOL CDialogInfo::OnInitDialog()
-{
+BOOL CDialogInfo::OnInitDialog() {
 	CDialogEx::OnInitDialog();
 	return TRUE;
 }

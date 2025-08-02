@@ -30,8 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // CPatchDensityDlg dialog
 
-class CPatchDensityDlg : public CDialogEx
-{
+class CPatchDensityDlg : public CDialogEx {
 public:
 	CPatchDensityDlg( CWnd* pParent = NULL );   // standard constructor
 

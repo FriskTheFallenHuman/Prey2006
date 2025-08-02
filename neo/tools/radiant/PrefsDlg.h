@@ -30,7 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 #define __PREFSDLG_H__
 
 #if _MSC_VER >= 1000
-	#pragma once
+#pragma once
 #endif // _MSC_VER >= 1000
 
 /////////////////////////////////////////////////////////////////////////////
@@ -38,8 +38,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #define MAX_TEXTURE_QUALITY 3
 
-class CPrefsDlg : public CDialogEx
-{
+class CPrefsDlg : public CDialogEx {
 // Construction
 public:
 	CPrefsDlg( CWnd* pParent = NULL ); // standard constructor

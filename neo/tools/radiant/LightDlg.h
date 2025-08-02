@@ -30,8 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "../common/GLWidget.h"
 
-class CLightInfo
-{
+class CLightInfo {
 public:
 	CLightInfo();
 
@@ -73,8 +72,7 @@ public:
 
 // CLightDlg dialog
 
-class CLightDlg : public CDialogEx
-{
+class CLightDlg : public CDialogEx {
 public:
 	CLightDlg( CWnd* pParent = NULL );   // standard constructor
 	~CLightDlg();
@@ -166,5 +164,5 @@ private:
 	CLightInfo				lightInfo;
 	CLightInfo				lightInfoOriginal;
 	idVec3					color;
-	idGLDrawableMaterial* 	m_drawMaterial;
+	idGLDrawableMaterial *	m_drawMaterial;
 };

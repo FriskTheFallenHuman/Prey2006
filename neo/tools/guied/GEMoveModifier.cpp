@@ -32,9 +32,8 @@ If you have questions concerning this license or the applicable additional terms
 #include "GEApp.h"
 #include "GEMoveModifier.h"
 
-rvGEMoveModifier::rvGEMoveModifier( const char* name, idWindow* window, float x, float y ) :
-	rvGEModifier( name, window )
-{
+rvGEMoveModifier::rvGEMoveModifier( const char * name, idWindow* window, float x, float y ) :
+	rvGEModifier( name, window ) {
 	mOldRect = mWrapper->GetClientRect( );
 
 	mNewRect[0] = mOldRect[0] + x;
@@ -43,33 +42,28 @@ rvGEMoveModifier::rvGEMoveModifier( const char* name, idWindow* window, float x,
 	mNewRect[3] = mOldRect[3];
 }
 
-bool rvGEMoveModifier::Merge( rvGEModifier* mergebase )
-{
-	rvGEMoveModifier* merge = ( rvGEMoveModifier* ) mergebase;
+bool rvGEMoveModifier::Merge( rvGEModifier* mergebase ) {
+	rvGEMoveModifier* merge = ( rvGEMoveModifier * ) mergebase;
 
 	mNewRect = merge->mNewRect;
 
 	return true;
 }
 
-bool rvGEMoveModifier::Apply()
-{
+bool rvGEMoveModifier::Apply() {
 	mWrapper->SetRect( mNewRect );
 
 	return true;
 }
 
-bool rvGEMoveModifier::Undo()
-{
+bool rvGEMoveModifier::Undo() {
 	mWrapper->SetRect( mOldRect );
 
 	return true;
 }
 
-bool rvGEMoveModifier::IsValid()
-{
-	if( !mWindow->GetParent( ) )
-	{
+bool rvGEMoveModifier::IsValid() {
+	if ( !mWindow->GetParent( ) ) {
 		return false;
 	}
 

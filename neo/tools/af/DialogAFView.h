@@ -29,8 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFView dialog
 
-class DialogAFView : public CDialog
-{
+class DialogAFView : public CDialog {
 
 	DECLARE_DYNAMIC( DialogAFView )
 

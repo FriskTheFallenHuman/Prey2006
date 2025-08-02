@@ -30,10 +30,9 @@ If you have questions concerning this license or the applicable additional terms
 
 // CSurfaceDlg dialog
 
-class CSurfaceDlg : public CDialogEx
-{
+class CSurfaceDlg : public CDialogEx {
 	bool m_bPatchMode;
-	CWnd* focusControl;
+	CWnd * focusControl;
 
 public:
 	CSurfaceDlg( CWnd* pParent = NULL );   // standard constructor

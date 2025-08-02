@@ -30,14 +30,13 @@ If you have questions concerning this license or the applicable additional terms
 #define __DIALOGSOUND_H__
 
 #if _MSC_VER > 1000
-	#pragma once
+#pragma once
 #endif // _MSC_VER > 1000
 
 /////////////////////////////////////////////////////////////////////////////
 // CDialogSound dialog
 
-class CDialogSound : public CDialog
-{
+class CDialogSound : public CDialog {
 public:
 	CDialogSound( CWnd* pParent = NULL ); // standard constructor\
 
@@ -120,15 +119,15 @@ private:
 	HTREEITEM				inUseTree;
 private:
 	void					AddSounds( bool rootItem );
-	HTREEITEM				AddStrList( const char* root, const idStrList& list, int id );
-	HTREEITEM				InsertTreeItem( const char* name, const char* fullName, HTREEITEM item );
-	idStr					RebuildItemName( const char* root, HTREEITEM item );
+	HTREEITEM				AddStrList( const char * root, const idStrList& list, int id );
+	HTREEITEM				InsertTreeItem( const char * name, const char * fullName, HTREEITEM item );
+	idStr					RebuildItemName( const char * root, HTREEITEM item );
 	void					UpdateSelectedOrigin( float x, float y, float z );
 	void					AddGroups();
 	void					AddSpeakers();
 	void					AddInUseSounds();
-	void					ApplyChanges( bool volumeOnly = false , bool updateInUseTree = true );
-	void					SetWaveSize( const char* p = NULL );
+	void					ApplyChanges( bool volumeOnly = false, bool updateInUseTree = true );
+	void					SetWaveSize( const char * p = NULL );
 	void					SetVolume( float f );
 	virtual BOOL			PreTranslateMessage( MSG* pMsg );
 };

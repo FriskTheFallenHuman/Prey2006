@@ -39,8 +39,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFConstraintSlider dialog
 
-toolTip_t DialogAFConstraintSlider::toolTips[] =
-{
+toolTip_t DialogAFConstraintSlider::toolTips[] = {
 	{ IDC_RADIO_SLIDER_AXIS_BONE, "use a bone for the slider axis" },
 	{ IDC_RADIO_SLIDER_AXIS_ANGLES, "use angles to set the orientation of the slider axis" },
 	{ IDC_COMBO_SLIDER_AXIS_JOINT1, "bone start joint" },
@@ -62,8 +61,7 @@ DialogAFConstraintSlider::DialogAFConstraintSlider( CWnd* pParent /*=NULL*/ )
 	, m_axisPitch( 0 )
 	, m_axisYaw( 0 )
 	, constraint( NULL )
-	, file( NULL )
-{
+	, file( NULL ) {
 	Create( IDD_DIALOG_AF_CONSTRAINT_SLIDER, pParent );
 	EnableToolTips( TRUE );
 }
@@ -73,8 +71,7 @@ DialogAFConstraintSlider::DialogAFConstraintSlider( CWnd* pParent /*=NULL*/ )
 DialogAFConstraintSlider::~DialogAFConstraintSlider
 ================
 */
-DialogAFConstraintSlider::~DialogAFConstraintSlider()
-{
+DialogAFConstraintSlider::~DialogAFConstraintSlider() {
 }
 
 /*
@@ -82,8 +79,7 @@ DialogAFConstraintSlider::~DialogAFConstraintSlider()
 DialogAFConstraintSlider::DoDataExchange
 ================
 */
-void DialogAFConstraintSlider::DoDataExchange( CDataExchange* pDX )
-{
+void DialogAFConstraintSlider::DoDataExchange( CDataExchange* pDX ) {
 	CDialog::DoDataExchange( pDX );
 	//{{AFX_DATA_MAP(DialogAFConstraintSlider)
 	DDX_Control( pDX, IDC_COMBO_SLIDER_AXIS_JOINT1, m_comboAxisJoint1 );
@@ -98,26 +94,22 @@ void DialogAFConstraintSlider::DoDataExchange( CDataExchange* pDX )
 DialogAFConstraintSlider::InitJointLists
 ================
 */
-void DialogAFConstraintSlider::InitJointLists()
-{
+void DialogAFConstraintSlider::InitJointLists() {
 	m_comboAxisJoint1.ResetContent();
 	m_comboAxisJoint2.ResetContent();
 
-	if( !file )
-	{
+	if ( !file ) {
 		return;
 	}
 
 	const idRenderModel* model = gameEdit->ANIM_GetModelFromName( file->model );
-	if( !model )
-	{
+	if ( !model ) {
 		return;
 	}
 
 	int numJoints = model->NumJoints();
-	for( int i = 0; i < numJoints; i++ )
-	{
-		const char* jointName = model->GetJointName( ( jointHandle_t ) i );
+	for ( int i = 0; i < numJoints; i++ ) {
+		const char * jointName = model->GetJointName( ( jointHandle_t ) i );
 		m_comboAxisJoint1.AddString( jointName );
 		m_comboAxisJoint2.AddString( jointName );
 	}
@@ -128,8 +120,7 @@ void DialogAFConstraintSlider::InitJointLists()
 DialogAFConstraintSlider::LoadFile
 ================
 */
-void DialogAFConstraintSlider::LoadFile( idDeclAF* af )
-{
+void DialogAFConstraintSlider::LoadFile( idDeclAF* af ) {
 	file = af;
 	constraint = NULL;
 	InitJointLists();
@@ -140,8 +131,7 @@ void DialogAFConstraintSlider::LoadFile( idDeclAF* af )
 DialogAFConstraintSlider::SaveFile
 ================
 */
-void DialogAFConstraintSlider::SaveFile()
-{
+void DialogAFConstraintSlider::SaveFile() {
 	SaveConstraint();
 }
 
@@ -150,8 +140,7 @@ void DialogAFConstraintSlider::SaveFile()
 DialogAFConstraintSlider::LoadConstraint
 ================
 */
-void DialogAFConstraintSlider::LoadConstraint( idDeclAF_Constraint* c )
-{
+void DialogAFConstraintSlider::LoadConstraint( idDeclAF_Constraint* c ) {
 	int i, s1, s2;
 	idAngles angles;
 
@@ -163,12 +152,9 @@ void DialogAFConstraintSlider::LoadConstraint( idDeclAF_Constraint* c )
 	angles = constraint->axis.ToVec3().ToAngles();
 	m_axisPitch = angles.pitch;
 	m_axisYaw = angles.yaw;
-	if( constraint->axis.type == idAFVector::VEC_BONEDIR )
-	{
+	if ( constraint->axis.type == idAFVector::VEC_BONEDIR ) {
 		i = IDC_RADIO_SLIDER_AXIS_BONE;
-	}
-	else
-	{
+	} else {
 		i = IDC_RADIO_SLIDER_AXIS_ANGLES;
 		constraint->axis.type = idAFVector::VEC_COORDS;
 	}
@@ -183,27 +169,22 @@ void DialogAFConstraintSlider::LoadConstraint( idDeclAF_Constraint* c )
 DialogAFConstraintSlider::SaveConstraint
 ================
 */
-void DialogAFConstraintSlider::SaveConstraint()
-{
+void DialogAFConstraintSlider::SaveConstraint() {
 	int s1, s2;
 	CString str;
 
-	if( !file || !constraint )
-	{
+	if ( !file || !constraint ) {
 		return;
 	}
 	UpdateData( TRUE );
 
 	// slider axis
-	if( constraint->axis.type == idAFVector::VEC_BONEDIR )
-	{
+	if ( constraint->axis.type == idAFVector::VEC_BONEDIR ) {
 		s1 = GetSafeComboBoxSelection( &m_comboAxisJoint1, str, -1 );
 		constraint->axis.joint1 = str;
 		s2 = GetSafeComboBoxSelection( &m_comboAxisJoint2, str, s1 );
 		constraint->axis.joint2 = str;
-	}
-	else
-	{
+	} else {
 		constraint->axis.ToVec3() = idAngles( m_axisPitch, m_axisYaw, 0.0f ).ToForward();
 	}
 
@@ -215,11 +196,9 @@ void DialogAFConstraintSlider::SaveConstraint()
 DialogAFConstraintSlider::UpdateFile
 ================
 */
-void DialogAFConstraintSlider::UpdateFile()
-{
+void DialogAFConstraintSlider::UpdateFile() {
 	SaveConstraint();
-	if( file )
-	{
+	if ( file ) {
 		gameEdit->AF_UpdateEntities( file->GetName() );
 	}
 }
@@ -229,8 +208,7 @@ void DialogAFConstraintSlider::UpdateFile()
 DialogAFConstraintSlider::OnToolHitTest
 ================
 */
-INT_PTR DialogAFConstraintSlider::OnToolHitTest( CPoint point, TOOLINFO* pTI ) const
-{
+INT_PTR DialogAFConstraintSlider::OnToolHitTest( CPoint point, TOOLINFO* pTI ) const {
 	CDialog::OnToolHitTest( point, pTI );
 	return DefaultOnToolHitTest( toolTips, this, point, pTI );
 }
@@ -252,72 +230,55 @@ END_MESSAGE_MAP()
 
 // DialogAFConstraintSlider message handlers
 
-BOOL DialogAFConstraintSlider::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult )
-{
+BOOL DialogAFConstraintSlider::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult ) {
 	return DefaultOnToolTipNotify( toolTips, id, pNMHDR, pResult );
 }
 
-void DialogAFConstraintSlider::OnBnClickedRadioSliderAxisBone()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_SLIDER_AXIS_BONE ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintSlider::OnBnClickedRadioSliderAxisBone() {
+	if ( IsDlgButtonChecked( IDC_RADIO_SLIDER_AXIS_BONE ) ) {
+		if ( constraint ) {
 			constraint->axis.type = idAFVector::VEC_BONEDIR;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintSlider::OnBnClickedRadioSliderAxisAngles()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_SLIDER_AXIS_ANGLES ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintSlider::OnBnClickedRadioSliderAxisAngles() {
+	if ( IsDlgButtonChecked( IDC_RADIO_SLIDER_AXIS_ANGLES ) ) {
+		if ( constraint ) {
 			constraint->axis.type = idAFVector::VEC_COORDS;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintSlider::OnCbnSelchangeComboSliderAxisJoint1()
-{
+void DialogAFConstraintSlider::OnCbnSelchangeComboSliderAxisJoint1() {
 	CString str;
 	GetSafeComboBoxSelection( &m_comboAxisJoint1, str, -1 );
 	UnsetSafeComboBoxSelection( &m_comboAxisJoint2, str );
 	UpdateFile();
 }
 
-void DialogAFConstraintSlider::OnCbnSelchangeComboSliderAxisJoint2()
-{
+void DialogAFConstraintSlider::OnCbnSelchangeComboSliderAxisJoint2() {
 	CString str;
 	GetSafeComboBoxSelection( &m_comboAxisJoint2, str, -1 );
 	UnsetSafeComboBoxSelection( &m_comboAxisJoint1, str );
 	UpdateFile();
 }
 
-void DialogAFConstraintSlider::OnEnChangeEditSliderAxisPitch()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_SLIDER_AXIS_PITCH ) ) )
-	{
+void DialogAFConstraintSlider::OnEnChangeEditSliderAxisPitch() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_SLIDER_AXIS_PITCH ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_SLIDER_AXIS_PITCH ) );
+	} else {
+		EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_SLIDER_AXIS_PITCH ) );
 	}
 }
 
-void DialogAFConstraintSlider::OnDeltaposSpinSliderAxisPitch( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintSlider::OnDeltaposSpinSliderAxisPitch( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_axisPitch += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_axisPitch -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -325,27 +286,19 @@ void DialogAFConstraintSlider::OnDeltaposSpinSliderAxisPitch( NMHDR* pNMHDR, LRE
 	*pResult = 0;
 }
 
-void DialogAFConstraintSlider::OnEnChangeEditSliderAxisYaw()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_SLIDER_AXIS_YAW ) ) )
-	{
+void DialogAFConstraintSlider::OnEnChangeEditSliderAxisYaw() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_SLIDER_AXIS_YAW ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_SLIDER_AXIS_YAW ) );
+	} else {
+		EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_SLIDER_AXIS_YAW ) );
 	}
 }
 
-void DialogAFConstraintSlider::OnDeltaposSpinSliderAxisYaw( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintSlider::OnDeltaposSpinSliderAxisYaw( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_axisYaw += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_axisYaw -= 1.0f;
 	}
 	UpdateData( FALSE );

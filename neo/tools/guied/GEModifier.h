@@ -31,54 +31,48 @@ If you have questions concerning this license or the applicable additional terms
 class idWindow;
 class rvGEWindowWrapper;
 
-class rvGEModifier
-{
+class rvGEModifier {
 public:
 
-	rvGEModifier( const char* name, idWindow* window );
+	rvGEModifier( const char * name, idWindow* window );
 	virtual ~rvGEModifier( ) { }
 
 	virtual bool		Apply() = 0;
 	virtual bool		Undo() = 0;
-	virtual const char*	GetName();
+	virtual const char	* GetName();
 	virtual bool		CanMerge( rvGEModifier* merge );
 
 	virtual bool		IsValid();
 
 	virtual bool		Merge( rvGEModifier* merge );
 
-	idWindow*			GetWindow();
+	idWindow		*	GetWindow();
 
 
 protected:
 
-	idWindow*			mWindow;
-	rvGEWindowWrapper*	mWrapper;
+	idWindow		*	mWindow;
+	rvGEWindowWrapper	* mWrapper;
 	idStr				mName;
 };
 
-ID_INLINE bool rvGEModifier::IsValid()
-{
+ID_INLINE bool rvGEModifier::IsValid() {
 	return true;
 }
 
-ID_INLINE idWindow* rvGEModifier::GetWindow()
-{
+ID_INLINE idWindow * rvGEModifier::GetWindow() {
 	return mWindow;
 }
 
-ID_INLINE const char* rvGEModifier::GetName()
-{
+ID_INLINE const char * rvGEModifier::GetName() {
 	return mName;
 }
 
-ID_INLINE bool rvGEModifier::CanMerge( rvGEModifier* merge )
-{
+ID_INLINE bool rvGEModifier::CanMerge( rvGEModifier* merge ) {
 	return false;
 }
 
-ID_INLINE bool rvGEModifier::Merge( rvGEModifier* merge )
-{
+ID_INLINE bool rvGEModifier::Merge( rvGEModifier* merge ) {
 	return false;
 }
 

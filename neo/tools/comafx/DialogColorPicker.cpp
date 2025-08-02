@@ -46,48 +46,36 @@ If you have questions concerning this license or the applicable additional terms
 int Distance( CPoint pt1, CPoint pt2 );
 
 
-double Slope( CPoint pt1, CPoint pt2 )
-{
+double Slope( CPoint pt1, CPoint pt2 ) {
 	double x, y;
 
 	y = pt2.y - pt1.y;
 	x = pt2.x - pt1.x;
-	if( x )
-	{
+	if ( x ) {
 		return y / x;
-	}
-	else
-	{
+	} else {
 		return BAD_SLOPE;
 	}
 }
 
-CPoint Intersection( LineDesc l1, LineDesc l2 )
-{
+CPoint Intersection( LineDesc l1, LineDesc l2 ) {
 	CPoint pt;
 	double x, y;
 
-	if( l1.slope == l2.slope )
-	{
+	if ( l1.slope == l2.slope ) {
 		// Parallel lines, no intersection
 		return CPoint( 0, 0 );
-	}
-	else if( l1.slope == BAD_SLOPE )
-	{
+	} else if ( l1.slope == BAD_SLOPE ) {
 		// First Line is vertical, eqn is x=0
 		// Put x = 0 in second line eqn to get y;
 		x = l1.x;
 		y = l2.slope * x + l2.c;
-	}
-	else if( l2.slope == BAD_SLOPE )
-	{
+	} else if ( l2.slope == BAD_SLOPE ) {
 		// second line is vertical Equation of line is x=0;
 		// Put x = 0 in first line eqn to get y;
 		x = l2.x;
 		y = l1.slope * l2.x + l1.c;
-	}
-	else
-	{
+	} else {
 		y = ( ( l1.c * l2.slope ) - ( l2.c * l1.slope ) ) / ( l2.slope - l1.slope );
 		x = ( y - l1.c ) / l1.slope;
 	}
@@ -95,23 +83,18 @@ CPoint Intersection( LineDesc l1, LineDesc l2 )
 	return CPoint( ( int )x, ( int )y );
 }
 
-double FindC( LineDesc& l )
-{
+double FindC( LineDesc& l ) {
 	double c;
 
-	if( l.slope == BAD_SLOPE )
-	{
+	if ( l.slope == BAD_SLOPE ) {
 		c = l.y;
-	}
-	else
-	{
+	} else {
 		c = l.y - l.slope * l.x;
 	}
 	return c;
 }
 
-CPoint PointOnLine( CPoint pt1, CPoint pt2, int len, int maxlen )
-{
+CPoint PointOnLine( CPoint pt1, CPoint pt2, int len, int maxlen ) {
 	double x, y, m, a, c, C, A;
 	double a2, c2, m2, B;
 	CPoint opt = pt1;
@@ -122,8 +105,7 @@ CPoint PointOnLine( CPoint pt1, CPoint pt2, int len, int maxlen )
 
 	a = ( double )len;
 
-	if( pt2.x != pt1.x )
-	{
+	if ( pt2.x != pt1.x ) {
 		m = ( double )( pt2.y - pt1.y ) / ( pt2.x - pt1.x );
 		m2 = m * m;
 		a2 = a * a;
@@ -143,22 +125,18 @@ CPoint PointOnLine( CPoint pt1, CPoint pt2, int len, int maxlen )
 		x = ( B + idMath::Sqrt( B * B - ( 4.0 * A * C ) ) ) / ( 2.0 * A );
 		y = m * x + c;
 		pt = CPoint( ( int )x, ( int )y );
-		if( Distance( pt, pt1 ) > maxlen || Distance( pt, pt2 ) > maxlen )
-		{
+		if ( Distance( pt, pt1 ) > maxlen || Distance( pt, pt2 ) > maxlen ) {
 			x = ( B - idMath::Sqrt( B * B - ( 4.0 * A * C ) ) ) / ( 2.0 * A );
 			y = m * x + c;
 			pt = CPoint( ( int )x, ( int )y );
 		}
-	}
-	else
-	{
+	} else {
 		a2 = a * a;
 		y = idMath::Sqrt( a2 );
 		x = 0;
 		pt = CPoint( ( int )x, ( int )y );
 		pt += pt1;
-		if( Distance( pt, pt1 ) > maxlen || Distance( pt, pt2 ) > maxlen )
-		{
+		if ( Distance( pt, pt1 ) > maxlen || Distance( pt, pt2 ) > maxlen ) {
 			y = -1.0 * y;
 			pt = CPoint( ( int )x, ( int )y );
 			pt += pt1;
@@ -169,8 +147,7 @@ CPoint PointOnLine( CPoint pt1, CPoint pt2, int len, int maxlen )
 }
 
 
-int Distance( CPoint pt1, CPoint pt2 )
-{
+int Distance( CPoint pt1, CPoint pt2 ) {
 	double a;
 	int x, y;
 
@@ -185,24 +162,19 @@ int Distance( CPoint pt1, CPoint pt2 )
 	return ( int )a;
 }
 
-double AngleFromPoint( CPoint pt, CPoint center )
-{
+double AngleFromPoint( CPoint pt, CPoint center ) {
 	double x, y;
 
 	y = -1 * ( pt.y - center.y );
 	x = pt.x - center.x;
-	if( x == 0 && y == 0 )
-	{
+	if ( x == 0 && y == 0 ) {
 		return 0.0;
-	}
-	else
-	{
+	} else {
 		return atan2( y, x );
 	}
 }
 
-CPoint PtFromAngle( double angle, double sat, CPoint center )
-{
+CPoint PtFromAngle( double angle, double sat, CPoint center ) {
 	angle = DEG2RAD( angle );
 	sat = TOSCALE( sat );
 
@@ -219,12 +191,10 @@ CPoint PtFromAngle( double angle, double sat, CPoint center )
 	return pt;
 }
 
-RGBType HSVType::toRGB()
-{
+RGBType HSVType::toRGB() {
 	RGBType rgb;
 
-	if( !h  && !s )
-	{
+	if ( !h  && !s ) {
 		rgb.r = rgb.g = rgb.b = v;
 	}
 
@@ -235,49 +205,35 @@ RGBType HSVType::toRGB()
 	min = max - delta;
 
 	hue = h;
-	if( h > 300 || h <= 60 )
-	{
+	if ( h > 300 || h <= 60 ) {
 		rgb.r = ( int )max;
-		if( h > 300 )
-		{
+		if ( h > 300 ) {
 			rgb.g = ( int )min;
 			hue = ( hue - 360.0 ) / 60.0;
 			rgb.b = ( int )( ( hue * delta - min ) * -1 );
-		}
-		else
-		{
+		} else {
 			rgb.b = ( int )min;
 			hue = hue / 60.0;
 			rgb.g = ( int )( hue * delta + min );
 		}
-	}
-	else if( h > 60 && h < 180 )
-	{
+	} else if ( h > 60 && h < 180 ) {
 		rgb.g = ( int )max;
-		if( h < 120 )
-		{
+		if ( h < 120 ) {
 			rgb.b = ( int )min;
 			hue = ( hue / 60.0 - 2.0 ) * delta;
 			rgb.r = ( int )( min - hue );
-		}
-		else
-		{
+		} else {
 			rgb.r = ( int )min;
 			hue = ( hue / 60 - 2.0 ) * delta;
 			rgb.b = ( int )( min + hue );
 		}
-	}
-	else
-	{
+	} else {
 		rgb.b = ( int )max;
-		if( h < 240 )
-		{
+		if ( h < 240 ) {
 			rgb.r = ( int )min;
 			hue = ( hue / 60.0 - 4.0 ) * delta;
 			rgb.g = ( int )( min - hue );
-		}
-		else
-		{
+		} else {
 			rgb.g = ( int )min;
 			hue = ( hue / 60 - 4.0 ) * delta;
 			rgb.r = ( int )( min + hue );
@@ -287,8 +243,7 @@ RGBType HSVType::toRGB()
 }
 
 
-HSVType RGBType::toHSV()
-{
+HSVType RGBType::toHSV() {
 	HSVType hsv;
 
 	double min, max, delta, temp;
@@ -298,34 +253,24 @@ HSVType RGBType::toHSV()
 	delta = max - min;
 
 	hsv.v = ( int )max;
-	if( !delta )
-	{
+	if ( !delta ) {
 		hsv.h = hsv.s = 0;
-	}
-	else
-	{
+	} else {
 		temp = delta / max;
 		hsv.s = ( int )( temp * 255 );
 
-		if( r == ( int )max )
-		{
+		if ( r == ( int )max ) {
 			temp = ( double )( g - b ) / delta;
-		}
-		else if( g == ( int )max )
-		{
+		} else if ( g == ( int )max ) {
 			temp = 2.0 + ( ( double )( b - r ) / delta );
-		}
-		else
-		{
+		} else {
 			temp = 4.0 + ( ( double )( r - g ) / delta );
 		}
 		temp *= 60;
-		if( temp < 0 )
-		{
+		if ( temp < 0 ) {
 			temp += 360;
 		}
-		if( temp == 360 )
-		{
+		if ( temp == 360 ) {
 			temp = 0;
 		}
 		hsv.h = ( int )temp;
@@ -338,8 +283,7 @@ HSVType RGBType::toHSV()
 
 
 CDialogColorPicker::CDialogColorPicker( COLORREF c, CWnd* pParent /*=NULL*/ )
-	: CDialog( CDialogColorPicker::IDD, pParent )
-{
+	: CDialog( CDialogColorPicker::IDD, pParent ) {
 	//{{AFX_DATA_INIT(CDialogColorPicker)
 	m_overBright = 0.0f;
 	//}}AFX_DATA_INIT
@@ -362,14 +306,11 @@ CDialogColorPicker::CDialogColorPicker( COLORREF c, CWnd* pParent /*=NULL*/ )
 	UpdateParent = NULL;
 }
 
-CDialogColorPicker::~CDialogColorPicker()
-{
-	if( m_RgbBitmap.GetSafeHandle() )
-	{
+CDialogColorPicker::~CDialogColorPicker() {
+	if ( m_RgbBitmap.GetSafeHandle() ) {
 		m_RgbBitmap.DeleteObject();
 	}
-	if( m_HsbBitmap.GetSafeHandle() )
-	{
+	if ( m_HsbBitmap.GetSafeHandle() ) {
 		m_HsbBitmap.DeleteObject();
 	}
 }
@@ -396,51 +337,34 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CDialogColorPicker message handlers
 
-void CDialogColorPicker::OnLButtonDown( UINT nFlags, CPoint point )
-{
-	if( hsbRect.PtInRect( point ) )
-	{
+void CDialogColorPicker::OnLButtonDown( UINT nFlags, CPoint point ) {
+	if ( hsbRect.PtInRect( point ) ) {
 		m_bInMouse = FALSE;
-		if( InCircle( point ) )
-		{
+		if ( InCircle( point ) ) {
 			m_nMouseIn = IN_CIRCLE;
-		}
-		else if( InBright( point ) )
-		{
+		} else if ( InBright( point ) ) {
 			m_nMouseIn = IN_BRIGHT;
-		}
-		else if( InOverBright( point ) )
-		{
+		} else if ( InOverBright( point ) ) {
 			m_nMouseIn = IN_OVERBRIGHT;
-		}
-		else
-		{
+		} else {
 			m_nMouseIn = IN_NOTHING;
 		}
 
-		if( m_nMouseIn )
-		{
+		if ( m_nMouseIn ) {
 			SetCapture();
 			TrackPoint( point );
 		}
-	}
-	else if( rgbRect.PtInRect( point ) )
-	{
+	} else if ( rgbRect.PtInRect( point ) ) {
 		m_nMouseIn = IN_NOTHING;
-		if( rects[RED].PtInRect( point ) )
-		{
+		if ( rects[RED].PtInRect( point ) ) {
 			SetCapture();
 			m_bInMouse = TRUE;
 			nIndex = RED;
-		}
-		else if( rects[GREEN].PtInRect( point ) )
-		{
+		} else if ( rects[GREEN].PtInRect( point ) ) {
 			SetCapture();
 			m_bInMouse = TRUE;
 			nIndex = GREEN;
-		}
-		else if( rects[BLUE].PtInRect( point ) )
-		{
+		} else if ( rects[BLUE].PtInRect( point ) ) {
 			SetCapture();
 			m_bInMouse = TRUE;
 			nIndex = BLUE;
@@ -450,37 +374,28 @@ void CDialogColorPicker::OnLButtonDown( UINT nFlags, CPoint point )
 	CDialog::OnLButtonDown( nFlags, point );
 }
 
-void CDialogColorPicker::OnLButtonUp( UINT nFlags, CPoint point )
-{
-	if( GetCapture() == this )
-	{
+void CDialogColorPicker::OnLButtonUp( UINT nFlags, CPoint point ) {
+	if ( GetCapture() == this ) {
 		ReleaseCapture();
 		m_bInMouse = FALSE;
 	}
 	CDialog::OnLButtonUp( nFlags, point );
 }
 
-void CDialogColorPicker::OnMouseMove( UINT nFlags, CPoint point )
-{
-	if( GetCapture() == this && m_nMouseIn )
-	{
+void CDialogColorPicker::OnMouseMove( UINT nFlags, CPoint point ) {
+	if ( GetCapture() == this && m_nMouseIn ) {
 		TrackPoint( point );
-	}
-	else if( GetCapture() == this && m_bInMouse )
-	{
+	} else if ( GetCapture() == this && m_bInMouse ) {
 		double val;
 		BOOL bChange = FALSE;
 
-		if( nIndex == RED )
-		{
-			if( point.y > Vertex.y )
-			{
+		if ( nIndex == RED ) {
+			if ( point.y > Vertex.y ) {
 				point.y = Vertex.y;
 			}
 			point.x = Vertex.x;
 			val = Distance( point, Vertex );
-			if( val > RedLen )
-			{
+			if ( val > RedLen ) {
 				val = RedLen;
 			}
 			CClientDC dc( this );
@@ -489,21 +404,17 @@ void CDialogColorPicker::OnMouseMove( UINT nFlags, CPoint point )
 			color.r = ( int )val;
 			CPoint pt;
 			pt = PointOnLine( Vertex, Top, ( color.r * RedLen ) / 255, RedLen );
-			rects[RED] = CRect( pt.x - RECT_WIDTH , pt.y - RECT_WIDTH , pt.x + RECT_WIDTH , pt.y + RECT_WIDTH );
+			rects[RED] = CRect( pt.x - RECT_WIDTH, pt.y - RECT_WIDTH, pt.x + RECT_WIDTH, pt.y + RECT_WIDTH );
 			CalcCuboid();
 			DrawLines( &dc );
 			bChange = TRUE;
-		}
-		else if( nIndex == GREEN )
-		{
-			if( point.x > Vertex.x )
-			{
+		} else if ( nIndex == GREEN ) {
+			if ( point.x > Vertex.x ) {
 				point.x = Vertex.x;
 			}
 			point.y = rects[GREEN].top + RECT_WIDTH;
 			val = Distance( point, Vertex );
-			if( val > GreenLen )
-			{
+			if ( val > GreenLen ) {
 				val = GreenLen;
 			}
 			CClientDC dc( this );
@@ -512,21 +423,17 @@ void CDialogColorPicker::OnMouseMove( UINT nFlags, CPoint point )
 			color.g = ( int )val;
 			CPoint pt;
 			pt = PointOnLine( Vertex, Left, ( color.g * GreenLen ) / 255, GreenLen );
-			rects[GREEN] = CRect( pt.x - RECT_WIDTH , pt.y - RECT_WIDTH , pt.x + RECT_WIDTH , pt.y + RECT_WIDTH );
+			rects[GREEN] = CRect( pt.x - RECT_WIDTH, pt.y - RECT_WIDTH, pt.x + RECT_WIDTH, pt.y + RECT_WIDTH );
 			CalcCuboid();
 			DrawLines( &dc );
 			bChange = TRUE;
-		}
-		else if( nIndex == BLUE )
-		{
-			if( point.x < Vertex.x )
-			{
+		} else if ( nIndex == BLUE ) {
+			if ( point.x < Vertex.x ) {
 				point.x = Vertex.x;
 			}
 			point.y = rects[BLUE].top + RECT_WIDTH;
 			val = Distance( point, Vertex );
-			if( val > BlueLen )
-			{
+			if ( val > BlueLen ) {
 				val = BlueLen;
 			}
 			CClientDC dc( this );
@@ -535,13 +442,12 @@ void CDialogColorPicker::OnMouseMove( UINT nFlags, CPoint point )
 			color.b = ( int )val;
 			CPoint pt;
 			pt = PointOnLine( Vertex, Right, ( color.b * GreenLen ) / 255, BlueLen );
-			rects[BLUE] = CRect( pt.x - RECT_WIDTH , pt.y - RECT_WIDTH , pt.x + RECT_WIDTH , pt.y + RECT_WIDTH );
+			rects[BLUE] = CRect( pt.x - RECT_WIDTH, pt.y - RECT_WIDTH, pt.x + RECT_WIDTH, pt.y + RECT_WIDTH );
 			CalcCuboid();
 			DrawLines( &dc );
 			bChange = TRUE;
 		}
-		if( bChange )
-		{
+		if ( bChange ) {
 			hsvColor = color.toHSV();
 			SetEditVals();
 			CClientDC dc( this );
@@ -556,16 +462,14 @@ void CDialogColorPicker::OnMouseMove( UINT nFlags, CPoint point )
 	CDialog::OnMouseMove( nFlags, point );
 }
 
-void CDialogColorPicker::OnPaint()
-{
+void CDialogColorPicker::OnPaint() {
 	CPaintDC dc( this ); // device context for painting
 
 	DrawHSB( &dc );
 	DrawRGB( &dc );
 }
 
-BOOL CDialogColorPicker::OnInitDialog()
-{
+BOOL CDialogColorPicker::OnInitDialog() {
 	CDialog::OnInitDialog();
 
 	GetDlgItem( IDC_STATIC_RGB_RECT )->GetWindowRect( &rgbRect );
@@ -640,17 +544,15 @@ BOOL CDialogColorPicker::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CDialogColorPicker::DrawMarkers( CDC* pDC )
-{
-	if( m_CurrentRect.Width() )
-	{
+void CDialogColorPicker::DrawMarkers( CDC* pDC ) {
+	if ( m_CurrentRect.Width() ) {
 		CPen* oldPen;
 		CBrush* oldBrush;
 		int oldMode;
 		CRect cr = m_CurrentRect;
 
-		oldPen = ( CPen* )pDC->SelectStockObject( WHITE_PEN );
-		oldBrush = ( CBrush* )pDC->SelectStockObject( NULL_BRUSH );
+		oldPen = ( CPen * )pDC->SelectStockObject( WHITE_PEN );
+		oldBrush = ( CBrush * )pDC->SelectStockObject( NULL_BRUSH );
 
 		oldMode = pDC->SetROP2( R2_XORPEN );
 
@@ -667,37 +569,30 @@ void CDialogColorPicker::DrawMarkers( CDC* pDC )
 	}
 }
 
-BOOL CDialogColorPicker::InCircle( CPoint pt )
-{
+BOOL CDialogColorPicker::InCircle( CPoint pt ) {
 	return Distance( pt, m_Centre ) <= RADIUS;
 }
 
-BOOL CDialogColorPicker::InBright( CPoint pt )
-{
+BOOL CDialogColorPicker::InBright( CPoint pt ) {
 	return brightRect.PtInRect( pt );
 }
 
-BOOL CDialogColorPicker::InOverBright( CPoint pt )
-{
+BOOL CDialogColorPicker::InOverBright( CPoint pt ) {
 	return overBrightRect.PtInRect( pt );
 }
 
-void CDialogColorPicker::TrackPoint( CPoint pt )
-{
-	if( m_nMouseIn == IN_CIRCLE )
-	{
+void CDialogColorPicker::TrackPoint( CPoint pt ) {
+	if ( m_nMouseIn == IN_CIRCLE ) {
 		CClientDC dc( this );
 
 		DrawMarkers( &dc );
 
 		hsvColor.h = ( int )RAD2DEG( AngleFromPoint( pt, m_Centre ) );
-		if( hsvColor.h < 0 )
-		{
+		if ( hsvColor.h < 0 ) {
 			hsvColor.h += 360;
 		}
 		hsvColor.s = ( int )SCALETOMAX( Distance( pt, m_Centre ) );
-		if( hsvColor.s > 255 )
-		{
+		if ( hsvColor.s > 255 ) {
 			hsvColor.s = 255;
 		}
 
@@ -715,19 +610,15 @@ void CDialogColorPicker::TrackPoint( CPoint pt )
 		CalcCuboid();
 		DrawRGB( &dc );
 
-	}
-	else if( m_nMouseIn == IN_BRIGHT )
-	{
+	} else if ( m_nMouseIn == IN_BRIGHT ) {
 		double d;
 		d = brightRect.bottom - pt.y;
 		d *= 255;
 		d /= brightRect.Height();
-		if( d < 0 )
-		{
+		if ( d < 0 ) {
 			d = 0;
 		}
-		if( d > 255 )
-		{
+		if ( d > 255 ) {
 			d = 255;
 		}
 		CClientDC dc( this );
@@ -744,27 +635,23 @@ void CDialogColorPicker::TrackPoint( CPoint pt )
 	}
 }
 
-void CDialogColorPicker::CreateBrightDIB()
-{
+void CDialogColorPicker::CreateBrightDIB() {
 	CDIB& d = m_BrightDIB;
 
 	d.Create( brightRect.Width(), brightRect.Height(), 8 );
-	for( int i = 0; i < d.Height(); i++ )
-	{
+	for ( int i = 0; i < d.Height(); i++ ) {
 		memset( d.GetLinePtr( i ), i, d.Width() );
 	}
 }
 
-void CDialogColorPicker::SetDIBPalette()
-{
-	BYTE palette[768], *p;
+void CDialogColorPicker::SetDIBPalette() {
+	BYTE palette[768], * p;
 	HSVType h = hsvColor;
 	double d;
 
 	d = 255.0 / brightRect.Height();
 	p = palette;
-	for( int i = brightRect.Height() - 1; i >= 0 ; i--, p += 3 )
-	{
+	for ( int i = brightRect.Height() - 1; i >= 0 ; i--, p += 3 ) {
 		h.v = ( int )( ( double )i * d );
 		RGBType rgb = h.toRGB();
 		p[0] = rgb.r;
@@ -774,8 +661,7 @@ void CDialogColorPicker::SetDIBPalette()
 	m_BrightDIB.SetPalette( palette );
 }
 
-void CDialogColorPicker::CalcRects()
-{
+void CDialogColorPicker::CalcRects() {
 	CPoint pt;
 
 	pt = PtFromAngle( hsvColor.h, hsvColor.s, m_Centre );
@@ -789,12 +675,10 @@ void CDialogColorPicker::CalcRects()
 }
 
 
-void CDialogColorPicker::DrawHSB( CDC* pDC )
-{
-	if( m_HsbBitmap.GetSafeHandle() )
-	{
+void CDialogColorPicker::DrawHSB( CDC* pDC ) {
+	if ( m_HsbBitmap.GetSafeHandle() ) {
 		CBitmap* pOldBitmap ;
-		pOldBitmap  = ( CBitmap* )memDC.SelectObject( &m_HsbBitmap );
+		pOldBitmap  = ( CBitmap * )memDC.SelectObject( &m_HsbBitmap );
 		pDC->BitBlt( hsbRect.left, hsbRect.top, hsbWidth, hsbHeight, &memDC, 0, 0, SRCCOPY );
 		m_BrightDIB.BitBlt( pDC->m_hDC, brightRect.left, brightRect.top, brightRect.Width(), brightRect.Height(), 0, 0 );
 		DrawMarkers( pDC );
@@ -802,20 +686,17 @@ void CDialogColorPicker::DrawHSB( CDC* pDC )
 	}
 }
 
-void CDialogColorPicker::DrawRGB( CDC* pDC )
-{
-	if( m_RgbBitmap.GetSafeHandle() )
-	{
+void CDialogColorPicker::DrawRGB( CDC* pDC ) {
+	if ( m_RgbBitmap.GetSafeHandle() ) {
 		CBitmap* pOldBitmap ;
-		pOldBitmap  = ( CBitmap* )memDC.SelectObject( &m_RgbBitmap );
+		pOldBitmap  = ( CBitmap * )memDC.SelectObject( &m_RgbBitmap );
 		pDC->BitBlt( rgbRect.left, rgbRect.top, rgbWidth, rgbHeight, &memDC, 0, 0, SRCCOPY );
 		DrawLines( pDC );
 		memDC.SelectObject( pOldBitmap );
 	}
 }
 
-void CDialogColorPicker::DrawLines( CDC* pDC )
-{
+void CDialogColorPicker::DrawLines( CDC* pDC ) {
 	CPoint pt[3];
 
 	pt[0] = PointOnLine( Vertex, Top, ( color.r * RedLen ) / 255, RedLen );
@@ -824,9 +705,8 @@ void CDialogColorPicker::DrawLines( CDC* pDC )
 
 	CRect cr;
 
-	for( int i = 0; i < 3; i++ )
-	{
-		cr = CRect( pt[i].x - RECT_WIDTH , pt[i].y - RECT_WIDTH , pt[i].x + RECT_WIDTH , pt[i].y + RECT_WIDTH );
+	for ( int i = 0; i < 3; i++ ) {
+		cr = CRect( pt[i].x - RECT_WIDTH, pt[i].y - RECT_WIDTH, pt[i].x + RECT_WIDTH, pt[i].y + RECT_WIDTH );
 		rects[i] = cr;
 		DrawXorRect( pDC, cr );
 	}
@@ -834,7 +714,7 @@ void CDialogColorPicker::DrawLines( CDC* pDC )
 	CPen* oldPen;
 	int oldMode;
 
-	oldPen = ( CPen* )pDC->SelectStockObject( WHITE_PEN );
+	oldPen = ( CPen * )pDC->SelectStockObject( WHITE_PEN );
 	oldMode = pDC->SetROP2( R2_XORPEN );
 
 	/*
@@ -870,15 +750,14 @@ void CDialogColorPicker::DrawLines( CDC* pDC )
 	DrawFilledColor( pDC, NewColorRect, color.color() );
 }
 
-void CDialogColorPicker::DrawXorRect( CDC* pDC, CRect& cr )
-{
-	CPen pen, *oldPen;
+void CDialogColorPicker::DrawXorRect( CDC* pDC, CRect& cr ) {
+	CPen pen, * oldPen;
 	CBrush* oldBrush;
 	int oldMode;
 
 	pen.CreatePen( PS_SOLID, 1, RGB( 255, 255, 255 ) );
-	oldPen = ( CPen* )pDC->SelectObject( &pen );
-	oldBrush = ( CBrush* )pDC->SelectStockObject( NULL_BRUSH );
+	oldPen = ( CPen * )pDC->SelectObject( &pen );
+	oldBrush = ( CBrush * )pDC->SelectStockObject( NULL_BRUSH );
 	oldMode = pDC->SetROP2( R2_XORPEN );
 	pDC->Rectangle( &cr );
 	pDC->SetROP2( oldMode );
@@ -888,16 +767,14 @@ void CDialogColorPicker::DrawXorRect( CDC* pDC, CRect& cr )
 
 }
 
-void CDialogColorPicker::CalcSlopes()
-{
+void CDialogColorPicker::CalcSlopes() {
 	lines[RED].slope = Slope( Top, Vertex );
 	lines[GREEN].slope = Slope( Left, Vertex );
 	lines[BLUE].slope = Slope( Right, Vertex );
 
 	int i;
 
-	for( i = 0; i < 3; i++ )
-	{
+	for ( i = 0; i < 3; i++ ) {
 		lines[i].x = Vertex.x;
 		lines[i].y = Vertex.y;
 		lines[i].c = FindC( lines[i] );
@@ -928,8 +805,7 @@ void CDialogColorPicker::CalcSlopes()
 	7-4
 */
 
-void CDialogColorPicker::CalcCuboid()
-{
+void CDialogColorPicker::CalcCuboid() {
 	double rLen, gLen, bLen;
 
 	rLen = ( double )( color.r * RedLen ) / 255;
@@ -995,46 +871,40 @@ void CDialogColorPicker::CalcCuboid()
 
 }
 
-void CDialogColorPicker::SetSpinVals()
-{
-	( ( CSpinButtonCtrl* )GetDlgItem( IDC_SPIN_RED ) )->SetRange( 0, 255 );
-	( ( CSpinButtonCtrl* )GetDlgItem( IDC_SPIN_GREEN ) )->SetRange( 0, 255 );
-	( ( CSpinButtonCtrl* )GetDlgItem( IDC_SPIN_BLUE ) )->SetRange( 0, 255 );
+void CDialogColorPicker::SetSpinVals() {
+	( ( CSpinButtonCtrl * )GetDlgItem( IDC_SPIN_RED ) )->SetRange( 0, 255 );
+	( ( CSpinButtonCtrl * )GetDlgItem( IDC_SPIN_GREEN ) )->SetRange( 0, 255 );
+	( ( CSpinButtonCtrl * )GetDlgItem( IDC_SPIN_BLUE ) )->SetRange( 0, 255 );
 
-	( ( CSpinButtonCtrl* )GetDlgItem( IDC_SPIN_HUE ) )->SetRange( 0, 360 );
-	( ( CSpinButtonCtrl* )GetDlgItem( IDC_SPIN_SAT ) )->SetRange( 0, 255 );
-	( ( CSpinButtonCtrl* )GetDlgItem( IDC_SPIN_VAL ) )->SetRange( 0, 255 );
+	( ( CSpinButtonCtrl * )GetDlgItem( IDC_SPIN_HUE ) )->SetRange( 0, 360 );
+	( ( CSpinButtonCtrl * )GetDlgItem( IDC_SPIN_SAT ) )->SetRange( 0, 255 );
+	( ( CSpinButtonCtrl * )GetDlgItem( IDC_SPIN_VAL ) )->SetRange( 0, 255 );
 
-	( ( CSpinButtonCtrl* )GetDlgItem( IDC_SPIN_OVERBRIGHT ) )->SetRange( 0, 1023 );
-
-}
-
-void CDialogColorPicker::SetEditVals()
-{
-	( ( CSpinButtonCtrl* )GetDlgItem( IDC_SPIN_RED ) )->SetPos( color.r );
-	( ( CSpinButtonCtrl* )GetDlgItem( IDC_SPIN_GREEN ) )->SetPos( color.g );
-	( ( CSpinButtonCtrl* )GetDlgItem( IDC_SPIN_BLUE ) )->SetPos( color.b );
-
-	( ( CSpinButtonCtrl* )GetDlgItem( IDC_SPIN_HUE ) )->SetPos( hsvColor.h );
-	( ( CSpinButtonCtrl* )GetDlgItem( IDC_SPIN_SAT ) )->SetPos( hsvColor.s );
-	( ( CSpinButtonCtrl* )GetDlgItem( IDC_SPIN_VAL ) )->SetPos( hsvColor.v );
+	( ( CSpinButtonCtrl * )GetDlgItem( IDC_SPIN_OVERBRIGHT ) )->SetRange( 0, 1023 );
 
 }
 
-void CDialogColorPicker::OnChangeEditBlue()
-{
+void CDialogColorPicker::SetEditVals() {
+	( ( CSpinButtonCtrl * )GetDlgItem( IDC_SPIN_RED ) )->SetPos( color.r );
+	( ( CSpinButtonCtrl * )GetDlgItem( IDC_SPIN_GREEN ) )->SetPos( color.g );
+	( ( CSpinButtonCtrl * )GetDlgItem( IDC_SPIN_BLUE ) )->SetPos( color.b );
+
+	( ( CSpinButtonCtrl * )GetDlgItem( IDC_SPIN_HUE ) )->SetPos( hsvColor.h );
+	( ( CSpinButtonCtrl * )GetDlgItem( IDC_SPIN_SAT ) )->SetPos( hsvColor.s );
+	( ( CSpinButtonCtrl * )GetDlgItem( IDC_SPIN_VAL ) )->SetPos( hsvColor.v );
+
+}
+
+void CDialogColorPicker::OnChangeEditBlue() {
 	int b;
 
 	b = GetDlgItemInt( IDC_EDIT_BLUE );
-	if( b != color.b && m_bInitOver )
-	{
+	if ( b != color.b && m_bInitOver ) {
 		color.b = b;
-		if( color.b < 0 )
-		{
+		if ( color.b < 0 ) {
 			color.b = 0;
 		}
-		if( color.b > 255 )
-		{
+		if ( color.b > 255 ) {
 			color.b = 255;
 		}
 		hsvColor = color.toHSV();
@@ -1042,20 +912,16 @@ void CDialogColorPicker::OnChangeEditBlue()
 	}
 }
 
-void CDialogColorPicker::OnChangeEditGreen()
-{
+void CDialogColorPicker::OnChangeEditGreen() {
 	int g;
 
 	g = GetDlgItemInt( IDC_EDIT_GREEN );
-	if( g != color.g && m_bInitOver )
-	{
+	if ( g != color.g && m_bInitOver ) {
 		color.g = g;
-		if( color.g < 0 )
-		{
+		if ( color.g < 0 ) {
 			color.g = 0;
 		}
-		if( color.g > 255 )
-		{
+		if ( color.g > 255 ) {
 			color.g = 255;
 		}
 		hsvColor = color.toHSV();
@@ -1063,20 +929,16 @@ void CDialogColorPicker::OnChangeEditGreen()
 	}
 }
 
-void CDialogColorPicker::OnChangeEditRed()
-{
+void CDialogColorPicker::OnChangeEditRed() {
 	int r;
 
 	r = GetDlgItemInt( IDC_EDIT_RED );
-	if( r != color.r && m_bInitOver )
-	{
+	if ( r != color.r && m_bInitOver ) {
 		color.r = r;
-		if( color.r < 0 )
-		{
+		if ( color.r < 0 ) {
 			color.r = 0;
 		}
-		if( color.r > 255 )
-		{
+		if ( color.r > 255 ) {
 			color.r = 255;
 		}
 		hsvColor = color.toHSV();
@@ -1084,20 +946,16 @@ void CDialogColorPicker::OnChangeEditRed()
 	}
 }
 
-void CDialogColorPicker::OnChangeEditHue()
-{
+void CDialogColorPicker::OnChangeEditHue() {
 	int h;
 
 	h = GetDlgItemInt( IDC_EDIT_HUE );
-	if( h != hsvColor.h && m_bInitOver )
-	{
+	if ( h != hsvColor.h && m_bInitOver ) {
 		hsvColor.h = h;
-		if( hsvColor.h < 0 )
-		{
+		if ( hsvColor.h < 0 ) {
 			hsvColor.h = 0;
 		}
-		if( hsvColor.h > 359 )
-		{
+		if ( hsvColor.h > 359 ) {
 			hsvColor.h = 359;
 		}
 		color = hsvColor.toRGB();
@@ -1105,20 +963,16 @@ void CDialogColorPicker::OnChangeEditHue()
 	}
 }
 
-void CDialogColorPicker::OnChangeEditSat()
-{
+void CDialogColorPicker::OnChangeEditSat() {
 	int s;
 
 	s = GetDlgItemInt( IDC_EDIT_SAT );
-	if( s != hsvColor.s && m_bInitOver )
-	{
+	if ( s != hsvColor.s && m_bInitOver ) {
 		hsvColor.s = s;
-		if( hsvColor.s < 0 )
-		{
+		if ( hsvColor.s < 0 ) {
 			hsvColor.s = 0;
 		}
-		if( hsvColor.s > 255 )
-		{
+		if ( hsvColor.s > 255 ) {
 			hsvColor.s = 255;
 		}
 		color = hsvColor.toRGB();
@@ -1126,20 +980,16 @@ void CDialogColorPicker::OnChangeEditSat()
 	}
 }
 
-void CDialogColorPicker::OnChangeEditVal()
-{
+void CDialogColorPicker::OnChangeEditVal() {
 	int v;
 
 	v = GetDlgItemInt( IDC_EDIT_VAL );
-	if( v != hsvColor.v && m_bInitOver )
-	{
+	if ( v != hsvColor.v && m_bInitOver ) {
 		hsvColor.v = v;
-		if( hsvColor.v < 0 )
-		{
+		if ( hsvColor.v < 0 ) {
 			hsvColor.v = 0;
 		}
-		if( hsvColor.v > 255 )
-		{
+		if ( hsvColor.v > 255 ) {
 			hsvColor.v = 255;
 		}
 		color = hsvColor.toRGB();
@@ -1147,20 +997,16 @@ void CDialogColorPicker::OnChangeEditVal()
 	}
 }
 
-void CDialogColorPicker::OnChangeEditOverbright()
-{
+void CDialogColorPicker::OnChangeEditOverbright() {
 	CString str;
 	GetDlgItemText( IDC_EDIT_OVERBRIGHT, str );
-	if( m_bInitOver )
-	{
+	if ( m_bInitOver ) {
 		overBright = atof( str );
 	}
 }
 
-void CDialogColorPicker::DrawAll()
-{
-	if( m_bInitOver && !m_bInDrawAll )
-	{
+void CDialogColorPicker::DrawAll() {
+	if ( m_bInitOver && !m_bInDrawAll ) {
 		CClientDC dc( this );
 
 		DrawMarkers( &dc );
@@ -1176,25 +1022,21 @@ void CDialogColorPicker::DrawAll()
 	}
 }
 
-void CDialogColorPicker::DrawFilledColor( CDC* pDC, CRect cr, COLORREF c )
-{
+void CDialogColorPicker::DrawFilledColor( CDC* pDC, CRect cr, COLORREF c ) {
 	pDC->FillSolidRect( &cr, c );
 	pDC->Draw3dRect( &cr, RGB( 0, 0, 0 ), RGB( 0, 0, 0 ) );
 	cr.InflateRect( -1, -1 );
 	pDC->Draw3dRect( &cr, RGB( 192, 192, 192 ), RGB( 128, 128, 128 ) );
 }
 
-void CDialogColorPicker::LoadMappedBitmap( CBitmap& bitmap, UINT nIdResource, CSize& size )
-{
+void CDialogColorPicker::LoadMappedBitmap( CBitmap& bitmap, UINT nIdResource, CSize& size ) {
 	CBitmap* pOldBitmap;
 
-	if( bitmap.GetSafeHandle() )
-	{
+	if ( bitmap.GetSafeHandle() ) {
 		bitmap.DeleteObject();
 	}
 
-	if( bitmap.LoadBitmap( nIdResource ) )
-	{
+	if ( bitmap.LoadBitmap( nIdResource ) ) {
 
 		int width, height;
 		BITMAP bmInfo;
@@ -1206,16 +1048,13 @@ void CDialogColorPicker::LoadMappedBitmap( CBitmap& bitmap, UINT nIdResource, CS
 		COLORREF colorWindow = ::GetSysColor( COLOR_3DFACE );
 		COLORREF sourceColor = RGB( 192, 192, 192 );
 
-		pOldBitmap = ( CBitmap* )memDC.SelectObject( &bitmap );
+		pOldBitmap = ( CBitmap * )memDC.SelectObject( &bitmap );
 
 		int i, j;
 
-		for( i = 0; i < height; i++ )
-		{
-			for( j = 0; j < width; j++ )
-			{
-				if( memDC.GetPixel( j, i ) == sourceColor )
-				{
+		for ( i = 0; i < height; i++ ) {
+			for ( j = 0; j < width; j++ ) {
+				if ( memDC.GetPixel( j, i ) == sourceColor ) {
 					memDC.SetPixel( j, i, colorWindow );
 				}
 			}
@@ -1226,31 +1065,26 @@ void CDialogColorPicker::LoadMappedBitmap( CBitmap& bitmap, UINT nIdResource, CS
 	}
 }
 
-void CDialogColorPicker::OnSysColorChange()
-{
+void CDialogColorPicker::OnSysColorChange() {
 	CSize size;
 	LoadMappedBitmap( m_HsbBitmap, IDB_BITMAP_HSB, size );
 	LoadMappedBitmap( m_RgbBitmap, IDB_BITMAP_RGB, size );
 }
 
-void CDialogColorPicker::OnTimer( UINT_PTR nIDEvent )
-{
-	if( UpdateParent )
-	{
+void CDialogColorPicker::OnTimer( UINT_PTR nIDEvent ) {
+	if ( UpdateParent ) {
 		UpdateParent( color.r, color.g, color.b, 1.0f );
 	}
 }
 
-bool DoColor( int* i1, int* i2, int* i3, float* overBright, void ( *Update )( float, float, float, float ) )
-{
+bool DoColor( int * i1, int * i2, int * i3, float * overBright, void ( *Update )( float, float, float, float ) ) {
 	COLORREF cr = ( *i1 ) + ( ( *i2 ) << 8 ) + ( ( *i3 ) << 16 );
 	CDialogColorPicker dlg( cr );
 	//CMyColorDialog dlg(cr, CC_FULLOPEN | CC_RGBINIT | CC_ANYCOLOR);
 
 	dlg.UpdateParent = Update;
 
-	if( dlg.DoModal() == IDOK )
-	{
+	if ( dlg.DoModal() == IDOK ) {
 		*i1 = ( dlg.GetColor() & 255 );
 		*i2 = ( ( dlg.GetColor() >> 8 ) & 255 );
 		*i3 = ( ( dlg.GetColor() >> 16 ) & 255 );

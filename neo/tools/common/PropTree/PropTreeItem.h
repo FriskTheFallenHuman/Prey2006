@@ -21,8 +21,7 @@
 
 class CPropTree;
 
-class PROPTREE_API CPropTreeItem
-{
+class PROPTREE_API CPropTreeItem {
 // Construction
 public:
 	CPropTreeItem();
@@ -55,8 +54,7 @@ public:
 	BOOL HitCheckBox( const POINT& pt );
 
 	// Overrideable - Returns TRUE if the point is on the button
-	virtual BOOL HitButton( const POINT& pt )
-	{
+	virtual BOOL HitButton( const POINT& pt ) {
 		return false;
 	}
 
@@ -91,8 +89,7 @@ public:
 	void CommitChanges();
 
 	// call to activate item attribute
-	enum
-	{
+	enum {
 		ACTIVATE_TYPE_KEYBOARD,
 		ACTIVATE_TYPE_MOUSE
 	};
@@ -133,13 +130,13 @@ public:
 	void SetPropOwner( CPropTree* pProp );
 
 	// Return the location of the PropItem
-	const POINT& GetLocation();
+	const POINT & GetLocation();
 
 	// TreeItem link pointer access
-	CPropTreeItem* GetParent();
-	CPropTreeItem* GetSibling();
-	CPropTreeItem* GetChild();
-	CPropTreeItem* GetNextVisible();
+	CPropTreeItem * GetParent();
+	CPropTreeItem * GetSibling();
+	CPropTreeItem * GetChild();
+	CPropTreeItem * GetNextVisible();
 
 	void SetParent( CPropTreeItem* pParent );
 	void SetSibling( CPropTreeItem* pSibling );
@@ -148,7 +145,7 @@ public:
 
 protected:
 	// CPropTree class that this class belongs
-	CPropTree*			m_pProp;
+	CPropTree		*	m_pProp;
 
 	// TreeItem label name
 	CString				m_sLabel;
@@ -169,8 +166,7 @@ protected:
 	UINT				m_nCtrlID;
 
 protected:
-	enum TreeItemStates
-	{
+	enum TreeItemStates {
 		TreeItemSelected =		0x00000001,
 		TreeItemExpanded =		0x00000002,
 		TreeItemCheckbox =		0x00000004,
@@ -198,10 +194,10 @@ protected:
 	CRect				m_rcButton;
 
 	// link pointers
-	CPropTreeItem*		m_pParent;
-	CPropTreeItem*		m_pSibling;
-	CPropTreeItem*		m_pChild;
-	CPropTreeItem*		m_pVis;
+	CPropTreeItem	*	m_pParent;
+	CPropTreeItem	*	m_pSibling;
+	CPropTreeItem	*	m_pChild;
+	CPropTreeItem	*	m_pVis;
 };
 
 #endif // _PROPTREEITEM_H

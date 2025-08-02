@@ -34,8 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogDeclNew dialog
 
-class DialogDeclNew : public CDialog
-{
+class DialogDeclNew : public CDialog {
 
 	DECLARE_DYNAMIC( DialogDeclNew )
 
@@ -43,24 +42,19 @@ public:
 	DialogDeclNew( CWnd* pParent = NULL );   // standard constructor
 	virtual				~DialogDeclNew();
 
-	void				SetDeclTree( CPathTreeCtrl* tree )
-	{
+	void				SetDeclTree( CPathTreeCtrl* tree ) {
 		declTree = tree;
 	}
-	void				SetDefaultType( const char* type )
-	{
+	void				SetDefaultType( const char * type ) {
 		defaultType = type;
 	}
-	void				SetDefaultName( const char* name )
-	{
+	void				SetDefaultName( const char * name ) {
 		defaultName = name;
 	}
-	void				SetDefaultFile( const char* file )
-	{
+	void				SetDefaultFile( const char * file ) {
 		defaultFile = file;
 	}
-	idDecl* 			GetNewDecl() const
-	{
+	idDecl 	*		GetNewDecl() const {
 		return newDecl;
 	}
 
@@ -96,11 +90,11 @@ private:
 
 	static toolTip_t	toolTips[];
 
-	CPathTreeCtrl* 		declTree;
+	CPathTreeCtrl 	*	declTree;
 	idStr				defaultType;
 	idStr				defaultName;
 	idStr				defaultFile;
-	idDecl* 			newDecl;
+	idDecl 	*		newDecl;
 
 private:
 	void				InitTypeList();

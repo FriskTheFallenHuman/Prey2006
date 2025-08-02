@@ -30,14 +30,13 @@ If you have questions concerning this license or the applicable additional terms
 #define GEPROPERTIES_H_
 
 #ifndef PROPERTYGRID_H_
-	#include "../common/PropertyGrid.h"
+#include "../common/PropertyGrid.h"
 #endif
 
 class rvGEWorkspace;
 class rvGEWindowWrapper;
 
-class rvGEProperties
-{
+class rvGEProperties {
 public:
 
 	rvGEProperties( );
@@ -53,23 +52,21 @@ public:
 
 protected:
 
-	bool	AddModifier( const char* name, const char* value );
+	bool	AddModifier( const char * name, const char * value );
 
 	static LRESULT CALLBACK WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
 
 	HWND				mWnd;
 	rvPropertyGrid		mGrid;
-	rvGEWindowWrapper*	mWrapper;
-	rvGEWorkspace*		mWorkspace;
+	rvGEWindowWrapper	* mWrapper;
+	rvGEWorkspace	*	mWorkspace;
 };
 
-ID_INLINE HWND rvGEProperties::GetWindow()
-{
+ID_INLINE HWND rvGEProperties::GetWindow() {
 	return mWnd;
 }
 
-ID_INLINE void rvGEProperties::SetWorkspace( rvGEWorkspace* workspace )
-{
+ID_INLINE void rvGEProperties::SetWorkspace( rvGEWorkspace* workspace ) {
 	mWorkspace = workspace;
 	Update( );
 }

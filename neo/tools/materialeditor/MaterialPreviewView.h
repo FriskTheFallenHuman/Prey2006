@@ -31,27 +31,26 @@ If you have questions concerning this license or the applicable additional terms
 #include "../common/GLWidget.h"
 
 
-class idGLDrawableView : public idGLDrawable
-{
+class idGLDrawableView : public idGLDrawable {
 
 public:
 	idGLDrawableView();
 	~idGLDrawableView();
 
-	virtual void setMedia( const char* name );
+	virtual void setMedia( const char * name );
 	virtual void draw( int x, int y, int w, int h );
 	virtual void buttonUp( int button ) {}
 	virtual void buttonDown( int _button, float x, float y );
 	virtual void mouseMove( float x, float y );
 	virtual void Update() {};
 
-	void UpdateCamera( renderView_t* refdef );
+	void UpdateCamera( renderView_t * refdef );
 	void UpdateModel();
 	void UpdateLights();
 
 	void addLight();
 	void deleteLight( const int lightId );
-	void drawLights( renderView_t* refdef );
+	void drawLights( renderView_t * refdef );
 
 	void InitWorld();
 	void ResetView();
@@ -67,9 +66,9 @@ public:
 	void setGlobalParm( int parmNum, float value );
 
 protected:
-	idRenderWorld*		world;
-	idRenderModel*		worldModel;
-	const idMaterial*	material;
+	idRenderWorld	*	world;
+	idRenderModel	*	worldModel;
+	const idMaterial	* material;
 
 	bool			showLights;
 
@@ -85,26 +84,24 @@ protected:
 
 	float			globalParms[MAX_GLOBAL_SHADER_PARMS];
 
-	typedef struct
-	{
+	typedef struct {
 		renderLight_t		renderLight;
 		qhandle_t			lightDefHandle;
 		idVec3				origin;
-		const idMaterial*	shader;
+		const idMaterial	* shader;
 		float				radius;
 		idVec3				color;
 		bool				allowMove;
 	} lightInfo_t;
 
-	idList<lightInfo_t>	viewLights;
+	idList < lightInfo_t >	viewLights;
 };
 
 
 // ==================================================================
 // ==================================================================
 
-class MaterialPreviewView : public CView, public MaterialView
-{
+class MaterialPreviewView : public CView, public MaterialView {
 	DECLARE_DYNCREATE( MaterialPreviewView )
 
 protected:

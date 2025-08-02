@@ -13,12 +13,10 @@
 IMPLEMENT_DYNCREATE( CPropTreeView, CFormView )
 
 CPropTreeView::CPropTreeView()
-	: CFormView( ( LPCTSTR ) NULL )
-{
+	: CFormView( ( LPCTSTR ) NULL ) {
 }
 
-CPropTreeView::~CPropTreeView()
-{
+CPropTreeView::~CPropTreeView() {
 }
 
 BEGIN_MESSAGE_MAP( CPropTreeView, CView )
@@ -30,8 +28,7 @@ END_MESSAGE_MAP()
 
 // CPropTreeView drawing
 
-void CPropTreeView::OnDraw( CDC* pDC )
-{
+void CPropTreeView::OnDraw( CDC* pDC ) {
 	//CDocument* pDoc = GetDocument();
 	// TODO: add draw code here
 }
@@ -40,13 +37,11 @@ void CPropTreeView::OnDraw( CDC* pDC )
 // CPropTreeView diagnostics
 
 #ifdef _DEBUG
-void CPropTreeView::AssertValid() const
-{
+void CPropTreeView::AssertValid() const {
 	CView::AssertValid();
 }
 
-void CPropTreeView::Dump( CDumpContext& dc ) const
-{
+void CPropTreeView::Dump( CDumpContext& dc ) const {
 	CView::Dump( dc );
 }
 #endif //_DEBUG
@@ -54,13 +49,11 @@ void CPropTreeView::Dump( CDumpContext& dc ) const
 
 BOOL CPropTreeView::Create( LPCTSTR lpszClassName, LPCTSTR lpszWindowName,
 							DWORD dwStyle, const RECT& rect, CWnd* pParentWnd,
-							UINT nID, CCreateContext* pContext )
-{
+							UINT nID, CCreateContext* pContext ) {
 	// create the view window itself
 	m_pCreateContext = pContext;
-	if( !CView::Create( lpszClassName, lpszWindowName,
-						dwStyle, rect, pParentWnd,  nID, pContext ) )
-	{
+	if ( !CView::Create( lpszClassName, lpszWindowName,
+						 dwStyle, rect, pParentWnd,  nID, pContext ) ) {
 		return FALSE;
 	}
 
@@ -68,10 +61,8 @@ BOOL CPropTreeView::Create( LPCTSTR lpszClassName, LPCTSTR lpszWindowName,
 }
 // CPropTreeView message handlers
 
-int CPropTreeView::OnCreate( LPCREATESTRUCT lpCreateStruct )
-{
-	if( CView::OnCreate( lpCreateStruct ) == -1 )
-	{
+int CPropTreeView::OnCreate( LPCREATESTRUCT lpCreateStruct ) {
+	if ( CView::OnCreate( lpCreateStruct ) == -1 ) {
 		return -1;
 	}
 
@@ -90,24 +81,20 @@ int CPropTreeView::OnCreate( LPCREATESTRUCT lpCreateStruct )
 	return 0;
 }
 
-void CPropTreeView::OnSize( UINT nType, int cx, int cy )
-{
+void CPropTreeView::OnSize( UINT nType, int cx, int cy ) {
 	CView::OnSize( nType, cx, cy );
 
-	if( ::IsWindow( m_Tree.GetSafeHwnd() ) )
-	{
+	if ( ::IsWindow( m_Tree.GetSafeHwnd() ) ) {
 		m_Tree.SetWindowPos( NULL, -1, -1, cx, cy, SWP_NOMOVE | SWP_NOZORDER );
 	}
 }
 
 
-void CPropTreeView::OnPaint()
-{
+void CPropTreeView::OnPaint() {
 	Default();
 }
 
-void CPropTreeView::MeasureItem( LPMEASUREITEMSTRUCT lpMeasureItemStruct )
-{
+void CPropTreeView::MeasureItem( LPMEASUREITEMSTRUCT lpMeasureItemStruct ) {
 	float scaling_factor = Win_GetWindowScalingFactor( GetSafeHwnd() );
 	int s20 = int( 20 * scaling_factor );
 

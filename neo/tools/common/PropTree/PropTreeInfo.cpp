@@ -25,21 +25,19 @@
 #include "PropTreeInfo.h"
 
 #ifdef _DEBUG
-	#define new DEBUG_NEW
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeInfo
 
 CPropTreeInfo::CPropTreeInfo() :
-	m_pProp( NULL )
-{
+	m_pProp( NULL ) {
 }
 
-CPropTreeInfo::~CPropTreeInfo()
-{
+CPropTreeInfo::~CPropTreeInfo() {
 }
 
 
@@ -52,13 +50,11 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeInfo message handlers
 
-void CPropTreeInfo::SetPropOwner( CPropTree* pProp )
-{
+void CPropTreeInfo::SetPropOwner( CPropTree* pProp ) {
 	m_pProp = pProp;
 }
 
-void CPropTreeInfo::OnPaint()
-{
+void CPropTreeInfo::OnPaint() {
 	CPaintDC dc( this );
 	CRect rc;
 
@@ -74,12 +70,9 @@ void CPropTreeInfo::OnPaint()
 
 	CPropTreeItem* pItem = m_pProp->GetFocusedItem();
 
-	if( !m_pProp->IsWindowEnabled() )
-	{
+	if ( !m_pProp->IsWindowEnabled() ) {
 		dc.SetTextColor( GetSysColor( COLOR_GRAYTEXT ) );
-	}
-	else
-	{
+	} else {
 		dc.SetTextColor( GetSysColor( COLOR_BTNTEXT ) );
 	}
 
@@ -88,12 +81,9 @@ void CPropTreeInfo::OnPaint()
 
 	CString txt;
 
-	if( !pItem )
-	{
+	if ( !pItem ) {
 		txt.LoadString( IDS_NOITEMSEL );
-	}
-	else
-	{
+	} else {
 		txt = pItem->GetLabelText();
 	}
 
@@ -108,12 +98,9 @@ void CPropTreeInfo::OnPaint()
 	ir.bottom = rc.bottom;
 	ir.right = rc.right;
 
-	if( pItem )
-	{
+	if ( pItem ) {
 		txt = pItem->GetInfoText();
-	}
-	else
-	{
+	} else {
 		txt.LoadString( IDS_SELFORINFO );
 	}
 

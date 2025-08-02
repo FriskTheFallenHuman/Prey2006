@@ -28,8 +28,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef GESTATUSBAR_H_
 #define GESTATUSBAR_H_
 
-class rvGEStatusBar
-{
+class rvGEStatusBar {
 public:
 
 	rvGEStatusBar( );
@@ -54,33 +53,26 @@ protected:
 	int		mTriangles;
 };
 
-ID_INLINE HWND rvGEStatusBar::GetWindow()
-{
+ID_INLINE HWND rvGEStatusBar::GetWindow() {
 	return mWnd;
 }
 
-ID_INLINE void rvGEStatusBar::SetZoom( int zoom )
-{
-	if( mZoom != zoom )
-	{
+ID_INLINE void rvGEStatusBar::SetZoom( int zoom ) {
+	if ( mZoom != zoom ) {
 		mZoom = zoom;
 		Update( );
 	}
 }
 
-ID_INLINE void rvGEStatusBar::SetTriangles( int triangles )
-{
-	if( triangles != mTriangles )
-	{
+ID_INLINE void rvGEStatusBar::SetTriangles( int triangles ) {
+	if ( triangles != mTriangles ) {
 		mTriangles = triangles;
 		Update( );
 	}
 }
 
-ID_INLINE void rvGEStatusBar::SetSimple( bool simple )
-{
-	if( mSimple != simple )
-	{
+ID_INLINE void rvGEStatusBar::SetSimple( bool simple ) {
+	if ( mSimple != simple ) {
 		mSimple = simple;
 		Update( );
 	}

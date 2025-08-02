@@ -34,8 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 /**
 * Constructor.
 */
-MaterialDef::MaterialDef()
-{
+MaterialDef::MaterialDef() {
 	type = 0;
 	quotes = false;
 }
@@ -43,15 +42,13 @@ MaterialDef::MaterialDef()
 /**
 * Destructor.
 */
-MaterialDef::~MaterialDef()
-{
+MaterialDef::~MaterialDef() {
 }
 
 /**
 * Returns view specific data associated with the material definition.
 */
-DWORD MaterialDef::GetViewData( const char* viewName )
-{
+DWORD MaterialDef::GetViewData( const char * viewName ) {
 	DWORD* value = NULL;
 	viewData.Get( viewName, &value );
 	return *value;
@@ -60,8 +57,7 @@ DWORD MaterialDef::GetViewData( const char* viewName )
 /**
 * Sets view specific data for the material definition.
 */
-void MaterialDef::SetViewData( const char* viewName, DWORD value )
-{
+void MaterialDef::SetViewData( const char * viewName, DWORD value ) {
 	viewData.Set( viewName, value );
 }
 
@@ -74,21 +70,18 @@ MaterialDefList MaterialDefManager::materialDefs[MaterialDefManager::MATERIAL_DE
 * Loads the material definition file instatiates MaterialDef objects for each definition
 * and groups the definitions.
 */
-void MaterialDefManager::InitializeMaterialDefLists()
-{
+void MaterialDefManager::InitializeMaterialDefLists() {
 
-	char*	buffer;
-	int length = fileSystem->ReadFile( MATERIAL_DEF_FILE, ( void** )&buffer );
+	char	* buffer;
+	int length = fileSystem->ReadFile( MATERIAL_DEF_FILE, ( void ** )&buffer );
 
-	if( length == -1 )
-	{
+	if ( length == -1 ) {
 		common->Error( "Couldn't load material editor definition: %s", MATERIAL_DEF_FILE );
 		return;
 	}
 
 	idLexer src;
-	if( !src.LoadMemory( buffer, length, MATERIAL_DEF_FILE ) )
-	{
+	if ( !src.LoadMemory( buffer, length, MATERIAL_DEF_FILE ) ) {
 		common->Error( "Couldn't parse %s", MATERIAL_DEF_FILE );
 		fileSystem->FreeFile( buffer );
 	}
@@ -107,8 +100,7 @@ void MaterialDefManager::InitializeMaterialDefLists()
 * @param typeName The name of the attribute grouping to search for in the file.
 * @param list The MaterialDefList object to append the MaterialDef instances to.
 */
-void MaterialDefManager::InitializeMaterialDefList( idLexer* src, const char* typeName, MaterialDefList* list )
-{
+void MaterialDefManager::InitializeMaterialDefList( idLexer* src, const char * typeName, MaterialDefList* list ) {
 
 	idToken token;
 
@@ -116,39 +108,27 @@ void MaterialDefManager::InitializeMaterialDefList( idLexer* src, const char* ty
 	src->SkipUntilString( typeName );
 	src->SkipUntilString( "{" );
 
-	while( 1 )
-	{
-		if( !src->ExpectAnyToken( &token ) )
-		{
+	while ( 1 ) {
+		if ( !src->ExpectAnyToken( &token ) ) {
 			//Todo: Add some error checking here
 			return;
 		}
 
-		if( token == "}" )
-		{
+		if ( token == "}" ) {
 			break;
 		}
 
 		MaterialDef* newProp = new MaterialDef();
 
-		if( !token.Icmp( "TYPE_GROUP" ) )
-		{
+		if ( !token.Icmp( "TYPE_GROUP" ) ) {
 			newProp->type = MaterialDef::MATERIAL_DEF_TYPE_GROUP;
-		}
-		else if( !token.Icmp( "TYPE_BOOL" ) )
-		{
+		} else if ( !token.Icmp( "TYPE_BOOL" ) ) {
 			newProp->type = MaterialDef::MATERIAL_DEF_TYPE_BOOL;
-		}
-		else if( !token.Icmp( "TYPE_STRING" ) )
-		{
+		} else if ( !token.Icmp( "TYPE_STRING" ) ) {
 			newProp->type = MaterialDef::MATERIAL_DEF_TYPE_STRING;
-		}
-		else if( !token.Icmp( "TYPE_FLOAT" ) )
-		{
+		} else if ( !token.Icmp( "TYPE_FLOAT" ) ) {
 			newProp->type = MaterialDef::MATERIAL_DEF_TYPE_FLOAT;
-		}
-		else if( !token.Icmp( "TYPE_INT" ) )
-		{
+		} else if ( !token.Icmp( "TYPE_INT" ) ) {
 			newProp->type = MaterialDef::MATERIAL_DEF_TYPE_INT;
 		}
 
@@ -174,8 +154,7 @@ void MaterialDefManager::InitializeMaterialDefList( idLexer* src, const char* ty
 		newProp->displayInfo = token;
 
 		//Type Specific Data
-		if( newProp->type == MaterialDef::MATERIAL_DEF_TYPE_STRING )
-		{
+		if ( newProp->type == MaterialDef::MATERIAL_DEF_TYPE_STRING ) {
 
 			newProp->quotes = false;
 
@@ -184,8 +163,7 @@ void MaterialDefManager::InitializeMaterialDefList( idLexer* src, const char* ty
 
 			//Read validate flag
 			src->ReadToken( &token );
-			if( token == "1" )
-			{
+			if ( token == "1" ) {
 				newProp->quotes = true;
 			}
 		}
@@ -199,13 +177,10 @@ void MaterialDefManager::InitializeMaterialDefList( idLexer* src, const char* ty
 /**
 * Destroys all MaterialDef instances and clears the material attribute grouping lists.
 */
-void MaterialDefManager::DestroyMaterialDefLists()
-{
+void MaterialDefManager::DestroyMaterialDefLists() {
 
-	for( int i = 0; i < MATERIAL_DEF_NUM; i++ )
-	{
-		for( int j = 0; j < materialDefs[i].Num(); j++ )
-		{
+	for ( int i = 0; i < MATERIAL_DEF_NUM; i++ ) {
+		for ( int j = 0; j < materialDefs[i].Num(); j++ ) {
 			delete materialDefs[i][j];
 		}
 		materialDefs[i].Clear();
@@ -216,10 +191,8 @@ void MaterialDefManager::DestroyMaterialDefLists()
 * Returns the MaterialDefList for the specified attribute grouping.
 * @param type The attribute grouping for which to retreive the attribute list.
 */
-MaterialDefList* MaterialDefManager::GetMaterialDefs( int type )
-{
-	if( type >= 0 && type < MATERIAL_DEF_NUM )
-	{
+MaterialDefList * MaterialDefManager::GetMaterialDefs( int type ) {
+	if ( type >= 0 && type < MATERIAL_DEF_NUM ) {
 		return &materialDefs[type];
 	}
 	return NULL;

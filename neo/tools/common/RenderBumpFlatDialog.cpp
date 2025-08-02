@@ -38,12 +38,9 @@ idCVar rbfg_DefaultHeight( "rbfg_DefaultHeight", "0", 0, "" );
 
 static idStr RBFName;
 
-static bool CheckPow2( int Num )
-{
-	while( Num )
-	{
-		if( ( Num & 1 ) && ( Num != 1 ) )
-		{
+static bool CheckPow2( int Num ) {
+	while ( Num ) {
+		if ( ( Num & 1 ) && ( Num != 1 ) ) {
 			return false;
 		}
 
@@ -53,15 +50,12 @@ static bool CheckPow2( int Num )
 	return true;
 }
 
-static void Com_WriteConfigToFile( const char* filename )
-{
+static void Com_WriteConfigToFile( const char * filename ) {
 	common->Warning( "Some renderbump code called Com_WriteConfigTiFile(\"%s\") which is not implemented!\n", filename );
 }
 
-static BOOL CALLBACK RBFProc( HWND hwndDlg, UINT message, WPARAM wParam, LPARAM lParam )
-{
-	switch( message )
-	{
+static BOOL CALLBACK RBFProc( HWND hwndDlg, UINT message, WPARAM wParam, LPARAM lParam ) {
+	switch ( message ) {
 		case WM_INITDIALOG:
 			SetDlgItemInt( hwndDlg, IDC_RBF_WIDTH, rbfg_DefaultWidth.GetInteger(), FALSE );
 			SetDlgItemInt( hwndDlg, IDC_RBF_HEIGHT, rbfg_DefaultHeight.GetInteger(), FALSE );
@@ -69,10 +63,8 @@ static BOOL CALLBACK RBFProc( HWND hwndDlg, UINT message, WPARAM wParam, LPARAM 
 			return TRUE;
 
 		case WM_COMMAND:
-			switch( LOWORD( wParam ) )
-			{
-				case IDOK:
-				{
+			switch ( LOWORD( wParam ) ) {
+				case IDOK: {
 					int		width, height;
 
 					width = GetDlgItemInt( hwndDlg, IDC_RBF_WIDTH, 0, FALSE );
@@ -83,8 +75,7 @@ static BOOL CALLBACK RBFProc( HWND hwndDlg, UINT message, WPARAM wParam, LPARAM 
 
 					Com_WriteConfigToFile( CONFIG_FILE );
 
-					if( !CheckPow2( width ) || !CheckPow2( height ) )
-					{
+					if ( !CheckPow2( width ) || !CheckPow2( height ) ) {
 						return TRUE;
 					}
 
@@ -103,8 +94,7 @@ static BOOL CALLBACK RBFProc( HWND hwndDlg, UINT message, WPARAM wParam, LPARAM 
 	return FALSE;
 }
 
-void DoRBFDialog( const char* FileName )
-{
+void DoRBFDialog( const char * FileName ) {
 	RBFName = FileName;
 
 	Sys_GrabMouseCursor( false );

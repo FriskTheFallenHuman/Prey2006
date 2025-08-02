@@ -61,8 +61,7 @@ typedef void ( *VectorCtlCallbackProc )( idQuat rotation );
 //      static void CALLBACK MyClass::MyCallBack (double dVecX, double dVecY, double dVecZ);
 
 
-class CVectorCtl : public CButton
-{
+class CVectorCtl : public CButton {
 
 #define EPS                                 1.0e-6                  // Epsilon
 
@@ -85,35 +84,29 @@ public:
 	virtual void DrawItem( LPDRAWITEMSTRUCT lpDrawItemStruct );
 
 	// Sets / Gets diffuse (ball) color.
-	void SetDiffuseColor( COLORREF clr )
-	{
+	void SetDiffuseColor( COLORREF clr ) {
 		m_clrDiffuse = clr;
 		Redraw();
 	}
-	COLORREF GetDiffuseColor()
-	{
+	COLORREF GetDiffuseColor() {
 		return m_clrDiffuse;
 	}
 
 	// Sets / Gets ambient (background) color.
-	void SetAmbientColor( COLORREF clr )
-	{
+	void SetAmbientColor( COLORREF clr ) {
 		m_clrAmbient = clr;
 		Redraw();
 	}
-	COLORREF GetAmbientColor()
-	{
+	COLORREF GetAmbientColor() {
 		return m_clrAmbient;
 	}
 
 	// Sets / Gets light color.
-	void SetLightColor( COLORREF clr )
-	{
+	void SetLightColor( COLORREF clr ) {
 		m_clrLight = clr;
 		Redraw();
 	}
-	COLORREF GetLightColor()
-	{
+	COLORREF GetLightColor() {
 		return m_clrLight;
 	}
 
@@ -125,8 +118,7 @@ public:
 
 	// Sets / Gets specular intensity
 	BOOL SetSpecularExponent( double dExp );
-	double GetSpecularExponent()
-	{
+	double GetSpecularExponent() {
 		return m_dSpecularExponent;
 	}
 
@@ -137,50 +129,40 @@ public:
 
 	// Sets / Gets ball radius (in pixels)
 	void SetRadius( UINT uRadius );
-	UINT GetRadius()
-	{
+	UINT GetRadius() {
 		return UINT( m_iRadius );
 	}
 
 	// Sets / Gets ball position (in pixels)
 	void SetCenter( UINT uHorizPos, UINT uVertPos );
-	UINT GetHorizCenter()
-	{
+	UINT GetHorizCenter() {
 		return UINT( m_iXCenter );
 	}
-	UINT GetVertCenter()
-	{
+	UINT GetVertCenter() {
 		return UINT( m_iYCenter );
 	}
 
 	// Sets / Gets vector components
-	void SetX( double dx )
-	{
+	void SetX( double dx ) {
 		SetAxis( dx, 0 );
 	}
-	double GetX()
-	{
+	double GetX() {
 		return m_dVec[0];
 	}
-	void SetY( double dy )
-	{
+	void SetY( double dy ) {
 		SetAxis( dy, 1 );
 	}
-	double GetY()
-	{
+	double GetY() {
 		return m_dVec[1];
 	}
-	void SetZ( double dz )
-	{
+	void SetZ( double dz ) {
 		SetAxis( dz, 2 );
 	}
-	double GetZ()
-	{
+	double GetZ() {
 		return m_dVec[2];
 	}
 	void SetVector( double dx, double dy, double dz );
-	void SetidAxis( const idMat3& mat )
-	{
+	void SetidAxis( const idMat3& mat ) {
 		rotationMatrix = mat;
 		rotationQuat = mat.ToQuat();
 		m_dVec = mat[2];
@@ -188,29 +170,25 @@ public:
 
 	// Sets / Gets mouse sensitivity
 	BOOL SetSensitivity( UINT uSens );
-	UINT GetSensitivity()
-	{
+	UINT GetSensitivity() {
 		return UINT( m_dSensitivity );
 	}
 
 	// Bounds / Unbounds vector to front (positive Z) only
-	void ClipToFront( BOOL bEnable )
-	{
+	void ClipToFront( BOOL bEnable ) {
 		m_bFrontVector = bEnable;
 	}
 
 	// Set user-defined callback function to call whenever the vector has changed.
 	// Set to NULL to disable callback.
-	void SetVectorChangingCallback( VectorCtlCallbackProc proc )
-	{
+	void SetVectorChangingCallback( VectorCtlCallbackProc proc ) {
 		m_procVectorChanging = proc;
 	}
 
 	// Set user-defined callback function to call whenever the vector has finished
 	// changing (user dropped track-ball).
 	// Set to NULL to disable callback.
-	void SetVectorChangedCallback( VectorCtlCallbackProc proc )
-	{
+	void SetVectorChangedCallback( VectorCtlCallbackProc proc ) {
 		m_procVectorChanged = proc;
 	}
 
@@ -220,7 +198,7 @@ private:
 	afx_msg void OnMouseMove( UINT nFlags, CPoint point );
 
 	// Mouse is being dragged
-	void OnMouseDrag( int , int );
+	void OnMouseDrag( int, int );
 	// Create and measure off-screen buffer
 	void InitBitmap( LPDRAWITEMSTRUCT lpDrawItemStruct, CDC* pDC );
 	// Build image to BitBlt
@@ -257,13 +235,13 @@ private:
 				m_iSqrRadius,           // Ball radius to the power of two
 				m_iXCenter,             // X center point
 				m_iYCenter;             // Y center point
-	CBitmap*    m_pOldBitmap;           // Previously selected bitmap
+	CBitmap  *  m_pOldBitmap;           // Previously selected bitmap
 	COLORREF    m_clrDiffuse,           // Ball diffusion color (self color)
 				m_clrAmbient,           // Ambient (background) color
 				m_clrLight,             // Color of light
 				m_clrBackgroundStart,   // Background color gradient start
 				m_clrBackgroundEnd;     // Background color gradient end
-	CWnd*       pCtl[3];                // Pointers to axis display controls
+	CWnd    *   pCtl[3];                // Pointers to axis display controls
 	double      m_dSpecularExponent,    // Specularity effect intensity
 				m_dSensitivity;         // The bigger the number the less sensitive the mouse gets
 	// Valid ranges are 1..MAX_UINT

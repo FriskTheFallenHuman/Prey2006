@@ -35,8 +35,7 @@ If you have questions concerning this license or the applicable additional terms
 /**
 * Structure used associate a material name with a tree item.
 */
-typedef struct
-{
+typedef struct {
 	idStr		materialName;
 	HTREEITEM	treeItem;
 } MaterialTreeItem_t;
@@ -44,14 +43,13 @@ typedef struct
 /**
 * A tree view of all the materials that have been defined.
 */
-class MaterialTreeView : public CTreeView, public MaterialView
-{
+class MaterialTreeView : public CTreeView, public MaterialView {
 
 public:
 	virtual			~MaterialTreeView();
 
-	void			InitializeMaterialList( bool includeFile = true, const char* filename = NULL );
-	void			BuildMaterialList( bool includeFile = true, const char* filename = NULL );
+	void			InitializeMaterialList( bool includeFile = true, const char * filename = NULL );
+	void			BuildMaterialList( bool includeFile = true, const char * filename = NULL );
 
 	//Material Interface
 	virtual void	MV_OnMaterialChange( MaterialDoc* pMaterial );
@@ -59,8 +57,8 @@ public:
 	virtual void	MV_OnMaterialSaved( MaterialDoc* pMaterial );
 	virtual void	MV_OnMaterialAdd( MaterialDoc* pMaterial );
 	virtual void	MV_OnMaterialDelete( MaterialDoc* pMaterial );
-	virtual void	MV_OnMaterialNameChanged( MaterialDoc* pMaterial, const char* oldName );
-	virtual void	MV_OnFileReload( const char* filename );
+	virtual void	MV_OnMaterialNameChanged( MaterialDoc* pMaterial, const char * oldName );
+	virtual void	MV_OnFileReload( const char * filename );
 
 	bool			CanCopy();
 	bool			CanPaste();
@@ -70,13 +68,13 @@ public:
 	bool			CanSaveFile();
 	idStr			GetSaveFilename();
 
-	bool			FindNextMaterial( MaterialSearchData_t* searchData );
-	HTREEITEM		FindNextMaterial( HTREEITEM item, MaterialSearchData_t* searchData );
+	bool			FindNextMaterial( MaterialSearchData_t * searchData );
+	HTREEITEM		FindNextMaterial( HTREEITEM item, MaterialSearchData_t * searchData );
 	HTREEITEM		GetNextSeachItem( HTREEITEM item, bool stayInFile );
 
 	void			DeleteFolder( HTREEITEM item, bool addUndo = true );
-	HTREEITEM		AddFolder( const char* name, HTREEITEM parent );
-	void			RenameFolder( HTREEITEM item, const char* name );
+	HTREEITEM		AddFolder( const char * name, HTREEITEM parent );
+	void			RenameFolder( HTREEITEM item, const char * name );
 
 
 protected:
@@ -86,8 +84,7 @@ protected:
 	/**
 	* List of tree item types
 	*/
-	enum
-	{
+	enum {
 		TYPE_ROOT = 0,
 		TYPE_FOLDER,
 		TYPE_FILE,
@@ -134,11 +131,11 @@ protected:
 
 
 	//Utility methods
-	void			RenameMaterial( HTREEITEM item, const char* originalName );
+	void			RenameMaterial( HTREEITEM item, const char * originalName );
 	bool			GetFileName( HTREEITEM item, idStr& out );
 	idStr			GetMediaPath( HTREEITEM item, DWORD type );
-	void			GetMaterialPaths( HTREEITEM item, idList<MaterialTreeItem_t>* list );
-	void			AddStrList( const char* root, idStrList* list, bool includeFile );
+	void			GetMaterialPaths( HTREEITEM item, idList < MaterialTreeItem_t > * list );
+	void			AddStrList( const char * root, idStrList* list, bool includeFile );
 	void			PopupMenu( CPoint* pt );
 	void			SetItemImage( HTREEITEM item, bool mod, bool apply, bool children );
 
@@ -154,16 +151,16 @@ protected:
 	bool					treeWithFile;
 
 	//Hashtables for quick lookups
-	idHashTable<HTREEITEM>	quickTree;
-	idHashTable<HTREEITEM>	materialToTree;
-	idHashTable<HTREEITEM>	fileToTree;
+	idHashTable < HTREEITEM >	quickTree;
+	idHashTable < HTREEITEM >	materialToTree;
+	idHashTable < HTREEITEM >	fileToTree;
 
 
 	//Member variables for renaming folders
 	HTREEITEM				renamedFolder;
-	idList<MaterialTreeItem_t> affectedMaterials;
+	idList < MaterialTreeItem_t > affectedMaterials;
 
-	CImageList*				dragImage;
+	CImageList		*		dragImage;
 	bool					bDragging;
 	CPoint					dropPoint;
 	HTREEITEM				dragItem;

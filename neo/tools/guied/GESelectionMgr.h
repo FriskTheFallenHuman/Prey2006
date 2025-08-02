@@ -31,12 +31,10 @@ If you have questions concerning this license or the applicable additional terms
 
 class rvGEWorkspace;
 
-class rvGESelectionMgr
-{
+class rvGESelectionMgr {
 public:
 
-	enum EHitTest
-	{
+	enum EHitTest {
 		HT_NONE,
 		HT_SELECT,
 		HT_MOVE,
@@ -54,9 +52,9 @@ public:
 
 	void			SetWorkspace( rvGEWorkspace* workspace );
 
-	void			Set( idWindow* );
+	void			Set( idWindow * );
 	void			Add( idWindow* window, bool expand = true );
-	void			Remove( idWindow* );
+	void			Remove( idWindow * );
 	void			Clear();
 
 	int				Num();
@@ -68,53 +66,47 @@ public:
 	bool			IsSelected( idWindow* window );
 	bool			IsExpression();
 
-	idRectangle&	GetRect();
-	idWindow*		GetBottomMost();
+	idRectangle	& GetRect();
+	idWindow	*	GetBottomMost();
 
-	idWindow*&		operator[]( int index );
+	idWindow*	&	operator[]( int index );
 
 protected:
 
 	void		UpdateRectangle();
 	void		UpdateExpression();
 
-	idList<idWindow*>	mSelections;
+	idList<idWindow *>	mSelections;
 	idRectangle			mRect;
-	rvGEWorkspace*		mWorkspace;
+	rvGEWorkspace	*	mWorkspace;
 	bool				mExpression;
 };
 
-ID_INLINE int rvGESelectionMgr::Num()
-{
+ID_INLINE int rvGESelectionMgr::Num() {
 	return mSelections.Num( );
 }
 
-ID_INLINE idWindow*& rvGESelectionMgr::operator[]( int index )
-{
+ID_INLINE idWindow* & rvGESelectionMgr::operator[]( int index ) {
 	assert( index >= 0 );
 	assert( index < mSelections.Num() );
 
 	return mSelections[ index ];
 }
 
-ID_INLINE void rvGESelectionMgr::SetWorkspace( rvGEWorkspace* workspace )
-{
+ID_INLINE void rvGESelectionMgr::SetWorkspace( rvGEWorkspace* workspace ) {
 	mWorkspace = workspace;
 }
 
-ID_INLINE idRectangle& rvGESelectionMgr::GetRect()
-{
+ID_INLINE idRectangle & rvGESelectionMgr::GetRect() {
 	UpdateRectangle( );
 	return mRect;
 }
 
-ID_INLINE bool rvGESelectionMgr::IsSelected( idWindow* window )
-{
+ID_INLINE bool rvGESelectionMgr::IsSelected( idWindow* window ) {
 	return mSelections.FindIndex( window ) != -1 ? true : false;
 }
 
-ID_INLINE bool rvGESelectionMgr::IsExpression()
-{
+ID_INLINE bool rvGESelectionMgr::IsExpression() {
 	return mExpression;
 }
 

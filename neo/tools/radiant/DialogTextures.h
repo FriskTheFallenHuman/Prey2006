@@ -32,16 +32,15 @@ If you have questions concerning this license or the applicable additional terms
 
 // CDialogTextures dialog
 
-class CDialogTextures : public CDialogEx
-{
+class CDialogTextures : public CDialogEx {
 // Construction
 public:
 	enum { NONE, TEXTURES, MATERIALS, MODELS, SCRIPTS, SOUNDS, SOUNDPARENT, GUIS, PARTICLES, FX, NUMIDS };
-	static const char* TypeNames[NUMIDS];
+	static const char * TypeNames[NUMIDS];
 	CDialogTextures( CWnd* pParent = NULL );   // standard constructor
 	void OnCancel();
 	void CollapseEditor();
-	void SelectCurrentItem( bool collapse, const char* name, int id );
+	void SelectCurrentItem( bool collapse, const char * name, int id );
 
 	enum { IDD = IDD_DIALOG_TEXTURELIST };
 	CButton	m_chkHideRoot;
@@ -55,7 +54,7 @@ public:
 	idGLDrawable m_testDrawable;
 	idGLDrawableMaterial m_drawMaterial;
 	idGLDrawableModel m_drawModel;
-	const idMaterial* editMaterial;
+	const idMaterial * editMaterial;
 	idStr editGui;
 	idStr currentFile;
 	idStr mediaName;
@@ -68,7 +67,7 @@ protected:
 	virtual BOOL PreCreateWindow( CREATESTRUCT& cs );
 
 protected:
-	void addStrList( const char* root, const idStrList& list, int id );
+	void addStrList( const char * root, const idStrList& list, int id );
 	void addScripts( bool rootItems );
 	void addModels( bool rootItems );
 	void addMaterials( bool rootItems );
@@ -78,9 +77,9 @@ protected:
 	void addParticles( bool rootItems );
 	void BuildTree();
 	void CollapseChildren( HTREEITEM parent );
-	const char* buildItemName( HTREEITEM item, const char* rootName );
+	const char * buildItemName( HTREEITEM item, const char * rootName );
 	bool loadTree( HTREEITEM item, const idStr& name, CWaitDlg* dlg );
-	HTREEITEM findItem( const char* name, HTREEITEM item, HTREEITEM* foundItem );
+	HTREEITEM findItem( const char * name, HTREEITEM item, HTREEITEM* foundItem );
 
 	virtual void OnOK();
 	virtual BOOL OnInitDialog();

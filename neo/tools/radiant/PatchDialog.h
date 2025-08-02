@@ -30,9 +30,8 @@ If you have questions concerning this license or the applicable additional terms
 
 // CPatchDialog dialog
 
-class CPatchDialog : public CDialogEx
-{
-	patchMesh_t* m_Patch;
+class CPatchDialog : public CDialogEx {
+	patchMesh_t * m_Patch;
 
 public:
 	void UpdateInfo();

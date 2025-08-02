@@ -43,20 +43,18 @@ If you have questions concerning this license or the applicable additional terms
 //
 //===============================================================
 
-typedef struct aasProcNode_s
-{
+typedef struct aasProcNode_s {
 	idPlane plane;
 	int children[2];		// negative numbers are (-1 - areaNumber), 0 = solid
 } aasProcNode_t;
 
 
-class idLedge
-{
+class idLedge {
 
 public:
 	idVec3					start;
 	idVec3					end;
-	idBrushBSPNode* 		node;
+	idBrushBSPNode 	*	node;
 	int						numExpandedPlanes;
 	int						numSplitPlanes;
 	int						numPlanes;
@@ -68,13 +66,12 @@ public:
 	void					AddPoint( const idVec3& v );
 	void					CreateBevels( const idVec3& gravityDir );
 	void					Expand( const idBounds& bounds, float maxStepHeight );
-	idWinding* 				ChopWinding( const idWinding* winding ) const;
+	idWinding 		*		ChopWinding( const idWinding* winding ) const;
 	bool					PointBetweenBounds( const idVec3& v ) const;
 };
 
 
-class idAASBuild
-{
+class idAASBuild {
 
 public:
 	idAASBuild( void );
@@ -84,19 +81,19 @@ public:
 	void					Shutdown( void );
 
 private:
-	const idAASSettings* 	aasSettings;
-	idAASFileLocal* 		file;
-	aasProcNode_t* 			procNodes;
+	const idAASSettings *	aasSettings;
+	idAASFileLocal 	*	file;
+	aasProcNode_t 	*		procNodes;
 	int						numProcNodes;
 	int						numGravitationalSubdivisions;
 	int						numMergedLeafNodes;
 	int						numLedgeSubdivisions;
-	idList<idLedge>			ledgeList;
-	idBrushMap* 			ledgeMap;
+	idList < idLedge >			ledgeList;
+	idBrushMap 	*		ledgeMap;
 
 private:	// map loading
 	void					ParseProcNodes( idLexer* src );
-	bool					LoadProcBSP( const char* name, ID_TIME_T minFileTime );
+	bool					LoadProcBSP( const char * name, ID_TIME_T minFileTime );
 	void					DeleteProcBSP( void );
 	bool					ChoppedAwayByProcBSP( int nodeNum, idFixedWinding* w, const idVec3& normal, const idVec3& origin, const float radius );
 	void					ClipBrushSidesWithProcBSP( idBrushList& brushList );
@@ -137,10 +134,10 @@ private:	// storing file
 	void					ShutdownHash( void );
 	void					ClearHash( const idBounds& bounds );
 	int						HashVec( const idVec3& vec );
-	bool					GetVertex( const idVec3& v, int* vertexNum );
-	bool					GetEdge( const idVec3& v1, const idVec3& v2, int* edgeNum, int v1num );
-	bool					GetFaceForPortal( idBrushBSPPortal* portal, int side, int* faceNum );
-	bool					GetAreaForLeafNode( idBrushBSPNode* node, int* areaNum );
+	bool					GetVertex( const idVec3& v, int * vertexNum );
+	bool					GetEdge( const idVec3& v1, const idVec3& v2, int * edgeNum, int v1num );
+	bool					GetFaceForPortal( idBrushBSPPortal* portal, int side, int * faceNum );
+	bool					GetAreaForLeafNode( idBrushBSPNode* node, int * areaNum );
 	int						StoreTree_r( idBrushBSPNode* node );
 	void					GetSizeEstimate_r( idBrushBSPNode* parent, idBrushBSPNode* node, struct sizeEstimate_s& size );
 	void					SetSizeEstimate( const idBrushBSP& bsp, idAASFileLocal* file );

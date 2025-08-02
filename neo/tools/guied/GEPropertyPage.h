@@ -29,26 +29,21 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef GEPROPERTYPAGE_H_
 #define GEPROPERTYPAGE_H_
 
-class rvGEPropertyPage
-{
+class rvGEPropertyPage {
 public:
 
 	rvGEPropertyPage( );
 
-	virtual bool	Init()
-	{
+	virtual bool	Init() {
 		return true;
 	}
-	virtual bool	Apply()
-	{
+	virtual bool	Apply() {
 		return true;
 	}
-	virtual bool	SetActive()
-	{
+	virtual bool	SetActive() {
 		return true;
 	}
-	virtual bool	KillActive()
-	{
+	virtual bool	KillActive() {
 		return true;
 	}
 	virtual int		HandleMessage( UINT msg, WPARAM wParam, LPARAM lParam );

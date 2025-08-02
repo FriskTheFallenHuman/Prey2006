@@ -29,14 +29,13 @@ If you have questions concerning this license or the applicable additional terms
 #define GEKEYVALUEMODIFIER_H_
 
 #ifndef GEMODIFIER_H_
-	#include "GEModifier.h"
+#include "GEModifier.h"
 #endif
 
-class rvGEKeyValueModifier : public rvGEModifier
-{
+class rvGEKeyValueModifier : public rvGEModifier {
 public:
 
-	rvGEKeyValueModifier( const char* name, idWindow* window, const char* key, const char* value );
+	rvGEKeyValueModifier( const char * name, idWindow* window, const char * key, const char * value );
 
 	virtual bool		Apply();
 	virtual bool		Undo();
@@ -51,9 +50,8 @@ protected:
 	idStr		mUndoValue;
 };
 
-ID_INLINE bool rvGEKeyValueModifier::CanMerge( rvGEModifier* merge )
-{
-	return !( ( rvGEKeyValueModifier* )merge )->mKey.Icmp( mKey );
+ID_INLINE bool rvGEKeyValueModifier::CanMerge( rvGEModifier* merge ) {
+	return !( ( rvGEKeyValueModifier * )merge )->mKey.Icmp( mKey );
 }
 
 #endif // GEKEYVALUEMODIFIER_H_

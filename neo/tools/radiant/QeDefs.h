@@ -92,11 +92,8 @@ If you have questions concerning this license or the applicable additional terms
 #define EXCLUDE_ANGLES		0x00004000
 #define EXCLUDE_VISPORTALS	0x00008000
 #define EXCLUDE_NODRAW		0x00010000
-#define EXCLUDE_COMBATNODES	0x00020000
-#define EXCLUDE_TRIGGERS	0x00040000
-// _D3XP
-#define EXCLUDE_MODELS		0x00080000
-
+#define EXCLUDE_TRIGGERS	0x00020000
+#define EXCLUDE_MODELS		0x00040000	// _D3XP
 
 //
 // menu indexes for modifying menus
@@ -113,8 +110,7 @@ If you have questions concerning this license or the applicable additional terms
 #define	VK_PLUS			187
 #define	VK_MINUS		189
 
-enum
-{
+enum {
 	COLOR_TEXTUREBACK,
 	COLOR_GRIDBACK,
 	COLOR_GRIDMINOR,

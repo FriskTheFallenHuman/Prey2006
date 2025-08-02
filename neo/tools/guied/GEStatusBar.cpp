@@ -31,8 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "GEApp.h"
 
-rvGEStatusBar::rvGEStatusBar( )
-{
+rvGEStatusBar::rvGEStatusBar( ) {
 	mSimple = true;
 	mZoom   = 0;
 	mTriangles = 0;
@@ -45,12 +44,10 @@ rvGEStatusBar::Create
 Creates a new status bar
 ================
 */
-bool rvGEStatusBar::Create( HWND parent, UINT id, bool visible )
-{
+bool rvGEStatusBar::Create( HWND parent, UINT id, bool visible ) {
 	mWnd = CreateStatusWindow( WS_CHILD | WS_VISIBLE | WS_BORDER, "", parent, id );
 
-	if( !mWnd )
-	{
+	if ( !mWnd ) {
 		return false;
 	}
 
@@ -66,8 +63,7 @@ rvGEStatusBar::Resize
 Resizes the status bar and updates the content
 ================
 */
-void rvGEStatusBar::Resize( int width, int height )
-{
+void rvGEStatusBar::Resize( int width, int height ) {
 	SendMessage( mWnd, WM_SIZE, 0, MAKELONG( width, height ) );
 
 	Update( );
@@ -80,8 +76,7 @@ rvGEStatusBar::Update
 Updates the status bar by setting up each part's width and text
 ================
 */
-void rvGEStatusBar::Update()
-{
+void rvGEStatusBar::Update() {
 	RECT	rStatus;
 	SIZE	zoomSize;
 	SIZE	trisSize;
@@ -89,15 +84,12 @@ void rvGEStatusBar::Update()
 
 	GetWindowRect( mWnd, &rStatus );
 
-	if( mSimple )
-	{
+	if ( mSimple ) {
 		parts[0] = -1;
 
 		SendMessage( mWnd, SB_SETPARTS, 1, ( LONG_PTR )parts );
 		SendMessage( mWnd, SB_SETTEXT, 1, ( LPARAM ) "" );
-	}
-	else
-	{
+	} else {
 		zoomSize.cx = 85;
 		trisSize.cx = 65;
 
@@ -121,8 +113,7 @@ rvGEStatusBar::Show
 Shows and hides the status bar
 ================
 */
-void rvGEStatusBar::Show( bool visible )
-{
+void rvGEStatusBar::Show( bool visible ) {
 	gApp.GetOptions().SetStatusBarVisible( visible );
 	ShowWindow( mWnd, visible ? SW_SHOW : SW_HIDE );
 }
