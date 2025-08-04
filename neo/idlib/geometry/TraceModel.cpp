@@ -553,15 +553,15 @@ void idTraceModel::SetupCylinder( const idBounds &cylBounds, const int numSides 
 		n = 3;
 	}
 	if ( n * 2 > MAX_TRACEMODEL_VERTS ) {
-		idLib::common->Printf( "WARNING: idTraceModel::SetupCylinder: too many vertices\n" );
+		idLib::common->Warning( "idTraceModel::SetupCylinder: too many vertices\n" );
 		n = MAX_TRACEMODEL_VERTS / 2;
 	}
 	if ( n * 3 > MAX_TRACEMODEL_EDGES ) {
-		idLib::common->Printf( "WARNING: idTraceModel::SetupCylinder: too many sides\n" );
+		idLib::common->Warning( "idTraceModel::SetupCylinder: too many sides\n" );
 		n = MAX_TRACEMODEL_EDGES / 3;
 	}
 	if ( n + 2 > MAX_TRACEMODEL_POLYS ) {
-		idLib::common->Printf( "WARNING: idTraceModel::SetupCylinder: too many polygons\n" );
+		idLib::common->Warning( "idTraceModel::SetupCylinder: too many polygons\n" );
 		n = MAX_TRACEMODEL_POLYS - 2;
 	}
 

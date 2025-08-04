@@ -939,7 +939,7 @@ static void R_CreateShadowVolumeInFrustum( const idRenderEntityLocal *ent,
 		if ( numShadowIndexes + opt.totalIndexes > MAX_SHADOW_INDEXES
 			|| numShadowVerts + opt.numVerts > MAX_SHADOW_VERTS ) {
 			overflowed = true;
-			common->Printf( "WARNING: overflowed MAX_SHADOW tables, shadow discarded\n" );
+			common->Warning( "overflowed MAX_SHADOW tables, shadow discarded\n" );
 			Mem_Free( opt.verts );
 			Mem_Free( opt.indexes );
 			return;

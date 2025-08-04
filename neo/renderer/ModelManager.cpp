@@ -458,7 +458,7 @@ void idRenderModelManagerLocal::ReloadModels( bool forceAll ) {
 			}
 		}
 
-		common->DPrintf( "reloading %s.\n", model->Name() );
+		common->DPrintf( "reloading '%s'.\n", model->Name() );
 
 		model->LoadModel();
 	}

@@ -538,9 +538,9 @@ void CMainFrame::SetButtonMenuStates() {
 			pMenu->CheckMenuItem( ID_VIEW_SHOWLIGHTS, MF_BYCOMMAND | MF_UNCHECKED );
 		}
 
-		if ( g_qeglobals.d_savedinfo.exclude & EXCLUDE_COMBATNODES ) {
-			pMenu->CheckMenuItem( ID_VIEW_SHOWCOMBATNODES, MF_BYCOMMAND | MF_UNCHECKED );
-		}
+		//if ( g_qeglobals.d_savedinfo.exclude & EXCLUDE_COMBATNODES ) {
+		//	pMenu->CheckMenuItem( ID_VIEW_SHOWCOMBATNODES, MF_BYCOMMAND | MF_UNCHECKED );
+		//}
 
 		if ( g_qeglobals.d_savedinfo.exclude & EXCLUDE_ENT ) {
 			pMenu->CheckMenuItem( ID_VIEW_SHOWENT, MF_BYCOMMAND | MF_UNCHECKED );
@@ -1228,7 +1228,7 @@ void CMainFrame::OnDestroy() {
 	//
 	// FIXME: idMaterial
 	// if (notexture) { // Timo // Surface properties plugin #ifdef _DEBUG if (
-	// !notexture->pData ) common->Printf("WARNING: found a qtexture_t* with no
+	// !notexture->pData ) common->Warning("found a qtexture_t* with no
 	// IPluginQTexture\n"); #endif if ( notexture->pData )
 	// GETPLUGINTEXDEF(notexture)->DecRef(); Mem_Free(notexture); }
 	// if (current_texture) free(current_texture);
@@ -1843,11 +1843,11 @@ void CMainFrame::OnViewShowpath() {
  =======================================================================================================================
  */
 void CMainFrame::OnViewShowCombatNodes() {
-	if ( ( g_qeglobals.d_savedinfo.exclude ^= EXCLUDE_COMBATNODES ) & EXCLUDE_COMBATNODES ) {
-		CheckMenuItem( ::GetMenu( GetSafeHwnd() ), ID_VIEW_SHOWCOMBATNODES, MF_BYCOMMAND | MF_UNCHECKED );
-	} else {
-		CheckMenuItem( ::GetMenu( GetSafeHwnd() ), ID_VIEW_SHOWCOMBATNODES, MF_BYCOMMAND | MF_CHECKED );
-	}
+	//if ( ( g_qeglobals.d_savedinfo.exclude ^= EXCLUDE_COMBATNODES ) & EXCLUDE_COMBATNODES ) {
+	//	CheckMenuItem( ::GetMenu( GetSafeHwnd() ), ID_VIEW_SHOWCOMBATNODES, MF_BYCOMMAND | MF_UNCHECKED );
+	//} else {
+	//	CheckMenuItem( ::GetMenu( GetSafeHwnd() ), ID_VIEW_SHOWCOMBATNODES, MF_BYCOMMAND | MF_CHECKED );
+	//}
 
 	Sys_UpdateWindows( W_XY | W_CAMERA );
 }

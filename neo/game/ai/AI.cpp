@@ -1497,7 +1497,7 @@ void idAI::SetAAS( void ) {
 	}
 	// HUMANHEAD pdm: Applied our override for creatures that don't use AAS
 	if ( spawnArgs.GetBool("noaas_warning", "1") ) {
-		gameLocal.Printf( "WARNING: %s has no AAS file\n", name.c_str() );
+		gameLocal.Warning( "'%s' has no AAS file\n", name.c_str() );
 	}
 }
 

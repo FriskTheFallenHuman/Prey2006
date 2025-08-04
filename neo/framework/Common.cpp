@@ -140,6 +140,7 @@ public:
 	virtual void				VPrintf( const char *fmt, va_list arg );
 	virtual void				DPrintf( const char *fmt, ... ) id_attribute((format(printf,2,3)));
 	virtual void				VerbosePrintf( const char *fmt, ... ) id_attribute((format(printf,2,3)));
+	virtual void				VerboseWarning( const char *fmt, ... ) id_attribute((format(printf,2,3)));
 	virtual void				Warning( const char *fmt, ... ) id_attribute((format(printf,2,3)));
 	virtual void				DWarning( const char *fmt, ...) id_attribute((format(printf,2,3)));
 	virtual void				PrintWarnings( void );
@@ -468,6 +469,22 @@ void idCommonLocal::VerbosePrintf( const char *fmt, ... ) {
 
 /*
 ==================
+idCommonLocal::VerboseWarning
+==================
+*/
+void idCommonLocal::VerboseWarning( const char *fmt, ... ) {
+	if( !dmapGlobals.verbose ) {
+		return;
+	}
+
+	va_list argptr;
+	va_start( argptr, fmt );
+	Warning( fmt, argptr );
+	va_end( argptr );
+}
+
+/*
+==================
 idCommonLocal::DPrintf
 
 prints message that only shows up if the "developer" cvar is set
@@ -490,7 +507,7 @@ void idCommonLocal::DPrintf( const char *fmt, ... ) {
 	bool temp = com_refreshOnPrint;
 	com_refreshOnPrint = false;
 
-	Printf( S_COLOR_RED"%s", msg );
+	Printf( S_COLOR_GRAY"%s", msg );
 
 	com_refreshOnPrint = temp;
 }
@@ -515,7 +532,7 @@ void idCommonLocal::DWarning( const char *fmt, ... ) {
 	va_end( argptr );
 	msg[sizeof(msg)-1] = '\0';
 
-	Printf( S_COLOR_YELLOW"WARNING: %s\n", msg );
+	Printf( S_COLOR_YELLOW"WARNING: " S_COLOR_GRAY "%s\n", msg );
 }
 
 /*

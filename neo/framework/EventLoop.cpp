@@ -113,7 +113,7 @@ void idEventLoop::PushEvent( sysEvent_t *event ) {
 		// don't print the warning constantly, or it can give time for more...
 		if ( !printedWarning ) {
 			printedWarning = true;
-			common->Printf( "WARNING: Com_PushEvent overflow\n" );
+			common->Warning( "Com_PushEvent overflow\n" );
 		}
 
 		if ( ev->evPtr ) {

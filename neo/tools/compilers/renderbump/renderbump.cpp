@@ -1258,7 +1258,7 @@ void RenderBump_f( const idCmdArgs& args ) {
 				opt.antiAlias = atoi( localArgs.Argv( j + 1 ) );
 				j += 1;
 			} else {
-				common->Printf( "WARNING: Unknown option \"%s\"\n", s );
+				common->Warning( "WARNING: Unknown option \"%s\"\n", s );
 				break;
 			}
 		}
@@ -1372,7 +1372,7 @@ void RenderBumpFlat_f( const idCmdArgs& args ) {
 			height = atoi( args.Argv( i + 2 ) );
 			i += 2;
 		} else {
-			common->Printf( "WARNING: Unknown option \"%s\"\n", s );
+			common->Warning( "WARNING: Unknown option \"%s\"\n", s );
 			break;
 		}
 	}

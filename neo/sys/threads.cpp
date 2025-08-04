@@ -258,7 +258,7 @@ void Sys_CreateThread(xthread_t function, void *parms, xthreadInfo& info, const 
 	if (thread_count < MAX_THREADS)
 		thread[thread_count++] = &info;
 	else
-		common->DPrintf("WARNING: MAX_THREADS reached\n");
+		common->DWarning("MAX_THREADS reached\n");
 
 	Sys_LeaveCriticalSection();
 }

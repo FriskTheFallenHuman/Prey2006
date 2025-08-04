@@ -532,7 +532,7 @@ static	void RemoveIfColinear( optVertex_t * ov, optIsland_t * island ) {
 	if ( !e2 ) {
 		// this may still happen legally when a tiny triangle is
 		// the only thing in a group
-		common->VerbosePrintf( "WARNING: vertex with only one edge\n" );
+		common->VerboseWarning( "vertex with only one edge\n" );
 		return;
 	}
 
@@ -780,7 +780,7 @@ static void LinkTriToEdge( optTri_t * optTri, optEdge_t * edge ) {
 			|| ( edge->v1 == optTri->v[1] && edge->v2 == optTri->v[2] )
 			|| ( edge->v1 == optTri->v[2] && edge->v2 == optTri->v[0] ) ) {
 		if ( edge->backTri ) {
-			common->VerbosePrintf( "Warning: LinkTriToEdge: already in use\n" );
+			common->VerboseWarning( "LinkTriToEdge: already in use\n" );
 			return;
 		}
 		edge->backTri = optTri;
@@ -790,7 +790,7 @@ static void LinkTriToEdge( optTri_t * optTri, optEdge_t * edge ) {
 			|| ( edge->v1 == optTri->v[2] && edge->v2 == optTri->v[1] )
 			|| ( edge->v1 == optTri->v[0] && edge->v2 == optTri->v[2] ) ) {
 		if ( edge->frontTri ) {
-			common->VerbosePrintf( "Warning: LinkTriToEdge: already in use\n" );
+			common->VerboseWarning( "LinkTriToEdge: already in use\n" );
 			return;
 		}
 		edge->frontTri = optTri;
@@ -848,7 +848,7 @@ static void CreateOptTri( optVertex_t * first, optEdge_t * e1, optEdge_t * e2, o
 	}
 
 	if ( !opposite ) {
-		common->VerbosePrintf( "Warning: BuildOptTriangles: couldn't locate opposite\n" );
+		common->VerboseWarning( "BuildOptTriangles: couldn't locate opposite\n" );
 		return;
 	}
 
@@ -1047,7 +1047,7 @@ static	void	RegenerateTriangles( optIsland_t * island ) {
 		if ( plane.Normal() * dmapGlobals.mapPlanes[ island->group->planeNum ].Normal() <= 0 ) {
 			// this can happen reasonably when a triangle is nearly degenerate in
 			// optimization planar space, and winds up being degenerate in 3D space
-			common->VerbosePrintf( "WARNING: backwards triangle generated!\n" );
+			common->VerboseWarning( "backwards triangle generated!\n" );
 			// discard it
 			FreeTri( tri );
 			continue;
@@ -1168,7 +1168,7 @@ static void AddOriginalTriangle( optVertex_t * v[3] ) {
 	// if this triangle is backwards (possible with epsilon issues)
 	// ignore it completely
 	if ( !IsTriangleValid( v[0], v[1], v[2] ) ) {
-		common->VerbosePrintf( "WARNING: backwards triangle in input!\n" );
+		common->VerboseWarning( "backwards triangle in input!\n" );
 		return;
 	}
 
@@ -1246,14 +1246,6 @@ void SplitOriginalEdgesAtCrossings( optimizeGroup_t * opt ) {
 	numOriginalVerts = numOptVerts;
 	// now split any crossing edges and create optEdges
 	// linked to the vertexes
-
-	// debug drawing bounds
-	dmapGlobals.drawBounds = optBounds;
-
-	dmapGlobals.drawBounds[0][0] -= 2;
-	dmapGlobals.drawBounds[0][1] -= 2;
-	dmapGlobals.drawBounds[1][0] += 2;
-	dmapGlobals.drawBounds[1][1] += 2;
 
 	// generate crossing points between all the original edges
 	crossings = ( edgeCrossing_t ** )Mem_ClearedAlloc( numOriginalEdges * sizeof( *crossings ) );

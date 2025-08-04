@@ -366,17 +366,17 @@ bool idAASSettings::FromFile( const idStr& fileName ) {
 	common->Printf( "loading %s\n", name.c_str() );
 
 	if ( !src.LoadFile( name ) ) {
-		common->Error( "WARNING: couldn't load %s\n", name.c_str() );
+		common->Error( "couldn't load '%s'\n", name.c_str() );
 		return false;
 	}
 
 	if ( !src.ExpectTokenString( "settings" ) ) {
-		common->Error( "%s is not a settings file", name.c_str() );
+		common->Error( "'%s' is not a settings file", name.c_str() );
 		return false;
 	}
 
 	if ( !FromParser( src ) ) {
-		common->Error( "failed to parse %s", name.c_str() );
+		common->Error( "failed to parse '%s'", name.c_str() );
 		return false;
 	}
 

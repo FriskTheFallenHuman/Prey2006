@@ -3202,7 +3202,7 @@ idEditorBrush * Patch_Parse( bool bOld ) {
 		}
 		GetToken( true );
 	} else {
-		common->Printf( "Warning: Patch read with no texture, using notexture... \n" );
+		common->Warning( "Patch read with no texture, using notexture... \n" );
 	}
 
 	if ( strcmp( token, "(" ) ) {

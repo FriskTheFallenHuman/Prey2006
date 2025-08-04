@@ -1692,7 +1692,7 @@ void idSessionLocal::ExecuteMapChange( bool noFadeWipe ) {
 			fileSystem->CloseFile( savegameFile );
 			savegameFile = NULL;
 
-			common->Warning( "WARNING: Loading savegame failed, will restart the map with the player persistent data!" );
+			common->Warning( "Loading savegame failed, will restart the map with the player persistent data!\n" );
 
 			game->SetServerInfo( mapSpawnData.serverInfo );
 			game->InitFromNewMap( fullMapName + ".map", rw, sw, idAsyncNetwork::server.IsActive(), idAsyncNetwork::client.IsActive(), Sys_Milliseconds() );

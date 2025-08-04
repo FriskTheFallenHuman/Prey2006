@@ -210,8 +210,6 @@ void ResetDmapGlobals( void ) {
 	dmapGlobals.noCM = false;
 	dmapGlobals.noAAS = false;
 	dmapGlobals.shadowOptLevel = SO_NONE;
-	dmapGlobals.drawBounds.Clear();
-	dmapGlobals.drawflag = false;
 	dmapGlobals.totalShadowTriangles = 0;
 	dmapGlobals.totalShadowVerts = 0;
 }
@@ -259,9 +257,6 @@ void Dmap( const idCmdArgs& args ) {
 		if ( !idStr::Icmp( s, "v" ) || !idStr::Icmp( s, "verbose" ) ) {
 			common->Printf( "verbose = true\n" );
 			dmapGlobals.verbose = true;
-		} else if ( !idStr::Icmp( s, "draw" ) ) {
-			common->Printf( "drawflag = true\n" );
-			dmapGlobals.drawflag = true;
 		} else if ( !idStr::Icmp( s, "noFlood" ) ) {
 			common->Printf( "noFlood = true\n" );
 			dmapGlobals.noFlood = true;

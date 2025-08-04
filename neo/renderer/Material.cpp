@@ -612,8 +612,8 @@ int idMaterial::ParseTerm( idLexer &src ) {
 		return EXP_REG_DISTANCE;
 	}
 	if ( !token.Icmp( "fragmentPrograms" ) ) {
-        pd->registersAreConstant = false;
-        return EmitOp(0, 0, OP_TYPE_FRAGMENTPROGRAMS);
+		pd->registersAreConstant = false;
+		return EmitOp(0, 0, OP_TYPE_FRAGMENTPROGRAMS);
 	}
 
 	if ( !token.Icmp( "sound" ) ) {
@@ -1582,7 +1582,7 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 		}
 
 		if ( !token.Icmp( "fragmentparm" ) ) {
-            ParseFragmentParm(src, &newStage);
+			ParseFragmentParm(src, &newStage);
 			continue;
 		}
 
@@ -2725,19 +2725,19 @@ void idMaterial::EvaluateRegisters( float *registers, const float shaderParms[MA
 		case OP_TYPE_OR:
 			registers[op->c] = registers[ op->a ] || registers[op->b];
 			break;
-        case OP_TYPE_FRAGMENTPROGRAMS: { //karin: check has ARB to GLSL shader stage is enabled current
-            float f = 0.0;
-            if (glConfig.ARBFragmentProgramAvailable && stages/* && !r_skipNewAmbient.GetBool()*/) {
-                for (int m = 0; m < numStages; m++) {
-                    if (stages[ m ].newStage && stages[ m ].newStage->fragmentProgram > 0) {
-                        f = 1.0;
-                        break;
-                    }
-                }
-            }
-            registers[op->c] = f;
-        }
-            break;
+		case OP_TYPE_FRAGMENTPROGRAMS: { //karin: check has ARB to GLSL shader stage is enabled current
+			float f = 0.0;
+			if (glConfig.ARBFragmentProgramAvailable && stages/* && !r_skipNewAmbient.GetBool()*/) {
+				for (int m = 0; m < numStages; m++) {
+					if (stages[ m ].newStage && stages[ m ].newStage->fragmentProgram > 0) {
+						f = 1.0;
+						break;
+					}
+				}
+			}
+			registers[op->c] = f;
+		}
+			break;
 		default:
 			common->FatalError( "R_EvaluateExpression: bad opcode" );
 		}
@@ -3026,50 +3026,50 @@ if there are three values, 4 = 1.0
 */
 void idMaterial::ParseFragmentParm(idLexer &src, newShaderStage_t *newStage)
 {
-    idToken				token;
+	idToken				token;
 
-    src.ReadTokenOnLine(&token);
-    int	parm = token.GetIntValue();
+	src.ReadTokenOnLine(&token);
+	int	parm = token.GetIntValue();
 
-    if (!token.IsNumeric() || parm < 0 || parm >= MAX_FRAGMENT_PARMS) {
-        common->Warning("bad fragmentParm number\n");
-        SetMaterialFlag(MF_DEFAULTED);
-        return;
-    }
+	if (!token.IsNumeric() || parm < 0 || parm >= MAX_FRAGMENT_PARMS) {
+		common->Warning("bad fragmentParm number\n");
+		SetMaterialFlag(MF_DEFAULTED);
+		return;
+	}
 
-    if (parm >= newStage->numFragmentParms) {
-        newStage->numFragmentParms = parm+1;
-    }
+	if (parm >= newStage->numFragmentParms) {
+		newStage->numFragmentParms = parm+1;
+	}
 
-    newStage->fragmentParms[parm][0] = ParseExpression(src);
+	newStage->fragmentParms[parm][0] = ParseExpression(src);
 
-    src.ReadTokenOnLine(&token);
+	src.ReadTokenOnLine(&token);
 
-    if (!token[0] || token.Icmp(",")) {
-        newStage->fragmentParms[parm][1] =
-        newStage->fragmentParms[parm][2] =
-        newStage->fragmentParms[parm][3] = newStage->fragmentParms[parm][0];
-        return;
-    }
+	if (!token[0] || token.Icmp(",")) {
+		newStage->fragmentParms[parm][1] =
+		newStage->fragmentParms[parm][2] =
+		newStage->fragmentParms[parm][3] = newStage->fragmentParms[parm][0];
+		return;
+	}
 
-    newStage->fragmentParms[parm][1] = ParseExpression(src);
+	newStage->fragmentParms[parm][1] = ParseExpression(src);
 
-    src.ReadTokenOnLine(&token);
+	src.ReadTokenOnLine(&token);
 
-    if (!token[0] || token.Icmp(",")) {
-        newStage->fragmentParms[parm][2] = GetExpressionConstant(0);
-        newStage->fragmentParms[parm][3] = GetExpressionConstant(1);
-        return;
-    }
+	if (!token[0] || token.Icmp(",")) {
+		newStage->fragmentParms[parm][2] = GetExpressionConstant(0);
+		newStage->fragmentParms[parm][3] = GetExpressionConstant(1);
+		return;
+	}
 
-    newStage->fragmentParms[parm][2] = ParseExpression(src);
+	newStage->fragmentParms[parm][2] = ParseExpression(src);
 
-    src.ReadTokenOnLine(&token);
+	src.ReadTokenOnLine(&token);
 
-    if (!token[0] || token.Icmp(",")) {
-        newStage->fragmentParms[parm][3] = GetExpressionConstant(1);
-        return;
-    }
+	if (!token[0] || token.Icmp(",")) {
+		newStage->fragmentParms[parm][3] = GetExpressionConstant(1);
+		return;
+	}
 
-    newStage->fragmentParms[parm][3] = ParseExpression(src);
+	newStage->fragmentParms[parm][3] = ParseExpression(src);
 }

@@ -457,7 +457,7 @@ void MakeTreePortals_r( node_t * node ) {
 	CalcNodeBounds( node );
 
 	if ( node->bounds[0][0] >= node->bounds[1][0] ) {
-		common->VerbosePrintf( "Warning: node without a volume" );
+		common->VerboseWarning( "node without a volume" );
 	}
 
 	for ( i = 0; i < 3; i++ ) {

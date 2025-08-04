@@ -756,7 +756,7 @@ void idInterpreter::CallEvent( const function_t *func, int argsize ) {
 
 		//HUMANHEAD rww - if thread owner is removed, destroy the thread
 		if (!eventEntity && thread && thread->threadOwnerCheck && (!thread->threadOwner.IsValid() || !thread->threadOwner.GetEntity())) {
-			gameLocal.Printf("WARNING: Thread '%s' was still running after threadOwner was removed.\n", thread->GetThreadName());
+			gameLocal.Warning("Thread '%s' was still running after threadOwner was removed.\n", thread->GetThreadName());
 			threadDying = true;
 			return;
 		}

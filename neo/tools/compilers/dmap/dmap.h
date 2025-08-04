@@ -328,9 +328,6 @@ typedef struct {
 	bool	noCM;				// don't create collision map
 	bool	noAAS;				// don't create AAS files
 
-	idBounds	drawBounds;
-	bool	drawflag;
-
 	int		totalShadowTriangles;
 	int		totalShadowVerts;
 

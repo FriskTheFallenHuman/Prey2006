@@ -270,21 +270,32 @@ void idImage::MakeDefault() {
 	const byte PINK[4]  = { 255,   0, 255, 255 };
 	const byte BLACK[4] = {   0,   0,   0, 255 };
 
-	for (int y = 0; y < DEFAULT_SIZE; y++) {
-		for (int x = 0; x < DEFAULT_SIZE; x++) {
-			// In what block are we?
-			int bx = x / BLOCK_SIZE;
-			int by = y / BLOCK_SIZE;
+	if ( com_developer.GetBool() ) {
+		for (int y = 0; y < DEFAULT_SIZE; y++) {
+			for (int x = 0; x < DEFAULT_SIZE; x++) {
+				// In what block are we?
+				int bx = x / BLOCK_SIZE;
+				int by = y / BLOCK_SIZE;
 
-			// even sum → pink, odd → black
-			bool isPink = ((bx + by) & 1) == 0;
-			const byte* col = isPink ? PINK : BLACK;
+				// even sum → pink, odd → black
+				bool isPink = ((bx + by) & 1) == 0;
+				const byte* col = isPink ? PINK : BLACK;
 
-			// write RGBA
-			data[y][x][0] = col[0];
-			data[y][x][1] = col[1];
-			data[y][x][2] = col[2];
-			data[y][x][3] = col[3];
+				// write RGBA
+				data[y][x][0] = col[0];
+				data[y][x][1] = col[1];
+				data[y][x][2] = col[2];
+				data[y][x][3] = col[3];
+			}
+		}
+	} else {
+		for ( y = 0 ; y < DEFAULT_SIZE ; y++ ) {
+			for ( x = 0 ; x < DEFAULT_SIZE ; x++ ) {
+				data[y][x][0] = 0;
+				data[y][x][1] = 0;
+				data[y][x][2] = 0;
+				data[y][x][3] = 0;
+			}
 		}
 	}
 
@@ -1010,7 +1021,7 @@ idImage::Reload
 void idImage::Reload( bool checkPrecompressed, bool force ) {
 	// always regenerate functional images
 	if ( generatorFunction ) {
-		common->DPrintf( "regenerating %s.\n", imgName.c_str() );
+		common->DPrintf( "regenerating '%s'.\n", imgName.c_str() );
 		generatorFunction( this );
 		return;
 	}
@@ -1454,7 +1465,7 @@ idImage *idImageManager::ImageFromFunction( const char *_name, void (*generatorF
 	for ( image = imageHashTable[hash] ; image; image = image->hashNext ) {
 		if ( name.Icmp( image->imgName ) == 0 ) {
 			if ( image->generatorFunction != generatorFunction ) {
-				common->DPrintf( "WARNING: reused image %s with mixed generators\n", name.c_str() );
+				common->DWarning( "reused image '%s' with mixed generators\n", name.c_str() );
 			}
 			return image;
 		}
@@ -1488,14 +1499,18 @@ idImage	*idImageManager::ImageFromFile( const char *_name, textureFilter_t filte
 	idImage	*image;
 	int hash;
 
-	if ( !_name || !_name[0] || idStr::Icmp( _name, "default" ) == 0 || idStr::Icmp( _name, "_default" ) == 0 ) {
+	if ( !_name || !_name[0] || idStr::Icmp( _name, "default" ) == 0 || idStr::Icmp( _name, "_default" ) == 0 || idStr::Icmp( _name, "unnamed" )  == 0 || strstr( _name, "default_material" ) || strstr( _name, "_emptyname" ) ) {
 		declManager->MediaPrint( "DEFAULTED\n" );
 		return globalImages->defaultImage;
 	}
 
 	// strip any .tga file extensions from anywhere in the _name, including image program parameters
+	//
 	name = _name;
-	name.Replace( ".tga", "" );
+	name.StripFileExtension();
+	//name.Replace( ".tga", "" );
+	//name.Replace( ".jpg", "" );
+	//name.Replace( ".png", "" );
 	name.BackSlashesToSlashes();
 
 	//

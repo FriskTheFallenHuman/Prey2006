@@ -838,7 +838,7 @@ void idEditorEntity::PostParse( idEditorBrush* pList ) {
 		}
 	} else {	// brush entity
 		if ( brushes.next == &brushes ) {
-			printf( "Warning: Brush entity with no brushes\n" );
+			common->Warning( "Brush entity with no brushes\n" );
 		}
 
 		if ( !needsOrigin ) {

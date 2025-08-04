@@ -560,7 +560,7 @@ void SplitBrush( uBrush_t * brush, int planenum, uBrush_t ** front, uBrush_t ** 
 	}
 
 	if ( w->IsHuge() ) {
-		common->Printf( "WARNING: huge winding\n" );
+		common->Warning( "huge winding\n" );
 	}
 
 	midwinding = w;

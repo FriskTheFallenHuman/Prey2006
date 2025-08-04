@@ -67,13 +67,13 @@ bool GetToken( bool crossline ) {
 	while ( *script_p <= 32 ) {
 		if ( !*script_p ) {
 			if ( !crossline ) {
-				printf( "Warning: Line %i is incomplete [01]\n", scriptline );
+				common->Warning( "Line %i is incomplete [01]\n", scriptline );
 			}
 			return false;
 		}
 		if ( *script_p++ == '\n' ) {
 			if ( !crossline ) {
-				printf( "Warning: Line %i is incomplete [02]\n", scriptline );
+				common->Warning( "Line %i is incomplete [02]\n", scriptline );
 			}
 			scriptline++;
 		}
@@ -82,12 +82,12 @@ bool GetToken( bool crossline ) {
 	// Handle comments
 	if ( script_p[0] == '/' && script_p[1] == '/' ) {
 		if ( !crossline ) {
-			printf( "Warning: Line %i is incomplete [03]\n", scriptline );
+			common->Warning( "Line %i is incomplete [03]\n", scriptline );
 		}
 		while ( *script_p++ != '\n' ) {
 			if ( !*script_p ) {
 				if ( !crossline ) {
-					printf( "Warning: Line %i is incomplete [04]\n", scriptline );
+					common->Warning( "Line %i is incomplete [04]\n", scriptline );
 				}
 				return false;
 			}
