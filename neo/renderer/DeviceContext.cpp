@@ -39,10 +39,17 @@ idVec4 idDeviceContext::colorBlack;
 idVec4 idDeviceContext::colorWhite;
 idVec4 idDeviceContext::colorNone;
 
+// This makes the alien fonts gets translated to human fonts
+const char *gui_translateAlienFontArgs[] = {
+	"fonts",
+	"fonts/menu",
+	NULL
+};
 
 idCVar gui_smallFontLimit( "gui_smallFontLimit", "0.30", CVAR_GUI | CVAR_ARCHIVE, "" );
 idCVar gui_mediumFontLimit( "gui_mediumFontLimit", "0.60", CVAR_GUI | CVAR_ARCHIVE, "" );
-
+idCVar gui_translateAlienFont( "gui_translateAlienFont", gui_translateAlienFontArgs[0], CVAR_GUI | CVAR_ARCHIVE, "Setup font name for automitic translate `alien` font text of GUI(empty to disable).", idCmdSystem::ArgCompletion_String<gui_translateAlienFontArgs> );
+idCVar gui_translateAlienFontDistance( "gui_translateAlienFontDistance", "200", CVAR_GUI | CVAR_FLOAT | CVAR_ARCHIVE, "Setup max distance of GUI to view origin for enable translate `alien` font text(0 = disable; -1 = always; positive: distance value)." );
 
 idList<fontInfoEx_t> idDeviceContext::fonts;
 
@@ -112,23 +119,15 @@ void idDeviceContext::Init() {
 	cursorImages[CURSOR_ARROW] = declManager->FindMaterial("guis/assets/guicursor_arrow.tga");
 	cursorImages[CURSOR_HAND] = declManager->FindMaterial("guis/assets/guicursor_hand.tga");
 	cursorImages[CURSOR_MENU] = declManager->FindMaterial("guis/assets/guicursor_menu.tga");
-	scrollBarImages[SCROLLBAR_HBACK] = declManager->FindMaterial("ui/assets/scrollbarh.tga");
+	scrollBarImages[SCROLLBAR_HBACK] = declManager->FindMaterial("guis/assets/scrollbarv_cap.tga");
 	scrollBarImages[SCROLLBAR_VBACK] = declManager->FindMaterial("guis/assets/scrollbarv.tga");
 	scrollBarImages[SCROLLBAR_THUMB] = declManager->FindMaterial("guis/assets/scrollbar_thumb.tga");
-	scrollBarImages[SCROLLBAR_RIGHT] = declManager->FindMaterial("ui/assets/scrollbar_right.tga");
-	scrollBarImages[SCROLLBAR_LEFT] = declManager->FindMaterial("ui/assets/scrollbar_left.tga");
-	scrollBarImages[SCROLLBAR_UP] = declManager->FindMaterial("ui/assets/scrollbar_up.tga");
-	scrollBarImages[SCROLLBAR_DOWN] = declManager->FindMaterial("ui/assets/scrollbar_down.tga");
 	cursorImages[CURSOR_ARROW]->SetSort( SS_GUI );
 	cursorImages[CURSOR_HAND]->SetSort( SS_GUI );
 	cursorImages[CURSOR_MENU]->SetSort( SS_GUI );
 	scrollBarImages[SCROLLBAR_HBACK]->SetSort( SS_GUI );
 	scrollBarImages[SCROLLBAR_VBACK]->SetSort( SS_GUI );
 	scrollBarImages[SCROLLBAR_THUMB]->SetSort( SS_GUI );
-	scrollBarImages[SCROLLBAR_RIGHT]->SetSort( SS_GUI );
-	scrollBarImages[SCROLLBAR_LEFT]->SetSort( SS_GUI );
-	scrollBarImages[SCROLLBAR_UP]->SetSort( SS_GUI );
-	scrollBarImages[SCROLLBAR_DOWN]->SetSort( SS_GUI );
 	cursor = CURSOR_ARROW;
 	enableClipping = true;
 	overStrikeMode = true;

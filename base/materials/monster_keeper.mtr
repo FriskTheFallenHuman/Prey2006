@@ -1,0 +1,415 @@
+
+////////////////////////////////////
+////////  keeper  /////////////////
+////////////////////////////////////
+//
+models/monsters/keeper/keeperbody
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	forceOverlays
+
+	renderbump -size 1024 1024 models/monsters/keeper/keeperbody_local models/monsters/keeper/keeperbodyhi.lwo
+	diffusemap models/monsters/keeper/keeperbody
+//	bumpmap	addnormals(models/monsters/keeper/keeperbody_local, heightmap(models/monsters/keeper/keeperbody_h, 7 ) )
+//	bumpmap	models/monsters/keeper/keeperbody_local
+	{
+		blend bumpmap
+		map addnormals(models/monsters/keeper/keeperbody_local, heightmap(models/monsters/keeper/keeperbody_h, 7 ) )
+		highres
+	}
+	specularmap models/monsters/keeper/keeperbody_s
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/keeper/keeperbody_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 0.3 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/keeper/keeperbody_dis	// replace this with a monster-specific texture
+		alphaTest 0.3 * (time - parm7)
+		glowStage
+	}
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/keeper/keeperleg
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	forceOverlays
+
+	renderbump -size 1024 1024 models/monsters/keeper/keeperleg_local models/monsters/keeper/keeperleghi.lwo
+	diffusemap models/monsters/keeper/keeperleg
+//	bumpmap	addnormals(models/monsters/keeper/keeperleg_local, heightmap(models/monsters/keeper/keeperleg_h, 7 ) )
+//	bumpmap	models/monsters/keeper/keeperleg_local
+	{
+		blend bumpmap
+		map addnormals(models/monsters/keeper/keeperleg_local, heightmap(models/monsters/keeper/keeperleg_h, 7 ) )
+		highres
+	}
+	specularmap models/monsters/keeper/keeperleg_s
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/keeper/keeperleg_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 0.3 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/keeper/keeperleg_dis	// replace this with a monster-specific texture
+		alphaTest 0.3 * (time - parm7)
+		glowStage
+	}
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/keeper/keeperhead
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	forceOverlays
+
+	renderbump -size 1024 1024 models/monsters/keeper/keeperhead_local models/monsters/keeper/keeperheadhi.lwo
+	{
+		if ( parm7 == 0 )
+		blend diffusemap
+		map models/monsters/keeper/keeperhead
+		alphatest	0.5
+	}
+	{
+		if parm7
+		blend diffusemap
+		map models/monsters/keeper/keeperhead
+	}
+//	bumpmap	addnormals(models/monsters/keeper/keeperhead_local, heightmap(models/monsters/keeper/keeperhead_h, 7 ) )
+//	bumpmap	models/monsters/keeper/keeperhead_local
+	{
+		blend bumpmap
+		map addnormals(models/monsters/keeper/keeperhead_local, heightmap(models/monsters/keeper/keeperhead_h, 7 ) )
+		highres
+	}
+	specularmap models/monsters/keeper/keeperhead_s
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/keeper/keeperhead_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 0.3 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/keeper/keeperhead_dis	// replace this with a monster-specific texture
+		alphaTest 0.3 * (time - parm7)
+		glowStage
+	}
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+
+models/monsters/keeper/keepereye_right
+{
+//	translucent
+	noshadows
+	matter_flesh
+
+	qer_editorimage models/monsters/keeper/keepereye_right
+
+//	deform	eyeball
+//	{
+//		clamp
+//		blend gl_dst_color, gl_src_color // 2x mod
+//		blend blend
+//		alpha 1.0
+//		map textures/cjr/eyeball
+//		map textures/cjr/eyeballnasty
+//		centerscale	1, 1 // scales the size of the iris (smaller # results in larger iris)
+//	}
+/*	{
+		privatepolygonoffset 1
+		clamp
+		blend	diffusemap
+		map	models/monsters/keeper/keepereye_right
+		//alphatest	0.5
+		centerscale	0.7, 0.7// scales the size of the iris (smaller # results in larger iris)
+	}	*/
+	{
+		if ( parm7 == 0 )
+		clamp
+		blend	add
+		map	models/monsters/keeper/keepereye_right_add
+		centerscale	keepereye [time * .1], keepereye [time * .1]// scales the size of the iris (smaller # results in larger iris)
+		glowStage
+	}
+	{
+		if parm7
+		blend add
+		map	_black
+	}
+}
+
+models/monsters/keeper/keepereye_left
+{
+//	translucent
+	noshadows
+	matter_flesh
+
+	qer_editorimage models/monsters/keeper/keepereye_left
+
+//	deform	eyeball
+//	{
+//		clamp
+//		blend gl_dst_color, gl_src_color // 2x mod
+//		blend blend
+//		alpha 1.0
+//		map textures/cjr/eyeball
+//		map textures/cjr/eyeballnasty
+//		centerscale	1, 1 // scales the size of the iris (smaller # results in larger iris)
+//	}
+/*	{
+		privatepolygonoffset 1
+		clamp
+		blend	diffusemap
+		map	models/monsters/keeper/keepereye_left
+		//alphatest	0.5
+		centerscale	0.7, 0.7// scales the size of the iris (smaller # results in larger iris)
+	}*/
+	{
+		if ( parm7 == 0 )
+		clamp
+		blend	add
+		map	models/monsters/keeper/keepereye_left_add
+		centerscale	keepereye [time * .1], keepereye [time * .1]// scales the size of the iris (smaller # results in larger iris)
+		glowStage
+	}
+	{
+		if parm7
+		blend add
+		map	_black
+	}
+}
+
+
+models/monsters/keeper/keeperbody_hidermelt
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	forceOverlays
+	noshadows
+
+	renderbump -size 1024 1024 models/monsters/keeper/keeperbody_local models/monsters/keeper/keeperbodyhi.lwo
+	diffusemap models/monsters/keeper/keeperbody
+	{
+		blend bumpmap
+		map addnormals(models/monsters/keeper/keeperbody_local, heightmap(models/monsters/keeper/keeperbody_h, 7 ) )
+		highres
+	}
+	specularmap models/monsters/keeper/keeperbody_s
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.01 + 0.3 * (time - parm7)
+		scale 1.5, 1.5
+	}
+	{	// burning corpse effect - greenish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.15 * (time - parm7)
+		rgb .6
+		scale 1.5, 1.5
+		glowStage
+	}
+	{	// burning corpse effect - greenish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.6		// stage-only polygon offset
+       blend gl_one, gl_zero
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.9 * (time - parm7 + 0.5)
+		rgb .2
+		glowStage
+	}
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/keeper/keeperhead_hidermelt
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	forceOverlays
+	noshadows
+
+	renderbump -size 1024 1024 models/monsters/keeper/keeperhead_local models/monsters/keeper/keeperheadhi.lwo
+	{
+		if ( parm7 == 0 )
+		blend diffusemap
+		map models/monsters/keeper/keeperhead
+		alphatest	0.5
+	}
+	{
+		if parm7
+		blend diffusemap
+		map models/monsters/keeper/keeperhead
+	}
+	{
+		blend bumpmap
+		map addnormals(models/monsters/keeper/keeperhead_local, heightmap(models/monsters/keeper/keeperhead_h, 7 ) )
+		highres
+	}
+	specularmap models/monsters/keeper/keeperhead_s
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.01 + 0.3 * (time - parm7)
+		scale 1.5, 1.5
+	}
+	{	// burning corpse effect - greenish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.15 * (time - parm7)
+		rgb .6
+		scale 1.5, 1.5
+		glowStage
+	}
+	{	// burning corpse effect - greenish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.6		// stage-only polygon offset
+       blend gl_one, gl_zero
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.9 * (time - parm7 + 0.5)
+		rgb .2
+		glowStage
+	}
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+
+//====================
+// Shadow Meshes
+//====================
+models/monsters/keeper/keeperbody_shadow {
+	diffusemap	textures/editor/shadow
+}
+
+models/monsters/keeper/keeperhead_shadow {
+	diffusemap	textures/editor/shadow
+}
+
+models/monsters/keeper/keeperleg_shadow {
+	diffusemap	textures/editor/shadow
+}
+

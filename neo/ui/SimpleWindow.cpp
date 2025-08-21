@@ -78,6 +78,8 @@ idSimpleWindow::idSimpleWindow(idWindow *win) {
 
 	hideCursor = win->hideCursor;
 
+	translateFontNum = -1;
+
 	anchor = win->anchor;
 	anchorTo = win->anchorTo;
 	anchorFactor = win->anchorFactor;
@@ -239,7 +241,12 @@ void idSimpleWindow::Redraw(float x, float y) {
 	}
 
 	CalcClientRect(0, 0);
-	dc->SetFont(fontNum);
+
+	if (translateFontNum >= 0) {
+		dc->SetFont(translateFontNum);
+	} else {
+		dc->SetFont(fontNum);
+	}
 
 	if (mParent && mParent->anchor != idDeviceContext::ANCHOR_NONE) {
 		anchor = mParent->anchor;
@@ -491,11 +498,20 @@ void idSimpleWindow::ReadFromSaveGame( idFile *savefile ) {
 
 }
 
+/*
+========================
+idSimpleWindow::Translate
+========================
+*/
+void idSimpleWindow::Translate( int tFontNum )  {
+	translateFontNum = tFontNum;
+}
 
 /*
-===============================
+========================
+idSimpleWindow::Size
+========================
 */
-
 size_t idSimpleWindow::Size() {
 	size_t sz = sizeof(*this);
 	sz += name.Size();

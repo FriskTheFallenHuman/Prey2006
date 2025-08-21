@@ -1,0 +1,600 @@
+
+textures/dch/lota/rotatingsky
+{
+	qer_editorimage textures/dreamworld/daylight2
+	noshadows
+{
+	blend gl_one, gl_zero
+	uncompressed
+	map	textures/dreamworld/daylight2
+	rotate		time * 0.001
+}
+}
+
+textures/dch/ftower_wall_tech2_dark
+{
+	qer_editorimage textures/feedingtower/ftwtch2_proxy
+	matter_altmetal
+	bumpmap
+		addnormals( textures/feedingtower/ftwtch2b_local,
+		heightmap( textures/feedingtower/ftwtch2_h, 16 ))
+	{
+		blend diffusemap
+		map	textures/feedingtower/ftwtch2_d_dark
+		alphatest 0.5
+	}
+	specularmap	textures/feedingtower/ftwtch2_spec
+}
+
+
+textures/dch/techwall24b_dark
+{
+	qer_editorimage 	textures/tech_wall/techwall24b_proxy
+	matter_metal
+	bumpmap 		addnormals (textures/tech_wall/techwall24b_local, heightmap (textures/tech_wall/techwall24b_h, 3))
+	diffusemap	 	textures/tech_wall/techwall24b_dark_d
+	specularmap		textures/tech_wall/techwall24b_dark_s
+}
+
+
+textures/vpaint/feeding2_3_a
+
+{
+	matter_flesh
+	qer_editorimage textures/vpaint/feeding2_3_proxy
+	noselfshadow
+	// Black verts
+	{
+		shaderFallback2
+		blend	bumpmap
+		scale parm6,parm7
+		map	textures/vpaint/feeding3_local
+	}
+	{
+		shaderFallback2
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	add( textures/vpaint/feeding3_d, textures/vpaint/feeding3_ss)
+	}
+	{
+		shaderFallback2
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/vpaint/feeding3_s
+	}
+	{
+		shaderLevel2
+		inversevertexcolor
+
+		blend shader
+		vertexprogram	vertexscale.vp
+		fragmentprogram parallaxExp.vfp
+
+		vertexparm		0		parm6,parm7,0,0
+
+		fragmentmap		1		textures/vpaint/feeding3_local
+		fragmentmap		4		add( textures/vpaint/feeding3_d, textures/vpaint/feeding3_ss)
+		fragmentmap		5		textures/vpaint/feeding2_s2
+		fragmentmap		7		textures/vpaint/feeding3_p
+
+		fragmentparm	0		.16, -.08
+		fragmentparm	1		300		// exponent
+	}
+	// White verts
+	{
+		shaderFallback2
+		blend	bumpmap
+		scale parm4,parm5
+		map		textures/vpaint/feeding2_local
+	}
+	{
+		shaderFallback2
+		blend diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map		add( textures/vpaint/feeding2_d, textures/vpaint/feeding2_ss)
+	}
+	{
+		shaderFallback2
+		blend specularmap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/vpaint/feeding2_s
+	}
+	{
+		shaderLevel2
+		vertexcolor
+
+		blend shader
+		vertexprogram	vertexscale.vp
+		fragmentprogram parallaxExp.vfp
+
+		vertexparm		0		parm4,parm5,0,0
+
+		fragmentmap		1		textures/vpaint/feeding2_local
+		fragmentmap		4		add( textures/vpaint/feeding2_d, textures/vpaint/feeding2_ss)
+		fragmentmap		5		textures/vpaint/feeding2_s2
+		fragmentmap		7		textures/vpaint/feeding2_p
+
+		fragmentparm	0		.12, -.06
+		fragmentparm	1		300		// exponent
+	}
+}
+
+
+textures/dreamworld/feedme
+{
+	matter_flesh
+	qer_editorimage textures/editor/checker512
+	noselfshadow
+	// White verts
+	{
+		blend	bumpmap
+		scale parm4,parm5
+		map heightmap(textures/feedingtower/bone3_h, 1)
+	}
+	{
+		blend diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/feedingtower/bone3_d
+	}
+	{
+		blend specularmap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/feedingtower/bone3_s
+	}
+	// Black verts
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map
+		addnormals( textures/feedingtower/ftworg1_local,
+		heightmap( textures/feedingtower/ftworg1_b, 2.0 ))
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/feedingtower/ftworg1
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/feedingtower/ftworg1_spec
+	}
+}
+
+// L I G H T S
+//
+//
+
+lights/amb_KFRoomA
+{
+	ambientLight
+	lightFalloffImage	_noFalloff
+	{
+		map lights/amb_KFRoomA
+		scale 1,-1
+		//scroll 1,0
+		colored
+		//zeroClamp
+	}
+}
+
+lights/dch/DualSatYellow1x2
+{
+	lightFalloffImage	makeintensity( lights/squarelight1a )
+	{
+		map	lights/dch/DaveLight1
+		color 2 * parm0, 2 * parm1, 2 * parm2, 1.0
+		zeroClamp
+	}
+}
+
+lights/dch/DualSatYellow1ax2
+{
+	lightFalloffImage	lights/falloff_curve1
+//	lightFalloffImage	makeintensity( lights/squarelight1a )
+	{
+		map	lights/dch/DaveLight1a
+		color 2 * parm0, 2 * parm1, 2 * parm2, 1.0
+		zeroClamp
+	}
+}
+
+lights/dch/DualSatYellow1
+{
+	lightFalloffImage	makeintensity( lights/squarelight1a )
+	{
+		map	lights/dch/DaveLight1
+		colored
+		zeroClamp
+	}
+}
+
+lights/dch/BlueOrb1
+{
+	lightFalloffImage	makeintensity( lights/squarelight1a )
+	{
+		map	lights/dch/BlueOrb1
+		colored
+		zeroClamp
+	}
+}
+
+lights/dch/BlueOrb1x2
+{
+	lightFalloffImage	makeintensity( lights/squarelight1a )
+	{
+		map	lights/dch/BlueOrb1
+		color 2 * parm0, 2 * parm1, 2 * parm2, 1.0
+		zeroClamp
+	}
+}
+
+lights/dch/BlueWebx2
+{
+	lightFalloffImage	makeintensity( lights/squarelight1a )
+	{
+		map	lights/dch/BlueWeb
+		color 2 * parm0, 2 * parm1, 2 * parm2, 1.0
+		zeroClamp
+	}
+}
+
+lights/dch/defProjLt_pulse1
+{
+	lightFalloffImage	makeintensity( lights/squarelight1a )
+	{
+		map	lights/defaultpointlight
+		zeroClamp
+		color		parm0 * (.25 * sintable [0 + time * 2 ] + 2),
+				parm1 * (.25 * sintable [0 + time * 2 ] + 2),
+				parm2 * (.25 * sintable [0 + time * 2 ] + 2),
+				1.0
+	}
+}
+
+lights/dch/defProjLt_pulse1ALT
+{
+	lightFalloffImage	makeintensity( lights/squarelight1a )
+	{
+		map	lights/defaultpointlight
+		zeroClamp
+		color		parm0 * (.25 * sintable [.5 + time * 3.5 ] + 1.5),
+				parm1 * (.25 * sintable [.5 + time * 3.5 ] + 1.5),
+				parm2 * (.25 * sintable [.5 + time * 3.5 ] + 1.5),
+				1.0
+	}
+}
+
+lights/dch/defProjLt_pulse1_noFall
+{
+	lightFalloffImage	_noFalloff
+	{
+		map	lights/defaultpointlight
+		zeroClamp
+		color		parm0 * (.1 * sintable [2 + time * .5 ] + 1.25),
+				parm1 * (.1 * sintable [2 + time * .5 ] + 1.25),
+				parm2 * (.1 * sintable [2 + time * .5 ] + 1.25),
+				1.0
+	}
+}
+
+lights/dch/defProjLight_pulse2
+{
+	{
+		map	lights/defaultpointlight
+		zeroClamp
+		color		parm0 * (.25 * sintable [.25 + time * .5 ] + 1.25),
+				parm1 * (.25 * sintable [.25 + time * .5 ] + 1.25),
+				parm2 * (.25 * sintable [.25 + time * .5 ] + 1.25),
+				1.0
+	}
+}
+
+lights/dch/defProjLight_pulse2_noFall
+{
+	lightFalloffImage	_noFalloff
+	{
+		map	lights/defaultpointlight
+		zeroClamp
+		color		parm0 * (.25 * sintable [.25 + time * .5 ] + 1.25),
+				parm1 * (.25 * sintable [.25 + time * .5 ] + 1.25),
+				parm2 * (.25 * sintable [.25 + time * .5 ] + 1.25),
+				1.0
+	}
+}
+
+// parm2 * (.2 * sintable [.15 + time * .5 ] + .7), - Original pulse
+
+
+// ======================================================================//
+
+// T E X T U R E S
+//
+//
+
+textures/dch/LotaVP_DirtBad
+
+{
+	matter_flesh
+	qer_editorimage textures/editor/512_checker
+	noselfshadow
+	// White verts
+	{
+		blend	bumpmap
+		scale parm4,parm5
+		map 	textures/dreamworld/dirt1_local
+	}
+	{
+		blend diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/dreamworld/dirt1_d
+	}
+	{
+		blend specularmap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/dreamworld/dirt1_s
+	}
+	// Black verts
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map	addnormals (textures/dreamworld/lotawall1_bad_local,
+				heightmap (textures/dreamworld/lotawall1_bad_h, 5))
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/dreamworld/lotawall1_bad_d
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/dreamworld/lotawall1_bad_s
+	}
+
+        description     	"dirt vp'ed with 'bad wall'"
+}
+
+textures/dch/LotaVP_BadRock1
+
+{
+	matter_flesh
+	qer_editorimage textures/editor/512_checker
+	noselfshadow
+	// White verts
+	{
+		blend	bumpmap
+		scale parm4,parm5
+		map	addnormals (textures/dreamworld/lotawall1_bad_local,
+				heightmap (textures/dreamworld/lotawall1_bad_h, 5))
+	}
+	{
+		blend	diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map	textures/dreamworld/lotawall1_bad_d
+	}
+	{
+		blend	specularmap
+		scale parm4,parm5
+		vertexcolor
+		map	textures/dreamworld/lotawall1_bad_s
+	}
+	// Black verts
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map	addnormals( textures/dreamworld/rock1_local, heightmap(textures/dreamworld/rock1_h, 6 ) )
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/dreamworld/rock1
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/dreamworld/rock1_s
+	}
+
+        description     	"dirt vp'ed with 'bad wall'"
+}
+
+textures/dch/ltcone_rayhive
+{
+	qer_editorimage textures/sfx/lightcone3
+	translucent
+	noshadows
+	nonsolid
+	noimpact
+	twoSided
+	{
+		blend	add
+		map		textures/sfx/lightcone3
+		scroll	time * 0.030, 0.0
+		color	0.35, 0.28, 0.24, 0.0
+		linear
+	}
+	{
+		blend	add
+		map		textures/sfx/lightcone3
+		scroll	time * -0.035, 0.0
+		color	0.35, 0.28, 0.24, 0.0
+		linear
+	}
+}
+
+
+textures/dch/feedbted
+{
+	qer_editorimage textures/feedingtower/feedbted
+
+	diffusemap	textures/feedingtower/feedbted
+}
+
+// ++++++++ //
+//          //
+//   Sky    //
+//          //
+// ++++++++ //
+
+textures/skybox/dchtest
+{
+	qer_editorimage textures/editor/skybox
+	SKYBOX_MACRO
+	{
+		cubemap	env/dchtest
+		uncompressed
+		texgen	skybox
+	}
+}
+
+textures/vpaint/feeding4_d2_3
+
+{
+	matter_flesh
+	qer_editorimage textures/vpaint/feeding2_3_proxy
+	noselfshadow
+
+	// White verts
+	{
+		blend 		bumpmap
+		scale 2,2
+		map		textures/vpaint/feeding2_local
+	}
+	{
+		blend 		diffusemap
+		scale 2,2
+		map 		textures/vpaint/feeding2_d
+		VertexColor
+	}
+	{
+		blend		specularmap
+		scale 2,2
+		map		textures/vpaint/feeding2_s
+		VertexColor
+	}
+	// Black verts
+	{
+	//	shaderFallback2
+		blend	bumpmap
+		scale 3,3
+		map	textures/vpaint/feeding3_local
+	}
+	{
+	//	shaderFallback2
+		blend	diffusemap
+		scale 3,3
+		inversevertexcolor
+		map	textures/vpaint/feeding3_d
+	}
+	{
+	//	shaderFallback2
+		blend	specularmap
+		scale 3,3
+		inversevertexcolor
+		map	textures/vpaint/feeding3_s
+	}
+/*	{
+		shaderLevel2
+		inversevertexcolor
+
+		blend shader
+		vertexprogram	vertexscale.vp
+		fragmentprogram parallaxExp.vfp
+
+		vertexparm		0		parm6,parm7,0,0
+
+		fragmentmap		1		textures/vpaint/feeding3_local
+		fragmentmap		4		add( textures/vpaint/feeding3_d, textures/vpaint/feeding3_ss)
+		fragmentmap		5		textures/vpaint/feeding2_s2
+		fragmentmap		7		textures/vpaint/feeding3_p
+
+		fragmentparm	0		.16, -.08
+		fragmentparm	1		300		// exponent
+	}
+*/
+}
+
+textures/vpaint/feeding2_3_roadhouse
+
+{
+	matter_flesh
+	qer_editorimage textures/vpaint/feeding2_3_proxy
+	noselfshadow
+
+	// White verts
+	{
+		blend 		bumpmap
+		scale 1,1
+		map		textures/vpaint/feeding2_local
+	}
+	{
+		blend 		diffusemap
+		scale 1,1
+		map 		textures/vpaint/feeding2_d
+		VertexColor
+	}
+	{
+		blend		specularmap
+		scale 1,1
+		map		textures/vpaint/feeding2_s
+		VertexColor
+	}
+	// Black verts
+	{
+	//	shaderFallback2
+		blend	bumpmap
+		scale 2,2
+		map	textures/vpaint/feeding3_local
+	}
+	{
+	//	shaderFallback2
+		blend	diffusemap
+		scale 2,2
+		inversevertexcolor
+		map	textures/vpaint/feeding3_d
+	}
+	{
+	//	shaderFallback2
+		blend	specularmap
+		scale 2,2
+		inversevertexcolor
+		map	textures/vpaint/feeding3_s
+	}
+/*	{
+		shaderLevel2
+		inversevertexcolor
+
+		blend shader
+		vertexprogram	vertexscale.vp
+		fragmentprogram parallaxExp.vfp
+
+		vertexparm		0		parm6,parm7,0,0
+
+		fragmentmap		1		textures/vpaint/feeding3_local
+		fragmentmap		4		add( textures/vpaint/feeding3_d, textures/vpaint/feeding3_ss)
+		fragmentmap		5		textures/vpaint/feeding2_s2
+		fragmentmap		7		textures/vpaint/feeding3_p
+
+		fragmentparm	0		.16, -.08
+		fragmentparm	1		300		// exponent
+	}
+*/
+}
+
+

@@ -1,0 +1,3272 @@
+//This is the material file for Vertex painted surfaces that reference
+//two shaders.
+
+//-----------------------------------------------------------------------
+// Feeding tower blend materials
+//-----------------------------------------------------------------------
+models/mapobjects/fmisc/fuv_blend
+{
+	matter_flesh
+	qer_editorimage textures/editor/checker512
+	noselfshadow
+	// White verts
+	{
+		blend	bumpmap
+		scale parm4,parm5
+		map heightmap(textures/feedingtower/bone3_h, 1)
+	}
+	{
+		blend diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/feedingtower/bone3_d
+	}
+	{
+		blend specularmap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/feedingtower/bone3_s
+	}
+	// Black verts
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map
+		addnormals( textures/feedingtower/ftworg1_local,
+		heightmap( textures/feedingtower/ftworg1_b, 2.0 ))
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/feedingtower/ftworg1
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/feedingtower/ftworg1_spec
+	}
+}
+
+
+models/mapobjects/fmisc/fuv_blend_slick
+{
+	matter_flesh
+	qer_editorimage textures/editor/checker512
+	noselfshadow
+	slick
+	// White verts
+	{
+		blend	bumpmap
+		scale parm4,parm5
+		map heightmap(textures/feedingtower/bone3_h, 1)
+	}
+	{
+		blend diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/feedingtower/bone3_d
+	}
+	{
+		blend specularmap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/feedingtower/bone3_s
+	}
+	// Black verts
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map
+		addnormals( textures/feedingtower/ftworg1_local,
+		heightmap( textures/feedingtower/ftworg1_b, 2.0 ))
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/feedingtower/ftworg1
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/feedingtower/ftworg1_spec
+	}
+}
+
+textures/organic_floor/bonefloor_vpaint
+{
+	matter_metal
+	noselfshadow
+	// White verts
+	{
+		blend	bumpmap
+		scale 8,8
+
+		map textures/organic_floor/bonefloor_local
+	}
+	{
+		blend diffusemap
+		scale 8,8
+		vertexcolor
+
+		map	textures/organic_floor/bonefloor_d
+	}
+	{
+		blend specularmap
+		scale 8,8
+		vertexcolor
+
+		map	textures/organic_floor/bonefloor_s
+	}
+	// Black verts
+	{
+		blend	bumpmap
+		scale 12,12
+
+		map
+		addnormals( textures/feedingtower/ftworg1_local,
+		heightmap( textures/feedingtower/ftworg1_b, 2.0 ))
+	}
+	{
+		blend	diffusemap
+		scale 12,12
+		inversevertexcolor
+
+		map	textures/feedingtower/ftworg1
+	}
+	{
+		blend	specularmap
+		scale 12,12
+		inversevertexcolor
+
+		map	textures/feedingtower/ftworg1_spec
+	}
+}
+
+
+
+
+
+
+//-----------------------------------------------------------------------
+//   [[[[  Spherebreeding blend materials
+//-----------------------------------------------------------------------
+
+// main = textures/organic_wall/wmeat3 || scale = parm4 parm5
+// detail = textures/organic_wall/ripplingwall1 || scale = parm6 parm7
+
+
+
+
+//-----------------------------------------------------------------------
+//  meat to green sickmeat
+//-----------------------------------------------------------------------
+
+models/mapobjects/sbmisc/sb01_blend
+{
+	matter_flesh
+	qer_editorimage textures/editor/blockout
+	noselfshadow
+
+	// White verts
+	{
+		blend	bumpmap
+		scale parm4, parm5  //scale 12,12
+
+		map 		textures/organic_wall/wmeat3_local
+	}
+	{
+		blend diffusemap
+		scale parm4, parm5  //scale 12,12
+		vertexcolor
+
+		map		textures/organic_wall/wmeat3
+	}
+	{
+		blend specularmap
+		scale parm4, parm5  //scale 12,12
+		vertexcolor
+
+		map		textures/organic_wall/wmeat3_spec
+	}
+
+
+	// Black verts
+	{
+		blend	bumpmap
+		scale	parm6, parm7  //scale 32,32
+		map
+		addnormals	(textures/organic_wall/orgwall20_local,
+		heightmap	(textures/organic_wall/orgwall20_h,6))
+//		centerscale	scale_1jitter[ time * 0.008 ], scale_1jitter[ time * 0.0060 ]
+	}
+	{
+		blend 	diffusemap
+		scale	parm6, parm7  //scale 32,32
+		inversevertexcolor
+		map		textures/organic_wall/orgwall20_d
+		centerscale	scale_1jitter[ time * 0.008 ], scale_1jitter[ time * 0.0060 ]
+	}
+/*	{
+		blend 	specularmap
+		scale	parm6, parm7  //scale 32,32
+		inversevertexcolor
+		map		textures/organic_wall/ripplingwall1_s
+	}*/
+}
+
+//-----------------------------------------------------------------------
+//  meat to bubbly hardness
+//-----------------------------------------------------------------------
+models/mapobjects/sbmisc/sb01a_blend
+{
+	matter_flesh
+	qer_editorimage textures/editor/blockout
+	noselfshadow
+
+
+	// White verts
+	{
+		blend bumpmap
+		scale parm4, parm5  //scale 12,12
+
+		map 		textures/organic_wall/wmeat3_local
+	}
+	{
+		blend diffusemap
+		scale parm4, parm5  //scale 12,12
+		vertexcolor
+
+		map		textures/organic_wall/wmeat3
+	}
+	{
+		blend specularmap
+		scale parm4, parm5  //scale 12,12
+		vertexcolor
+
+		map		textures/organic_wall/wmeat3_spec
+	}
+
+
+	// Black verts
+	{
+
+		blend	bumpmap
+		scale	parm6, parm7  //scale 32,32
+
+		map
+		addnormals	(textures/organic_wall/circuitwall1_local,
+		heightmap	(textures/organic_wall/circuitwall1_h,6))
+	}
+	{
+		blend 	diffusemap
+		scale	parm6, parm7  //scale 32,32
+		inversevertexcolor
+
+		map		textures/organic_wall/circuitwall1_d
+	}
+	{
+		blend 	specularmap
+		scale	parm6, parm7  //scale 32,32
+		inversevertexcolor
+		map		textures/organic_wall/circuitwall1_s
+	}
+}
+
+
+//-----------------------------------------------------------------------
+// meat to bone
+//-----------------------------------------------------------------------
+
+models/mapobjects/sbmisc/sb01b_blend
+{
+	matter_flesh
+	qer_editorimage textures/editor/blockout
+//	noselfshadow
+
+
+	// White verts
+	{
+		blend bumpmap
+		scale parm4, parm5  //scale 12,12
+
+		map 		textures/organic_wall/wmeat3_local
+	}
+	{
+		blend diffusemap
+		scale parm4, parm5  //scale 12,12
+		vertexcolor
+
+		map		textures/organic_wall/wmeat3
+	}
+	{
+		blend specularmap
+		scale parm4, parm5  //scale 12,12
+		vertexcolor
+
+		map		textures/organic_wall/wmeat3_spec
+	}
+
+
+	/* Black verts
+
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map
+		addnormals( textures/feedingtower/ftworg1_local,
+		heightmap( textures/feedingtower/ftworg1_b, 2.0 ))
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/feedingtower/ftworg1
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/feedingtower/ftworg1_spec
+	}
+}
+	*/
+
+	// Black verts
+	{
+		blend	bumpmap
+		scale	parm6, parm7
+		map heightmap(textures/feedingtower/bone1_h, 5)
+	}
+	{
+		blend diffusemap
+		scale	parm6, parm7
+		inversevertexcolor
+		map		textures/feedingtower/bone1_d
+	}
+	{
+		blend specularmap
+		scale	parm6, parm7
+		inversevertexcolor
+		map		textures/feedingtower/bone1_s
+	}
+}
+
+
+//-----------------------------------------------------------------------
+//  bad steak meat to sinewy meat
+//
+//  wmeat3 to orgwall23
+//-----------------------------------------------------------------------
+
+models/mapobjects/sbmisc/sb02_blend
+{
+	matter_flesh
+	qer_editorimage textures/editor/blockout
+	noselfshadow
+
+	// White verts
+	{
+		blend	bumpmap
+		scale parm4, parm5  //scale 12,12
+
+		map 		textures/organic_wall/wmeat3_local
+	}
+	{
+		blend diffusemap
+		scale parm4, parm5  //scale 12,12
+		vertexcolor
+
+		map		textures/organic_wall/wmeat3
+	}
+	{
+		blend specularmap
+		scale parm4, parm5  //scale 12,12
+		vertexcolor
+
+		map		textures/organic_wall/wmeat3_spec
+	}
+
+
+	// Black verts
+	{
+		blend bumpmap
+		map
+			addnormals 	(textures/organic_wall/orgwall23_local,
+			heightmap	(textures/organic_wall/orgwall23_h,24))
+	}
+
+	{
+		blend diffusemap
+		scale parm4, parm5  //scale 12,12
+		inversevertexcolor
+
+		map		textures/organic_wall/orgwall23_d
+	}
+	{
+		blend specularmap
+		scale parm4, parm5  //scale 12,12
+		inversevertexcolor
+
+		map		textures/organic_wall/orgwall23_s
+	}
+}
+
+//-----------------------------------------------------------------------
+// meat to gibbable meat
+//-----------------------------------------------------------------------
+
+/*textures/organic_wall/wmeat1
+{
+	matter_flesh
+	qer_editorimage	textures/organic_wall/wmeat1_proxy
+	bumpmap			textures/organic_wall/wmeat1_local
+	diffusemap		textures/organic_wall/wmeat1
+	specularmap		textures/organic_wall/wmeat1_spec
+}
+
+textures/organic_wall/softorgan3
+{
+	matter_flesh
+	qer_editorimage	textures/organic_wall/softorgan3_d
+	bumpmap
+		addnormals 	(textures/organic_wall/softorgan3_local,
+		heightmap	(textures/organic_wall/softorgan3_h,24))
+	diffusemap		textures/organic_wall/softorgan3_d
+	specularmap		textures/organic_wall/softorgan3_s
+}*/
+
+models/mapobjects/sbmisc/sb01_gibbable
+{
+	matter_flesh
+	qer_editorimage textures/organic_wall/softorgan3_d
+//	noselfshadow
+
+
+	// White verts
+	{
+		blend bumpmap
+		scale parm4, parm5  //scale 12,12
+
+		map 		textures/organic_wall/wmeat3_local
+	}
+	{
+		blend diffusemap
+		scale parm4, parm5  //scale 12,12
+		vertexcolor
+
+		map		textures/organic_wall/wmeat3
+	}
+	{
+		blend specularmap
+		scale parm4, parm5  //scale 12,12
+		vertexcolor
+
+		map		textures/organic_wall/wmeat3_spec
+	}
+
+
+	// Black verts
+	{
+		blend bumpmap
+		map
+			addnormals 	(textures/organic_wall/softorgan3_local,
+			heightmap	(textures/organic_wall/softorgan3_h,24))
+	}
+
+	{
+		blend diffusemap
+		scale parm4, parm5  //scale 12,12
+		inversevertexcolor
+
+		map		textures/organic_wall/softorgan3_d
+	}
+	{
+		blend specularmap
+		scale parm4, parm5  //scale 12,12
+		inversevertexcolor
+
+		map		textures/organic_wall/softorgan3_s
+	}
+
+}
+
+models/mapobjects/sbmisc/sb01_floor
+{
+	matter_flesh
+	qer_editorimage textures/editor/blockout
+	noselfshadow
+
+
+	// White verts
+	{
+		blend bumpmap
+		scale parm4, parm5  //scale 12,12
+
+		map 		textures/organic_wall/wmeat3_local
+	}
+	{
+		blend diffusemap
+		scale parm4, parm5  //scale 12,12
+		vertexcolor
+
+		map		textures/organic_wall/wmeat3
+	}
+	{
+		blend specularmap
+		scale parm4, parm5  //scale 12,12
+		vertexcolor
+
+		map		textures/organic_wall/wmeat3_spec
+	}
+
+
+	// Black verts
+	{
+
+		blend	bumpmap
+		scale	parm6, parm7  //scale 32,32
+
+		map
+//		addnormals	(textures/organic_wall/bio_organic_100_plain_local,
+		heightmap	(textures/organic_wall/bio_organic_100_plain_h,6) //)
+	}
+	{
+		blend 	diffusemap
+		scale	parm6, parm7  //scale 32,32
+		inversevertexcolor
+
+		map		textures/organic_wall/bio_organic_100_plain_d
+	}
+	{
+		blend 	specularmap
+		scale	parm6, parm7  //scale 32,32
+		inversevertexcolor
+		map		textures/organic_wall/bio_organic_100_plain_s
+	}
+}
+
+
+//-----------------------------------------------------------------------
+// End Spherebreeding  ]]]]
+//-----------------------------------------------------------------------
+
+
+textures/vpaint/bone1UV_blend
+{
+	qer_editorimage textures/editor/blockout
+	noselfshadow
+	matter_stone
+	// White verts
+	{
+		blend	bumpmap
+		scale parm4,parm5
+		map
+		addnormals( textures/vpaint/bone2_local,
+		heightmap( textures/vpaint/bone2_h, 2.0 ))
+	}
+	{
+		blend diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/vpaint/bone2_d
+	}
+	{
+		blend specularmap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/vpaint/bone2_s
+	}
+	// Black verts
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map
+		addnormals( textures/vpaint/bone1_local,
+		heightmap( textures/vpaint/bone1_h, 2.0 ))
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/vpaint/bone1_d
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/vpaint/bone1_s
+	}
+}
+
+
+// Material used to procedurally transition gibbable_flesh texture
+textures/sfx/gibbable/flesh
+{
+	matter_flesh
+	qer_editorimage textures/organic_wall/softorgan3_d
+//	noselfshadow
+
+
+	// White verts
+	{
+		blend bumpmap
+		map 		textures/organic_wall/wmeat3_local
+	}
+	{
+		blend diffusemap
+		vertexcolor
+		map		textures/organic_wall/wmeat3
+	}
+	{
+		blend specularmap
+		vertexcolor
+		map		textures/organic_wall/wmeat3_spec
+	}
+
+
+	// Black verts
+	{
+		blend bumpmap
+		map
+			addnormals 	(textures/organic_wall/softorgan3_local,
+			heightmap	(textures/organic_wall/softorgan3_h,24))
+	}
+
+	{
+		blend diffusemap
+		inversevertexcolor
+		map		textures/organic_wall/softorgan3_d
+	}
+	{
+		blend specularmap
+		inversevertexcolor
+		map		textures/organic_wall/softorgan3_s
+	}
+}
+
+// Material used to procedurally transition gibbable_tentacle texture
+textures/sfx/gibbable/atentacle
+{
+	matter_flesh
+	qer_editorimage textures/special/gibwall_org2B_d
+	noselfshadow
+
+
+	// White verts
+	{
+		blend bumpmap
+		map 		addnormals 	(textures/special/gibwall_org2A_local,
+				heightmap	(textures/special/gibwall_org2A_h,4))
+		centerscale	2, 2
+	}
+	{
+		blend diffusemap
+		vertexcolor
+		map		textures/special/gibwall_org2A_d
+		centerscale	2, 2
+	}
+	{
+		blend specularmap
+		vertexcolor
+		map		textures/special/gibwall_org2A_s
+		centerscale	2, 2
+	}
+
+
+	// Black verts
+	{
+		blend bumpmap
+		map		addnormals 	(textures/special/gibwall_org2B_local,
+				heightmap	(textures/special/gibwall_org2B_h,6))
+		centerscale	2, 2
+	}
+
+	{
+		blend diffusemap
+		inversevertexcolor
+		map		textures/special/gibwall_org2B_d
+		centerscale	2, 2
+	}
+	{
+		blend specularmap
+		inversevertexcolor
+		map		textures/special/gibwall_org2B_s
+		centerscale	2, 2
+	}
+}
+
+// Material used to procedurally transition gibbable_chitin texture
+textures/sfx/gibbable/chitin
+{
+	matter_metal
+	qer_editorimage textures/special/gibwall_chit1B_d
+	noselfshadow
+
+
+	// White verts
+	{
+		blend bumpmap
+		map 		addnormals 	(textures/special/gibwall_chit1A_local,
+				heightmap	(textures/special/gibwall_chit1A_h,6))
+		centerscale	2, 2
+	}
+	{
+		blend diffusemap
+		vertexcolor
+		map		textures/special/gibwall_chit1A_d
+		centerscale	2, 2
+	}
+	{
+		blend specularmap
+		vertexcolor
+		map		textures/special/gibwall_chit1A_s
+		centerscale	2, 2
+	}
+
+
+	// Black verts
+	{
+		blend bumpmap
+		map		addnormals 	(textures/special/gibwall_chit1B_local,
+				heightmap	(textures/special/gibwall_chit1B_h,6))
+		centerscale	2, 2
+	}
+
+	{
+		blend diffusemap
+		inversevertexcolor
+		map		textures/special/gibwall_chit1B_d
+		centerscale	2, 2
+	}
+	{
+		blend specularmap
+		inversevertexcolor
+		map		textures/special/gibwall_chit1B_s
+		centerscale	2, 2
+	}
+}
+
+textures/vpaint/dc10ground
+{
+	matter_stone
+	qer_editorimage textures/feedingtower/ftworg2
+	noselfshadow
+	// White verts
+	{
+		blend	bumpmap
+		scale 12, 7
+		map	heightmap(textures/feedingtower/bone2_h, 9)
+	}
+	{
+		blend diffusemap
+		scale 12, 7
+		vertexcolor
+		map	textures/feedingtower/bone2_d
+	}
+	{
+		blend specularmap
+		scale 12, 7
+		vertexcolor
+		map	textures/feedingtower/bone2_s
+	}
+	// Black verts
+	{
+		blend	bumpmap
+		scale 12, 7
+		inversevertexcolor
+		map textures/feedingtower/ftworg2_local
+	}
+	{
+		blend	diffusemap
+		scale 12, 7
+		inversevertexcolor
+		map		textures/feedingtower/ftworg2
+	}
+	{
+		blend	specularmap
+		scale 12, 7
+		inversevertexcolor
+		map		textures/feedingtower/ftworg2_spec
+	}
+}
+
+
+models/mapobjects/fmisc/large_tentacle
+{
+	matter_flesh
+	qer_editorimage textures/editor/checker512
+	noselfshadow
+	// White verts
+	{
+		blend	bumpmap
+		scale 1,4
+		map textures/organic_wall/orgwall23_local
+	}
+	{
+		blend diffusemap
+		scale 1,4
+		vertexcolor
+		map		textures/organic_wall/orgwall23_d
+	}
+	{
+		blend specularmap
+		scale 1,4
+		vertexcolor
+		map		textures/organic_wall/orgwall23_s
+	}
+	// Black verts
+	{
+		blend	bumpmap
+		scale 2,3
+		map
+		addnormals( textures/feedingtower/ftworg1_local,
+		heightmap( textures/feedingtower/ftworg1_b, 2.0 ))
+	}
+	{
+		blend	diffusemap
+		scale 2,3
+		inversevertexcolor
+		map	textures/feedingtower/ftworg1
+	}
+	{
+		blend	specularmap
+		scale 2,3
+		inversevertexcolor
+		map	textures/feedingtower/ftworg1_spec
+	}
+}
+
+
+textures/vpaint/neuron1
+{
+	qer_editorimage textures/editor/blockout
+	noselfshadow
+	matter_metal
+	// White verts
+	{
+		blend	bumpmap
+		scale parm4,parm5
+		map
+		addnormals( textures/organic_wall/bio_floor2_local,
+		heightmap( textures/organic_wall/bio_floor2_h, 8.0 ))
+	}
+	{
+		blend diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/organic_wall/bio_floor2_d
+	}
+	{
+		blend specularmap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/organic_wall/bio_floor2_s
+	}
+	// Black verts
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map
+		addnormals( textures/organic_wall/circuitwall1_B_local,
+		heightmap( textures/organic_wall/circuitwall1_B_h, 4.0 ))
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/organic_wall/circuitwall1_B_d
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/organic_wall/circuitwall1_B_s
+	}
+	{
+		blend add
+		scale parm6,parm7
+		inversevertexcolor
+		map textures/organic_wall/circuitwall1_B_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+}
+
+textures/vpaint/neuron2
+{
+	qer_editorimage textures/editor/blockout
+	noselfshadow
+	matter_metal
+	// White verts
+	{
+		blend	bumpmap
+		scale parm4,parm5
+		map
+		addnormals( textures/organic_wall/bio_floor2_local,
+		heightmap( textures/organic_wall/bio_floor2_h, 8.0 ))
+	}
+	{
+		blend diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/organic_wall/bio_floor2_d
+	}
+	{
+		blend specularmap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/organic_wall/bio_floor2_s
+	}
+	// Black verts
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map
+		addnormals( textures/organic_wall/circuitwall1_local,
+		heightmap( textures/organic_wall/circuitwall1_h, 4.0 ))
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/organic_wall/circuitwall1_d
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/organic_wall/circuitwall1_s
+	}
+	{
+		blend add
+		scale parm6,parm7
+		inversevertexcolor
+		map textures/organic_wall/circuitwall1_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+}
+
+
+textures/vpaint/neuron1_cap
+{
+	qer_editorimage textures/editor/blockout
+	noselfshadow
+	matter_metal
+	// White verts
+	{
+		blend	bumpmap
+		scale parm4,parm5
+		map
+		addnormals( textures/organic_wall/bio_floor2_local,
+		heightmap( textures/organic_wall/bio_floor2_h, 2.0 ))
+	}
+	{
+		blend diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/organic_wall/bio_floor2_d
+	}
+	{
+		blend specularmap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/organic_wall/bio_floor2_s
+	}
+	// Black verts
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map
+		addnormals( textures/organic_wall/circuitwall1_B_local,
+		heightmap( textures/organic_wall/circuitwall1_B_h, 4.0 ))
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/organic_wall/circuitwall1_B_d
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/organic_wall/circuitwall1_B_s
+	}
+	{
+		blend add
+		scale parm6,parm7
+		inversevertexcolor
+		map textures/organic_wall/circuitwall1_B_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+}
+
+
+//textures/dreamworld/rock2
+//textures/dreamworld/lotawall9
+//textures/dreamworld/craters_001
+textures/vpaint/asteroid1
+{
+	qer_editorimage textures/editor/blockout
+	matter_stone
+	noselfshadow
+	lightWholeMesh
+
+	 //White verts
+	{
+		blend	bumpmap
+		scale parm4,parm5
+		map
+		addnormals (textures/dreamworld/rock2_local, heightmap (textures/dreamworld/rock2_h, 8.0))
+	}
+	{
+		blend diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/dreamworld/rock2_d
+		rgb 0.5
+	}
+	{
+		blend specularmap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/dreamworld/rock2_s
+	}
+	 //Black verts
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map
+        	addnormals (textures/dreamworld/craters_001_local, heightmap (textures/dreamworld/craters_001_h, 8.0))
+        	highres
+
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map textures/dreamworld/craters_001_d
+		rgb 0.5
+		highres
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map textures/dreamworld/craters_001_s
+		highres
+	}
+}
+
+
+
+
+
+
+textures/vpaint/bio_organic_400
+{
+	matter_flesh
+	qer_editorimage textures/editor/checker512
+	noselfshadow
+	// White verts
+	{
+		blend	bumpmap
+		scale parm4,parm5
+		map 	textures/organic_wall/bio_organic_400_local
+	}
+	{
+		blend diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/organic_wall/bio_organic_400_d
+	}
+	{
+		blend specularmap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/organic_wall/bio_organic_400_s
+	}
+	// Black verts
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map	textures/organic_wall/bio_organic_401_local
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/organic_wall/bio_organic_401_d
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/organic_wall/bio_organic_401_s
+	}
+
+        description     	"sticky stuff with scales"
+}
+
+
+textures/vpaint/bio_organic_402
+
+{
+	matter_metal
+	qer_editorimage textures/editor/checker512
+	noselfshadow
+	// White verts
+	{
+		blend	bumpmap
+		scale parm4,parm5
+		map 	textures/organic_wall/bio_organic_402_local
+	}
+	{
+		blend diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/organic_wall/bio_organic_402_d
+	}
+	{
+		blend specularmap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/organic_wall/bio_organic_402_s
+	}
+	// Black verts
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map	addnormals (textures/organic_wall/circuitwall3_local,
+			heightmap  (textures/organic_wall/circuitwall3_h, 4))
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/organic_wall/circuitwall3_d
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/organic_wall/circuitwall3_s
+	}
+	{
+		blend add
+		scale parm6,parm7
+		inversevertexcolor
+		map textures/organic_wall/circuitwall3_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+
+        description     	"hard lava with blobby circuitwall"
+}
+
+textures/vpaint/bio_organic_403
+
+{
+	matter_metal
+	qer_editorimage textures/editor/checker512
+	noselfshadow
+	// White verts
+	{
+		blend	bumpmap
+		scale parm4,parm5
+		map 	textures/organic_wall/bio_organic_403_local
+	}
+	{
+		blend diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/organic_wall/bio_organic_403_d
+	}
+	{
+		blend specularmap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/organic_wall/bio_organic_403_s
+	}
+	// Black verts
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map	addnormals (textures/organic_wall/bio_organic_404_local,
+			heightmap  (textures/organic_wall/bio_organic_404_h, 6))
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/organic_wall/bio_organic_404_d
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/organic_wall/bio_organic_404_s
+	}
+
+
+        description     	"lava rock with hard vines"
+}
+
+textures/vpaint/circuitwall1
+
+{
+	matter_metal
+	qer_editorimage textures/editor/checker512
+	noselfshadow
+	// White verts
+	{
+		blend	bumpmap
+		scale parm4,parm5
+		map	addnormals (textures/organic_wall/circuitwall2_local,
+			heightmap  (textures/organic_wall/circuitwall2_h, 4))
+	}
+	{
+		blend	diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map	textures/organic_wall/circuitwall2_d
+	}
+	{
+		blend	specularmap
+		scale parm4,parm5
+		vertexcolor
+		map	textures/organic_wall/circuitwall2_s
+	}
+	{
+		blend add
+		scale parm4,parm5
+		vertexcolor
+		map textures/organic_wall/circuitwall2_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+	// Black verts
+
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map	addnormals (textures/organic_wall/circuitwall1_local,
+			heightmap  (textures/organic_wall/circuitwall1_h, 4))
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/organic_wall/circuitwall1_d
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/organic_wall/circuitwall1_s
+	}
+	{
+		blend add
+		scale parm6,parm7
+		inversevertexcolor
+		map textures/organic_wall/circuitwall1_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+        description     	"mixed circuitwall types"
+}
+
+textures/vpaint/circuitwall2
+
+{
+	matter_metal
+	qer_editorimage textures/editor/checker512
+	noselfshadow
+	// White verts
+	{
+		blend	bumpmap
+		scale parm4,parm5
+		map	addnormals (textures/organic_wall/circuitwall2_local,
+			heightmap  (textures/organic_wall/circuitwall2_h, 4))
+	}
+	{
+		blend	diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map	textures/organic_wall/circuitwall2_d
+	}
+	{
+		blend	specularmap
+		scale parm4,parm5
+		vertexcolor
+		map	textures/organic_wall/circuitwall2_s
+	}
+	{
+		blend add
+		scale parm4,parm5
+		vertexcolor
+		map textures/organic_wall/circuitwall2_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+	// Black verts
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map	textures/organic_wall/bio_organic_401_local
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/organic_wall/bio_organic_401_d
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/organic_wall/bio_organic_401_s
+	}
+
+        description     	"brain-like circuitry with scales"
+}
+
+
+
+
+
+textures/vpaint/bio_organic_324d
+
+{
+	matter_flesh
+	qer_editorimage textures/editor/checker512
+	noselfshadow
+	// White verts
+	{
+		blend	bumpmap
+		scale parm4,parm5
+		map	addnormals (textures/organic_wall/bio_organic_324d_local,
+			heightmap  (textures/organic_wall/bio_organic_324d_h, 6))
+	}
+	{
+		blend	diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map	textures/organic_wall/bio_organic_324d_d
+	}
+	{
+		blend	specularmap
+		scale parm4,parm5
+		vertexcolor
+		map	textures/organic_wall/bio_organic_324d_s
+	}
+
+
+	// Black verts
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map	textures/organic_wall/bio_organic_324e_local
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/organic_wall/bio_organic_324e_d
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/organic_wall/bio_organic_324e_s
+	}
+
+        description     	"green skin and bones"
+}
+
+textures/vpaint/kf_vpaint1
+
+{
+	matter_metal
+	qer_editorimage textures/editor/checker512
+	noselfshadow
+	// White verts
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map	addnormals (textures/vpaint/kf_vpaint_circuit_local,
+			heightmap  (textures/organic_wall/circuitwall3_h, 4))
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/vpaint/kf_vpaint_circuit_d
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/organic_wall/circuitwall3_s
+	}
+	// Black verts
+	{
+		blend	bumpmap
+		scale parm4,parm5
+		map 	textures/vpaint/kf_vpaint_lava_local
+	}
+	{
+		blend diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/vpaint/kf_vpaint_lava_d
+	}
+	{
+		blend specularmap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/organic_wall/bio_organic_402_s
+	}
+
+        description     	"modified version of circuitwall vpaint"
+}
+
+
+textures/vpaint/ft_vpaint1
+
+{
+	matter_flesh
+	qer_editorimage textures/editor/checker512
+	noselfshadow
+	// White verts
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map	textures/vpaint/ft_blend1_normal
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/vpaint/ft_blend1_d
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/vpaint/ft_blend1_s
+	}
+	// Black verts
+	{
+		blend	bumpmap
+		scale parm4,parm5
+		map 	textures/vpaint/ft_blend2_normal
+	}
+	{
+		blend diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map	textures/vpaint/ft_blend2_d
+	}
+	{
+		blend specularmap
+		scale parm4,parm5
+		vertexcolor
+		map	textures/vpaint/ft_blend2_s
+	}
+
+        description     	"trial blend for feeding tower area"
+}
+
+
+
+
+
+//--------------------------------
+// FEEDING TOWER
+//--------------------------------
+
+textures/vpaint/feeding1
+{
+	qer_editorimage	textures/vpaint/feeding1_d
+	matter_flesh
+	//bumpmap			textures/vpaint/feeding1_local
+	//diffusemap		textures/vpaint/feeding1_d
+	//specularmap		textures/vpaint/feeding1_s
+
+	{
+		shaderFallback2
+		blend 		bumpmap
+		map			textures/vpaint/feeding1_local
+	}
+	{
+		shaderFallback2
+		blend 		diffusemap
+		map 		textures/vpaint/feeding1_d
+	}
+	{
+		shaderFallback2
+		blend		specularmap
+		map			textures/vpaint/feeding1_s
+	}
+
+	{
+		shaderLevel2
+
+		blend shader
+		vertexprogram vertexscale.vp
+		fragmentprogram parallaxExp.vfp
+
+		vertexparm		0		1,1,0,0
+
+		fragmentmap		1		textures/vpaint/feeding1_local
+		fragmentmap		4		textures/vpaint/feeding1_d
+		fragmentmap		5		textures/vpaint/feeding1_s
+		fragmentmap		7		textures/vpaint/feeding2_p
+
+		fragmentparm	0		.12, -.06
+		fragmentparm	1		30		// exponent
+	}
+/*
+	{
+		blend 		bumpmap
+		map			textures/vpaint/feeding1_local
+	}
+	{
+		blend 		diffusemap
+		map 		textures/vpaint/feeding1_d
+	}
+	{
+		blend		specularmap
+		map			textures/vpaint/feeding1_s
+		specularexp 60, 1.5
+	}
+*/
+}
+
+textures/vpaint/feeding2
+{
+	qer_editorimage 	textures/vpaint/feeding2_proxy
+	matter_flesh
+	{
+		shaderFallback2
+		blend 		bumpmap
+		map			textures/vpaint/feeding2_local
+		scale		parm4,parm5
+//		scroll		0.1 * sintable[ time * 0.05 ], 0.1 * sintable[ time * 0.06 ]
+	}
+	{
+		shaderFallback2
+		blend 		diffusemap
+		map 		add( textures/vpaint/feeding2_d, textures/vpaint/feeding2_ss )
+		scale		parm4,parm5
+//		scroll		0.1 * sintable[ time * 0.05 ], 0.1 * sintable[ time * 0.06 ]
+	}
+	/*{
+		blend 		diffusemap
+		map			textures/vpaint/feeding2_ss
+		scale		parm4,parm5
+//		scroll		0.1 * sintable[ time * 0.05 ], 0.1 * sintable[ time * 0.06 ]
+	}*/
+	{
+		shaderFallback2
+		blend		specularmap
+		map			textures/vpaint/feeding2_s
+		scale		parm4,parm5
+//		scroll		0.1 * sintable[ time * 0.05 ], 0.1 * sintable[ time * 0.06 ]
+	}
+	{
+		shaderLevel2
+
+		blend shader
+		vertexprogram vertexscale.vp
+		fragmentprogram parallaxExp.vfp
+
+		vertexparm		0		parm4,parm5,0,0
+
+		fragmentmap		1		textures/vpaint/feeding2_local
+		//fragmentmap		4		textures/vpaint/feeding2_d
+		fragmentmap		4		add( textures/vpaint/feeding2_d, textures/vpaint/feeding2_ss )
+		fragmentmap		5		textures/vpaint/feeding2_s2
+		fragmentmap		7		textures/vpaint/feeding2_p
+
+		fragmentparm	0		.12, -.06
+		fragmentparm	1		300		// exponent
+	}
+}
+textures/vpaint/feeding2_slick
+{
+	qer_editorimage 	textures/vpaint/feeding2_proxy
+	matter_flesh
+	slick
+	{
+		shaderFallback2
+		blend 		bumpmap
+		map			textures/vpaint/feeding2_local
+		scale		parm4,parm5
+//		scroll		0.1 * sintable[ time * 0.05 ], 0.1 * sintable[ time * 0.06 ]
+	}
+	{
+		shaderFallback2
+		blend 		diffusemap
+		map 		add( textures/vpaint/feeding2_d, textures/vpaint/feeding2_ss )
+		scale		parm4,parm5
+//		scroll		0.1 * sintable[ time * 0.05 ], 0.1 * sintable[ time * 0.06 ]
+	}
+	{
+		shaderFallback2
+		blend		specularmap
+		map			textures/vpaint/feeding2_s
+		scale		parm4,parm5
+//		scroll		0.1 * sintable[ time * 0.05 ], 0.1 * sintable[ time * 0.06 ]
+	}
+	{
+		shaderLevel2
+
+		blend shader
+		vertexprogram vertexscale.vp
+		fragmentprogram parallaxExp.vfp
+
+		vertexparm		0		parm4,parm5,0,0
+
+		fragmentmap		1		textures/vpaint/feeding2_local
+		//fragmentmap		4		textures/vpaint/feeding2_d
+		fragmentmap		4		add( textures/vpaint/feeding2_d, textures/vpaint/feeding2_ss )
+		fragmentmap		5		textures/vpaint/feeding2_s2
+		fragmentmap		7		textures/vpaint/feeding2_p
+
+		fragmentparm	0		.12, -.06
+		fragmentparm	1		300		// exponent
+	}
+}
+textures/vpaint/feeding2_dark
+{
+	qer_editorimage 	textures/vpaint/feeding2dark_proxy
+	matter_flesh
+	{
+		blend 		bumpmap
+		map			textures/vpaint/feeding2_local
+		scale		parm4,parm5
+//		scroll		0.1 * sintable[ time * 0.05 ], 0.1 * sintable[ time * 0.06 ]
+	}
+	{
+		blend 		diffusemap
+		map 		textures/vpaint/feeding2dark_d
+		scale		parm4,parm5
+//		scroll		0.1 * sintable[ time * 0.05 ], 0.1 * sintable[ time * 0.06 ]
+	}
+	{
+		blend 		diffusemap
+		map			textures/vpaint/feeding2dark_ss
+		scale		parm4,parm5
+//		scroll		0.1 * sintable[ time * 0.05 ], 0.1 * sintable[ time * 0.06 ]
+	}
+	{
+		blend		specularmap
+		map			textures/vpaint/feeding2dark_s
+		scale		parm4,parm5
+//		scroll		0.1 * sintable[ time * 0.05 ], 0.1 * sintable[ time * 0.06wdddddd ]
+	}
+}
+textures/vpaint/feeding2_scroll
+{
+	qer_editorimage 	textures/vpaint/feeding2_proxy
+		matter_flesh
+	{
+		shaderFallback2
+		blend 		bumpmap
+		map		textures/vpaint/feeding2_local
+		scale		parm4, parm5
+		//scroll		time * parm6, time * parm7
+	}
+	{
+		shaderFallback2
+		blend 		diffusemap
+		map 		add( textures/vpaint/feeding2_d, textures/vpaint/feeding2_ss )
+		scale		parm4, parm5
+		//scroll		time * parm6, time * parm7
+	}
+	{
+		shaderFallback2
+		blend		specularmap
+		map		textures/vpaint/feeding2_s
+		scale		parm4, parm5
+		//scroll		time * parm6, time * parm7
+	}
+	{
+		shaderLevel2
+
+		blend shader
+		vertexprogram vertexscale.vp
+		fragmentprogram deformInteraction.vfp
+
+		vertexparm		0		parm4, parm5, 0, 0		//scale x,y, scroll x,y
+
+		fragmentmap		1		textures/vpaint/feeding2_local		// normal
+		fragmentmap		4		add( textures/vpaint/feeding2_d, textures/vpaint/feeding2_ss )	// diffuse
+		fragmentmap		5		textures/vpaint/feeding2_s2							// specular
+		fragmentmap		7		textures/glass/vp1			//deform texture
+
+		fragmentparm	0		parm6, parm7, time * .06*parm6, time * .06*parm7	//scale x,y, scroll x,y of deform
+		fragmentparm	1		.02		// deform amount
+		fragmentparm	2		300		// exponent
+	}
+}
+
+textures/vpaint/feeding2_scrollsimple
+{
+	qer_editorimage 	textures/vpaint/feeding2_proxy
+	matter_flesh
+	{
+		blend 		bumpmap
+		map		textures/vpaint/feeding2_local
+		scale		parm4, parm5
+		scroll		time * parm6, time * parm7
+	}
+	{
+		blend 		diffusemap
+		map 		textures/vpaint/feeding2_d
+		scale		parm4, parm5
+		scroll		time * parm6, time * parm7
+	}
+	{
+		blend 		diffusemap
+		map		textures/vpaint/feeding2_ss
+		scale		parm4, parm5
+		scroll		time * parm6, time * parm7
+	}
+	{
+		blend		specularmap
+		map		textures/vpaint/feeding2_s
+		scale		parm4, parm5
+		scroll		time * parm6, time * parm7
+	}
+}
+
+textures/vpaint/feeding2_scrollred
+{
+	qer_editorimage 	textures/vpaint/feeding2s_proxy
+	matter_flesh
+	{
+		shaderfallback2
+		blend 		bumpmap
+		map		textures/vpaint/feeding2_local
+		scale		parm4, parm5
+		scroll		time * parm6, time * parm7
+	}
+	{
+		shaderfallback2
+		blend 		diffusemap
+		map 		add( textures/vpaint/feeding2red_d, textures/vpaint/feeding2_ss )
+		scale		parm4, parm5
+		scroll		time * parm6, time * parm7
+	}
+	{
+		shaderfallback2
+		blend		specularmap
+		map		textures/vpaint/feeding2_s
+		scale		parm4, parm5
+		scroll		time * parm6, time * parm7
+	}
+	{
+		shaderLevel2
+
+		blend shader
+		vertexprogram	vertexscale.vp
+		fragmentprogram parallaxExp.vfp
+
+		vertexparm		0	parm4, parm5, time * parm6*parm4, time * parm7*parm5		//scale x,y, scroll x,y
+
+		fragmentmap		1		textures/vpaint/feeding2_local
+		fragmentmap		4		add( textures/vpaint/feeding2red_d, textures/vpaint/feeding2_ss )
+		fragmentmap		5		textures/vpaint/feeding2_s2
+		fragmentmap		7		textures/vpaint/feeding2_p
+
+		fragmentparm	0		.12, -.06
+		fragmentparm	1		300		// exponent
+	}
+}
+
+textures/vpaint/feeding2_scrollredsimple
+{
+	qer_editorimage 	textures/vpaint/feeding2s_proxy
+	matter_flesh
+	{
+		blend 		bumpmap
+		map		textures/vpaint/feeding2_local
+		scale		parm4, parm5
+		scroll		time * parm6, time * parm7
+	}
+	{
+		blend 		diffusemap
+		map 		textures/vpaint/feeding2red_d
+		scale		parm4, parm5
+		scroll		time * parm6, time * parm7
+	}
+	{
+		blend 		diffusemap
+		map		textures/vpaint/feeding2_ss
+		scale		parm4, parm5
+		scroll		time * parm6, time * parm7
+	}
+	{
+		blend		specularmap
+		map		textures/vpaint/feeding2_s
+		scale		parm4, parm5
+		scroll		time * parm6, time * parm7
+	}
+}
+
+textures/vpaint/feeding3
+{
+	qer_editorimage 	textures/vpaint/feeding3_proxy
+	matter_flesh
+	{
+		shaderFallback2
+		blend 		bumpmap
+		map			textures/vpaint/feeding3_local
+		scale parm6,parm7
+	}
+	{
+		shaderFallback2
+		blend 		diffusemap
+		map 		add( textures/vpaint/feeding3_d, textures/vpaint/feeding3_ss )
+		scale parm6,parm7
+	}
+	{
+		shaderFallback2
+		blend		specularmap
+		map			textures/vpaint/feeding3_s
+		scale parm6,parm7
+	}
+	{
+		shaderLevel2
+
+		blend shader
+		vertexprogram	vertexscale.vp
+		fragmentprogram parallaxExp.vfp
+
+		vertexparm		0		parm6,parm7,0,0
+
+		fragmentmap		1		textures/vpaint/feeding3_local
+		fragmentmap		4		add( textures/vpaint/feeding3_d, textures/vpaint/feeding3_ss)
+		fragmentmap		5		textures/vpaint/feeding2_s2
+		fragmentmap		7		textures/vpaint/feeding3_p
+
+		fragmentparm	0		.16, -.08
+		fragmentparm	1		300		// exponent
+	}
+}
+
+textures/vpaint/feeding2_3
+
+{
+	matter_flesh
+	qer_editorimage textures/vpaint/feeding2_3_proxy
+	noselfshadow
+	// White verts
+	{
+		shaderFallback2
+		blend	bumpmap
+		scale parm6,parm7
+		map	textures/vpaint/feeding3_local
+	}
+	{
+		shaderFallback2
+		blend	diffusemap
+		scale parm6,parm7
+		vertexcolor
+		map	add( textures/vpaint/feeding3_d, textures/vpaint/feeding3_ss )
+	}
+	{
+		shaderFallback2
+		blend	specularmap
+		scale parm6,parm7
+		vertexcolor
+		map	textures/vpaint/feeding3_s
+	}
+	{
+		shaderLevel2
+		vertexcolor
+
+		blend shader
+		vertexprogram	vertexscale.vp
+		fragmentprogram parallaxExp.vfp
+
+		vertexparm		0		parm6,parm7,0,0
+
+		fragmentmap		1		textures/vpaint/feeding3_local
+		fragmentmap		4		add( textures/vpaint/feeding3_d, textures/vpaint/feeding3_ss)
+		fragmentmap		5		textures/vpaint/feeding2_s2
+		fragmentmap		7		textures/vpaint/feeding3_p
+
+		fragmentparm	0		.16, -.08
+		fragmentparm	1		300		// exponent
+	}
+	// Black verts
+	{
+		shaderFallback2
+		blend	bumpmap
+		scale parm4,parm5
+		map		textures/vpaint/feeding2_local
+	}
+	{
+		shaderFallback2
+		blend diffusemap
+		scale parm4,parm5
+		inversevertexcolor
+		map		add(textures/vpaint/feeding2_d, textures/vpaint/feeding2_ss)
+	}
+	{
+		shaderFallback2
+		blend specularmap
+		scale parm4,parm5
+		inversevertexcolor
+		map		textures/vpaint/feeding2_s
+	}
+	{
+		shaderLevel2
+		inversevertexcolor
+		blend shader
+		vertexprogram vertexscale.vp
+		fragmentprogram parallaxExp.vfp
+
+		vertexparm		0		parm4,parm5,0,0
+
+		fragmentmap		1		textures/vpaint/feeding2_local
+		fragmentmap		4		add(textures/vpaint/feeding2_d, textures/vpaint/feeding2_ss)
+		fragmentmap		5		textures/vpaint/feeding2_s2
+		fragmentmap		7		textures/vpaint/feeding2_p
+
+		fragmentparm	0		.12, -.06
+		fragmentparm	1		300		// exponent
+	}
+}
+
+
+textures/vpaint/feeding2_3_dry_nugget
+{
+	matter_flesh
+	qer_editorimage textures/vpaint/feeding2_3_proxy
+	noselfshadow
+	// Black verts
+	{
+		shaderFallback2
+		blend	bumpmap
+		scale parm6,parm7
+		map	textures/vpaint/feeding3_local
+	}
+	{
+		shaderFallback2
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	add( textures/vpaint/feeding3_d, textures/vpaint/feeding3_ss)
+	}
+	{
+		shaderFallback2
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/vpaint/feeding3_s
+	}
+	{
+		shaderLevel2
+		inversevertexcolor
+
+		blend shader
+		vertexprogram	vertexscale.vp
+		fragmentprogram parallaxExp.vfp
+
+		vertexparm		0		parm6,parm7,0,0
+
+		fragmentmap		1		textures/vpaint/feeding3_local
+		fragmentmap		4		add( textures/vpaint/feeding3_d, textures/vpaint/feeding3_ss)
+		fragmentmap		5		textures/vpaint/feeding2_s2
+		fragmentmap		7		textures/vpaint/feeding3_p
+
+		fragmentparm	0		.16, -.08
+		fragmentparm	1		30		// exponent
+	}
+	// White verts
+	{
+		shaderFallback2
+		blend	bumpmap
+		scale parm4,parm5
+		map		textures/vpaint/feeding2_local
+	}
+	{
+		shaderFallback2
+		blend diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map		add( textures/vpaint/feeding2_d, textures/vpaint/feeding2_ss)
+	}
+	{
+		shaderFallback2
+		blend specularmap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/vpaint/feeding2_s
+	}
+	{
+		shaderLevel2
+		vertexcolor
+
+		blend shader
+		vertexprogram	vertexscale.vp
+		fragmentprogram parallaxExp.vfp
+
+		vertexparm		0		parm4,parm5,0,0
+
+		fragmentmap		1		textures/vpaint/feeding2_local
+		fragmentmap		4		add( textures/vpaint/feeding2_d, textures/vpaint/feeding2_ss)
+		fragmentmap		5		textures/vpaint/feeding2_s2
+		fragmentmap		7		textures/vpaint/feeding2_p
+
+		fragmentparm	0		.12, -.06
+		fragmentparm	1		400		// exponent
+	}
+}
+
+
+//save -mflynn
+//jittering texture that fades in as the player approaches.  add this to func_spiritbridges.
+//parm5 adds to the 'fadein complete' distance
+//parm6 adds to the 'fadein begin' distance
+//parm6 + 200 must be > parm5
+//parm4 alters the speed of the jitter. small values of -5 to 5 work best.
+// parm7: automatically set to a random number by the spiritbridge code.  used to automatically offset the bridges so they don't pulse in unison -cjr
+
+textures/vpaint/feeding2_3_spirit
+{
+
+	noshadows
+	translucent
+	unsmoothedtangents
+	collision
+	twosided
+	qer_editorimage textures/vpaint/feeding2_3_proxy
+	noselfshadow
+
+
+
+	// White verts
+
+//bump
+	{if ( distance < ( 200 ) )
+
+		blend bumpmap
+		scale 4,4
+
+		map		textures/vpaint/feeding2_local
+		rgb 1
+	}
+	{if ( distance <= ( 400  ) && distance >= ( 200  ) )
+
+		blend bumpmap
+		scale 4,4
+
+		map		textures/vpaint/feeding2_local
+		rgb 1 - ( ( distance - (200 ) ) / ( (400 ) - (200 ) ) )//dynamic interaction explanation[ (current distance - base) / (max distance - base) = a number between 0 'close' and 1 'far'. 1 - this number = rgb
+
+	}
+	{if ( distance > 400 )
+		blend bumpmap
+		scale 4,4
+
+		map		textures/vpaint/feeding2_local
+		rgb 0
+
+	}
+//diff
+
+	{if ( distance < ( 200 ) )
+
+		blend diffusemap
+		scale 4,4
+		vertexcolor
+		map		textures/vpaint/feeding2_spirit_d
+		rgb 1
+			}
+	{if ( distance <= ( 400 ) && distance >= ( 200 ) )
+
+		blend diffusemap
+		scale 4,4
+		vertexcolor
+		map		textures/vpaint/feeding2_spirit_d
+		rgb 1 - ( ( distance - (200 ) ) / ( (400) - (200 ) ) )//dynamic interaction explanation[ (current distance - base) / (max distance - base) = a number between 0 'close' and 1 'far'. 1 - this number = rgb
+
+	}
+	{if ( distance > 400 )
+		blend diffusemap
+		scale 4,4
+		vertexcolor
+		map		textures/vpaint/feeding2_spirit_d
+		rgb 0
+
+	}
+//spec
+	{if ( distance < ( 200 ) )
+
+		blend specularmap
+		scale 4,4
+		vertexcolor
+		map		textures/vpaint/feeding2_spirit_s
+		rgb 1
+	}
+	{if ( distance <= ( 400 ) && distance >= ( 200 ) )
+
+		blend specularmap
+		scale 4,4
+		vertexcolor
+		map		textures/vpaint/feeding2_spirit_s
+		rgb 1 - ( ( distance - (200) ) / ( (400) - (200) ) )//dynamic interaction explanation[ (current distance - base) / (max distance - base) = a number between 0 'close' and 1 'far'. 1 - this number = rgb
+
+	}
+	{if ( distance > 400 )
+		blend specularmap
+		scale 4,4
+		vertexcolor
+		map		textures/vpaint/feeding2_spirit_s
+		rgb 0
+
+	}
+
+//add
+	{if ( distance < ( 200 ) )
+
+		blend gl_src_alpha, gl_one
+		scale 4,4
+
+		map textures/vpaint/feeding2_spirit_add
+		glowStage
+		//rgb alpha[(time * 0.25) + .5] // cjr
+		rgb 1
+		vertexcolor
+	}
+	{if ( distance <= ( 400 ) && distance >= ( 200 ) )
+
+		blend gl_src_alpha, gl_one
+		scale 4,4
+
+		map textures/vpaint/feeding2_spirit_add
+		glowStage
+		rgb 1 - ( ( distance - (200 ) ) / ( (400 ) - (200 ) ) )//dynamic interaction explanation[ (current distance - base) / (max distance - base) = a number between 0 'close' and 1 'far'. 1 - this number = rgb
+		vertexcolor
+	}
+	{if ( distance > 400 )
+		blend gl_src_alpha, gl_one
+		scale 4,4
+
+		map textures/vpaint/feeding2_spirit_add
+		glowStage
+		rgb 0
+		vertexcolor
+	}
+
+}
+textures/vpaint/feeding2_3_spirit_invert
+
+{
+
+	noshadows
+	translucent
+	unsmoothedtangents
+	collision
+
+	qer_editorimage textures/vpaint/feeding2_3_proxy
+	noselfshadow
+//	deform jitter jacobladder[ ( time + parm7 ) * 2] * 0.25
+
+//	{if ( distance < ( 200 + parm5 ) )
+//		blend add
+//		map	textures/sfx/spiritflesh
+//		rgb 1
+//		glowStage
+//	}
+//	{if ( distance <= ( 400 + parm6 ) && distance >= ( 200 + parm5 ) )
+//		blend add
+//		map	textures/sfx/spiritflesh
+//		rgb 1 - ( ( distance - (200 + parm5) ) / ( (400 + parm6) - (200 + parm5) ) )//dynamic interaction explanation[ (current distance - base) / (max distance - base) = a number between 0 'close' and 1 'far'. 1 - this number = rgb
+//		glowStage
+//	}
+//	{if ( distance > 400 + parm6 )
+//		blend add
+//		map	textures/sfx/spiritflesh
+//		rgb 0
+//		glowStage
+//	}
+
+	// Black verts
+//	{
+//		if ( distance < 200 )
+//		blend gl_src_alpha, gl_one
+//		scale 2,2
+//		map textures/vpaint/feeding3_spirit_add
+//
+//		glowStage
+//	}
+//	{
+//		if ( distance < 200 )
+//		blend	bumpmap
+//		scale 2,2
+//		map	textures/vpaint/feeding3_local
+//	}
+	{
+		if ( distance < 200 )
+		blend	diffusemap
+		scale 2,2
+		vertexcolor
+		rgb 1
+		map textures/vpaint/feeding3_spirit_add
+	}
+
+
+	// White verts
+//add
+	{if ( distance < ( 200 ) )
+
+		blend gl_src_alpha, gl_one
+		scale 4,4
+
+		map textures/vpaint/feeding2_spirit_add
+		glowStage
+		rgb alpha[(time * 0.25) + .5] // cjr
+	}
+	{if ( distance <= ( 400 ) && distance >= ( 200 ) )
+
+		blend gl_src_alpha, gl_one
+		scale 4,4
+
+		map textures/vpaint/feeding2_spirit_add
+		glowStage
+		rgb 1 - ( ( distance - (200 ) ) / ( (400 ) - (200 ) ) )//dynamic interaction explanation[ (current distance - base) / (max distance - base) = a number between 0 'close' and 1 'far'. 1 - this number = rgb
+
+	}
+	{if ( distance > 400 )
+		blend gl_src_alpha, gl_one
+		scale 4,4
+
+		map textures/vpaint/feeding2_spirit_add
+		glowStage
+		rgb 0
+
+	}
+//bump
+	{if ( distance < ( 200 ) )
+
+		blend bumpmap
+		scale 4,4
+
+		map		textures/vpaint/feeding2_local
+		rgb 1
+	}
+	{if ( distance <= ( 400  ) && distance >= ( 200  ) )
+
+		blend bumpmap
+		scale 4,4
+
+		map		textures/vpaint/feeding2_local
+		rgb 1 - ( ( distance - (200 ) ) / ( (400 ) - (200 ) ) )//dynamic interaction explanation[ (current distance - base) / (max distance - base) = a number between 0 'close' and 1 'far'. 1 - this number = rgb
+
+	}
+	{if ( distance > 400 )
+		blend bumpmap
+		scale 4,4
+
+		map		textures/vpaint/feeding2_local
+		rgb 0
+
+	}
+//diff
+	{if ( distance < ( 200 ) )
+
+		blend diffusemap
+		scale 4,4
+		vertexcolor
+		map		textures/vpaint/feeding2_spirit_d
+		rgb 1
+			}
+	{if ( distance <= ( 400 ) && distance >= ( 200 ) )
+
+		blend diffusemap
+		scale 4,4
+		vertexcolor
+		map		textures/vpaint/feeding2_spirit_d
+		rgb 1 - ( ( distance - (200 ) ) / ( (400) - (200 ) ) )//dynamic interaction explanation[ (current distance - base) / (max distance - base) = a number between 0 'close' and 1 'far'. 1 - this number = rgb
+
+	}
+	{if ( distance > 400 )
+		blend diffusemap
+		scale 4,4
+		vertexcolor
+		map		textures/vpaint/feeding2_spirit_d
+		rgb 0
+
+	}
+//spec
+	{if ( distance < ( 200 ) )
+
+		blend specularmap
+		scale 4,4
+
+		map		textures/vpaint/feeding2_spirit_s
+		rgb 1
+	}
+	{if ( distance <= ( 400 ) && distance >= ( 200 ) )
+
+		blend specularmap
+		scale 4,4
+
+		map		textures/vpaint/feeding2_spirit_s
+		rgb 1 - ( ( distance - (200) ) / ( (400) - (200) ) )//dynamic interaction explanation[ (current distance - base) / (max distance - base) = a number between 0 'close' and 1 'far'. 1 - this number = rgb
+
+	}
+	{if ( distance > 400 )
+		blend specularmap
+		scale 4,4
+
+		map		textures/vpaint/feeding2_spirit_s
+		rgb 0
+
+	}
+
+}
+textures/vpaint/feeding4
+{
+	qer_editorimage 	textures/vpaint/feeding4_proxy
+	matter_flesh
+	{
+		blend 		bumpmap
+		map			textures/vpaint/feeding4_local
+		scale parm4,parm5
+	}
+	{
+		blend 		diffusemap
+		map 		add(textures/vpaint/feeding4_d, textures/vpaint/feeding4_ss)
+		scale parm4,parm5
+	}
+	{
+		shaderFallback1
+		blend		specularmap
+		map			textures/vpaint/feeding4_s
+		scale parm4,parm5
+	}
+	{
+		shaderLevel1
+		blend		specularmap
+		map			textures/vpaint/feeding4_s2
+		specularexp		100, .6
+		scale parm4,parm5
+	}
+	//bjk: interactionexp is obsolete
+}
+
+textures/vpaint/feeding3_4
+
+{
+	matter_flesh
+	qer_editorimage textures/vpaint/feeding3_4_proxy
+	noselfshadow
+	// !!!! TELL ME IF THIS IS EVER USED!!! -bjk
+
+	// White verts
+	{
+		blend	bumpmap
+		scale parm6,parm7
+		map	textures/vpaint/feeding3_local
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/vpaint/feeding3_d
+	}
+	{
+		blend	specularmap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/vpaint/feeding3_s
+	}
+	{
+		blend	diffusemap
+		scale parm6,parm7
+		inversevertexcolor
+		map	textures/vpaint/feeding3_ss
+	}
+	// Black verts
+	{
+		blend	bumpmap
+		scale parm4,parm5
+		map		textures/vpaint/feeding4_local
+	}
+	{
+		blend diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/vpaint/feeding4_d
+	}
+	{
+		blend specularmap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/vpaint/feeding4_s
+	}
+	{
+		blend diffusemap
+		scale parm4,parm5
+		vertexcolor
+		map		textures/vpaint/feeding4_ss
+	}
+}
+
+
+textures/vpaint/ft_vpaint3
+{
+	qer_editorimage  textures/rock/sharprock_dark_lava1
+	noSelfShadow
+	noshadows
+	matter_flesh
+
+	{
+	blend bumpmap
+	scale parm6,parm7
+	map textures/vpaint/kf_vpaint_circuit_local
+	}
+	{
+	blend diffusemap
+	scale parm6,parm7
+	map textures/vpaint/kf_vpaint_circuit_d
+	vertexcolor
+	}
+	{
+	blend specularmap
+	scale parm6,parm7
+	map textures/organic_wall/circuitwall3_s
+	vertexcolor
+	}
+
+/////////////////////////////////////////////////////////////////
+	{
+	blend  bumpmap
+	map  textures/vpaint/ft_lit_membrane_local
+	scale parm6,parm7
+	}
+	{
+	blend  diffusemap
+	map  textures/vpaint/kf_vpaint_circuit_d_alpha
+	scale parm6,parm7
+	inverseVertexColor
+	}
+	{
+	map  textures/vpaint/kf_vpaint_circuit_d_alpha
+	scale parm6,parm7
+	maskcolor
+	}
+	{
+	blend   specularmap
+	map textures/organic_wall/circuitwall3_s
+	scale parm6,parm7
+	inverseVertexColor
+	}
+	{
+	blend  gl_dst_alpha , gl_one
+	map   textures/vpaint/ft_vpaint_ooze2
+	scale parm6,parm7
+	translate time * .01 , time * -0.025
+	inverseVertexColor
+	}
+	{
+	blend  gl_dst_alpha , gl_one
+	map   textures/vpaint/ft_vpaint_ooze
+	scale parm6,parm7
+	translate time * .01 , time * -0.025
+	inverseVertexColor
+	}
+}
+
+
+
+textures/vpaint/feeding_goo
+{
+	noSelfShadow
+    noshadows
+	matter_flesh
+	qer_editorimage		textures/vpaint/feeding_goo_proxy
+	{
+		blend			bumpmap
+		map				textures/vpaint/feeding_goo_local
+		scale			parm6 * 0.8, parm7 * 0.8
+	}
+	{
+		blend			diffusemap
+		map				textures/vpaint/feeding_goo_alp
+		scale			parm6 * 0.8, parm7 * 0.8
+	}
+	{
+		blend			specularmap
+		map				textures/vpaint/feeding_goo_s
+		scale			parm6 * 0.8, parm7 * 0.8
+	}
+	{
+		map				textures/vpaint/feeding_goo_alp
+		scale			parm6 * 0.8, parm7 * 0.8
+		maskcolor
+	}
+	{
+		blend		gl_dst_alpha , gl_one
+		map textures/vpaint/feeding_goo_fx
+		scale		parm6 * 0.8, parm7 * 0.8
+		translate	 time * 0.02 , time * .04
+	}
+	{
+		blend		gl_dst_alpha , gl_one
+		map textures/vpaint/feeding_goo_fx2
+		scale		parm6 * 1.5, parm7 * 1.5
+		translate	 time * -.01 , time * 0.02
+	}
+	{
+		blend		gl_dst_alpha , gl_one
+		map textures/vpaint/feeding_goo_fx2
+		scale		parm6 * 1, parm7 * 1
+		translate	 time * .01 , time *0.02
+	}
+}
+
+textures/vpaint/feeding_goo_blend
+{
+	qer_editorimage		textures/vpaint/feeding_goo_blend_proxy
+	noSelfShadow
+	matter_flesh
+	{
+		//shaderFallback2
+		blend	bumpmap
+		scale parm4,parm5
+		map		textures/vpaint/feeding2_local
+	}
+	{
+		//shaderFallback2
+		blend diffusemap
+		scale parm4,parm5
+		vertexColor
+		map		add(textures/vpaint/feeding2_d, textures/vpaint/feeding2_ss)
+	}
+	{
+		shaderFallback2
+		blend specularmap
+		scale parm4,parm5
+		vertexColor
+		map		textures/vpaint/feeding2_s
+	}
+	{
+		shaderLevel2
+		blend specularmap
+		scale parm4,parm5
+		vertexColor
+		map		textures/vpaint/feeding2_s2
+		specularexp 300, 1
+	}
+
+	{
+		blend		bumpmap
+		map		textures/vpaint/feeding_goo_local
+		scale		parm6 * 0.8, parm7 * 0.8
+	}
+	{
+		blend		diffusemap
+		map		textures/vpaint/feeding_goo_alp
+		scale		parm6 * 0.8, parm7 * 0.8
+		inverseVertexColor
+	}
+	{
+		blend			specularmap
+		map				textures/vpaint/feeding_goo_s
+		scale			parm6 * 0.8, parm7 * 0.8
+		specularexp 60, 1.5
+		inverseVertexColor
+	}
+	{
+		maskcolor
+		map		textures/vpaint/feeding_goo_alp
+		scale		parm6 * 0.8, parm7 * 0.8
+	}
+	{
+		blend		gl_dst_alpha, gl_one
+		map		textures/vpaint/feeding_goo_fx
+		translate	time * 0.02, time * .04
+		scale		parm6 * 0.8, parm7 * 0.8
+		inversevertexColor
+	}
+	{
+		blend		gl_dst_alpha, gl_one
+		map		textures/vpaint/feeding_goo_fx2
+		translate	time * -0.01, time * 0.02
+		scale		parm6 * 1.5, parm7 * 1.5
+		inversevertexColor
+	}
+	{
+		blend		gl_dst_alpha, gl_one
+		map		textures/vpaint/feeding_goo_fx2
+		translate	time * .01, time *0.02
+		scale		parm6 *1, parm7 * 1
+		inversevertexColor
+	}
+}
+
+textures/vpaint/feeding_goo_blend_new
+{
+	qer_editorimage		textures/vpaint/feeding_goo_blend_proxy
+	noSelfShadow
+	matter_flesh
+	{
+		//shaderFallback2
+		blend	bumpmap
+		scale parm4,parm5
+		map		textures/vpaint/feeding2_local
+	}
+	{
+		//shaderFallback2
+		blend diffusemap
+		scale parm4,parm5
+		vertexColor
+		map		add(textures/vpaint/feeding2_d, textures/vpaint/feeding2_ss)
+	}
+	{
+		shaderFallback2
+		blend specularmap
+		scale parm4,parm5
+		vertexColor
+		map		textures/vpaint/feeding2_s
+	}
+	{
+		shaderLevel2
+		blend specularmap
+		scale parm4,parm5
+		vertexColor
+		map		textures/vpaint/feeding2_s2
+		specularexp 300, 1
+	}
+
+	{
+		blend		bumpmap
+		map		textures/vpaint/feeding_goo_local
+		scale		parm6 * 0.8, parm7 * 0.8
+	}
+	{
+		blend		diffusemap
+		map		textures/vpaint/feeding_goo_alp
+		scale		parm6 * 0.8, parm7 * 0.8
+		inverseVertexColor
+	}
+	{
+		blend			specularmap
+		map				textures/vpaint/feeding_goo_s
+		scale			parm6 * 0.8, parm7 * 0.8
+		specularexp 60, 1.5
+		inverseVertexColor
+	}
+	{
+		maskcolor
+		map		textures/vpaint/feeding_goo_alp
+		scale		parm6 * 0.8, parm7 * 0.8
+	}
+	{
+		blend		gl_dst_alpha, gl_one
+		map		textures/vpaint/feeding_goo_fx
+		translate	time * -0.04, time * .02
+		scale		parm6 * 0.8, parm7 * 0.8
+		inversevertexColor
+	}
+	{
+		blend		gl_dst_alpha, gl_one
+		map		textures/vpaint/feeding_goo_fx2
+		translate	time * -0.03, time * -0.01
+		scale		parm6 * 1.5, parm7 * 1.5
+		inversevertexColor
+	}
+	{
+		blend		gl_dst_alpha, gl_one
+		map		textures/vpaint/feeding_goo_fx2
+		translate	time * -.03, time *0.01
+		scale		parm6 *1, parm7 * 1
+		inversevertexColor
+	}
+}
+textures/vpaint/feeding_goo2
+{
+	noSelfShadow
+    noshadows
+   	matter_flesh
+	qer_editorimage		textures/vpaint/feeding_goo2_proxy
+	{
+		blend			bumpmap
+		map				textures/vpaint/feeding_goo_local
+		scale			parm6 * 0.8, parm7 * 0.8
+	}
+	{
+		blend			diffusemap
+		map				textures/vpaint/feeding_goo_alp
+		scale			parm6 * 0.8, parm7 * 0.8
+	}
+	{
+		blend			specularmap
+		map				textures/vpaint/feeding_goo_s
+		scale			parm6 * 0.8, parm7 * 0.8
+	}
+	{
+		map				textures/vpaint/feeding_goo_alp
+		scale			parm6 * 0.8, parm7 * 0.8
+		maskcolor
+	}
+	{
+		blend		gl_dst_alpha , gl_one
+		map textures/vpaint/feeding_goo_fx4
+		scale		parm6 * 0.8, parm7 * 0.8
+		translate	 time * 0.02 , time * .04
+		inverseVertexColor
+	}
+	{
+		blend		gl_dst_alpha , gl_one
+		map textures/vpaint/feeding_goo_fx3
+		scale		parm6 * 1.5, parm7 * 1.5
+		translate	 -.09 , time * 0.02
+		inverseVertexColor
+	}
+	{
+		blend		gl_dst_alpha , gl_one
+		map textures/vpaint/feeding_goo_fx3
+		scale		parm6 * 1, parm7 * 1
+		translate	 .02 , time *0.02
+		inverseVertexColor
+	}
+}
+
+textures/vpaint/feeding_goo2_blend
+{
+	qer_editorimage		textures/vpaint/feeding_goo2_blend_proxy
+	noSelfShadow
+	noshadows
+	matter_flesh
+	{
+		blend 		bumpmap
+		map		textures/vpaint/feeding2_local
+		scale		parm4, parm5
+	}
+	{
+		blend 		diffusemap
+		map		add(textures/vpaint/feeding2_d, textures/vpaint/feeding2_ss)
+		scale		parm4, parm5
+		vertexColor
+	}
+	{
+		blend		specularmap
+		map		textures/vpaint/feeding2_s
+		scale 		parm4,parm5
+		vertexColor
+	}
+	{
+		blend		bumpmap
+		map		textures/vpaint/feeding_goo_local
+		scale		parm6 * 0.8, parm7 * 0.8
+	}
+	{
+		map		textures/vpaint/feeding_goo_alp
+		maskcolor
+		scale		parm6 * 0.8, parm7 * 0.8
+	}
+	{
+		inverseVertexColor
+		blend		diffusemap
+		map		textures/vpaint/feeding_goo_alp
+		scale		parm6 * 0.8, parm7 * 0.8
+	}
+	{
+		inversevertexColor
+		blend		gl_dst_alpha, gl_one
+		map		textures/vpaint/feeding_goo_fx4
+		translate	time * 0.02, time * .04
+		scale		parm6 * 0.8, parm7 * 0.8
+	}
+	{
+		inversevertexColor
+		blend		gl_dst_alpha, gl_one
+		map		textures/vpaint/feeding_goo_fx3
+		translate	time * -0.01, time * 0.02
+		scale		parm6 * 1.5, parm7 * 1.5
+	}
+	{
+		inversevertexColor
+		blend		gl_dst_alpha, gl_one
+		map		textures/vpaint/feeding_goo_fx3
+		translate	time * .01, time *0.02
+		scale		parm6 *1, parm7 * 1
+	}
+}
+
+textures/vpaint/feedingred
+{
+	qer_editorimage		textures/vpaint/feedingred
+	matter_flesh
+	{
+		blend		bumpmap
+		map		textures/vpaint/feedingred_local
+		scale		parm6, parm6
+	}
+	{
+		blend		diffusemap
+		map		textures/vpaint/feedingred
+		scale		parm6, parm6
+		scroll		time * parm3 * -0.75, time * parm3 * 0.25
+		colored
+	}
+	{
+		blend		specularmap
+		map		textures/vpaint/feedingred_s
+		scale		parm6, parm6
+		scroll		time * parm3 * 0.33, time * parm3 * -0.66
+		colored
+	}
+}
+
+textures/vpaint/feeding2_red
+{
+	qer_editorimage		textures/vpaint/feedingred
+	matter_flesh
+	{
+		blend 		bumpmap
+		map		textures/vpaint/feeding2_local
+		scale		parm4, parm5
+	}
+	{
+		blend 		diffusemap
+		map 		textures/vpaint/feeding2_d
+		scale		parm4, parm5
+	}
+	{
+		vertexcolor
+		blend 		diffusemap
+		map		textures/vpaint/feeding2_ss
+		scale		parm4, parm5
+	}
+	{
+		vertexcolor
+		blend		specularmap
+		map		textures/vpaint/feeding2_s
+		scale		parm4, parm5
+	}
+	{
+		blend		bumpmap
+		map		textures/vpaint/feedingred_local
+		scale		parm6, parm6
+	}
+	{
+		inversevertexcolor
+		blend		diffusemap
+		map		textures/vpaint/feedingred
+		scale		parm6, parm6
+		scroll		time * parm3 * -0.75, time * parm3 * 0.25
+		colored
+	}
+	{
+		inversevertexcolor
+		blend		specularmap
+		map		textures/vpaint/feedingred_s
+		scale		parm6, parm6
+		scroll		time * parm3 * 0.33, time * parm3 * -0.66
+		colored
+	}
+}
+
+textures/vpaint/feeding2_d
+{
+	matter_flesh
+	noselfshadow
+
+	bumpmap			textures/vpaint/feeding2_local
+	diffusemap		textures/vpaint/feeding2_d
+	specularmap		textures/vpaint/feeding1_s
+}
+
+textures/vpaint/feeding4_d
+{
+	qer_editorimage 	textures/vpaint/feeding4_proxy
+	matter_flesh
+	{
+		blend 		bumpmap
+		map			textures/vpaint/feeding4_local
+		scale parm4,parm5
+	}
+	{
+		blend 		diffusemap
+		map 		add(textures/vpaint/feeding4_d, textures/vpaint/feeding4_ss)
+		scale parm4,parm5
+	}
+	{
+		shaderFallback1
+		blend		specularmap
+		map			textures/vpaint/feeding4_s
+		scale parm4,parm5
+	}
+	{
+		shaderLevel1
+		blend		specularmap
+		map			textures/vpaint/feeding4_s2
+		specularexp		100, .6
+		scale parm4,parm5
+	}
+	//bjk: interactionexp is obsolete
+}
+
+textures/vpaint/feeding3_d
+{
+	matter_flesh
+	noselfshadow
+
+	bumpmap			textures/vpaint/feeding3_local
+	diffusemap		textures/vpaint/feeding3_d
+	specularmap		textures/vpaint/feeding3_s
+}
+
+textures/vpaint/feeding4_d2
+{
+	matter_flesh
+
+
+	bumpmap			textures/vpaint/feeding4mix_local
+	diffusemap		textures/vpaint/feeding4_d2
+	specularmap		textures/vpaint/feeding4_sx
+}
+textures/vpaint/feeding4_d3
+{
+	matter_flesh
+
+	{
+		blend 		bumpmap
+		map		textures/vpaint/feeding4mix_local
+	}
+	{
+		blend 		diffusemap
+		map 		textures/vpaint/feeding4_d2
+		VertexColor
+	}
+	{
+		blend		specularmap
+		map		textures/vpaint/feeding4_sx
+		VertexColor
+	}
+}
+
+
+
+textures/vpaint/dm_sphere1 //flesh + feeding1
+{
+	qer_editorimage	textures/vpaint/feeding1_d
+	matter_flesh
+
+	{
+		blend 		bumpmap
+		map			textures/vpaint/feeding1_local
+	}
+	{
+		blend 		diffusemap
+		map 		textures/vpaint/feeding1_d
+		VertexColor
+	}
+	{
+		blend		specularmap
+		map			textures/vpaint/feeding1_s
+		VertexColor
+	}
+
+/*	{
+		shaderLevel2
+
+		blend shader
+		vertexprogram vertexscale.vp
+		fragmentprogram parallaxExp.vfp
+
+		vertexparm		0		1.0,1.0,0,0
+
+		fragmentmap		1		textures/vpaint/feeding1_local
+		fragmentmap		4		textures/vpaint/feeding1_d
+		fragmentmap		5		textures/vpaint/feeding1_s
+		fragmentmap		7		textures/vpaint/feeding2_p
+
+		fragmentparm	0		.12, -.06
+		fragmentparm	1		30		// exponent
+	}*/
+
+
+	{
+		blend  bumpmap
+		map  textures/vpaint/flesh_local
+	}
+	{
+		blend  diffusemap
+		map  textures/vpaint/flesh
+		inverseVertexColor
+	}
+	{
+		blend  specularmap
+		map  textures/vpaint/flesh_spec
+		inverseVertexColor
+	}
+
+
+}
+
+textures/vpaint/feeding4_d4
+{
+	matter_flesh
+
+	{
+		blend 		bumpmap
+		map		textures/vpaint/feeding2_local
+	}
+	{
+		blend 		diffusemap
+		map 		textures/vpaint/feeding2_d
+		VertexColor
+	}
+	{
+		blend		specularmap
+		map		textures/vpaint/feeding1_s
+		VertexColor
+	}
+}
+
+textures/vpaint/feeding2_sphere1
+
+{
+	matter_flesh
+	qer_editorimage textures/vpaint/feeding2_3_proxy
+	noselfshadow
+
+	// White verts
+	{
+		blend 		bumpmap
+		scale 1,1
+		map		textures/vpaint/feeding4mix_local
+	}
+	{
+		blend 		diffusemap
+		scale 1,1
+		map 		textures/vpaint/feeding4_d4
+		VertexColor
+	}
+	{
+		blend		specularmap
+		scale 1,1
+		map		textures/vpaint/feeding4_sx
+		VertexColor
+	}
+	// Black verts
+	{
+	//	shaderFallback2
+		blend	bumpmap
+		scale 1.25,1.25
+		map	textures/organic_floor/sphere_husk_local
+	}
+	{
+	//	shaderFallback2
+		blend	diffusemap
+		scale 1.25,1.25
+		inversevertexcolor
+		map	textures/organic_floor/sphere_husk_d
+	}
+	{
+	//	shaderFallback2
+		blend	specularmap
+		scale 1.25,1.25
+		inversevertexcolor
+		map	textures/organic_floor/sphere_husk_s
+	}
+/*	{
+		shaderLevel2
+		inversevertexcolor
+
+		blend shader
+		vertexprogram	vertexscale.vp
+		fragmentprogram parallaxExp.vfp
+
+		vertexparm		0		parm6,parm7,0,0
+
+		fragmentmap		1		textures/vpaint/feeding3_local
+		fragmentmap		4		add( textures/vpaint/feeding3_d, textures/vpaint/feeding3_ss)
+		fragmentmap		5		textures/vpaint/feeding2_s2
+		fragmentmap		7		textures/vpaint/feeding3_p
+
+		fragmentparm	0		.16, -.08
+		fragmentparm	1		300		// exponent
+	}
+*/
+}
+
+textures/vpaint/feeding2_sphere2
+
+{
+	matter_flesh
+	qer_editorimage textures/vpaint/feeding2_3_proxy
+	noselfshadow
+
+	// White verts
+	{
+		blend 		bumpmap
+		scale 1.,1.
+		map		textures/vpaint/feeding4mix_local
+
+	}
+	{
+		blend 		diffusemap
+		scale 1.,1.
+		map 	textures/vpaint/feeding4_d4
+		VertexColor
+	}
+	{
+		blend		specularmap
+		scale 1.,1.
+		map		textures/vpaint/feeding4_sx
+		VertexColor
+	}
+	{
+		blend		add
+		scale 1.,1.
+		map		textures/vpaint/feeding2_sphere_add
+		VertexColor
+		glowStage
+		rgb alpha[(time * 0.17) + .2]
+	}
+	// Black verts
+	{
+	//	shaderFallback2
+		blend	bumpmap
+		scale .75,.75
+		map		textures/organic_floor/sphere_husk_local
+	}
+	{
+	//	shaderFallback2
+		blend	diffusemap
+		scale .75,.75
+		inversevertexcolor
+		map		textures/organic_floor/sphere_husk_d
+	}
+	{
+	//	shaderFallback2
+		blend	specularmap
+		scale .75,.75
+		inversevertexcolor
+		map		textures/organic_floor/sphere_husk_s
+	}
+
+	{
+		if parm7
+		blend gl_zero, gl_one
+		map textures/sfx/genericdissolve
+		alphaTest 0.05 + 0.35 * (time - parm4)
+		centerscale 0.5, 0.5
+	}
+	{
+		if parm7
+		privatePolygonOffset -1
+        blend add
+		map textures/sfx/genericdissolve
+		alphaTest 0.35 * (time - parm4)
+		centerscale 0.5, 0.5
+		glowStage
+	}
+	{
+		if parm7
+		privatePolygonOffset -1.3
+		blend add
+		map _white
+		alphaTest 0
+		glowStage
+	}
+
+/*	{
+		shaderLevel2
+		inversevertexcolor
+
+		blend shader
+		vertexprogram	vertexscale.vp
+		fragmentprogram parallaxExp.vfp
+
+		vertexparm		0		parm6,parm7,0,0
+
+		fragmentmap		1		textures/vpaint/feeding3_local
+		fragmentmap		4		add( textures/vpaint/feeding3_d, textures/vpaint/feeding3_ss)
+		fragmentmap		5		textures/vpaint/feeding2_s2
+		fragmentmap		7		textures/vpaint/feeding3_p
+
+		fragmentparm	0		.16, -.08
+		fragmentparm	1		300		// exponent
+	}
+*/
+}
+
+textures/organic_floor/sphere_husk2
+
+{
+	matter_flesh
+	qer_editorimage textures/vpaint/feeding2_3_proxy
+	noselfshadow
+
+	// White verts
+	{
+		blend 		bumpmap
+		scale 1,1
+		map		textures/vpaint/feeding4mix_local
+	}
+	{
+		blend 		diffusemap
+		scale 1,1
+		map 		textures/vpaint/feeding4_d2
+		VertexColor
+	}
+	{
+		blend		specularmap
+		scale 1,1
+		map		textures/vpaint/feeding4_sx
+		VertexColor
+	}
+	// Black verts
+	{
+	//	shaderFallback2
+		blend	bumpmap
+		scale .7,.7
+		map	textures/organic_floor/sphere_husk_local
+	}
+	{
+	//	shaderFallback2
+		blend	diffusemap
+		scale .7,.7
+		inversevertexcolor
+		map	textures/organic_floor/sphere_husk_d
+	}
+	{
+	//	shaderFallback2
+		blend	specularmap
+		scale .7,.7
+		inversevertexcolor
+		map	textures/organic_floor/sphere_husk_s
+	}
+/*	{
+		shaderLevel2
+		inversevertexcolor
+
+		blend shader
+		vertexprogram	vertexscale.vp
+		fragmentprogram parallaxExp.vfp
+
+		vertexparm		0		parm6,parm7,0,0
+
+		fragmentmap		1		textures/vpaint/feeding3_local
+		fragmentmap		4		add( textures/vpaint/feeding3_d, textures/vpaint/feeding3_ss)
+		fragmentmap		5		textures/vpaint/feeding2_s2
+		fragmentmap		7		textures/vpaint/feeding3_p
+
+		fragmentparm	0		.16, -.08
+		fragmentparm	1		300		// exponent
+	}
+*/
+}

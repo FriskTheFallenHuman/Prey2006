@@ -347,6 +347,10 @@ public:
 
 	virtual bool		UpdateFromDictionary ( idDict& dict );
 
+	int                 translateFontNum;
+	void                Translate( int tFontNum = -1 );
+	virtual void SetVisible( bool visible );
+
 protected:
 
 	friend		class rvGEWindowWrapper;
@@ -436,8 +440,6 @@ protected:
 	idWinVec2 tabMargins;
 	idWinFloat trailOffset;
 	idWinInt splineIn;
-
-	virtual void SetVisible( bool visible );
 
 	idList<idWinVar*> definedVars;
 	idList<idWinVar*> updateVars;

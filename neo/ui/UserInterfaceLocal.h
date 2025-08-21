@@ -95,7 +95,7 @@ public:
 	idStr						&GetReturnCmd() { return returnCmd; };
 
 	virtual void				CallStartup( void );
-	//virtual void				Translate( const char *fontname );
+	virtual void				Translate( const char *fontname );
 	
 	virtual idRectangle			GetScreenRect( void ) { return desktop->drawRect; }
 
@@ -121,6 +121,8 @@ private:
 	int							time;
 
 	int							refs;
+
+	int                         translateFont;
 
 	// DG: used so we can notify GUI scripts about changes in side padding.
 	//  Relevant if they use anchor, so they can know how big padding on the left/right

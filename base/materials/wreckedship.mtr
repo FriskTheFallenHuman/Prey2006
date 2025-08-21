@@ -1,0 +1,21 @@
+textures/wreckedship/techpipes1
+{
+	qer_editorimage 	textures/wreckedship/techpipes1_d
+
+	bumpmap 		addnormals (textures/wreckedship/techpipes1_local, heightmap (textures/wreckedship/techpipes1_h, 6))
+
+	diffusemap	 	textures/wreckedship/techpipes1_d
+	specularmap		textures/wreckedship/techpipes1_s
+
+}
+
+textures/wreckedship/techpipes1_small
+{
+	qer_editorimage 	textures/wreckedship/techpipes1_small_d
+
+	bumpmap 		addnormals (textures/wreckedship/techpipes1_small_local, heightmap (textures/wreckedship/techpipes1_small_h, 6))
+
+	diffusemap	 	textures/wreckedship/techpipes1_small_d
+	specularmap		textures/wreckedship/techpipes1_small_s
+
+}

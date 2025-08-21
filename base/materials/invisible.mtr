@@ -1,0 +1,1064 @@
+
+// none of the surfaces in this file generate visible drawing,
+// they are just for modifying the game and utility behavior
+
+// surfaces without stages will never get marks, so they
+// don't need to explicitly specify nooverlays
+
+// when gui surfaces are placed on an entity to allow them to be
+// interactive, use this surface for the view screen and place
+// a "gui" key containing the gui file, like "guis/mainmenu.gui"
+// on the entity
+textures/common/entitygui {
+	qer_editorimage	textures/editor/entitygui
+	discrete
+	playerclip
+	guisurf	entity
+	matter_metal
+}
+
+// when gui surfaces are placed on an entity to allow them to be
+// interactive, use this surface for the view screen and place
+// a "gui" key containing the gui file, like "guis/mainmenu.gui"
+// on the entity
+textures/common/entitygui2 {
+	qer_editorimage	textures/editor/entitygui2
+	discrete
+	playerclip
+	guisurf	entity2
+	matter_metal
+}
+
+// when gui surfaces are placed on an entity to allow them to be
+// interactive, use this surface for the view screen and place
+// a "gui" key containing the gui file, like "guis/mainmenu.gui"
+// on the entity
+textures/common/entitygui3 {
+	qer_editorimage	textures/editor/entitygui3
+	discrete
+	guisurf	entity3
+	playerclip
+	matter_metal
+}
+
+// visportal brushes stop the area flood fills in dmap and
+// define portals, separating the world into areas
+textures/editor/visportal
+{
+	description		"visportal brushes stop the area flood fills in dmap and\ndefine portals, separating the world into areas"
+	qer_editorimage	textures/editor/visportal
+	areaportal
+	noshadows
+}
+
+// aassolid brushes create solid space in AAS files
+textures/editor/aassolid
+{
+	description		"aassolid brushes create solid space in AAS files"
+	qer_editorimage	textures/editor/aassolid
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	nonsolid
+	noshadows
+	aassolid
+}
+
+// aasobstacle brushes are used to compile obstacles into AAS
+// that can be enabled/disabled
+textures/editor/aasobstacle
+{
+	description		"aasobstacle brushes are used to compile obstacles into AAS\nthat can be enabled/disabled"
+	qer_editorimage	textures/editor/aasobstacle
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	nonsolid
+	noshadows
+	aasobstacle
+}
+
+// a caulk brush will behave as a normal solid surface
+// for collision detection and utility flood filling, and
+// should be used whenever you know the area isn't going to
+// be visible, but it needs to be closed off for things to
+// work right.  Curves and models don't stop the utility
+// flood filling, so you need to have solid brushes behind
+// them.  Setting the faces that won't ever be seen to
+// caulk will save some rendering time and data space.
+textures/common/caulk
+{
+	description	"a caulk behaves as a normal solid surface\nfor collision detection and utility flood filling"
+	qer_editorimage textures/editor/caulk
+	noshadows
+	noimpact
+	nooverlays
+	nosteps
+	forceopaque			// will still seal levels
+}
+
+textures/common/caulkdiscrete
+{
+	qer_editorimage textures/editor/caulk
+	noshadows
+	noimpact
+	nooverlays
+	nosteps
+	discrete
+	forceopaque			// will still seal levels
+}
+
+// nodraw is used for surfaces that don't have any automatic
+// interaction with anything
+textures/common/nodraw
+{
+	description	"nodraw is used for surfaces that don't have any automatic\ninteraction with anything"
+	qer_editorimage textures/editor/nodraw
+	nonsolid
+	noshadows
+}
+
+// nodraw solid is used for surfaces that are not visible but are used to collide with
+textures/common/nodrawsolid
+{
+	description		"nodraw solid is used for surfaces that are not visible but are used to collide with"
+	qer_editorimage textures/editor/nodraw
+	noshadows
+}
+
+// this is an invisible brush that should cast a shadow
+// - xian (jul.9.2001)
+textures/common/shadow
+{
+	description		"invisible brush that casts a shadow"
+	qer_editorimage textures/editor/shadow
+	nonsolid
+	forceshadows
+}
+
+// invisible shadow 2
+textures/common/shadow2
+{
+	description		"invisible brush that casts a shadow but not on itself"
+	qer_editorimage textures/editor/shadow
+	nonsolid
+	forceshadows
+	noselfshadow
+}
+
+// trigger entities use this material
+textures/common/trigger
+{
+	qer_editorimage textures/editor/trigger
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+	trigger
+}
+
+// trigger entities use this material
+textures/common/triggeronce
+{
+	qer_editorimage textures/editor/triggeronce
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+	trigger
+}
+
+// trigger entities use this material
+textures/common/triggertimer
+{
+	qer_editorimage textures/editor/triggertimer
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+	trigger
+}
+
+// trigger entities use this material
+textures/common/triggerrelay
+{
+	qer_editorimage textures/editor/triggerrelay
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+	trigger
+}
+
+// a clip brush is solid to players and monsters, but not missiles
+textures/common/clip
+{
+	description		"a clip brush is solid to players and monsters, but not missiles"
+
+	qer_editorimage textures/editor/clip
+	noimpact
+	nonsolid
+	monsterclip
+	playerclip
+	noshadows
+	matter_metal
+}
+
+// humanhead: missiles don't impact these, but they're matter based for sake of footsteps, etc.
+textures/common/clip_metal
+{
+	description		"solid to players and monsters, but not missiles (metal)"
+	qer_editorimage textures/editor/clip_metal
+	noimpact
+	nonsolid
+	monsterclip
+	playerclip
+	noshadows
+	matter_metal
+}
+
+textures/common/clip_flesh
+{
+	description		"solid to players/monsters, not missiles (flesh)"
+	qer_editorimage textures/editor/clip_flesh
+	noimpact
+	nonsolid
+	monsterclip
+	playerclip
+	noshadows
+	matter_flesh
+}
+
+textures/common/clip_wood
+{
+	description		"solid to players/monsters, not missiles (wood)"
+	qer_editorimage textures/editor/clip_wood
+	noimpact
+	nonsolid
+	monsterclip
+	playerclip
+	noshadows
+	matter_wood
+}
+
+textures/common/clip_stone
+{
+	description		"solid to players/monsters, not missiles (stone)"
+	qer_editorimage textures/editor/clip_stone
+	noimpact
+	nonsolid
+	monsterclip
+	playerclip
+	noshadows
+	matter_stone
+}
+
+// a clip brush is solid to players and monsters, but not missiles + wallwalk
+textures/common/clip_wallwalk
+{
+	description		"a clip brush is solid to players and monsters, but not missiles"
+
+	qer_editorimage textures/editor/clip_wallwalk
+	noimpact
+	nonsolid
+	monsterclip
+	playerclip
+	noshadows
+	wallwalk
+}
+
+// Solid to players, monsters, and movables
+textures/common/clip_monplaymov_flesh
+{
+	description		"solid to players/monsters/movables, not missiles (flesh)"
+	qer_editorimage textures/editor/monplaymov
+	noimpact
+	nonsolid
+	monsterclip
+	playerclip
+	moveableclip
+	noshadows
+	matter_flesh
+}
+
+// Solid to players, monsters, and movables
+textures/common/clip_monplaymov_metal
+{
+	description		"solid to players/monsters/movables, not missiles (metal)"
+	qer_editorimage textures/editor/monplaymov
+	noimpact
+	nonsolid
+	monsterclip
+	playerclip
+	moveableclip
+	noshadows
+	matter_metal
+}
+
+// not used much, if it is, should make matter type versions
+// full clip is just like a solid brush, clipping missiles, monsters, and players
+textures/common/full_clip
+{
+	description		"solid to players/monsters/missiles"
+	qer_editorimage textures/editor/full_clip
+	monsterclip
+	playerclip
+	ikclip			// Allow IK to see it as solid since it's blocking the player
+	noshadows
+	moveableclip
+	matter_metal
+}
+
+textures/common/full_clip_wood
+{
+	description		"solid to players/monsters/missiles"
+	qer_editorimage textures/editor/full_clip
+	monsterclip
+	playerclip
+	ikclip			// Allow IK to see it as solid since it's blocking the player
+	noshadows
+	moveableclip
+	matter_wood
+}
+
+textures/common/full_clip_stone
+{
+	description		"solid to players/monsters/missiles"
+	qer_editorimage textures/editor/full_clip
+	monsterclip
+	playerclip
+	ikclip			// Allow IK to see it as solid since it's blocking the player
+	noshadows
+	moveableclip
+	matter_stone
+}
+
+textures/common/full_clip_metal
+{
+	description		"solid to players/monsters/missiles"
+	qer_editorimage textures/editor/full_clip
+	monsterclip
+	playerclip
+	ikclip			// Allow IK to see it as solid since it's blocking the player
+	noshadows
+	moveableclip
+	matter_metal
+}
+
+textures/common/full_clip_flesh
+{
+	description		"solid to players/monsters/missiles"
+	qer_editorimage textures/editor/full_clip
+	monsterclip
+	playerclip
+	ikclip			// Allow IK to see it as solid since it's blocking the player
+	noshadows
+	moveableclip
+	matter_flesh
+}
+
+textures/common/full_clip_glass
+{
+	description		"solid to players/monsters/missiles"
+	qer_editorimage textures/editor/full_clip
+	monsterclip
+	playerclip
+	ikclip			// Allow IK to see it as solid since it's blocking the player
+	noshadows
+	moveableclip
+	matter_glass
+}
+
+textures/common/full_clip_pipe
+{
+	description		"solid to players/monsters/missiles"
+	qer_editorimage textures/editor/full_clip
+	monsterclip
+	playerclip
+	ikclip			// Allow IK to see it as solid since it's blocking the player
+	noshadows
+	moveableclip
+	matter_pipe
+}
+
+// a player clip brush is solid to players, but not monsters and missiles
+textures/common/player_clip
+{
+	description		"solid to players, not monsters/missiles"
+	qer_editorimage textures/editor/player_clip
+	noimpact
+	nonsolid
+	playerclip
+	noshadows
+}
+
+// a player clip brush is solid to players, but not monsters and missiles
+textures/common/player_clip_stone
+{
+	description		"solid to players, not monsters/missiles"
+	qer_editorimage textures/editor/player_clip
+	noimpact
+	nonsolid
+	playerclip
+	noshadows
+	matter_stone
+}
+
+// a player clip brush is solid to players, but not monsters and missiles
+textures/common/player_clip_nosteps
+{
+	description		"solid to players, not monsters/missiles"
+	qer_editorimage textures/editor/player_clip
+	noimpact
+	nonsolid
+	playerclip
+	noshadows
+	nosteps
+}
+
+// a player clip brush is solid to players, but not monsters and missiles + slick
+textures/common/player_clip_slick
+{
+	description		"solid to players, not monsters/missiles"
+	qer_editorimage textures/editor/player_clip_slick
+	noimpact
+	nonsolid
+	playerclip
+	noshadows
+	slick
+}
+
+// a player clip brush is solid to players, but not monsters and missiles
+textures/common/player_missle_clip_metal
+{
+	description		"solid to players and missles, not monsters"
+	qer_editorimage textures/editor/full_clip
+	playerclip
+	noshadows
+	moveableclip
+	matter_metal
+}
+
+// a monster clip brush is solid to monsters only
+textures/common/monster_clip
+{
+	description		"solid to monsters, not players/missiles"
+	qer_editorimage textures/editor/monsterclip
+	nonsolid
+	monsterclip
+	noshadows
+}
+
+// a moveable clip brush is solid only to moveables like rigid bodies and articulated figures
+textures/common/moveable_clip
+{
+	description		"solid to moveables only"
+	qer_editorimage textures/editor/moveable_clip
+	nonsolid
+	moveableclip
+	noshadows
+}
+
+// a ik clip brush is solid only to ik collision testing
+textures/common/ik_clip
+{
+	qer_editorimage textures/editor/ikclip
+	nonsolid
+	ikclip
+	noshadows
+}
+
+// a cushion is an invisible surface that is
+// solid to movement, but will never give falling
+// damage.  put a thin sliver brush over jump pads, etc.
+textures/common/cushion
+{
+	description		"will never give falling damage"
+	qer_editorimage textures/editor/cushion
+	nonsolid
+	playerclip
+	nodamage
+	noshadows
+	nosteps
+}
+
+textures/common/cushion_metal
+{
+	description		"will never give falling damage"
+	qer_editorimage textures/editor/cushion*/
+	nonsolid
+	playerclip
+	nodamage
+	noshadows
+	matter_metal
+}
+
+textures/common/cushion_flesh
+{
+	description		"will never give falling damage"
+	qer_editorimage textures/editor/cushion
+	nonsolid
+	playerclip
+	nodamage
+	noshadows
+	matter_flesh
+}
+
+textures/common/cushion_glass
+{
+	description		"will never give falling damage"
+	qer_editorimage textures/editor/cushion
+	nonsolid
+	playerclip
+	nodamage
+	noshadows
+	matter_glass
+}
+
+textures/common/cushion_wood
+{
+	description		"will never give falling damage"
+	qer_editorimage textures/editor/cushion
+	nonsolid
+	playerclip
+	nodamage
+	noshadows
+	matter_wood
+}
+
+textures/common/cushion_stone
+{
+	description		"will never give falling damage"
+	qer_editorimage textures/editor/cushion
+	nonsolid
+	playerclip
+	nodamage
+	noshadows
+	matter_stone
+}
+
+// slick is an invisible surface that should be
+// used as a thin sliver brush over floors to cause sliding
+textures/common/slick
+{
+	qer_editorimage textures/editor/slick
+	slick
+	noshadows
+}
+
+// noimpact can be used as a thin sliver
+// brush over surfaces that you want missiles to
+// just dissapear into, instead of exploding on
+textures/common/noimpact
+{
+	description		"missiles disappear into instead of exploding"
+	qer_editorimage textures/editor/noimpact
+	noimpact
+	noshadows
+}
+
+// subviews are for perfect mirrors or portals
+// without any extra surface drawing
+textures/common/mirror
+{
+	// this one doesn't work so i replaced it - pdm
+/*	discrete		// never merge with other surfaces
+	qer_editorimage textures/editor/mirror
+	solid
+	mirror
+	{
+		blend add
+		map _black
+	}
+*/
+	qer_editorimage	textures/editor/mirror
+	noshadows
+	{
+		mirrorrendermap	256 256	// width / height of render image
+		translate	0.5 , 0.5
+		scale	0.5 , 0.5
+	}
+}
+
+textures/common/mirrormap
+{
+	qer_editorimage	textures/editor/mirror
+	noshadows
+	{
+		mirrorrendermap	256 256	// width / height of render image
+		translate	0.5 , 0.5
+		scale	0.5 , 0.5
+	}
+}
+
+textures/common/mirror512_nonsolid
+{
+	qer_editorimage	textures/editor/mirror
+	noshadows
+	nonsolid
+	{
+		mirrorrendermap	512 256	// width / height of render image
+		translate	0.5 , 0.5
+		scale	0.5 , 0.5
+	}
+}
+
+// this is used during dmap development for some things
+invisible
+{
+	noshadows
+}
+
+// a ladder brush is solid to players and monsters, but not missiles (11/06/01)
+// players can climb ladder brushes
+textures/common/ladder
+{
+	qer_editorimage textures/editor/ladder
+	nonsolid
+	monsterclip
+	playerclip
+	noimpact
+	ladder
+	noshadows
+}
+
+// if an ase/lwo model has a surface that uses this material that surface will
+// be used for collision detection instead of the visual surface(s)
+textures/common/collision
+{
+	description		"these surfaces replace visual surfaces for collision"
+	qer_editorimage textures/editor/collision
+	noshadows
+	collision
+	matter_metal
+}
+
+textures/common/collision_metal
+{
+	description		"these surfaces replace visual surfaces for collision (metal)"
+	qer_editorimage textures/editor/collision
+	noshadows
+	collision
+	matter_metal
+}
+
+textures/common/collision_flesh
+{
+	description		"these surfaces replace visual surfaces for collision (flesh)"
+	qer_editorimage textures/editor/collision
+	noshadows
+	collision
+	matter_flesh
+}
+
+textures/common/collision_glass
+{
+	description		"these surfaces replace visual surfaces for collision (glass)"
+	qer_editorimage textures/editor/collision
+	noshadows
+	collision
+	matter_glass
+}
+
+textures/common/collision_wood
+{
+	description		"these surfaces replace visual surfaces for collision (wood)"
+	qer_editorimage textures/editor/collision
+	noshadows
+	collision
+	matter_wood
+}
+
+textures/common/collision_stone
+{
+	description		"these surfaces replace visual surfaces for collision (stone)"
+	qer_editorimage textures/editor/collision
+	noshadows
+	collision
+	matter_stone
+}
+
+
+textures/common/speaker
+{
+	qer_editorimage textures/editor/speaker
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+}
+
+textures/common/particle
+{
+	qer_editorimage textures/editor/particle
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+}
+
+textures/common/overdrawtest
+{
+    noselfShadow
+    noshadows
+	translucent
+	{
+		blend	filter
+		map		textures/editor/overdraw
+	}
+}
+
+textures/common/moveableclipmodel
+{
+	qer_editorimage textures/editor/clip
+	noshadows
+}
+
+// ---------------------------------------------------------------------------
+// humanhead added materials
+// ---------------------------------------------------------------------------
+
+alignment
+{
+	qer_editorimage textures/editor/alignment
+	diffusemap textures/editor/alignment
+}
+
+// jumpzone: invisible cushion volume that both
+// triggers the thrust as well as cushions falls
+textures/common/jumpzone
+{
+	qer_editorimage textures/editor/jumppad
+	nodamage
+	noshadows
+	trigger
+}
+
+textures/common/debrisspawner
+{
+	qer_editorimage textures/editor/debrisspawner
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	trigger
+	noshadows
+}
+
+textures/editor/volumeasteroid
+{
+	qer_editorimage textures/editor/volumeasteroid
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	trigger
+	noshadows
+}
+
+textures/editor/volumeminefield
+{
+	qer_editorimage textures/editor/volumeminefield
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	trigger
+	noshadows
+}
+
+textures/editor/volumereaction
+{
+	qer_editorimage textures/editor/volumereaction
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	trigger
+	noshadows
+}
+
+textures/editor/volumereaction_listener
+{
+	qer_editorimage textures/editor/volumereaction_listener
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	trigger
+	noshadows
+}
+
+textures/editor/volumereaction_effect
+{
+	qer_editorimage textures/editor/volumereaction_effect
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	trigger
+	noshadows
+}
+
+textures/editor/volumegravity
+{
+	qer_editorimage textures/editor/volumegravity
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	trigger
+	noshadows
+}
+
+textures/editor/volumevelocity
+{
+	qer_editorimage textures/editor/volumevelocity
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	trigger
+	noshadows
+}
+
+textures/editor/volumesludge
+{
+	qer_editorimage textures/editor/volumesludge
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	trigger
+	noshadows
+}
+
+textures/editor/volumenodrop
+{
+	qer_editorimage textures/editor/nodrop
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	trigger
+	noshadows
+}
+
+// entity triggers don't need to be any particular material,
+// but this is used by convention
+textures/common/target_shake
+{
+	qer_editorimage textures/editor/targetshake
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	trigger
+	noshadows
+}
+
+// note: these only work on models files, not world geometry - pdm
+textures/common/entitygui_noshadows
+{
+	qer_editorimage	textures/editor/entitygui
+	discrete
+	noshadows
+	guisurf	entity
+	matter_metal
+}
+textures/common/entitygui2_noshadows
+{
+	qer_editorimage	textures/editor/entitygui2
+	discrete
+	noshadows
+	guisurf	entity2
+	matter_metal
+}
+textures/common/entitygui3_noshadows
+{
+	qer_editorimage	textures/editor/entitygui3
+	discrete
+	noshadows
+	guisurf	entity3
+	matter_metal
+}
+
+// apply this to an entity, and give the entity a "cameratarget" key set
+// to the name of the enity to take the remote view from.
+textures/common/remotecamera
+{
+	qer_editorimage	textures/editor/camera
+	discrete
+	noshadows
+	nooverlays
+	matter_metal
+	polygonoffset
+	{
+		remoterendermap	256 256	// width / height of render image
+		rgb	guipulse	[time * 3]
+		scale 1, -1			// the render view are upside down otherwise
+		translate 0, -1
+	}
+	{
+		blend blend
+		map guis/assets/scanline/scanline2
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   1
+		scroll 0, time*-1
+		linear
+	}
+	{
+		blend blend
+		map guis/assets/scanline/scanline
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   .3
+		scroll 0, time*-3
+		linear
+	}
+}
+
+textures/common/remotecamera2
+{
+	qer_editorimage	textures/editor/camera
+	discrete
+	noshadows
+	nooverlays
+	matter_metal
+	polygonoffset
+	{
+		remoterendermap	256 256	// width / height of render image
+		rgb	guipulse	[time * 3]
+		scale 1, -1			// the render view are upside down otherwise
+		translate 0, -1
+	}
+	{
+		blend blend
+		map guis/assets/scanline/scanline2
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   1
+		scroll 0, time*-1
+		linear
+	}
+	{
+		blend blend
+		map guis/assets/scanline/scanline
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   .3
+		scroll 0, time*-3
+		linear
+	}
+}
+
+// for weapon guis in case we want to differentiate them later
+textures/common/weapongui
+{
+	qer_editorimage	textures/editor/weapongui
+	discrete
+	guisurf entity
+}
+
+// trigger entities use this material
+textures/common/triggerdamagable
+{
+	qer_editorimage textures/editor/triggerdamagable
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+	solid
+	matter_metal
+}
+
+// trigger entities use this material
+textures/common/triggerpain
+{
+	qer_editorimage textures/editor/triggerpain
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+	trigger
+}
+
+// entity triggers don't need to be any particular material,
+// but this is used by convention
+textures/common/triggertripwire
+{
+	qer_editorimage textures/editor/triggertripwire
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	trigger
+	noshadows
+}
+
+textures/common/patternrelay
+{
+	qer_editorimage textures/editor/patternrelay
+	qer_nocarve		// don't let an awry CSG operation cut it up
+	noshadows
+	trigger
+}
+
+textures/common/playerstart
+{
+	qer_editorimage textures/editor/playerstart
+}
+
+textures/common/infonull
+{
+	qer_editorimage textures/editor/infonull
+}
+
+textures/common/location
+{
+	qer_editorimage textures/editor/location
+}
+
+textures/common/locationseperator
+{
+	qer_editorimage textures/editor/locationseperator
+}
+
+// This will display anywhere there is _emptyname (material not found)
+_emptyname
+{
+	qer_editorimage textures/editor/unknown
+}
+
+textures/common/emitter
+{
+	qer_editorimage textures/editor/emitter
+}
+
+// a vehicle clip brush is solid to vehicles, but not players, monsters, or missiles
+textures/common/vehicle_clip
+{
+	description		"solid to vehicles, not players/monsters/missiles"
+	qer_editorimage textures/editor/vehicle_clip
+	noimpact
+	nonsolid
+	vehicleclip
+	noshadows
+}
+
+textures/common/hunter_clip
+{
+	description		"solid to monsters, not monsters in vehicles"
+	qer_editorimage textures/editor/hunter_clip
+	noimpact
+	nonsolid
+	hunterclip
+	noshadows
+}
+
+// place at bottom of liquid pools so impacts, footsteps, and land sounds have proper matter type
+textures/common/liquid_bottom {
+	qer_editorimage textures/editor/liquid_bottom
+	matter_liquid
+	noshadows
+	diffusemap _black
+	bumpmap _flat
+	specularmap _black
+}
+
+
+textures/editor/skyboxportal
+{
+	qer_editorimage textures/editor/skybox
+
+	skybox_macro
+	skyboxportal
+	{
+		blend add
+		map _black
+	}
+}
+
+// Direct render portals - tmj
+// This is a temporary material that demonstrates direct render portals.
+// The final material will be animated in some way and have some better
+// translucency effects.
+textures/editor/directportal
+{
+	qer_editorimage	textures/editor/glowportal
+	noshadows noselfshadow nooverlays
+
+	directportal 0
+	{
+		map textures/sfx/portals/portal_1/port1loop00000
+		blend gl_one, gl_one_minus_src_color colored alphatest 0.3 ignorealphatest
+	}
+}
+
+// Used for non-blocking clipmodels around invisible guis
+textures/common/opaque
+{
+	qer_editorimage textures/editor/opaque
+	nooverlays
+	noimpact
+	nonsolid
+	noseethru
+	noshadows
+	nooverlays
+}
+
+textures/common/bindcontroller
+{
+	qer_editorimage textures/common/bindcontroller
+	nonsolid
+	noshadows
+}

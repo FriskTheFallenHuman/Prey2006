@@ -1,0 +1,815 @@
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// fodder
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+models/monsters/fodder/fodder
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	forceoverlays
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/fodder/fodder_local models/monsters/fodder/fodderhi.lwo
+	diffusemap models/monsters/fodder/fodder
+//	bumpmap	addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+	{
+		blend bumpmap
+		map addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+		highres
+	}
+	//specularmap models/monsters/fodder/fodder_s
+	{
+		blend specularmap
+		map models/monsters/fodder/fodder_s
+		specularexp		100, 6.6
+	}
+	{ // glowing eyes
+		blend add
+		map models/monsters/fodder/fodder_eyes
+		rgb parm6
+		glowStage
+	}
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/fodder/fodder_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 0.4 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/fodder/fodder_dis	// replace this with a monster-specific texture
+		alphaTest 0.4 * (time - parm7)
+		glowStage
+	}
+
+
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/fodder/fodder_teeth
+{
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	twosided
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/fodder/fodder_local models/monsters/fodder/fodderhi.lwo
+	{
+		if parm7
+		blend diffusemap
+		map models/monsters/fodder/fodder
+	}
+	{
+		if parm7 == 0
+		blend diffusemap
+		map models/monsters/fodder/fodder
+		alphatest 0.5
+	}
+//	bumpmap	addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+	{
+		blend bumpmap
+		map addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+		highres
+	}
+	specularmap models/monsters/fodder/fodder_s
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/fodder/fodder_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 0.4 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/fodder/fodder_dis	// replace this with a monster-specific texture
+		alphaTest 0.4 * (time - parm7)
+		glowStage
+	}
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/fodder/fodder_blood
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	forceoverlays
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/fodder/fodder_local models/monsters/fodder/fodderhi.lwo
+	diffusemap models/monsters/fodder/fodder_blood
+//	bumpmap	addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+	{
+		blend bumpmap
+		map addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+		highres
+	}
+	specularmap models/monsters/fodder/fodder_s
+
+	{ // glowing eyes
+		blend add
+		map models/monsters/fodder/fodder_eyes
+		rgb parm6
+		glowStage
+	}
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/fodder/fodder_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 0.4 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/fodder/fodder_dis	// replace this with a monster-specific texture
+		alphaTest 0.4 * (time - parm7)
+		glowStage
+	}
+
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/fodder/fodder_bloody
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	forceoverlays
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/fodder/fodder_local models/monsters/fodder/fodderhi.lwo
+	diffusemap models/monsters/fodder/fodder_bloody
+//	bumpmap	addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+	{
+		blend bumpmap
+		map addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+		highres
+	}
+	//specularmap models/monsters/fodder/fodder_s
+	{
+		blend specularmap
+		map models/monsters/fodder/fodder_bloody_s
+		specularexp		100, 6.6
+	}
+	{ // glowing eyes
+		blend add
+		map models/monsters/fodder/fodder_eyes
+		rgb parm6
+		glowStage
+	}
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/fodder/fodder_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 0.4 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/fodder/fodder_dis	// replace this with a monster-specific texture
+		alphaTest 0.4 * (time - parm7)
+		glowStage
+	}
+
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/fodder/fodder_teeth_bloody
+{
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	twosided
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/fodder/fodder_local models/monsters/fodder/fodderhi.lwo
+	{
+		if parm7
+		blend diffusemap
+		map models/monsters/fodder/fodder_bloody
+	}
+	{
+		if parm7 == 0
+		blend diffusemap
+		map models/monsters/fodder/fodder_bloody
+		alphatest 0.5
+	}
+//	bumpmap	addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+	{
+		blend bumpmap
+		map addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+		highres
+	}
+	specularmap models/monsters/fodder/fodder_bloody_s
+
+	{ // glowing eyes
+		blend add
+		map models/monsters/fodder/fodder_eyes
+		rgb parm7
+		glowStage
+	}
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/fodder/fodder_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 0.4 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/fodder/fodder_dis	// replace this with a monster-specific texture
+		alphaTest 0.4 * (time - parm7)
+		glowStage
+	}
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/fodder/fodder_frozen
+{
+	unsmoothedtangents
+	matter_stone
+	translucent
+	collision
+	noshadows
+	noOverlays
+	{
+		shaderLevel1
+
+		program			refraction.vfp
+
+		vertexparm		1       3.5*fadeIce[1+.3*(parm7-time)]			// magnitude of the distortion
+
+		fragmentparm	0		1-.1*fadeIce[1+.3*(parm7-time)], 1-.1*fadeIce[1+.3*(parm7-time)], 1-.04*fadeIce[1+.3*(parm7-time)], 1	// refraction color
+		fragmentparm	1		.8*fadeIce[1+.3*(parm7-time)], .8*fadeIce[1+.3*(parm7-time)], .9*fadeIce[1+.3*(parm7-time)], 1		// reflection color
+		fragmentparm	2		2*fadeIce[1+.3*(parm7-time)]
+
+		fragmentmap		1		highres models/monsters/fodder/fodder_local
+		fragmentmap		2       _currentrender
+	}
+
+	{
+		blend bumpmap
+		map addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+		highres
+	}
+	{
+		blend blend
+		map _white
+		rgb .72
+		alpha .35*fadeIce[1+.3*(parm7-time)]
+	}
+	{
+		blend diffusemap
+		map _white
+		color .34*fadeIce[1+.3*(parm7-time)], .34*fadeIce[1+.3*(parm7-time)], .36*fadeIce[1+.3*(parm7-time)], 1
+	}
+}
+
+//////////////
+//hider weapon skin melt
+//////////////
+
+models/monsters/fodder/fodder_hidermelt
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/fodder/fodder_local models/monsters/fodder/fodderhi.lwo
+	diffusemap models/monsters/fodder/fodder
+//	bumpmap	addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+	{
+		blend bumpmap
+		map addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+		highres
+	}
+	//specularmap models/monsters/fodder/fodder_s
+	{
+		blend specularmap
+		map models/monsters/fodder/fodder_s
+		specularexp		100, 6.6
+	}
+	{ // glowing eyes
+		blend add
+		map models/monsters/fodder/fodder_eyes
+		rgb parm6
+		glowStage
+	}
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.01 + 0.3 * (time - parm7)
+	}
+	{	// burning corpse effect - greenish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.15 * (time - parm7)
+		glowStage
+	}
+	{	// Remaining flesh, not alpha masked
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.3		// stage-only polygon offset - ensure that this is lower than the blue burn
+        blend add
+
+		map models/monsters/shared/melted_body
+		glowstage
+//		alphaTest 0 // Necessary, otherwise the other stages will mask out this stage
+	}
+	{	// burning corpse effect - greenish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.6		// stage-only polygon offset
+       blend gl_one, gl_zero
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.9 * (time - parm7 + 0.5)
+		rgb .3
+		glowStage
+	}
+
+	{ // Scope view texture
+       blend add
+       map textures/sfx/monsterSniperView
+       rgb flicker5 [ time * 2.5 ]
+       texgen screen
+	   scroll 0.5, 0.5
+	   scale 0.5, 0.5
+       clamp
+       glowStage
+       scopeView    // Only visible in the rifle scope view
+   }
+}
+
+models/monsters/fodder/fodder_teeth_hidermelt
+{
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	twosided
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/fodder/fodder_local models/monsters/fodder/fodderhi.lwo
+	{
+		if parm7
+		blend diffusemap
+		map models/monsters/fodder/fodder
+	}
+	{
+		if parm7 == 0
+		blend diffusemap
+		map models/monsters/fodder/fodder
+		alphatest 0.5
+	}
+//	bumpmap	addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+	{
+		blend bumpmap
+		map addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+		highres
+	}
+	specularmap models/monsters/fodder/fodder_s
+
+	{ // glowing eyes
+		blend add
+		map models/monsters/fodder/fodder_eyes
+		rgb parm7
+		glowStage
+	}
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.01 + 0.3 * (time - parm7)
+	}
+	{	// burning corpse effect - greenish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.15 * (time - parm7)
+		glowStage
+	}
+	{	// Remaining flesh, not alpha masked
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.3		// stage-only polygon offset - ensure that this is lower than the blue burn
+        blend add
+
+		map models/monsters/shared/melted_body
+		glowstage
+//		alphaTest 0 // Necessary, otherwise the other stages will mask out this stage
+	}
+	{	// burning corpse effect - greenish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.6		// stage-only polygon offset
+       blend gl_one, gl_zero
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.9 * (time - parm7 + 0.5)
+		rgb .3
+		glowStage
+	}
+
+	{ // Scope view texture
+       blend add
+       map textures/sfx/monsterSniperView
+       rgb flicker5 [ time * 2.5 ]
+       texgen screen
+	   scroll 0.5, 0.5
+	   scale 0.5, 0.5
+       clamp
+       glowStage
+       scopeView    // Only visible in the rifle scope view
+   }
+}
+
+models/monsters/fodder/fodder_blood_hidermelt
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/fodder/fodder_local models/monsters/fodder/fodderhi.lwo
+	diffusemap models/monsters/fodder/fodder_blood
+//	bumpmap	addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+	{
+		blend bumpmap
+		map addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+		highres
+	}
+	specularmap models/monsters/fodder/fodder_s
+
+	{ // glowing eyes
+		blend add
+		map models/monsters/fodder/fodder_eyes
+		rgb parm6
+		glowStage
+	}
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.01 + 0.3 * (time - parm7)
+	}
+	{	// burning corpse effect - greenish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.15 * (time - parm7)
+		glowStage
+	}
+	{	// Remaining flesh, not alpha masked
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.3		// stage-only polygon offset - ensure that this is lower than the blue burn
+        blend add
+
+		map models/monsters/shared/melted_body
+		glowstage
+//		alphaTest 0 // Necessary, otherwise the other stages will mask out this stage
+	}
+	{	// burning corpse effect - greenish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.6		// stage-only polygon offset
+       blend gl_one, gl_zero
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.9 * (time - parm7 + 0.5)
+		rgb .3
+		glowStage
+	}
+
+	{ // Scope view texture
+       blend add
+       map textures/sfx/monsterSniperView
+       rgb flicker5 [ time * 2.5 ]
+       texgen screen
+	   scroll 0.5, 0.5
+	   scale 0.5, 0.5
+       clamp
+       glowStage
+       scopeView    // Only visible in the rifle scope view
+   }
+}
+
+models/monsters/fodder/fodder_bloody_hidermelt
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/fodder/fodder_local models/monsters/fodder/fodderhi.lwo
+	diffusemap models/monsters/fodder/fodder_bloody
+//	bumpmap	addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+	{
+		blend bumpmap
+		map addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+		highres
+	}
+	//specularmap models/monsters/fodder/fodder_s
+	{
+		blend specularmap
+		map models/monsters/fodder/fodder_bloody_s
+		specularexp		100, 6.6
+	}
+	{ // glowing eyes
+		blend add
+		map models/monsters/fodder/fodder_eyes
+		rgb parm6
+		glowStage
+	}
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.01 + 0.3 * (time - parm7)
+	}
+	{	// burning corpse effect - greenish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.15 * (time - parm7)
+		glowStage
+	}
+	{	// Remaining flesh, not alpha masked
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.3		// stage-only polygon offset - ensure that this is lower than the blue burn
+        blend add
+
+		map models/monsters/shared/melted_body
+		glowstage
+//		alphaTest 0 // Necessary, otherwise the other stages will mask out this stage
+	}
+	{	// burning corpse effect - greenish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.6		// stage-only polygon offset
+       blend gl_one, gl_zero
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.9 * (time - parm7 + 0.5)
+		rgb .3
+		glowStage
+	}
+
+	{ // Scope view texture
+       blend add
+       map textures/sfx/monsterSniperView
+       rgb flicker5 [ time * 2.5 ]
+       texgen screen
+	   scroll 0.5, 0.5
+	   scale 0.5, 0.5
+       clamp
+       glowStage
+       scopeView    // Only visible in the rifle scope view
+   }
+}
+
+models/monsters/fodder/fodder_teeth_bloody_hidermelt
+{
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	twosided
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/fodder/fodder_local models/monsters/fodder/fodderhi.lwo
+	{
+		if parm7
+		blend diffusemap
+		map models/monsters/fodder/fodder_bloody
+	}
+	{
+		if parm7 == 0
+		blend diffusemap
+		map models/monsters/fodder/fodder_bloody
+		alphatest 0.5
+	}
+//	bumpmap	addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+	{
+		blend bumpmap
+		map addnormals(models/monsters/fodder/fodder_local, heightmap(models/monsters/fodder/fodder_h, 7 ) )
+		highres
+	}
+	specularmap models/monsters/fodder/fodder_bloody_s
+
+	{ // glowing eyes
+		blend add
+		map models/monsters/fodder/fodder_eyes
+		rgb parm7
+		glowStage
+	}
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.01 + 0.3 * (time - parm7)
+	}
+	{	// burning corpse effect - greenish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.15 * (time - parm7)
+		glowStage
+	}
+	{	// Remaining flesh, not alpha masked
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.3		// stage-only polygon offset - ensure that this is lower than the blue burn
+        blend add
+
+		map models/monsters/shared/melted_body
+		glowstage
+//		alphaTest 0 // Necessary, otherwise the other stages will mask out this stage
+	}
+	{	// burning corpse effect - greenish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.6		// stage-only polygon offset
+       blend gl_one, gl_zero
+
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.9 * (time - parm7 + 0.5)
+		rgb .3
+		glowStage
+	}
+
+	{ // Scope view texture
+       blend add
+       map textures/sfx/monsterSniperView
+       rgb flicker5 [ time * 2.5 ]
+       texgen screen
+	   scroll 0.5, 0.5
+	   scale 0.5, 0.5
+       clamp
+       glowStage
+       scopeView    // Only visible in the rifle scope view
+   }
+}
+
+
+//====================
+// Shadow Meshes
+//====================
+models/monsters/fodder/fodder_shadow {
+	diffusemap	textures/editor/shadow
+}

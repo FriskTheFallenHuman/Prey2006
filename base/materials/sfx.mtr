@@ -1,0 +1,4590 @@
+//this is the material file for special effects, such as mirrors.
+textures/sfx/shockwave
+{
+	translucent
+    {
+    	program         heatHazeWithMaskAndVertex.vfp
+    	vertexParm      0   0                           // texture scrolling
+    	vertexParm      1   35                          // magnitude of the distortion
+    	fragmentMap		0   _currentRender
+    	fragmentMap		1   textures/sfx/shockwave			// the normal map for distortion
+    	fragmentMap     2	textures/sfx/vpring1_alpha   	// the distortion blend map
+    }
+}
+
+textures/sfx/pointsprite_sub
+{
+	qer_editorimage textures/sfx/fdot
+	deform sprite
+	{
+		blend	gl_zero, gl_one_minus_src_color
+		map	textures/sfx/fdot
+		colored
+	}
+}
+
+textures/sfx/maskedhaze
+{
+	qer_editorimage 		textures/editor/haze
+	deform sprite
+	nonsolid
+	translucent
+        {
+                vertexProgram           heatHazeWithMask.vfp
+                vertexParm              0       time * parm5, time * parm6	// texture scrolling
+                vertexParm              1       parm7				// magnitude of the distortion
+                fragmentProgram			heatHazeWithMask.vfp
+                fragmentMap             0       _currentRender
+                fragmentMap             1       textures/sfx/vp1
+                fragmentMap             2       textures/sfx/vp1_alpha
+        }
+}
+
+textures/sfx/maskedhaze_nosprite
+{
+	qer_editorimage 		textures/editor/haze
+	nonsolid
+	translucent
+        {
+                vertexProgram           heatHazeWithMask.vfp
+                vertexParm              0       time * parm5, time * parm6	// texture scrolling
+                vertexParm              1       parm7				// magnitude of the distortion
+                fragmentProgram			heatHazeWithMask.vfp
+                fragmentMap             0       _currentRender
+                fragmentMap             1       textures/sfx/vp1
+                fragmentMap             2       textures/sfx/vp1_alpha
+        }
+}
+
+textures/organic_floor/bio_organicfloor_350_ramp
+{
+	qer_editorimage 	textures/organic_floor/bio_orgflr_350_proxy
+	noshadows
+	matter_metal
+	forceOverlays
+
+	bumpmap	addnormals (textures/organic_floor/bio_organicfloor_350_local,
+			heightmap  (textures/organic_floor/bio_organicfloor_350_h, 4))
+	specularmap	textures/organic_floor/bio_organicfloor_350_s
+	diffusemap textures/organic_floor/bio_organicfloor_350_d
+
+	//global alphatest stages
+	{
+		if ( parm5 == 0 )
+		blend none
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest 1 - ( time + parm4 ) * 0.85
+	}
+	{
+		if ( parm5 > 0 ) //fade out
+		blend none
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest ( time + parm4 ) * 0.85
+	}
+
+	//additive fx stage
+	{
+		if ( parm5 == 0 ) //fade out
+		privatepolygonoffset	-1
+		blend add
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest 1 - ( time + parm4 ) * 0.85 + 0.1
+		rgb 2
+		glowStage
+	}
+	{
+		if ( parm5 > 0 ) //fade out
+		privatepolygonoffset	-1
+		blend add
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest ( time + parm4 ) * 0.85 - 0.1
+		rgb 2
+		glowStage
+	}
+}
+
+textures/organic_floor/bio_organicfloor_350b_ramp
+{
+	qer_editorimage 	textures/organic_floor/bio_orgflr_350b_proxy
+	noshadows
+	matter_metal
+	forceOverlays
+
+	bumpmap	addnormals (textures/organic_floor/bio_organicfloor_350_local,
+			heightmap  (textures/organic_floor/bio_organicfloor_350_h, 4))
+	specularmap	textures/organic_floor/bio_organicfloor_350b_s
+	diffusemap textures/organic_floor/bio_organicfloor_350b_d
+
+	//global alphatest stages
+	{
+		if ( parm5 == 0 )
+		blend none
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest 1 - ( time + parm4 ) * 0.85
+	}
+	{
+		if ( parm5 > 0 ) //fade out
+		blend none
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest ( time + parm4 ) * 0.85
+	}
+
+	//additive fx stage
+	{
+		if ( parm5 == 0 ) //fade out
+		privatepolygonoffset	-1
+		blend add
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest 1 - ( time + parm4 ) * 0.85 + 0.1
+		rgb 2
+		glowStage
+	}
+	{
+		if ( parm5 > 0 ) //fade out
+		privatepolygonoffset	-1
+		blend add
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest ( time + parm4 ) * 0.85 - 0.1
+		rgb 2
+		glowStage
+	}
+}
+
+textures/sfx/beam_fadeon_solid2{
+	noshadows
+	translucent
+	twosided
+	sort 100
+	//	qer_editorimage textures/sfx/beam_fadeon
+
+	{if ( distance < ( 64 ) )
+		blend	add
+		map		textures/sfx/beam_fadeon
+		color	0.1, 0.1, 0.1, 0.0
+		linear
+		rgb 1
+	}
+	{if ( distance <= 256 && distance >= 64 )
+		blend	add
+		map		textures/sfx/beam_fadeon
+		color	0.1, 0.1, 0.1, 0.0
+		linear
+		rgb 1 - ( ( distance - 64 ) / ( 192 ) )
+	}
+	{if ( distance > 256 )
+		blend add
+		map	textures/sfx/beam_fadeon
+		color	0.1, 0.1, 0.1, 0.0
+		linear
+		rgb 0
+	}
+	{if ( parm5 != 0 )
+		blend add
+		map _white
+		colored
+	}
+}
+
+//
+// shuttle tube walls
+// inside glass
+//
+textures/sfx/sductwall
+{
+	qer_editorimage textures/sfx/stube_direction
+	matter_glass
+	noselfshadow
+	translucent
+	//twosided
+
+	{
+		blend add
+		map textures/sfx/stube1
+		//color parm0 * 0.95, parm1 * 0.95, parm2 * 0.95, 0
+		scroll 0, time * 0.6
+
+	}
+	{
+		blend add
+		map textures/sfx/stube1
+		//color parm0 * 0.95, parm1 * 0.95, parm2 * 0.95, 0
+		scroll 0.5, time * 0.3
+	}
+	{
+		blend add
+		map textures/sfx/stube2a
+		scroll time * 0, time * 0.2
+		rgb 0.05
+		glowStage
+	}
+}
+
+//
+// shuttle tube walls
+// outside glass for indoor areas
+//
+
+textures/sfx/sductwall_glow
+{
+	qer_editorimage textures/sfx/stube_direction
+	matter_glass
+	noselfshadow
+	translucent
+	//twosided
+	{
+		blend add
+		map textures/sfx/stube1
+		color parm0 * 0.95, parm1 * 0.95, parm2 * 0.95, 0
+		scroll 0, time * 0.6
+	}
+	{
+		blend add
+		map textures/sfx/stube1
+		color parm0 * 0.95, parm1 * 0.95, parm2 * 0.95, 0
+		scroll 0.5, time * 0.3
+	}
+	{
+		maskcolor
+		map	makealpha(textures/glass/ftower_glass5_mask)
+	}
+	{
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		cubemap	env/shuttle_indoor1_oily
+		//cubemap	env/shuttle_outdoor1
+		red	0.4 * parm0
+		green 	0.35 * parm1
+		blue	0.3 * parm2
+		texgen	reflect
+	}
+	{
+		blend add
+		map textures/sfx/stube2a
+		scroll time * 0, time * 0.2
+		//scale (jitter10 [time * 0.2]), (jitter10 [time * 0.2])
+		rgb 0.05
+		glowStage
+	}
+	{
+		blend add
+		map textures/sfx/stube2a
+		scroll time * 0, time * .8
+		rgb 0.05
+		scale 1, 2
+		glowStage
+	}
+}
+
+//
+// shuttle tube walls
+// outside glass for outdoor areas
+//
+
+textures/sfx/sductwall_glow_outside
+{
+	qer_editorimage textures/sfx/stube_direction
+	matter_glass
+	noselfshadow
+	translucent
+	//twosided
+
+	{
+		blend add
+		map textures/sfx/stube1
+		color parm0 * 0.95, parm1 * 0.95, parm2 * 0.95, 0
+		scroll 0, time * 0.6
+
+	}
+	{
+		blend add
+		map textures/sfx/stube1
+		color parm0 * 0.95, parm1 * 0.95, parm2 * 0.95, 0
+		scroll 0.5, time * 0.3
+	}
+	{
+		maskcolor
+		map	makealpha(textures/glass/ftower_glass5_mask)
+	}
+	{
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		cubemap	env/shuttle_outdoor1
+		red	0.4 * parm0
+		green 	0.35 * parm1
+		blue	0.3 * parm2
+		texgen	reflect
+	}
+	{
+		blend add
+		map textures/sfx/stube2a
+		scroll time * 0, time * 0.2
+		//scale (jitter10 [time * 0.2]), (jitter10 [time * 0.2])
+		rgb 0.05
+		glowStage
+	}
+	{
+		blend add
+		map textures/sfx/stube2a
+		scroll time * 0, time * .8
+		rgb 0.05
+		scale 1, 2
+		glowStage
+	}
+}
+
+textures/sfx/gravscroll
+{
+	qer_editorimage textures/sfx/gravscroll
+	noshadows
+	translucent
+	{
+		blend add
+		map textures/sfx/gravscroll
+		scroll 0, time * parm5
+		colored
+	}
+	{
+		blend add
+		map textures/sfx/gravscroll
+		scroll 0, 2 * time * parm5
+		colored
+	}
+}
+
+textures/sfx/shoottarget
+{
+	qer_editorimage textures/sfx/shoottarget
+	noshadows
+	translucent
+	{
+		blend add
+		map textures/sfx/shoottarget
+		colored
+	}
+}
+
+textures/sfx/mirror1
+{
+	matter_glass
+	discrete
+	//translucent
+	//twosided
+	noshadows
+
+	qer_editorimage	textures/editor/mirror
+	{
+		blend gl_dst_color,gl_zero
+		//blend diffusemap
+//		blend specularmap
+		map textures/sfx/mirror1
+//		map textures/decals/mirrorgrime_01
+	}
+	mirror
+}
+
+textures/sfx/mirror_perfect
+{
+	matter_glass
+	discrete
+	noshadows
+	qer_editorimage	textures/editor/mirror
+	{
+		blend gl_dst_color, gl_zero
+		map _white
+	}
+	mirror
+}
+textures/sfx/mirror_rh
+{
+	matter_glass
+	qer_editorimage	textures/sfx/mirror_rh
+	{
+		blend gl_zero, gl_one_minus_src_color
+		map textures/sfx/mirror_rh
+	}
+	mirror
+}
+
+// invisibility test
+// alpha value is controlled with parm3 (defaults to 1, no fade)
+// scrolling time is controlled with parm4 (defaults to 0)
+textures/sfx/inviso
+{
+	translucent
+	noselfshadow
+	noshadows
+
+	qer_editorimage		_threshold
+	{
+		blend gl_zero, gl_one_minus_src_alpha
+		alpha parm3
+		map _threshold
+		scroll time * parm4, time * parm4
+	}
+}
+
+textures/sfx/flamesparks
+{
+	translucent
+	nonsolid
+	noimpact
+	nooverlays
+	noshadows
+	qer_editorimage	textures/decals/bloodspot
+
+	{
+		blend gl_dst_color, gl_src_color
+		map textures/decals/bloodspot
+		clamp
+		linear
+	}
+}
+
+textures/sfx/laserbeam1
+{
+	translucent
+	twosided
+	noshadows
+	nonsolid
+	noimpact
+	nooverlays
+	qer_editorimage		textures/sfx/laserbeam1
+
+	{if ( parm4 == 0 )
+		//colored
+		blend add
+		map	textures/sfx/laserbeam1
+		scroll 0, time * 7.0
+		rgb 	0
+	}
+	{if (parm4 == 1 )
+		//colored
+		blend		add
+		map	textures/sfx/laserbeam1
+		scroll 0, time * 7.0
+		red		1
+		green		0
+		blue		0
+	}
+
+}
+
+// 10-15-02 - gb
+textures/sfx/quadflare
+{
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm5 )
+	{
+		blend		add
+		map		_quadratic
+		colored
+	}
+}
+
+textures/sfx/quadflare_flash
+{
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm5 )
+
+	{if ( parm4 == 0 )
+		blend		add
+		map		_quadratic
+		rgb 	0
+	}
+	{if ( parm4 != 0 )
+		blend		add
+		map		_quadratic
+		clamp
+		color 	parm0 * ( flashTable[ ( time + parm4 ) * 6 ] ),
+				parm1 * ( flashTable[ ( time + parm4 ) * 6 ] ),
+				parm2 * ( flashTable[ ( time + parm4 ) * 6 ] ),
+				1
+	}
+}
+
+textures/sfx/quadflare_snd
+{
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm5 )
+	{if ( parm6 == 0 )
+		blend		add
+		map		_quadratic
+		color	parm0 * sound,
+				parm1 * sound,
+				parm2 * sound,
+				parm3
+	}
+	{if ( parm6 != 0 )
+		blend		add
+		map		_quadratic
+		color	parm0 * parm6,
+				parm1 * parm6,
+				parm2 * parm6,
+				parm3
+	}
+}
+
+textures/sfx/quadflare_model
+{
+	description		" parm5: flare size (+/-size), parm6: relative rgb intensity (-0.5/+0.5) "
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm5 )
+	{
+		blend		add
+		map		_quadratic
+		color		parm0 * ( 0.5 + parm6 ),
+				parm1 * ( 0.5 + parm6 ),
+				parm2 * ( 0.5 + parm6 ),
+				0
+	}
+}
+textures/sfx/quadflare_model2
+{
+	description		" parm5: flare size (+/-size), parm6: relative rgb intensity (-0.5/+0.5) "
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm5 )
+	{
+		blend		add
+		map		_quadratic
+		color		parm0 * ( 0.5 + parm6 ),
+				parm1 * ( 0.5 + parm6 ),
+				parm2 * ( 0.5 + parm6 ),
+				0
+	}
+}
+textures/sfx/quadflare_model3
+{
+	description		" parm5: flare size (+/-size), parm6: relative rgb intensity (-0.5/+0.5) "
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm5 )
+	{
+		blend		add
+		map		_quadratic
+		color		parm0 * ( 0.5 + parm6 ),
+				parm1 * ( 0.5 + parm6 ),
+				parm2 * ( 0.5 + parm6 ),
+				0
+	}
+}
+textures/sfx/quadflare_model4
+{
+	description		" parm5: flare size (+/-size), parm6: relative rgb intensity (-0.5/+0.5) "
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm5 )
+	{
+		blend		add
+		map		_quadratic
+		color		parm0 * ( 0.5 + parm6 ),
+				parm1 * ( 0.5 + parm6 ),
+				parm2 * ( 0.5 + parm6 ),
+				0
+	}
+}
+textures/sfx/quadflare_model5
+{
+	description		" parm5: flare size (+/-size), parm6: relative rgb intensity (-0.5/+0.5) "
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm5 )
+	{
+		blend		add
+		map		_quadratic
+		color		parm0 * ( 0.5 + parm6 ),
+				parm1 * ( 0.5 + parm6 ),
+				parm2 * ( 0.5 + parm6 ),
+				0
+	}
+}
+textures/sfx/quadflare_model_rgb347
+{
+	// - gb 9/23/2004 4:21PM
+	// Special case for models/mapobjects/ftmisc/ft_inject_full.lwo
+	// parms 3,4 and 7 control RGB, parm 5 flare size, 6 relative intensity
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm5 )
+	{
+		blend		add
+		map		_quadratic
+		color		parm3 * ( 0.5 + parm6 ),
+				parm4 * ( 0.5 + parm6 ),
+				parm7 * ( 0.5 + parm6 ),
+				0
+	}
+}
+textures/sfx/quadflare_model_snd
+{
+	description		" parm5: flare size (+/-size), parm6: relative rgb intensity (-0.5/+0.5) "
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm5 )
+	{
+		blend		add
+		map		_quadratic
+		color		parm0 * ( 0.5 + parm6 ) * sound,
+				parm1 * ( 0.5 + parm6 ) * sound,
+				parm2 * ( 0.5 + parm6 ) * sound,
+				parm3
+	}
+}
+textures/sfx/quadflare_model_1minussnd
+{
+	description		" parm5: flare size (+/-size), parm6: relative rgb intensity (-0.5/+0.5) "
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm5 )
+	{
+		blend		add
+		map		_quadratic
+		color		parm0 * ( 0.5 + parm6 ) * ( 1 - sound ),
+				parm1 * ( 0.5 + parm6 ) * ( 1 - sound ),
+				parm2 * ( 0.5 + parm6 ) * ( 1 - sound ),
+				parm3
+	}
+}
+
+textures/sfx/quadflare2
+{
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm5 )
+	{
+		blend		add
+		map		_quadratic
+		colored
+//		vertexcolor
+	}
+}
+textures/sfx/transport_flare
+{
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm5 )
+	{
+		blend		add
+		map			_quadratic
+		red		.3
+		green		.67
+		blue		.71
+//		colored
+//		vertexcolor
+	}
+}
+textures/sfx/transport_flare2
+{
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm5 )
+	{
+		blend		add
+		map			_quadratic
+		red		.3
+		green		.67
+		blue		.71
+//		colored
+//		vertexcolor
+	}
+}
+textures/sfx/transport_flare3
+{
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm5 )
+	{
+		blend		add
+		map			_quadratic
+		red		.3
+		green		.67
+		blue		.71
+//		colored
+//		vertexcolor
+	}
+}
+textures/sfx/transport_flare4
+{
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm5 )
+	{
+		blend		add
+		map			_quadratic
+		red		.3
+		green		.67
+		blue		.71
+//		colored
+//		vertexcolor
+	}
+}
+
+
+
+// parm3 - phase, 4 - flare size, 5 - min color, 6 - speed
+textures/sfx/quadflare_flkr
+{
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm4 )
+	{
+		blend		add
+		map			_quadratic
+		color		( parm0 * parm5 ) + (( 1 - parm5 ) * parm0  * ( flicker_elec[ parm3 + ( time * parm6 ) ])),
+					( parm1 * parm5 ) + (( 1 - parm5 ) * parm1  * ( flicker_elec[ parm3 + ( time * parm6 ) ])),
+					( parm2 * parm5 ) + (( 1 - parm5 ) * parm2  * ( flicker_elec[ parm3 + ( time * parm6 ) ])),
+					1.0
+//		vertexcolor
+	}
+}
+
+// parm3 - phase, 4 - flare size, 5 - min color, 6 - speed
+textures/sfx/quadflare_pulse
+{
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm4 )
+	{
+		blend		add
+		map			_quadratic
+		color		( parm0 * parm5 ) + (( 1 - parm5 ) * parm0  * ((( sintable[ parm3 + ( time * parm6 ) ] + 1 ) * 0.5 ))),
+					( parm1 * parm5 ) + (( 1 - parm5 ) * parm1  * ((( sintable[ parm3 + ( time * parm6 ) ] + 1 ) * 0.5 ))),
+					( parm2 * parm5 ) + (( 1 - parm5 ) * parm2  * ((( sintable[ parm3 + ( time * parm6 ) ] + 1 ) * 0.5 ))),
+					1.0
+//		vertexcolor
+	}
+}
+
+// parm3 - phase, 4 - flare size, 5 - min color, 6 - speed
+textures/sfx/quadflare_hb1
+{
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm4 )
+	{
+		blend		add
+		map			_quadratic
+		color		( parm0 * parm5 ) + (( 1 - parm5 ) * parm0  * ( heartbeat1[ parm3 + ( time * parm6 ) ])),
+					( parm1 * parm5 ) + (( 1 - parm5 ) * parm1  * ( heartbeat1[ parm3 + ( time * parm6 ) ])),
+					( parm2 * parm5 ) + (( 1 - parm5 ) * parm2  * ( heartbeat1[ parm3 + ( time * parm6 ) ])),
+					1.0
+//		vertexcolor
+	}
+}
+
+textures/sfx/tubeflare
+{
+	qer_editorimage		textures/sfx/tubeflare
+//	nonsolid
+//	discrete
+//	translucent
+//	noshadows
+	deform tube
+	{
+		blend	add
+		map	textures/sfx/tubeflare
+	}
+}
+
+textures/sfx/tubeflare_colored
+{
+	qer_editorimage		textures/sfx/tubeflare
+//	nonsolid
+//	discrete
+//	translucent
+//	noshadows
+	deform tube
+	{
+		blend	add
+		map	textures/sfx/tubeflare
+		colored
+	}
+}
+
+// 10-16-02 - gb
+// moved from greg.mtr
+textures/sfx/energy1_cyan
+{
+	qer_editorimage textures/sfx/energy1
+	translucent
+	noshadows
+	nonsolid
+	noimpact
+	twosided
+	discrete
+	{
+		blend	add
+		map		textures/sfx/energy1
+		scale	1.0, 0.5
+		scroll	0.0, time * 0.5
+		color	0.2, 0.2, 0.4, 1.0
+		linear
+	}
+	{
+		blend	add
+		map		textures/sfx/energy1
+		scroll	0.0, time * 0.4
+		color	0.2, 0.3, 0.5, 1.0
+		linear
+	}
+}
+
+textures/sfx/lightcone_gravity
+{
+	qer_editorimage textures/sfx/lightcone3
+	translucent
+	noshadows
+	nonsolid
+	noimpact
+	twosided
+	{
+		blend	add
+		map		textures/sfx/lightcone3
+		scroll	time * 0.045, 0.0
+		color	0.05, 0.15, 0.05, 0.0
+		linear
+	}
+	{
+		blend	add
+		map		textures/sfx/lightcone3
+		scroll	time * -0.045, 0.0
+		color	0.1, 0.1, 0.05, 0.0
+		linear
+	}
+}
+textures/sfx/lightcone_sub
+{
+	qer_editorimage textures/sfx/lightcone2
+	translucent
+	noshadows
+	nonsolid
+	noimpact
+	twosided
+	{
+		blend	gl_zero, gl_one_minus_src_color
+		map	textures/sfx/lightcone5
+		scroll	time * 0.045, 0.0
+		colored
+	}
+	{
+		blend	gl_zero, gl_one_minus_src_color
+		map	textures/sfx/lightcone5
+		scroll	time * -0.045, 0.0
+		colored
+	}
+}
+textures/sfx/lightcone_gravity_cyan
+{
+	qer_editorimage textures/sfx/lightcone4
+	translucent
+	noshadows
+	nonsolid
+	noimpact
+	twosided
+	{
+		blend	add
+		map		textures/sfx/lightcone4
+		scroll	time * 3.045, 0.0
+		color	0.00, 0.075, 0.15, 0.0
+		linear
+	}
+	{
+		blend	add
+		map		textures/sfx/lightcone4
+		scroll	time * 2.065, 0.0
+		color	0.00, 0.075, 0.15, 0.0
+		linear
+	}
+}
+
+textures/sfx/lightcone_gravity_orng
+{
+	qer_editorimage textures/sfx/lightcone4
+	translucent
+	noshadows
+	nonsolid
+	noimpact
+	twosided
+	{
+		blend	add
+		map		textures/sfx/lightcone4
+		scroll	time * 3.045, 0.0
+		color	0.15, 0.10, 0.05, 0.0
+		linear
+	}
+	{
+		blend	add
+		map		textures/sfx/lightcone4
+		scroll	time * 2.065, 0.0
+		color	0.15, 0.10, 0.05, 0.0
+		linear
+	}
+}
+
+textures/sfx/lightcone_rays0
+{
+	qer_editorimage textures/sfx/lightcone1
+	translucent
+	noshadows
+	nonsolid
+	noimpact
+	twosided
+	{
+		blend	add
+		map		textures/sfx/lightcone1
+		color	0.2, 0.2, 0.2, 0.0
+		linear
+		glowStage
+	}
+}
+
+textures/sfx/lightcone_rays1
+{
+	qer_editorimage textures/sfx/lightcone2
+	translucent
+	noshadows
+	nonsolid
+	noimpact
+	twosided
+	{
+		blend	add
+		map		textures/sfx/lightcone2
+		scroll	time * 0.030, 0.0
+		color	0.1, 0.1, 0.1, 0.0
+		linear
+		glowStage
+	}
+	{
+		blend	add
+		map		textures/sfx/lightcone2
+		scroll	time * -0.035, 0.0
+		color	0.1, 0.1, 0.1, 0.0
+		linear
+		glowStage
+	}
+}
+
+textures/sfx/lightcone_rays2
+{
+	qer_editorimage textures/sfx/lightcone3
+	translucent
+	noshadows
+	nonsolid
+	noimpact
+	twosided
+	{
+		blend	add
+		map		textures/sfx/lightcone3
+		scroll	time * 0.030, 0.0
+		color	0.1, 0.1, 0.1, 0.0
+		linear
+	}
+	{
+		blend	add
+		map		textures/sfx/lightcone3
+		scroll	time * -0.035, 0.0
+		color	0.1, 0.1, 0.1, 0.0
+		linear
+	}
+}
+
+textures/sfx/lightcone_rays0_colored
+{
+	qer_editorimage textures/sfx/lightcone1
+	translucent
+	noshadows
+	nonsolid
+	noimpact
+	twosided
+	{
+		blend	add
+		map		textures/sfx/lightcone1
+		color	parm0 * 0.2, parm1 * 0.2, parm2 * 0.2, 0.0
+		linear
+		glowStage
+	}
+}
+
+textures/sfx/lightcone_rays1_colored
+{
+	qer_editorimage textures/sfx/lightcone2
+	translucent
+	noshadows
+	nonsolid
+	noimpact
+	twosided
+	{
+		blend	add
+		map		textures/sfx/lightcone2
+		scroll	time * 0.030, 0.0
+		color	parm0 * 0.1, parm1 * 0.1, parm2 * 0.1, 0.0
+		linear
+		glowStage
+	}
+	{
+		blend	add
+		map		textures/sfx/lightcone2
+		scroll	time * -0.035, 0.0
+		color	parm0 * 0.1, parm1 * 0.1, parm2 * 0.1, 0.0
+		linear
+		glowStage
+	}
+}
+
+textures/sfx/lightcone_rays2_colored
+{
+	qer_editorimage textures/sfx/lightcone3
+	translucent
+	noshadows
+	nonsolid
+	noimpact
+	twosided
+	{
+		blend	add
+		map		textures/sfx/lightcone3
+		scroll	time * 0.030 * ( 1 + parm6 ), 0.0
+		color	parm0 * 0.1, parm1 * 0.1, parm2 * 0.1, 0.0
+		linear
+		glowStage
+	}
+	{
+		blend	add
+		map		textures/sfx/lightcone3
+		scroll	time * -0.035 * ( 1 + parm6 ), 0.0
+		color	parm0 * 0.1, parm1 * 0.1, parm2 * 0.1, 0.0
+		linear
+		glowStage
+	}
+}
+
+textures/sfx/lightcone_rays2_colored_onesided
+{
+	qer_editorimage textures/sfx/lightcone3
+	translucent
+	noshadows
+	nonsolid
+	noimpact
+	{
+		blend	add
+		map		textures/sfx/lightcone3
+		scroll	time * 0.030 * ( 1 + parm6 ), 0.0
+		color	parm0 * 0.1, parm1 * 0.1, parm2 * 0.1, 0.0
+		linear
+		glowStage
+	}
+	{
+		blend	add
+		map		textures/sfx/lightcone3
+		scroll	time * -0.035 * ( 1 + parm6 ), 0.0
+		color	parm0 * 0.1, parm1 * 0.1, parm2 * 0.1, 0.0
+		linear
+		glowStage
+
+	}
+}
+
+textures/sfx/lightcone_rays2_colored_distance
+{
+	/*
+		parm4 distance in units that color should be 0
+		parm5 distance in units that the fade starts at
+		parm6 scroll speed multiplier
+	*/
+	qer_editorimage textures/sfx/lightcone3
+	translucent
+	noshadows
+	nonsolid
+	noimpact
+	//1st layer
+	{
+		if ( distance <= parm5 )
+		blend	add
+		map		textures/sfx/lightcone3
+		scroll	time * 0.030 * ( 1 + parm6 ), 0.0
+		color  ( parm0 * 0.1 ) - ( ( ( parm5 - distance ) / ( parm5 - parm4 ) ) * parm0 * 0.1 ),
+			   ( parm1 * 0.1 ) - ( ( ( parm5 - distance ) / ( parm5 - parm4 ) ) * parm1 * 0.1 ),
+			   ( parm2 * 0.1 ) - ( ( ( parm5 - distance ) / ( parm5 - parm4 ) ) * parm2 * 0.1 ),
+			   0.0
+		linear
+		glowStage
+	}
+	{
+		if ( distance > parm5 )
+		blend	add
+		map		textures/sfx/lightcone3
+		scroll	time * 0.030 * ( 1 + parm6 ), 0.0
+		color  parm0 * 0.1, parm1 * 0.1, parm2 * 0.1, 0.0
+		linear
+		glowStage
+	}
+	//2nd layer
+	{
+		if ( distance <= parm5 )
+		blend	add
+		map		textures/sfx/lightcone3
+		scroll	time * -0.035 * ( 1 + parm6 ), 0.0
+		color  ( parm0 * 0.1 ) - ( ( ( parm5 - distance ) / ( parm5 - parm4 ) ) * parm0 * 0.1 ),
+			   ( parm1 * 0.1 ) - ( ( ( parm5 - distance ) / ( parm5 - parm4 ) ) * parm1 * 0.1 ),
+			   ( parm2 * 0.1 ) - ( ( ( parm5 - distance ) / ( parm5 - parm4 ) ) * parm2 * 0.1 ),
+			   0.0
+		linear
+		glowStage
+	}
+	{
+		if ( distance > parm5 )
+		blend	add
+		map		textures/sfx/lightcone3
+		scroll	time * -0.035 * ( 1 + parm6 ), 0.0
+		color  parm0 * 0.1, parm1 * 0.1, parm2 * 0.1, 0.0
+		linear
+		glowStage
+	}
+}
+
+textures/sfx/lightcone_rays2_colored_offset
+{
+	qer_editorimage textures/sfx/lightcone3
+	translucent
+	noshadows
+	nonsolid
+	noimpact
+	polygonoffset
+	twosided
+	{
+		blend	add
+		map		textures/sfx/lightcone3
+		scroll	time * 0.030, 0.0
+		color	parm0 * 0.1, parm1 * 0.1, parm2 * 0.1, 0.0
+		linear
+		glowStage
+	}
+	{
+		blend	add
+		map		textures/sfx/lightcone3
+		scroll	time * -0.035, 0.0
+		color	parm0 * 0.1, parm1 * 0.1, parm2 * 0.1, 0.0
+		linear
+		glowStage
+	}
+}
+
+table harv_grav_cube_flash { { 0, 1, 0.8, 0.6, 0.4, 0.2, 0 } }
+
+textures/sfx/harv_grav_cube
+{
+	qer_editorimage textures/sfx/lightcone3
+	translucent
+	noshadows
+	nonsolid
+	noimpact
+	twosided
+	{
+		blend	add
+		map		textures/sfx/lightcone3
+		scroll	time * 0.030 * ( 1 + parm6 ), 0.0
+		color parm0 * 0.0455875,
+			  parm1 * 0.0848,
+			  parm2 * 0.11275,
+			  0.0
+		linear
+		glowStage
+	}
+	{
+		blend	add
+		map		textures/sfx/lightcone3
+		scroll	time * -0.035 * ( 1 + parm6 ), 0.0
+		color parm0 * 0.0455875,
+			  parm1 * 0.0848,
+			  parm2 * 0.11275,
+			  0.0
+		linear
+		glowStage
+	}
+}
+
+
+textures/sfx/arc_flare
+{
+	qer_editorimage 	textures/sfx/arc_flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform sprite
+	{
+		blend		add
+		map			textures/sfx/arc_flare
+		rgb flicker4 [(time * 2)]
+		centerscale arc_scale [(time * 2)], arc_scale [(time * 2)]
+		rotate (time * .025)
+		clamp
+//		colored
+	}
+}
+
+textures/sfx/flare0
+{
+	qer_editorimage 	textures/sfx/flare0
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform sprite
+	{
+		highquality
+		blend		add
+		map			textures/sfx/flare0
+		colored
+	}
+}
+textures/sfx/flare0b
+// Color on parms 3,4,5 - for use on model
+{
+	qer_editorimage 	textures/sfx/flare0
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform sprite
+	{
+		highquality
+		blend		add
+		map			textures/sfx/flare0
+		color	parm3,parm4,parm5,0
+	}
+}
+
+textures/sfx/flare0blink
+{
+	qer_editorimage 	textures/sfx/flare0
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform sprite
+	{
+		highquality
+		blend		add
+		map			textures/sfx/flare0
+		color parm0 * planelightblink[ ( time * 0.5 ) + parm6 ],
+			  parm1 * planelightblink[ ( time * 0.5 ) + parm6 ],
+			  parm2 * planelightblink[ ( time * 0.5 ) + parm6 ],
+			  1
+	}
+}
+
+textures/sfx/flare1
+{
+	qer_editorimage 	textures/sfx/flare1
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform sprite
+	{
+		highquality
+		blend		add
+		map			textures/sfx/flare1
+		colored
+	}
+}
+
+textures/sfx/flare6
+{
+	qer_editorimage 	textures/sfx/flare1
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform sprite
+	{
+		highquality
+		blend		add
+		map			textures/sfx/flare6
+		colored
+	}
+}
+textures/sfx/flare7
+{
+	qer_editorimage 	textures/sfx/flare1
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform sprite
+	{
+		highquality
+		blend		add
+		map			textures/sfx/flare7
+		colored
+	}
+}
+textures/sfx/flare1_flash
+{
+	qer_editorimage 	textures/sfx/flare1
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform sprite
+	{if ( parm4 == 0 )
+		highquality
+		blend		add
+		map			textures/sfx/flare1
+		rgb 		0
+	}
+	{if ( parm4 != 0 )
+		highquality
+		blend		add
+		map			textures/sfx/flare1
+		clamp
+		color 		parm0 * ( flashTable[ ( time + parm4 ) * 6 ] ),
+					parm1 * ( flashTable[ ( time + parm4 ) * 6 ] ),
+					parm2 * ( flashTable[ ( time + parm4 ) * 6 ] ),
+					1
+		glowStage
+	}
+}
+
+textures/sfx/flare1_pulse
+{
+	qer_editorimage 	textures/sfx/flare1
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform sprite
+	{
+		highquality
+		blend		add
+		map			textures/sfx/flare1
+		color		( parm0 * parm5 ) + (( 1 - parm5 ) * parm0  * ((( biopulse2[ parm3 + ( time * parm6 ) ] + 1 ) * 0.5 ))),
+				( parm1 * parm5 ) + (( 1 - parm5 ) * parm1  * ((( biopulse2[ parm3 + ( time * parm6 ) ] + 1 ) * 0.5 ))),
+				( parm2 * parm5 ) + (( 1 - parm5 ) * parm2  * ((( biopulse2[ parm3 + ( time * parm6 ) ] + 1 ) * 0.5 ))),
+				1.0
+		colored
+	}
+
+}
+
+textures/sfx/flare2
+{
+	qer_editorimage 	textures/sfx/flare2
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform sprite
+	{
+		highquality
+		blend		add
+		map			textures/sfx/flare2
+		colored
+	}
+}
+
+textures/sfx/hwindows
+{
+	qer_editorimage	textures/sfx/hwindows
+	{
+		blend	add
+		map		textures/sfx/hwindows
+		colored
+	}
+}
+
+
+textures/sfx/console_eyerim
+{
+	qer_editorimage 	textures/sfx/beams/beam_colored2
+//	discrete
+	noshadows
+	translucent
+	twosided
+	nonsolid
+	nooverlays
+	sort 0
+/*
+	{
+		blend 		gl_one, gl_one_minus_src_color //add
+		map			textures/sfx/beams/beam_colored2 //textures/sfx/console_rim
+//		centerscale	1, 1
+//		scroll 		time * 0.5, 0
+//		red			parm0 * 0.2
+//		green		parm1 * 0.2
+//		blue		parm2 * 0.2
+		colored
+	}
+*/
+}
+
+textures/sfx/console_eyeflare
+{
+	qer_editorimage 	textures/sfx/flare1
+//	discrete
+	noshadows
+	translucent
+	twosided
+	nonsolid
+	nooverlays
+	deform flare 4
+	sort 0
+//	deform corona 0.25
+	{
+		blend 		add
+		map			textures/sfx/flare1
+		colored
+	}
+}
+
+textures/sfx/console_eye
+{
+	qer_editorimage 	textures/sfx/guiprojector
+//	discrete
+	noshadows
+	translucent
+	twosided
+	nonsolid
+	nooverlays
+	{
+		blend		gl_one, gl_one_minus_src_color
+		map			textures/sfx/guiprojector
+		rotate 		time * 0.05
+		colored
+	}
+		{
+		blend		gl_one, gl_one_minus_src_color
+		map			textures/sfx/guiprojector_2
+		rotate 		time * -0.05
+		colored
+	}
+/*	{
+		blend		gl_one, gl_one_minus_src_color
+		map			textures/sfx/guiprojector
+		rotate time * -0.27
+		red			parm0 * 0.5
+		green		parm1 * 0.5
+		blue		parm2 * 0.5
+	}
+*/
+	{
+		blend 		gl_dst_color, gl_src_color
+		map			textures/sfx/guiprojector_blend
+		rotate time * 0.5
+	}
+//		{
+//		blend 		gl_dst_color, gl_src_color
+//		map			textures/sfx/guiprojector_blend
+//		rotate time * -0.9
+//	}
+}
+
+textures/sfx/alarmconsole_eyeflare
+{
+	qer_editorimage 	textures/sfx/flare1
+	noshadows
+	translucent
+	twosided
+	nonsolid
+	nooverlays
+	deform flare 6
+	sort 0
+	{
+		blend 		add
+		map			textures/sfx/flare1
+		red 	1
+		green	0.2
+		blue 	0
+	}
+}
+
+textures/sfx/alarmconsole_eye
+{
+	qer_editorimage 	textures/sfx/guiprojector
+	noshadows
+	translucent
+	twosided
+	nonsolid
+	nooverlays
+	{
+		blend		gl_one, gl_one_minus_src_color
+		map			textures/sfx/guiprojector
+		rotate 		time * 0.05
+		red 	1
+		green	0.2
+		blue 	0
+
+	}
+		{
+		blend		gl_one, gl_one_minus_src_color
+		map			textures/sfx/guiprojector_2
+		rotate 		time * -0.05
+		red 	1
+		green	0.2
+		blue 	0
+	}
+	{
+		blend 		gl_dst_color, gl_src_color
+		map			textures/sfx/guiprojector_blend
+		rotate time * 0.5
+	}
+}
+
+textures/sfx/alarmconsole_eyerim
+{
+	qer_editorimage 	textures/sfx/beams/beam_colored2
+//	discrete
+	noshadows
+	translucent
+	twosided
+	nonsolid
+	nooverlays
+	sort 0
+	{
+		blend 		gl_one, gl_one_minus_src_color //add
+		map			textures/sfx/beams/beam_colored2 //textures/sfx/console_rim
+		centerscale	1, 1
+		scroll 		time * 0.5, 0
+		red 	1
+		green	0.2
+		blue 	0
+
+		glowstage
+	}
+}
+
+textures/sfx/guiprojector
+{
+	qer_editorimage 	textures/sfx/guiprojector
+//	discrete
+	noshadows
+	translucent
+	twosided
+	nonsolid
+	nooverlays
+	{
+		blend		gl_one, gl_one_minus_src_color
+		map			textures/sfx/guiprojector
+		rotate time * 0.1
+		red 1
+		green 0.2
+		blue 0.1
+//		colored
+	}
+	{
+		blend gl_dst_color, gl_src_color
+		map			textures/sfx/guiprojector_blend
+		rotate time * 0.5
+		colored
+	}
+}
+
+
+textures/sfx/guicorona
+{
+	qer_editorimage 	textures/sfx/flare1
+//	discrete
+	noshadows
+	translucent
+	twosided
+	nonsolid
+	nooverlays
+	deform corona 0.25
+	{
+//		blend		gl_one, gl_one_minus_src_color
+		blend add
+		map			textures/sfx/flare1
+		red 1
+		green 0.2
+		blue 0.1
+//		vertexcolor
+//		colored
+	}
+}
+
+textures/sfx/static
+{
+	{
+		blend blend
+		map guis/assets/static/static001
+		scroll time*5, time*7
+		rotate time*3
+		colored
+	}
+}
+
+textures/sfx/flashcorona
+{
+	translucent
+	twosided
+	noshadows
+	deform corona 6
+	{
+		blend add
+		map textures/sfx/flare0
+		rgb burnout[ 2 * (time + parm4 ) ]
+		centerscale burnout[ (time + parm4 ) ], burnout[ (time + parm4 ) ]
+	}
+}
+
+/////
+//
+// spherebreed
+//
+/////
+
+textures/sfx/spherebreed/flare_flicker_1
+{
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm4 )
+	{
+		blend		add
+		map			_quadratic
+		color		parm0 * 4.0 * ( flicker_elec[ time * 0.75 ]),
+				parm1 * 4.0 * ( flicker_elec[ time * 0.75 ]),
+				parm2 * 4.0 * ( flicker_elec[ time * 0.75 ]),
+				1.0
+//		colored
+//		vertexcolor
+	}
+}
+
+// this material is applied to objects in the world when bow alt-mode is active.  it generates
+// a jitter effect and generates special texture coords for the object.  these texture coords are
+// used to mask off the object outside of the alpha area defined in the texture, giving the illusion
+// of a smaller than screen scope being used to view through walls
+textures/sfx/bowvision
+{
+	noshadows
+	translucent
+
+	deform jitter jacobladder[time * parm5 * 20]
+
+	{
+		blend add
+	 	map models/weapons/bow/bowvision
+		texgen screen
+		clamp
+		rotate time*3
+		//rotate jitter1[time*90]
+		scale 0.5, 0.5
+		scroll 1, 1
+		rgb parm3*(0.6 + 0.4*bowvision[time*0.43])
+	}
+}
+
+// this material overlays the whole screen when the bow's alt mode is active
+// it should look like the spiritwalk effect with an additional darkened area that
+// matches the bowvision "seethrough" mask from textures/sfx/bowvision
+textures/sfx/bowvisionoverlay
+{
+	noselfshadow
+	noshadows
+	translucent
+
+	/*{
+		program			heatHazeWithMaskAndVertex.vfp
+		vertexparm		0       time * 0.1, time * 0.1
+		vertexparm		1       0.02
+		fragmentprogram		heatHazeWithMask.vfp
+		fragmentmap		0       _currentrender
+		fragmentmap		1       textures/decals/spiritwalk
+		fragmentmap		2       textures/decals/spiritwalk_alpha
+	}*/
+	// NON-FRAGMENT PROGRAM VERSION
+	{	// fill the alpha channel with texture
+		//if fragmentPrograms == 0
+		shaderfallback2
+
+		maskcolor				// write only to the alpha channel
+		map makealpha(textures/decals/spiritblur)
+		alpha	0
+	}
+	{	// write alpha test values to destination alpha
+		//if fragmentPrograms == 0
+		shaderfallback2
+
+		maskcolor				// write only to the alpha channel
+		map textures/decals/spiritblur
+		alphatest 0.5 // - parm3
+		rotate time * 0.005
+	}
+	{ // blur using scaled scratch buffer
+		//if fragmentPrograms == 0
+		shaderfallback2
+
+		blend		gl_dst_alpha, gl_one_minus_dst_alpha
+      	scale		1, -1
+		map			_scratch
+		centerscale 0.99, 0.99
+		alpha 0.15
+		translate	0, -1			// move it back to the 0.0 to 1.0 range so clamp works
+	}
+
+	// FRAGMENT PROGRAM VERSION
+	{
+		shaderlevel2
+		program			screenblur.vfp
+		vertexparm		0       0, time * 0.1
+		vertexparm		1       1
+
+		fragmentmap		0       _currentrender
+		fragmentmap		1       textures/sfx/vpspiritview_local
+		fragmentmap		2       textures/sfx/spiritview_alpha
+	}
+
+	{
+		blend add
+		map		textures/decals/spiritwalk2
+		rotate		time * 0.035
+		centerscale	1.25 * zerotoonesnap[ time * -0.7 ],1.0 * zerotoonesnap[ 0.00 + time * -0.7 ]
+		rgb		0.40 * heartbeat2[ time * 0.4 ]
+//		clamp
+	}
+	{
+		blend add
+		map		textures/decals/spiritwalk2
+		rotate		time * 0.035
+		centerscale	1.25 * zerotoonesnap[ 0.80 + time * -0.7 ],1.2 * zerotoonesnap[ 0.80 + time * -0.7 ]
+		rgb		0.40 * heartbeat2[ time * 0.4 ]
+//		clamp
+	}
+	{
+		blend add
+		map		textures/decals/spiritwalk2
+		rotate		time * 0.035
+		centerscale	1.25 * zerotoonesnap[ 0.60 + time * -0.7 ],1.2 * zerotoonesnap[ 0.60 + time * -0.7 ]
+		rgb		0.40 * heartbeat2[ time * 0.4 ]
+//		clamp
+	}
+	{
+		blend add
+		map		textures/decals/spiritwalk2
+		rotate		time * 0.035
+		centerscale	1.25 * zerotoonesnap[ 0.35 + time * -0.7 ],1.2 * zerotoonesnap[ 0.35 + time * -0.7 ]
+		rgb		0.40 * heartbeat2[ time * 0.4 ]
+//		clamp
+	}
+		{
+		blend add
+		map		textures/decals/spiritwalk2
+		rotate		time * 0.035
+		centerscale	1.25 * zerotoonesnap[ 0.10 + time * -0.7 ],1.2 * zerotoonesnap[ 0.10 + time * -0.7 ]
+		rgb		0.40 * heartbeat2[ time * 0.4 ]
+//		clamp
+	}
+	{
+		blend add
+		map		textures/sfx/spiritview_fx
+		rotate		time * 0.035
+		centerscale	1.6 * zerotoonesnap[ time * -0.4 ],1.2 * zerotoonesnap[ 0.00 + time * -0.4 ]
+		rgb		0.40 * zerotoonesnap[ time * 0.4 ]
+		clamp
+	}
+	{
+		blend add
+		map		textures/sfx/spiritview_fx
+		rotate		time * 0.025
+		centerscale	1.6 * zerotoonesnap[ -0.25 + time * -0.4 ],1.2 * zerotoonesnap[ -0.25 + time * -0.4 ]
+		rgb		0.40 * zerotoonesnap[ 0.25 + time * 0.4 ]
+		clamp
+	}
+	{
+		blend add
+		map		textures/sfx/spiritview_fx
+		rotate		time * -0.03
+		centerscale	1.6 * zerotoonesnap[ -0.50 + time * -0.4 ],1.2 * zerotoonesnap[ -0.50 + time * -0.4 ]
+		rgb		0.40 * zerotoonesnap[ 0.50 + time * 0.4 ]
+		clamp
+	}
+	{
+		blend add
+		map		textures/sfx/spiritview_fx
+		rotate		time * -0.02
+		centerscale	1.6 * zerotoonesnap[ -0.75 + time * -0.4 ],1.2 * zerotoonesnap[ -0.75 + time * -0.4 ]
+		rgb		0.20 * zerotoonesnap[ 0.75 + time * 0.4 ]
+		clamp
+	}
+/*	{
+		blend add
+//		map models/weapons/bow/bowoverlay
+		map textures/decals/spiritwalkadd
+		clamp
+		colored
+		highquality
+		centerscale heartbeat4 [ time * .5 ], heartbeat4 [ time * .5 ]
+		rotate tim2 [ time * .05 ]
+		rgb .01
+	}
+
+	{
+		blend add
+//		map models/weapons/bow/bowoverlay
+		map textures/decals/spiritwalkadd
+		clamp
+		colored
+		highquality
+		centerscale heartbeat4 [ time * .5 ], heartbeat4 [ time * .5 ]
+		rotate tim2 [ time * .05 ]
+		rgb .01
+	}*/
+
+
+	// these stages copied from 'textures/decals/spiritview'
+	{
+		blend add
+		map textures/decals/spiritwalk00
+		rgb	twentyonestage [(time + 0 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk01
+		rgb	twentyonestage [(time + 1 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk02
+		rgb	twentyonestage [(time + 2 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk03
+		rgb	twentyonestage [(time + 3 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk04
+		rgb	twentyonestage [(time + 4 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk05
+		rgb	twentyonestage [(time + 5 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk06
+		rgb	twentyonestage [(time + 6 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk07
+		rgb	twentyonestage [(time + 7 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk08
+		rgb	twentyonestage [(time + 8 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk09
+		rgb	twentyonestage [(time + 9 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk10
+		rgb	twentyonestage [(time + 10 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk11
+		rgb	twentyonestage [(time + 11 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk12
+		rgb	twentyonestage [(time + 12 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk13
+		rgb	twentyonestage [(time + 13 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk14
+		rgb	twentyonestage [(time + 14 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk15
+		rgb	twentyonestage [(time + 15 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk16
+		rgb	twentyonestage [(time + 16 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk17
+		rgb	twentyonestage [(time + 17 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk18
+		rgb	twentyonestage [(time + 18 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk19
+		rgb	twentyonestage [(time + 19 / 21) * 1]
+	}
+	{
+		blend add
+		map textures/decals/spiritwalk20
+		rgb	twentyonestage [(time + 20 / 21) * 1]
+	}
+}
+
+
+
+
+//--------------------------------------
+//sun, moon &  earth textures
+//--------------------------------------
+
+
+textures/sfx/sun
+{
+	qer_editorimage textures/dreamworld/sun
+	deform sprite
+	noshadows
+	{
+		uncompressed
+		blend gl_one, gl_one_minus_src_color
+ 		map	textures/dreamworld/sun
+	}
+}
+
+textures/sfx/sun2
+{
+	qer_editorimage textures/dreamworld/sun2
+//	deform sprite
+	noshadows
+	{
+		uncompressed
+		blend gl_one, gl_one_minus_src_color
+ 		map	textures/dreamworld/sun2
+	}
+}
+
+
+textures/sfx/moon
+{
+	qer_editorimage textures/dreamworld/moon
+	deform sprite
+	noshadows
+	{
+		uncompressed
+		blend gl_one, gl_one_minus_src_color
+	 	map	textures/dreamworld/moon
+	}
+}
+
+textures/sfx/moon2
+{
+	qer_editorimage textures/dreamworld/moon2
+//	deform sprite
+	noshadows
+	{
+		uncompressed
+		blend gl_src_alpha, gl_one_minus_src_alpha
+	 	map	textures/dreamworld/moon2
+	}
+}
+
+textures/sfx/moon3
+{
+	translucent
+	noshadows
+	{
+		blend blend
+		nopicmip
+		//alphaTest 0.5
+		map textures/dreamworld/moon3
+	}
+}
+
+textures/sfx/earth
+{
+	qer_editorimage textures/dreamworld/earth
+	deform sprite
+	noshadows
+	{
+		uncompressed
+		blend gl_one, gl_one_minus_src_color
+	 	map	textures/dreamworld/earth
+	}
+}
+
+textures/sfx/earth2
+{
+	qer_editorimage textures/dreamworld/earth2
+//	deform sprite
+	noshadows
+	{
+		uncompressed
+		blend gl_src_alpha, gl_one_minus_src_alpha
+	 	map	textures/dreamworld/earth2
+	}
+}
+
+textures/sfx/earth3
+{
+	translucent
+	{
+		blend blend
+		nopicmip
+		//alphaTest 0.5
+		map textures/dreamworld/earth3
+	}
+}
+
+textures/sfx/starfield
+{
+	qer_editorimage textures/dreamworld/starfield
+	noshadows
+	{
+	 	map	textures/dreamworld/starfield
+		uncompressed
+		blend gl_one, gl_zero
+	 	scale 2.5,2.5
+	}
+}
+
+textures/sfx/starfield2
+{
+	noshadows
+	sort far
+	{
+		blend add
+		nopicmip
+		map textures/sfx/starfield2d
+	}
+}
+
+
+textures/sfx/gibbable/tech1
+{
+	qer_editorimage 	textures/tech_wall/techwall_054_b_red_d
+	matter_metal
+
+	bumpmap 		heightmap (textures/tech_wall/techwall_054_b_h, 6)
+
+	diffusemap	 	textures/tech_wall/techwall_054_b_red_d
+	specularmap		textures/tech_wall/techwall_054_b_s
+}
+
+
+
+//-----------------------------------------------------------------------
+//glass struts - regular and 2 sided
+textures/sfx/glass_struts
+{
+	noshadows
+	qer_editorimage 	textures/sfx/glass_struts_local
+	matter_metal
+	bumpmap 		textures/sfx/glass_struts_local
+	{
+		blend diffusemap
+		map textures/sfx/glass_struts_d
+		alphatest 0.5
+	}
+	specularmap		textures/sfx/glass_struts_s
+}
+textures/sfx/glass_struts_2sided
+{
+	noshadows
+	qer_editorimage 	textures/sfx/glass_struts_local
+	matter_metal
+	twosided
+	bumpmap 		textures/sfx/glass_struts_local
+	{
+		blend diffusemap
+		map textures/sfx/glass_struts_d
+		alphatest 0.5
+	}
+	specularmap		textures/sfx/glass_struts_s
+}
+textures/sfx/glass_struts_warm
+{
+	noshadows
+	qer_editorimage 	textures/sfx/glass_struts_local
+	matter_metal
+	bumpmap 		textures/sfx/glass_struts_local
+	{
+		blend diffusemap
+		map textures/sfx/glass_struts_warm_d
+		alphatest 0.5
+	}
+	specularmap		textures/sfx/glass_struts_warm_s
+}
+textures/sfx/glass_struts_warm_2sided
+{
+	noshadows
+	qer_editorimage 	textures/sfx/glass_struts_local
+	matter_metal
+	twosided
+	bumpmap 		textures/sfx/glass_struts_local
+	{
+		blend diffusemap
+		map textures/sfx/glass_struts_warm_d
+		alphatest 0.5
+	}
+	specularmap		textures/sfx/glass_struts_warm_s
+}
+
+textures/sfx/glass_struts_shadow
+{
+	noshadows
+	qer_editorimage 	textures/sfx/glass_struts_local
+	matter_metal
+	bumpmap 		textures/sfx/glass_struts_local
+	{
+		blend diffusemap
+		map textures/sfx/glass_struts_shadow
+		alphatest 0.5
+	}
+	//specularmap		textures/sfx/glass_struts_warm_s
+}
+
+
+textures/sfx/glass_struts2
+{
+	noshadows
+	qer_editorimage 	textures/sfx/glass_struts2_local
+	matter_metal
+	bumpmap 		textures/sfx/glass_struts2_local
+	{
+		blend diffusemap
+		map textures/sfx/glass_struts2_d
+		alphatest 0.5
+	}
+	specularmap		textures/sfx/glass_struts2_s
+}
+textures/sfx/glass_struts2_2sided
+{
+	noshadows
+	qer_editorimage 	textures/sfx/glass_struts2_local
+	matter_metal
+	twosided
+	bumpmap 		textures/sfx/glass_struts2_local
+	{
+		blend diffusemap
+		map textures/sfx/glass_struts2_d
+		alphatest 0.5
+	}
+	specularmap		textures/sfx/glass_struts2_s
+}
+textures/sfx/glass_struts2_warm
+{
+	noshadows
+	qer_editorimage 	textures/sfx/glass_struts2_local
+	matter_metal
+	bumpmap 		textures/sfx/glass_struts2_local
+	{
+		blend diffusemap
+		map textures/sfx/glass_struts2_warm_d
+		alphatest 0.5
+	}
+	specularmap		textures/sfx/glass_struts2_warm_s
+}
+textures/sfx/glass_struts2_warm_2sided
+{
+	noshadows
+	qer_editorimage 	textures/sfx/glass_struts2_local
+	matter_metal
+	twosided
+	bumpmap 		textures/sfx/glass_struts2_local
+	{
+		blend diffusemap
+		map textures/sfx/glass_struts2_warm_d
+		alphatest 0.5
+	}
+	specularmap		textures/sfx/glass_struts2_warm_s
+}
+textures/sfx/glass_struts3
+{
+	noshadows
+	qer_editorimage 	textures/sfx/glass_struts3_local
+	matter_metal
+	bumpmap 		textures/sfx/glass_struts3_local
+	{
+		blend diffusemap
+		map textures/sfx/glass_struts3_d
+		alphatest 0.5
+	}
+	specularmap		textures/sfx/glass_struts3_s
+}
+textures/sfx/glass_struts3_2sided
+{
+	noshadows
+	qer_editorimage 	textures/sfx/glass_struts3_local
+	matter_metal
+	twosided
+	bumpmap 		textures/sfx/glass_struts3_local
+	{
+		blend diffusemap
+		map textures/sfx/glass_struts3_d
+		alphatest 0.5
+	}
+	specularmap		textures/sfx/glass_struts3_s
+}
+textures/sfx/glass_struts3_warm
+{
+	noshadows
+	qer_editorimage 	textures/sfx/glass_struts3_local
+	matter_metal
+	bumpmap 		textures/sfx/glass_struts3_local
+	{
+		blend diffusemap
+		map textures/sfx/glass_struts3_warm_d
+		alphatest 0.5
+	}
+	specularmap		textures/sfx/glass_struts3_warm_s
+}
+textures/sfx/glass_struts3_warm_2sided
+{
+	noshadows
+	qer_editorimage 	textures/sfx/glass_struts3_local
+	matter_metal
+	twosided
+	bumpmap 		textures/sfx/glass_struts3_local
+	{
+		blend diffusemap
+		map textures/sfx/glass_struts3_warm_d
+		alphatest 0.5
+	}
+	specularmap		textures/sfx/glass_struts3_warm_s
+}
+textures/sfx/glass_struts4
+{
+	noshadows
+	qer_editorimage 	textures/sfx/glass_struts4_local
+	matter_metal
+	bumpmap 		textures/sfx/glass_struts4_local
+	{
+		blend diffusemap
+		map textures/sfx/glass_struts4_d
+		alphatest 0.5
+	}
+	specularmap		textures/sfx/glass_struts4_s
+}
+textures/sfx/glass_struts4_2sided
+{
+	noshadows
+	qer_editorimage 	textures/sfx/glass_struts4_local
+	matter_metal
+	twosided
+	bumpmap 		textures/sfx/glass_struts4_local
+	{
+		blend diffusemap
+		map textures/sfx/glass_struts4_d
+		alphatest 0.5
+	}
+	specularmap		textures/sfx/glass_struts4_s
+}
+textures/sfx/glass_struts4_warm
+{
+	noshadows
+	qer_editorimage 	textures/sfx/glass_struts4_local
+	matter_metal
+	bumpmap 		textures/sfx/glass_struts4_local
+	{
+		blend diffusemap
+		map textures/sfx/glass_struts4_warm_d
+		alphatest 0.5
+	}
+	specularmap		textures/sfx/glass_struts4_warm_s
+}
+textures/sfx/glass_struts4_warm_2sided
+{
+	noshadows
+	qer_editorimage 	textures/sfx/glass_struts4_local
+	matter_metal
+	twosided
+	bumpmap 		textures/sfx/glass_struts4_local
+	{
+		blend diffusemap
+		map textures/sfx/glass_struts4_warm_d
+		alphatest 0.5
+	}
+	specularmap		textures/sfx/glass_struts4_warm_s
+}
+//----------------------------------------------------------------------------
+
+
+
+
+textures/sfx/guibugflare
+{
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 8 )
+	{
+		blend		add
+		map			_quadratic
+		color .6, .22, .08, 0
+//		vertexcolor
+	}
+}
+
+
+
+textures/sfx/spindleshaft
+{
+	qer_editorimage textures/sfx/spindleshaft
+	noshadows
+{
+
+	blend gl_one, gl_zero
+	uncompressed
+	map	textures/sfx/spindleshaft
+}
+}
+
+textures/sfx/spindleshaft_sound
+{
+	qer_editorimage textures/sfx/spindleshaft
+	noshadows
+	{ if ( parm7 == 0 )
+		blend gl_one, gl_zero
+		uncompressed
+		map	textures/sfx/spindleshaft
+		red		( parm0 * sound )
+		green	( parm1 * sound )
+		blue	( parm2 * sound )
+	}
+	{ if ( parm7 == 1 )
+		blend gl_one, gl_zero
+		uncompressed
+		map	textures/sfx/spindleshaft
+		red		( parm0 * 0.9 ) + ( parm0 * 0.1 * sound )
+		green	( parm1 * 0.9 ) + ( parm1 * 0.1 * sound )
+		blue	( parm2 * 0.9 ) + ( parm2 * 0.1 * sound )
+	}
+}
+
+// parm3 - phase, 4 - flare size, 5 - min color, 6 - speed
+textures/sfx/emergencylight_flare
+{
+	qer_editorimage		textures/editor/flare
+	noshadows
+	translucent
+	twosided
+	nonsolid
+	nooverlays
+	deform flare ( 16 + parm6 )
+	sort 0
+	{
+		highquality
+		blend		add
+		map			textures/sfx/flare1
+		color		1 * ( parm0 * (heartbeat3 [ time * 1.5 ])),
+					1 * ( parm1 * (heartbeat3 [ time * 1.5 ])),
+					1 * ( parm2 * (heartbeat3 [ time * 1.5 ])),
+					1.0
+//		vertexcolor
+	}
+/*		noshadows
+	translucent
+	twosided
+	nonsolid
+	nooverlays
+	deform flare 4
+	sort 0*/
+}
+
+// parm3 - phase, 4 - flare size, 5 - min color, 6 - speed
+textures/sfx/emergencylight_flare_sound
+{
+	qer_editorimage		textures/editor/flare
+	noshadows
+	translucent
+	twosided
+	nonsolid
+	nooverlays
+	deform flare ( 16 + parm6 )
+	sort 0
+
+	{ if ( sound <= 0 )
+		highquality
+		blend		add
+		map			textures/sfx/flare1
+		color		0, 0, 0, 1
+	}
+
+	{ if ( sound > 0 )
+		highquality
+		blend		add
+		map			textures/sfx/flare1
+		color		parm0 * sound,
+					parm1 * sound,
+					parm2 * sound,
+					1.0
+//		red			2 * (parm0 * 0.2) + ( ( soundzone32 [sound * (parm0 * 0.8)] ) / 32 )//mf 7/28/04
+//		green 		2 * (parm1 * 0.2) + ( ( soundzone32 [sound * (parm1 * 0.8)] ) / 32 )
+//		blue		2 * (parm2 * 0.2) + ( ( soundzone32 [sound * (parm2 * 0.8)] ) / 32 )
+	}
+}
+
+
+
+//--------------------------------------------------------
+//  energy tube effect : modified for scripting
+//parm5 affects scroll speed: 0 = regular speed, 1 = stopped, -#'s speed it up.
+//--------------------------------------------------------
+textures/sfx/energytube
+{
+	qer_editorimage textures/sfx/energytube_in1
+	matter_glass
+	noselfshadow
+	translucent
+	sort		10	//added by Rowan to try to address sorting issue with particles in Spindle.
+
+	{
+//		blend add
+		blend gl_one, gl_one_minus_src_color
+		map textures/sfx/energytube_in1
+		//scroll 0, time * 1.8
+		color	parm0 *  0.4,
+				parm1 *  0.4,
+				parm2 *  0.4,
+				1
+		scroll time * 0.3 * (1 - parm5), 0.1
+		glowStage
+	}
+	{
+//		blend add
+		blend gl_one, gl_one_minus_src_color
+		map textures/sfx/energytube_in2
+		color 	parm0 *  0.55,
+				parm1 *  0.55,
+				parm2 *  0.55,
+				1
+		scroll 0, time * 4 * (1 - parm5)
+		glowStage
+	}
+	{
+//		blend add
+		blend gl_one, gl_one_minus_src_color
+		map textures/sfx/energytube_in3
+		color 	parm0 *  0.4,
+				parm1 *  0.4,
+				parm2 *  0.4,
+				1
+		scroll 0, time * 1.5 * (1 - parm5)
+//		glowStage
+	}
+
+
+}
+
+textures/sfx/energytube_inside
+{
+	qer_editorimage textures/sfx/energytube_in1
+	matter_glass
+	noselfshadow
+	translucent
+
+	//deform expand  4 * heartbeat1[time]
+	{
+//		blend add
+		blend gl_one, gl_one_minus_src_color
+		map textures/sfx/energytube_in1
+		//scroll 0, time * 1.8
+		color 	parm0 * 1 * jitter2[time*1.5],
+				parm1 * 1 * jitter2[time*1.5],
+				parm2 * 1 * jitter2[time*1.5],
+				1
+		scroll time * 0.2 * (1 - parm5), 0.1
+		glowStage
+	}
+	{
+//		blend add
+		blend gl_one, gl_one_minus_src_color
+		map textures/sfx/energytube_in1
+		color 	parm0 * 1 * jitter2[time*1.5],
+				parm1 * 1 * jitter2[time*1.5],
+				parm2 * 1 * jitter2[time*1.5],
+				1
+		scroll 0.5, time * 0.5 * (1 - parm5)
+		glowStage
+	}
+	{
+//		blend add
+		blend gl_one, gl_one_minus_src_color
+		map textures/sfx/energytube_in2
+		color 	parm0 * 1 * jitter2[time*1.5],
+				parm1 * 1 * jitter2[time*1.5],
+				parm2 * 1 * jitter2[time*1.5],
+				1
+		scroll 0.5, time * 2 * (1 - parm5)
+		glowStage
+
+	}
+	{
+//		blend add
+		blend gl_one, gl_one_minus_src_color
+		map textures/sfx/energytube_in3
+		color 	parm0 * 1 * jitter2[time*1.5],
+				parm1 * 1 * jitter2[time*1.5],
+				parm2 * 1 * jitter2[time*1.5],
+				1
+		scroll 0.5, time * 4 * (1 - parm5)
+		glowStage
+	}
+}
+
+textures/sfx/shuttleforcefield2
+{
+	qer_editorimage textures/sfx/shuttle_field1
+	translucent
+	noshadows
+	twosided
+	{
+		blend	add
+		map		textures/sfx/shuttle_field1
+		scroll	time * 0.045, 0.2
+		rgb (bowvision [ time * .25 ]) * parm4
+		centerscale 4, 4
+		linear
+	}
+	{
+		blend	add
+		map		textures/sfx/shuttle_field2
+		scroll	sintable[time * -0.045], 0.34
+		rgb (jitter2 [ time * .15 ] * 0.5) * parm4
+		centerscale 4, 4
+		linear
+	}
+	{
+		blend	add
+		map		textures/sfx/shuttle_field2
+		scroll	0.5 + time * -0.023, 0.32
+		rgb (jitter2 [ time * .13 ] * 0.5) * parm4
+		centerscale 4+sintable[time*0.1], 4+costable[time*0.1]
+		linear
+	}
+}
+
+
+textures/sfx/shuttleforcefield
+{
+	qer_editorimage textures/special/forcefield2_proxy
+	noshadows
+	translucent
+
+/*	{
+		program			heathaze.vfp
+		vertexparm		0       time * 0.1 , time * 0.2	// texture scrolling
+		vertexparm		1       parm4 * 1.0			// magnitude of the distortion
+		fragmentprogram		heathaze.vfp
+		fragmentmap		0       _currentrender
+		fragmentmap		1       textures/glass/vp1	// the normal map for distortion
+	}*/
+	{
+		maskcolor
+		map textures/special/forcefield2
+		scale ( forcefieldflicker[ time * 0.025 ] * 0.02 ) , .02
+//		scroll time * 100, time * 0.034 * ( parm7 + 1 )
+	}
+
+	{
+
+		blend	gl_one, gl_one
+		map textures/special/forcefield2
+		scale ( forcefieldflicker[ time * 2.5 ] * 0.02 ) , .02
+		scroll time * 0.034 * ( parm7 + 1 ), time * 1
+		rgb parm4 * ( 1 + parm7) * ( ( ( sintable[ -0.25 + ( time * 0.5 ) ] )+ 1 ) / 4 ) * ( ( sintable[ time * 0.1 ] / 6 ) + 1 )
+	}
+
+	{
+		blend	gl_one, gl_one
+		map textures/special/forcefield2
+//		scale ( forcefieldflicker[ time * 3.5 ] * 0.02 ) , .02
+		scroll time * 0.034 * ( parm7 + 1 ), time * 1
+//		rotate 0.25
+		rgb parm4 * ( 1 + parm7) * ( ( ( costable[ time * 0.5 ] )+ 1 ) / 4 ) * ( ( sintable[ time * 0.1 ] / 6 ) + 1 )
+	}
+
+	{
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		map textures/special/shuttle_forcefield_1
+		scale .1, .1
+		rgb 0.25
+		scroll 0.21, 0
+//		rotate 0.25
+//		scale 3, 3
+//		rotate 0.13
+//		rgb 0.3
+//		scale 4, 4
+//		rgb 0.25
+//		rotate 0.13
+//		scale 6, 6
+//		rgb 0.4
+		glowstage
+	}
+	{
+		if( parm7 != 0 )
+		blend add
+		map textures/special/forcefield2b
+		scroll 0, random[ time ]
+		scale 0, random[ time ] * 2
+		rgb parm7
+	}
+}
+//----------------
+// energy effect flat
+//----------------
+
+textures/sfx/energyflat
+{
+	noshadows
+	qer_editorimage 	textures/sfx/energyflat
+	matter_metal
+
+	bumpmap 		textures/sfx/energyflat_local
+	diffusemap	 	textures/sfx/energyflat
+	specularmap		textures/sfx/energyflat_s
+	{
+		blend add
+		map 		textures/sfx/energyflat_a
+		colored
+		glowStage
+	}
+}
+
+textures/sfx/energyflat_kf
+{
+	noshadows
+	qer_editorimage 	textures/sfx/energyflat
+	matter_metal
+
+	bumpmap 		textures/sfx/energyflat_local
+	diffusemap	 	textures/sfx/energyflat
+	specularmap		textures/sfx/energyflat_s
+	{
+		blend add
+		map 		textures/sfx/energyflat_a3
+	}
+}
+
+textures/sfx/energyflat_colored
+{
+	noshadows
+	qer_editorimage 	textures/sfx/energyflat
+	matter_metal
+
+	bumpmap 		textures/sfx/energyflat_local
+	diffusemap	 	textures/sfx/energyflat
+	specularmap		textures/sfx/energyflat_s
+	{
+		blend add
+		map 		textures/sfx/energyflat_a2
+		colored
+	}
+
+}
+textures/sfx/energyflat_sound
+{
+	noshadows
+	qer_editorimage 	textures/sfx/energyflat
+	matter_metal
+
+	bumpmap 		textures/sfx/energyflat_local
+	diffusemap	 	textures/sfx/energyflat
+	specularmap		textures/sfx/energyflat_s
+	{
+		blend add
+		map 		textures/sfx/energyflat_a
+		rgb sound + parm5
+	}
+
+}
+
+textures/sfx/energyflat_circular
+{
+	noshadows
+	qer_editorimage 	textures/sfx/energyflatcir
+	matter_metal
+
+	bumpmap 		textures/sfx/energyflatcir_local
+	diffusemap	 	textures/sfx/energyflatcir
+	specularmap		textures/sfx/energyflatcir_s
+	{
+		blend add
+		map 		textures/sfx/energyflatcir_a
+		colored
+	}
+}
+
+textures/sfx/energyflat_circular_colored
+{
+	noshadows
+	qer_editorimage 	textures/sfx/energyflatcir
+	matter_metal
+
+	bumpmap 		textures/sfx/energyflatcir_local
+	diffusemap	 	textures/sfx/energyflatcir
+	specularmap		textures/sfx/energyflatcir_s
+	{
+		blend add
+		map 		textures/sfx/energyflatcir_a3
+		colored
+	}
+}
+textures/sfx/energyflat_circular_colored2
+{
+
+	qer_editorimage 	textures/sfx/energyflatcir
+	matter_metal
+
+	bumpmap 		textures/sfx/energyflatcir_local
+	diffusemap	 	textures/sfx/energyflatcir
+	specularmap		textures/sfx/energyflatcir_s
+
+
+	{
+		blend		add
+		map			textures/sfx/energyflatcir_a_colorable
+		colored
+		glowStage
+	}
+
+
+
+
+}
+
+textures/sfx/energyflat_round_col
+{
+	noshadows
+	qer_editorimage 	textures/sfx/energyflatciralp
+	matter_metal
+
+	bumpmap 		textures/sfx/energyflatciralp_local
+	diffusemap	 	textures/sfx/energyflatciralp
+	specularmap		textures/sfx/energyflatcir_s
+	{
+		blend add
+		map 		textures/sfx/energyflatcir_a3
+		colored
+
+	}
+}
+
+textures/sfx/energyflat_round_col_dissolve
+{
+	qer_editorimage 	textures/sfx/energyflatciralp
+	matter_metal
+
+	bumpmap 		textures/sfx/energyflatciralp_local
+	diffusemap	 	textures/sfx/energyflatciralp
+	specularmap		textures/sfx/energyflatcir_s
+	{
+		blend add
+		map 		textures/sfx/energyflatcir_a3
+		colored
+	}
+
+	//global alphatest stages
+	{
+		if ( parm5 == 0 )
+		blend none
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest 1 - ( time + parm4 ) * 0.5
+	}
+	{
+		if ( parm5 > 0 ) //fade out
+		blend none
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest ( time + parm4 ) * 0.5
+	}
+
+	//additive fx stage
+	{
+		if ( parm5 == 0 ) //fade out
+		privatepolygonoffset	-1
+		blend add
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest 1 - ( time + parm4 ) * 0.5 + 0.1
+		rgb 2
+		glowStage
+	}
+	{
+		if ( parm5 > 0 ) //fade out
+		privatepolygonoffset	-1
+		blend add
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest ( time + parm4 ) * 0.5 - 0.1
+		rgb 2
+		glowStage
+	}
+}
+
+textures/sfx/energyflat_circular_noadd
+{
+	noshadows
+	qer_editorimage 	textures/sfx/energyflatcir
+	matter_metal
+
+	bumpmap 		textures/sfx/energyflatcir_local
+	diffusemap	 	textures/sfx/energyflatcir
+	specularmap		textures/sfx/energyflatcir_s
+}
+
+textures/sfx/energyflat_circular_noadd2
+{
+	qer_editorimage 	textures/sfx/energyflatcir
+	matter_metal
+
+	bumpmap 		textures/sfx/energyflatcir_local
+	diffusemap	 	textures/sfx/energyflatcir
+	specularmap		textures/sfx/energyflatcir_s
+}
+
+textures/sfx/energyflat_circular_noadd2_shuttle
+{
+	qer_editorimage 	textures/sfx/energyflatcir
+	matter_metal
+
+	bumpmap 		textures/sfx/energyflatcir_local
+	diffusemap	 	textures/sfx/energyflatcir
+	specularmap		textures/sfx/energyflatcir_s
+
+{	// Shuttle view stage
+                 blend add
+		map textures/decals/shuttle_flicker_02_blue
+                texgen screen
+		 rgb (fade_pulse [time * .4] * 0.4)
+
+                 scroll time * 10, time * 10.1 * ( parm7 + 10 )
+                shuttleView
+		glowstage
+	}
+
+                {	// Shuttle view stage
+
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		map textures/decals/shuttle_flicker
+		texgen screen
+                 rgb (fade_pulse [time * .4] * 0.2)
+                scale ( forcefieldflicker[ time * 1.0 ] * .01 ) , 0.5
+		scroll time * 10, time * 10.1 * ( parm7 + 10 )
+		shuttleView
+		glowstage
+	}
+}
+
+textures/sfx/energyflat_circular_noadd2_dissolve
+{
+	qer_editorimage 	textures/sfx/energyflatcir
+	matter_metal
+
+	bumpmap 		textures/sfx/energyflatcir_local
+	specularmap		textures/sfx/energyflatcir_s
+	diffusemap textures/sfx/energyflatcir
+
+	//global alphatest stages
+	{
+		if ( parm5 == 0 ) //fade in
+		blend none
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest 1 - ( time + parm4 ) * 0.5
+	}
+	{
+		if ( parm5 > 0 ) //fade out
+		blend none
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest ( time + parm4 ) * 0.5
+	}
+
+	//additive fx stage
+	{
+		if ( parm5 == 0 ) //fade in
+		privatepolygonoffset	-1
+		blend add
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest 1 - ( time + parm4 ) * 0.5 + 0.1
+		rgb 2
+		glowStage
+	}
+	{
+		if ( parm5 > 0 ) //fade out
+		privatepolygonoffset	-1
+		blend add
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest ( time + parm4 ) * 0.5 - 0.1
+		rgb 2
+		glowStage
+	}
+}
+
+textures/sfx/energyflat_circular_noadd2_can_dissolve
+{
+	qer_editorimage 	textures/sfx/energyflatcir
+	matter_metal
+
+	bumpmap 		textures/sfx/energyflatcir_local
+	specularmap		textures/sfx/energyflatcir_s
+	diffusemap textures/sfx/energyflatcir
+
+	//global alphatest stages
+	{
+		if ( parm5 == 0 ) //fade in
+		blend none
+		map textures/sfx/feeding_ramp_fx_256_3
+		alphaTest 1 - ( time + parm4 ) * 0.5
+	}
+	{
+		if ( parm5 > 0 ) //fade out
+		blend none
+		map textures/sfx/feeding_ramp_fx_256_3
+		alphaTest ( time + parm4 ) * 0.5
+	}
+
+	//additive fx stage
+	{
+		if ( parm5 == 0 ) //fade in
+		privatepolygonoffset	-1
+		blend add
+		map textures/sfx/feeding_ramp_fx_256_3
+		alphaTest 1 - ( time + parm4 ) * 0.5 + 0.1
+		rgb 2
+		glowStage
+	}
+	{
+		if ( parm5 > 0 ) //fade out
+		privatepolygonoffset	-1
+		blend add
+		map textures/sfx/feeding_ramp_fx_256_3
+		alphaTest ( time + parm4 ) * 0.5 - 0.1
+		rgb 2
+		glowStage
+	}
+}
+
+textures/sfx/energyflat_circular2
+{
+	noshadows
+	qer_editorimage 	textures/sfx/energyflatcir
+	matter_metal
+
+	bumpmap 		textures/sfx/energyflatcir_local
+	diffusemap	 	textures/sfx/energyflatcir
+	specularmap		textures/sfx/energyflatcir_s
+	{
+		blend add
+		map 		textures/sfx/energyflatcir_a2
+		colored
+	}
+}
+
+textures/sfx/energyflat_circulargreen
+{
+	noshadows
+	qer_editorimage 	textures/sfx/energyflatcir
+	matter_metal
+
+	bumpmap 		textures/sfx/energyflatcir_local
+	diffusemap	 	textures/sfx/energyflatcir
+	specularmap		textures/sfx/energyflatcir_s
+	{
+		blend add
+		map 		textures/sfx/energyflatcir_green
+		colored
+	}
+}
+
+textures/sfx/energyflat_circularblue
+{
+	noshadows
+	qer_editorimage 	textures/sfx/energyflatcir
+	matter_metal
+
+	bumpmap 		textures/sfx/energyflatcir_local
+	diffusemap	 	textures/sfx/energyflatcir
+	specularmap		textures/sfx/energyflatcir_s
+	{
+		blend add
+		map 		textures/sfx/energyflatcir_blue
+		colored
+	}
+}
+
+textures/sfx/keeperglyphs
+{
+	decal_macro
+	qer_editorimage 	textures/decals/glyphdecal_s
+
+	{
+		blend	add
+		map	textures/decals/glyphdecal
+		scroll	time*parm4,0
+		colored
+	}
+}
+
+
+
+//==================================================
+//
+//keeper fortress
+//
+//==================================================
+
+
+textures/sfx/kf_ftower_screen
+{
+	qer_editorimage textures/feedingtower/ftascr1
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	{
+		blend add
+		map textures/feedingtower/ftascr1
+		colored
+	}
+	{
+		blend add
+		map textures/feedingtower/ftascr2
+		colored
+		scroll 0.05, time * 0.1356
+	}
+
+	{
+		blend add
+		map textures/feedingtower/ftascr2
+		colored
+		scale 1,1.3333
+		scroll 0.015, time * 0.0713
+	}
+}
+
+textures/sfx/urinal_water
+{
+	qer_editorimage	textures/sfx/urinalwater
+	translucent
+	{
+		blend bumpmap
+		map textures/sfx/urinalwater_local
+		scroll 0, time * -1.25
+		centerscale 0.5, 1
+		color parm0 * 0.5,
+			  parm1 * 0.5,
+			  parm2 * 0.5,
+			  parm3
+	}
+	{
+		blend specularmap
+		map	textures/sfx/urinalwater_s
+		scroll 0, time * -1.0
+		centerscale 0.5, 1
+		color parm0 * 0.5,
+			  parm1 * 0.5,
+			  parm2 * 0.5,
+			  parm3
+	}
+	{
+		blend diffusemap
+		map	textures/sfx/urinalwater_s
+		scroll 0, time * -1.0
+		centerscale 0.5, 1
+		color parm0 * 0.2,
+			  parm1 * 0.2,
+			  parm2 * 0.2,
+			  parm3
+	}
+	{
+		program			heathaze.vfp
+
+		vertexparm		0       0.0 , time * -2.15	// texture scrolling
+		vertexparm		1       parm6 * 1.0			// magnitude of the distortion
+		fragmentprogram		heathaze.vfp
+		fragmentmap		0       _currentrender
+		fragmentmap		1       textures/sfx/urinalwater_local	// the normal map for distortion
+	}
+}
+
+textures/sfx/feedingtowertele
+{
+	qer_editorimage 	textures/roadhouse/rhshipexhaust1
+	noshadows
+	translucent
+	forceoverlays
+
+	{
+		program			heathaze.vfp
+
+		vertexparm		0       0, time	* -2// texture scrolling
+		vertexparm		1       100 * parm5			// magnitude of the distortion
+		fragmentprogram			heathaze.vfp
+		fragmentmap		0       _currentrender
+		fragmentmap		1       textures/roadhouse/rhshipexhaust1 // the normal map for distortion
+	}
+}
+
+textures/sfx/ringvfp
+{
+	translucent
+    {
+    	program         heatHazeWithMaskAndVertex.vfp
+    	vertexParm      0   0                           // texture scrolling
+    	vertexParm      1   35                          // magnitude of the distortion
+    	fragmentMap		0   _currentRender
+    	fragmentMap		1   textures/sfx/vpring2			// the normal map for distortion
+    	fragmentMap     2	textures/sfx/vpring1_alpha   	// the distortion blend map
+    }
+}
+
+textures/sfx/fademirror {
+	discrete			// each surface needs to make a separate mirror view
+	qer_editorimage textures/editor/mirror
+	translucent
+	noshadows
+	{
+		mirrorrendermap		512	512		// size of the texture to draw the mirror view in
+		blend	blend
+
+		// give it a greenish tint
+		red		0.8
+		green	1
+		blue	0.8
+
+		// opacity
+		alpha	parm6
+
+		// fix up the projection
+		translate	0.5 , 0.5
+		scale	0.5 , 0.5
+	}
+}
+
+textures/sfx/feedamirror {
+	matter_glass
+	discrete			// each surface needs to make a separate mirror view
+	qer_editorimage textures/editor/mirror
+	noshadows
+	{
+		blend	gl_dst_color,gl_zero
+		map textures/sfx/mirror1
+
+		// give it a greenish tint
+		red		0.8
+		green	1
+		blue	0.8
+	}
+	mirror
+}
+
+textures/sfx/laserscan
+{
+	qer_editorimage textures/sfx/laserscan
+//	discrete
+	noshadows
+	translucent
+	nonsolid
+	twosided
+	{
+		blend add
+		map textures/sfx/laserscan
+		rgb (jitter2 [ time * 3 ])
+		rotate		time * -0.52
+		clamp
+		colored
+	}
+	{
+		blend add
+		map textures/sfx/laserscan
+		rgb (jitter2 [ time * 2 ])
+		rotate		time * 0.75
+		clamp
+		colored
+	}
+	{
+		blend add
+		map textures/sfx/laserscan
+		rgb (jitter2 [ time * 3.5 ])
+		rotate		time * 0.95
+		clamp
+		colored
+	}
+	{
+//		blend gl_dst_color, gl_src_color
+		blend add
+		map textures/sfx/laserscan2
+		rgb (jitter2 [ time * 3.5 ])
+//		rotate		time * 0.95
+//		clamp
+		rotate		time * 8.95
+		colored
+	}
+	{
+//		blend gl_dst_color, gl_src_color
+		blend add
+		map textures/sfx/laserscan3
+		rgb (jitter2 [ time * 3.5 ])
+//		rotate		time * 0.95
+//		clamp
+//		rotate		time * -9.95
+		colored
+	}
+}
+
+textures/sfx/flashbackStart
+{
+	noselfshadow
+	noshadows
+	translucent
+
+	{
+		//if fragmentPrograms == 1
+
+		program			screeneffect.vfp
+
+		fragmentmap		0       _currentrender
+		fragmentmap		2		_white	//mask
+
+		fragmentparm	0		( parm0 - 1 ) * .105, ( parm0 - 1 ) * .09, .65	//blur size, blur strength, blur lerp
+		fragmentparm	1		1.5, 0			//pre scale, pre bias
+		fragmentparm	2		parm0				//desateration
+		fragmentparm	3		parm1, .5			//contrast, contrast center
+		fragmentparm	4		1, 1, 1, 0.6		//tint color
+		fragmentparm	5		parm3	//post additive color
+	}
+	/*{
+		if fragmentprograms == 1 // Fragment program-specific version
+
+		program			heatHaze.vfp
+		vertexparm		0       time * 0.0, time * 0.2
+		vertexparm		1       0.40 * growIn[ ( time - parm4 ) * 0.015 ]
+		fragmentprogram		heatHaze.vfp
+		fragmentmap		0       _currentrender
+		fragmentmap		1       textures/decals/flashback
+//		rgb		0.40 * alpha_opp[ time * 0.4 ]
+//		fragmentmap		2       textures/decals/spiritwalk_alpha
+	}*/
+
+	// NON-FRAGMENT PROGRAM VERSION
+	{	// fill the alpha channel with texture
+		if fragmentPrograms == 0
+
+		maskcolor				// write only to the alpha channel
+		map makealpha(textures/decals/deathwalkblur)
+		alpha	0
+	}
+	{	// write alpha test values to destination alpha
+		if fragmentPrograms == 0
+
+		maskcolor				// write only to the alpha channel
+		map textures/decals/deathwalkblur
+		alphatest 0.5 * growIn[ ( time - parm4 ) * 0.215 ]
+		rotate time * 4.505
+		translate	0, -1
+	}
+	{ // blur using scaled scratch buffer
+		if fragmentPrograms == 0
+
+		blend		gl_dst_alpha, gl_one_minus_dst_alpha
+      	scale		1, -1
+		map			_scratch
+		centerscale 0.99, 0.99
+		alpha 0.15 * growIn[ ( time - parm4 ) * 0.215 ]
+		translate	0, -1			// move it back to the 0.0 to 1.0 range so clamp works
+	}
+	{
+		if fragmentPrograms == 0
+
+		blend gl_zero, gl_one_minus_src_color
+		map		_white
+		rotate		time * 0.135
+		centerscale	1.25 * OneToZeroSnap[ time * -0.15 ],1.2 * OneToZeroSnap[ 0.00 + time * -0.15 ]
+		rgb		1.00 * growIn[ ( time - parm4 ) * 0.215 ]
+//		clamp
+	}
+
+/*	{
+		if fragmentPrograms == 0
+
+		blend gl_zero, gl_one_minus_src_color
+		map		textures/sfx/flashback
+		rotate		time * 0.035
+		centerscale	1.25 * OneToZeroSnap[ 0.60 + time * -0.15 ],1.2 * OneToZeroSnap[ 0.60 + time * -0.15 ]
+		rgb		1.00 * growIn[ ( time - parm4 ) * 0.215 ]
+//		clamp
+	}
+	{
+		if fragmentPrograms == 0
+
+		blend gl_zero, gl_one_minus_src_color
+		map		textures/sfx/flashback
+		rotate		time * 0.035
+		centerscale	1.25 * OneToZeroSnap[ 0.35 + time * -0.15 ],1.2 * OneToZeroSnap[ 0.35 + time * -0.15 ]
+		rgb		1.00 * growIn[ ( time - parm4 ) * 0.215 ]
+//		clamp
+	}
+	{
+		if fragmentPrograms == 0
+
+		blend gl_zero, gl_one_minus_src_color
+		map		textures/sfx/flashback
+		rotate		time * 0.035
+		centerscale	1.25 * OneToZeroSnap[ 0.10 + time * -0.15 ],1.2 * OneToZeroSnap[ 0.10 + time * -0.15 ]
+		rgb		1.00 * growIn[ ( time - parm4 ) * 0.215 ]
+//		clamp
+	}*/
+}
+
+textures/sfx/flashbackEnd
+{
+	noselfshadow
+	noshadows
+	translucent
+
+	{
+		//if fragmentPrograms == 1
+
+		program			screeneffect.vfp
+
+		fragmentmap		0       _currentrender
+		fragmentmap		2		_white	//mask
+
+		fragmentparm	0		( parm0 - 1 ) * .105, ( parm0 - 1 ) * .09, .65	//blur size, blur strength, blur lerp
+		fragmentparm	1		1.5, 0			//pre scale, pre bias
+		fragmentparm	2		parm0				//desateration
+		fragmentparm	3		parm1, .5			//contrast, contrast center
+		fragmentparm	4		1, 1, 1, 0.6		//tint color
+		fragmentparm	5		parm3	//post additive color
+	}
+	/*{
+		if fragmentprograms
+
+		program			heatHaze.vfp
+		vertexparm		0       time * 0.0, time * 0.2
+		vertexparm		1       0.40 * growOut[ ( time - parm4 ) * 0.065 ]
+		fragmentprogram	heatHaze.vfp
+		fragmentmap		0       _currentrender
+		fragmentmap		1       textures/decals/flashback
+	}*/
+}
+
+textures/sfx/lota_teleport
+{
+	qer_editorimage textures/sfx/lota_teleport_add
+//	discrete
+	noshadows
+//	translucent
+//	nonsolid
+//	twosided
+	{
+		blend diffusemap
+		map _black
+	}
+	{
+		blend add
+		map textures/sfx/lota_teleport_add
+		centerscale 1.0 , 0.5
+		translate	time * 0.10, time * 0.62
+		rgb		0.9 * mflicker[ time * 2.215 ]
+		glowStage
+	}
+	{
+		blend add
+		map textures/sfx/lota_teleport_add
+		centerscale 1.0 , 0.5
+		translate	time * -0.15, time * 0.85
+		rgb		0.6 * mflicker[ time * 1.5 ]
+		glowStage
+	}
+}
+
+textures/sfx/plasma {
+	noselfshadow
+	noshadows
+	twosided
+
+	deform tube
+
+	{
+		blend add
+		map textures/sfx/beams/beam_plasma
+		centerscale 2, 1
+		//colored
+		scroll time * -1.5, 0
+
+//		glowStage
+	}
+}
+
+textures/sfx/plasma_glass
+{
+	glass_macro
+
+	qer_editorimage 	textures/sfx/glass1_d
+	{
+		blend diffusemap
+		map	textures/sfx/glass1_d
+		color 0.6,0.7,1,0
+	}
+	{
+		blend add
+		map	textures/sfx/glass1_d
+		color 0.6,0.7,1,0
+	}
+	{
+		blend specularmap
+		map	textures/sfx/glass1_s
+		color 0.1,0.2,0.2,0
+	}
+}
+
+textures/sfx/scanburn
+{
+	translucent
+
+	qer_editorimage		textures/editor/vfp
+	{
+		program			screenprocess.vfp
+
+		fragmentparm	0	parm0		// saturation
+		fragmentparm	1	parm1, .5	// contrast, scale point
+		fragmentparm	2	parm2 * 1.1, parm2 * 1, parm2 * 1	// multiply
+		fragmentparm	3	parm3	// add/brightness
+
+		fragmentmap		0       _currentrender
+	}
+}
+
+textures/sfx/screen_lotatransition
+{
+	translucent
+
+	qer_editorimage		textures/editor/vfp
+	{
+		program			screenprocess.vfp
+
+		fragmentparm	0	parm0		// saturation
+		fragmentparm	1	parm1, 6	// contrast, scale point
+		fragmentparm	2	parm2 * 1.1, parm2 * 1, parm2 * 1	// multiply
+		fragmentparm	3	parm3	// add/brightness
+
+		fragmentmap		0       _currentrender
+	}
+}
+
+textures/sfx/flame2
+{
+	noSelfShadow
+	translucent
+	noShadows
+	twosided
+//	deform tube
+	{
+		map textures/particles/fire_strip
+		//blend gl_one, gl_one_minus_src_color
+		blend add
+		vertexColor
+		//scale 1 ,-1
+		rgb .8
+		clamp
+		notSpiritWalk
+//		uncompressed
+	}
+	{
+		map textures/particles/fire_strip
+		blend add
+		vertexColor
+		//scale 1 ,-1
+		//scale -1 ,1
+		glowstage
+		rgb 1
+		clamp
+		notSpiritWalk
+//		uncompressed
+	}
+		{
+		map textures/particles/fire_strip
+		//blend gl_one, gl_one_minus_src_color
+		blend add
+		vertexColor
+		//scale 1 ,-1
+		rgb .1
+		clamp
+		SpiritWalk
+//		uncompressed
+	}
+	{
+		map textures/particles/fire_strip
+		blend add
+		vertexColor
+		//scale 1 ,-1
+		//scale -1 ,1
+		glowstage
+		rgb .1
+		clamp
+		SpiritWalk
+//		uncompressed
+	}
+}
+
+textures/sfx/possessed_girl_soul {
+    deform particle rrtest
+
+    {
+    	blend none
+    	map _default
+    }
+}
+
+textures/sfx/dw_spinenergy
+{
+	deform sprite
+	{
+		blend add
+		map	textures/particles/wisps
+		rgb 0.2 * mflicker[ time * 0.5 ]
+		rotate time * .7
+		centerscale 2.4 * flicker6[ time * 0.5 ], 2.4 * flicker6[ time * 0.7 ]
+		clamp
+//		colored
+	}
+	{
+		blend add
+		map	textures/particles/wisps
+		rgb 0.2 * headlightpulse[ time * 0.3 ]
+		rotate time * -.5
+		centerscale 2.7 * flicker6[ time * 0.2 ], 2.7 * flicker6[ time * 0.3 ]
+		clamp
+//		colored
+	}
+	{
+		blend add
+		map	textures/particles/rifle_flash
+		red 0.2 * flicker6[ time * 2.3 ]
+		green .2 * flicker6[ time * 2.3 ]
+		blue .4 * flicker6[ time * 2.3 ]
+		rotate 1 * doubleSin[ time * 2 ]
+		centerscale 2.3 * flicker6[ time * 0.4 ], 2.3 * flicker6[ time * 0.4 ]
+		clamp
+//		colored
+	}
+}
+
+textures/sfx/beamcorona
+{
+	qer_editorimage 	textures/sfx/flare1
+//	discrete
+	noshadows
+	translucent
+	twosided
+	nonsolid
+	nooverlays
+	deform corona 0.25
+	{
+//		blend		gl_one, gl_one_minus_src_color
+		blend add
+		map			textures/sfx/flare1
+		red .9
+		green .7
+		blue 0.4
+//		vertexcolor
+//		colored
+	}
+}
+
+textures/sfx/flare_laser
+{
+	qer_editorimage 	textures/sfx/flare1
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform corona 0.25
+	{
+		highquality
+		blend		add
+		map			textures/sfx/flare1
+		red beamflicker[time * 0.8]
+		green 0
+		blue 0
+	}
+}
+
+textures/sfx/flare_laser_sprite
+{
+	qer_editorimage 	textures/sfx/flare1
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform sprite
+	{
+		highquality
+		blend		add
+		map			textures/sfx/flare1
+		red beamflicker[time * 0.8]
+		green 0
+		blue 0
+	}
+}
+
+textures/sfx/shuttleboxinfo
+{
+	decal_macro
+
+//	qer_editorimage 	textures/sfx/shuttleboxinfo
+	{
+		blend add
+		map	textures/sfx/shuttleboxinfo_add1
+//		color 0.6,0.7,1,0
+		scale 1 , 4
+		rgb	1-powersurge2[time*1]
+
+	}
+	{
+		blend add
+		map	textures/sfx/shuttleboxinfo_add2
+//		color 0.6,0.7,1,0
+		scale 1 , 4
+		rgb	alpha_opp[time*0.4]
+		glowStage
+	}
+	{
+		blend add
+		map	textures/sfx/shuttleboxinfo_add3
+		color 0.6, 0.1, 0.1, 0.6
+		alpha		1-powersurge2[time*1]
+//		rgb	alpha_opp[time*0.0004]
+		scale 1 , 3
+		scroll -0.03, (time * 0.09)
+	}
+	{
+		blend add
+		map	textures/sfx/shuttleboxinfo_add3
+		color 0.4, 0.0, 0.0, 0.2
+//		rgb		0.2
+		scale 2 , 4
+		scroll -0.03, (time * -0.04)
+	}
+}
+
+textures/sfx/transport_creation_flare
+{
+	qer_editorimage 	textures/sfx/flare1
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform corona 0.35
+	{
+		highquality
+		blend		add
+		map			textures/sfx/flare1
+		red 0.3
+		green 0.67
+		blue 0.71
+	}
+
+}
+
+textures/sfx/shuttlehider_flare
+{
+	qer_editorimage 	textures/sfx/flare1
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform corona 0.35
+	{
+		highquality
+		blend		add
+		map			textures/particles/flare //sfx/flare1
+		red (0.9 * flicker_elec2[time * .5])
+		green (0.9 * flicker_elec2[time * .5])
+		blue (1 * flicker_elec2[time * .5])
+//		centerscale (flicker_elec2[time * 1]), (flicker_elec2[time * 1])
+		clamp
+	}
+
+}
+
+textures/sfx/hologram_turbine_flare
+{
+	qer_editorimage 	textures/sfx/flare1
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform corona 0.35
+	{
+		highquality
+		blend		add
+		map			textures/sfx/flare1
+		red 0.3
+		green 0.67
+		blue 0.71
+	}
+
+}
+
+textures/sfx/keeper_flare
+{
+	qer_editorimage 	textures/sfx/flare11
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform sprite
+	{
+		highquality
+		blend		add
+		map			textures/sfx/flare11
+		colored
+	}
+}
+
+textures/sfx/sboss_flare1 {
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform sprite
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/sfx/sboss_flare1
+		rotate time / -20
+		glowstage
+		rgb 0.6
+		clamp
+	}
+}
+
+textures/sfx/sboss_flare2 {
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform sprite
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/sfx/sboss_flare2
+		rotate time / -20
+		glowstage
+		rgb 0.6
+		clamp
+	}
+}
+
+textures/sfx/flare_forcefield_beam
+{
+	qer_editorimage 	textures/sfx/flare0
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform sprite
+	{
+		highquality
+		blend		add
+		map			textures/sfx/flare7
+		red		1	* parm0
+		green	0.4	* parm1
+		blue	0.2	* parm2
+		glowstage
+	}
+}
+
+textures/sfx/flare_biolabs_holding_beam
+{
+	qer_editorimage 	textures/sfx/flare0
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform sprite
+	{
+		highquality
+		blend		add
+		map			textures/sfx/flare12
+		red 0.5
+		green 0.9
+		blue 1
+		glowstage
+		zeroclamp
+	}
+}
+
+textures/sfx/aagrandfather_a
+{
+   matter_glass
+   {
+       blend gl_one, gl_zero
+       map textures/sfx/aagrandfather_a
+       highres
+   }
+}
+
+textures/sfx/aagrandfather_b
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aagrandfather_b
+       highres
+   }
+}
+
+textures/sfx/aagrandfather_c
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aagrandfather_c
+       highres
+   }
+}
+
+textures/sfx/aagrandfather_d
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aagrandfather_d
+       highres
+   }
+}
+
+textures/sfx/aahumans_a
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aahumans_a
+       highres
+   }
+}
+
+textures/sfx/aahumans_b
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aahumans_b
+       highres
+   }
+}
+
+textures/sfx/aahumans_c
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aahumans_c
+       highres
+   }
+}
+
+textures/sfx/aahumans_d
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aahumans_d
+       highres
+   }
+}
+
+
+textures/sfx/aajennygrandfather
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aajennygrandfather
+       highres
+   }
+}
+
+textures/sfx/aajennygrandfather_b
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aajennygrandfather_b
+       highres
+   }
+}
+
+textures/sfx/aajennygrandfather_c
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aajennygrandfather_c
+       highres
+   }
+}
+
+textures/sfx/aajennygrandfather_d
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aajennygrandfather_d
+       highres
+   }
+}
+
+textures/sfx/aajennygrandfather_e
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aajennygrandfather_e
+       highres
+   }
+}
+
+textures/sfx/aajennyalone_a
+{
+   matter_glass
+   {
+       blend gl_one, gl_zero
+       map textures/sfx/aajennyalone_a
+       highres
+   }
+}
+
+textures/sfx/aajennyalone_b
+{
+   matter_glass
+   {
+       blend gl_one, gl_zero
+       map textures/sfx/aajennyalone_b
+       highres
+   }
+}
+
+textures/sfx/aajennyalone_c
+{
+   matter_glass
+   {
+       blend gl_one, gl_zero
+       map textures/sfx/aajennyalone_c
+       highres
+   }
+}
+
+textures/sfx/aajennyalone_closeup_a
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aajennyalone_closeup_a
+       highres
+   }
+}
+
+textures/sfx/aajennyalone_closeup_b
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aajennyalone_closeup_b
+       highres
+   }
+}
+
+textures/sfx/aajennyalone_closeup_c
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aajennyalone_closeup_c
+       highres
+   }
+}
+
+textures/sfx/aawreckage
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aawreckage
+       highres
+   }
+}
+
+textures/sfx/aatommy_firefight
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aatommy_firefight
+       highres
+   }
+}
+
+textures/sfx/aatommy_firing
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aatommy_firing
+       highres
+   }
+}
+
+textures/sfx/aatommy_portal
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aatommy_portal
+       highres
+   }
+}
+
+textures/sfx/aatommy_sphincdoor
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aatommy_sphincdoor
+        highres
+  }
+}
+
+textures/sfx/aatommy_wallwalk
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aatommy_wallwalk
+       highres
+   }
+}
+
+textures/sfx/aahiders_portal_1
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aahiders_portal_1
+       highres
+   }
+}
+
+textures/sfx/aahiders_portal_2
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aahiders_portal_2
+       highres
+   }
+}
+
+textures/sfx/aahiders_portal_3
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aahiders_portal_3
+       highres
+   }
+}
+
+textures/sfx/aahiders_portal_4
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aahiders_portal_4
+       highres
+   }
+}
+
+textures/sfx/aahiders_portal_5
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aahiders_portal_5
+       highres
+   }
+}
+
+textures/sfx/aatommy_slab_256
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aatommy_slab_256
+       highres
+   }
+}
+
+textures/sfx/aatommy_slab_512
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aatommy_slab_512
+       highres
+   }
+}
+
+textures/sfx/aajennytommy_1
+{
+   matter_glass
+   {
+       blend gl_one, gl_zero
+       map textures/sfx/aajennytommy_1
+       highres
+   }
+}
+
+textures/sfx/aajenny_harvester_a1
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aajenny_harvester_a1
+       highres
+   }
+}
+
+textures/sfx/aajenny_harvester_a2
+{
+   matter_glass
+   {
+       blend gl_one, gl_zero
+       map textures/sfx/aajenny_harvester_a2
+       highres
+   }
+}
+
+textures/sfx/aajenny_harvester_a3
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aajenny_harvester_a3
+       highres
+   }
+}
+
+textures/sfx/aajenny_harvester_a4
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aajenny_harvester_a4
+       highres
+   }
+}
+
+textures/sfx/aajenny_harvester_b1
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aajenny_harvester_b1
+       highres
+   }
+}
+
+textures/sfx/aajenny_harvester_b2
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aajenny_harvester_b2
+       highres
+   }
+}
+
+textures/sfx/aajenny_harvester_b3
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aajenny_harvester_b3
+       highres
+   }
+}
+
+textures/sfx/aajenny_harvester_b4
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aajenny_harvester_b4
+       highres
+   }
+}
+
+textures/sfx/aajenny_harvester_c1
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aajenny_harvester_c1
+       highres
+   }
+}
+
+textures/sfx/aajenny_harvester_c2
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aajenny_harvester_c2
+       highres
+   }
+}
+
+textures/sfx/aajenny_harvester_c3
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aajenny_harvester_c3
+       highres
+   }
+}
+
+textures/sfx/aajenny_harvester_c4
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aajenny_harvester_c4
+       highres
+   }
+}
+
+textures/sfx/aashuttlea_centurion1
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aashuttlea_centurion1
+       highres
+   }
+}
+
+textures/sfx/aashuttlea_centurion2
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aashuttlea_centurion2
+       highres
+   }
+}
+
+textures/sfx/aashuttlea_centurion3
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aashuttlea_centurion3
+       highres
+   }
+}
+
+textures/sfx/aashuttlea_centurion4
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aashuttlea_centurion4
+       highres
+   }
+}
+
+textures/sfx/aabiolabsb_carousel1
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aabiolabsb_carousel1
+       highres
+   }
+}
+
+textures/sfx/aabiolabsb_carousel2
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aabiolabsb_carousel2
+       highres
+   }
+}
+
+textures/sfx/aabiolabsb_carousel3
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aabiolabsb_carousel3
+       highres
+   }
+}
+
+textures/sfx/aabiolabsb_carousel4
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aabiolabsb_carousel4
+       highres
+   }
+}
+
+textures/sfx/aaharvb_sportal1
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aaharvb_sportal1
+       highres
+   }
+}
+
+textures/sfx/aaharvb_sportal2
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aaharvb_sportal2
+       highres
+   }
+}
+textures/sfx/aaharvb_sportal3
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aaharvb_sportal3
+       highres
+  }
+}
+textures/sfx/aaharvb_sportal4
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aaharvb_sportal4
+       highres
+   }
+}
+
+
+textures/sfx/aagfx_asteroid1
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aagfx_asteroid1
+       highres
+   }
+}
+
+textures/sfx/aagfx_asteroid2
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aagfx_asteroid2
+       highres
+   }
+}
+textures/sfx/aagfx_asteroid3
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aagfx_asteroid3
+       highres
+   }
+}
+textures/sfx/aagfx_asteroid4
+{
+   matter_glass
+   {
+
+       blend gl_one, gl_zero
+       map textures/sfx/aagfx_asteroid4
+       highres
+   }
+}
+
+textures/sfx/portal_image
+{
+   qer_editorimage 	textures/sfx/portal_image
+	noshadows
+	translucent
+	nonsolid
+   {
+       blend add
+       map textures/sfx/portal_image
+       rotate 	time * 0.05
+       centerscale	1.00 * flicker5light[ time * -0.07 ],1.00 * flicker5light[ time * -0.07 ]
+       clamp
+   }
+   {
+       blend add
+       map textures/sfx/portal_image
+       rotate 	time * -0.05
+       centerscale	1.00 * flicker5light[ time * -0.08 ],1.00 * flicker5light[ time * -0.08 ]
+       clamp
+   }
+}
+
+textures/sfx/matte_green
+{
+	noshadows
+	{
+		blend diffusemap
+		map _black
+	}
+	{
+		blend add
+		map _white
+		red 	0
+		green	1
+		blue 	0
+	}
+}

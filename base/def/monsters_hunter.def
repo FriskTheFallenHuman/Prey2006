@@ -1,0 +1,1115 @@
+entityDef monster_hunter_elite {
+	"inherit"						"monster_hunter"	
+	"editor_var can_backflip"		"allows backflipping (default to 1)"
+	"can_snipe"						"1"
+	"can_dodge"						"1"
+	"can_backflip"					"1"
+	"elite"							"1"
+	"dda_grenade_min"				"0.4"	//chance to throw grenade
+	"dda_grenade_max"				"0.7"
+	"dda_dodge_min"					"0.4"	//chance to roll away from projectiles
+	"dda_dodge_max"					"0.6"
+	"dda_attack_min"				"2"	//time between attacks
+	"dda_attack_max"				"4"
+	"head_focus_rate"				"0.15"
+	"hit_chance"					"0.4"
+	"hit_accuracy"					"1"
+	"miss_accuracy"					"15"
+	"acidburn"						"1"
+	"can_freeze"					"1"
+	"spirit_check_delay"			"3"
+
+	// Caching
+	"model"							"model_monster_hunter_elite"
+	"skin"							"skins/monsters/elite_hunter.skin"
+	"skin_dropDeath"				"skins/monsters/elite_hunter_nogun.skin"
+	"fx_flashlight"					"fx/hunter_elite_flashlight_4"
+	"skin_acidburn"					"skins/monsters/elite_hunter_acid"
+	"snd_meleeattack"				"monster_elite_hunter_meleeattack"
+	"snd_yell"						"monster_elite_hunter_yell"
+	"def_projectile"				"projectile_hunter_rifle"
+	"def_projectileInfo"			"projectile_hunter_rifle,projectile_hunter_rifle_first,projectile_hunter_mine,projectile_hunter_rifle_snipe"
+
+	// Voice sounds
+	"snd_pain_small"				"monster_elite_hunter_pain"
+	"snd_pain_medium"				"monster_elite_hunter_pain"
+	"snd_pain_large"				"monster_elite_hunter_pain"
+	"snd_pain_huge"					"monster_elite_hunter_pain"
+	"snd_low_screwed"				"monster_elite_hunter_low_screwed"	
+	"snd_intimidate"				"monster_elite_hunter_intimidate"
+	"snd_im_hit"					"monster_elite_hunter_im_hit"
+	"snd_help"						"monster_elite_hunter_help"
+	"snd_throwing_grenade"			"monster_elite_hunter_throwing_grenade"
+	"snd_react_grenade"				"monster_elite_hunter_throwing_grenade"
+	"snd_fear"						"monster_elite_hunter_fear"
+	"snd_anger"						"monster_elite_hunter_anger"
+	"snd_hunt"						"monster_elite_hunter_speech_hunt_enemy"
+	"snd_speech_VehicleDock_shuttledock"				"monster_elite_hunter_speech_shuttle"
+
+	"snd_taking_fire"				""
+	"snd_affirmative"				""
+	"snd_negative"					""
+	"snd_man_down"					"monster_elite_hunter_anger"
+	"snd_last_man"					""
+	"snd_cover_me"					""
+	"snd_backup"					""
+	"snd_moveoutgo"					""
+	"snd_conserve_ammo"				""
+	"snd_incoming"					""
+	"snd_defend_position"			""
+	"snd_alarm"						""
+	"snd_health"					""
+	"snd_react_launcher"			""
+	"snd_react_sniper"				""
+	"snd_react_rush"				""
+	"snd_enemy_health_low"			""
+	"snd_enemy_retreat"				""
+	"snd_enemy_rez"					""
+	"snd_down_here"					""
+	"snd_over_here"					""
+	"snd_over_there"				""
+	"snd_behind_cover"				""
+}
+
+entityDef monster_hunter_elite_veteran {
+	"inherit"						"monster_hunter_elite"
+
+	// Voice sounds
+	"snd_intimidate"				"monster_elite_hunter2_intimidate"
+	"snd_fear"						"monster_elite_hunter2_fear"
+	"snd_hunt"						"monster_elite_hunter2_speech_hunt_enemy"
+}
+
+entityDef monster_hunter_veteran {
+	"inherit"						"monster_hunter"
+
+	// Voice sounds
+	"snd_sight"						"monster_hunter2_sight"
+	"snd_enemy_rez"					"monster_hunter2_enemy_rez"
+	"snd_last_man"					"monster_hunter2_last_man_standing"
+	"snd_fear"						"monster_hunter2_fear"
+	"snd_anger"						"monster_hunter2_anger"
+	"snd_intimidate"				"monster_hunter2_intimidate"
+}
+
+entityDef monster_hunter_elite_alien {
+	"inherit"						"monster_hunter_elite"
+
+	// Voice sounds
+	"snd_sight"						"monster_hunter_ftb_gibberish_long"
+	"snd_anger"						"monster_hunter_ftb_gibberish_short"
+	"snd_im_hit"					"monster_hunter_ftb_gibberish_short"
+	"snd_low_screwed"				"monster_hunter_ftb_gibberish_short"
+	"snd_hunt"						"monster_hunter_ftb_gibberish_long"
+	"snd_taking_fire"				"monster_hunter_ftb_gibberish_long"
+	"snd_affirmative"				"monster_hunter_ftb_gibberish_long"
+	"snd_negative"					"monster_hunter_ftb_gibberish_short"
+	"snd_fear"						"monster_hunter_ftb_gibberish_short"
+	"snd_man_down"					"monster_hunter_ftb_gibberish_long"
+	"snd_intimidate"				"monster_hunter_ftb_gibberish_long"
+	"min_snd_intimidate"			"5"
+	"snd_last_man"					"monster_hunter_ftb_gibberish_long"
+	"snd_cover_me"					"monster_hunter_ftb_gibberish_short"
+	"snd_backup"					"monster_hunter_ftb_gibberish_long"
+	"snd_moveoutgo"					"monster_hunter_ftb_gibberish_short"
+	"snd_throwing_grenade"			"monster_hunter_ftb_gibberish_long"
+	"snd_conserve_ammo"				"monster_hunter_ftb_gibberish_short"
+	"snd_incoming"					"monster_hunter_ftb_gibberish_short"
+	"snd_help"						"monster_hunter_ftb_gibberish_long"
+	"snd_defend_position"			"monster_hunter_ftb_gibberish_long"
+	"snd_alarm"						"monster_hunter_ftb_gibberish_long"
+	"snd_health"					"monster_hunter_ftb_gibberish_long"
+	"snd_react_launcher"			"monster_hunter_ftb_gibberish_short"
+	"snd_react_sniper"				"monster_hunter_ftb_gibberish_short"
+	"snd_react_grenade"				"monster_hunter_ftb_gibberish_long"
+	"snd_react_rush"				"monster_hunter_ftb_gibberish_long"
+	"snd_enemy_health_low"			"monster_hunter_ftb_gibberish_long"
+	"snd_enemy_retreat"				"monster_hunter_ftb_gibberish_long"
+	"snd_enemy_rez"					"monster_hunter_ftb_gibberish_short"
+	"snd_down_here"					"monster_hunter_ftb_gibberish_short"
+	"snd_over_here"					"monster_hunter_ftb_gibberish_short"
+	"snd_over_there"				"monster_hunter_ftb_gibberish_long"
+	"snd_behind_cover"				"monster_hunter_ftb_gibberish_long"
+	"snd_speech_VehicleDock_shuttledock"				"monster_hunter_ftb_gibberish_long"
+}
+
+entityDef monster_hunter_alien {
+	"inherit"						"monster_hunter"
+
+	"snd_sight"						"monster_hunter_ftb_gibberish_long"
+	"snd_anger"						"monster_hunter_ftb_gibberish_short"
+	"snd_im_hit"					"monster_hunter_ftb_gibberish_short"
+	"snd_low_screwed"				"monster_hunter_ftb_gibberish_short"
+	"snd_hunt"						"monster_hunter_ftb_gibberish_long"
+	"snd_taking_fire"				"monster_hunter_ftb_gibberish_long"
+	"snd_affirmative"				"monster_hunter_ftb_gibberish_long"
+	"snd_negative"					"monster_hunter_ftb_gibberish_short"
+	"snd_fear"						"monster_hunter_ftb_gibberish_short"
+	"snd_man_down"					"monster_hunter_ftb_gibberish_long"
+	"snd_intimidate"				"monster_hunter_ftb_gibberish_long"
+	"min_snd_intimidate"			"5"
+	"snd_last_man"					"monster_hunter_ftb_gibberish_long"
+	"snd_cover_me"					"monster_hunter_ftb_gibberish_short"
+	"snd_backup"					"monster_hunter_ftb_gibberish_long"
+	"snd_moveoutgo"					"monster_hunter_ftb_gibberish_short"
+	"snd_throwing_grenade"			"monster_hunter_ftb_gibberish_long"
+	"snd_conserve_ammo"				"monster_hunter_ftb_gibberish_short"
+	"snd_incoming"					"monster_hunter_ftb_gibberish_short"
+	"snd_help"						"monster_hunter_ftb_gibberish_long"
+	"snd_defend_position"			"monster_hunter_ftb_gibberish_long"
+	"snd_alarm"						"monster_hunter_ftb_gibberish_long"
+	"snd_health"					"monster_hunter_ftb_gibberish_long"
+	"snd_react_launcher"			"monster_hunter_ftb_gibberish_short"
+	"snd_react_sniper"				"monster_hunter_ftb_gibberish_short"
+	"snd_react_grenade"				"monster_hunter_ftb_gibberish_long"
+	"snd_react_rush"				"monster_hunter_ftb_gibberish_long"
+	"snd_enemy_health_low"			"monster_hunter_ftb_gibberish_long"
+	"snd_enemy_retreat"				"monster_hunter_ftb_gibberish_long"
+	"snd_enemy_rez"					"monster_hunter_ftb_gibberish_short"
+	"snd_down_here"					"monster_hunter_ftb_gibberish_short"
+	"snd_over_here"					"monster_hunter_ftb_gibberish_short"
+	"snd_over_there"				"monster_hunter_ftb_gibberish_long"
+	"snd_behind_cover"				"monster_hunter_ftb_gibberish_long"
+	"snd_speech_VehicleDock_shuttledock"				"monster_hunter_ftb_gibberish_long"
+}
+
+entityDef monster_hunter {
+	"inherit"						"monster_hunter_base"
+	"dda_dodge_min"					"0.0"	//chance to roll away from projectiles
+	"dda_dodge_max"					"0.0"
+
+	// Voice sounds
+	"snd_sight"						"monster_hunter_sight"
+	"snd_anger"						"monster_hunter_anger"
+	"snd_im_hit"					"monster_hunter_im_hit"
+	"snd_low_screwed"				"monster_hunter_low_screwed"
+	"snd_hunt"						"monster_hunter_speech_hunt_enemy"
+	"snd_taking_fire"				"monster_hunter_taking_fire"
+	"snd_affirmative"				"monster_hunter_affirmative"
+	"snd_negative"					"monster_hunter_negative"
+	"snd_fear"						"monster_hunter_fear"
+	"snd_man_down"					"monster_hunter_man_down"
+	"snd_intimidate"				"monster_hunter_intimidate"
+	"min_snd_intimidate"			"5"
+	"snd_last_man"					"monster_hunter_last_man_standing"
+	"snd_cover_me"					"monster_hunter_cover_me"
+	"snd_backup"					"monster_hunter_backup"
+	"snd_moveoutgo"					"monster_hunter_moveoutgo"
+	"snd_throwing_grenade"			"monster_hunter_throwing_grenade"
+	"snd_conserve_ammo"				"monster_hunter_conserve_ammo"
+	"snd_incoming"					"monster_hunter_incoming"
+	"snd_help"						"monster_hunter_help"
+	"snd_defend_position"			"monster_hunter_defend_position"
+	"snd_alarm"						"monster_hunter_speech_alarm"
+	"snd_health"					"monster_hunter_speech_health"
+	"snd_react_launcher"			"monster_hunter_react_launcher"
+	"snd_react_sniper"				"monster_hunter_react_sniper"
+	"snd_react_grenade"				"monster_hunter_throwing_grenade"
+	"snd_react_rush"				"monster_hunter_rush"
+	"snd_enemy_health_low"			"monster_hunter_speech_player_almost_dead"
+	"snd_enemy_retreat"				"monster_hunter_speech_hunt_enemy"
+	"snd_enemy_rez"					"monster_hunter_enemy_rez"
+	"snd_down_here"					"monster_hunter_down_here"
+	"snd_over_here"					"monster_hunter_over_here"
+	"snd_over_there"				"monster_hunter_over_there"
+	"snd_behind_cover"				"monster_hunter_speech_player_behind_cover"
+	"snd_speech_VehicleDock_shuttledock"				"monster_hunter_speech_shuttle"
+}
+
+entityDef monster_hunter_base {
+	"inherit"						"monster_simple_default"	
+	"editor_color"					"1 .5 0"
+	"editor_mins"					"-24 -24 0"
+	"editor_maxs"					"24 24 90"
+	"editor_var force_snipe"		"forces hunter to only snipe (defaults to 0)"
+	"editor_var can_snipe"			"allows sniping at range specified by snipe_range (defaults to 0)"
+	"editor_var snipe_range"		"range at which hunter chooses to snipe if can_snipe is set to 1 (defaults to 800)"
+	"editor_var can_grenade"		"allows throwing crawler grenade (defaults to 1)"
+	"editor_var can_backflip"		"allows backflipping (default to 0)"
+	"spawnclass"					"hhHunterSimple"
+	"scriptobject"					"monster_hunter"
+
+	"has_melee_attack"				"1"
+	"has_range_attack"				"1"
+	"has_maneuver"					"1"
+	"melee_range"					"48"
+	"grenade_range"					"350"
+	"heal_threshold"				"75"
+	"team"							"7"
+	"rank"							"0"
+	"gravInterpDelta"				"0.8"
+	"can_snipe"						"0"
+	"can_dodge"						"0"
+	"can_grenade"					"1"
+	"can_wallwalk"					"1"
+	"can_fall"						"0"
+	"CanUseConsole"					"1"
+	"CanPilotShuttle"				"1"
+	"run_distance"					"100"
+	"produces_splats"				"1"
+	"use_aas"						"aas48"		
+	"health"						"100"
+	"gibhealth"						"-250"
+	"size"							"32 32 90"
+	"turn_rate"						"360"
+	"fov"							"120"
+	"pain_delay"					"0.0"
+	"pain_counter"					"50"
+	"pushes"						"1"
+	"push_cosine"					".9"	
+	"attack_accuracy"				"2"
+	"dropDeathItemJoint"			"rifle_joint"
+	"shuttle_attack_length"			"3"
+	"shuttle_attack_freq"			"0.5"
+	"bTalonAttack"					"1" // Talon can attack this creature
+	"can_flashlight"				"1"
+	"fx_flashlight"					"fx/hunter_flashlight_4"
+	"hit_chance"					"0.3"
+	"hit_accuracy"					"0"
+	"miss_accuracy"					"5"
+	"focus_align_time"				"0"
+	"immunity"						"missile_hunter_rifle"
+	"blockedRadius"					"10"
+	"blockedMoveTime"				"1000"
+	"blockedAttackTime"				"1000"
+	"splash_hunter_grenade"			"99"
+	"spirit_check_delay"			"8"
+
+	"attack_range"			"200"
+	"attack_z"				"5"
+	"attack_min"			"80"
+	"attack_max"			"400"
+
+	"cover_range" "100"
+
+	//sniper stuff
+	"snipe_range"					"800"
+	"laser_bone"					"dd"
+	"fx_laserFlash"					""
+	"laser_flash_dot"				"-0.985"
+	"flash_freq"					"999"
+	"look_damping"					"1"
+	"look_spring"					"100"
+	"look_scale"					"0.2"
+
+	//look
+	"head_look"						"1"
+	"look_joint b1"					"0.15 0.15 0"
+	"look_joint b2"					"0.15 0.15 0"
+	"look_joint M_torsoC"			"0.15 0.15 0"
+	"look_joint b3"					"0.55 0.55 0"
+	"look_min"						"-110 -110 0"
+	"look_max"						"110 110 0"
+	"head_focus_rate"				"0.15"
+
+	// These are magnitudes for movements of various facial bones for our fallback jawflapping technique
+	// jawbone_<xform name>			specifies a bone to be transformed (use this <xform name> on the other keys)
+	// jawflapR_<xform name>		specifies rotational magnitude in degrees (pitch, yaw, roll)
+	// jawflapT_<xform name>		specifies translational magnitude in world units (x, y, z)
+	// jawflapRMin_<xform name>		specifies a threshold.  Only amplitudes over this threshold will result in rotation
+	// jawflapTMin_<xform name>		specifies a threshold.  Only amplitudes over this threshold will result in translation
+	"jawbone_jaw"					"M_Jaw"
+	"jawflapR_Jaw"					"10 0 0"
+
+	"mtr_flashShader"				"lights/circlelight1"
+	"bone_flash"					"Lwrist"
+	"flashColor"					"0.75 0.48 0.36"
+	"flashRadius"					"50 35 50"
+	"flashTime"						"0.02"
+	"flashOffset"					"-40 0 -30"
+	
+	
+	// DDA
+	"ddaIndex"						"3"
+	
+	"dda_grenade_min"				"0.2"	//chance to throw grenade
+	"dda_grenade_max"				"0.4"
+	"dda_health_min"				"0.5"	//chance to go for health when injured
+	"dda_health_max"				"1.0"
+	"dda_attack_min"				"3"	//time between attacks
+	"dda_attack_max"				"6"
+
+	// Damage zones
+	"damage_zone head"				"*Neck"
+	"damage_zone chest"				"*Waist -*Lupleg -*Rupleg -*neck -*Lclav -*Rclav"
+	"damage_zone left_arm"			"*Luparm"
+	"damage_zone right_arm"			"*Ruparm"
+	"damage_zone legs"				"*waist -*b1"
+	"damage_scale head"				"1.5"
+
+	// Caching
+	"model"							"model_monster_hunter"
+	"ragdoll"						"monster_hunter"
+	"def_projectile"				"projectile_hunter_rifle"
+	"def_projectileInfo"			"projectile_hunter_rifle,projectile_hunter_rifle_first,projectile_hunter_grenade,projectile_hunter_rifle_snipe"
+	"def_gibDebrisSpawner"			"debrisSpawner_hunter"
+	"def_dropsSoul"					"ammo_lifeforce_medium"	
+	"fx_muzzleflash"				"fx/hunter_muzzleflash.fx"
+	"fx_prefire"					"fx/hunter_muzzleprefire.fx"
+	"skin"							"skins/monsters/hunter.skin"
+	"def_beamLaser"					"beams/huntersniper.beam"
+	"def_dropDeathItem"				"movable_item_rifle"
+	"skin_dropDeath"				"skins/monsters/hunter_nogun"
+	"acidburn"						"1"
+	"can_freeze"					"1"
+	"rush_freq"						"0.5"
+	"rush_count"					"6"
+	"rush_distance"					"1000"
+	"skin_freeze"					"skins/monsters/hunter_frozen.skin"
+	"skin_acidburn"					"skins/monsters/hunter_acid"
+	"skin_burn"						"skins/monsters/hunter_burned.skin"
+
+	// Sounds
+	"min_snd_sight"					"1000"
+	"snd_pain"						"monster_hunter_pain"
+	"snd_pain_small"				""
+	"snd_pain_medium"				""
+	"snd_pain_large"				""
+	"snd_pain_huge"					""
+	"snd_meleeattack"				"monster_hunter_meleeattack"
+	"snd_missileattack"				"monster_hunter_missileattack"
+	"snd_altmissileattack"			"monster_hunter_altmissileattack"
+	"snd_death"						"monster_hunter_die"
+	"snd_footstep"					"monster_hunter_footstep_metal"
+	"snd_snipe_1"					"monster_hunter_snipe_1"
+	"snd_snipe_2"					"monster_hunter_snipe_2"
+	"snd_sniperlaser"				"monster_hunter_sniper_laser"
+	"snd_prefire"					"monster_hunter_prefire"
+	"snd_land"						"monster_hunter_jump_land"
+
+	// IK Stuff
+	"ik_numLegs"						"2"
+	"ik_tiltWaist"						"1" // HUMANHEAD mdl:  This flag isn't used by Doom3 and doesn't appear to be used by the code either.
+	"ik_usePivot"						"0" // HUMANHEAD mdl:  This flag isn't used by Doom3 and the associated code appears to be broken.  Leave it disabled.
+	"ik_footSize"						"4"
+	"ik_minWaistAnkleDist"				"20"
+	"ik_minWaistFloorDist"				"20"
+	"ik_waist"							"Waist"		// doom has this different than bone_waist (probably starting point of ik tranversal)
+	"ik_hip1"							"lupleg"
+	"ik_hip2"							"rupleg"
+	"ik_knee1"							"lknee"
+	"ik_knee2"							"rknee"
+	"ik_ankle1"							"lankle"
+	"ik_ankle2"							"rankle"
+	"ik_dir1"							"Lvector"		// IK direction is defined as the vector from ik_dir to ik_knee
+	"ik_dir2"							"Rvector"		// IK direction is used to tell which way to bend (should be straight out in front of knee)
+	"ik_foot1"							"Ltoe_r"
+	"ik_foot2"							"Rtoe_r"
+}
+
+entityDef projectile_hunter_mine {
+	"mins"						"-10 -10 -10"
+	"maxs"						"10 10 10"
+	"inherit"					"projectile_default"
+	"spawnclass"				"hhProjectileTracking"
+	"_color"					"0.8 0.3 0.1"
+	"velocity"					"120 0 30"
+	"mass"						"10"
+	"gravity"					"0"
+	"trackingUpdateRate"		"100"			// ms between updates
+	"fov"						"180"				// Cone (in degrees) for targetting
+	"turnfactor"				"0.6"			// [0..1], percentage of turn to make each tick
+	"trackPlayersOnly"			"1"
+	"constantEnemy"				"1"
+	"detonate_on_fuse"			"0"
+	"detonate_on_death"			"1"
+	"detonate_on_world"			"0"
+	"detonate_on_actor"			"1"
+	"fuse"						"9999"
+	"proj_collision"			"1"
+	"health"					"1"
+
+	// Caching
+	"def_damage"				"splash_harvester_mine"
+	"def_detonateFx"			"detonateFx_mine"
+	"model"						"models/projectiles/mine/minelo.lwo"
+	"snd_fly"					"monster_hunter_mine_fly"
+	"snd_explode"				"projectile_rocket_explode"
+}
+
+entityDef splash_hunter_mine {
+	"inherit"			"splash_generic"
+
+	"damage"			"20"
+	"knockback"			"0"
+	"kickDir"			"1 0 0"
+	"kick_time"			"250"
+	"kick_amplitude"	"1"
+	
+	"radius"			"200"
+
+	"push_radius"		"0"
+	"outer_push"		"0"
+	"push"				"0"
+}
+
+entityDef missile_hunter_rifle {
+	"inherit"			"missile_rifle"
+	"push"				"0"
+	"push_ragdoll"		"0"
+	"damage"			"2"
+	"knockback"			"0"
+	"snd_impact_flesh"			"projectile_hunter_rifle_impact_flesh"
+	"snd_impact_metal"			"projectile_hunter_rifle_impact_metal"
+	"snd_impact_altmetal"		"projectile_hunter_rifle_impact_metal"
+	"def_entranceWound"			"entranceWound_hunterrifle"
+	"def_entranceMark_overlay"	""		// no overlays
+}
+
+entityDef entranceWound_hunterrifle {
+	"inherit"					"entranceWound_rifle"
+	"fx_wound_flesh"			"fx/playerblood.fx"
+}
+
+entityDef projectile_hunter_rifle_first {
+	"inherit"					"projectile_hunter_rifle"
+	"hit_notify"				"1"
+}
+
+entityDef projectile_hunter_rifle {
+	"inherit"					"projectile_rifle"	
+	"model"						"models/weapons/rifle/rifleBlast.lwo"
+	"def_damage"				"missile_hunter_rifle"
+	"velocity"					"2000 0 0"
+	"scale"						"0.35"
+	"mass"						"1"
+	"mins"						"-1 -1 -1"
+	"maxs"						"1 1 1"
+	"attack_accuracy"			"2"
+	"enemywall_accuracy"		"15"
+	"wall_accuracy"				"12"
+	
+	"mtr_explode_light_shader"	""
+
+	"fx_fly"					"fx/hunter_rifle_trail.fx"
+	"snd_fly"					"projectile_hunter_rifle_fly"
+}
+
+entityDef projectile_hunter_rifle_snipe {
+	"inherit"					"projectile_riflesniper"
+	"def_damage"				"missile_hunter_rifle_snipe"	
+	"velocity"					"10000 0 0"
+	"mass"						"40"
+	"snipe"						"1"
+	"hit_chance"				"0.2"
+	"attack_accuracy"			"0"
+	"hit_accuracy"				"0"
+	"miss_accuracy"				"2"
+	"mtr_light_shader"			"models/projectiles/glow/genericglow"
+	"light_color"				"1.0 0.2 0.2"
+	"light_intensity"			"1.0"
+	"light_size"				"200 200 200"
+	"light_offset"				"0 0 0"		
+	"fx_fly"					"fx/hunter_riflesniper.fx"
+}
+
+entityDef projectile_hunter_grenade {
+	"inherit"					"projectile_crawler"
+	"def_splash_damage"			"splash_hunter_grenade"
+	"health"					"10"
+	"velocity"					"900 0 0"
+	"attack_accuracy"			"0"
+	"fuse"						"4"
+	"snd_fly"					"monster_hunter_grenade_fly"
+	"snd_fizzle"				"monster_hunter_grenade_fly"
+	"snd_expand_screech"		"monster_hunter_grenade_fly"
+}
+
+entityDef splash_hunter_grenade {
+	"inherit"			"splash_crawlergrenade"
+	"gib"				"0"
+	"noscaling"			"1"
+}
+
+entityDef melee_hunter_right {
+	"inherit"			"melee_generic"
+	"damage"			"10"
+	"kickDir"			"0 0.8 0.9"
+	"kick_time"			"400"
+	"kick_amplitude"	"7"
+	
+	"blob_devx"			"100"
+	"blob_devy"			"100"
+	
+	"mb_time"			"350"	// motion blur duration
+	"mb_amplitude"		"1.9"		// motion blur strength
+	
+	"snd_hit"			"monster_hunter_melee_hit"
+	"snd_miss"			"monster_hunter_melee_miss"
+}
+
+entityDef monster_targetingdummy {
+	"inherit"					"monster_hunter"
+	"health"					"1000"
+	"turn_rate"					"0"
+	"team"						"0"
+	"scriptobject"				"monster_base_simple"
+	"spawnclass"				"hhMonsterAI"
+	"damage_zone head"			""
+	"damage_zone chest"			""
+	"damage_zone left_arm"		""
+	"damage_zone right_arm"		""
+}
+
+export all {
+	options		-scale 1.0 -prefix hunterRef_ 
+
+	addoptions	-rename M_pelvis waist
+	addoptions	-rename M_torsoA b1
+	addoptions	-rename M_torsoB b2
+	addoptions	-rename M_torsoD b3
+	addoptions	-rename M_neck neck
+	addoptions	-rename M_basehead head
+	addoptions	-rename R_clavicle Rclav
+	addoptions	-rename R_shoulder Rshldr
+	addoptions	-rename R_upperarm Ruparm
+	addoptions	-rename R_forearm Relbow
+	addoptions	-rename R_wrist Rwrist
+	addoptions	-rename L_clavicle Lclav
+	addoptions	-rename L_shoulder Lshldr
+	addoptions	-rename L_upperarm Luparm
+	addoptions	-rename L_forearm Lelbow
+	addoptions	-rename L_wrist Lwrist
+	addoptions	-rename R_femur Rupleg
+	addoptions	-rename R_shin Rknee
+	addoptions	-rename R_foot Rankle
+	addoptions	-rename R_toe Rtoe_r
+	addoptions	-rename L_femur Lupleg
+	addoptions	-rename L_shin Lknee
+	addoptions	-rename L_foot Lankle
+	addoptions	-rename L_toe Ltoe_r	
+
+	mesh		models/monsters/hunter/hunter.ma -destdir models/monsters/hunter
+
+	addoptions	-destdir models/monsters/hunter/anim
+	anim  	    models/monsters/hunter/anim/idle.ma
+	anim		models/monsters/hunter/anim/walk.ma
+	anim		models/monsters/hunter/anim/run.ma
+	anim		models/monsters/hunter/anim/walkback.ma
+	anim		models/monsters/hunter/anim/walkbacklook.ma
+	anim		models/monsters/hunter/anim/death.ma
+	anim		models/monsters/hunter/anim/walklook.ma
+	anim		models/monsters/hunter/anim/riflewalk.ma
+	anim		models/monsters/hunter/anim/rifleidle.ma
+	anim		models/monsters/hunter/anim/riflerun.ma
+	anim		models/monsters/hunter/anim/riflewalkback.ma
+	anim		models/monsters/hunter/anim/riflewalkbacklook.ma
+	anim		models/monsters/hunter/anim/rifleidlelookaround.ma
+	anim		models/monsters/hunter/anim/rifleidlerubneck.ma
+	anim		models/monsters/hunter/anim/riflewalklook.ma
+	anim		models/monsters/hunter/anim/riflepain.ma
+	anim		models/monsters/hunter/anim/rifleattack.ma
+	anim		models/monsters/hunter/anim/rifleevadeleft.ma
+	anim		models/monsters/hunter/anim/rifleevaderight.ma
+	anim		models/monsters/hunter/anim/initial.ma
+	anim		models/monsters/hunter/anim/alertcrouchshot.ma
+	anim		models/monsters/hunter/anim/alertcrouchidle.ma
+	anim		models/monsters/hunter/anim/alertgrenadethrow.ma
+	anim		models/monsters/hunter/anim/alertidlerifle.ma
+	anim		models/monsters/hunter/anim/alertwalk.ma
+	anim		models/monsters/hunter/anim/alertwalksearch.ma
+	anim		models/monsters/hunter/anim/alertmelee.ma
+	anim		models/monsters/hunter/anim/portalwalk.ma
+	anim		models/monsters/hunter/anim/workingidle.ma
+	anim		models/monsters/hunter/anim/workinga.ma
+	anim		models/monsters/hunter/anim/workingb.ma
+	anim		models/monsters/hunter/anim/workingb_fast.ma
+	anim		models/monsters/hunter/anim/workingc.ma
+	anim		models/monsters/hunter/anim/alertcrouchidleaim.ma	
+	anim		models/monsters/hunter/anim/alertattack.ma
+	anim		models/monsters/hunter/anim/alertaim.ma
+	anim		models/monsters/hunter/anim/alertkick.ma
+	anim		models/monsters/hunter/anim/alertattackb.ma
+	anim		models/monsters/hunter/anim/nick_up.ma
+	anim		models/monsters/hunter/anim/nick_down.ma
+	anim		models/monsters/hunter/anim/seated.ma
+	anim		models/monsters/hunter/anim/tbeam.ma
+	anim		models/monsters/hunter/anim/alertmeleeforward.ma
+	anim		models/monsters/hunter/anim/alertstraferight.ma
+	anim		models/monsters/hunter/anim/alertstrafeleft.ma
+	anim		models/monsters/hunter/anim/backflip.ma
+	anim		models/monsters/hunter/anim/alertwalkback.ma
+	anim		models/monsters/hunter/anim/jumptest.ma
+	anim		models/monsters/hunter/anim/jumptest2.ma
+	anim		models/monsters/hunter/anim/alertdiveright.ma
+	anim		models/monsters/hunter/anim/alertdiveleft.ma
+	anim		models/monsters/hunter/anim/Otest.ma
+	anim		models/monsters/hunter/anim/alertwalk_45right.ma
+	anim		models/monsters/hunter/anim/alertwalk_45left.ma
+	anim		models/monsters/hunter/anim/feedingc_office_lookout.ma
+	anim		models/monsters/hunter/anim/e3_lookdown.ma
+	anim		models/monsters/hunter/anim/scan_A.ma
+	anim		models/monsters/hunter/anim/scan_B.ma
+	anim		models/monsters/hunter/anim/CoverArt_hunter_new_rifle_hold.ma
+	anim		models/monsters/hunter/anim/CoverArt_hunter_on_stairs.ma
+	anim		models/monsters/hunter/anim/CoverArt_hunter_on_stairs_2.ma
+	anim		models/monsters/hunter/anim/jump_portal.ma
+	anim		models/monsters/hunter/anim/jump_fall.ma
+	anim		models/monsters/hunter/anim/jump_land.ma
+	anim		models/monsters/hunter/anim/cover_fire.ma
+	anim		models/monsters/hunter/anim/prone_idle.ma
+	anim		models/monsters/hunter/anim/prone_fire.ma
+	anim		models/monsters/hunter/anim/alert_walkslow.ma
+	anim		models/monsters/hunter/anim/alert_coma.ma
+	anim		models/monsters/hunter/anim/alertattack_short.ma
+	anim		models/monsters/hunter/anim/jump_rail.ma
+	anim		models/monsters/hunter/anim/jump_ledge.ma
+	anim		models/monsters/hunter/anim/jump_fall2.ma
+	anim		models/monsters/hunter/anim/leashed_hound.ma
+	anim		models/monsters/hunter/anim/wallwalk_idle.ma
+	anim		models/monsters/hunter/anim/wallwalk_1.ma
+	anim		models/monsters/hunter/anim/gasbagged.ma
+	anim		models/monsters/hunter/anim/jump_275.ma
+	anim		models/monsters/hunter/anim/jump_192.ma
+	anim		models/monsters/hunter/anim/box_jumpup.ma
+	anim		models/monsters/hunter/anim/box_idle.ma
+	anim		models/monsters/hunter/anim/box_jumpdown_front.ma
+	anim		models/monsters/hunter/anim/box_jumpdown_back.ma
+	anim		models/monsters/hunter/anim/alertwalkback_45right.ma
+	anim		models/monsters/hunter/anim/alertwalkback_45left.ma
+	anim		models/monsters/hunter/anim/jump_45right.ma
+	anim		models/monsters/hunter/anim/jump_45left.ma
+	anim		models/monsters/hunter/anim/shuttlerun.ma
+	anim		models/monsters/hunter/anim/KFhunter_idle1.ma
+	anim		models/monsters/hunter/anim/KFhunter_alarmed.ma
+	anim		models/monsters/hunter/anim/KFhunter_onguard.ma
+	anim		models/monsters/hunter/anim/cover_idle.ma
+	anim		models/monsters/hunter/anim/cover_rlean.ma
+	anim		models/monsters/hunter/anim/cover_rlean_idle.ma
+	anim		models/monsters/hunter/anim/cover_rlean_fire.ma
+	anim		models/monsters/hunter/anim/cover_rlean_grenade.ma
+	anim		models/monsters/hunter/anim/cover_rlean_to_idle.ma
+	anim		models/monsters/hunter/anim/cover_llean.ma
+	anim		models/monsters/hunter/anim/cover_llean_idle.ma
+	anim		models/monsters/hunter/anim/cover_llean_fire.ma
+	anim		models/monsters/hunter/anim/cover_llean_grenade.ma
+	anim		models/monsters/hunter/anim/cover_llean_to_idle.ma
+	anim		models/monsters/hunter/anim/feedingb_look.ma
+	anim		models/monsters/hunter/anim/pain_rshoulder.ma
+	anim		models/monsters/hunter/anim/pain_knockback.ma
+	anim		models/monsters/hunter/anim/walk_110.ma
+	anim		models/monsters/hunter/anim/run_130.ma
+	anim		models/monsters/hunter/anim/alertmelee_standing.ma
+
+}
+
+model model_monster_hunter {
+	mesh						models/monsters/hunter/hunter.md5mesh
+	channel torso				(*b2)
+	channel legs				(*waist -*b2 origin)
+
+	anim cover_rlean			models/monsters/hunter/anim/cover_rlean.md5anim {
+		ai_no_turn
+		frame 12					launch_missile fx_barrel projectile_hunter_rifle
+		frame 12					sound snd_missileattack
+		frame 12					event_args spawnFXAlongBone fx_muzzleFlash fx_barrel
+		frame 14					launch_missile fx_barrel projectile_hunter_rifle
+		frame 14					sound snd_missileattack
+		frame 14					event_args spawnFXAlongBone fx_muzzleFlash fx_barrel
+	}
+	anim cover_rlean_idle		models/monsters/hunter/anim/cover_rlean_idle.md5anim {
+		ai_no_turn
+	}
+	anim cover_rlean_fire		models/monsters/hunter/anim/cover_rlean_fire.md5anim {
+		ai_no_turn
+		frame 1						launch_missile fx_barrel projectile_hunter_rifle
+		frame 1						sound snd_missileattack
+		frame 1						event_args spawnFXAlongBone fx_muzzleFlash fx_barrel
+	}
+	anim cover_rlean_to_idle	models/monsters/hunter/anim/cover_rlean_to_idle.md5anim {
+		ai_no_turn
+	}
+	anim cover_llean			models/monsters/hunter/anim/cover_llean.md5anim {
+		ai_no_turn
+		frame 12					launch_missile fx_barrel projectile_hunter_rifle
+		frame 12					sound snd_missileattack
+		frame 12					event_args spawnFXAlongBone fx_muzzleFlash fx_barrel
+		frame 14					launch_missile fx_barrel projectile_hunter_rifle
+		frame 14					sound snd_missileattack
+		frame 14					event_args spawnFXAlongBone fx_muzzleFlash fx_barrel
+	}
+	anim cover_llean_idle		models/monsters/hunter/anim/cover_llean_idle.md5anim {
+		ai_no_turn
+	}
+	anim cover_llean_fire		models/monsters/hunter/anim/cover_llean_fire.md5anim {
+		ai_no_turn
+		frame 1						launch_missile fx_barrel projectile_hunter_rifle
+		frame 1						sound snd_missileattack
+		frame 1						event_args spawnFXAlongBone fx_muzzleFlash fx_barrel
+	}
+	anim cover_llean_to_idle	models/monsters/hunter/anim/cover_llean_to_idle.md5anim {
+		ai_no_turn
+	}
+
+	anim alertattack_short 		models/monsters/hunter/anim/alertattack_short.md5anim
+	anim cover_coma			    models/monsters/hunter/anim/alert_coma.md5anim
+	anim alert_walkslow 		models/monsters/hunter/anim/alert_walkslow.md5anim		
+	anim alert_walkslow_shoot	models/monsters/hunter/anim/alert_walkslow.md5anim {
+		frame 6						launch_missile fx_barrel projectile_hunter_rifle
+		frame 6						sound snd_missileattack
+		frame 6						event_args spawnFXAlongBone fx_muzzleFlash fx_barrel
+		frame 14					launch_missile fx_barrel projectile_hunter_rifle
+		frame 14					sound snd_missileattack
+		frame 14					event_args spawnFXAlongBone fx_muzzleFlash fx_barrel
+		frame 22					launch_missile fx_barrel projectile_hunter_rifle
+		frame 22					sound snd_missileattack
+		frame 22					event_args spawnFXAlongBone fx_muzzleFlash fx_barrel
+	}
+	anim jump45r		 		models/monsters/hunter/anim/jump_45right.md5anim
+	anim jump45l		 		models/monsters/hunter/anim/jump_45left.md5anim
+	anim cover_fire 			models/monsters/hunter/anim/cover_fire.md5anim		
+	anim e3_lookdown			models/monsters/hunter/anim/e3_lookdown.md5anim
+	anim pain_knockback			models/monsters/hunter/anim/pain_knockback.md5anim
+	anim pain					models/monsters/hunter/anim/pain_rshoulder.md5anim
+	anim jump_rail  			models/monsters/hunter/anim/jump_rail.md5anim {
+		frame 1				disableGravity
+		frame 1				disableWalkIK
+		frame 21			enableGravity
+	}
+	anim jump_ledge 			models/monsters/hunter/anim/jump_ledge.md5anim {
+		frame 17			enableGravity
+	}
+	anim jump_fall2 			models/monsters/hunter/anim/jump_fall2.md5anim
+	anim jump_portal			models/monsters/hunter/anim/jump_portal.md5anim
+	anim jump_fall				models/monsters/hunter/anim/jump_fall.md5anim
+	anim jump_land				models/monsters/hunter/anim/jump_land.md5anim {
+		frame 1						sound snd_land
+	}
+	anim idle					models/monsters/hunter/anim/rifleidle.md5anim
+	anim feedingc				models/monsters/hunter/anim/feedingc_office_lookout.md5anim
+	anim crane_bound			models/monsters/hunter/anim/tbeam.md5anim {
+		frame 1					disableWalkIK
+		frame 33				enableWalkIK
+	}
+	anim shuttle_bound			models/monsters/hunter/anim/tbeam.md5anim {
+		frame 1					disableWalkIK
+		frame 33				enableWalkIK
+	}
+	anim fall					models/monsters/hunter/anim/tbeam.md5anim {
+		frame 1					disableWalkIK
+		frame 33				enableWalkIK
+	}
+	anim shuttle_vehicle		models/monsters/hunter/anim/seated.md5anim
+	anim af_pose				models/monsters/hunter/anim/initial.md5anim
+	anim ik_pose				models/monsters/hunter/anim/initial.md5anim
+	anim initial				models/monsters/hunter/anim/initial.md5anim
+	anim crouch					models/monsters/hunter/anim/alertcrouchidle.md5anim
+	anim dive_right				models/monsters/hunter/anim/alertdiveright.md5anim {
+		frame 4					disableWalkIK
+		frame 18				enableWalkIK
+	}
+	anim dive_left				models/monsters/hunter/anim/alertdiveleft.md5anim {
+		frame 4					disableWalkIK
+		frame 18				enableWalkIK
+	}
+	anim activity1				models/monsters/hunter/anim/workinga.md5anim
+	anim activity2				models/monsters/hunter/anim/workingb.md5anim
+	anim activity3				models/monsters/hunter/anim/workingc.md5anim
+	anim activity4				models/monsters/hunter/anim/workingb_fast.md5anim
+	anim activityIdle			models/monsters/hunter/anim/workingidle.md5anim
+	anim console_use			models/monsters/hunter/anim/workingc.md5anim
+	anim openportal				models/monsters/hunter/anim/workingc.md5anim {
+		frame 1						event escapePortal
+	}
+	anim portalexit				models/monsters/hunter/anim/portalwalk.md5anim {
+		frame 22					event hide
+		frame 23					event kill
+	}
+	anim portalattack			models/monsters/hunter/anim/portalwalk.md5anim {
+		frame 12					leftfoot
+	}	
+	anim portal					models/monsters/hunter/anim/portalwalk.md5anim {
+		frame 12					leftfoot
+	}	
+	anim portaljump				models/monsters/hunter/anim/portalwalk.md5anim {
+		frame 12					leftfoot
+	}	
+	anim death					models/monsters/hunter/anim/death.md5anim {
+		frame 1						sound_voice snd_death
+		frame 1						sound_body snd_dead_body_hit
+	}	
+	anim melee_attack			models/monsters/hunter/anim/alertmelee.md5anim {
+		frame 2						sound snd_meleeattack
+		frame 6						leftfoot
+		frame 15					melee melee_hunter_right		
+		frame 20					rightfoot
+	}
+	anim melee_attack_stand		models/monsters/hunter/anim/alertmelee_standing.md5anim {
+
+	}	
+	anim walk					models/monsters/hunter/anim/riflewalk.md5anim {
+		frame 12					leftfoot
+		frame 24					rightfoot
+	}
+	anim run_130					models/monsters/hunter/anim/run_130.md5anim {
+		frame 12					leftfoot
+		frame 24					rightfoot
+	}	
+	anim run					models/monsters/hunter/anim/riflerun.md5anim {		
+		frame 5						rightfoot
+		frame 11					leftfoot		
+	}		
+	anim backup					models/monsters/hunter/anim/riflewalkback.md5anim {
+		frame 11					rightfoot
+		frame 22					leftfoot		
+	}		
+	anim alt_attack				models/monsters/hunter/anim/alertgrenadethrow.md5anim {
+		frame 20					launch_missile L_hand projectile_hunter_grenade
+	}		
+	anim mine_attack			models/monsters/hunter/anim/alertgrenadethrow.md5anim {
+		frame 20					launch_missile L_hand projectile_hunter_mine
+	}		
+	anim snipe_attack			models/monsters/hunter/anim/rifleattack.md5anim {
+		frame 1						launch_missile fx_barrel projectile_hunter_rifle_snipe
+		frame 1						sound snd_snipe_1
+		frame 1						sound snd_snipe_2
+		frame 1						event_args spawnFXAlongBone fx_muzzleFlash fx_barrel
+	}		
+	anim dodge_left				models/monsters/hunter/anim/rifleevadeleft.md5anim {
+		frame 5						rightfoot
+		frame 11					leftfoot		
+	}		
+	anim dodge_right			models/monsters/hunter/anim/rifleevaderight.md5anim {
+		frame 5						rightfoot
+		frame 11					leftfoot		
+	}	
+	anim crouch_range_attack	models/monsters/hunter/anim/alertcrouchshot.md5anim {
+		frame 1						sound_weapon snd_missileattack
+		frame 1						launch_missile fx_barrel projectile_hunter_rifle
+		frame 1						event_args spawnFXAlongBone fx_muzzleFlash fx_barrel
+	}	
+	anim range_attack				models/monsters/hunter/anim/alertaim.md5anim {
+		frame 6						launch_missile fx_barrel projectile_hunter_rifle
+		frame 6						sound snd_missileattack
+		frame 6						event_args spawnFXAlongBone fx_muzzleFlash fx_barrel
+		frame 14					launch_missile fx_barrel projectile_hunter_rifle
+		frame 14					sound snd_missileattack
+		frame 14					event_args spawnFXAlongBone fx_muzzleFlash fx_barrel
+		frame 22					launch_missile fx_barrel projectile_hunter_rifle
+		frame 22					sound snd_missileattack
+		frame 22					event_args spawnFXAlongBone fx_muzzleFlash fx_barrel
+	}			
+	anim strafe_left			models/monsters/hunter/anim/alertstrafeleft.md5anim {
+		frame 5						rightfoot
+		frame 17					leftfoot
+	}	
+	anim strafe_right			models/monsters/hunter/anim/alertstraferight.md5anim {	
+		frame 5						rightfoot
+		frame 17					leftfoot
+	}		
+	anim backflip				models/monsters/hunter/anim/backflip.md5anim {
+		frame 7						disableWalkIK
+		frame 23					enableWalkIK
+	}
+	anim gasbagged				models/monsters/hunter/anim/gasbagged.md5anim
+	anim wallwalk_idle			models/monsters/hunter/anim/wallwalk_idle.md5anim
+	anim wallwalk				models/monsters/hunter/anim/wallwalk_1.md5anim
+	anim jump					models/monsters/hunter/anim/jumptest2.md5anim
+
+	anim alert_idle				models/monsters/hunter/anim/alertattackb.md5anim
+	anim alert_crouch			models/monsters/hunter/anim/alertcrouchidleaim.md5anim
+	anim alert_dive_right		models/monsters/hunter/anim/alertdiveright.md5anim {
+		frame 4					disableWalkIK
+		frame 18				enableWalkIK
+	}
+	anim alert_dive_left		models/monsters/hunter/anim/alertdiveleft.md5anim {
+		frame 4					disableWalkIK
+		frame 18				enableWalkIK
+	}
+	anim alert_backup			models/monsters/hunter/anim/alertwalkback.md5anim {
+		frame 10					rightfoot
+		frame 22					leftfoot
+	}
+	anim alert_backup_slow		models/monsters/hunter/anim/alertwalkback_slow.md5anim {
+		frame 10					rightfoot
+		frame 22					leftfoot
+	}
+	anim strafe_left_slow		models/monsters/hunter/anim/alertstrafeleft_slow.md5anim {
+		frame 5						rightfoot
+		frame 17					leftfoot
+	}	
+	anim strafe_right_slow		models/monsters/hunter/anim/alertstraferight_slow.md5anim {	
+		frame 5						rightfoot
+		frame 17					leftfoot
+	}
+	anim alert_run				models/monsters/hunter/anim/riflerun.md5anim {
+		frame 5						rightfoot
+		frame 11					leftfoot		
+	}	
+	anim alert_walk				models/monsters/hunter/anim/alertwalk.md5anim {
+		frame 12					leftfoot
+		frame 24					rightfoot
+	}
+	anim alert_search			models/monsters/hunter/anim/alertwalksearch.md5anim {
+		frame 12					leftfoot
+		frame 24					rightfoot
+		frame 36					leftfoot
+		frame 48					rightfoot
+		frame 60					leftfoot
+		frame 72					rightfoot
+		frame 84					leftfoot
+		frame 96					rightfoot
+		frame 108					leftfoot
+		frame 120					rightfoot
+		frame 132					leftfoot
+		frame 144					rightfoot
+	}	
+	anim alert_melee_attack		models/monsters/hunter/anim/alertmelee.md5anim {
+		frame 2						sound snd_meleeattack
+		frame 15					melee melee_hunter_right
+	}
+	anim melee_forward			models/monsters/hunter/anim/alertmeleeforward.md5anim {
+		frame 2						sound snd_meleeattack
+		frame 15					melee melee_hunter_right
+	}
+	anim alert_crouch_prefire	models/monsters/hunter/anim/alertcrouchidleaim.md5anim {
+		frame 1						event_args spawnFXAlongBone fx_prefire fx_barrel
+	}
+	anim alert_prefire				models/monsters/hunter/anim/alertattackb.md5anim {
+		frame 1						event_args spawnFXAlongBone fx_prefire fx_barrel
+	}
+	anim alert_attack_first		models/monsters/hunter/anim/alertattackb.md5anim {
+		frame 1						launch_missile fx_barrel projectile_hunter_rifle_first
+		frame 1						sound snd_missileattack
+		frame 1						event_args spawnFXAlongBone fx_muzzleFlash fx_barrel
+	}
+	anim alert_attack_idle		models/monsters/hunter/anim/alertattackb.md5anim {
+		frame 1						launch_missile fx_barrel projectile_hunter_rifle
+		frame 1						sound snd_missileattack
+		frame 1						event_args spawnFXAlongBone fx_muzzleFlash fx_barrel
+	}
+	
+	anim CoverArt_hunter_on_stairs					    models/monsters/hunter/anim/CoverArt_hunter_on_stairs.md5anim
+	anim CoverArt_hunter_new_rifle_hold					models/monsters/hunter/anim/CoverArt_hunter_new_rifle_hold.md5anim
+    anim CoverArt_hunter_on_stairs_2					models/monsters/hunter/anim/CoverArt_hunter_on_stairs_2.md5anim
+}
+
+model model_monster_hunter_elite {
+	inherit						model_monster_hunter
+}
+
+entityDef projectile_hunter_rocket {
+	"inherit"					"projectile_harvester_rocket"
+	"velocity"					"600 0 0"
+	"def_damage"				"missile_jetpack_rocket"
+	"def_splash_damage"			"splash_jetpack_rocket"
+	"remove_time"				"999"
+	"fuse_time"					"999"
+	"fx_fly"					"fx/crawler_rocket_spooge.fx"
+
+	"flyby_dist"				"400"
+	"snd_flyby"					"monster_jetpackharvester_missle_flyby"
+	"snd_fly"					"monster_jetpackharvester_missle_fly"
+}
+
+/***********************************************************************
+
+HUNTER WALLWALK
+
+***********************************************************************/
+entityDef monster_hunter_wallwalk1 {
+	"inherit"				"monster_hunter"
+	"model"					"model_monster_hunter_wallwalk1"
+
+}
+
+model model_monster_hunter_wallwalk1 {
+	"inherit" 					"model_monster_hunter"
+	
+	anim wallwalk_idle			models/monsters/hunter/anim/wallwalk_idle.md5anim
+	anim wallwalk				models/monsters/hunter/anim/wallwalk_1.md5anim
+}
+
+/***********************************************************************
+
+KEEPER FORTRESS HUNTER
+
+***********************************************************************/
+entityDef monster_hunter_keeperfortress {
+	"inherit"				"monster_hunter"
+	"model"					"model_monster_hunter_keeperfortress"
+
+}
+
+model model_monster_hunter_keeperfortress {
+	"inherit" 					"model_monster_hunter_elite"
+	
+	anim KFhunter_idle1			models/monsters/hunter/anim/KFhunter_idle1.md5anim
+	anim KFhunter_alarmed		models/monsters/hunter/anim/KFhunter_alarmed.md5anim
+	anim KFhunter_onguard		models/monsters/hunter/anim/KFhunter_onguard.md5anim
+}
+
+/***********************************************************************
+
+HUNTER GASBAGGED
+
+***********************************************************************/
+entityDef monster_hunter_gasbagged {
+	"inherit"				"monster_hunter"
+	"model"					"model_monster_hunter_gasbagged"
+
+}
+
+model model_monster_hunter_gasbagged {
+	"inherit" 					"model_monster_hunter"
+	
+	anim gasbagged				models/monsters/hunter/anim/gasbagged.md5anim
+}
+
+/***********************************************************************
+
+HUNTER FEEDINGA
+
+***********************************************************************/
+entityDef monster_hunter_feedinga {
+	"inherit"				"monster_hunter"
+	"model"					"model_monster_hunter_feedinga"
+}
+
+model model_monster_hunter_feedinga {
+	"inherit" 					"model_monster_hunter"
+	
+	anim shuttlerun				models/monsters/hunter/anim/shuttlerun.md5anim
+	anim scan_A				                        	models/monsters/hunter/anim/scan_A.md5anim {
+		frame 90				sound snd_hunterchat		
+	}
+	anim scan_B				                        	models/monsters/hunter/anim/scan_B.md5anim
+    anim leashed_walk					models/monsters/hunter/anim/leashed_hound.md5anim
+    anim tunnelrun					models/monsters/hunter/anim/riflerun.md5anim {		
+		frame 5						sound snd_footstep
+		frame 11					sound snd_footstep		
+	}
+}
+
+entityDef monster_hunter_feedingb {
+	"inherit"				"monster_hunter_elite"
+	"model"					"model_monster_hunter_feedingb"
+	
+	"snd_look_voice"		"ftb_hugehunter_voice"
+}
+
+model model_monster_hunter_feedingb {
+	"inherit" 					"model_monster_hunter_elite"
+	
+	anim feedingb_look 		models/monsters/hunter/anim/feedingb_look.md5anim {
+		frame 14				call map_feedingtowerb::HugeHunterFootstepLeft
+		frame 25				call map_feedingtowerb::HugeHunterVoice
+		
+		frame 145				call map_feedingtowerb::HugeHunterFootstepLeft
+	}
+	anim walk					models/monsters/hunter/anim/riflewalk.md5anim {
+		frame 12				call map_feedingtowerb::HugeHunterFootstepLeft
+		frame 24				call map_feedingtowerb::HugeHunterFootstepRight
+	}
+}
+
+table hunterlighttable { { .7, 1, .6, .8, .6, .6, .6, .7, .8, 1, 1, .9, .7, .8, 1, .7, .7, .8, .6, .7, .7, .8, .6, .9, .7, .9, 1 } }
+
+material lights/hunterlight {
+	lightFalloffImage	makeIntensity( lights/falloff_curve1 )
+	{
+		map		lights/circlelight11
+		zeroClamp
+		rgb		hunterlighttable[ time * .05 ] * parm3
+	}
+}

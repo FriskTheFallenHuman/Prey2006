@@ -1,0 +1,603 @@
+
+//
+//
+// hound (seperated into head, body and drool)
+//
+//
+models/monsters/hound/houndhead
+{
+	noShadows
+	unsmoothedtangents
+	forceoverlays
+	matter_flesh
+
+	renderbump  -size 1024 1024  -aa 1  -colormap models/monsters/hound/houndhead_local models/monsters/hound/houndhi.lwo
+
+	{
+		shaderFallback3
+		if parm7
+		blend diffusemap
+		map models/monsters/hound/houndhead
+	}
+	{
+		shaderFallback3
+		if parm7 == 0
+		blend diffusemap
+		map models/monsters/hound/houndhead
+		alphatest 0.5
+	}
+	{
+		shaderFallback3
+		blend bumpmap
+		map addnormals(models/monsters/hound/houndhead_local, heightmap(models/monsters/hound/houndhead_h, 8 ) )
+	}
+	{
+		shaderFallback3
+		blend specularmap
+		map models/monsters/hound/houndhead_s
+	}
+
+	{
+		shaderLevel3
+		if parm7 == 0
+		maskcolor
+		map models/monsters/hound/houndhead
+		alphatest 0.5
+	}
+	{
+		shaderLevel3
+		blend shader
+		program skin.vfp
+
+		fragmentparm	0	1, 0, 0, 0		// mask channel
+		// fragmentparm	1	0.1, 0.0, .15	// sss color, power
+		fragmentparm	1	0.4, 0.05, 0.5	// sss color, power
+		fragmentparm	2	0.5, 0.5		// wrap around
+		fragmentparm	3	1.5				// rim
+		fragmentparm	4	2.2, 2.2, 2.2, 45		// specular color, power
+		fragmentparm	5	0.9, 0.9, 0.9, 10		// glancing specular color, power
+		fragmentparm	6	0.35
+
+		fragmentmap 1 addnormals(models/monsters/hound/houndhead_local, heightmap(models/monsters/hound/houndhead_h, 8 ) )
+		fragmentmap 4 models/monsters/hound/houndhead
+		fragmentmap 5 models/monsters/hound/houndhead_s
+		fragmentmap 6 models/monsters/hound/houndhead_s
+		fragmentmap 7 _white
+	}
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+		map models/monsters/hound/houndhead_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 0.8 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+		map models/monsters/hound/houndhead_dis	// replace this with a monster-specific texture
+		alphaTest 0.8 * (time - parm7)
+		glowStage
+	}
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/hound/houndhead_bloody
+{
+	noShadows
+	unsmoothedtangents
+	forceoverlays
+	matter_flesh
+
+	renderbump  -size 1024 1024  -aa 1  -colormap models/monsters/hound/houndhead_local models/monsters/hound/houndhi.lwo
+	{
+		shaderFallback3
+		if parm7
+		blend diffusemap
+		map models/monsters/hound/hound_bloody_head
+	}
+	{
+		shaderFallback3
+		if parm7 == 0
+		blend diffusemap
+		map models/monsters/hound/hound_bloody_head
+		alphatest 0.5
+	}
+	{
+		shaderFallback3
+		blend bumpmap
+		map addnormals(models/monsters/hound/houndhead_local, heightmap(models/monsters/hound/houndhead_h, 8 ) )
+	}
+	{
+		shaderFallback3
+		blend specularmap
+		map models/monsters/hound/hound_bloody_s
+	}
+
+	{
+		shaderLevel3
+		if parm7 == 0
+		maskcolor
+		map models/monsters/hound/hound_bloody_head
+		alphatest 0.5
+	}
+	{
+		shaderLevel3
+		blend shader
+		program skin.vfp
+
+		fragmentparm	0	1, 0, 0, 0		// mask channel
+		// fragmentparm	1	0.1, 0.0, .15	// sss color, power
+		fragmentparm	1	0.4, 0.05, 0.5	// sss color, power
+		fragmentparm	2	0.5, 0.5		// wrap around
+		fragmentparm	3	1.5				// rim
+		fragmentparm	4	2.2, 2.2, 2.2, 45		// specular color, power
+		fragmentparm	5	0.9, 0.9, 0.9, 10		// glancing specular color, power
+		fragmentparm	6	0.35
+
+		fragmentmap 1 addnormals(models/monsters/hound/houndhead_local, heightmap(models/monsters/hound/houndhead_h, 8 ) )
+		fragmentmap 4 models/monsters/hound/hound_bloody_head
+		fragmentmap 5 models/monsters/hound/hound_bloody_s
+		fragmentmap 6 models/monsters/hound/hound_bloody_s
+		fragmentmap 7 _white
+	}
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+		map models/monsters/hound/houndhead_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 0.8 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+		map models/monsters/hound/houndhead_dis	// replace this with a monster-specific texture
+		alphaTest 0.8 * (time - parm7)
+		glowStage
+	}
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/hound/houndbody
+{
+	noShadows
+	unsmoothedtangents
+	forceoverlays
+	matter_flesh
+
+	renderbump  -size 1024 1024 -aa 2 -trace 0.02 -colormap models/monsters/hound/houndbody_local models/monsters/hound/houndhi.lwo
+
+	{
+		shaderFallback3
+		blend diffusemap
+		map models/monsters/hound/houndbody
+	}
+	{
+		shaderFallback3
+		blend bumpmap
+		map addnormals(models/monsters/hound/houndbody_local, heightmap(models/monsters/hound/houndbody_h, 6 ) )
+	}
+	{
+		shaderFallback3
+		blend specularmap
+		map models/monsters/hound/houndbody_s
+	}
+
+	{
+		shaderLevel3
+		blend shader
+		program skin.vfp
+
+		fragmentparm	0	1, 0, 0, 0		// mask channel
+		// fragmentparm	1	0.1, 0.0, .15	// sss color, power
+		fragmentparm	1	0.4, 0.05, 0.5	// sss color, power
+		fragmentparm	2	0.5, 0.5		// wrap around
+		fragmentparm	3	1.5				// rim
+		fragmentparm	4	2.2, 2.2, 2.2, 45		// specular color, power
+		fragmentparm	5	0.9, 0.9, 0.9, 10		// glancing specular color, power
+		fragmentparm	6	0.35
+
+		fragmentmap 1 addnormals(models/monsters/hound/houndbody_local, heightmap(models/monsters/hound/houndbody_h, 6 ) )
+		fragmentmap 4 models/monsters/hound/houndbody
+		fragmentmap 5 models/monsters/hound/houndbody_s
+		fragmentmap 6 models/monsters/hound/houndbody_s
+		fragmentmap 7 _white
+	}
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+		map models/monsters/hound/houndbody_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 0.8 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+		map models/monsters/hound/houndbody_dis	// replace this with a monster-specific texture
+		alphaTest 0.8 * (time - parm7)
+		glowStage
+	}
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/hound/hounddrool
+{
+    noselfshadow
+    noshadows
+	translucent
+	{
+		blend bumpmap
+		map heightmap(models/monsters/hound/slobber_h, 4 )
+		translate	time * 0 , time * -1
+	}
+	specularmap		models/monsters/hound/slobber_s
+
+}
+
+//
+//
+// hound bloody (seperated into head, body and drool)
+//
+// used in the demo when the hound is eating the hider
+//
+models/monsters/hound/houndheadbloody
+{
+	noShadows
+	unsmoothedtangents
+	matter_flesh
+
+	bumpmap	addnormals(models/monsters/hound/houndhead_local, heightmap(models/monsters/hound/houndhead_h, 2 ) )
+	specularmap models/monsters/hound/houndhead_s
+	{
+		blend diffusemap
+		map models/monsters/hound/houndheadbloody
+		alphatest	0.5
+	}
+	{
+		blend	add
+		map	models/monsters/hound/houndhead_add
+	}
+}
+
+models/monsters/hound/hounddroolbloody
+{
+    noshadows
+	twosided
+
+	{
+		blend	diffusemap
+		map		models/monsters/hound/droolbloody
+		alphatest 0.1
+	}
+	bumpmap 		heightmap(models/monsters/hound/drool_h, 4)
+	specularmap		models/monsters/hound/drool_s
+}
+
+models/monsters/hound/gib
+{
+	noShadows
+	matter_flesh
+
+	diffusemap models/monsters/harvester/harvesterguts
+	bumpmap	addnormals(models/monsters/harvester/harvesterguts_local, heightmap(models/monsters/harvester/harvesterguts_h, 6 ) )
+	specularmap models/monsters/harvester/harvesterguts_s
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/hound/houndbody_frozen
+{
+	unsmoothedtangents
+	matter_stone
+	forceOverlays
+	translucent
+	collision
+	noshadows
+	{
+		shaderLevel1
+
+		program			refraction.vfp
+
+		vertexparm		1       3.5*fadeIce[1+.3*(parm7-time)]			// magnitude of the distortion
+
+		fragmentparm	0		1-.1*fadeIce[1+.3*(parm7-time)], 1-.1*fadeIce[1+.3*(parm7-time)], 1-.04*fadeIce[1+.3*(parm7-time)], 1	// refraction color
+		fragmentparm	1		.8*fadeIce[1+.3*(parm7-time)], .8*fadeIce[1+.3*(parm7-time)], .9*fadeIce[1+.3*(parm7-time)], 1		// reflection color
+		fragmentparm	2		2*fadeIce[1+.3*(parm7-time)]
+
+		fragmentmap		1		addnormals(models/monsters/hound/houndbody_local, heightmap(models/monsters/hound/houndbody_h, 6 ) )
+		fragmentmap		2       _currentrender
+	}
+	bumpmap	addnormals(models/monsters/hound/houndbody_local, heightmap(models/monsters/hound/houndbody_h, 6 ) )
+	{
+		blend blend
+		map _white
+		rgb .72
+		alpha .35*fadeIce[1+.3*(parm7-time)]
+	}
+	{
+		blend diffusemap
+		map _white
+		color .34*fadeIce[1+.3*(parm7-time)], .34*fadeIce[1+.3*(parm7-time)], .36*fadeIce[1+.3*(parm7-time)], 1
+	}
+}
+
+models/monsters/hound/houndhead_frozen
+{
+	unsmoothedtangents
+	matter_stone
+	forceOverlays
+	translucent
+	collision
+	noshadows
+	{
+		shaderLevel1
+
+		program			refraction.vfp
+
+		vertexparm		1       3.5*fadeIce[1+.3*(parm7-time)]			// magnitude of the distortion
+
+		fragmentparm	0		1-.1*fadeIce[1+.3*(parm7-time)], 1-.1*fadeIce[1+.3*(parm7-time)], 1-.04*fadeIce[1+.3*(parm7-time)], 1	// refraction color
+		fragmentparm	1		.8*fadeIce[1+.3*(parm7-time)], .8*fadeIce[1+.3*(parm7-time)], .9*fadeIce[1+.3*(parm7-time)], 1		// reflection color
+		fragmentparm	2		2*fadeIce[1+.3*(parm7-time)]
+
+		fragmentmap		1		addnormals(models/monsters/hound/houndhead_local, heightmap(models/monsters/hound/houndhead_h, 8 ) )
+		fragmentmap		2       _currentrender
+	}
+	bumpmap	addnormals(models/monsters/hound/houndhead_local, heightmap(models/monsters/hound/houndhead_h, 8 ) )
+	{
+		blend blend
+		map _white
+		rgb .72
+		alpha .35*fadeIce[1+.3*(parm7-time)]
+	}
+	{
+		blend diffusemap
+		map _white
+		color .34*fadeIce[1+.3*(parm7-time)], .34*fadeIce[1+.3*(parm7-time)], .36*fadeIce[1+.3*(parm7-time)], 1
+	}
+}
+
+//////////////
+//hider weapon skin melt
+//////////////
+models/monsters/hound/houndhead_hidermelt
+{
+	noShadows
+	unsmoothedtangents
+	forceoverlays
+	matter_flesh
+
+	renderbump  -size 1024 1024  -aa 1  -colormap models/monsters/hound/houndhead_local models/monsters/hound/houndhi.lwo
+	{
+		shaderFallback3
+		if parm7
+		blend diffusemap
+		map models/monsters/hound/houndhead
+	}
+	{
+		shaderFallback3
+		if parm7 == 0
+		blend diffusemap
+		map models/monsters/hound/houndhead
+		alphatest 0.5
+	}
+	{
+		shaderFallback3
+		blend bumpmap
+		map addnormals(models/monsters/hound/houndhead_local, heightmap(models/monsters/hound/houndhead_h, 8 ) )
+	}
+	{
+		shaderFallback3
+		blend specularmap
+		map models/monsters/hound/houndhead_s
+	}
+
+	{
+		shaderLevel3
+		if parm7 == 0
+		maskcolor
+		map models/monsters/hound/houndhead
+		alphatest 0.5
+	}
+	{
+		shaderLevel3
+		blend shader
+		program skin.vfp
+
+		fragmentparm	0	1, 0, 0, 0		// mask channel
+		// fragmentparm	1	0.1, 0.0, .15	// sss color, power
+		fragmentparm	1	0.4, 0.05, 0.5	// sss color, power
+		fragmentparm	2	0.5, 0.5		// wrap around
+		fragmentparm	3	1.5				// rim
+		fragmentparm	4	2.2, 2.2, 2.2, 45		// specular color, power
+		fragmentparm	5	0.9, 0.9, 0.9, 10		// glancing specular color, power
+		fragmentparm	6	0.35
+
+		fragmentmap 1 addnormals(models/monsters/hound/houndhead_local, heightmap(models/monsters/hound/houndhead_h, 8 ) )
+		fragmentmap 4 models/monsters/hound/houndhead
+		fragmentmap 5 models/monsters/hound/houndhead_s
+		fragmentmap 6 models/monsters/hound/houndhead_s
+		fragmentmap 7 _white
+	}
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.01 + 0.3 * (time - parm7)
+	}
+	{	// burning corpse effect - greenish effect that trails the burnout
+		if parm7			// only when dead
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.15 * (time - parm7)
+		rgb .6
+		glowStage
+	}
+
+	{ // Scope view texture
+       blend add
+       map textures/sfx/monsterSniperView
+       rgb flicker5 [ time * 2.5 ]
+       texgen screen
+	   scroll 0.5, 0.5
+	   scale 0.5, 0.5
+       clamp
+       glowStage
+       scopeView    // Only visible in the rifle scope view
+   }
+}
+
+models/monsters/hound/houndbody_hidermelt
+{
+	noShadows
+	unsmoothedtangents
+	forceoverlays
+	matter_flesh
+
+	renderbump  -size 1024 1024 -aa 2 -trace 0.02 -colormap models/monsters/hound/houndbody_local models/monsters/hound/houndhi.lwo
+
+	{
+		shaderFallback3
+		blend diffusemap
+		map models/monsters/hound/houndbody
+	}
+	{
+		shaderFallback3
+		blend bumpmap
+		map addnormals(models/monsters/hound/houndbody_local, heightmap(models/monsters/hound/houndbody_h, 6 ) )
+	}
+	{
+		shaderFallback3
+		blend specularmap
+		map models/monsters/hound/houndbody_s
+	}
+	{
+		shaderLevel3
+		blend shader
+		program skin.vfp
+
+		fragmentparm	0	1, 0, 0, 0		// mask channel
+		// fragmentparm	1	0.1, 0.0, .15	// sss color, power
+		fragmentparm	1	0.4, 0.05, 0.5	// sss color, power
+		fragmentparm	2	0.5, 0.5		// wrap around
+		fragmentparm	3	1.5				// rim
+		fragmentparm	4	2.2, 2.2, 2.2, 45		// specular color, power
+		fragmentparm	5	0.9, 0.9, 0.9, 10		// glancing specular color, power
+		fragmentparm	6	0.35
+
+		fragmentmap 1 addnormals(models/monsters/hound/houndbody_local, heightmap(models/monsters/hound/houndbody_h, 6 ) )
+		fragmentmap 4 models/monsters/hound/houndbody
+		fragmentmap 5 models/monsters/hound/houndbody_s
+		fragmentmap 6 models/monsters/hound/houndbody_s
+		fragmentmap 7 _white
+	}
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.01 + 0.3 * (time - parm7)
+		scale 1.5, 1.5
+	}
+	{	// burning corpse effect - greenish effect that trails the burnout
+		if parm7			// only when dead
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.15 * (time - parm7)
+		rgb .6
+		scale 1.5, 1.5
+		glowStage
+	}
+	{	// burning corpse effect - greenish effect that trails the burnout
+		if parm7			// only when dead
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.6		// stage-only polygon offset
+       blend gl_one, gl_zero
+		map models/monsters/shared/melted_body	// replace this with a monster-specific texture
+		alphaTest 0.9 * (time - parm7 + 0.5)
+		rgb .2
+		glowStage
+	}
+
+	{ // Scope view texture
+       blend add
+       map textures/sfx/monsterSniperView
+       rgb flicker5 [ time * 2.5 ]
+       texgen screen
+	   scroll 0.5, 0.5
+	   scale 0.5, 0.5
+       clamp
+       glowStage
+       scopeView    // Only visible in the rifle scope view
+   }
+}
+
+
+//====================
+// Shadow Meshes
+//====================
+models/monsters/hound/houndbody_shadow {
+	diffusemap	textures/editor/shadow
+}
+
+models/monsters/hound/houndhead_shadow {
+	diffusemap	textures/editor/shadow
+}

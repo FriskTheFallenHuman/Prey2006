@@ -362,7 +362,11 @@ void idSliderWindow::InitCvar( ) {
 
 	cvar = cvarSystem->Find( cvarStr );
 	if ( !cvar ) {
-		common->Warning( "idSliderWindow::InitCvar: gui '%s' window '%s' references undefined cvar '%s'", gui->GetSourceFile(), name.c_str(), cvarStr.c_str() );
+		if (!cvar) {
+			if ( strcmp( cvarStr.c_str(), "s_musicvolume_dB" ) ) {
+				common->Warning( "idSliderWindow::InitCvar: gui '%s' window '%s' references undefined cvar '%s'", gui->GetSourceFile(), name.c_str(), cvarStr.c_str() );
+			}
+		}
 		cvar_init = true;
 		return;
 	}

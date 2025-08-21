@@ -1,0 +1,869 @@
+//----------------------------------------------------------------
+// projectile impact decals - these are applied to non-dynamic models (non-animating)
+//
+// these are applied as decals which use the decalinfo properties to do their own fading
+// reference them in projectiles.def, using keys:  mtr_decal_*
+//
+// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+//
+// decal waits for <stayseconds> and then fades from <start rgba> to <end rgba> over <fadeseconds>
+// these materials should all use vertexcolor, and not rgb or colored keywords to fade correctly
+// this setup is appropriate for additive and inverted filter blend modes
+// (blend add & blend gl_zero, gl_one_minus_src_color)
+//
+// the below info is obsolete (applies to normal materials, not these decals):
+// if using 2x modulation (blend gl_dst_color, gl_src_color) they can't fade out
+// if they use alpha blending (blend blend), they can fade with alpha parm3, but will be fullbright
+// if they are additive, they fade with rgb parm3
+// if they are inverted filter (gl_zero, gl_one_minus_src_color), they fade with rgb
+// inverse color is recommended, as it offers lighting (non-fullbright) and fading
+//----------------------------------------------------------------
+
+
+// these tables not needed anymore, all fade info is in the decalinfo blocks
+table wrenchscorchfade			{ clamp { 1, 1, 1, 0 } }
+table riflescorchfade			{ clamp { 1, 1, 1, 0 } }
+table riflescorchburn			{ clamp { 1, 0 } }
+table vomitscorchfade			{ clamp { 1, 1, 1, 0 } }
+table flamethrowerscorchfade	{ clamp { 1, 0 } }
+table flamethrowerburn			{ clamp { 0, 0.5, 1, 0.75, 0.5, 0.25, 0.125, 0 } }
+table tetherscorchfade			{ clamp { 1, 1, 1, 0 } }
+table tetherburn				{ clamp { 1, 0.75, 0.5, 0.25, 0.125, 0 } }
+
+
+//-----------------------------------
+// default (used by multiple projectiles)
+//-----------------------------------
+
+textures/scorches/glassimpact
+{
+	qer_editorimage	textures/scorches/glassimpact
+	scorch_macro
+	twosided
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 3 3 (1 1 1 1) (0 0 0 0)
+	{
+		blend add
+		map textures/scorches/glassimpact
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+textures/scorches/glassimpact2
+{
+	qer_editorimage	textures/scorches/glassimpact2
+	scorch_macro
+	twosided
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 3 3 (1 1 1 1) (0 0 0 0)
+	{
+		blend add
+		map textures/scorches/glassimpact2
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+
+//-----------------------------------
+// wrench
+//-----------------------------------
+
+textures/scorches/wrench/metal
+{
+	qer_editorimage	textures/scorches/wrenchmark
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/wrenchmark
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+textures/scorches/wrench/flesh
+{
+	qer_editorimage	textures/scorches/wrenchmarkflesh
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/wrenchmarkflesh
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+textures/scorches/wrench/wood
+{
+	qer_editorimage	textures/scorches/wrenchmarkwood
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/wrenchmarkwood
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+textures/scorches/wrench/tile
+{
+	qer_editorimage	textures/scorches/wrenchmarktile
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/wrenchmarktile
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+//-----------------------------------
+// rifle
+//-----------------------------------
+
+// not used
+textures/scorches/riflemark
+{
+	qer_editorimage	textures/scorches/scorchmarkinverse
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/scorchmarkinverse
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+// rifle glow decal
+textures/scorches/rifle/metal
+{
+	qer_editorimage	textures/scorches/rifle_glow
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 1 2 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		add
+		map			textures/scorches/rifle_glow
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		glowstage
+	}
+}
+
+textures/scorches/rifle/flesh
+{
+	qer_editorimage	textures/scorches/riflemarkflesh
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/riflemarkflesh
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+textures/scorches/rifle/flesh2
+{
+	qer_editorimage	textures/scorches/riflemarkflesh
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 8 2 (1 1 1 1) (0 0 0 0)
+	{
+    blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/rifle_flesh
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+// for hitting pipe materials
+textures/scorches/rifle/pipe
+{
+	qer_editorimage	textures/scorches/rifle_glow_pipe
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 4.3 1 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		add
+		map			textures/scorches/rifle_glow_pipe
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		glowstage
+	}
+}
+
+textures/scorches/rifle/pipe_scorch
+{
+	qer_editorimage	textures/scorches/rifle_pipe_scorch
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 1)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/rifle_pipe_scorch
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+//-----------------------------------
+// sniper rifle
+//-----------------------------------
+
+
+textures/scorches/sniper/metal
+{
+	qer_editorimage	textures/scorches/explosionscorch
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/explosionscorch
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+textures/scorches/sniper/metal2
+{
+	qer_editorimage	textures/scorches/sniper_glow
+	scorch_macro
+	sort 2
+		// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 1 2 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		add
+		map			textures/scorches/sniper_glow
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		glowstage
+	}
+}
+
+textures/scorches/sniper/pipe
+{
+	qer_editorimage	textures/scorches/rifle_glow_pipe
+	scorch_macro
+	sort 2
+		// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 4.3 1 (1 .2 .0 1) (0 0 0 0)
+	{
+      	blend		add
+		map			textures/scorches/rifle_glow_pipe
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		glowstage
+	}
+}
+
+textures/scorches/sniper/pipe_scorch
+{
+	qer_editorimage	textures/scorches/rifle_pipe_scorch
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 1)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/rifle_pipe_scorch
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+textures/scorches/sniper/flesh
+{
+	qer_editorimage	textures/scorches/riflemarkflesh
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/riflemarkflesh
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+	{
+	      	blend		add
+		map		textures/scorches/riflemarkflesh
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		red 0.45
+		green 0.2
+		blue 0
+		glowstage
+		scopeView
+	}
+}
+
+//-----------------------------------
+// rocket
+//-----------------------------------
+
+textures/scorches/rocket/metal
+{
+	qer_editorimage	textures/scorches/launcher_explosion
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 1 3 (0.8 0.8 0.8 0.8) (0 0 0 0)
+	{
+    blend gl_one,gl_one_minus_src_color
+		map			textures/scorches/launcher_explosion
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		glowstage
+	}
+}
+
+textures/scorches/rocket/metal2
+{
+	qer_editorimage	textures/decals/explosion
+	scorch_macro
+	sort farthest
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 7 7 (0.6 0.7 0.8 0.7) (0 0 0 0)
+	{
+    blend		gl_zero, gl_one_minus_src_color
+		map			textures/decals/explosion
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		glowstage
+	}
+}
+
+textures/scorches/rocket/flesh
+{
+	qer_editorimage	textures/scorches/launcher_flesh
+	scorch_macro
+	sort farthest
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 7 7 (1 1 1 1) (0 0 0 0)
+	{
+    blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/launcher_flesh
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+
+//-----------------------------------
+// docked gun
+//-----------------------------------
+
+textures/scorches/dockedgun/metal
+{
+	qer_editorimage	textures/scorches/dockedgun_glow
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/dockedgun_scorch
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+textures/scorches/dockedgun/flesh
+{
+	qer_editorimage	textures/decals/bloodspot
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/bloodmark
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+//-----------------------------------
+// crawler
+//-----------------------------------
+
+textures/scorches/crawler/metal
+{
+	qer_editorimage	textures/scorches/crawler_explosion
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+    blend gl_one,gl_one_minus_src_color
+		map			textures/scorches/crawler_explosion
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		glowstage
+	}
+}
+
+
+//-----------------------------------
+// acid
+//-----------------------------------
+
+textures/scorches/acid/metal
+{
+	qer_editorimage	textures/scorches/hider_burn
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 3 2 (1 1 1 1) (0 0 0 0) // Acid decals fade fast
+	{
+//	      	blend 		gl_one, gl_one_minus_src_color
+//	      	blend 		gl_src_alpha, gl_one
+		blend	gl_one, gl_one_minus_src_alpha
+		map			textures/scorches/hider_burn
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		rgb 0.8
+		glowStage
+	}
+}
+
+textures/scorches/acid/metal2
+{
+	qer_editorimage	textures/scorches/hider_burn2
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 3 2 (1 1 1 1) (0 0 0 0) // Acid decals fade fast
+	{
+//	      	blend 		gl_one, gl_one_minus_src_color
+//	      	blend 		gl_src_alpha, gl_one
+		blend	gl_one, gl_one_minus_src_alpha
+		map			textures/scorches/hider_burn2
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		rgb 0.8
+		glowStage
+	}
+}
+textures/scorches/acid/flesh
+{
+	qer_editorimage	textures/scorches/tether_scorch
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 3 2 (1 1 1 1) (0 0 0 0) // Acid decals fade fast
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/tether_scorch
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		glowStage
+	}
+}
+
+
+//-----------------------------------
+// vomit
+//-----------------------------------
+
+textures/scorches/vomit/metal
+{
+	qer_editorimage	textures/decals/vomit_splat
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+//      	blend		gl_zero, gl_one_minus_src_color
+		blend		add
+		map			textures/scorches/vomit_splat
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+textures/scorches/vomit/flesh
+{
+	qer_editorimage	textures/decals/bloodspot
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/bloodmark
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+
+//-----------------------------------
+// flamethrower? (obsolete)
+//-----------------------------------
+
+textures/scorches/flamethrower/metal
+{
+	qer_editorimage	textures/scorches/flamethrowerscorch
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/flamethrowerscorch
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+// gasbag laser burn trail
+
+textures/scorches/gasbag/metal
+{
+	qer_editorimage	textures/scorches/gasbag_glow
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 0) (0 0 0 0)
+	{
+		blend		add
+		map			textures/scorches/gasbag_glow
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+// asteroid
+textures/scorches/asteroid
+{
+	qer_editorimage	textures/scorches/asteroidimpact
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 0) (0 0 0 0)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/asteroidimpact
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+//-----------------------------------
+// autocannon
+//-----------------------------------
+
+textures/scorches/autocannon/metal
+{
+	qer_editorimage	textures/scorches/scorchmarkinverse
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 4 3 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/scorchmarkinverse
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+textures/scorches/autocannon/metal2
+{
+	qer_editorimage	textures/scorches/scorchmarkinverse
+	scorch_macro
+	sort 4
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 1 4 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		add
+		map			textures/scorches/autocannon_glow
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+textures/scorches/autocannon/explosion
+{
+	qer_editorimage	textures/scorches/explosionscorch
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/explosionscorch
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+textures/scorches/autocannon/flesh
+{
+	qer_editorimage	textures/scorches/autocannon_flesh
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 8 2 (1 1 1 1) (0 0 0 0)
+	{
+    blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/autocannon_flesh
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+textures/scorches/autocannon/tile
+{
+	qer_editorimage	textures/scorches/tileimpact
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 1)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/tileimpact
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+//-----------------------------------
+// keeper
+//-----------------------------------
+
+
+// keeper glow decal
+textures/scorches/keeper/metal
+{
+	qer_editorimage	textures/particles/cloud_blast
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 0.5 0.5 (0.21 0.24 0.25 0.25) (0 0 0 0)
+	{
+      	blend		add
+		map			textures/particles/cloud_blast
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		glowstage
+	}
+}
+
+//-----------------------------------
+// railgun
+//-----------------------------------
+
+textures/scorches/railgun_impact
+{
+	qer_editorimage	textures/scorches/explosionscorch
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 5 2 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/explosionscorch
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+textures/scorches/railgun_impact2
+{
+	qer_editorimage	textures/scorches/explosionscorch
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 5 2 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		gl_zero, gl_one_minus_src_color
+		map			textures/scorches/explosionscorch
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+//-----------------------------------
+// freezer
+//-----------------------------------
+
+textures/scorches/freeze
+{
+	qer_editorimage	textures/scorches/freeze
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 2 4 (0.7 0.7 0.7 1) (0 0 0 0)
+	{
+		blend gl_one,gl_one_minus_src_color
+		map			textures/scorches/freeze
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		rgb 0.5
+	}
+}
+
+//-----------------------------------
+// plasma
+//-----------------------------------
+
+textures/scorches/plasma
+{
+	qer_editorimage	textures/scorches/plasma
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 1 2 (1 1 1 1) (0 0 0 0)
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map 	textures/decals/explosion
+		vertexcolor
+		rgb 0.6
+	}
+	{
+		blend gl_one,gl_one_minus_src_color
+		map			textures/scorches/plasma
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		glowstage
+		rotate time / 40
+		centerscale (pulsebeat [time / 5]),(pulsebeat [time / 5])
+		centerscale 1.7 , 1.7
+		rgb 0.25
+	}
+	{
+		blend gl_one,gl_one_minus_src_color
+		map			textures/scorches/plasma
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		glowstage
+		centerscale (pulsebeat [time / 20]),(pulsebeat [time / 20])
+		centerscale 1.2 , 1.2
+		rgb 0.2
+	}
+}
+
+textures/scorches/plasma_burn
+{
+	qer_editorimage	textures/scorches/plasma
+	scorch_macro
+	sort farthest
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 3 5 (1 1 1 1) (0 0 0 0)
+		{
+			blend 	gl_zero,gl_one_minus_src_color
+			map 	textures/decals/explosion
+			vertexcolor
+			rgb 0.6
+		}
+}
+
+//-----------------------------------
+// possessed girl energy ball
+//-----------------------------------
+
+textures/scorches/bouncy_ball
+{
+	qer_editorimage	textures/scorches/energy_ball_glow
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 0.5 2 (0.6 0.6 0.6 0.6) (0 0 0 0)
+	{
+      	blend		add
+		map			textures/scorches/energy_ball_glow
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		glowstage
+	}
+}
+
+//-----------------------------------
+// shuttle
+//-----------------------------------
+
+textures/scorches/shuttle/flesh
+{
+	qer_editorimage	textures/scorches/shuttleblast_flesh
+	decal_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+
+	decalinfo 6 6 (1 1 1 1) (0 0 0 0)
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map 	textures/scorches/shuttleblast_flesh
+		vertexcolor
+	}
+}
+
+//-----------------------------------
+// shuttle
+//-----------------------------------
+
+textures/scorches/shuttle/metal
+{
+	qer_editorimage	textures/scorches/shuttleblast_metal
+	decal_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+
+	decalinfo 6 6 (1 1 1 1) (0 0 0 0)
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map 	textures/scorches/shuttleblast_metal
+		vertexcolor
+	}
+}
+
+//-----------------------------------
+// mountedgun
+//-----------------------------------
+
+textures/scorches/mountedgun/metal
+{
+	qer_editorimage	textures/scorches/mountedgun
+	scorch_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 1 2 (1 1 1 1) (0 0 0 0)
+	{
+      	blend		add
+		map			textures/scorches/mountedgun
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		glowstage
+	}
+}

@@ -1,0 +1,1070 @@
+textures/outro/earth_base
+{
+	noshadows
+	{
+		// diffuse
+		blend	diffusemap
+		map		textures/outro/earthcomp4096
+		highres
+	}
+	{
+		// spec
+		blend specularmap
+		map		textures/outro/earth2048s
+		specularexp 10, 1
+		color	0.17, 0.19, 0.2, 0
+		highres
+	}
+	{
+		// night city lights
+		maskcolor
+		map		textures/outro/earthcomp4096
+		highres
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map		_white
+		colored
+		highres
+	}
+}
+
+textures/outro/earth_atmos
+{
+	translucent
+	{
+		shaderLevel1
+		blend shader
+		program atmosphere.vfp
+
+		fragmentparm	0		1.2				//fresnel exponent
+		fragmentparm	1		0.75			//brightness
+		fragmentparm	2		.1, .1, .2		//sun spot
+
+		fragmentmap		4		forcehighquality nopicmip textures/outro/atmosphere
+	}
+}
+
+textures/outro/moon
+{
+	noshadows
+	{
+		blend	diffusemap
+		map		textures/outro/moon2048color
+		highres
+	}
+	{
+		blend	bumpmap
+		map		textures/outro/moon2048local
+		highres
+	}
+}
+
+textures/outro/starsky
+{
+	qer_editorimage textures/editor/skybox
+	skybox_macro
+	{
+		blend add
+		cubemap	env/outrostars
+//		uncompressed
+		texgen	skybox
+	}
+}
+
+textures/outro/blur
+{
+	translucent
+	// FRAGMENT PROGRAM VERSION
+	{
+		if fragmentPrograms == 1
+
+		program			radialblur.vfp
+
+		fragmentmap		0       _currentrender
+
+		fragmentparm	0		parm0, .125, 0.5	//blur size, blur strength, blur lerp
+		fragmentparm	1		1, 0				//pre scale, pre bias
+		fragmentparm	2		1					//desaturation
+		fragmentparm	3		1 + parm1, 0.5		//contrast, contrast center
+		fragmentparm	4		1, 1, 1, 0			//tint color
+		fragmentparm	5		0, 0, 0				//post additive color
+	}
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/special/spherebrain_flash_veins
+		rotate		time * 0.01
+		centerscale	1 * zerotoonesnap[ time / 2 ], 1 * zerotoonesnap[ 0.00 + time / 2 ]
+		rgb		0.1 * zerotoonesnap[ time / -2 ]
+		clamp
+	}
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/special/spherebrain_flash_veins
+		rotate		time * -0.01
+		centerscale	1 * zerotoonesnap[ -0.25 + time / 2 ], 1 * zerotoonesnap[ -0.25 + time / 2 ]
+		rgb		0.1 * zerotoonesnap[ 0.25 + time / -2 ]
+		clamp
+	}
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/special/spherebrain_flash_veins
+		rotate		time * 0.01
+		centerscale	1 * zerotoonesnap[ -0.50 + time / 2 ], 1 * zerotoonesnap[ -0.50 + time / 2 ]
+		rgb		0.1 * zerotoonesnap[ 0.50 + time / -2 ]
+		clamp
+	}
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/special/spherebrain_flash_veins
+		rotate		time * -0.01
+		centerscale	1 * zerotoonesnap[ -0.75 + time / 2 ], 1 * zerotoonesnap[ -0.75 + time / 2 ]
+		rgb		0.1 * zerotoonesnap[ 0.75 + time / -2 ]
+		clamp
+	}
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/special/spherebrain_flash_veins
+		rotate		pulsebeat [time * -0.04]
+		centerscale	0.55 * pulsebeat [time * 0.4 ], 0.55 * pulsebeat [time * 0.4 ]
+		rgb		0.1 * zerotoonesnap [time * -0.6 ]
+		clamp
+	}
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/special/spherebrain_flash_veins
+		rotate		pulsebeat [time * 0.01]
+		centerscale	0.5 * pulsebeat [ -0.25 + time * 0.2 ], 0.5 * pulsebeat [ -0.25 + time * 0.2 ]
+		rgb		0.1 * zerotoonesnap [ -0.25 + time * -0.6 ]
+		clamp
+	}
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/special/spherebrain_flash_veins
+		rotate		pulsebeat [time * -0.01]
+		centerscale	0.55 * pulsebeat [ -0.5 + time * 0.6 ], 0.55 * pulsebeat [ -0.5 + time * 0.6 ]
+		rgb		0.1 * zerotoonesnap [ 0.5 + time * -0.6 ]
+		clamp
+	}
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/special/spherebrain_flash_veins
+		rotate		pulsebeat [time * 0.02]
+		centerscale	0.5 * pulsebeat [ -0.75 + time * 0.6 ], 0.5 * pulsebeat [ -0.75 + time * 0.6 ]
+		rgb		0.1 * zerotoonesnap [ -0.75 + time * -0.6 ]
+		clamp
+	}
+
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/special/spherebrain_flash_focus
+		rotate		time * 0.05
+		centerscale	1.5 * zerotoonesnap[ time / 1 ], 1.2 * zerotoonesnap[ 0.00 + time / 1 ]
+		rgb		0.2 * zerotoonesnap[ time / -1 ]
+		clamp
+	}
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/special/spherebrain_flash_focus
+		rotate		time * -0.03
+		centerscale	1.5 * zerotoonesnap[ -0.25 + time / 1 ], 1.2 * zerotoonesnap[ -0.25 + time / 1 ]
+		rgb		0.2 * zerotoonesnap[ 0.25 + time / -1 ]
+		clamp
+	}
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/special/spherebrain_flash_focus
+		rotate		time * 0.03
+		centerscale	1.5 * zerotoonesnap[ -0.50 + time / 1 ], 1.2 * zerotoonesnap[ -0.50 + time / 1 ]
+		rgb		0.2 * zerotoonesnap[ 0.50 + time / -1 ]
+		clamp
+	}
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/special/spherebrain_flash_focus
+		rotate		time * -0.05
+		centerscale	1.5 * zerotoonesnap[ -0.75 + time / 1 ], 1.2 * zerotoonesnap[ -0.75 + time / 1 ]
+		rgb		0.2 * zerotoonesnap[ 0.75 + time / -1 ]
+		clamp
+	}
+
+		//info flashes
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/special/spherebrain_flash_focus2
+		rotate time * 100
+		centerscale	1 * (glyphjitter3 [ time * .25 ]), .7 * (glyphjitter3 [ time * .25 ])
+		red 0.1 * glyphflash[ 0.7 + time * 0.1 ]
+		green 0.08 * glyphflash[ 0.7 + time * 0.1 ]
+		blue	0.03 * glyphflash[ 0.7 + time * 0.1 ]
+		clamp
+	}
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/special/spherebrain_flash_focus2
+		rotate time * -40
+		centerscale	.7 * (glyphjitter3 [ 0.1 + time * .25 ]), .5 * (glyphjitter3 [ 0.1 + time * .25 ])
+		red 0.3 * glyphflash[ 0.7 + time * 0.1 ]
+		green 0.2 * glyphflash[ 0.7 + time * 0.1 ]
+		blue	0.1 * glyphflash[ 0.7 + time * 0.1 ]
+		clamp
+	}
+}
+
+//used on the inside cone
+
+textures/outro/lightspeed
+{
+	qer_editorimage textures/outro/lightspeed_proxy
+	{
+		blend add
+		map textures/outro/lightspeed2
+		scroll parm4 * time * -0.02, parm4 * time * 0.03
+		centerscale 2, 2
+		color
+			parm0 * 0.1,
+			parm1 * 0.1,
+			parm2 * 0.1,
+			0
+	}
+	{
+		maskcolor
+		map	makealpha(textures/outro/lightspeed_mask)
+		clamp
+		glowstage
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map textures/outro/lightspeed1
+		scroll 1.5 * parm4 * time * 0.02, 1.5 * parm4 * time * 1.0
+		centerscale 2, 2
+		colored
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map textures/outro/lightspeed1
+		scroll parm4 * time * 0.035, parm4 * time * 1.3
+		centerscale 2.4, 2.6
+		colored
+	}
+}
+
+//used on the outide cone
+
+textures/outro/lightspeed2
+{
+	qer_editorimage textures/outro/lightspeed_proxy
+	{
+		blend add
+		map textures/outro/lightspeed1
+		scroll parm4 * time * 0.02, parm4 * time * 0.7
+		centerscale 4, 4
+		color
+			parm0 * 0.2,
+			parm1 * 0.2,
+			parm2 * 0.2,
+			0
+	}
+	{
+		maskcolor
+		map	makealpha(textures/outro/lightspeed_mask)
+		clamp
+		glowstage
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map textures/outro/lightspeed2
+		scroll 1.5 * parm4 * time * 0.015, 1.7 * parm4 * time * 0.01
+		centerscale 1, 1
+		color
+			parm0 * 0.4,
+			parm1 * 0.4,
+			parm2 * 0.4,
+			0
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map textures/outro/lightspeed1
+		scroll 1.5 * parm4 * time * 0.01, 1.5 * parm4 * time * 0.7
+		centerscale 3.5, 3.5
+		color
+			parm0 * 0.5,
+			parm1 * 0.5,
+			parm2 * 0.5,
+			0
+	}
+}
+
+textures/outro/sun
+{
+	qer_editorimage textures/outro/sun
+	deform sprite
+	{
+		blend		add
+		//blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/outro/sun
+		clamp
+		glowstage
+		rgb 0.8 * (pulsebeat [time * 0.1]) * parm4
+	}
+	{
+		blend		add
+		map textures/outro/sun
+		rotate time * -0.001
+		rotate 1.3
+		clamp
+		glowstage
+		rgb 0.1 * (pulsebeat [time * -0.3]) * parm4
+	}
+	{
+		maskcolor
+		map	makealpha(textures/outro/sun_mask)
+		rotate time * -0.001
+		centerscale 0.98 * (pulsebeat2 [time * 0.05]), 0.98 * (pulsebeat2 [time * 0.05])
+		clamp
+		glowstage
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map textures/outro/sun_surface
+		scroll time * -0.005, time * -0.005
+		rotate time * 0.004
+		centerscale 1.1, 1.1
+		rgb 0.4 * (pulsebeat [time * 0.3]) * parm4
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map textures/outro/sun_surface
+		scroll time * 0.005, time * 0.005
+		rotate time * -0.004
+		centerscale 0.8, 0.8
+		rgb 0.35 * (pulsebeat [time * -0.1]) * parm4
+	}
+}
+
+textures/outro/sun_flares
+{
+	qer_editorimage textures/outro/sun_flares_mask
+	deform sprite
+	{
+		blend	add
+		map textures/outro/sun_flares_mask
+		rotate 1.5 * time * -0.005
+		centerscale 0.97 * (pulsebeat2 [time * -0.03]), 0.97 * (pulsebeat2 [time * -0.03])
+		clamp
+		glowstage
+		rgb 0.05 * (pulsebeat [time * 0.1]) * parm4
+	}
+	{
+		maskcolor
+		map	makealpha(textures/outro/sun_flares_mask)
+		rotate time * 0.001
+		centerscale 0.98 * (pulsebeat2 [time * -0.05]), 0.98 * (pulsebeat2 [time * -0.05])
+		clamp
+		glowstage
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map textures/outro/sun_flares
+		rotate time * 0.003
+		centerscale 1.1, 1.1
+		rgb 0.05 * (pulsebeat [time * 0.3]) * parm4
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map textures/outro/sun_flares
+		rotate time * -0.005
+		centerscale 0.8, 0.8
+		rgb 0.45 * (pulsebeat [time * -0.1]) * parm4
+	}
+}
+
+textures/outro/sun_corona
+{
+	qer_editorimage 	textures/sfx/flare1
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform sprite
+	{
+		highquality
+		blend		add
+		map			textures/sfx/flare1
+		rotate time * 0.001
+		clamp
+		red 0.317647 * parm4
+		green 0.301961 * parm4
+		blue 0.230588 * parm4
+	}
+}
+
+
+//gui elements, in order of appearance
+
+textures/outro/gui_vitals1
+{
+	qer_editorimage textures/outro/gui_vitals1
+	{
+		blend add
+		map textures/outro/gui_vitals1
+		colored
+	}
+	{
+		blend add
+		map textures/outro/gui_vitals1_rotater
+		rotate time * 0.3
+		centerscale 2.4, 4.8
+		zeroclamp
+		scroll .046, -.085
+		glowstage
+		colored
+	}
+	{
+		blend add
+		map textures/outro/gui_vitals1_rotater
+		rotate 1.5 + time * -0.3
+		centerscale 2.4, 4.8
+		zeroclamp
+		scroll .046, -.333
+		glowstage
+		colored
+	}
+	{
+		blend add
+		map textures/outro/gui_vitals1_xray7
+		centerscale 1.32, 2.64
+		clamp
+		scroll 0, .312
+		color
+			parm0 * (eightstage [0.000 + time * 0.8]),
+			parm1 * (eightstage [0.000 + time * 0.8]),
+			parm2 * (eightstage [0.000 + time * 0.8]),
+			0
+	}
+	{
+		blend add
+		map textures/outro/gui_vitals1_xray6
+		centerscale 1.32, 2.64
+		clamp
+		scroll 0, .312
+		color
+			parm0 * (eightstage [0.125 + time * 0.8]),
+			parm1 * (eightstage [0.125 + time * 0.8]),
+			parm2 * (eightstage [0.125 + time * 0.8]),
+			parm3 * (eightstage [0.125 + time * 0.8])
+	}
+	{
+		blend add
+		map textures/outro/gui_vitals1_xray5
+		centerscale 1.32, 2.64
+		clamp
+		scroll 0, .312
+		color
+			parm0 * (eightstage [0.250 + time * 0.8]),
+			parm1 * (eightstage [0.250 + time * 0.8]),
+			parm2 * (eightstage [0.250 + time * 0.8]),
+			parm3 * (eightstage [0.250 + time * 0.8])
+	}
+	{
+		blend add
+		map textures/outro/gui_vitals1_xray4
+		centerscale 1.32, 2.64
+		clamp
+		scroll 0, .312
+		color
+			parm0 * (eightstage [0.375 + time * 0.8]),
+			parm1 * (eightstage [0.375 + time * 0.8]),
+			parm2 * (eightstage [0.375 + time * 0.8]),
+			parm3 * (eightstage [0.375 + time * 0.8])
+	}
+	{
+		blend add
+		map textures/outro/gui_vitals1_xray3
+		centerscale 1.32, 2.64
+		clamp
+		scroll 0, .312
+		color
+			parm0 * (eightstage [0.500 + time * 0.8]),
+			parm1 * (eightstage [0.500 + time * 0.8]),
+			parm2 * (eightstage [0.500 + time * 0.8]),
+			parm3 * (eightstage [0.500 + time * 0.8])
+	}
+	{
+		blend add
+		map textures/outro/gui_vitals1_xray2
+		centerscale 1.32, 2.64
+		clamp
+		scroll 0, .312
+		color
+			parm0 * (eightstage [0.625 + time * 0.8]),
+			parm1 * (eightstage [0.625 + time * 0.8]),
+			parm2 * (eightstage [0.625 + time * 0.8]),
+			parm3 * (eightstage [0.625 + time * 0.8])
+	}
+	{
+		blend add
+		map textures/outro/gui_vitals1_xray1
+		centerscale 1.32, 2.64
+		clamp
+		scroll 0, .312
+		color
+			parm0 * (eightstage [0.750 + time * 0.8]),
+			parm1 * (eightstage [0.750 + time * 0.8]),
+			parm2 * (eightstage [0.750 + time * 0.8]),
+			parm3 * (eightstage [0.750 + time * 0.8])
+	}
+}
+
+table pulsebeat2 { { 1, 1.04, 1.06, 1.02, 1, 1.04, 1.06, 1.02 } }
+
+textures/outro/gui_vitals2
+{
+	qer_editorimage textures/outro/gui_vitals2
+	{
+		blend add
+		map textures/outro/gui_vitals2
+		colored
+	}
+	{
+		maskcolor
+		map	makealpha(textures/outro/gui_vitals2_mask)
+		glowstage
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map textures/outro/gui_vitals2_EEG
+		colored
+		centerscale 1 , 2.5
+		scroll time * 0.3, 0.025
+		centerscale 1 * (pulsebeat2 [time * 0.2]) , 1 * (pulsebeat2 [time * 0.05])
+		glowstage
+		color
+			parm0 * 0.7 * (pulsebeat [time * 0.5]),
+			parm1 * 0.7 * (pulsebeat [time * 0.5]),
+			parm2 * 0.7 * (pulsebeat [time * 0.5]),
+			parm3 * 0.7 * (pulsebeat [time * 0.5])
+	}
+}
+
+textures/outro/gui_viewfinder1
+{
+	qer_editorimage textures/outro/gui_viewfinder1
+	{
+		blend add
+		map textures/outro/gui_viewfinder1
+		rotate 1 * parm4
+		color
+			parm0 * 0.8,
+			parm1 * 0.8,
+			parm2 * 0.8,
+			parm3 * 0.8
+		clamp
+	}
+}
+
+textures/outro/gui_viewfinder2
+{
+	qer_editorimage textures/outro/gui_viewfinder2
+	{
+		blend add
+		map textures/outro/gui_viewfinder2
+		rotate time * 0.02
+		centerscale 1.2, 1.2
+		color
+			parm0 * 0.75,
+			parm1 * 0.75,
+			parm2 * 0.75,
+			parm3 * 0.75
+		clamp
+	}
+	{
+		blend add
+		map textures/outro/gui_viewfinder2
+		rotate time * -0.02
+		centerscale 1.5 * (jitter1 [time * .2]), 1.5 * (jitter1 [time * .2])
+				color
+			parm0 * 0.45,
+			parm1 * 0.45,
+			parm2 * 0.45,
+			parm3 * 0.45
+		clamp
+	}
+}
+
+textures/outro/gui_earth_pointer
+{
+	qer_editorimage textures/outro/gui_earth_pointer
+	{
+		blend add
+		map textures/outro/gui_earth_pointer
+		colored
+	}
+	{
+		maskcolor
+		map	makealpha(textures/outro/gui_earth_pointer_mask)
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map textures/outro/gui_numbers
+		colored
+		centerscale 1.4, 1.9
+		scroll time * 0.8, 0
+	}
+}
+
+textures/outro/gui_earth_pointer2
+{
+	qer_editorimage textures/outro/gui_earth_pointer
+	{
+		blend add
+		map textures/outro/gui_earth_pointer
+		colored
+	}
+	{
+		maskcolor
+		map	makealpha(textures/outro/gui_earth_pointer_mask)
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map textures/outro/gui_numbers
+		colored
+		centerscale 2, 2.4
+		scroll time * 0.9, 0
+	}
+}
+
+textures/outro/gui_earth_readout1 //sb_outroGUI_5
+{
+	qer_editorimage textures/outro/gui_earth_readout1
+	{
+		blend add
+		map textures/outro/gui_earth_readout1
+		colored
+	}
+	{
+		maskcolor
+		map	makealpha(textures/outro/gui_earth_readout1_mask)
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map textures/outro/gui_earth_readout1_map
+		colored
+		centerscale 2 * (pulsebeat [time * 0.05]), 1 * (pulsebeat [time * 0.05])
+		scroll (pulsebeat [time * 0.1]), (pulsebeat [time * 0.07])
+	}
+}
+
+textures/outro/gui_earth_readout2a //sb_outroGUI_6
+{
+	qer_editorimage textures/outro/gui_earth_readout2a
+	{
+		blend add
+		map textures/outro/gui_earth_readout2a
+		colored
+	}
+}
+
+textures/outro/gui_earth_readout2b //sb_outroGUI_7
+{
+	qer_editorimage textures/outro/gui_earth_readout2b
+	{
+		blend add
+		map textures/outro/gui_earth_readout2b
+		colored
+	}
+	{
+		maskcolor
+		map	makealpha(textures/outro/gui_earth_readout2b_mask)
+		glowstage
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map textures/outro/gui_earth_readout2b_glyphs
+		colored
+		scroll 0, time * 0.5
+		glowstage
+	}
+}
+
+textures/outro/gui_readout //sb_outroGUI_8
+{
+	qer_editorimage textures/outro/gui_readout
+	{
+		blend add
+		map textures/outro/gui_readout
+		colored
+	}
+	{
+		maskcolor
+		map	makealpha(textures/outro/gui_readout_mask)
+		glowstage
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map textures/outro/gui_numbers
+		colored
+		centerscale 2, 2
+		scroll time * 0.5, 0.1
+		glowstage
+		color
+			parm0 * 0.7,
+			parm1 * 0.7,
+			parm2 * 0.7,
+			0
+	}
+}
+
+textures/outro/gui_sun_pointer1  //sb_outroGUI_9
+{
+	qer_editorimage textures/outro/gui_sun_pointer1
+	{
+		blend add
+		map textures/outro/gui_sun_pointer1
+		colored
+	}
+}
+
+textures/outro/gui_sun_lockon  //sb_outroGUI_10
+{
+	qer_editorimage textures/outro/gui_sun_lockon1
+	{
+		blend add
+		map textures/outro/gui_sun_lockon1
+		colored
+		rotate (rotater [time * 0.02])
+		clamp
+	}
+	{
+		blend add
+		map textures/outro/gui_sun_lockon2
+		colored
+		rotate (rotater [time * -0.08])
+		centerscale 1.3 * parm4, 1.3 * parm4
+		clamp
+	}
+}
+
+textures/outro/gui_sun_pointer2  //sb_outroGUI_11
+{
+	qer_editorimage textures/outro/gui_sun_pointer2
+	{
+		blend add
+		map textures/outro/gui_sun_pointer2
+		colored
+	}
+}
+
+textures/outro/gui_sun
+{
+	qer_editorimage textures/outro/sun
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/outro/sun
+		rotate -1.5
+		clamp
+		glowstage
+		color
+			parm0 * 1 * (pulsebeat [time * 0.1]),
+			parm1 * 1 * (pulsebeat [time * 0.1]),
+			parm2 * 1 * (pulsebeat [time * 0.1]),
+			0
+	}
+	{
+		blend		add
+		map textures/outro/sun
+		rotate time * -0.001
+		rotate 1.3
+		clamp
+		glowstage
+		color
+			parm0 * 0.6 * (pulsebeat [time * -0.3]),
+			parm1 * 0.6 * (pulsebeat [time * -0.3]),
+			parm2 * 0.6 * (pulsebeat [time * -0.3]),
+			0
+	}
+}
+
+textures/outro/gui_sun_readout  //sb_outroGUI_12
+{
+	qer_editorimage textures/outro/gui_sun_readout
+	{
+		blend add
+		map textures/outro/gui_sun_readout
+		colored
+	}
+}
+
+textures/outro/gui_accelerating  //sb_outroGUI_13
+{
+	qer_editorimage textures/outro/gui_accelerating
+	{
+		blend add
+		map textures/outro/gui_accelerating
+		colored
+	}
+}
+
+textures/outro/gui_accelerating_graph
+{
+	qer_editorimage textures/outro/gui_accelerating_graph
+	{
+		blend add
+		map _white
+		glowstage
+		color
+			parm0 * 0.01,
+			parm1 * 0.01,
+			parm2 * 0.01,
+			0
+	}
+	{
+		maskcolor
+		map	makealpha(textures/outro/gui_accelerating_graph_mask)
+		scroll 1, parm4 * 1.3 * (pulsebeat [parm4 * time * 2])
+		glowstage
+		zeroclamp
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map textures/outro/gui_accelerating_graph
+		colored
+		centerscale 0.7, 1
+		scroll 0.2 + time * 2.7, 1
+		glowstage
+		color
+			parm0 * 0.6 * (pulsebeat [time * 0.9]),
+			parm1 * 0.6 * (pulsebeat [time * 0.9]),
+			parm2 * 0.6 * (pulsebeat [time * 0.9]),
+			0
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map textures/outro/gui_accelerating_graph
+		colored
+		centerscale 0.4, 1
+		scroll time * -2., 1
+		glowstage
+		color
+			parm0 * 0.6 * (pulsebeat [time * -0.9]),
+			parm1 * 0.6 * (pulsebeat [time * -0.9]),
+			parm2 * 0.6 * (pulsebeat [time * -0.9]),
+			0
+	}
+}
+
+textures/outro/gui_asteroid_pointer1
+{
+	qer_editorimage textures/outro/gui_asteroid_pointer1
+	{
+		blend add
+		map textures/outro/gui_asteroid_pointer1
+		colored
+	}
+}
+
+textures/outro/gui_asteroid_pointer2
+{
+	qer_editorimage textures/outro/gui_asteroid_pointer2
+	{
+		blend add
+		map textures/outro/gui_asteroid_pointer2
+		colored
+	}
+}
+
+textures/outro/gui_asteroid_pointer3
+{
+	qer_editorimage textures/outro/gui_asteroid_pointer3
+	{
+		blend add
+		map textures/outro/gui_asteroid_pointer3
+		colored
+	}
+}
+
+textures/outro/gui_asteroid_lockon
+{
+	qer_editorimage textures/outro/gui_asteroid_lockon
+	sort nearest
+	{
+		blend gl_src_alpha, gl_one_minus_src_alpha
+		map textures/outro/gui_asteroid_lockon
+		rgb 0
+		alpha parm3
+	}
+	{
+		blend add
+		map textures/outro/gui_asteroid_lockon
+		glowstage
+		colored
+	}
+}
+
+textures/outro/gui_warning2  //sb_outroGUI_14
+{
+	qer_editorimage textures/outro/gui_warning2
+	{
+		blend add
+		map textures/outro/gui_warning2
+		colored
+	}
+}
+
+textures/outro/gui_warning4  //sb_outroGUI_18
+{
+	qer_editorimage textures/outro/gui_warning4
+	{
+		blend add
+		map textures/outro/gui_warning4
+		glowstage
+		color
+			parm0 * 0.5 * ( sin010 [ parm4 * time ] ),
+			parm1 * 0.5 * ( sin010 [ parm4 * time ] ),
+			parm2 * 0.5 * ( sin010 [ parm4 * time ] ),
+			0
+	}
+}
+
+textures/outro/gui_warning1  //sb_outroGUI_17
+{
+	qer_editorimage textures/outro/gui_warning1
+	{
+		blend add
+		map textures/outro/gui_warning1
+		colored
+	}
+	{
+		blend add
+		map textures/outro/gui_warning
+		rotate time * -0.4
+		centerscale 2.2, 2.2
+		scroll -0.12, -0.2
+		zeroclamp
+		color
+			parm0 * 1 * (bus1 [time * 0.8]),
+			parm1 * 1 * (bus1 [time * 0.8]),
+			parm2 * 1 * (bus1 [time * 0.8]),
+			parm3 * 1 * (bus1 [time * 0.8])
+	}
+	{
+		blend add
+		map textures/outro/gui_warningb
+		centerscale 2.2, 2.2
+		scroll -0.12, -0.2
+		zeroclamp
+		glowstage
+		colored
+	}
+}
+
+textures/outro/gui_warning5  //sb_outroGUI_15
+{
+	qer_editorimage textures/outro/gui_warning5
+	{
+		blend add
+		map textures/outro/gui_warning5
+		colored
+	}
+	{
+		blend add
+		map textures/outro/gui_warningd
+		centerscale 2., 2.
+		scroll 0.005, 0.01
+		zeroclamp
+		color
+			parm0 * 0.4,
+			parm1 * 0.4,
+			parm2 * 0.4,
+			0
+	}
+	{
+		blend add
+		map textures/outro/gui_warningd
+		centerscale 2., 2.
+		scroll 0.005, 0.01
+		zeroclamp
+		glowstage
+		color
+			parm0 * 0.3 * (bus1 [time * 3.2]),
+			parm1 * 0.3 * (bus1 [time * 3.2]),
+			parm2 * 0.3 * (bus1 [time * 3.2]),
+			0
+	}
+	{
+		blend add
+		map textures/outro/gui_warningc
+		centerscale 2.1, 2.1
+		scroll 0.005, 0.01
+		zeroclamp
+		glowstage
+		color
+			parm0 * 0.3 * (bus2 [time * 3.2]),
+			parm1 * 0.3 * (bus2 [time * 3.2]),
+			parm2 * 0.3 * (bus2 [time * 3.2]),
+			0
+	}
+}
+
+textures/outro/gui_warning3  //sb_outroGUI_16
+{
+	qer_editorimage textures/outro/gui_warning3
+	{
+		blend add
+		map textures/outro/gui_warning3
+		colored
+	}
+	{
+		blend add
+		map textures/outro/gui_warning
+		centerscale 2.2, 2.2
+		scroll -0.11, -0.135
+		zeroclamp
+		glowstage
+		color
+			parm0 * 0.7 * (bus2 [time * 1.6]),
+			parm1 * 0.7 * (bus2 [time * 1.6]),
+			parm2 * 0.7 * (bus2 [time * 1.6]),
+			0
+
+	}
+	{
+		blend add
+		map textures/outro/gui_warningc
+		centerscale 2.2, 2.2
+		scroll -0.11, -0.135
+		zeroclamp
+		glowstage
+		color
+			parm0 * 0.7 * (bus1 [time * 1.6]),
+			parm1 * 0.7 * (bus1 [time * 1.6]),
+			parm2 * 0.7 * (bus1 [time * 1.6]),
+			0
+	}
+	{
+		blend add
+		map textures/outro/gui_warning
+		centerscale 2.2, 2.2
+		scroll -0.11, -0.135
+		zeroclamp
+		color
+			parm0 * 0.4,
+			parm1 * 0.4,
+			parm2 * 0.4,
+			0
+
+	}
+	{
+		blend add
+		map textures/outro/gui_warningc
+		centerscale 2.2, 2.2
+		scroll -0.11, -0.135
+		zeroclamp
+		color
+			parm0 * 0.4,
+			parm1 * 0.4,
+			parm2 * 0.4,
+			0
+	}
+}
+

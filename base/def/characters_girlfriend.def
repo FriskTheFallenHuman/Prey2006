@@ -1,0 +1,620 @@
+/////////////////////////////////////////////////////////////////////////////////////
+//
+// GIRLFRIEND
+//
+/////////////////////////////////////////////////////////////////////////////////////
+export all {
+	options		-scale 1.0 -prefix GRL_ -keep Waist waistLook bone_orientation Rattach_gun Lattach_gun Lsleeve Rsleeve flap1 flap2 flap3 falp4 flap5 flap6 flap7
+
+
+	addoptions	-destdir models/characters/girlfriend/anim
+	addoptions  -keepmesh girl_body
+
+	mesh		models/characters/females/female.ma -destdir models/characters/girlfriend -dest girlfriend
+
+	anim		models/characters/females/anim/initial.ma
+	anim		models/characters/females/anim/bar_wipeidle.ma
+	anim		models/characters/females/anim/wipe.ma
+	anim		models/characters/females/anim/suckedup.ma
+	anim		models/characters/females/anim/onslab.ma
+	anim		models/characters/females/anim/cower.ma
+	anim		models/characters/females/anim/cower_idle.ma
+	anim		models/characters/females/anim/idle_default.ma
+	anim		models/characters/females/anim/walk.ma
+	anim		models/characters/females/anim/run.ma
+//	anim		models/characters/females/anim/bar_idle_1.ma
+//	anim		models/characters/females/anim/bar_idle_2.ma
+	anim		models/characters/females/anim/idle_2.ma
+	anim		models/characters/females/anim/abduct_reaction.ma
+	anim		models/characters/females/anim/abduct_idle_1.ma
+	anim		models/characters/females/anim/rh_armsfolded_from_jenny.ma
+	anim		models/characters/females/anim/rh_armsfolded_idle_jenny.ma
+	anim		models/characters/females/anim/rh_armsfolded_to_jenny.ma
+	anim		models/characters/females/anim/rh_grab_arm_idle_jenny.ma
+	anim		models/characters/females/anim/rh_grab_arm_jenny.ma
+	anim		models/characters/females/anim/rh_grab_arm_release_jenny.ma
+	anim		models/characters/females/anim/rh_lean_idle_jenny.ma
+	anim		models/characters/females/anim/rh_lean_idle_to_jenny.ma
+	anim		models/characters/females/anim/rh_leanforward_idle_jenny.ma
+	anim		models/characters/females/anim/rh_servebeers_jenny.ma
+	anim		models/characters/females/anim/rh_speech_from_jenny.ma
+	anim		models/characters/females/anim/rh_speech_idle_jenny.ma
+	anim		models/characters/females/anim/rh_speech_to_jenny.ma
+	anim		models/characters/females/anim/rh_walktodrunks_jenny.ma
+	anim		models/characters/females/anim/rh_wipe_idle_jenny.ma
+	anim		models/characters/females/anim/rh_wash_idle_jenny.ma
+	anim		models/characters/females/anim/rh_walktodrunks_foldarms_jenny.ma
+	anim		models/characters/females/anim/rh_leanforward_jenny.ma
+	anim		models/characters/females/anim/rh_grab_arm_release_idle_jenny.ma
+	anim		models/characters/females/anim/rh_abduct_to.ma
+	anim		models/characters/females/anim/idle.ma
+//	anim		models/characters/females/anim/bl_monitor_jenny.ma
+//	anim		models/characters/females/anim/bl_reaction1_jenny.ma
+	anim		models/characters/females/anim/bl_reaction2_jenny.ma
+	anim		models/characters/females/anim/bl_reaction3_jenny.ma
+//	anim		models/characters/females/anim/bl_youhavechanged_jenny.ma
+	anim		models/characters/females/anim/bl_speech_jenny.ma
+//	anim		models/characters/females/anim/bl_speech_frantic_jenny.ma
+	anim		models/characters/females/anim/bl_whatisgoingon_jenny.ma
+	anim		models/characters/females/anim/sp_cower_idle_jenny.ma
+	anim		models/characters/females/anim/sp_cower_speech_jenny.ma
+	anim		models/characters/females/anim/sp_kneel_idle_jenny.ma
+	anim		models/characters/females/anim/sp_kneel_jenny.ma
+	anim		models/characters/females/anim/sp_kneel_talk.ma
+	anim		models/characters/females/anim/sp_kneel_to_cower_jenny.ma
+	anim		models/characters/females/anim/sp_stand_jenny.ma
+	anim		models/characters/females/anim/sp_stand_cower_to.ma
+	anim		models/characters/females/anim/sp_stand_cower_idle.ma
+	anim		models/characters/females/anim/sp_stand_cower_from.ma
+	anim		models/characters/females/anim/sp_careful_to_jenny.ma
+	anim		models/characters/females/anim/sp_careful_idle_jenny.ma
+	anim		models/characters/females/anim/sp_careful_from_jenny.ma
+	anim		models/characters/females/anim/ep_speech_jenny.ma
+	anim		models/characters/females/anim/ep_emotion1_jenny.ma
+	anim		models/characters/females/anim/ep_emotion2_jenny.ma
+	anim		models/characters/females/anim/ep_look_around_jenny.ma
+	anim		models/characters/females/anim/ep_shrug_shoulders_jenny.ma
+	anim		models/characters/females/anim/rh_wash_speech_to_jenny.ma
+	anim		models/characters/females/anim/rh_wash_speech_from_jenny.ma
+	anim		models/characters/females/anim/rh_wash_speech_jenny.ma
+	anim		models/characters/females/anim/rh_lean_to_armsfolded_jenny.ma
+	anim		models/characters/females/anim/rh_armsfolded_shakehead_jenny.ma
+	anim		models/characters/females/anim/rh_armsfolded_questioning_jenny.ma
+	anim		models/characters/females/anim/rh_armsfolded_nod_jenny.ma
+	anim		models/characters/females/anim/rh_armsfolded_fingerdown_jenny.ma
+	anim		models/characters/females/anim/abduct_idle_still.ma
+	anim		models/characters/females/anim/tank_idle.ma
+	anim		models/characters/females/anim/tank_shock.ma
+//	anim		models/characters/females/anim/tank_fall.ma
+	anim		models/characters/females/anim/tank_fall_1.ma
+//	anim		models/characters/females/anim/tank_fall_speech_to.ma
+	anim		models/characters/females/anim/tank_fall_speech.ma
+//	anim		models/characters/females/anim/tank_fall_speech_from.ma
+	anim		models/characters/females/anim/tank_fall_2.ma
+	anim		models/characters/females/anim/ep_dontbe_jenny.ma
+	anim		models/characters/females/anim/bl_Iwanttogohome_jenny.ma
+	anim		models/characters/females/anim/rh_wash_ring_sponge_jenny.ma
+	anim		models/characters/females/anim/rh_armsfolded_lean_idle_jenny.ma
+	anim		models/characters/females/anim/flythrough.ma -xyzprecision 0.001 -quatprecision 0.00006
+	anim		models/characters/females/anim/windowfly.ma
+	anim		models/characters/females/anim/fly2portal.ma
+	anim		models/characters/females/anim/on_slab2.ma
+	anim		models/characters/females/anim/on_slab3.ma
+	anim		models/characters/females/anim/on_slab_drop.ma
+	anim		models/characters/females/anim/on_slab_death_stab.ma
+	anim		models/characters/females/anim/rh_ringout_idle_jenny.ma
+	anim		models/characters/females/anim/rh_ringout_to_jenny.ma
+	anim		models/characters/females/anim/sp_cover_idle_jenny.ma
+//	anim		models/characters/females/anim/bl_onknee_idle_jenny.ma
+	anim		models/characters/females/anim/jn_feedinga_wherethe.ma
+	anim		models/characters/females/anim/jn_feedinga_uniqua.ma
+	anim		models/characters/females/anim/lota_float.ma
+	anim		models/characters/females/anim/rh_bbar_idle_jenny.ma
+	anim		models/characters/females/anim/abduct_truck.ma
+	anim		models/characters/females/anim/on_slab_genericdeath.ma
+	anim		models/characters/females/anim/idle_scared.ma
+}
+model model_character_girlfriend {
+	
+	mesh					models/characters/girlfriend/girlfriend.md5mesh	
+	channel torso				(*b1)
+	channel legs				(*origin -*b1)
+
+  	anim initial			models/characters/girlfriend/anim/initial.md5anim
+  	anim af_pose			models/characters/girlfriend/anim/initial.md5anim
+  	anim ik_pose			models/characters/girlfriend/anim/initial.md5anim
+	anim idle				models/characters/girlfriend/anim/idle_scared.md5anim
+	
+	anim walk				models/characters/girlfriend/anim/walk.md5anim
+	anim run				models/characters/girlfriend/anim/run.md5anim
+//	anim fly2portal			models/characters/girlfriend/anim/fly2portal.md5anim
+	anim tankshock			models/characters/girlfriend/anim/tank_shock.md5anim
+}
+
+model model_character_girlfriend_slab {
+	inherit			model_character_girlfriend
+	
+	anim on_slab1				models/characters/girlfriend/anim/onslab.md5anim
+	anim on_slab2				models/characters/girlfriend/anim/on_slab2.md5anim
+	anim on_slab3				models/characters/girlfriend/anim/on_slab3.md5anim
+	anim on_slab4				models/characters/girlfriend/anim/onslab.md5anim
+	anim on_slab_calm1			models/characters/girlfriend/anim/on_slab2.md5anim
+	anim on_slab_fight1			models/characters/girlfriend/anim/on_slab2.md5anim
+	anim on_slab_fight2			models/characters/girlfriend/anim/on_slab3.md5anim
+	anim on_slab_gdeath			models/characters/girlfriend/anim/on_slab_genericdeath.md5anim
+	anim on_slab_final_death			models/characters/girlfriend/anim/on_slab3.md5anim {
+		frame 1	sound_voice snd_death
+	}
+	anim on_slab_death_stab		models/characters/girlfriend/anim/on_slab_death_stab.md5anim
+	anim on_slab_death_stab_silent		models/characters/girlfriend/anim/on_slab_death_stab.md5anim
+	anim on_slab_drop			models/characters/girlfriend/anim/on_slab_drop.md5anim
+
+	anim jn_feedinga_tommy		models/characters/girlfriend/anim/onslab.md5anim
+	anim jn_feedinga_tommyicant	models/characters/girlfriend/anim/on_slab3.md5anim
+	anim jn_feedinga_wherethe	models/characters/girlfriend/anim/jn_feedinga_wherethe.md5anim
+	anim jn_feedinga_uniqua		models/characters/girlfriend/anim/jn_feedinga_uniqua.md5anim
+}
+
+entityDef character_girlfriend {
+	"inherit"						"character_default"	
+	
+	"size"							"32 32 68"
+	"rank"							"0"
+	"health"						"25"
+	"wait_for_enemy"				"1"
+	
+	"skin"							"skins/characters/girlfriend"
+
+	"def_earring"					"env_earring"	// Spawn her earrings on her ears
+	"earringboneL"					"Learring_locator"
+	"earringboneR"					"Rearring_locator"
+
+	"model"							"model_character_girlfriend"
+	"ragdoll"						"character_girlfriend"
+
+	"model_head"					"head_jenny"
+	"head_joint"					"neck"
+
+	"eye_turn_min"					"-20 -30 0"
+	"eye_turn_max"					"20 30 0"
+	"eye_focus_rate"				"0.0005"	// Doesn't seem to have any effect
+	"head_focus_rate"				"0.1"
+	"focus_align_time"				"100"
+
+	"talk_no_turn"					"1"
+	"look_joint neck"				"1 1 0"
+	"look_min"						"-40 -45 0"
+	"look_max"						"20 45 0"
+
+	//"snd_sight"					"character_girlfriend_sight"
+	//"snd_chatter"					"character_girlfriend_chatter"
+	//"snd_pain"					"character_girlfriend_pain"
+	//"snd_meleeattack"				"character_girlfriend_meleeattack"
+	//"snd_death"					"character_girlfriend_die"
+	//"snd_dead_body_hit"			"character_girlfriend_dead_body_hit"
+
+	// IK Stuff
+	"ik_numLegs"				"2"
+	"ik_tiltWaist"				"1" // HUMANHEAD mdl:  This flag isn't used by Doom3 and doesn't appear to be used by the code either.
+	"ik_usePivot"				"0" // HUMANHEAD mdl:  This flag isn't used by Doom3 and the associated code appears to be broken.  Leave it disabled.
+	"ik_footSize"				"4"
+	"ik_minWaistAnkleDist"		"24"
+	"ik_minWaistFloorDist"		"24"
+	"ik_waist"					"Waist"		// doom has this different than bone_waist (probably starting point of ik tranversal)
+	"ik_hip1"					"Lupleg"
+	"ik_hip2"					"Rupleg"
+	"ik_knee1"					"Lknee"
+	"ik_knee2"					"Rknee"
+	"ik_ankle1"					"Lankle"
+	"ik_ankle2"					"Rankle"
+	"ik_dir1"					"Lvector"		// IK direction is defined as the vector from ik_dir to ik_knee
+	"ik_dir2"					"Rvector"		// IK direction is used to tell which way to bend (should be straight out in front of knee)
+	"ik_foot1"					"Ltoe_r"
+	"ik_foot2"					"Rtoe_r"
+}
+
+model model_character_girlfriend_spirit {
+    "inherit"				"model_character_girlfriend"
+
+	anim lota_float			models/characters/girlfriend/anim/lota_float.md5anim
+}
+
+entityDef character_girlfriend_spirit {
+	"inherit"					"character_girlfriend"
+	"skin"						"skins/characters/girlfriend_spirit.skin"
+	"model"						"model_character_girlfriend_spirit"
+	"model_head"				"head_girlfriend_spirit"
+	"def_earring"				""
+}
+
+entityDef character_girlfriend_blonde {
+	"inherit"					"character_girlfriend"
+	"skin"						"skins/characters/girlfriend_blonde.skin"
+	"model_head"				"head_girlfriend_blonde"
+	"def_earring"				""
+}
+
+entityDef character_girlfriend_slab {
+	"inherit"					"character_girlfriend"
+	"model"						"model_character_girlfriend_slab"
+
+	"model_head"				"head_girlfriend_slab"
+	
+	"def_earring"				""
+}
+
+entityDef character_girlfriend_blonde_slab {
+	"inherit"					"character_girlfriend_blonde"
+	"model"						"model_character_girlfriend_slab"
+	
+	"model_head"				"head_girlfriend_blonde_slab"
+	
+	"def_earring"				""
+	
+	"snd_death"					"gen_npc_adult_female_slab_death"
+	"snd_slab_scream"			"gen_npc_adult_female_slab_scream"
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+//
+// character_girlfriend_roadhouse
+//
+/////////////////////////////////////////////////////////////////////////////////////
+model model_character_girlfriend_roadhouse {
+    "inherit"				"model_character_girlfriend"
+    
+	anim rh_armsfolded_from_jenny			models/characters/girlfriend/anim/rh_armsfolded_from_jenny.md5anim {
+		frame 44		call map_roadhouse::GirlfriendRagGrab
+	}
+	anim rh_armsfolded_idle_jenny			models/characters/girlfriend/anim/rh_armsfolded_idle_jenny.md5anim
+	anim rh_armsfolded_to_jenny				models/characters/girlfriend/anim/rh_armsfolded_to_jenny.md5anim
+	anim rh_grab_arm_idle_jenny				models/characters/girlfriend/anim/rh_grab_arm_idle_jenny.md5anim 
+	anim rh_grab_arm_jenny					models/characters/girlfriend/anim/rh_grab_arm_jenny.md5anim
+	anim rh_grab_arm_release_jenny			models/characters/girlfriend/anim/rh_grab_arm_release_jenny.md5anim
+	anim rh_leanforward_idle_jenny			models/characters/girlfriend/anim/rh_leanforward_idle_jenny.md5anim
+	anim rh_servebeers_jenny				models/characters/girlfriend/anim/rh_servebeers_jenny.md5anim {
+		frame 94		call map_roadhouse::GirlfriendRagDrop
+		frame 163		call map_roadhouse::BeerDoorsOpen
+		frame 226		call map_roadhouse::BeerDoorsClose
+		frame 192		call map_roadhouse::GirlfriendBeerLGrab
+		frame 192		call map_roadhouse::GirlfriendBeerRGrab
+		frame 217		call map_roadhouse::GirlfriendBeerLDrop
+		frame 217		call map_roadhouse::GirlfriendBeerRDrop
+    }
+	anim rh_speech_from_jenny				models/characters/girlfriend/anim/rh_speech_from_jenny.md5anim
+	anim rh_speech_idle_jenny				models/characters/girlfriend/anim/rh_speech_idle_jenny.md5anim
+	anim rh_speech_to_jenny					models/characters/girlfriend/anim/rh_speech_to_jenny.md5anim 
+	anim rh_walktodrunks_jenny				models/characters/girlfriend/anim/rh_walktodrunks_jenny.md5anim
+	anim rh_wipe_idle_jenny					models/characters/girlfriend/anim/rh_wipe_idle_jenny.md5anim
+	anim rh_lean_idle_jenny					models/characters/girlfriend/anim/idle_2.md5anim
+	anim rh_lean_idle_to_jenny				models/characters/girlfriend/anim/rh_lean_idle_to_jenny.md5anim
+	anim rh_wash_idle_jenny					models/characters/girlfriend/anim/rh_wash_idle_jenny.md5anim
+	anim rh_ringout_idle_jenny			    models/characters/girlfriend/anim/rh_ringout_idle_jenny.md5anim
+	anim rh_ringout_to_jenny				models/characters/girlfriend/anim/rh_ringout_to_jenny.md5anim
+	anim rh_walktodrunks_foldarms_jenny		models/characters/girlfriend/anim/rh_walktodrunks_foldarms_jenny.md5anim
+	anim rh_leanforward_jenny				models/characters/girlfriend/anim/rh_leanforward_jenny.md5anim
+	anim rh_grab_arm_release_idle_jenny		models/characters/girlfriend/anim/rh_grab_arm_release_idle_jenny.md5anim
+	anim rh_abduct_to						models/characters/girlfriend/anim/rh_abduct_to.md5anim
+	anim abduct_reaction					models/characters/girlfriend/anim/abduct_reaction.md5anim
+	anim abduct_idle1						models/characters/girlfriend/anim/abduct_idle_1.md5anim
+	anim cower								models/characters/girlfriend/anim/cower.md5anim
+	anim cower_idle							models/characters/girlfriend/anim/cower_idle.md5anim
+	anim suckedup							models/characters/girlfriend/anim/suckedup.md5anim {
+		frame 80			sound_voice fta_conv3_jen09
+	}	
+	anim rh_wash_speech_to_jenny			models/characters/girlfriend/anim/rh_wash_speech_to_jenny.md5anim
+	anim rh_wash_speech_from_jenny			models/characters/girlfriend/anim/rh_wash_speech_from_jenny.md5anim
+	anim rh_wash_speech_jenny				models/characters/girlfriend/anim/rh_wash_speech_jenny.md5anim
+	anim rh_lean_to_armsfolded_jenny		models/characters/girlfriend/anim/rh_lean_to_armsfolded_jenny.md5anim
+	anim rh_armsfolded_shakehead_jenny		models/characters/girlfriend/anim/rh_armsfolded_shakehead_jenny.md5anim
+	anim rh_armsfolded_questioning_jenny	models/characters/girlfriend/anim/rh_armsfolded_questioning_jenny.md5anim
+	anim rh_armsfolded_nod_jenny			models/characters/girlfriend/anim/rh_armsfolded_nod_jenny.md5anim
+	anim rh_armsfolded_fingerdown_jenny		models/characters/girlfriend/anim/rh_armsfolded_fingerdown_jenny.md5anim
+	anim abduct_idle_still					models/characters/girlfriend/anim/abduct_idle_still.md5anim
+	
+	anim rh_wash_ring_sponge_jenny			models/characters/girlfriend/anim/rh_wash_ring_sponge_jenny.md5anim
+	anim rh_armsfolded_lean_idle_jenny		models/characters/girlfriend/anim/rh_armsfolded_lean_idle_jenny.md5anim
+	
+	anim bar_wipeidle		models/characters/girlfriend/anim/bar_wipeidle.md5anim
+	anim bar_wipe			models/characters/girlfriend/anim/wipe.md5anim
+	anim bar_idle1			models/characters/girlfriend/anim/bar_idle_1.md5anim {
+		frame 1					event disableClip
+		frame 1					event disableEyelook
+	}
+	anim bar_idle2			models/characters/girlfriend/anim/bar_idle_2.md5anim
+	anim abduct_truck		models/characters/girlfriend/anim/abduct_truck.md5anim
+	anim rh_bbar_idle_jenny		models/characters/girlfriend/anim/rh_bbar_idle_jenny.md5anim
+}
+
+entityDef character_girlfriend_roadhouse {
+	"inherit"						"character_girlfriend"	
+	"skin"							"skins/characters/girlfriend_roadhouse.skin"
+	"talks"							"0"
+	"ignore_push"					"1"
+	"model"							"model_character_girlfriend_roadhouse"
+	"model_head"					"head_jenny_roadhouse"
+	
+	"eye_verticle_offset"			"-2"
+	
+	"look_min"						"-40 -45 0"
+	"look_max"						"20 45 0"
+
+	"look_joint neck"				"1 1 0"
+	"eye_turn_min"					"-20 -50 0"
+	"eye_turn_max"					"20 50 0"
+	
+	"focus_align_time"				"0"
+	
+	"head_focus_rate"				"0.05"
+}
+
+model model_character_girlfriend_harvestera {
+    "inherit"				"model_character_girlfriend"
+    
+	anim windowfly			models/characters/girlfriend/anim/windowfly.md5anim {
+		frame 1				event disableGravity
+		frame 1				event disableClip
+		frame 60			call map_harvestera::JenCapture
+	}
+}
+
+entityDef character_girlfriend_harvestera {
+	"inherit"						"character_girlfriend"	
+	"skin"							"skins/characters/girlfriend_roadhouse.skin"
+	"talks"							"0"
+	"ignore_push"					"1"
+	"ik_numLegs"					"0"
+	"model"							"model_character_girlfriend_harvestera"
+	"model_head"					"head_jenny_harvestera"
+	"def_earring"					""
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+//
+// character_girlfriend_lotae
+//
+/////////////////////////////////////////////////////////////////////////////////////
+model model_character_girlfriend_lotae {
+    "inherit"				"model_character_girlfriend"
+    
+	anim ep_speech_jenny			models/characters/girlfriend/anim/bl_speech_jenny.md5anim
+	anim ep_emotion1_jenny			models/characters/girlfriend/anim/ep_emotion1_jenny.md5anim
+	anim ep_emotion2_jenny			models/characters/girlfriend/anim/ep_emotion2_jenny.md5anim
+	
+	anim ep_look_around_jenny		models/characters/girlfriend/anim/ep_look_around_jenny.md5anim
+	anim ep_shrug_shoulders_jenny	models/characters/girlfriend/anim/ep_shrug_shoulders_jenny.md5anim {
+		frame 2		event disableEyelook
+		frame 50	event enableEyelook
+	}
+}
+
+entityDef character_girlfriend_lotae {
+	"inherit"						"character_girlfriend"	
+	"talks"							"0"
+	"ignore_push"					"1"
+	"model"							"model_character_girlfriend_lotae"
+	"model_head"					"head_jenny_lotae"
+	"skin"							"skins/characters/girlfriend_fadeout.skin"
+	"def_earring"					""
+	
+	"look_joint neck"			"0 0 0"
+	"look_joint b1"				"0.0 0.20 0"
+	"look_joint b2"				"0.0 0.20 0"
+	"look_joint b3"				"0.0 0.20 0"
+	"headlook_joint headlook"	"1.0 0.40 0"
+	
+	"look_min"					"-45 -90 0"
+	"look_max"					"15 90 0"
+	
+	"eye_turn_min"					"-20 -50 0"
+	"eye_turn_max"					"20 50 0"
+	
+	"focus_align_time"				"0"
+
+	"eye_verticle_offset"			"-2"
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+//
+// character_girlfriend_biolabs
+//
+/////////////////////////////////////////////////////////////////////////////////////
+model model_character_girlfriend_biolabs {
+	inherit 			model_character_girlfriend
+	//alias anims : TEMP
+	anim turn_right					models/characters/girlfriend/anim/bl_speech_jenny.md5anim
+	anim turn_left					models/characters/girlfriend/anim/bl_speech_jenny.md5anim
+	
+	anim	tank_struggle  			models/characters/girlfriend/anim/bl_speech_jenny.md5anim
+	anim tank_idle					models/characters/girlfriend/anim/tank_idle.md5anim
+	anim tank_fall_1				models/characters/girlfriend/anim/tank_fall_1.md5anim {
+		frame 12						sound_voice snd_biolabs_jen_jenfalls
+	}
+	anim tank_fall_speech			models/characters/girlfriend/anim/tank_fall_speech.md5anim
+	anim tank_fall_2				models/characters/girlfriend/anim/tank_fall_2.md5anim
+	 
+	anim bl_monitor					models/characters/girlfriend/anim/bl_monitor_jenny.md5anim
+	anim bl_reaction1				models/characters/girlfriend/anim/bl_reaction1_jenny.md5anim
+	anim bl_reaction2				models/characters/girlfriend/anim/bl_speech_jenny.md5anim
+	anim bl_reaction3				models/characters/girlfriend/anim/bl_reaction3_jenny.md5anim
+	anim bl_speech		 			models/characters/girlfriend/anim/bl_speech_jenny.md5anim
+	anim bl_speech_frantic			models/characters/girlfriend/anim/idle_scared.md5anim
+	anim bl_whatisgoingon			models/characters/girlfriend/anim/bl_whatisgoingon_jenny.md5anim
+	anim bl_youhavechanged			models/characters/girlfriend/anim/bl_youhavechanged_jenny.md5anim
+	anim idle_scared				models/characters/girlfriend/anim/idle_scared.md5anim
+}
+
+entityDef character_girlfriend_biolabs {
+	"inherit"					"character_girlfriend"
+	"model"						"model_character_girlfriend_biolabs"
+	"model_head"				"head_jenny_biolabs"
+	"snd_biolabs_jen_jenfalls"	"biolabs_jen_jenfalls"
+	"focus_align_time"				"0"
+	"head_focus_rate"				"0.07"
+	"ignore_obstacles"				"1"
+	"follow_min_dist"				"90"
+	"def_earring"					""
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+//
+// character_girlfriend_superportal
+//
+/////////////////////////////////////////////////////////////////////////////////////
+model model_character_girlfriend_superportal {
+	inherit 			model_character_girlfriend
+	//alias anims : TEMP
+	anim turn_right					models/characters/girlfriend/anim/bl_speech_jenny.md5anim
+	anim turn_left					models/characters/girlfriend/anim/bl_speech_jenny.md5anim
+	//conversation anims
+/*
+	anim sp_cower_idle				models/characters/girlfriend/anim/sp_cower_idle_jenny.md5anim
+	anim sp_cower_speech			models/characters/girlfriend/anim/sp_cower_speech_jenny.md5anim
+	anim sp_kneel_idle				models/characters/girlfriend/anim/sp_kneel_idle_jenny.md5anim
+	anim sp_kneel					models/characters/girlfriend/anim/sp_kneel_jenny.md5anim
+	anim sp_kneel_talk				models/characters/girlfriend/anim/sp_kneel_talk.md5anim
+	anim sp_kneel_to_cower			models/characters/girlfriend/anim/sp_kneel_to_cower_jenny.md5anim
+	anim sp_stand					models/characters/girlfriend/anim/sp_stand_jenny.md5anim
+	
+	anim sp_stand_cower_to			models/characters/girlfriend/anim/sp_stand_cower_to.md5anim
+	anim sp_stand_cower_idle		models/characters/girlfriend/anim/sp_stand_cower_idle.md5anim
+	anim sp_stand_cower_from		models/characters/girlfriend/anim/sp_stand_cower_from.md5anim
+	anim sp_careful_to				models/characters/girlfriend/anim/sp_careful_to_jenny.md5anim
+	anim sp_careful_idle			models/characters/girlfriend/anim/sp_careful_idle_jenny.md5anim
+	anim sp_careful_from			models/characters/girlfriend/anim/sp_careful_from_jenny.md5anim
+*/
+	anim sp_cower_idle				models/characters/girlfriend/anim/sp_cower_idle_jenny.md5anim
+	anim sp_kneel     				models/characters/girlfriend/anim/sp_kneel_jenny.md5anim
+	anim sp_kneel_idle				models/characters/girlfriend/anim/sp_kneel_idle_jenny.md5anim
+	anim sp_cover     				models/characters/girlfriend/anim/sp_cover_idle_jenny.md5anim
+	anim sp_cover_idle				models/characters/girlfriend/anim/sp_cover_idle_jenny.md5anim
+	anim sp_kneel_talk				models/characters/girlfriend/anim/sp_kneel_talk.md5anim
+
+	
+	anim sp_flythrough				models/characters/girlfriend/anim/flythrough.md5anim {
+		frame 1				event disableGravity
+		frame 1				event disableClip
+	}
+}
+
+entityDef character_girlfriend_superportal {
+	"inherit"					"character_girlfriend"
+	"model"						"model_character_girlfriend_superportal"
+	"model_head"				"head_jenny_superportal"
+	"def_earring"				""
+	"look_joint neck"			"0 0 0"
+	"look_joint b1"				"0.0 0 0"
+	"look_joint b2"				"0.0 0 0"
+	"look_joint b3"				"0.0 0 0"
+	"headlook_joint headlook"	"0 0 0"
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+//
+// character_girlfriend_feedinga
+//
+/////////////////////////////////////////////////////////////////////////////////////
+model model_character_girlfriend_feedinga {
+    "inherit"		"model_character_girlfriend_slab"
+}
+
+entityDef character_girlfriend_feedinga {
+	"inherit"						"character_girlfriend"	
+	"talks"							"0"
+	"ignore_push"					"1"
+	"model"							"model_character_girlfriend_feedinga"
+	"model_head"					"head_jenny_feedinga"
+	
+	"look_min"						"-40 -45 0"
+	"look_max"						"20 45 0"
+
+	"look_joint neck"				"1 1 0"
+	
+	"focus_align_time"				"0"
+	
+	"head_focus_rate"				"0.07"
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+//
+// character_girlfriend_feedingc
+//
+/////////////////////////////////////////////////////////////////////////////////////
+model model_character_girlfriend_feedingc {
+    "inherit"		"model_character_girlfriend_slab"
+}
+
+entityDef character_girlfriend_feedingc {
+	"inherit"						"character_girlfriend"	
+	
+	"def_earring"					""
+	"talks"							"0"
+	"ignore_push"					"1"
+	"model"							"model_character_girlfriend_feedingc"
+	"model_head"					"head_jenny_feedingc"
+	
+	"look_min"						"-40 -45 0"
+	"look_max"						"20 45 0"
+
+	"look_joint neck"				"1 1 0"
+	"eye_turn_min"					"-20 -30 0"
+	"eye_turn_max"					"20 30 0"
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+//
+// GIRLFRIEND WHOLE
+//
+/////////////////////////////////////////////////////////////////////////////////////
+export all {
+	options		-scale 1.0 -prefix GRL_ -keep Waist waistLook Lsleeve Rsleeve flap1 flap2 flap3 falp4 flap5 flap6 flap7
+
+	addoptions	-destdir models/characters/girlfriend_whole/anim
+	addoptions  -keepmesh girl_body
+	addoptions  -keepmesh girl_head
+	addoptions  -keepmesh girl_left_eye
+	addoptions  -keepmesh girl_right_eye
+
+	mesh		models/characters/females/female.ma -destdir models/characters/girlfriend_whole -dest girlfriend
+
+
+	anim		models/characters/females/anim/initial.ma
+	anim		models/characters/females/anim/bar_wipeidle.ma
+	anim		models/characters/females/anim/wipe.ma
+	anim		models/characters/females/anim/suckedup.ma
+	anim		models/characters/females/anim/onslab.ma
+	anim		models/characters/females/anim/cower.ma
+	anim		models/characters/females/anim/cower_idle.ma
+	anim		models/characters/females/anim/idle_default.ma
+	anim		models/characters/females/anim/tank_idle.ma
+	anim		models/characters/females/anim/tank_fall.ma
+	anim		models/characters/females/anim/walk.ma
+	anim		models/characters/females/anim/run.ma
+	anim		models/characters/females/anim/bar_idle_2.ma
+}
+
+model model_character_girlfriend_whole {
+	
+	mesh					models/characters/girlfriend_whole/girlfriend.md5mesh	
+	channel torso				(*b1)
+	channel legs				(*origin -*b1)
+
+  	anim initial			models/characters/girlfriend_whole/anim/initial.md5anim
+  	anim af_pose			models/characters/girlfriend_whole/anim/initial.md5anim
+	anim idle				models/characters/girlfriend_whole/anim/idle_default.md5anim
+	anim idle_default		models/characters/girlfriend_whole/anim/idle_default.md5anim
+	anim tank_idle			models/characters/girlfriend_whole/anim/tank_idle.md5anim
+	anim tank_fall			models/characters/girlfriend_whole/anim/tank_fall.md5anim
+	anim walk				models/characters/girlfriend_whole/anim/walk.md5anim
+	anim run				models/characters/girlfriend_whole/anim/run.md5anim
+	anim wipe				models/characters/girlfriend_whole/anim/wipe.md5anim
+	anim suckedup			models/characters/girlfriend_whole/anim/suckedup.md5anim {
+		frame 1					event disableClip
+		frame 1					event disableGravity
+	}
+	anim onslab				models/characters/girlfriend_whole/anim/onslab.md5anim
+	anim cower				models/characters/girlfriend_whole/anim/cower.md5anim
+	anim cower_idle			models/characters/girlfriend_whole/anim/cower_idle.md5anim
+	anim bar_idle2			models/characters/girlfriend_whole/anim/bar_idle_2.md5anim
+
+}

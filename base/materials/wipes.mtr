@@ -1,0 +1,8 @@
+models/wipes/wipe01
+{
+twosided
+	{
+	blend blend
+	map models/wipes/wipe01
+	}
+}

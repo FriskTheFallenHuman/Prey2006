@@ -1,0 +1,202 @@
+textures/biolab/labwall_light1
+{
+	qer_editorimage 	textures/biolab/labwall_light1
+	bumpmap 		addnormals ( textures/biolab/labwall_light1_local, heightmap (textures/biolab/labwall_light1_h, 6))
+	diffusemap	 	textures/biolab/labwall_light1_d
+	specularmap		textures/biolab/labwall_light1_s
+
+}
+
+textures/biolab/labwall_light1b
+{
+	qer_editorimage 	textures/biolab/labwall_light1b_s
+	bumpmap 		addnormals ( textures/biolab/labwall_light1b_local, heightmap (textures/biolab/labwall_light1b_h, 6))
+	diffusemap	 	textures/biolab/labwall_light1b_d
+	specularmap		textures/biolab/labwall_light1b_s
+
+}
+
+
+textures/biolab/labwall_light2
+{
+	qer_editorimage 	textures/biolab/labwall_light2_d
+	bumpmap 		addnormals ( textures/biolab/labwall_light2_local, heightmap (textures/biolab/labwall_light2_h, 6))
+	diffusemap	 	textures/biolab/labwall_light2_d
+	specularmap		textures/biolab/labwall_light2_s
+
+}
+
+
+textures/biolab/labwall_light3
+{
+	qer_editorimage 	textures/biolab/labwall_light3_d
+	bumpmap 		addnormals (textures/biolab/labwall_light3_local, heightmap (textures/biolab/labwall_light3_h, 8))
+	diffusemap	 	textures/biolab/labwall_light3_d
+	specularmap		textures/biolab/labwall_light3_s
+	{
+		blend add
+		map textures/biolab/labwall_light3_add
+		rgb (jitter2 [time ])
+	}
+}
+
+
+textures/biolab/labwall_light4
+{
+	qer_editorimage 	textures/biolab/labwall_light4_d
+	bumpmap 		textures/biolab/labwall_light4_local
+	diffusemap	 	textures/biolab/labwall_light4_d
+	specularmap		textures/biolab/labwall_light4_s
+
+}
+
+
+textures/biolab/labwall_light4b
+{
+	qer_editorimage 	textures/biolab/labwall_light4_d
+	bumpmap 		textures/biolab/labwall_light4_local
+	diffusemap	 	textures/biolab/labwall_light4_d
+	specularmap		textures/biolab/labwall_light4_s
+	{
+		blend add
+		map textures/biolab/labwall_light4_add
+		rgb (.7 * sintable [.15 + time * .5 ]) + .7
+	}
+}
+
+
+textures/biolab/labwall_light5
+{
+	qer_editorimage 	textures/biolab/labwall_light5_d
+	bumpmap 		textures/biolab/labwall_light5_local
+	diffusemap	 	textures/biolab/labwall_light5_d
+	specularmap		textures/biolab/labwall_light5_s
+
+}
+
+textures/biolab/labwall_light6
+{
+	qer_editorimage 	textures/biolab/labwall_light6_d
+	bumpmap 		textures/biolab/labwall_light6_local
+	diffusemap	 	textures/biolab/labwall_light6_d
+	specularmap		textures/biolab/labwall_light6_s
+
+}
+
+textures/biolab/labwall_light5b
+{
+	qer_editorimage 	textures/biolab/labwall_light5b_d
+	bumpmap 		textures/biolab/labwall_light5b_local
+	diffusemap	 	textures/biolab/labwall_light5b_d
+	specularmap		textures/biolab/labwall_light5b_s
+
+}
+
+textures/biolab/labtrim_light1
+{
+	qer_editorimage 	textures/biolab/labtrim_light1_d
+	bumpmap 		addnormals ( textures/biolab/labtrim_light1_local, heightmap (textures/biolab/labtrim_light1_h, 4))
+	diffusemap	 	textures/biolab/labtrim_light1_d
+	specularmap		textures/biolab/labtrim_light1_s
+	{
+		blend add
+		map textures/biolab/labtrim_light1_add
+		rgb (jitter1 [time * 3])
+	}
+
+}
+
+
+textures/biolab/labwall_dark1
+{
+	qer_editorimage 	textures/biolab/labwall_dark1_d
+	bumpmap 		addnormals ( textures/biolab/labwall_dark1_local, heightmap (textures/biolab/labwall_dark1_h, 6))
+	diffusemap	 	textures/biolab/labwall_dark1_d
+	specularmap		textures/biolab/labwall_dark1_s
+
+}
+
+
+textures/biolab/labwall_dark2
+{
+	qer_editorimage 	textures/biolab/labwall_dark2_d
+	bumpmap 		addnormals ( textures/biolab/labwall_dark2_local, heightmap (textures/biolab/labwall_dark2_h, 6))
+	diffusemap	 	textures/biolab/labwall_dark2_d
+	specularmap		textures/biolab/labwall_dark2_s
+
+}
+
+
+textures/biolab/labvent2
+{
+
+	qer_editorimage 	textures/biolab/labvent2_d
+
+	{
+	blend bumpmap
+	map			addnormals(textures/biolab/labvent2_local, heightmap(textures/biolab/labvent2_h, 4))
+	highquality
+	}
+
+	diffusemap	 	textures/biolab/labvent2_d
+
+	{
+	blend specularmap
+	map			textures/biolab/labvent2_s
+	uncompressed
+	}
+
+}
+
+textures/biolab/whaleflesh1
+{
+	qer_editorimage 	textures/biolab/whaleflesh1_local
+	bumpmap 		addnormals ( textures/biolab/whaleflesh1_local, heightmap (textures/biolab/whaleflesh1_h, 6))
+	diffusemap	 	textures/biolab/whaleflesh1_d
+	specularmap		textures/biolab/whaleflesh1_s
+
+}
+
+textures/biolab/mutilatedhumanflat
+{
+	qer_editorimage 	textures/biolab/mutilatedflat_d
+
+	bumpmap 		addnormals (textures/biolab/mutilatedflat_local, heightmap (textures/biolab/mutilatedflat_h, 6))
+//	bumpmap 		textures/biolab/mutilatedflat_local
+
+	diffusemap	 	textures/biolab/mutilatedflat_d
+	specularmap		textures/biolab/mutilatedflat_s
+
+}
+
+textures/prey_walls/oozetube1_seethru
+{
+
+	translucent
+	twosided
+	noshadows
+
+	qer_editorimage 	textures/prey_walls/oozetube1_local
+//	bumpmap 		textures/prey_walls/oozetube1_local
+	diffusemap	 	textures/prey_walls/oozetube1_d
+	specularmap		textures/prey_walls/oozetube1_s
+	{
+		blend add
+		map textures/prey_walls/oozetube1_add1
+		scroll (0.1 * sintable [time* 0.1]), time * 0.1
+//		rgb (jitter2 [time * 4])
+	}
+	{
+		blend add
+		map textures/prey_walls/oozetube1_add2
+		scroll 0, time * 0.35
+//		rgb (jitter2 [time * 6])
+	}
+	{
+		blend add
+		map textures/prey_walls/oozetube1_add3
+		scroll (0.1 * sintable [time* 0.1]), time * 0.5
+		rgb (flicker1 [time * 1])
+	}
+}
+

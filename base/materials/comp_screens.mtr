@@ -1,0 +1,273 @@
+textures/comp_screens/cp_1
+{
+	decal_macro
+	{
+	blend blend
+	map textures/comp_screens/cp_1/g1
+	alpha 1-powersurge2[time*1]
+	}
+
+	{
+		blend blend
+		map guis/assets/scanline/scanline2
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   1
+		scroll 0, time*-0.5
+		linear
+	}
+	{
+		blend blend
+		map guis/assets/scanline/scanline
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   .7
+		scroll 0, time*-1.5
+		linear
+	}
+}
+textures/comp_screens/cp_2
+{
+	decal_macro
+	{
+	blend blend
+	map textures/comp_screens/cp_2/g1
+	alpha 1-powersurge2[time*1]
+	}
+
+	{
+		blend blend
+		map guis/assets/scanline/scanline2
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   1
+		scroll 0, time*-0.5
+		linear
+	}
+	{
+		blend blend
+		map guis/assets/scanline/scanline
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   .6
+		scroll 0, time*-0.7
+		linear
+	}
+}
+textures/comp_screens/cp_3
+{
+	decal_macro
+	{
+	blend blend
+	map textures/comp_screens/cp_3/g1
+	alpha 1-powersurge2[time*1]
+	}
+
+	{
+		blend blend
+		map guis/assets/scanline/scanline2
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   1
+		scroll 0, time*-0.5
+		linear
+	}
+	{
+		blend blend
+		map guis/assets/scanline/scanline
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   .3
+		scroll 0, time*-3
+		linear
+	}
+}
+textures/comp_screens/cp_4
+{
+	decal_macro
+	{
+	blend blend
+	map textures/comp_screens/cp_4/g1
+	alpha 1-powersurge2[time*1]
+	}
+
+	{
+		blend blend
+		map guis/assets/scanline/scanline2
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   1
+		scroll 0, time*-0.3
+		linear
+	}
+	{
+		blend blend
+		map guis/assets/scanline/scanline
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   .3
+		scroll 0, time*-4
+		linear
+	}
+}
+textures/comp_screens/cp_5
+{
+	decal_macro
+	{
+	blend blend
+	map textures/comp_screens/cp_5/g1
+	alpha 1-powersurge2[time*1]
+	}
+
+	{
+		blend blend
+		map guis/assets/scanline/scanline2
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   1
+		scroll 0, time*-0.5
+		linear
+	}
+	{
+		blend blend
+		map guis/assets/scanline/scanline
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   .3
+		scroll 0, time*-1.5
+		linear
+	}
+
+}
+textures/comp_screens/cp_6
+{
+	decal_macro
+	{
+	blend blend
+	map textures/comp_screens/cp_6/g1
+	alpha 1-powersurge2[time*1]
+	}
+
+	{
+		blend blend
+		map guis/assets/scanline/scanline2
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   1
+		scroll 0, time*-0.4
+		linear
+	}
+	{
+		blend blend
+		map guis/assets/scanline/scanline
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   1
+		scroll 0, time*-0.5
+		linear
+	}
+}
+textures/comp_screens/cp_7
+{
+	decal_macro
+	{
+	blend blend
+	map textures/comp_screens/cp_7/g1
+	alpha 1-powersurge2[time*1]
+	}
+
+	{
+		blend blend
+		map guis/assets/scanline/scanline2
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   1
+		scroll 0, time*-0.6
+		linear
+	}
+	{
+		blend blend
+		map guis/assets/scanline/scanline
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   .7
+		scroll 0, time*-0.8
+		linear
+	}
+}
+textures/comp_screens/lcp_1
+{
+	decal_macro
+	{
+	blend blend
+	map textures/comp_screens/lcp_1/g1
+	alpha 1-powersurge2[time*1]
+	}
+
+	{
+		blend blend
+		map guis/assets/scanline/scanline2
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   1
+		scroll 0, time*-0.5
+		linear
+	}
+	{
+		blend blend
+		map guis/assets/scanline/scanline
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   .3
+		scroll 0, time*-1.5
+		linear
+	}
+}
+
+textures/comp_screens/lcp_2
+{
+	decal_macro
+	{
+//	blend blend
+	blend gl_one, gl_one_minus_src_color
+	map textures/comp_screens/lcp_1/g1
+	alpha 1-powersurge2[time*1]
+	}
+
+	{
+		blend blend
+		map guis/assets/scanline/scanline2
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   1
+		scroll 0, time*-0.5
+		linear
+	}
+	{
+		blend blend
+		map guis/assets/scanline/scanline
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   .3
+		scroll 0, time*-1.5
+		linear
+	}
+}

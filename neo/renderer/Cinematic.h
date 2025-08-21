@@ -74,13 +74,10 @@ public:
 	virtual				~idCinematic();
 
 	// returns false if it failed to load
-	virtual bool		InitFromFile( const char *qpath, bool looping, bool audio );
+	virtual bool		InitFromFile( const char *qpath, bool looping );
 
 	// returns the length of the animation in milliseconds
 	virtual int			AnimationLength();
-
-	// is this cinematic still playing?
-	virtual bool        IsPlaying() const;
 
 	// the pointers in cinData_t will remain valid until the next UpdateForTime() call
 	virtual cinData_t	ImageForTime( int milliseconds );
@@ -90,9 +87,6 @@ public:
 
 	// closes the file and frees all allocated memory
 	virtual void		ResetTime(int time);
-
-	// gets the time the cinematic started
-	virtual int			GetStartTime();
 };
 
 /*
@@ -109,7 +103,7 @@ public:
 						idSndWindow() { showWaveform = false; }
 						~idSndWindow() {}
 
-	bool				InitFromFile( const char *qpath, bool looping, bool audio );
+	bool				InitFromFile( const char *qpath, bool looping );
 	cinData_t			ImageForTime( int milliseconds );
 	int					AnimationLength();
 
@@ -124,7 +118,7 @@ public:
 						hhProfilerGraph() {}
 						~hhProfilerGraph() {}
 
-	bool				InitFromFile( const char *qpath, bool looping, bool audio  );
+	bool				InitFromFile( const char *qpath, bool looping );
 	cinData_t			ImageForTime( int milliseconds );
 	int					AnimationLength();
 

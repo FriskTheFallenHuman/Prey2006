@@ -1207,32 +1207,22 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 		}
 
 		if ( !token.Icmp( "videomap" ) ) {
-			bool withAudio = false;
+			// note that videomaps will always be in clamp mode, so texture
+			// coordinates had better be in the 0 to 1 range
+			if ( !src.ReadToken( &token ) ) {
+				common->Warning( "missing parameter for 'videoMap' keyword in material '%s'", GetName() );
+				continue;
+			}
 			bool loop = false;
-			bool error = false;
-			while ( true ) {
-				// note that videomaps will always be in clamp mode, so texture
-				// coordinates had better be in the 0 to 1 range
+			if ( !token.Icmp( "loop" ) ) {
+				loop = true;
 				if ( !src.ReadToken( &token ) ) {
 					common->Warning( "missing parameter for 'videoMap' keyword in material '%s'", GetName() );
-					error = true;
-					break;
+					continue;
 				}
-				if ( !token.Icmp( "loop" ) )
-					loop = true;
-				else if ( !token.Icmp( "withAudio" ) )
-					withAudio = true;
-				else
-					break;
 			}
-			if ( loop && withAudio ) {
-					common->Warning( "Enabling both 'loop' and 'withAudio' for 'videoMap' is not implemented (material '%s')", GetName() );
-					loop = false;
-			}
-			if ( !error ) {
-				ts->cinematic = idCinematic::Alloc();
-				ts->cinematic->InitFromFile( token.c_str(), loop, withAudio );
-			}
+			ts->cinematic = idCinematic::Alloc();
+			ts->cinematic->InitFromFile( token.c_str(), loop );
 			continue;
 		}
 
@@ -1242,7 +1232,7 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 				continue;
 			}
 			ts->cinematic = new idSndWindow();
-			ts->cinematic->InitFromFile( token.c_str(), true, false );
+			ts->cinematic->InitFromFile( token.c_str(), true );
 			continue;
 		}
 
@@ -1657,7 +1647,7 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 			continue;
 		}
 
-		common->Warning( "unknown token '%s' in material '%s'", token.c_str(), GetName() );
+		src.Warning( "unknown token '%s' in material '%s'", token.c_str(), GetName() );
 		SetMaterialFlag( MF_DEFAULTED );
 		return;
 	}
@@ -2832,33 +2822,6 @@ void idMaterial::ResetCinematicTime( int time ) const {
 			stages[i].texture.cinematic->ResetTime( time );
 		}
 	}
-}
-
-/*
-=============
-idMaterial::GetCinematicStartTime
-=============
-*/
-int idMaterial::GetCinematicStartTime( void ) const {
-	for( int i = 0; i < numStages; i++ ) {
-		if ( stages[i].texture.cinematic ) {
-			return stages[i].texture.cinematic->GetStartTime();
-		}
-	}
-	return -1;
-}
-
-/*
-=============
-idMaterial::CinematicIsPlaying
-=============
-*/
-bool idMaterial::CinematicIsPlaying( void ) const {
-	if ( !stages || !stages[0].texture.cinematic ) {
-		return 0;
-	}
-
-	return stages[0].texture.cinematic->IsPlaying();
 }
 
 /*

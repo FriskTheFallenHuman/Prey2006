@@ -1,0 +1,2203 @@
+//mflynn.mtr
+
+/////////////////////////////////////////////////////////////////////////
+//
+//model/engine textures
+//
+//
+///////////////////
+
+
+
+//format for the daylight color change.  this is simply a structure note...it will be commented out
+//4 hour rows
+//table daytonight { { 12, 	1, 1, 1, 2,  1, 3,  1, 4,  	//initialized, noon to 4pm
+//				  		1, 5, 1, 6,  1, 7,  1, 8,	//4:30 to 8pm
+//				  		1, 9, 1, 10, 1, 11, 1, 12,	//8:30 to midnight
+//				 		1, 1, 1, 2,  1, 3,  1, 4,	//12:30 4am
+//				 		1, 5, 1, 6,  1, 7,  1, 8,	//4am to 8am
+//						1, 9, 1, 10, 1, 11, 1, 12 } }	//8am to noon
+
+////timepass time tables
+////				initialized 	noon to 4pm										4:30 - 8pm			90							8:30 to midnight						180		12:30 to 4am									4am to 8am			270						8:30am to noon						360
+////sky
+//table skyred		{	{ .27,		.27, .27, .27, .27, .27, .27, .27, .27,			.26, .26, .25, .25, .20, .15, .10, .05, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, .05, .10, .15, .20,		.25, .25, .26, .26, .27, .27, .27, .27 }	}
+//table skygreen	{	{ .56,		.56, .56, .56, .56, .56, .56, .56, .56,			.50, .44, .38, .32, .26, .20, .13, .06, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, .06, .13, .20, .26,		.32, .38, .44, .50, .56, .56, .56, .56 }	}
+//table skyblue		{	{ .84,		.84, .84, .84, .84, .84, .84, .84, .84,			.80, .76, .73, .69, .55, .41, .27, .13, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,			0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, .13, .27, .41, .55,		.69, .73, .76, .80, .84, .84, .84, .84 }	}
+////maybe use this for the stars (and invert the changes), (currently used for the clouds):
+//table skyalpha	{	{ 1.0, 		1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,			.95, .90, .85, .80, .70, .60, .40, .20, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		.05, .10, .15, .20, .30, .40, .60, .80,		1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 }	}
+////dawn
+//table dawnred		{	{ 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,			0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, .05, .15, .25, .35,		.25, .15, .10, .05, 0.0, 0.0, 0.0, 0.0 }	}
+//table dawngreen	{	{ 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,			0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, .05, .10, .15,		.10, .05, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }	}
+//table dawnblue	{	{ 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,			0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,			0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }	}
+////dusk
+//table duskred 	{	{ 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,			.05, .15, .25, .35, .25, .15, .10, .05, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }	}
+//table duskgreen	{	{ 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,			0.0, .05, .10, .15, .10, .05, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }	}
+//table duskblue	{	{ 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,			0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,			0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,		0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }	}
+
+//late night/early morning
+//0.25 0.32 0.69
+
+
+//time:			   initialized	 		noon to 4pm										4:30 - 8pm										8:30 to midnight								12:30 to 4am									4am to 8am									8:30am to noon						360
+//sun position:							0 degrees															90 degrees																	180 degrees															270 degrees													360 degrees
+////Sun and moon: shadow light
+//table skyShadowRed	{ { 1.0, 			1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 		.89, .89, .89, .89, .22, .22, .22, .22, 		.22, .22, .22, .22, .22, .22, .22, .22, 		.22, .22, .22, .22, .22, .22, .22, .22, 		.22, .22, .22, .22, .89, .89, .89, .89, 	1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 } }
+//table skyShadowGreen{ { .95, 			.95, .95, .95, .95, .95, .95, .95, .95, 		.78, .78, .78, .78, .28, .28, .28, .28, 		.28, .28, .28, .28, .28, .28, .28, .28, 		.28, .28, .28, .28, .28, .28, .28, .28, 		.28, .28, .28, .28, .78, .78, .78, .78, 	.99, .99, .99, .99, .99, .99, .99, .99 } }
+//table skyShadowBlue	{ { .80, 			.80, .80, .80, .80, .80, .80, .80, .80, 		.70, .70, .70, .70, .35, .35, .35, .35, 		.35, .35, .35, .35, .35, .35, .35, .35, 		.35, .35, .35, .35, .35, .35, .35, .35, 		.35, .35, .35, .35, .70, .70, .70, .70, 	.84, .84, .84, .84, .84, .84, .84, .84 } }
+//
+////Sun and moon: ambient light
+//table skyAmbRed		{ { 1.0, 			1.0, .89, .44, .24, .64, 1.0 } }
+//table skyAmbGreen	{ { .99, 			.99, .78, .49, .29, .69, .99 } }
+//table skyAmbBlue	{ { .84, 			.84, .70, .59, .69, .89, .84 } }
+////										12p	 4	  8	   12a	4	 8
+lights/skyshadow
+{
+	lightFalloffImage	makeintensity( lights/squarelight1a )
+	{
+		forceHighQuality
+		map lights/squarelight1
+		red		( skyShadowRed		[ time * parm6 ] ) * ( 1 - parm5 ) //set parm 5 to one to turn this light 'off'
+		green	( skyShadowGreen	[ time * parm6 ] ) * ( 1 - parm5 )
+		blue	( skyShadowBlue		[ time * parm6 ] ) * ( 1 - parm5 )
+		zeroclamp
+	}
+}
+
+lights/skyambient
+{
+	lightFalloffImage	makeintensity( lights/squarelight1a )
+	{
+		forceHighQuality
+		map lights/squarelight1
+		red		( skyAmbRed [ time * parm6 ] ) * .25
+		green	( skyAmbGreen [ time * parm6 ] ) * .25
+		blue	( skyAmbBlue [ time * parm6 ] ) * .25
+		zeroclamp
+	}
+}
+
+//parm 6 controls the speed
+models/mapobjects/skysphere
+{
+	qer_editorimage models/mapobjects/skysphere/skysphere_d
+	noselfshadow
+
+	{
+		blend	add
+		map		models/mapobjects/skysphere/skysphere_d
+		scroll	0.03 * time, 0.02 * time
+		scale	4, 4
+		rgba	1 - ( skyAlpha	[ time * parm6 ] )
+	}
+
+	{
+		blend 	add
+		map		models/mapobjects/skysphere/skysphere_add
+		red		skyred 		[ time * parm6 ]
+		green	skygreen 	[ time * parm6 ]
+		blue	skyblue 	[ time * parm6 ]
+	}
+}
+
+textures/dreamworld/skysphere_dawn
+{
+	qer_editorimage textures/sfx/lightcone2
+	translucent
+	noshadows
+	nonsolid
+	noimpact
+	{
+		blend gl_one, gl_one_minus_src_color
+		map		textures/sfx/lightcone2
+		scroll	time * 0.030, 0.0
+		red		dawnred		[ time * parm6 ]
+		green	dawngreen 	[ time * parm6 ]
+		blue	dawnblue 	[ time * parm6 ]
+		linear
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map		textures/sfx/lightcone2
+		scroll	time * -0.035, 0.0
+		red		dawnred		[ time * parm6 ]
+		green	dawngreen 	[ time * parm6 ]
+		blue	dawnblue 	[ time * parm6 ]
+		linear
+	}
+//	{
+//		blend gl_one, gl_one_minus_src_color
+//		map	models/mapobjects/skysphere/skysphere_add
+//		red		dawnred		[ time * parm6 ]
+//		green	dawngreen 	[ time * parm6 ]
+//		blue	dawnblue 	[ time * parm6 ]
+//	}
+}
+
+textures/dreamworld/skysphere_dusk
+{
+	qer_editorimage textures/sfx/lightcone2
+	translucent
+	noshadows
+	nonsolid
+	noimpact
+	{
+		blend gl_one, gl_one_minus_src_color
+		map		textures/sfx/lightcone2
+		scroll	time * 0.030, 0.0
+		red		duskred		[ time * parm6 ]
+		green	duskgreen 	[ time * parm6 ]
+		blue	duskblue 	[ time * parm6 ]
+		linear
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map		textures/sfx/lightcone2
+		scroll	time * -0.035, 0.0
+		red		duskred		[ time * parm6 ]
+		green	duskgreen 	[ time * parm6 ]
+		blue	duskblue 	[ time * parm6 ]
+		linear
+	}
+//	{
+//		blend add
+//		map	models/mapobjects/skysphere/skysphere_add
+//		red		duskred		[ time * parm6 ]
+//		green	duskgreen 	[ time * parm6 ]
+//		blue	duskblue 	[ time * parm6 ]
+//	}
+}
+
+textures/dreamworld/skysphere_cloudlayer1
+{
+	qer_editorimage textures/dreamworld/mockclouds
+	noshadows
+	{
+		blend  gl_src_alpha, gl_one_minus_src_color //was add
+		map textures/dreamworld/mockclouds
+		scroll time * 0.025, time * -0.175
+		rgb  0.75 * ( skyalpha [ time * 0.017 ] ) //need a fade during the day
+	}
+
+}
+
+textures/dreamworld/skysphere_singlecloud1
+{
+	qer_editorimage textures/dreamworld/mockcloud2
+	noshadows
+	{
+		blend  gl_src_alpha, gl_one_minus_src_color //was add
+		map textures/dreamworld/mockcloud2
+		//scroll time * 0.025, time * -0.175
+		rgb  0.25 * ( skyalpha [ time * 0.017 ] ) //need a fade during the day
+		clamp
+	}
+}
+
+textures/sfx/moon/moonphase1
+{
+	qer_editorimage textures/sfx/moon/moonphase1
+	noshadows
+	deform sprite
+	{
+		blend  gl_src_alpha, gl_one_minus_src_color //was add
+		map textures/sfx/moon/moonphase1
+		clamp
+	}
+}
+
+textures/sfx/moon/moonphase2
+{
+	qer_editorimage textures/sfx/moon/moonphase2
+	noshadows
+	deform sprite
+	{
+		blend  gl_src_alpha, gl_one_minus_src_color //was add
+		map textures/sfx/moon/moonphase2
+		clamp
+	}
+}
+
+textures/sfx/moon/moonphase3
+{
+	qer_editorimage textures/sfx/moon/moonphase3
+	noshadows
+	deform sprite
+	{
+		blend  gl_src_alpha, gl_one_minus_src_color //was add
+		map textures/sfx/moon/moonphase3
+		clamp
+	}
+}
+
+textures/sfx/moon/moonphase4
+{
+	qer_editorimage textures/sfx/moon/moonphase4
+	noshadows
+	deform sprite
+	{
+		blend  gl_src_alpha, gl_one_minus_src_color //was add
+		map textures/sfx/moon/moonphase4
+		clamp
+	}
+}
+textures/sfx/moon/moonphase5
+{
+	qer_editorimage textures/sfx/moon/moonphase5
+	noshadows
+	deform sprite
+	{
+		blend  gl_src_alpha, gl_one_minus_src_color //was add
+		map textures/sfx/moon/moonphase5
+		clamp
+	}
+}
+
+textures/sfx/moon/moonphase6
+{
+	qer_editorimage textures/sfx/moon/moonphase6
+	noshadows
+	deform sprite
+	{
+		blend  gl_src_alpha, gl_one_minus_src_color //was add
+		map textures/sfx/moon/moonphase6
+		clamp
+	}
+}
+
+//
+//table bloodflow_clot { { -0.2, 0.2 } }
+
+textures/organic_wall/oozetube2_startoozing
+{
+//	detail
+	qer_editorimage textures/organic_wall/oozetube2_local
+	translucent
+	matter_flesh
+
+//	bumpmap 		addnormals (textures/organic_wall/oozetube2_local, heightmap (textures/organic_wall/oozetube2_h, 6))
+//	diffusemap	 	textures/organic_wall/oozetube2_d
+//	specularmap		textures/organic_wall/oozetube2_s
+
+	//minor movement
+	{if ( parm4 == 0 )
+		blend add
+			map textures/organic_wall/oozetube2_add1
+			scroll (0.05 * sintable [time * 0.1]), 0
+			rgb		0.25
+	}
+	{if ( parm4 == 0 )
+		blend add
+			map textures/organic_wall/oozetube2_add2
+			scroll	(bloodflow[time * 0.25] - time * 0.3) * 0.1, 0
+			rgb		0.25
+	}
+	{if ( parm4 == 0 )
+		blend add
+			map textures/organic_wall/oozetube2_add3
+			scroll (0.075 * sintable[time * 0.2]), 0
+			rgb		0.25
+
+	}
+	////
+	//fade transition
+	//fade out
+	{if ( parm4 != 0 && (time + parm4) < 1 / 0.25 )
+		blend add
+			map 	textures/organic_wall/oozetube2_add1
+			scroll 	(0.05 * sintable [time * 0.1]), 0
+			rgb	 	fade_offdim [ (time + parm4) * 0.25 ]
+	}
+	{if ( parm4 != 0 && (time + parm4) < 1 / 0.25 )
+		blend add
+			map 	textures/organic_wall/oozetube2_add2
+			scroll	(bloodflow[time * 0.25] - time * 0.3) * 0.1, 0
+			rgb 	fade_offdim [ (time + parm4) * 0.25 ]
+	}
+	{if ( parm4 != 0 && (time + parm4) < 1 / 0.25 )
+		blend add
+			map 	textures/organic_wall/oozetube2_add3
+			scroll 	(0.075 * sintable[time * 0.2]), 0
+			rgb 	fade_offdim [ (time + parm4) * 0.25 ]
+	}
+	//fade in
+	{if ( parm4 != 0 && (time + parm4) < 1 / 0.25 )
+		blend add
+			map 	textures/organic_wall/oozetube2_add1
+			scroll (0.1 * sintable [time * 0.1]), time * 0.3
+			rgb		fade_on1 [ (time + parm4) * 0.25 ]
+	}
+	{if ( parm4 != 0 && (time + parm4) < 1 / 0.25 )
+		blend add
+			map 	textures/organic_wall/oozetube2_add2
+			scroll 0, bloodflow[time * 0.25] - time * 0.3
+			rgb		fade_on1 [ (time + parm4) * 0.25 ]
+	}
+	{if ( parm4 != 0 && (time + parm4) < 1 / 0.25 )
+		blend add
+			map textures/organic_wall/oozetube2_add3
+			scroll (0.2 * sintable[time * 0.2]), 2 * bloodflow[time * 0.25] - time * 0.3
+			rgb		fade_on1 [ (time + parm4) * 0.25 ]
+			//to begining of rgb (jitter2 [time * 1]) //note ends at one (0.5, 1)
+	}
+	////
+	//pump it
+	{if ( parm4 != 0 && (time + parm4) >= 1 / 0.25 )
+		blend add
+			map textures/organic_wall/oozetube2_add1
+			scroll (0.1 * sintable [time * 0.1]), time * 0.3
+			//		rgb (jitter2 [time * 4])
+	}
+	{if ( parm4 != 0 && (time + parm4) >= 1 / 0.25 )
+		blend add
+			map textures/organic_wall/oozetube2_add2
+			scroll 0, bloodflow[time * 0.25] - time * 0.3
+			//		rgb (jitter2 [time * 6])
+	}
+	{if ( parm4 != 0 && (time + parm4) >= 1 / 0.25 )
+		blend add
+			map textures/organic_wall/oozetube2_add3
+			scroll (0.2 * sintable[time * 0.2]), 2 * bloodflow[time * 0.25] - time * 0.3
+			rgb fade_pulse [(time + parm4) * 0.25]
+	}
+}
+
+//grime/burn texture that can be faded in using the alpha channel
+textures/decals/grime7_fade
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_src_alpha    //worked ok
+		map textures/decals/grime7			//grime7_alphatexture had a black alpha layer: this was not necessary
+		color parm0, parm1, parm2, parm3  	//set parm3 at ~ 0.5 and fade from 0.5 to 0 to fade in
+	}
+}
+
+textures/sfx/techhot_fade
+{
+	qer_editorimage	textures/decals/scorchmark
+
+//	translucent
+	nonsolid
+	noimpact
+//	nooverlays
+	noshadows
+	{
+		blend gl_dst_color, gl_src_color
+//		blend diffusemap (try with rgba to fade this out)
+//		blend blend (try with rgba)
+		map textures/decals/scorchmark
+		clamp
+		linear
+//		alpha parm3
+	}
+
+	{
+		blend add
+		map textures/decals/scorchburn1
+		rgb burnout[(time + parm4) * 0.5]
+	}
+}
+
+textures/sfx/nonbreakglass_colored
+{
+	glass_macro
+
+	qer_editorimage	textures/sfx/nonbreakglass_h
+	{
+//		blend gl_dst_color, gl_src_color
+		blend add
+//		blend gl_one_minus_dst_color, gl_one
+//		blend gl_dst_color, gl_one
+		cubemap	env/gs3
+		texgen reflect
+		colored
+	}
+	{
+		blend	diffusemap
+		map	textures/sfx/nonbreakglass_d
+		centerscale	1.6, 1.6
+	}
+	{
+		blend	specularmap
+		map	textures/sfx/nonbreakglass_s
+		centerscale	1.6, 1.6
+	}
+	{
+		blend	add
+		map	textures/sfx/nonbreakglass_add
+		centerscale	1.6, 1.6
+		color	parm0 / 2,
+				parm1 / 2,
+				parm2 / 2,
+				1
+	}
+//	specularmap	textures/sfx/nonbreakglass_s
+}
+
+textures/tech_trim/techtrim_057k_clean_add_colored
+{
+	qer_editorimage 	textures/tech_trim/techtrim_057k_clean_d_colored
+	matter_metal
+
+	bumpmap 		textures/tech_trim/techtrim_057k_clean_local
+
+	diffusemap	 	textures/tech_trim/techtrim_057k_clean_d_colored
+	specularmap		textures/tech_trim/techtrim_057k_clean_s
+	{
+		blend		add
+		map			textures/tech_trim/techtrim_057k_clean_add_colored
+		color		parm0 * jitter3b [time * 3],
+					parm1 * jitter3b [time * 3],
+					parm2 * jitter3b [time * 3],
+					1
+		glowStage
+	}
+}
+
+/*
+textures/tech_trim/techtrim_057k_clean_add_colored_glow
+{
+	qer_editorimage 	textures/tech_trim/techtrim_057k_clean_d_colored
+	matter_metal
+
+	bumpmap 		textures/tech_trim/techtrim_057k_clean_local
+
+	diffusemap	 	textures/tech_trim/techtrim_057k_clean_d_colored
+	specularmap		textures/tech_trim/techtrim_057k_clean_s
+	{
+		blend		add
+		map			textures/tech_trim/techtrim_057k_clean_add_colored
+		color		parm0 * jitter3b [time * 3],
+					parm1 * jitter3b [time * 3],
+					parm2 * jitter3b [time * 3],
+					1
+	}
+}
+*/
+
+
+/////////////////////////////////
+//def file textures
+/////
+textures/common/controlpoint
+{
+	qer_editorimage textures/editor/controlpoint
+	nonsolid
+	noshadows
+}
+
+textures/editor/moveableblock
+{
+	qer_editorimage textures/editor/moveable
+
+	diffusemap textures/editor/moveable
+}
+
+/////////////////////////////////////////////////////////
+//beam textures
+//////////////
+
+textures/sfx/beams/mflynntest
+{
+	//noselfshadow
+	//noshadows
+	//translucent
+	twosided
+	{
+		blend add
+		map textures/sfx/beams/beam_colored
+		centerscale 6, 1
+		colored
+		scroll time * -0.25, 0
+	}
+}
+
+textures/sfx/beams/mflynntest2
+{
+	//noselfshadow
+	//noshadows
+	//translucent
+	twosided
+	{
+		blend add
+		map textures/sfx/beams/beam_colored
+		centerscale 6, 1
+		colored
+		scroll time * -0.32, 0
+	}
+}
+
+textures/sfx/beams/mflynntest3
+{
+	//noselfshadow
+	//noshadows
+	//translucent
+	twosided
+	{
+		blend add
+		map textures/sfx/beams/beam_colored
+		centerscale 6, 1
+		colored
+		scroll time * -0.39, 0
+	}
+}
+//this shader is for a test ase local to my machine only.
+//models/mapobjects/boxtest/boxtest
+//{
+//	renderbump -size 256 256 -aa 1 -trace 0.05 models/mapobjects/boxtest/boxtest_local models/mapobjects/boxtest/boxtest_hi.ase
+//	noselfshadow
+//	diffusemap models/mapobjects/boxtest/boxtest_d
+//	specularmap models/mapobjects/boxtest/boxtest_s
+//	bumpmap addnormals (models/mapobjects/boxtest/boxtest_local, heightmap (models/mapobjects/boxtest/boxtest_h, 5))
+//
+//}
+
+//renderbump models/mapobjects/feedingtower/tkennelin.ase
+models/mapobjects/feedingtower/tkennelin
+{
+	renderbump -size 256 256 -aa 1 -trace 0.05 models/mapobjects/feedingtower/tkennelin_local models/mapobjects/feedingtower/tkennelin_hi.ase
+	noselfshadow
+	diffusemap models/mapobjects/feedingtower/tkennelin_d
+	specularmap models/mapobjects/feedingtower/tkennelin_s
+	bumpmap addnormals (models/mapobjects/feedingtower/tkennelin_local, heightmap (models/mapobjects/feedingtower/tkennelin_h, 5))
+}
+
+//renderbump models/mapobjects/feedingtower/tkennelout.ase
+models/mapobjects/feedingtower/tkennelout
+{
+	renderbump -size 256 256 -aa 1 -trace 0.05 models/mapobjects/feedingtower/tkennelout_local models/mapobjects/feedingtower/tkennelout_hi.ase
+	noselfshadow
+	diffusemap models/mapobjects/feedingtower/tkennelout_d
+	specularmap models/mapobjects/feedingtower/tkennelout_s
+	bumpmap addnormals (models/mapobjects/feedingtower/tkennelout_local, heightmap (models/mapobjects/feedingtower/tkennelout_h, 5))
+}
+
+//commented out because textures and hi-poly don't exist yet
+//models/mapobjects/droidz/droidz
+//{
+//	renderbump -size 512 512 -aa 1 -trace 0.05 models/mapobjects/droidz/droidz_local models/mapobjects/droidz/droidz_hi.ase
+//	noselfshadow
+//	diffusemap models/mapobjects/droidz/droidz_d
+//	specularmap models/mapobjects/droidz/droidz_s
+//	bumpmap addnormals (models/mapobjects/droidz/droidz_local, heightmap (models/mapobjects/droidz/droidz_h, 5))
+//
+//}
+
+//////////////////////////////////
+
+//this shader goes from a nodraw to a transparent laser.  place it on a long thin pain box
+	//working on this...
+textures/sfx/laser_trig
+{
+	nonsolid
+	noshadows
+	translucent
+	qer_editorimage		textures/editor/flare // gb - was missing asset
+	deform flare		8
+	twosided
+
+	{if ( parm4 == 0 )
+		//colored
+		blend		add
+		map			_quadratic
+		rgb 	0
+		//maskdepth
+//		vertexcolor
+	}//after much testing it seems that flares do not like to be toggled globally; ie, what ever they
+	//are set to at the beginning of the map they will not change...they must be toggled independently
+	//...this could just be a problem with global parm setting in general.
+	{if ( parm4 == 1 )
+		//colored
+		blend		add
+		map			_quadratic
+//		vertexcolor
+		red			1
+		green		0
+		blue		0
+	}
+	{if ( parm5 == 0 )
+		blend		add
+		map			_quadratic
+//		vertexcolor
+		rgb			0
+	}
+	{if ( parm5 == 1 )
+		blend		add
+		map			_quadratic
+//		vertexcolor
+		red			0
+		green		1
+		blue		0
+	}
+	{if ( parm6 == 0 )
+		blend		add
+		map			_quadratic
+//		vertexcolor
+		rgb			0
+	}
+	{if ( parm6 == 1 )
+		blend		add
+		map			_quadratic
+//		vertexcolor
+		red			0
+		green		0
+		blue		1
+	}
+}
+///////////
+//super portal sfx textures
+///////////
+textures/sfx/portals/superportal/earth_cany0730
+//textures/sfx/portals/superportal/earth_cany0730
+{
+	qer_editorimage	textures/sfx/portals/superportal/earth_immgriff
+	{
+		blend		diffusemap
+		map 		textures/sfx/portals/superportal/earth_immgriff
+		//scale 		mflicker[ time * 0.25 ], mflicker2[ time * 0.25 ]
+		alpha 		parm3
+	}
+}
+
+
+//////////
+//lota texture
+/////////
+textures/dreamworld/rocktech_trans1
+{
+	qer_editorimage		textures/dreamworld/rocks1tech_d
+
+	{
+		blend add
+		map		textures/dreamworld/rocks1tech_add
+
+//		red 	parm0
+//		green 	parm1
+//		blue	parm2
+
+		red 	global0
+		green 	global1
+		blue	global2
+	}
+
+//	{if ( parm4 == 0 )
+//		blend	bumpmap
+//		map		addnormals (textures/dreamworld/rocks1_local, heightmap (textures/dreamworld/rocks1_h, 6))
+//	}
+//	{if ( parm4 == 0 )
+//		blend	diffusemap
+//		map		textures/dreamworld/rocks1_d
+//	}
+//	{if ( parm4 == 0 )
+//		blend	specularmap
+//		map		textures/dreamworld/rocks1_s
+//	}
+//
+//	{if ( parm4 == 1 )
+//		blend	bumpmap
+//		map		addnormals (textures/dreamworld/rocks1tech_local, heightmap (textures/dreamworld/rocks1tech_h, 6))
+//	}
+//	{if ( parm4 == 1 )
+//		blend	diffusemap
+//		map		textures/dreamworld/rocks1tech_d
+//	}
+//	{if ( parm4 == 1 )
+//		blend	specularmap
+//		map		textures/dreamworld/rocks1tech_s
+//	}
+
+	{if ( global4 == 0 )
+		blend	bumpmap
+		map		addnormals (textures/dreamworld/rocks1_local, heightmap (textures/dreamworld/rocks1_h, 6))
+	}
+	{if ( global4 == 0 )
+		blend	diffusemap
+		map		textures/dreamworld/rocks1_d
+	}
+	{if ( global4 == 0 )
+		blend	specularmap
+		map		textures/dreamworld/rocks1_s
+	}
+
+	{if ( global4 == 1 )
+		blend	bumpmap
+		map		addnormals (textures/dreamworld/rocks1tech_local, heightmap (textures/dreamworld/rocks1tech_h, 6))
+	}
+	{if ( global4 == 1 )
+		blend	diffusemap
+		map		textures/dreamworld/rocks1tech_d
+	}
+	{if ( global4 == 1 )
+		blend	specularmap
+		map		textures/dreamworld/rocks1tech_s
+	}
+}
+
+textures/sfx/junkfade
+{
+	twosided
+	translucent
+	{
+		blend	bumpmap
+		map		addnormals (textures/dreamworld/rocks1_local, heightmap (textures/dreamworld/rocks1_h, 6))
+		colored
+	}
+	{
+		blend	diffusemap
+		map		textures/dreamworld/rocks1_d
+		colored
+	}
+	{
+		blend	specularmap
+		map		textures/dreamworld/rocks1_s
+		colored
+
+	}
+//	{
+//		blend add
+//		map		textures/dreamworld/rocks1tech_add
+//
+//		red 	parm0
+//		green 	parm1
+//		blue	parm2
+//	}
+}
+
+//textures/dreamworld/rocks1
+//{
+//	qer_editorimage		textures/dreamworld/rocks1_d
+//
+//
+//
+//}
+//
+//textures/dreamworld/rocks1tech
+//{
+//	qer_editorimage		textures/dreamworld/rocks1tech_d
+//
+//
+//
+//}
+//
+//textures/dreamworld/rocks1tech_add
+//{
+//	translucent
+//	noshadows
+//	qer_editorimage 	textures/dreamworld/rocks1tech_add
+//	{
+//
+//		colored
+//	}
+//}
+
+//textures/sfx/rock_distance_500
+//{
+//	qer_editorimage	textures/dreamworld/rocks1_d
+//
+////	diffusemap		textures/dreamworld/rocks1_d
+//	bumpmap			addnormals (textures/dreamworld/rocks1_local, heightmap (textures/dreamworld/rocks1_h, 6))
+//	specularmap		textures/dreamworld/rocks1_s
+//
+//	{if ( distance > 500 )
+//		blend diffusemap
+//		map textures/dreamworld/rocks1_s
+////		bumpmap			addnormals (textures/dreamworld/rocks1_local, heightmap (textures/dreamworld/rocks1_h, 6))
+////		specularmap		textures/dreamworld/rocks1_s
+//		zeroclamp
+//		red			parm0
+//		blue		parm1
+//		green		parm2
+//	}
+//	{if ( distance <= 500 && distance > 0 )
+//		blend diffusemap
+//		map textures/dreamworld/rocks1_d
+////		bumpmap			addnormals (textures/dreamworld/rocks1_local, heightmap (textures/dreamworld/rocks1_h, 6))
+////		specularmap		textures/dreamworld/rocks1_s
+//		zeroclamp
+//		red			parm0 * ( distance / 500 )
+//		blue		parm1 * ( distance / 500 )
+//		green		parm2 * ( distance / 500 )
+////		red			parm0 * 0
+////		blue		parm1 * 0
+////		green		parm2 * 0
+//	}
+//}
+
+textures/tech_wall/techpanel23_scrolling
+{
+	qer_editorimage 	textures/tech_wall/techpanel23_proxy
+	{
+		blend	bumpmap
+		map 	addnormals (textures/tech_wall/techpanel23_local, heightmap (textures/tech_wall/techpanel23_h, 3))
+		scroll 			(time * ( 1 + parm5 ) ), 0
+	}
+	{
+		blend	diffusemap
+		map		textures/tech_wall/techpanel23_d
+		scroll 			(time * ( 1 + parm5 ) ), 0
+	}
+	{
+		blend	specularmap
+		map		textures/tech_wall/techpanel23_s
+		scroll 			(time * ( 1 + parm5 ) ), 0
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+//
+//gui textures//
+//
+/////////////////
+textures/sfx/guiassets/lightstrip
+{
+	noshadows
+	qer_editorimage guis/assets/mem1/vertlight
+	{
+		blend		add
+		map guis/assets/mem1/vertlight
+		scroll 0, time * 1
+	}
+}
+textures/sfx/guiassets/g15offrot
+{
+	noshadows
+	qer_editorimage guis/assets/mem1/g15off
+	{
+		blend		add
+		map guis/assets/mem1/g15off
+		rotate time * 1
+	}
+}
+textures/sfx/guiassets/lightstrip_2
+{
+	noshadows
+	qer_editorimage guis/assets/mem1/vertlight
+	{
+		blend		add
+		map guis/assets/mem1/vertlight
+		rotate time * 1
+	}
+}
+textures/sfx/guiassets/mem_back_scroll
+{
+	noshadows
+	qer_editorimage textures/organics/sinewwall1_d
+	{
+		blend		add
+		map textures/organics/sinewwall1_d
+		scroll time * -0.01, 0
+	}
+}
+textures/sfx/guiassets/mem_back_scale
+{
+	noshadows
+	qer_editorimage textures/organics/eyetree1b_d
+	{
+		blend		add
+		map _default
+		scroll mflicker2 [time * 0.01], mflicker [time * 0.01]
+		scale mflicker [time * 0.01], mflicker2 [time * 0.01]
+		rotate mflicker [time * 0.01]
+	}
+}
+
+textures/sfx/guiassets/mem_desktop
+{
+	noshadows
+	qer_editorimage guis/assets/mem1/mem_desktop
+	{
+		blend		add
+		map guis/assets/mem1/mem_desktop
+	}
+}
+
+/////////////////////////////////////////////////////////////////////////
+//
+//flares//
+//
+///////////////////
+textures/sfx/flare_ship1
+{
+	noshadows
+	translucent
+	nonsolid
+	deform flare		64
+	qer_editorimage		textures/editor/flare // gb - was missing asset
+
+	{
+		colored
+		blend		add
+		map		_quadratic
+		//rgb mflicker[time *1.5]//optional mflicker.  must include a table with the name "mflicker" (or whatever).
+//		vertexcolor
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+//portal tests
+///////////////////////////////////////////////////////////////////////////
+
+//this is bad.  hard crash.
+//textures/portals/portal_sprite
+//{
+//	qer_editorimage	textures/editor/portal
+//	noshadows
+//	noselfshadow
+//	deform sprite//ouch
+//	{
+//		portalrendermap 512 512
+//		translate	0.5 , 0.5
+//		scale	0.5 , 0.5
+//	}
+//}
+
+models/mapobjects/velocityring/velocityring
+{
+	qer_editorimage		models/mapobjects/velocityring/velocityring
+	noshadows
+	translucent
+	nonsolid
+
+	{
+		blend add
+		zeroclamp
+		map	_white
+		red 0.9 	green 0.22 		blue 0.21
+	}
+}
+
+textures/sfx/quadflare_doorstatus
+{
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 16 + parm4 )
+
+//	{ if ( parm7 == 0 && parm6 == 0 )
+//		blend add
+//		zeroclamp
+//
+//		map	_quadratic
+////		red 0.9 	green 0.95 		blue 0.1		// cdoor_add_locked
+//		colored
+////		vertexcolor
+//	}
+
+	{ if ( parm7 < 2 && parm6 == 0)
+		blend add
+		zeroclamp
+		map	_quadratic
+		red 	0.35
+		green	0.83
+		blue	1		// cdoor_add_open
+//		vertexcolor
+	}
+
+	{ if ( parm7 < 2 && parm6 == 1 )
+		blend add
+		zeroclamp
+		map	_quadratic
+		red 	0.35 * ( airlockwaittable [ time * 0.8 ] )		// cdoor_add_open_waiting
+		green 	0.83 * ( airlockwaittable [ time * 0.8 ] )	// cdoor_add_open_waiting
+		blue 	1	 * ( airlockwaittable [ time * 0.8 ] )		// cdoor_add_open_waiting
+//		vertexcolor
+	}
+
+	{ if ( parm7 == 2 && parm6 == 0 )
+		blend add
+		zeroclamp
+		map	_quadratic
+		red 0.884 	green  0.0 		blue 0.0		//locked
+//		vertexcolor
+	}
+
+	{ if ( parm7 == 2 && parm6 == 1 )
+		blend add
+		zeroclamp
+		map	_quadratic
+		red 0.884	* ( airlockwaittable [ time * 0.8 ] )
+		green 0 	* ( airlockwaittable [ time * 0.8 ] )
+		blue 0		* ( airlockwaittable [ time * 0.8 ] )	// cdoor_add_locked
+//		vertexcolor
+	}
+	{ if ( parm7 == 3 )
+		blend add
+		zeroclamp
+		map	_quadratic
+		red 	0
+		green	0
+		blue	0
+	}
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////
+//
+//light textures///
+//
+//
+///////////////////
+
+//use parm4 to offset pulse
+lights/squarelight1_sequence
+{
+	{
+		forceHighQuality
+		map	lights/squarelight1
+		red		parm0 * lightscale1[ (time * 0.5) + parm4 ]
+		green	parm1 * lightscale1[ (time * 0.5) + parm4 ]
+		blue	parm2 * lightscale1[ (time * 0.5) + parm4 ]
+		zeroclamp
+	}
+}
+
+
+
+////////////////////////////////////////////////////
+/////asteroid star textures/////////////////////////
+////////////////////////////////////////////////////
+textures/sfx/beams/asteroidstar_large {
+	noselfshadow
+	noshadows
+	translucent
+	twosided
+
+	deform beam	// always face the view origin
+
+	{
+		blend add
+		map textures/sfx/beams/beam_r22c
+		centerscale 2, .5
+		colored
+		scroll time * -1.5, 0
+	}
+}
+
+textures/sfx/beams/asteroidstar_small {
+	noselfshadow
+	noshadows
+	translucent
+	twosided
+
+	deform beam	// always face the view origin
+
+	{
+		blend add
+		map textures/sfx/beams/beam_r22c
+		centerscale 6, 1
+		scroll time * -1.5, 0
+		red parm0 * beamflash[time * distance]
+		green parm1 * beamflash[time * distance]
+		blue parm2 * beamflash[time * distance]
+	}
+}
+
+
+textures/sfx/quadflare_asteroid
+{
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 512 + parm5 )
+
+	{
+		blend gl_one, gl_one_minus_src_color
+		zeroclamp
+//		map	_quadratic
+		map	textures/sfx/flare0
+		colored
+//		vertexcolor
+	}
+}
+
+
+
+/////////////////////////////////////////
+/////////alarm textures//////////////////
+/////////////////////////////////////////
+
+models/mapobjects/lightobjects/alarm/main
+{
+	matter_metal
+
+	renderbump  -size 256 256 -trace 0.08 -colormap models/mapobjects/lightobjects/alarm/alarm_local models/mapobjects/lightobjects/alarm/alarmhi.lwo
+
+	bumpmap models/mapobjects/lightobjects/alarm/alarm_local
+	specularmap models/mapobjects/lightobjects/alarm/alarm_s
+	{
+		blend diffusemap
+		map models/mapobjects/lightobjects/alarm/alarm_d
+		alphatest	0.5
+	}
+
+	{ if ( parm6 != parm7 )
+		blend add
+		map models/mapobjects/lightobjects/alarm/alarm_a
+		red		0
+		green	0
+		blue	0
+	}
+	{ if ( parm6 == 0 && parm7 == 0 )
+		blend add
+		map models/mapobjects/lightobjects/alarm/alarm_a
+		red		Parm0
+		green	Parm1
+		blue	Parm2
+	}
+	{ if ( parm6 == 1 && parm7 == 1 )
+		blend add
+		map models/mapobjects/lightobjects/alarm/alarm_a
+		red		Parm0 * sound
+		green	Parm1 * sound
+		blue	Parm2 * sound
+	}
+//OLD
+//	{ if ( parm6 == 0 && parm7 == 0 )
+//		blend add
+//		map models/mapobjects/lightobjects/alarm/alarm_a
+//		red		1
+//		green	0
+//		blue	0
+//	}
+//	{ if ( parm6 == 1 && parm7 == 1 )
+//		blend add
+//		map models/mapobjects/lightobjects/alarm/alarm_a
+//		red		1 * sound
+//		green	0
+//		blue	0
+//	}
+}
+
+textures/sfx/quadflare_alarm
+{
+	qer_editorimage		textures/editor/flare
+	discrete
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		( 32 + parm4 )
+
+	{ if ( parm6 != parm7 )
+		blend gl_one, gl_one_minus_src_color
+		zeroclamp
+//		map	_quadratic
+		map	textures/sfx/flare0
+		red		0
+		green	0
+		blue	0
+//		vertexcolor
+	}
+	{ if ( parm6 == 0 && parm7 == 0 )
+		blend gl_one, gl_one_minus_src_color
+		zeroclamp
+//		map	_quadratic
+		map	textures/sfx/flare0
+		red		Parm0
+		green	Parm1
+		blue	Parm2
+//		vertexcolor
+	}
+	{ if ( parm6 == 1 && parm7 == 1 )
+		blend gl_one, gl_one_minus_src_color
+		zeroclamp
+//		map	_quadratic
+		map	textures/sfx/flare0
+		red		Parm0 * sound
+		green	Parm1 * sound
+		blue	Parm2 * sound
+//		vertexcolor
+	}
+}
+
+////////////////////
+////////////////////
+
+
+/////
+//parm7
+//		0 = setting parm4 to -time willfade it in
+//		1 = setting parm4 to -time willfade it out
+textures/tech_light/biotech5_trim1_colored_fade_on1
+{
+	qer_editorimage 	textures/tech_light/biotech5_trim1_d
+	bumpmap 		textures/tech_light/biotech5_trim1_local
+	diffusemap	 	textures/tech_light/biotech5_trim1_d
+	specularmap		textures/tech_light/biotech5_trim1_s
+
+	{if ( parm4 == 0 && parm7 == 0 )
+		blend add
+		map textures/tech_light/biotech5_trim1_a2
+		red		parm0 * parm5
+		green	parm1 * parm5
+		blue	parm2 * parm5
+	}
+	{if ( parm4 != 0 && parm7 == 0 )
+		blend add
+		map textures/tech_light/biotech5_trim1_a2
+		red		parm0 * ( fade_on1 [ (time + parm4) * ( 0.30 + parm6 ) ])
+		green	parm1 * ( fade_on1 [ (time + parm4) * ( 0.30 + parm6 ) ])
+		blue	parm2 * ( fade_on1 [ (time + parm4) * ( 0.30 + parm6 ) ])
+	}
+	{if ( parm4 != 0 && parm7 == 1 )
+		blend add
+		map textures/tech_light/biotech5_trim1_a2
+		red		parm0 * ( burnout [ (time + parm4) * ( 0.60 + parm6 ) ])
+		green	parm1 * ( burnout [ (time + parm4) * ( 0.60 + parm6 ) ])
+		blue	parm2 * ( burnout [ (time + parm4) * ( 0.60 + parm6 ) ])
+	}
+}
+
+textures/tech_light/biotech5_trim1_colored_fade_on1b
+{
+	qer_editorimage 	textures/tech_light/biotech5_trim1_d
+	bumpmap 		textures/tech_light/biotech5_trim1_local
+	diffusemap	 	textures/tech_light/biotech5_trim1_d
+	specularmap		textures/tech_light/biotech5_trim1_s
+
+	{if ( parm4 == 0 )
+		blend add
+		map textures/tech_light/biotech5_trim1_a2
+		red		parm0 * parm5
+		green	parm1 * parm5
+		blue	parm2 * parm5
+	}
+	{if ( parm4 != 0 && ( time + parm4 ) < ( 10 * ( 0.30 + parm6 ) ) )
+		blend add
+		map textures/tech_light/biotech5_trim1_a2
+		red		parm0 * ( fade_on1 [ (time + parm4) * ( 0.30 + parm6 ) ])
+		green	parm1 * ( fade_on1 [ (time + parm4) * ( 0.30 + parm6 ) ])
+		blue	parm2 * ( fade_on1 [ (time + parm4) * ( 0.30 + parm6 ) ])
+	}
+	{if ( parm4 != 0 && ( time + parm4 ) >= ( 10 * ( 0.30 + parm6 ) ) )
+		blend add
+		map textures/tech_light/biotech5_trim1_a2
+		red		parm0 * ( mflicker4 [time * 1] )
+		green	parm1 * ( mflicker4 [time * 1] )
+		blue	parm2 * ( mflicker4 [time * 1] )
+	}
+}
+
+textures/special/wallwalk_flickeron
+{
+	wallwalk
+
+	qer_editorimage textures/special/wall_walk_proxy
+
+	diffusemap textures/special/wall_walk_d
+ 	specularmap textures/special/wall_walk_s
+	bumpmap	textures/special/wall_walk_local
+
+	{if ( parm4 != 0 && ( time + parm4 ) < ( 10 * ( 0.30 + parm6 ) ) )
+		blend add
+		map textures/special/wall_walk_a
+		red		parm0 * ( flicker_on1 [ (time + parm4) * ( 0.30 + parm6) ] )
+		green	parm1 * ( flicker_on1 [ (time + parm4) * ( 0.30 + parm6) ] )
+		blue	parm2 * ( flicker_on1 [ (time + parm4) * ( 0.30 + parm6) ] )
+	}
+	{if ( parm4 != 0 && ( time + parm4 ) >= ( 10 * ( 0.30 + parm6 ) ) )
+		blend add
+		map textures/special/wall_walk_a
+		red		parm0 * ( jitter5b [time * 2] )
+		green	parm1 * ( jitter5b [time * 2] )
+		blue	parm2 * ( jitter5b [time * 2] )
+	}
+}
+
+
+/////////////////////////////////////////////////////////////////////////
+//
+//remote camera///
+//
+//
+///////////////////
+textures/sfx/remotecamera_clear
+{
+	qer_editorimage	textures/editor/camera
+	noshadows
+	forceopaque
+
+	//bumpmap		textures/sfx/monitor_glass_local
+	//specularmap		textures/sfx/monitor_glass_s
+	diffusemap	_black
+	{
+		blend add
+		remoterendermap	512 256	// width / height of render image
+		scale 1 , -1		// the render view ars(is?) upside down otherwise
+		translate 0, -1
+		//scroll 0, ( mflicker2 [time * 0.6])
+	}
+//	{
+//    		  	 blend	filter
+//				 map	textures/sfx/monitor_glass
+//				scale	2, 2
+//				translate	time * 5 , time * 3
+//	}
+}
+
+textures/sfx/remotecamera2_clear
+{
+	qer_editorimage	textures/editor/camera
+	noshadows
+	forceopaque
+
+	//bumpmap		textures/sfx/monitor_glass_local
+	//specularmap		textures/sfx/monitor_glass_s
+	diffusemap	_black
+	{
+		blend add
+		remoterendermap	512 256	// width / height of render image
+		scale 1 , -1		// the render view ars(is?) upside down otherwise
+		translate 0, -1
+		//scroll 0, ( mflicker2 [time * 0.6])
+	}
+}
+
+//////////////////
+//////////////////
+//special effects:
+//////////////////
+//////////////////
+
+///councilfire////
+
+//spirits
+table spirit1fade { { 1, 0, 0, 0, 0, 0, 0, 0, 0 } }
+
+//save for eventual use...fix me -mflynn
+textures/sfx/councilspirit1
+{
+	qer_editorimage	textures/sfx/spirit1
+	noshadows
+	noselfshadow
+	nooverlays
+	//nonsolid...make func_static solid 0
+
+	deform tube
+
+	{if ( parm4 == 0 )
+		blend		add
+		map			textures/sfx/spirit1
+		red			0
+		green		0
+		blue		0
+		scroll		0, 0
+	}
+	{if ( parm4 != 0 && ( time + parm4 ) <= ( 10 * 0.10 ) )
+		blend		add
+		map			textures/sfx/spirit1
+		red			parm0 * ( spirit1fade [ (time + parm4) * 0.10])
+		green		parm1 * ( spirit1fade [ (time + parm4) * 0.10])
+		blue		parm2 * ( spirit1fade [ (time + parm4) * 0.10])
+		scroll		0, ( spirit1fade [ (time + parm4) * 0.075] ) * -1
+	}
+	{if ( parm4 != 0 && ( time + parm4 ) > ( 10 * 0.10 ) )
+		blend		add
+		map			textures/sfx/spirit1
+		red			0
+		green		0
+		blue		0
+		scroll		0, 0
+	}
+}
+
+//	animation test 	 save
+//		this is an example of how to use the animation frame tables.
+//		this example could use better art...fix me
+textures/sfx/animationtest
+{
+	qer_editorimage	textures/sfx/animationtest
+	noshadows
+	noselfshadow
+	nooverlays
+	nonsolid
+
+	{
+		blend		add
+		map			textures/sfx/animationtest
+		red			parm0
+		green		parm1
+		blue		parm2
+		scroll		anim_8frame [ time * 2 ], 0
+	}
+}
+
+//save -mflynn
+textures/sfx/xray_colored
+{
+	qer_editorimage	lights/defaultpointlight
+	noshadows
+	translucent
+	noselfshadow
+	matter_flesh
+
+	{// inverse overlay; desaturated and colorable
+		blend 		gl_one_minus_dst_color, gl_zero
+		map 		lights/defaultpointlight
+		red 		( parm0 / 2 ) + 0.5
+		green 		( parm1 / 2 ) + 0.5
+		blue 		( parm2 / 2 ) + 0.5
+	}
+}
+
+//save -mflynn
+//jittering texture that fades in as the player approaches.  add this to func_spiritbridges.
+//parm5 adds to the 'fadein complete' distance
+//parm6 adds to the 'fadein begin' distance
+//parm6 + 200 must be > parm5
+//parm4 alters the speed of the jitter. small values of -5 to 5 work best.
+// parm7: automatically set to a random number by the spiritbridge code.  used to automatically offset the bridges so they don't pulse in unison -cjr
+textures/sfx/spiritbridge_fadeon_jitter1 {
+	noshadows
+	translucent
+	deform jitter jacobladder[ ( time + parm7 ) * ( 20 + parm4 )]
+
+	{if ( distance < ( 200 + parm5 ) )
+		blend add
+		map	textures/sfx/spiritflesh
+		rgb 1
+		glowStage
+	}
+	{if ( distance <= ( 400 + parm6 ) && distance >= ( 200 + parm5 ) )
+		blend add
+		map	textures/sfx/spiritflesh
+		rgb 1 - ( ( distance - (200 + parm5) ) / ( (400 + parm6) - (200 + parm5) ) )//dynamic interaction explanation[ (current distance - base) / (max distance - base) = a number between 0 'close' and 1 'far'. 1 - this number = rgb
+		glowStage
+	}
+	{if ( distance > 400 + parm6 )
+		blend add
+		map	textures/sfx/spiritflesh
+		rgb 0
+		glowStage
+	}
+}
+//temp -ryanred
+//jittering texture that fades in as the player approaches.  add this to func_spiritbridges.
+//parm5 adds to the 'fadein complete' distance
+//parm6 adds to the 'fadein begin' distance
+//parm6 + 200 must be > parm5
+//parm4 alters the speed of the jitter. small values of -5 to 5 work best.
+// parm7: automatically set to a random number by the spiritbridge code.  used to automatically offset the bridges so they don't pulse in unison -cjr
+textures/sfx/spiritbridge_fadeon_jitter1_twosided {
+	noshadows
+	translucent
+	twosided
+	deform jitter jacobladder[ ( time + parm7 ) * ( 20 + parm4 )]
+
+	//{if ( distance < ( 200 + parm5 ) )
+	{
+		blend add
+		map	textures/sfx/spiritflesh
+		rgb 1
+		glowStage
+	}
+	/*{if ( distance <= ( 400 + parm6 ) && distance >= ( 200 + parm5 ) )
+		blend add
+		map	textures/sfx/spiritflesh
+		rgb 1 - ( ( distance - (200 + parm5) ) / ( (400 + parm6) - (200 + parm5) ) )//dynamic interaction explanation[ (current distance - base) / (max distance - base) = a number between 0 'close' and 1 'far'. 1 - this number = rgb
+		glowStage
+	}
+	{if ( distance > 400 + parm6 )
+		blend add
+		map	textures/sfx/spiritflesh
+		rgb 0
+		glowStage
+	}*/
+}
+//save -mflynn
+//same settings as above; fade is reversed
+textures/sfx/spiritbridge_fadeoff_jitter1 {
+	noshadows
+	translucent
+	deform jitter jacobladder[ ( time + parm7 ) * ( 20 + parm4 )]
+
+	{if ( distance < ( 200 + parm5 ) )
+		blend add
+		map	textures/sfx/spiritflesh
+		rgb 0
+		glowStage
+	}
+	{if ( distance <= ( 400 + parm6 ) && distance >= ( 200 + parm5 ) )
+		blend add
+		map	textures/sfx/spiritflesh
+		rgb ( distance - (200 + parm5) ) / ( (400 + parm6) - (200 + parm5) )//dynamic interaction explanation[ (current distance - base) / (max distance - base) = a number between 0 'close' and 1 'far'. 1 - this number = rgb
+		glowStage
+	}
+	{if ( distance > 400 + parm6 )
+		blend add
+		map	textures/sfx/spiritflesh
+		rgb 1
+		glowStage
+	}
+}
+//save -mflynn
+//no parm4 usage
+textures/sfx/spiritbridge_fadeon_solid {
+	noshadows
+	translucent
+
+	{if ( distance < ( 200 + parm5 ) )
+		blend add
+		map	textures/sfx/spiritflesh
+		rgb 1
+		glowStage
+	}
+	{if ( distance <= ( 400 + parm6 ) && distance >= ( 200 + parm5 ) )
+		blend add
+		map	textures/sfx/spiritflesh
+		rgb 1 - ( ( distance - (200 + parm5) ) / ( (400 + parm6) - (200 + parm5) ) )//dynamic interaction explanation[ (current distance - base) / (max distance - base) = a number between 0 'close' and 1 'far'. 1 - this number = rgb
+		glowStage
+	}
+	{if ( distance > 400 + parm6 )
+		blend add
+		map	textures/sfx/spiritflesh
+		rgb 0
+		glowStage
+	}
+}
+//save -mflynn
+//no parm4 usage
+//made colorable 4/24/05 mf
+textures/sfx/spiritbridge_fadeoff_solid {
+	noshadows
+	translucent
+
+	{if ( distance < ( 200 + parm5 ) )
+		blend add
+		map	textures/sfx/spiritflesh
+		rgb 0
+		glowStage
+	}
+	{if ( distance <= ( 400 + parm6 ) && distance >= ( 200 + parm5 ) )
+		blend add
+		map	textures/sfx/spiritflesh
+		red 	parm0 * ( distance - (200 + parm5) ) / ( (400 + parm6) - (200 + parm5) )//dynamic interaction explanation[ (current distance - base) / (max distance - base) = a number between 0 'close' and 1 'far'. 1 - this number = rgb
+		green 	parm1 * ( distance - (200 + parm5) ) / ( (400 + parm6) - (200 + parm5) )//dynamic interaction explanation[ (current distance - base) / (max distance - base) = a number between 0 'close' and 1 'far'. 1 - this number = rgb
+		blue 	parm2 * ( distance - (200 + parm5) ) / ( (400 + parm6) - (200 + parm5) )//dynamic interaction explanation[ (current distance - base) / (max distance - base) = a number between 0 'close' and 1 'far'. 1 - this number = rgb
+		glowStage
+	}
+	{if ( distance > 400 + parm6 )
+		blend add
+		map	textures/sfx/spiritflesh
+		red 	parm0
+		green 	parm1
+		blue 	parm2
+		glowStage
+	}
+}
+
+//save -mflynn
+textures/decals/lotaglyph_a
+{
+	decal_macro
+	qer_editorimage 	textures/decals/lotaglyph_a
+
+	{ if ( parm4 == 0 )
+		blend	add
+		map		textures/decals/lotaglyph_a
+		red		0
+		green	0
+		blue	0
+	}
+
+	{ if ( parm4 != 0 )
+		blend	add
+		map		textures/decals/lotaglyph_a
+		red		parm0 * glyphclamp[ ( time + parm4 ) * 0.15 ]
+		green	parm1 * glyphclamp[ ( time + parm4 ) * 0.15 ]
+		blue	parm2 * glyphclamp[ ( time + parm4 ) * 0.15 ]
+	}
+}
+
+textures/decals/lotaglyph_b
+{
+	decal_macro
+	qer_editorimage 	textures/decals/lotaglyph_a
+
+	{ if ( parm4 == 0 )
+		blend	add
+		map		textures/decals/lotaglyph_a
+		red		0
+		green	0
+		blue	0
+	}
+
+	{ if ( parm4 != 0 )
+		blend	add
+		map		textures/decals/lotaglyph_a
+		red		parm0 * glyphclamp[ ( time + parm4 ) * 0.15 ]
+		green	parm1 * glyphclamp[ ( time + parm4 ) * 0.15 ]
+		blue	parm2 * glyphclamp[ ( time + parm4 ) * 0.15 ]
+	}
+}
+
+textures/decals/lotaglyph_c
+{
+	decal_macro
+	qer_editorimage 	textures/decals/lotaglyph_a
+
+	{ if ( parm4 == 0 )
+		blend	add
+		map		textures/decals/lotaglyph_a
+		red		0
+		green	0
+		blue	0
+	}
+
+	{ if ( parm4 != 0 )
+		blend	add
+		map		textures/decals/lotaglyph_a
+		red		parm0 * glyphclamp[ ( time + parm4 ) * 0.15 ]
+		green	parm1 * glyphclamp[ ( time + parm4 ) * 0.15 ]
+		blue	parm2 * glyphclamp[ ( time + parm4 ) * 0.15 ]
+	}
+}
+
+lights/lotaglyph
+{
+	lightfalloffimage	makeintensity( lights/squarelight1a )
+
+	{ if ( parm4 == 0 )
+		blend	add
+		map lights/squarelight1
+		red		0
+		green	0
+		blue	0
+		zeroclamp
+	}
+
+	{ if ( parm4 != 0 )
+		blend	add
+		map lights/squarelight1
+		red		parm0 * ( glyphclamp2[ ( time + parm4 ) * 0.15 ] )
+		green	parm1 * ( glyphclamp2[ ( time + parm4 ) * 0.15 ] )
+		blue	parm2 * ( glyphclamp2[ ( time + parm4 ) * 0.15 ] )
+		zeroclamp
+	}
+}
+
+textures/decals/bigchars_glow
+{
+	decal_macro
+	qer_editorimage 	textures/gfx/bigchars
+	{
+		blend blend
+		maskdepth
+		colored
+		nopicmip
+		linear
+		map textures/gfx/bigchars
+		glowstage
+	}
+}
+
+///*********************************************
+//particle textures
+//*********************************************/
+//textures/particles/ips_test1 {
+//	qer_editorimage textures/particles/shuttle_projectile
+//	translucent
+//	noshadows
+//	sort		10
+//	{
+//		blend add
+//		map textures/sfx/soulstrip3
+//		//colored
+//		//map _white
+//		//vertexcolor
+//	}
+//}
+
+/////////////////////////
+///////// old ///////////
+////paranoid reference///
+/////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////
+//fog tests
+/////////////
+//these don't work as intended
+//fogs/whirlingfog
+//{
+//	foglight			// tell the engine it is fog and not a light
+//	noshadows
+//	{
+//		map		textures/sfx/whirlingfoginner
+//		red		parm0 * 0.5
+//		green	parm1 * 0.5
+//		blue	parm2 * 0.5
+//		rotate  time * 0.25
+//		alphazeroclamp
+//	}
+//}
+//
+//fogs/whirlingfog2
+//{
+//	blendlight
+//	noshadows
+//	lightfalloffimage	lights/squarelight1a
+//	{
+//		blend		blend
+//		map		textures/sfx/whirlingfoginner
+//		red		parm0 * 0.5
+//		green	parm1 * 0.5
+//		blue	parm2 * 0.5
+//		rotate  time * 0.25
+//		alphazeroclamp
+//	}
+//}
+
+
+//
+//lights/mflickertest
+//{
+//	{
+//		map	lights/defaultpointlight
+//		colored
+//		//zeroclamp
+//		//scroll (runninglight [time * .5]), 0
+//		rgb mflicker[time *1.5]
+//	}
+//}
+
+//lights/mflickertest_breakable
+//{
+//	{if ( parm7 == 0 )
+//		map		lights/defaultpointlight
+////		red 	( mflicker [time * 1.5]) * parm0 * sound
+////		green 	( mflicker [time * 1.5]) * parm1 * sound
+////		blue	( mflicker [time * 1.5]) * parm2 * sound
+//		red 	parm0 * sound
+//		green 	parm1 * sound
+//		blue	parm2 * sound
+//		zeroclamp
+//	}
+//	{if ( parm7 != 0 )
+//		map		lights/defaultpointlight
+//		red 	( mflicker [time * 0.2]) * parm0 * sound
+//		green 	( mflicker [time * 1.5]) * parm1 * sound
+//		blue	( mflicker [time * 2.5]) * parm2 * sound
+////		red 	0
+////		green 	0
+////		blue	0
+//		zeroclamp
+//	}
+//}
+
+//lights/mflickertest_breakable2
+//{
+//	{if ( parm7 == 0 )
+//		map		lights/defaultpointlight
+////		red 	( mflicker [time * 1.5]) * parm0
+////		green 	( mflicker [time * 1.5]) * parm1
+////		blue	( mflicker [time * 1.5]) * parm2
+//		red 	(parm0 * 0.8) + (sound * 0.2)
+//		green 	(parm1 * 0.8) + (sound * 0.2)
+//		blue	(parm2 * 0.8) + (sound * 0.2)
+//		zeroclamp
+//	}
+//	{if ( parm7 != 0 )
+//		map		lights/defaultpointlight
+////		red 	( mflicker [time * 0.2]) * parm0
+////		green 	( mflicker [time * 1.5]) * parm1
+////		blue	( mflicker [time * 2.5]) * parm2
+////		red 	(parm0 * 0.2) + (sound * 0.8)
+////		green 	(parm1 * 0.2) + (sound * 0.8)
+////		blue	(parm2 * 0.2) + (sound * 0.8)
+//		red 	(parm0 * sound * 0.8) + 0.2
+//		green 	(parm1 * sound * 0.8) + 0.2
+//		blue	(parm2 * sound * 0.8) + 0.2
+//		zeroclamp
+//	}
+//}
+
+
+
+////hook this up to sound asap
+//lights/mflickertest_trig
+//{
+//	{if ( parm4 == 0 )
+//		map		lights/defaultpointlight
+//		//( mflicker2 [time * 1.5]) * //old stuff
+//		red 	parm0 * sound
+//		green 	parm1 * sound
+//		blue	parm2 * sound
+//		zeroclamp
+//	}
+//	{if ( parm4 == 1 )
+////		blend add
+////		map		lights/wavelight1
+////		scroll 	( 0.4 * costable [time * .7])  , time * 0.3
+//		map		lights/defaultpointlight
+//		red 	( mflicker2 [time * 0.2]) * parm0 * sound
+//		green 	( mflicker2 [time * 1.5]) * parm1 * sound
+//		blue	( mflicker2 [time * 2.5]) * parm2 * sound
+////		rotate 	0.25
+////		red 	0
+////		green 	0
+////		blue	0
+//		zeroclamp
+//	}
+//}
+
+
+
+//lights/mflickertest_breakable
+//{
+//	{if ( parm7 == 0 )
+//		map		lights/defaultpointlight
+//		red 		sound * parm0
+//		green 		sound * parm1
+//		blue 		sound * parm2
+//		zeroclamp
+//	}
+//	{if ( parm7 != 0 )
+//		map		lights/defaultpointlight
+//		red 		sound * parm0
+//		green 		sound * parm1
+//		blue 		sound * parm2
+//		zeroclamp
+//	}
+//
+//
+//}
+
+
+
+//textures/sfx/digitalghost {
+//	noshadows
+//	translucent
+//	//deform	expand	4*sintable[time*0.5]
+//	//deform jitter jacobladder[time * 20]
+//
+//
+//	{if ( distance < 200 )
+//		blend add
+//		map	textures/sfx/warning4_fuzz1
+//		//alphatest	0
+//		rgb 0
+//	}
+////	{if ( distance < 200 )
+////		blend add
+////		map	textures/sfx/warning6_fuzz2
+////		alphatest	1
+////	}
+//
+//
+//	{if ( distance <= 400 && distance >= 200 )
+//		blend add
+//		map	textures/sfx/warning4_fuzz1
+//		//alphatest	( distance - 200 ) / 200//200 to 400 == 0 to 1
+//		rgb ( distance - 200 ) / 200//200 to 400 == 0 to 1
+//	}
+////	{if ( distance <= 400 && distance >= 200 )
+////		blend add
+////		map	textures/sfx/warning6_fuzz2
+////		alphatest	1 - ( ( distance - 200 ) / 200 )//200 to 400 == 1 to 0
+////	}
+//
+//	{if ( distance > 400 )
+//		blend add
+//		map	textures/sfx/warning4_fuzz1
+//		//alphatest	1
+//		rgb 1
+//	}
+////	{if ( distance > 400 )
+////		blend add
+////		map	textures/sfx/warning6_fuzz2
+////		alphatest	0
+////	}
+//}
+//
+////jittering texture that fades in as the player approaches.  add this to func_spiritbridges.
+////parm5 adds to the 'fadein complete' distance
+////parm6 adds to the 'fadein begin' distance
+////parm6 + 200 must be > parm5
+//textures/sfx/digitalghost_b {
+//	noshadows
+//	translucent
+//	//deform	expand	4*sintable[time*0.5]
+//	deform jitter jacobladder[time * 20]
+//
+//	{if ( distance < ( 200 + parm5 ) )
+//		blend add
+//		map	textures/sfx/spiritflesh
+//		//alphatest	1
+//		rgb 1
+//	}
+//	{if ( distance <= ( 400 + parm6 ) && distance >= ( 200  + parm5 ) )
+//		blend add
+//		map	textures/sfx/spiritflesh
+//		//alphatest	1 - ( ( distance - 200 ) / 200 )//200 to 400 == 1 to 0
+//		rgb 1 - ( ( distance - ( (400 + parm6) - (200 + parm5) ) ) / ( 200 + parm5 ) )//200 to 400 == 1 to 0//changed to be dynamic
+//	}
+//	{if ( distance > 400 )
+//		blend add
+//		map	textures/sfx/spiritflesh
+//		//alphatest	0
+//		rgb 0
+//	}
+//}
+//
+//textures/sfx/digitalghost2_a {
+//	noshadows
+//	translucent
+//	//deform	expand	4*sintable[time*0.5]
+//	deform jitter jacobladder[time * 20]
+//
+//
+//	{if ( distance < 200 )
+//		blend add
+//		map	textures/sfx/spiritflesh
+//		//alphatest	0
+//		rgb 0
+//	}
+////	{if ( distance < 200 )
+////		blend add
+////		map	textures/sfx/warning6_fuzz2
+////		alphatest	1
+////	}
+//
+//
+//	{if ( distance <= 400 && distance >= 200 )
+//		blend add
+//		map	textures/sfx/spiritflesh
+//		//alphatest	( distance - 200 ) / 200//200 to 400 == 0 to 1
+//		rgb ( distance - 200 ) / 200//200 to 400 == 0 to 1
+//	}
+////	{if ( distance <= 400 && distance >= 200 )
+////		blend add
+////		map	textures/sfx/warning6_fuzz2
+////		alphatest	1 - ( ( distance - 200 ) / 200 )//200 to 400 == 1 to 0
+////	}
+//
+//	{if ( distance > 400 )
+//		blend add
+//		map	textures/sfx/spiritflesh
+//		//alphatest	1
+//		rgb 1
+//	}
+////	{if ( distance > 400 )
+////		blend add
+////		map	textures/sfx/warning6_fuzz2
+////		alphatest	0
+////	}
+//}
+//
+//textures/sfx/digitalghost2_b {
+//	noshadows
+//	//translucent
+//	//deform	expand	4*sintable[time*0.5]
+//	//deform jitter jacobladder[time * 20]
+//
+//	{if ( distance < 200 )
+//		blend 	add
+//		map	textures/sfx/spiritflesh
+//		//alphatest	1
+//		rgb 1
+//	}
+//	{if ( distance <= 400 && distance >= 200 )
+//		blend 	add
+//		map	textures/sfx/spiritflesh
+//		//alphatest	1 - ( ( distance - 200 ) / 200 )//200 to 400 == 1 to 0
+//		rgb 1 - ( ( distance - 200 ) / 200 )//200 to 400 == 1 to 0
+//	}
+//	{if ( distance > 400 )
+//		blend 	add
+//		map	textures/sfx/spiritflesh
+//		//alphatest	0
+//		rgb 0
+//	}
+//}
+
+textures/common/player_clip_physicalonly
+{
+	qer_editorimage textures/editor/player_clip
+	forcefield_nobullets
+	noshadows
+	description		"solid to physical players, not monsters, missiles, or spirit walk"
+}
+
+textures/sfx/beams/portalArc {
+	noselfshadow
+	noshadows
+	translucent
+	twosided
+
+	deform beam	// always face the view origin
+
+	{
+		blend add
+		map textures/sfx/beams/beam_r28
+		centerscale 6, 1
+		scroll time * -1.5, 0
+		red 	parm0 * beamflash[ time * ( 1 + parm6 ) ]//* distance]
+		green 	parm1 * beamflash[ time * ( 1 + parm6 ) ]// * distance]
+		blue 	parm2 * beamflash[ time * ( 1 + parm6 ) ]// * distance]
+		glowStage
+	}
+}
+
+textures/sfx/flare_portalArc {
+	noselfshadow
+	noshadows
+	translucent
+	twosided
+
+//	deform flare  16
+	deform beam
+
+	{
+		blend add
+		map			_quadratic
+		red 	parm0 * beamflash[ time * ( 1 + parm6 ) ]//* distance]
+		green 	parm1 * beamflash[ time * ( 1 + parm6 ) ]// * distance]
+		blue 	parm2 * beamflash[ time * ( 1 + parm6 ) ]// * distance]
+		glowStage
+	}
+}
+
+textures/particles/spark_white_portalArc
+{
+	qer_editorimage textures/particles/spark_white
+	translucent
+	noshadows
+	sort		10
+
+	{
+		blend add
+		//blend gl_one, gl_one_minus_src_color
+		map textures/particles/spark_white
+		red 	parm0 * beamflash[ time * ( 1 + parm6 ) ]//* distance]
+		green 	parm1 * beamflash[ time * ( 1 + parm6 ) ]// * distance]
+		blue 	parm2 * beamflash[ time * ( 1 + parm6 ) ]// * distance]
+		vertexcolor
+	}
+}
+
+textures/particles/dryice_smoke_color
+{
+	qer_editorimage textures/particles/smokepuff11
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_one_minus_src_alpha, gl_one_minus_src_color //graying blend (white smoke)
+		map textures/particles/smokepuff11
+		colored
+		vertexcolor
+	}
+}
+
+
+textures/sfx/e3_logo_3dr
+{
+	qer_editorimage	textures/sfx/E3_logo_3dr
+	noshadows
+	noselfshadow
+	nonsolid
+
+/*
+	{
+		blend		add
+		map			textures/sfx/E3_logo_3dr
+		red			parm0
+		green		parm0
+		blue		parm0
+	}
+*/
+	{
+		blend		add
+		map			textures/sfx/E3_logo_3dr_text
+		red			parm1
+		green		parm1
+		blue		parm1
+	}
+}
+
+textures/sfx/e3_logo_hh
+{
+	qer_editorimage	textures/sfx/E3_logo_hh
+	noshadows
+	noselfshadow
+	nonsolid
+/*
+	{
+		blend		add
+		map			textures/sfx/E3_logo_hh
+		red			parm0
+		green		parm0
+		blue		parm0
+	}
+*/
+	{
+		blend		add
+		map			textures/sfx/E3_logo_hh_text
+		red			parm1
+		green		parm1
+		blue		parm1
+	}
+}
+
+textures/sfx/e3_logo_prey_intro
+{
+	qer_editorimage	textures/special/E3PreyLogo
+	noshadows
+	noselfshadow
+	nonsolid
+
+	{
+		blend		gl_one_minus_dst_color, gl_src_color
+		map			textures/sfx/E3_logo_bird
+		red			parm0
+		green		parm0
+		blue		parm0
+	}
+
+	{
+		blend		add
+		map			textures/sfx/E3_logo_prey
+		red			parm1
+		green		parm1
+		blue		parm1
+	}
+
+	{//intro "earth's savior doesn't want the job" text
+		blend		add
+		map			textures/sfx/E3_logo_start_text
+		red			parm2
+		green		parm2
+		blue		parm2
+	}
+
+//	{//outro "when it's done" text
+//		blend		gl_one_minus_dst_color, gl_src_color
+//		map			textures/sfx/E3_logo_end_text
+//		red			parm3
+//		green		parm3
+//		blue		parm3
+//		alpha		1
+//	}
+}
+
+textures/sfx/e3_whiteroom
+{
+	qer_editorimage	textures/special/E3PreyLogo
+	noshadows
+	noselfshadow
+	nonsolid
+
+	{
+//		blend		gl_one_minus_dst_color, gl_src_color
+		blend		gl_dst_color, gl_src_alpha
+		map			textures/special/E3PreyLogo
+		red			parm0
+		green		parm0
+		blue		parm0
+	}
+}

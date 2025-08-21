@@ -1,0 +1,277 @@
+//HUMANHEAD PFC jsh 4/26/06 - removed combat_charge() and added end_times for all movement loops to prevent move bugs
+object monster_sphereboss : monster_base_simple {
+	float		nextAttack;
+	boolean		AI_FACE_ENEMY;
+	boolean		AI_CAN_DAMAGE;
+	void		combat_bomb();
+	void		combat_range();
+	void		combat_wander();
+	void		init();
+};
+
+void monster_sphereboss::Torso_Idle() {
+	idleAnim( ANIMCHANNEL_TORSO, "fly" );
+	while( !AI_PAIN ) {
+		waitFrame();
+	}
+	animState( ANIMCHANNEL_TORSO, "Torso_Pain", 3 );
+}
+
+void monster_sphereboss::Torso_Pain() {
+	playAnim( ANIMCHANNEL_TORSO, "pain" );
+	while( !animDone( ANIMCHANNEL_TORSO, 3 ) ) {
+		waitFrame();
+	}
+	finishAction( "pain" );
+	animState( ANIMCHANNEL_TORSO, "Torso_Idle", 8 );
+}
+
+
+void monster_sphereboss::Torso_Prefire() {
+	playCycle( ANIMCHANNEL_TORSO, "prefire" );	
+}
+
+void monster_sphereboss::Torso_Bomb() {
+	playAnim( ANIMCHANNEL_TORSO, "shoot" );	
+}
+
+void monster_sphereboss::Torso_RangeAttack() {
+	float i, end_time;
+	float range = enemyRange2D();
+	float rando = sys.random(100);
+	if ( getIntKey( "can_stream" ) && range > 200 && sys.random(100) < 75 ) {
+		for ( i=0;i<3;i++ ) {
+			end_time = sys.getTime() + 0.8;
+			playAnim( ANIMCHANNEL_TORSO, "range_attack" );
+			while( sys.getTime() < end_time ) {
+				waitFrame();
+			}
+		}
+	} else if ( getIntKey( "can_burst" ) ) {
+		end_time = sys.getTime() + 1.0;
+		for ( i=0;i<5;i++ ) {
+			setBlendFrames( ANIMCHANNEL_TORSO, 12 );
+			float shoot_time = sys.getTime() + 0.5;
+			playAnim( ANIMCHANNEL_TORSO, "burst_attack" );
+			while ( sys.getTime() < shoot_time ) {
+				faceEnemy();
+				waitFrame();
+			}
+		}
+	}
+	finishAction( "range_attack" );
+	animState( ANIMCHANNEL_TORSO, "Torso_Idle", 4 );
+}
+
+void monster_sphereboss::init() {
+	setMoveType( MOVETYPE_FLY );
+	setState( "state_Begin" );
+}
+
+void monster_sphereboss::state_Pain() {
+	AI_CAN_DAMAGE = true;
+	stopMove();
+	setShaderParm( 7, 0 );
+	setSkin( getKey( "def_noshieldskin" ) );
+	vector vel = getLinearVelocity();
+	setLinearVelocity( vel * 0.15 );
+	stopSound( SND_CHANNEL_ANY, 0 );
+	startSound( "snd_pain", SND_CHANNEL_ANY, 0 );
+	animState( ANIMCHANNEL_TORSO, "Torso_Pain", 0 );
+	startSound( "snd_shield_down", SND_CHANNEL_ANY, 0 );
+	float parm = 1;
+	while ( parm > 0 ) {
+		parm -= 0.03;
+		setShaderParm( 7, parm );
+		sys.wait(0.03);
+	}
+	sys.wait(2);
+	spinClouds( false );
+	setState( "state_Combat" );
+}
+
+void monster_sphereboss::state_Begin() {
+	animState( ANIMCHANNEL_TORSO, "Torso_Idle", 0 );
+	monster_begin();
+	setState( "state_Idle" );
+}
+
+void monster_sphereboss::state_Idle() {
+	wait_for_enemy();
+	sys.wait(1);
+	setState( "state_Combat" );
+}
+
+void monster_sphereboss::state_Combat() {
+	disableClip();
+	float attack_flags;
+	stopMove();
+	//HUMANHEAD jsh PCF 5/1/06 hack: dont set skin on stage 2
+	if ( !getIntKey( "no_bomb" ) ) {
+		setSkin( "skins/monsters/sphereboss" );
+	}
+	startSound( "snd_shield_up_2", SND_CHANNEL_ANY, 0 );
+	sys.wait( 0.5 );
+	startSound( "snd_shield_up", SND_CHANNEL_ANY, 0 );
+	float parm;
+	while ( parm < 1 ) {
+		parm += 0.05;
+		setShaderParm( 7, parm );
+		sys.wait(0.02);
+	}
+	AI_CAN_DAMAGE = false;
+	combat_bomb();
+	setShaderParm( 7, 1 );
+	eachFrame {
+		if ( !getEnemy() ) {
+			stopSound( SND_CHANNEL_ANY, 0 );
+			stopMove();
+			eachFrame {
+				if ( canSee( $player1 ) ) {
+					setEnemy( $player1 );
+					break;
+				}
+			}
+		}
+		combat_wander();
+		combat_range();
+		sys.wait(1);
+		combat_bomb();
+	}
+}
+
+void monster_sphereboss::combat_bomb() {
+	if ( getIntKey( "no_bomb" ) ) {
+		return;
+	}
+	float attack_flags;
+	float count = 6;
+	startSound( "snd_laugh", SND_CHANNEL_ANY, 0 );
+	setSeekScale(10);
+	setFlySpeed( getFloatKey( "bomb_speed" ) );
+	entity node;
+	eachFrame {
+		if ( count <= 0 ) {
+			break;
+		}
+		AI_FACE_ENEMY = false;
+		node = getCircleNode();
+		if ( sys.getTime() > nextAttack ) {
+			nextAttack = sys.getTime()+ 0.2;
+			playAnim( ANIMCHANNEL_TORSO, "shoot" );
+		}
+		if ( node ) {
+			count = count - 1;
+			moveToPosition( node.getOrigin() );
+			if ( AI_MOVE_DONE ) {
+				break;
+			}
+			float end_time = sys.getTime() + 10;
+			while ( !AI_MOVE_DONE ) {
+				if ( sys.getTime() > end_time ) {
+					stopMove();
+					break;
+				}
+				waitFrame();
+			}
+		} else {
+			break;
+		}
+	}
+	setSeekScale( getFloatKey( "fly_seek_scale" ) );
+	setFlySpeed( getFloatKey( "fly_speed" ) );
+}
+
+void monster_sphereboss::combat_range() {
+	stopMove();
+	faceEnemy();
+	sys.wait(0.6);
+	if ( getIntKey( "spin_clouds" ) ) {
+		spinClouds( true );
+	}
+	sys.trigger( sys.getEntity( getKey( "dust1" ) ) );
+	sys.trigger( sys.getEntity( getKey( "dust2" ) ) );
+	startSound( "snd_scare", SND_CHANNEL_ANY, 0 );
+	if ( sys.random(100) < 15 ) {
+		startSound( "snd_laugh", SND_CHANNEL_ANY, 0 );
+	}
+	animState( ANIMCHANNEL_TORSO, "Torso_Prefire", 4 );
+	sys.wait(1.0);
+	startSound( "snd_meta_attack", SND_CHANNEL_ANY, 0 );
+	startSound( "snd_wind", SND_CHANNEL_DEMONIC, 0 );
+	animState( ANIMCHANNEL_TORSO, "Torso_RangeAttack", 4 );
+	waitAction( "range_attack" );
+	sys.trigger( sys.getEntity( getKey( "dust1" ) ) );
+	sys.trigger( sys.getEntity( getKey( "dust2" ) ) );
+	if ( getIntKey( "spin_clouds" ) ) {
+		spinClouds( false );
+	}
+	stopMove();
+	sys.wait(1.0);
+	stopSound( SND_CHANNEL_DEMONIC, 0 );
+}
+
+void monster_sphereboss::state_LookAtPlayer() {
+	eachFrame {
+		turnToEntity( $player1 );
+	}
+}
+
+void monster_sphereboss::state_BlowUp() {
+	playCycle( ANIMCHANNEL_TORSO, "predeath" );
+	sys.wait( getFloatKey( "death_wait1" ) );
+	setBlendFrames( ANIMCHANNEL_TORSO, 12 );
+	sys.wait( getFloatKey( "death_wait2" ) );
+	playAnim( ANIMCHANNEL_TORSO, "death" );
+	setSkin( "skins/monsters/sphereboss_hide" );
+	while ( !animDone( ANIMCHANNEL_TORSO, 0 ) ) {
+		setLinearVelocity( '0 0 0' );
+		waitFrame();
+	}	
+}
+
+void monster_sphereboss::state_SphereDeath() {
+	spinClouds( false );
+	setHealth(1);
+	ignoreDamage();
+	entity death_point = sys.getEntity( getKey( "death_point" ) );
+	float end_time = sys.getTime() + 20;
+	moveToPosition( death_point.getOrigin() );
+	while ( !AI_MOVE_DONE ) {
+		if ( sys.getTime() > end_time ) {
+			stopMove();
+			break;
+		}
+		waitFrame();
+	}
+	activateTargets( self );
+
+	//HUMANHEAD jsh PCF 4/28/06 play idle anim upon death
+	stopAnim( ANIMCHANNEL_TORSO, 4 );
+	playCycle( ANIMCHANNEL_TORSO, "idle" );
+
+	eachFrame {
+		turnToEntity( $player1 );		
+	}
+}
+
+void monster_sphereboss::state_Killed() {
+	setLinearVelocity( '0 0 0' );
+}
+
+void monster_sphereboss::combat_wander() {
+	stopMove();
+	AI_FACE_ENEMY = false;
+	entity node = getCombatNode();
+	float end_time = sys.getTime() + 10;
+	if ( node ) {
+		moveToPosition( node.getOrigin() );
+		while ( !AI_MOVE_DONE ) {
+			if ( sys.getTime() > end_time ) {
+				stopMove();
+				break;
+			}
+			waitFrame();
+		}
+	}
+}

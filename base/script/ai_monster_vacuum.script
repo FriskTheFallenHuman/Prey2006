@@ -1,0 +1,45 @@
+object monster_vacuum : monster_base_simple {
+	void init();
+};
+
+void monster_vacuum::init() {
+	entity	entVacuumFlashlight;
+	sys.setSpawnArg( "light_target", "768 0 0" );		// light cone direction
+	sys.setSpawnArg( "light_right", "0 0 -256" );		// light cone width
+	sys.setSpawnArg( "light_up", "0 -256 0" );			// light cone height
+   	sys.setSpawnArg( "_color", "1 1 1" );        		// light color
+   	sys.setSpawnArg( "texture", "lights/hunterlight" );	// custom light shader
+//	sys.setSpawnArg( "origin", getOrigin() + getVectorKey( "flashlight_offset" ) + '0 0 4' );
+   	entVacuumFlashlight = sys.spawn("light");
+   	entVacuumFlashlight.bind( self );
+   	entVacuumFlashlight.setOrigin( '8 0 16' );
+
+	setFlySpeed(getIntKey("ambient_speed"));
+	setMoveType(MOVETYPE_SLIDE);
+	sys.setSpawnArg( "origin", getOrigin() + getVectorKey( "flashlight_offset" ) );
+	sys.setSpawnArg( "fx", getKey( "fx_flashlight" ) );
+	entity eSpawnFx = sys.spawn( "func_fx" );
+	eSpawnFx.bind( self );
+	sys.trigger( eSpawnFx );
+	setState( "state_Begin" );
+}
+
+void monster_vacuum::state_Begin() {
+	setState("state_Idle");
+}
+
+void monster_vacuum::state_Idle() {
+	setContents( 0 );
+	wander();
+}
+
+void monster_vacuum::state_Killed() {
+	startSound( "snd_death", SND_CHANNEL_ANY, 0 );
+	sys.radiusDamage( getOrigin(), self, self, self, getKey( "def_explodeDamage" ), 1 );
+	spawnFX( getKey( "fx_death" ) );
+	hide();
+	sys.wait(1);
+	remove();
+
+	self.removeBinds();
+}

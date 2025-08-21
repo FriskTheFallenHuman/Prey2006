@@ -1,0 +1,309 @@
+textures/liquid/crater_lake
+{
+	qer_editorimage		textures/liquid/crater_lake_d
+	noselfshadow
+	translucent
+	noshadows
+	water
+	{
+		blend bumpmap
+		rotate	time / -160
+		scale 2, 2
+		map		textures/liquid/crater_lake_local
+		vertexcolor
+	}
+	{
+		blend diffusemap
+		rotate	time / -160
+		scale 2,2
+		map			textures/liquid/crater_lake_d
+		colored
+		vertexcolor
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map textures/liquid/crater_lake_glow
+		scroll time / 600, time / 80 * ( parm7 + 1 )
+		rotate	time / -200
+		colored
+		scale 2, 2
+		glowstage
+		rgb twostage [time / 4] * 0.2
+		vertexcolor
+	}
+	{
+		blend specularmap
+		map			textures/liquid/crater_lake_s
+		scale 2,2
+		rotate	time / -160
+		specularexp 240, 10.2
+		vertexcolor
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map textures/liquid/crater_lake_glow
+		rotate	time / 80
+		colored
+		scale 3, 3
+		glowstage
+		rgb twostage [time / 8] * 0.2
+		vertexcolor
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		map textures/liquid/crater_lake_glow2
+		rotate	time / 80
+		colored
+		glowstage
+		rgb 0.2
+		vertexcolor
+	}
+}
+
+textures/liquid/pussooze
+{
+	qer_editorimage textures/liquid/pussooze_d
+	{
+
+		blend	add
+		map	textures/liquid/pussooze_d
+		scroll time * 0, time / 30 * ( parm7 + 1 )
+		}
+		{
+		blend filter
+		map	textures/liquid/pussooze_d2
+		scroll time * 0, time / 70 * ( parm7 + 1 )
+		}
+}
+
+textures/liquid/blacksludge
+{
+	noshadows
+	noselfshadow
+	forceopaque
+
+	{
+		blend diffusemap
+		map	textures/liquid/sludge
+		centerscale 3,3
+	}
+	{
+		blend bumpmap
+		map	heightmap (textures/liquid/sludge_h, 2)
+		centerscale 3,3
+	}
+	{
+		blend specularmap
+		map	textures/liquid/sludge_s
+		centerscale 3,3
+	}
+}
+
+// this is applied to liquid in lota training
+/*
+textures/liquid/lotatraining/water
+{
+	qer_editorimage textures/editor/liquid
+	noselfshadow
+	noshadows
+	twosided
+	water
+
+	// non fullbright, no specular
+	{
+		blend diffusemap
+		map _white
+		rgb 1
+	}
+	{
+		blend gl_dst_color, gl_src_color
+		cubemap	env/lotawater
+		texgen	reflect
+		red		0.2
+		green	0.2
+		blue	0.2
+	}
+	bumpmap _flat
+	specularmap _white
+}
+*/
+
+textures/liquid/lotatraining/water
+{
+	qer_editorimage textures/editor/liquid
+	noselfshadow
+	noshadows
+	twosided
+//	translucent
+	water
+
+
+	// non fullbright, no specular
+
+	{
+		shaderFallback1
+
+		blend diffusemap
+		map _white
+		rgb 0.5
+	}
+	{
+		shaderFallback1
+
+		blend gl_dst_color, gl_src_color
+		cubemap	env/lotawater
+		texgen	reflect
+	}
+
+	{
+		shaderLevel1
+
+		program			liquid.vfp
+
+		vertexparm		1       5.5			// magnitude of the distortion
+
+		fragmentparm	0		5, .85, .15			//fresnel power, bias, 1-bias
+		fragmentparm	1		0.9, 0.9, 1.0		// refraction color
+		fragmentparm	2		0.96, 0.95, 1.0		// reflection color
+		fragmentparm	3       0.02 * cosTable[time * 0.3], 0.02 * sinTable[time * 0.3], sinTable[time*0.3+2], time*0.2	// texture scrolling
+
+		fragmentmap		0		cubemap	env/lotawater		// reflection cubemap
+		fragmentmap		1		smoothnormals(heightmap(textures/liquid/dnoise,5))	//normalmap
+		fragmentmap		2       _currentrender
+	}
+	{
+		shaderLevel1
+
+		blend shader
+		program interactionLiquid.vfp
+
+		fragmentmap		1		smoothnormals(heightmap(textures/liquid/dnoise,5))	//normalmap
+		fragmentmap		4		_black		//diffuse
+		fragmentmap		5		_white		//specular
+
+		fragmentparm	0		300		// exponent
+		fragmentparm	1       0.02 * cosTable[time * 0.3], 0.02 * sinTable[time * 0.3], sinTable[time*0.3+2], time*0.2	// texture scrolling
+	}
+}
+
+// Applied to liquid in feeding tower crouch area
+/*
+textures/liquid/feedingtower/crouchsludge
+{
+	qer_editorimage textures/editor/liquid
+	noselfshadow
+	noshadows
+	twosided
+	water
+
+	// non fullbright, no specular
+	{
+		blend diffusemap
+		map _white
+		rgb 1
+	}
+	{
+		blend gl_dst_color, gl_src_color
+		cubemap	env/ftcrouch
+		texgen	reflect
+		red		0.2
+		green	0.2
+		blue	0.2
+	}
+	bumpmap _flat
+	specularmap _white
+}*/
+
+
+textures/liquid/feedingtower/crouchsludge
+{
+	qer_editorimage textures/editor/liquid
+	noselfshadow
+	noshadows
+	twosided
+//	translucent
+	water
+
+
+	// non fullbright, no specular
+
+	{
+		shaderFallback1
+
+		blend diffusemap
+		map _white
+		rgb 0.5
+	}
+	{
+		shaderFallback1
+
+		blend gl_dst_color, gl_src_color
+//		cubemap	env/ftpool
+		cubemap	env/ftcrouch
+		texgen	reflect
+	}
+
+	{
+		shaderLevel1
+
+		program			liquid.vfp
+
+		vertexparm		1       6.5			// magnitude of the distortion
+
+		fragmentparm	0		5, .5, .5			//fresnel power, bias, 1-bias
+		fragmentparm	1		0.33, 0.33, .45		// refraction color
+		fragmentparm	2		0.75, 0.7, 1.0		// reflection color
+		fragmentparm	3       0.02 * cosTable[time * 0.3], 0.02 * sinTable[time * 0.3], sinTable[time*0.3+2], time*0.2	// texture scrolling
+
+		fragmentmap		0		cubemap	env/ftcrouch		// reflection cubemap
+		fragmentmap		1		smoothnormals(heightmap(textures/liquid/dnoise,5))		//normalmap
+		fragmentmap		2       _currentrender
+	}
+	diffusemap _black		// make sure normals are generated
+}
+
+textures/liquid/testLiquid
+{
+	qer_editorimage textures/editor/liquid
+	noselfshadow
+	noshadows
+	twosided
+//	translucent
+	water
+
+
+	// non fullbright, no specular
+
+	{
+		shaderFallback1
+
+		blend diffusemap
+		map _white
+		rgb 0.5
+	}
+
+	{
+		shaderLevel1
+
+		program			liquid.vfp
+
+		vertexparm		0       0.01 * cosTable[time * 0.2], 0.01 * sinTable[time * 0.2], sinTable[time*0.2+2], sinTable[time*0.2+1]	// texture scrolling
+		vertexparm		1       3.5			// magnitude of the distortion
+		vertexparm		2		0.7, 0.8, 1.8, 1	// refraction color
+		vertexparm		3		0.8, 1, 0.98, 1		// reflection color
+
+		//fragmentmap		0		cubemap	env/lotawater
+		fragmentmap		0		cubemap	env/ftcrouch		// reflection cubemap
+		fragmentmap		1		smoothnormals(heightmap(textures/liquid/noise,15))
+		fragmentmap		2       _currentrender
+	}
+
+	{
+		shaderFallback1
+
+		blend gl_dst_color, gl_src_color
+//		cubemap	env/ftpool
+		cubemap	env/ftcrouch
+		texgen	reflect
+	}
+}

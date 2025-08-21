@@ -1,0 +1,203 @@
+//
+//
+// centurion (divided into three parts)
+//
+//
+//
+models/monsters/centurion/centurionbody
+{
+	noShadows
+	//noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	forceOverlays
+
+	renderbump -size 2048 2048 -aa 1 -colormap models/monsters/centurion/centurionbody_local models/monsters/centurion/centurionhi.lwo
+	diffusemap models/monsters/centurion/centurionbody
+	bumpmap	addnormals(models/monsters/centurion/centurionbody_local, heightmap(models/monsters/centurion/centurionbody_h, 6 ) )
+	specularmap models/monsters/centurion/centurionbody_s
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+		{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/centurion/centurionbody_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 0.4 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/centurion/centurionbody_dis	// replace this with a monster-specific texture
+		alphaTest 0.4 * (time - parm7)
+		glowStage
+	}
+
+}
+models/monsters/centurion/centurionhead
+{
+	noShadows
+	//noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	forceOverlays
+
+	renderbump -size 1024 1024 -aa 1 -trace 0.01 models/monsters/centurion/centurionhead_local models/monsters/centurion/centurionhi.lwo
+	diffusemap models/monsters/centurion/centurionhead
+	bumpmap	addnormals(models/monsters/centurion/centurionhead_local, heightmap(models/monsters/centurion/centurionhead_h, 6 ) )
+	specularmap models/monsters/centurion/centurionhead_s
+
+	{ // Glowing eyes
+		blend add
+		map models/monsters/centurion/centurioneyes
+		rgb parm6
+		glowStage
+	}
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+		{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/centurion/centurionbody_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 0.4 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/centurion/centurionbody_dis	// replace this with a monster-specific texture
+		alphaTest 0.4 * (time - parm7)
+		glowStage
+	}
+
+}
+models/monsters/centurion/centurionguns
+{
+	noShadows
+	//noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	forceOverlays
+
+	renderbump -size 1024 1024 -aa 1 -colormap models/monsters/centurion/centurionbody_local models/monsters/centurion/centurionhi.lwo
+	diffusemap models/monsters/centurion/centurionbody
+	bumpmap	addnormals(models/monsters/centurion/centurionbody_local, heightmap(models/monsters/centurion/centurionbody_h, 6 ) )
+	specularmap models/monsters/centurion/centurionbody_s
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/centurion/centurionbody_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 0.7 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/centurion/centurionbody_dis	// replace this with a monster-specific texture
+		alphaTest 0.7 * (time - parm7)
+		glowStage
+	}
+
+}
+
+
+
+
+/*
+models/monsters/centurion/centuriongut
+{
+	//noselfshadow
+	unsmoothedtangents
+	matter_flesh
+
+	//renderbump -size 512 512 models/monsters/centurion/centurionbody_local models/monsters/centurion/centurionhi.lwo
+
+//	diffusemap models/monsters/centurion/centurionhead
+//	bumpmap	addnormals(models/monsters/centurion/centurionbody_local, heightmap(models/monsters/centurion/centurionbody_h, 1 ) )
+	bumpmap	models/monsters/centurion/centurionhead_local
+	specularmap models/monsters/centurion/centurionhead_s
+	{
+		blend diffusemap
+		map models/monsters/centurion/centurionhead
+		alphatest	0.5
+	}
+}
+models/monsters/centurion/swordarm
+{
+	//noselfshadow
+	unsmoothedtangents
+	matter_flesh
+
+	renderbump -size 256 256 models/monsters/centurion/swordarm_local models/monsters/centurion/centurionhi.lwo
+	diffusemap models/monsters/centurion/swordarm
+//	bumpmap	addnormals(models/monsters/centurion/swordarm_local, heightmap(models/monsters/centurion/swordarm_h, 1 ) )
+	bumpmap	models/monsters/centurion/swordarm_local
+//	specularmap models/monsters/centurion/swordarm_s
+}
+////////////////////////////
+/////  centurion 2 /////////
+////////////////////////////
+
+models/monsters/centurion2/centurion2
+{
+	//noselfshadow
+	unsmoothedtangents
+	matter_flesh
+
+	renderbump -size 1024 1024 -aa 0 models/monsters/centurion2/centurion2body_local models/monsters/centurion2/centurionhi.lwo
+	diffusemap models/monsters/centurion2/centurion2body
+//	bumpmap	addnormals(models/monsters/centurion2/centurion2body_local, heightmap(models/monsters/centurion2/centurion2body_h, 1 ) )
+	bumpmap	models/monsters/centurion2/centurion2body_local
+//	specularmap models/monsters/centurion2/centurion2body_s
+}
+*/

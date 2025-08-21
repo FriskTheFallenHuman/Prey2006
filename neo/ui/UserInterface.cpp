@@ -246,6 +246,7 @@ idUserInterfaceLocal::idUserInterfaceLocal() {
 	refs = 1;
 	timeStamp = 0;
 	lastGlWidth = lastGlHeight = 0;
+	translateFont = -1;
 }
 
 idUserInterfaceLocal::~idUserInterfaceLocal() {
@@ -329,6 +330,7 @@ bool idUserInterfaceLocal::InitFromFile( const char *qpath, bool rebuild, bool c
 		uiManagerLocal.guis.Append( this );
 	}
 
+	translateFont = -1;
 	loading = false;
 
 	return true;
@@ -458,9 +460,19 @@ void idUserInterfaceLocal::Redraw( int _time ) {
 		}
 
 		time = _time;
+
+		if ( translateFont >= 0 ) {
+			desktop->Translate( translateFont );
+		}
+
 		uiManagerLocal.dc.PushClipRect( uiManagerLocal.screenRect );
 		desktop->Redraw( 0, 0 );
 		uiManagerLocal.dc.PopClipRect();
+
+		if ( translateFont >= 0 ) {
+			translateFont = -1;
+			desktop->Translate();
+		}
 	}
 }
 
@@ -804,4 +816,23 @@ void idUserInterfaceLocal::CallStartup( void ) {
 	if ( desktop ) {
 		desktop->RunScript( idWindow::ON_STARTUP );
 	}
+}
+
+/*
+==============
+idUserInterfaceLocal::Translate
+==============
+*/
+void idUserInterfaceLocal::Translate( const char *fontname ) {
+	if ( !desktop ) {
+		return;
+	}
+
+	translateFont = -1;
+	
+	if ( !fontname || !fontname[0] ) {
+		return;
+	}
+
+	translateFont = uiManagerLocal.dc.FindFont( fontname );
 }

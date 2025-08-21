@@ -1,0 +1,41 @@
+// video.mtr
+// All video materials
+
+// tv.gui
+video/tv/channel2 {
+	qer_editorimage	textures/editor/video
+	translucent {
+		videomap loop "video/picnic.roq"
+		linear
+	}
+}
+video/tv/channel3 {
+	qer_editorimage	textures/editor/video
+	translucent {
+		videomap loop "video/patient.roq"
+		linear
+	}
+}
+video/tv/news {
+	{	//static
+		blend blend
+		map guis/assets/static/static001
+		scroll time*5, time*7
+		rotate time*3
+		colored
+	}
+}
+
+video/3drealms_logo {
+	qer_editorimage	textures/editor/video
+	translucent {
+		videomap loop "video/3dr.roq"
+	}
+}
+
+video/humanhead_logo {
+	qer_editorimage	textures/editor/video
+	translucent {
+		videomap loop "video/hh.roq"
+	}
+}

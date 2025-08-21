@@ -173,6 +173,20 @@ void R_RenderGuiSurf( idUserInterface *gui, drawSurf_t *drawSurf ) {
 
 	tr.guiRecursionLevel++;
 
+	// Are in range of a GUI surface that uses the alien font?
+	// Translate it.
+	const char* translateAlienFont = cvarSystem->GetCVarString( "gui_translateAlienFont" );
+	if ( translateAlienFont && translateAlienFont[0] && cvarSystem->GetCVarFloat( "gui_translateAlienFontDistance" ) != 0.0f ) {
+		if ( cvarSystem->GetCVarFloat( "gui_translateAlienFontDistance" ) < 0.0f ) {
+			gui->Translate( translateAlienFont );
+		} else {
+			// > 0
+			if ( ( tr.primaryRenderView.vieworg - idVec3( modelMatrix[12], modelMatrix[13], modelMatrix[14]) ).LengthFast() <= cvarSystem->GetCVarFloat( "gui_translateAlienFontDistance" ) ) {
+				gui->Translate( translateAlienFont );
+			}
+		}
+	}
+
 	// call the gui, which will call the 2D drawing functions
 	tr.guiModel->Clear();
 	gui->Redraw( tr.viewDef->renderView.time );

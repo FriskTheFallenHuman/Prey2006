@@ -1,5 +1,5 @@
 // gfx.shader
-// 
+//
 // this file contains shaders that are used by the programmers to
 // generate special effects not attached to specific geometry.  this
 // also has 2d shaders such as fonts, etc.
@@ -12,6 +12,10 @@ textures/region
 	forceopaque			// will still seal levels
 }
 
+textures/black
+{
+	map _black
+}
 
 textures/bigchars
 {
@@ -22,14 +26,14 @@ textures/bigchars
 		colored
 		nopicmip
 		linear
-		map textures/gfx/bigchars.tga
+		map textures/gfx/bigchars
 	}
 }
 
 console
 {
 	{
-		map			textures/gfx/console.tga
+		map			textures/gfx/console
 		linear		// no mip maps
 	}
 }
@@ -38,17 +42,7 @@ splashscreen
 {
 	{
 		forcehighquality
-		map		guis/assets/splash/intro.tga 
-		nopicmip
-		linear
-	}
-}
-
-photsensitivityScreen
-{
-	{
-		forcehighquality  
-		map		guis/assets/splash/photosensitivity.tga 
+		map		guis/assets/loading/loading
 		nopicmip
 		linear
 	}
@@ -67,7 +61,7 @@ menubacknologo
 {
 	translucent
 	{
-		map		textures/gfx/colors/black.tga
+		map		textures/gfx/colors/black
 		maskdepth
 	}
 }
@@ -78,7 +72,7 @@ itemhighlightshell
 {
 	nonsolid
 	{
-		map		lights/squarelight1.tga
+		map		lights/squarelight1
 		blend	add
 		red		parm4*0.7
 		green	parm4*0.5
@@ -116,7 +110,7 @@ textures/sfx/lagometer
 {
 	{
 		blend add
-		map textures/sfx/lagometer.tga
+		map textures/sfx/lagometer
 		linear
 	}
 }
@@ -125,7 +119,7 @@ textures/gfx/plug
 {
 	{
 		blend add
-		map textures/gfx/plug.tga
+		map textures/gfx/plug
 		linear
 		zeroclamp
 	}
@@ -133,7 +127,7 @@ textures/gfx/plug
 
 textures/sfx/lagsprite
 {
-    qer_editorimage textures/gfx/plug.tga
+    qer_editorimage textures/gfx/plug
     noShadows
     nonsolid
     noimpact
@@ -142,14 +136,14 @@ textures/sfx/lagsprite
     {
         colored
         blend add
-		map textures/gfx/plug.tga
+		map textures/gfx/plug
 //		clamp
     }
 }
 
 textures/sfx/chatsprite
 {
-    qer_editorimage textures/gfx/chat.tga
+    qer_editorimage textures/gfx/chat
     noShadows
     nonsolid
     noimpact
@@ -158,13 +152,13 @@ textures/sfx/chatsprite
     {
         colored
             blend add
-            map textures/gfx/chat.tga
+            map textures/gfx/chat
     }
 }
 
 textures/sfx/teamsprite
 {
-    qer_editorimage textures/gfx/teamsprite.tga
+    qer_editorimage textures/gfx/teamsprite
     noShadows
     nonsolid
     noimpact
@@ -172,7 +166,7 @@ textures/sfx/teamsprite
     {
 	blend add
 	colored
-        map textures/gfx/teamsprite.tga
+        map textures/gfx/teamsprite
 //        centerscale 4,4
         glowstage
         zeroclamp

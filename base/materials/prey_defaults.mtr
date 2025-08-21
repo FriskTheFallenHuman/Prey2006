@@ -1,0 +1,21 @@
+textures/prey_defaults/default_wall
+{
+	qer_editorimage textures/prey_defaults/default_wall
+	matter_metal
+
+	diffusemap textures/prey_defaults/default_wall_d
+ 	specularmap textures/prey_defaults/default_wall_s
+ 	bumpmap addnormals (textures/prey_defaults/default_wall_local, heightmap (textures/prey_defaults/default_wall_h, 1))
+
+}
+
+textures/prey_defaults/default_floor
+{
+	qer_editorimage textures/prey_defaults/default_floor
+	matter_metal
+
+	diffusemap textures/prey_defaults/default_floor_d
+ 	specularmap textures/prey_defaults/default_floor_s
+ 	bumpmap addnormals (textures/prey_defaults/default_floor_local, heightmap (textures/prey_defaults/default_floor_h, 1))
+
+}

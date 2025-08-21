@@ -34,26 +34,79 @@ windowDef desktop {
 	scaleto43		0
 	float inSubmenu	0
 	float inModal	0
+	float "video_num"	0
+	float "video_check"	0
 
 	onActivate {
 	}
-
+	
 	onDeactivate {
 	}
 
 	onNamedEvent playIntro {
 		set "desktop::mapexists" "0" ;
 		resetTime "Anim_ResetMainMenuButtons" "0";
-		resetTime "AnimPortalIn" "0" ;
+
+		showcursor "0" ;
+		resetTime "p_video" "0" ;
+		set "desktop::video_check" "1" ;
+		set "desktop::video_num" "1" ;
+		
+		set "videoBlack::visible" "1" ;
+		set "videoBlack::backcolor_w" "1" ;
+		
+		set "video_3dr::visible" "1" ;
 	}
 	
 	onNamedEvent noIntro {
+		set "p_video::rect" "0 0 0 0";
 		set "ScreenShotBackground::visible" "1" ;
 		resetTime "Anim_ResetMainMenuButtons" "0";
 		resetTime "AnimPortalIn" "0" ;
 	}
 	
 	onESC {
+		if ("desktop::video_check" == 1 )
+		{
+			if ("desktop::video_num" == 1 )
+			{
+				set "p_video::notime" "1" ;
+				set "video_hh::notime" "1" ;
+				
+				set "desktop::video_num" "0" ;
+				set "desktop::video_check" "0" ;
+				set "video_3dr::visible" "0" ;
+				set "video_hh::visible" "0" ;
+
+				set "ScreenShotBackground::visible" "0" ;
+				resetTime "videoBlack" "0" ;
+
+				showcursor "1" ;
+				set "desktop::mapexists" "0" ;
+				resetTime "Anim_ResetMainMenuButtons" "0";
+				resetTime "AnimPortalIn" "0" ;
+				set "p_video::rect" "0 0 0 0";
+			}
+			else if ("desktop::video_num" == 3)
+			{
+				set "p_video::notime" "1" ;
+				set "video_hh::notime" "1" ;
+				
+				set "desktop::video_num" "0" ;
+				set "desktop::video_check" "0" ;
+				set "video_3dr::visible" "0" ;
+				set "video_hh::visible" "0" ;
+
+				set "ScreenShotBackground::visible" "0" ;
+				resetTime "videoBlack" "0" ;
+
+				showcursor "1" ;
+				resetTime "Anim_ResetMainMenuButtons" "0";
+				resetTime "AnimPortalIn" "0" ;
+				set "p_video::rect" "0 0 0 0";
+			} 
+		}
+
 		if ("desktop::inModal" != 0) {
 			// Do nothing
 		} else if ("desktop::inSubmenu" == SUBMENU_INDEX_NONE) {
@@ -895,6 +948,78 @@ windowDef desktop {
 					set "cmd" "play guisounds_menu_clickin";
 					resetTime "Mods_AnimIn" "0" ;
 				}
+			}
+		}
+	}
+
+	
+	windowDef p_video
+	{
+		rect	0,0,640,480
+		visible	1
+		notime	1
+
+		onTime 6000 {
+			resettime "video_hh" "0" ;
+		}
+		
+		windowDef videoBlack
+		{
+			rect	0,0,640,480
+			visible	0
+			backcolor	0,0,0,1
+			notime	1
+
+			onTime 250 {	
+				set "videoBlack::visible" "0" ;
+				
+				if ("desktop::motd" == 1) {
+					set "cmd" "getMOTD" ;
+				}
+			}
+
+		}
+		windowDef video_3dr
+		{
+			rect	0,0,640,480
+			visible	0
+			background	"video/3drealms_logo"
+
+		}
+		windowDef video_hh
+		{
+			rect	0,0,640,480
+			visible	0
+			background	"video/humanhead_logo"
+			notime	1
+
+			onTime 0 {
+				set "desktop::video_num" "3" ;				
+				set "video_3dr::visible" "0" ;
+				set "video_hh::visible" "0" ;
+				set "videoBlack::visible" "1" ;
+			}
+			onTime 1000 {
+				set "video_hh::visible" "1" ;
+				set "videoBlack::visible" "0" ;
+			}
+
+			onTime 6200 {
+				set "video_3dr::visible" "0" ;
+				set "video_hh::visible" "0" ;
+				set "video_hh::notime" "1" ;
+				set "videoBlack::visible" "0" ;
+				set "desktop::video_num" "0" ;
+				set "desktop::video_check" "0" ;
+				resetTime "videoBlack" "0";
+				showcursor "1" ;
+				set "Main_Menu::visible" "0" ;
+				set "Main_Menu::visible" "1" ;
+				set "desktop::inSubmenu" SUBMENU_INDEX_NONE;
+				set "desktop::mapexists" "0" ;
+				resetTime "AnimPortalIn" "0" ;
+				set "p_video::rect" "0 0 0 0";
+				
 			}
 		}
 	}

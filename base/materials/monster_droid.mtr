@@ -1,0 +1,68 @@
+
+//
+//
+// droid1
+//
+//
+models/monsters/droid/droid
+{
+	noShadows
+	//noselfshadow
+	unsmoothedtangents
+	matter_metal
+	forceOverlays
+
+	renderbump  -size 512 512 -trace 0.05 -aa 1 models/monsters/droid/droid_local models/monsters/droid/droidhi.ase
+	diffusemap models/monsters/droid/droid
+//	bumpmap	addnormals(models/monsters/droid/droid_local, heightmap(models/monsters/droid/droid_h, 5 ) )
+//	bumpmap	models/monsters/droid/droid_local
+	{
+		blend bumpmap
+		map addnormals(models/monsters/droid/droid_local, heightmap(models/monsters/droid/droid_h, 5 ) )
+		highres
+	}
+	specularmap models/monsters/droid/droid_s
+
+	{
+		blend	add
+		map	models/monsters/droid/droid_add3
+		red parm0
+		green parm1
+		blue parm2
+		glowStage
+	}
+	{
+		blend	add
+		map	models/monsters/droid/droid_add2
+		rgb 2 * ( sintable [time * .4 ])
+		glowStage
+	}
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/droid/droid_noadd
+{
+	noShadows
+	unsmoothedtangents
+	matter_metal
+
+	renderbump  -size 512 512 -trace 0.05 -aa 1 models/monsters/droid/droid_local models/monsters/droid/droidhi.ase
+	diffusemap models/monsters/droid/droid
+//	bumpmap	addnormals(models/monsters/droid/droid_local, heightmap(models/monsters/droid/droid_h, 5 ) )
+	{
+		blend bumpmap
+		map addnormals(models/monsters/droid/droid_local, heightmap(models/monsters/droid/droid_h, 5 ) )
+		highres
+	}
+	specularmap models/monsters/droid/droid_s
+}

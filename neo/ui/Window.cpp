@@ -183,6 +183,8 @@ void idWindow::CommonInit() {
 
 	hideCursor = false;
 
+	translateFontNum = -1;
+
 	anchor = idDeviceContext::ANCHOR_NONE;
 	anchorTo = idDeviceContext::ANCHOR_NONE;
 	anchorFactor = 0.0f;
@@ -330,7 +332,11 @@ idWindow::SetFont
 ================
 */
 void idWindow::SetFont() {
-	dc->SetFont(fontNum);
+	if (translateFontNum >= 0) {
+		dc->SetFont(translateFontNum);
+	} else {
+		dc->SetFont(fontNum);
+	}
 }
 
 /*
@@ -4463,6 +4469,29 @@ void idWindow::SetVisible( bool on ) {
 	for( int i = 0; i < drawWindows.Num(); i++ ) {
 		if ( drawWindows[i].win ) {
 			drawWindows[i].win->SetVisible( on );
+		}
+	}
+}
+
+/*
+================
+idWindow::Translate
+================
+*/
+void idWindow::Translate( int tFontNum )
+{
+	if ( translateFontNum == tFontNum ) {
+		return;
+	}
+
+	translateFontNum = tFontNum;
+
+	int c = drawWindows.Num();
+	for ( int i = 0; i < c; i++ ) {
+		if ( drawWindows[i].win ) {
+			drawWindows[i].win->Translate( tFontNum );
+		} else {
+			drawWindows[i].simp->Translate( tFontNum );
 		}
 	}
 }

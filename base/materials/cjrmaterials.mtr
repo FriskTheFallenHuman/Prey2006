@@ -1,0 +1,851 @@
+
+cjr/lotaTunnel
+{
+	twosided
+	noshadows
+	noselfshadow
+
+	{
+		map _white
+	}
+}
+
+
+cjr/coldbeer
+{
+	translucent
+	twosided
+	noshadows
+
+	{
+		blend add
+		map textures/cjr/coldbeer
+		glowStage
+		rgb (0.7 + 0.3 * flicker1[time * 5])
+	}
+}
+
+
+cjr/liquor
+{
+	translucent
+	twosided
+	noshadows
+
+	{
+		blend add
+		map textures/cjr/liquor
+		glowStage
+	}
+}
+
+cjr/suncorona
+{
+	translucent
+	twosided
+	noshadows
+	{
+		blend add
+		map textures/sfx/flare_lota
+		colored
+	}
+}
+
+//table visionflashtable	{ { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 } }
+
+table whichviewtable		{ snap { 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3 } }
+
+table visionflashtable		{ { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 } }
+
+textures/cjr/visionflash
+{
+	noshadows
+	noselfshadow
+
+	{
+		if ( whichviewtable[ time * 0.25 ] == 1 )
+		map textures/cjr/visionflash1
+	}
+
+	{
+		if ( whichviewtable[ time * 0.25 ] == 2 )
+		map textures/cjr/visionflash2
+	}
+
+	{
+		if ( whichviewtable[ time * 0.25 ] == 3 )
+		map textures/cjr/visionflash3
+	}
+
+	{
+		map textures/cjr/flashadd
+		blend blend
+		alpha visionflashtable[ time * 0.75 ]
+		highquality // simple circular additive had compression artifacts
+	}
+}
+
+cjr/harvester
+{
+	noshadows
+	translucent
+	deform jitter jacobladder[time * 20]
+
+	{
+		blend add
+		map models/monsters/harvester/harvester
+		rgb 0.5
+	}
+}
+
+cjr/screenvision
+{
+	noshadows
+	translucent
+
+	deform jitter 0.2
+
+	{
+		blend add
+		map _white
+		rgb 0.5
+	}
+/*
+	{
+		blend gl_one, gl_one_minus_src_alpha
+	 	map models/weapons/bow/bowvision
+		texgen screen
+		clamp
+		rotate time*3
+		//rotate jitter1[time*90]
+		scale 0.5, 0.5
+		scroll 1, 1
+		rgb parm3*(0.6 + 0.4*bowvision[time*0.43])
+	}
+*/
+}
+
+fogs/cjrblendinverse
+{
+	blendlight
+	noshadows
+	{
+		blend gl_one_minus_dst_color, gl_zero
+		map	_white
+		alphazeroclamp
+		colored
+	}
+}
+
+cjr/inverse_test
+{
+	translucent
+	noshadows
+	noselfshadow
+
+	{
+		blend gl_one_minus_dst_color, gl_zero
+		map _white
+		red 0.5
+		green 0.56
+		blue 0.51
+	}
+}
+
+cjr/console_red
+{
+	translucent
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map guis/assets/generic_on_off/bg
+
+		maskgreen
+		maskblue
+/*
+		red 0.6
+		green 0
+		blue 0.3
+*/
+	}
+}
+
+cjr/console_green
+{
+	translucent
+	noshadows
+	noselfshadow
+	deform move 1.25
+
+	{
+		blend add
+		map guis/assets/generic_on_off/bg
+		maskred
+		maskblue
+/*
+		red 0.3
+		green 1.0
+		blue 0.0
+*/
+	}
+}
+
+cjr/console_blue
+{
+	translucent
+	noshadows
+	noselfshadow
+	deform move 2.5
+
+	{
+		blend add
+		map guis/assets/generic_on_off/bg
+		maskgreen
+		maskred
+/*
+		red 0
+		green 0
+		blue 0.3
+*/
+	}
+}
+
+cjr/corona
+{
+	translucent
+	twosided
+	noshadows
+	deform corona 4
+	{
+		blend add
+		map textures/sfx/flare2
+		colored
+	}
+}
+
+/*
+// relatively low with a sudden spike
+table heartbeat1 { snap {
+0.375, 0.355, 0.345, 0.305, 0.31, 0.3125, 0.31, 0.3, 0.3, 0.3, 0.3125, 0.295, 0.2875, 0.35, 0.8875, 0.25, 0.3, 0.35
+} }
+
+// more even and rhythmic
+table heartbeat2 { snap {
+0.6375, 0.6, 0.5, 0.4375, 0.4375, 0.45, 0.4375, 0.4125, 0.4075, 0.4125, 0.4125, 0.3875, 0.4, 0.625, 0.25, 0.45, 0.4875, 0.5375
+} }
+*/
+
+cjr/blendbumpmap
+{
+	// blended part
+
+	{
+		blend bumpmap
+		map		heightmap (textures/organic_wall/chitinwall1_h, 4)
+		// note that you do not put vertexcolor on the bumpmap
+	}
+	{
+		blend diffusemap
+		map		textures/organic_wall/chitinwall1_d
+		vertexcolor
+	}
+	{
+		blend specularmap
+		map		textures/organic_wall/chitinwall1_s
+		vertexcolor
+	}
+
+	// inverse blended part
+
+	{
+		blend	bumpmap
+		map		textures/organic_wall/chitinwall3_local
+	}
+	{
+		blend	diffusemap
+		map		textures/organic_wall/chitinwall3_d
+		inversevertexcolor
+	}
+
+}
+
+//---------------------------------------
+table bumpanimstep { snap { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 } }
+
+cjr/animbump
+{
+	qer_editorimage	textures/cjr/bump_anim0
+	diffusemap _white
+//	specularmap textures/organic_wall/softorgan2_s
+
+	{
+		if(bumpanimstep[(time * 2) + 0 / 10] == 1)
+		blend bumpmap // cjr
+		map textures/cjr/bump_anim0
+	}
+	{
+		if(bumpanimstep[(time * 2) + 1 / 10] == 1)
+		blend bumpmap // cjr
+		map textures/cjr/bump_anim1
+	}
+	{
+		if(bumpanimstep[(time * 2) + 2 / 10] == 1)
+		blend bumpmap // cjr
+		map textures/cjr/bump_anim2
+	}
+	{
+		if(bumpanimstep[(time * 2) + 3 / 10] == 1)
+		blend bumpmap // cjr
+		map textures/cjr/bump_anim3
+	}
+	{
+		if(bumpanimstep[(time * 2) + 4 / 10] == 1)
+		blend bumpmap // cjr
+		map textures/cjr/bump_anim4
+	}
+	{
+		if(bumpanimstep[(time * 2) + 5 / 10] == 1)
+		blend bumpmap // cjr
+		map textures/cjr/bump_anim5
+	}
+	{
+		if(bumpanimstep[(time * 2) + 6 / 10] == 1)
+		blend bumpmap // cjr
+		map textures/cjr/bump_anim4
+	}
+	{
+		if(bumpanimstep[(time * 2) + 7 / 10] == 1)
+		blend bumpmap // cjr
+		map textures/cjr/bump_anim3
+	}
+	{
+		if(bumpanimstep[(time * 2) + 8 / 10] == 1)
+		blend bumpmap // cjr
+		map textures/cjr/bump_anim2
+	}
+	{
+		if(bumpanimstep[(time * 2) + 9 / 10] == 1)
+		blend bumpmap // cjr
+		map textures/cjr/bump_anim1
+	}
+}
+
+cjr/portal
+{
+	qer_editorimage	textures/editor/camera
+	noshadows
+	noselfshadow
+	nooverlays
+	{
+		portalrendermap 512 512
+		translate	0.5 , 0.5
+		scale	0.5 , 0.5
+	}
+}
+
+cjr/portal2
+{
+	qer_editorimage	textures/editor/camera
+	noshadows
+	noselfshadow
+	nooverlays
+	{
+		portalrendermap 512 512
+		translate	0.5 , 0.5
+		scale	0.5 , 0.5
+	}
+}
+
+cjr/testcubemap
+{
+	skybox_macro
+	{
+		cubemap env/cjrtest
+		texgen skybox
+	}
+}
+
+//////////////////////////
+// spirit hands
+//////////////////////////
+
+models/weapons/hands/spirithands
+{
+//	forceopaque
+	noshadows
+	noselfshadow
+	{
+		blend blend
+		map	models/weapons/hands/hands
+		alpha 0.5
+	}
+	{
+		blend add
+		map textures/cjr/beamblue
+		rgb 0.5
+		scroll time * -3, 0
+	}
+}
+
+
+// --------------------------------------------
+
+cjr/beamtest
+{
+	noselfshadow
+	noshadows
+	translucent
+	twosided
+//	deform beam
+	{
+		blend add
+		map textures/cjr/beam
+		rgb 0.7
+		centerscale 8, 1
+		scroll time * -1, 0
+	}
+}
+
+cjr/beamtest2
+{
+	noselfshadow
+	noshadows
+	translucent
+	twosided
+//	deform beam
+	{
+		blend add
+		map textures/cjr/beam2
+		rgb 0.8
+		centerscale 8, 1
+		scroll time * -1, 0
+	}
+}
+
+cjr/beamlaser
+{
+	noselfshadow
+	noshadows
+	translucent
+	twosided
+	{
+		blend add
+		map textures/cjr/beamlaser
+		rgb 0.8
+		centerscale 3, 1
+		scroll time * -0.5, 0.05 * sintable[time * 0.5]
+	}
+}
+
+cjr/beamblue
+{
+	noselfshadow
+	noshadows
+	translucent
+	twosided
+	{
+		blend add
+		map textures/cjr/beamblue
+		rgb 0.7
+		centerscale 8, 1
+		scroll time * -1, 0
+	}
+}
+
+cjr/beampurple
+{
+	noselfshadow
+	noshadows
+	translucent
+	twosided
+	{
+		blend add
+		map textures/cjr/beampurple
+		rgb 0.7
+		centerscale 3, 1
+		scroll time * -1, 0
+	}
+}
+
+models/weapons/bfg/projectile1
+{
+	deform beam
+
+	{
+		blend add
+		map models/weapons/bfg/projectile1
+		rgb 0.8
+	}
+}
+
+textures/cjr/spiritpuff
+{
+	{
+		blend add
+		map textures/particles/spiritpuff
+		vertexcolor
+	}
+}
+
+cjr/photo/skin
+{
+	description "icky skin"
+
+	qer_editorimage textures/cjr/skin_d
+	diffusemap 	textures/cjr/skin_d
+	specularmap textures/cjr/skin_s
+	bumpmap 	textures/cjr/skin_local
+}
+
+cjr/photo/bone
+{
+	qer_editorimage textures/cjr/bone_d
+	diffusemap 	textures/cjr/bone_d
+	specularmap textures/cjr/bone_s
+	bumpmap 	textures/cjr/bone_local
+}
+
+cjr/photo/tumor
+{
+	qer_editorimage textures/cjr/tumor_d
+	diffusemap 	textures/cjr/tumor_d
+	specularmap textures/cjr/tumor_s
+	bumpmap 	textures/cjr/tumor_local
+}
+
+cjr/photo/grass
+{
+	qer_editorimage textures/cjr/grass_d
+	diffusemap 	textures/cjr/grass_d
+	specularmap textures/cjr/grass_s
+	bumpmap 	heightmap (textures/cjr/grass_h, 7)
+}
+
+textures/cjr/fireball
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map textures/cjr/fireball
+		vertexcolor
+	}
+}
+
+table blobstage { { 1, 0, 0, 0, 0 } }
+
+textures/cjr/wraithblob
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend 	add
+		map	textures/cjr/wraithblob1
+		rgb	blobstage [ time + 0 / 5 ]
+	}
+	{
+		blend 	add
+		map	textures/cjr/wraithblob2
+		rgb	blobstage [ time + 1 / 5 ]
+	}
+	{
+		blend 	add
+		map	textures/cjr/wraithblob3
+		rgb	blobstage [ time + 2 / 5 ]
+	}
+	{
+		blend 	add
+		map	textures/cjr/wraithblob4
+		rgb	blobstage [ time + 3 / 5 ]
+	}
+	{
+		blend 	add
+		map	textures/cjr/wraithblob5
+		rgb	blobstage [ time + 4 / 5 ]
+	}
+}
+
+textures/cjr/wraithglow
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend gl_dst_color, gl_src_color
+		map textures/cjr/wraithglow
+	}
+	{
+		blend none
+		map textures/cjr/wraithmask
+		alphatest 0.8
+		scroll 0, time
+	}
+	{
+		blend none
+		map textures/cjr/wraithmask
+		alphatest 0.8
+		scroll 0, time * 0.33
+	}
+}
+
+cjr/blacksludge
+{
+	noshadows
+	noselfshadow
+	forceopaque
+
+	{
+		blend add
+		cubemap env/blocker
+		texgen reflect
+		rgb		0.1
+	}
+	bumpmap 		heightmap (textures/feedingtower/bone1_h, 9)
+	diffusemap	 	textures/feedingtower/bone1_d
+//	{
+//		blend diffusemap
+//		map _white
+//		rgb 0.1
+//	}
+	specularmap		textures/feedingtower/bone1_s
+
+	{
+		blend blend
+		mirrorrendermap	64 64	// width / height of render image
+		translate	0.5 , 0.5
+		scale	0.5 , 0.5
+		alpha 0.7
+	}
+
+//	{
+//		blend gl_dst_color, gl_src_color
+//		map textures/cjr/sludgeslick
+//		scroll 0.1 * sintable[time * 0.05], 0
+//	}
+}
+
+cjr/white
+{
+	qer_editorimage _white
+	diffusemap _white
+}
+
+cjr/rifleshot
+{
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		8
+	qer_editorimage		textures/editor/flare
+	{
+		blend		add
+		map 		_quadratic
+		colored
+	}
+}
+
+cjr/rifleshotfade
+{
+	translucent
+	{
+		blend add
+		map textures/cjr/rifleshotfade
+		rgb 0.7
+	}
+}
+
+cjr/eyetest
+{
+//	translucent
+	noshadows
+
+	qer_editorimage textures/cjr/eyeball
+
+	deform	eyeball
+	{
+		clamp
+//		blend gl_dst_color, gl_src_color // 2x mod
+		blend blend
+		alpha 1.0
+		map textures/cjr/eyeball
+//		map textures/cjr/eyeballnasty
+		centerscale	1, 1 // scales the size of the iris (smaller # results in larger iris)
+	}
+}
+
+// other eye -- so the two eyes are guaranteed to have seperate shaders
+cjr/eyetest2
+{
+//	translucent
+	noshadows
+
+	qer_editorimage textures/cjr/eyeball
+
+	deform	eyeball
+	{
+		clamp
+//		blend gl_dst_color, gl_src_color // 2x mod
+		blend blend // blend diffusemap did not work.  must be a non-lit blend
+		alpha 1
+		map textures/cjr/eyeball
+		centerscale	1, 1 // scales the size of the iris (smaller # results in larger iris)
+	}
+}
+
+cjr/cjrmirror
+{
+	qer_editorimage	textures/editor/camera
+	noshadows
+	{
+		mirrorrendermap	256 256	// width / height of render image
+		translate	0.5 , 0.5
+		scale	0.5 , 0.5
+	}
+}
+
+cjr/cjrmirror2
+{
+	qer_editorimage	textures/editor/camera
+	noshadows
+	{
+		mirrorrendermap	256 256	// width / height of render image
+		translate	0.5 , 0.5
+		scale	0.5 , 0.5
+	}
+}
+
+textures/cjr/flare
+{
+	noshadows
+	translucent
+	nonsolid
+	deform flare 		(1 + (0.2 * alpha[time])) * 128
+	qer_editorimage		textures/editor/flare
+	{
+		blend		add
+//		map 		_quadratic
+		map			lights/defaultpointlight
+
+		red 	parm0 * (0.8 + alpha[time * 0.2] * 0.1)
+		green 	parm1 * (0.8 + alpha[time * 0.2] * 0.1)
+		blue 	parm2 * (0.8 + alpha[time * 0.2] * 0.1)
+//		colored
+	}
+}
+
+textures/cjr/move
+{
+	deform move 		4
+
+	qer_editorimage 	textures/feedingtower/intestine1_local
+	bumpmap 		addnormals (textures/feedingtower/intestine1_local, heightmap (textures/feedingtower/intestine1_h, 4))
+
+	diffusemap	 	textures/feedingtower/intestine1b_d
+	specularmap		textures/feedingtower/intestine1_s
+}
+
+cjr/inviso
+{
+	noshadows
+	{
+		blend gl_zero, gl_one_minus_src_alpha
+		alpha 0.3
+		map _threshold
+		scroll time * 0.2, time * 0.2
+	}
+}
+
+fogs/cjrpitfog
+{
+	blendlight
+	noshadows
+	lightfalloffimage		textures/cjr/pitfalloff	// white in color channel,
+											// alpha ramps from 0 to 255, then stays at 255 a bit,
+											// than has another 0 at the other end
+	{
+		blend		blend		// alpha blend on surfaces
+		map			_fog		// solid white in color, single pixel alpha border
+		alphazeroclamp			// make sure it doesn't bleed over the edges
+		colored					// take rgba from entity shaderparms
+	}
+}
+
+fogs/cjrcircle
+{
+	foglight			// tell the engine it is fog and not a light
+	noshadows
+	{
+		map		textures/cjr/fogcircle	// the internal fog image
+		colored			// take rgba from entity shaderparms
+	}
+}
+
+
+textures/prey_walls/cjrooze
+{
+	detail
+	qer_editorimage textures/prey_walls/oozetube1_local
+	bumpmap 		textures/prey_walls/oozetube1_local
+	diffusemap	 	textures/prey_walls/oozetube1_d
+	specularmap		textures/prey_walls/oozetube1_s
+	{
+		blend add
+		map textures/prey_walls/oozetube1_add1
+		scroll (0.1 * sintable [time * 0.1]), time * 0.3
+//		rgb (jitter2 [time * 4])
+	}
+	{
+		blend add
+		map textures/prey_walls/oozetube1_add2
+		scroll 0, bloodflow[time * 0.25] - time * 0.3
+//		rgb (jitter2 [time * 6])
+	}
+	{
+		blend add
+		map textures/prey_walls/oozetube1_add3
+		scroll (0.2 * sintable[time * 0.2]), 2 * bloodflow[time * 0.25] - time * 0.3
+		rgb (jitter2 [time * 1])
+	}
+}
+
+cjr/remotecamera
+{
+	qer_editorimage	textures/editor/camera
+	noshadows
+	{
+		remoterendermap	128 128	// width / height of render image
+		scale -1 , -1		// the render view are upside down otherwise
+		translate 0, -1
+	}
+	{
+		blend blend
+		map textures/cjr/scope_blur
+		alpha 0.4
+		scroll 0, time
+	}
+}
+
+cjr/cjrenv
+{
+	forceopaque
+
+	{
+		blend add
+		cubemap env/boob
+		texgen reflect
+	}
+}
+
+cjr/cjrsky
+{
+	skybox_macro
+	{
+		cubemap env/largetext
+		texgen skybox
+	}
+}
+

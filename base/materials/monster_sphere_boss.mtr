@@ -1,0 +1,414 @@
+models/monsters/sphere_boss/sphere_boss
+{
+	noShadows
+//	noselfshadow
+	//unsmoothedtangents
+	//translucent
+	matter_flesh
+	forceoverlays
+
+	renderbump -size 1024 1024 -aa 1 models/monsters/sphere_boss/sphere_boss_local models/monsters/sphere_boss/sphere_boss_hi.lwo
+	diffusemap models/monsters/sphere_boss/sphere_boss
+	bumpmap 	addnormals(models/monsters/sphere_boss/sphere_boss_local, heightmap(models/monsters/sphere_boss/sphere_boss_h, 10 ) )
+	specularmap	models/monsters/sphere_boss/sphere_boss_s
+	{
+		blend add
+		map models/monsters/sphere_boss/sphere_boss_add
+		glowstage
+	}
+	{ // Scope view texture
+	       blend add
+	       map textures/sfx/monsterSniperView
+	       rgb flicker5 [ time * 2.5 ]
+	       texgen screen
+		   scroll 0.5, 0.5
+		   scale 0.5, 0.5
+	       clamp
+	       glowStage
+	       scopeView    // Only visible in the rifle scope view
+	}
+	{ // Shield
+		blend add
+		map textures/special/forcefield_sphereboss
+		red 	0.2 * parm7
+		green 	0.5  * parm7
+		blue 	1  * parm7
+		scroll time * 0.5,time * 0.5
+		centerscale 2,2
+		glowStage
+	}
+}
+models/monsters/sphere_boss/sphere_boss_translucent
+{
+	noShadows
+//	noselfshadow
+	translucent
+	matter_flesh
+	forceoverlays
+
+	renderbump -size 1024 1024 -aa 1 models/monsters/sphere_boss/sphere_boss_local models/monsters/sphere_boss/sphere_boss_hi.lwo
+	bumpmap 	addnormals( models/monsters/sphere_boss/sphere_boss_local, heightmap(models/monsters/sphere_boss/sphere_boss_h, 4 ))
+	{
+		shaderfallback1
+		blend gl_one_minus_src_alpha, gl_src_alpha
+		map models/monsters/sphere_boss/sphere_boss
+	}
+	{
+		shaderfallback1
+		blend gl_dst_color, gl_src_alpha
+		map models/monsters/sphere_boss/sphere_boss
+	}
+	{
+		blend specularmap
+		map models/monsters/sphere_boss/sphere_boss_s
+		specularexp 10, 2.0
+	}
+	{
+		shaderLevel1
+
+		program			membrane.vfp
+
+		vertexparm		1       0.35				// magnitude of the distortion
+
+		fragmentparm	0		.85, 1, .95, .4		// refraction color
+		fragmentparm	1		.8, .95, 0.9, 1.2	// reflection color
+		fragmentparm	2		1.2					// fresnel exponent
+
+		fragmentmap		1		models/monsters/sphere_boss/sphere_boss_local
+		fragmentmap		2		_currentrender
+		fragmentmap		3		models/monsters/sphere_boss/sphere_boss_fp
+		fragmentmap		4		models/monsters/sphere_boss/sphere_boss_fp
+	}
+	{
+		map _white
+		alpha 0.2
+
+		maskColor
+	}
+
+	{
+		shaderLevel1
+
+		blend	gl_dst_alpha, gl_one
+		texgen	reflect
+		cubemap	env/dwsky2
+		notScopeView // do not show this stage in scope view
+	}
+	{ // Scope view texture
+	       blend add
+	       map textures/sfx/monsterSniperView
+	       rgb flicker5 [ time * 2.5 ]
+	       texgen screen
+		   scroll 0.5, 0.5
+		   scale 0.5, 0.5
+	       clamp
+	       glowStage
+	       scopeView    // Only visible in the rifle scope view
+	}
+	{ // Shield
+		blend add
+		map textures/special/forcefield_sphereboss
+		red 	0.2 * parm7
+		green 	0.5  * parm7
+		blue 	1  * parm7
+		scroll time * 0.5,time * 0.5
+		centerscale 2,2
+		glowStage
+	}
+}
+
+models/monsters/sphere_boss/sphere_boss_translucent_nofp
+{
+	// used in sphere boss stage 2
+	noShadows
+//	noselfshadow
+	translucent
+	matter_flesh
+	sort filter
+	forceoverlays
+
+	bumpmap 	addnormals( models/monsters/sphere_boss/sphere_boss_local, heightmap(models/monsters/sphere_boss/sphere_boss_h, 4 ))
+	{
+		blend gl_one_minus_src_alpha, gl_src_alpha
+		map models/monsters/sphere_boss/sphere_boss
+	}
+	{
+		blend gl_dst_color, gl_src_alpha
+		map models/monsters/sphere_boss/sphere_boss
+	}
+	{
+		blend specularmap
+		map models/monsters/sphere_boss/sphere_boss_s
+	}
+	{
+		map _white
+		alpha 0.2
+		maskColor
+	}
+	{
+		blend	gl_dst_alpha, gl_one
+		texgen	reflect
+		cubemap	env/dwsky2
+		notScopeView // do not show this stage in scope view
+	}
+	{ // Scope view texture
+	       blend add
+	       map textures/sfx/monsterSniperView
+	       rgb flicker5 [ time * 2.5 ]
+	       texgen screen
+		   scroll 0.5, 0.5
+		   scale 0.5, 0.5
+	       clamp
+	       glowStage
+	       scopeView    // Only visible in the rifle scope view
+	}
+	{ // Shield
+		blend add
+		map textures/special/forcefield_sphereboss
+		red 	0.2 * parm7
+		green 	0.5  * parm7
+		blue 	1  * parm7
+		scroll time * 0.5,time * 0.5
+		centerscale 2,2
+		glowStage
+	}
+}
+
+models/monsters/sphere_boss/sphereboss_woman/sphere_boss_head
+{
+	noShadows
+	//noselfshadow
+	//unsmoothedtangents
+	matter_flesh
+	forceoverlays
+
+	renderbump -size 512 512 -aa 1 -colormap models\monsters\sphere_boss\sphereboss_woman/sphere_boss_head_local models\monsters\sphere_boss\sphereboss_woman/sphereboss_woman_head_hi.lwo
+	diffusemap models/monsters/sphere_boss/sphereboss_woman/sphere_boss_head
+	bumpmap 	addnormals(models/monsters/sphere_boss/sphereboss_woman/sphere_boss_head_local, heightmap(models/monsters/sphere_boss/sphereboss_woman/sphere_boss_head_h, 10 ) )
+	specularmap	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_head_s
+
+	{
+		blend add
+		map models/monsters/sphere_boss/sphereboss_woman/sphere_boss_head_add
+		glowstage
+	}
+
+	{ // Scope view texture
+	       blend add
+	       map textures/sfx/monsterSniperView
+	       rgb flicker5 [ time * 2.5 ]
+	       texgen screen
+		   scroll 0.5, 0.5
+		   scale 0.5, 0.5
+	       clamp
+	       glowStage
+	       scopeView    // Only visible in the rifle scope view
+	}
+
+	{ // Shield
+		blend add
+		map textures/special/forcefield_sphereboss
+		red 	0.2 * parm7
+		green 	0.5  * parm7
+		blue 	1  * parm7
+		scroll time * 0.5,time * 0.5
+		centerscale 2,2
+		glowStage
+	}
+}
+
+models/monsters/sphere_boss/sphereboss_woman/sphere_boss_headdress
+{
+	noShadows
+	//noselfshadow
+	//unsmoothedtangents
+	matter_flesh
+	forceoverlays
+
+	renderbump -size 512 512 -aa 1 -colormap models\monsters\sphere_boss\sphereboss_woman/sphere_boss_headdress_local models\monsters\sphere_boss\sphereboss_woman/sphereboss_woman_head_hi.lwo
+	bumpmap 	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_headdress_local
+	specularmap	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_headdress_s
+
+	{
+		blend diffusemap
+		map models/monsters/sphere_boss/sphereboss_woman/sphere_boss_headdress
+		alphaTest 0.5
+	}
+	{
+		blend add
+		map models/monsters/sphere_boss/sphereboss_woman/sphere_boss_headdress_add
+		glowstage
+	}
+
+	{ // Scope view texture
+	       blend add
+	       map textures/sfx/monsterSniperView
+	       rgb flicker5 [ time * 2.5 ]
+	       texgen screen
+		   scroll 0.5, 0.5
+		   scale 0.5, 0.5
+	       clamp
+	       glowStage
+	       scopeView    // Only visible in the rifle scope view
+	}
+
+	{ // Shield
+		blend add
+		map textures/special/forcefield_sphereboss
+		red 	0.2 * parm7
+		green 	0.5  * parm7
+		blue 	1  * parm7
+		scroll time * 0.5,time * 0.5
+		centerscale 2,2
+		glowStage
+	}
+}
+
+models/monsters/sphere_boss/sphereboss_woman/sphere_boss_body
+{
+	noShadows
+	//noselfshadow
+	//unsmoothedtangents
+	matter_flesh
+	forceoverlays
+
+	renderbump -size 1024 1024 -aa 1 -colormap models\monsters\sphere_boss\sphereboss_woman/sphere_boss_body_local models\monsters\sphere_boss\sphereboss_woman/sphereboss_woman_body_hi.lwo
+	diffusemap models/monsters/sphere_boss/sphereboss_woman/sphere_boss_body
+	bumpmap 	addnormals(models/monsters/sphere_boss/sphereboss_woman/sphere_boss_body_local, heightmap(models/monsters/sphere_boss/sphereboss_woman/sphere_boss_body_h, 10 ) )
+	specularmap	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_body_s
+
+	{ // Scope view texture
+	       blend add
+	       map textures/sfx/monsterSniperView
+	       rgb flicker5 [ time * 2.5 ]
+	       texgen screen
+		   scroll 0.5, 0.5
+		   scale 0.5, 0.5
+	       clamp
+	       glowStage
+	       scopeView    // Only visible in the rifle scope view
+	}
+
+	{ // Shield
+		blend add
+		map textures/special/forcefield_sphereboss
+		red 	0.2 * parm7
+		green 	0.5  * parm7
+		blue 	1  * parm7
+		scroll time * 0.5,time * 0.5
+		centerscale 2,2
+		glowStage
+	}
+}
+
+models/monsters/sphere_boss/sphereboss_woman/sphere_boss_tubes
+{
+	noShadows
+	//noselfshadow
+	//unsmoothedtangents
+	matter_flesh
+	forceoverlays
+
+	renderbump -size 1024 1024 -aa 1 -colormap models\monsters\sphere_boss\sphereboss_woman/sphere_boss_tubes_local models\monsters\sphere_boss\sphereboss_woman/sphereboss_woman_body_hi.lwo
+	diffusemap models/monsters/sphere_boss/sphereboss_woman/sphere_boss_tubes
+	bumpmap 	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_tubes_local
+	specularmap	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_tubes_s
+
+	{ // Scope view texture
+	       blend add
+	       map textures/sfx/monsterSniperView
+	       rgb flicker5 [ time * 2.5 ]
+	       texgen screen
+		   scroll 0.5, 0.5
+		   scale 0.5, 0.5
+	       clamp
+	       glowStage
+	       scopeView    // Only visible in the rifle scope view
+	}
+
+	{ // Shield
+		blend add
+		map textures/special/forcefield_sphereboss
+		red 	0.2 * parm7
+		green 	0.5  * parm7
+		blue 	1  * parm7
+		scroll time * 0.5,time * 0.5
+		centerscale 2,2
+		glowStage
+	}
+}
+
+models/monsters/sphere_boss/sphereboss_machine/sphereboss_machine
+{
+	noShadows
+	//noselfshadow
+	//unsmoothedtangents
+	matter_flesh
+	forceoverlays
+
+	renderbump -size 512 512 -aa 1 -colormap models\monsters\sphere_boss\sphereboss_machine/sphereboss_machine_local models\monsters\sphere_boss\sphereboss_machine/sphereboss_machine_hi.lwo
+	diffusemap models/monsters/sphere_boss/sphereboss_machine/sphereboss_machine
+	bumpmap 	models/monsters/sphere_boss/sphereboss_machine/sphereboss_machine_local
+	specularmap	models/monsters/sphere_boss/sphereboss_machine/sphereboss_machine_s
+
+	{
+		blend add
+		map models/monsters/sphere_boss/sphereboss_machine/sphereboss_machine_add
+		glowstage
+	}
+	{ // Scope view texture
+	       blend add
+	       map textures/sfx/monsterSniperView
+	       rgb flicker5 [ time * 2.5 ]
+	       texgen screen
+		   scroll 0.5, 0.5
+		   scale 0.5, 0.5
+	       clamp
+	       glowStage
+	       scopeView    // Only visible in the rifle scope view
+	}
+
+	{ // Shield
+		blend add
+		map textures/special/forcefield_sphereboss
+		red 	0.2 * parm7
+		green 	0.5  * parm7
+		blue 	1  * parm7
+		scroll time * 0.5,time * 0.5
+		centerscale 2,2
+		glowStage
+	}
+}
+
+
+//====================
+// Shadow Meshes
+//====================
+models/monsters/sphere_boss/sphere_boss_shadow {
+	diffusemap	textures/editor/shadow
+}
+
+models/monsters/sphere_boss/sphere_boss_translucent_shadow {
+	diffusemap	textures/editor/shadow
+}
+
+models/monsters/sphere_boss/sphereboss_machine/sphereboss_machine_shadow {
+	diffusemap	textures/editor/shadow
+}
+
+models/monsters/sphere_boss/sphereboss_woman/sphere_boss_body_shadow {
+	diffusemap	textures/editor/shadow
+}
+
+models/monsters/sphere_boss/sphereboss_woman/sphere_boss_head_shadow {
+	diffusemap	textures/editor/shadow
+}
+
+models/monsters/sphere_boss/sphereboss_woman/sphere_boss_headdress_shadow {
+	diffusemap	textures/editor/shadow
+}
+
+models/monsters/sphere_boss/sphereboss_woman/sphere_boss_tubes_shadow {
+	diffusemap	textures/editor/shadow
+}
+

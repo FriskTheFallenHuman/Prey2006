@@ -259,7 +259,7 @@ bool hhConsole::HandleSingleGuiCommand(idEntity *entityGui, idLexer *src) {
 			idStr fontname = "fonts\\";
 			fontname += token;
 			if (renderEntity.gui[0]) {
-				//renderEntity.gui[0]->Translate(fontname.c_str());
+				renderEntity.gui[0]->Translate(fontname.c_str());
 			}
 		}
 		return true;

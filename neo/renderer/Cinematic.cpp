@@ -50,12 +50,10 @@ public:
 							idCinematicLocal();
 	virtual					~idCinematicLocal();
 
-	virtual bool			InitFromFile( const char *qpath, bool looping, bool audio  );
+	virtual bool			InitFromFile( const char *qpath, bool looping );
 	virtual cinData_t		ImageForTime( int milliseconds );
 	virtual int				AnimationLength();
-	virtual bool			IsPlaying() const;
 	virtual void			Close();
-	virtual int				GetStartTime();
 	virtual void			ResetTime(int time);
 
 private:
@@ -219,7 +217,7 @@ idCinematic::~idCinematic( ) {
 idCinematicLocal::InitFromFile
 ==============
 */
-bool idCinematic::InitFromFile( const char *qpath, bool looping, bool audio  ) {
+bool idCinematic::InitFromFile( const char *qpath, bool looping ) {
 	return false;
 }
 
@@ -230,15 +228,6 @@ idCinematicLocal::AnimationLength
 */
 int idCinematic::AnimationLength() {
 	return 0;
-}
-
-/*
-==============
-idCinematic::GetStartTime
-==============
-*/
-int idCinematic::GetStartTime() {
-	return -1;
 }
 
 /*
@@ -258,15 +247,6 @@ cinData_t idCinematic::ImageForTime( int milliseconds ) {
 	cinData_t c;
 	memset( &c, 0, sizeof( c ) );
 	return c;
-}
-
-/*
-==============
-idCinematic::IsPlaying
-==============
-*/
-bool idCinematic::IsPlaying() const {
-	return false;
 }
 
 /*
@@ -313,7 +293,7 @@ idCinematicLocal::~idCinematicLocal() {
 idCinematicLocal::InitFromFile
 ==============
 */
-bool idCinematicLocal::InitFromFile( const char *qpath, bool amilooping, bool audio ) {
+bool idCinematicLocal::InitFromFile( const char *qpath, bool amilooping ) {
 	unsigned short RoQID;
 
 	Close();
@@ -325,21 +305,6 @@ bool idCinematicLocal::InitFromFile( const char *qpath, bool amilooping, bool au
 		sprintf( fileName, "video/%s", qpath );
 	} else {
 		sprintf( fileName, "%s", qpath );
-	}
-
-	// try to play the matching wav file
-	if ( audio ) {
-		//idStr	soundFile = fileName;
-		//soundFile.Replace( "video/", "" );
-		//soundFile.StripPath();
-		//soundFile.StripFileExtension();
-
-		//idStr	wavString = soundFile;	
-		//wavString = "guisounds_cin_" + wavString;
-		//common->Printf( "Playing '%s' for .RoQ file '%s'\n", wavString.c_str(), fileName.c_str() );
-		//soundSystem->SetMute( false );
-		//soundSystem->SetPlayingSoundWorld( session->sw );
-		//session->sw->PlayShaderDirectly( wavString.c_str() );
 	}
 
 	iFile = fileSystem->OpenFileRead( fileName );
@@ -381,15 +346,6 @@ bool idCinematicLocal::InitFromFile( const char *qpath, bool amilooping, bool au
 
 /*
 ==============
-idCinematicLocal::IsPlaying
-==============
-*/
-bool idCinematicLocal::IsPlaying() const {
-	return ( status == FMV_PLAY );
-}
-
-/*
-==============
 idCinematicLocal::Close
 ==============
 */
@@ -410,15 +366,6 @@ idCinematicLocal::AnimationLength
 */
 int idCinematicLocal::AnimationLength() {
 	return animationLength;
-}
-
-/*
-==============
- idCinematicLocal::GetStartTime
-==============
-*/
-int idCinematicLocal::GetStartTime() {
-	return startTime;
 }
 
 /*
@@ -1631,7 +1578,7 @@ void idCinematicLocal::RoQShutdown( void ) {
 idSndWindow::InitFromFile
 ==============
 */
-bool idSndWindow::InitFromFile( const char *qpath, bool looping, bool audio ) {
+bool idSndWindow::InitFromFile( const char *qpath, bool looping ) {
 	idStr fname = qpath;
 
 	fname.ToLower();
