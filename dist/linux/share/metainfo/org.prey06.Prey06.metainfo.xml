@@ -4,57 +4,52 @@
 <component type="desktop">
   <id>org.prey06.Prey06</id>
   <name>Prey (2006)</name>
-  <summary>Fork of dhewm 3 that makes Prey 2006 run on Doom 3 GPL</summary>
+  <summary>Prey 2006 SDK integrated with Doom 3 GPL release</summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0</project_license>
 
-  <developer_name>Prey06 3 team</developer_name>
-  <update_contact>eonfge@kevindegeling.nl</update_contact>
+  <developer_name>Krispy</developer_name>
+  <update_contact>https://github.com/FriskTheFallenHuman</update_contact>
 
-  <url type="homepage">https://dhewm3.org</url>
-  <url type="help">https://github.com/dhewm/dhewm3/wiki/FAQ</url>
-  <url type="bugtracker">https://github.com/dhewm/dhewm3</url>
+  <url type="homepage">https://krispy-the-goat.itch.io/prey-2006</url>
+  <url type="bugtracker">https://github.com/FriskTheFallenHuman/Prey2006</url>
 
   <launchable type="desktop-id">org.prey06.Prey06.desktop</launchable>
 
   <description>
-    <p>dhewm3 is a source port of the original Doom3 (not Doom3 BFG, for that you may want to try RBDoom3BFG). It's known to work on Windows, Linux, macOS, FreeBSD, OpenBSD and AROS, but it should work on (or be easily portable to) any system that supports OpenGL 1.4 with ARB shaders, SDL and OpenAL.
+    <p>This project is a code integration of the Prey 2006 SDK against the Doom 3 GPL codebase. This means this includes new engine side features that were in the Prey 2006 engine,
+	and some adjustments to the Prey 2006 SDK code.
     </p>
-    <p>Compared to the original version of Doom3, dhewm3 has many bugfixes, supports EAX-like sound effects on all operating systems and hardware (via OpenAL Softs EFX support), has much better support for widescreen resolutions and has 64bit support.
+    <p>This runs in a semi vanilla Dhewm3 fork that specifically removes imgui, soft particles and joystick support for the time being.
     </p>
-    <p>It only supports old Mods if they either don't require their own game DLL or have been ported to dhewm3 - see the Mods page for more information.
-    </p>
-    <p>Note that while the Doom3 source code has been released under GPL, you still need to legally own the game and provide dhewm3 the game data to play. See the How to Install section for more information.
+    <p>You MUST source your own legal copy of Prey (2006) to run this, i wouldn't provide any links for this.
     </p>
   </description>
 
   <screenshots>
     <screenshot type="default">
-      <image>https://github.com/dhewm/dhewm.github.io/raw/master/dhewm3-linux.jpg</image>
-      <caption>Doom 3 running on Linux</caption>
+      <image>https://img.itch.zone/aW1hZ2UvMzE0MjE3Mi8xODc3MjEwMC5qcGc=/original/9Za1bQ.jpg</image>
+      <caption>Roadhouse</caption>
     </screenshot>
     <screenshot>
-      <image>https://github.com/dhewm/dhewm.github.io/raw/master/dhewm3-1.jpg</image>
-      <caption>Gameplay of Doom 3</caption>
+      <image>https://img.itch.zone/aW1hZ2UvMzE0MjE3Mi8xODc3MjEwMS5qcGc=/original/zHVHcT.jpg</image>
+      <caption>Roadhouse B</caption>
     </screenshot>
     <screenshot>
-      <image>https://github.com/dhewm/dhewm.github.io/raw/master/dhewm3-d3xp1.jpg</image>
-      <caption>Gameplay of Doom 3 Expansion pack</caption>
+      <image>https://img.itch.zone/aW1hZ2UvMzE0MjE3Mi8xODc3MjQwNS5qcGc=/original/6XOxZY.jpg</image>
+      <caption>Feeding Tower</caption>
     </screenshot>
     <screenshot>
-      <image>https://github.com/dhewm/dhewm.github.io/raw/master/dhewm3-150.jpg</image>
-      <caption>Classic Doom 3 mod support</caption>
+      <image>https://img.itch.zone/aW1hZ2UvMzE0MjE3Mi8xODc3MjQwNC5qcGc=/original/7rr2Qq.jpg</image>
+      <caption>Feeding Tower B</caption>
     </screenshot>
   </screenshots>
 
   <releases>
-    <release version="1.5.1" date="2021-03-14"/>
+    <release version="1.5.0" date="2025-04-22"/>
+    <release version="1.4.0" date="2024-11-02"/>
   </releases>
 
-  <!--
-    ESRB gave Doom 3 VR Edition for the PlayStation 4 also a 'Strong language' tag, but no other version has that.
-    Guess that the demons are quite susceptible to motion sickness.
-  -->
   <content_rating type="oars-1.1">
     <content_attribute id="violence-realistic">intense</content_attribute>
     <content_attribute id="violence-bloodshed">intense</content_attribute>
