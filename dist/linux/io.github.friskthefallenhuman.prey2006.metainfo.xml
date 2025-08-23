@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>io.github.friskthefallenhuman.prey2006</id>
+  <name>Prey (2006)</name>
+  <summary>Sci-fi horror FPS source port</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0</project_license>
+
+  <developer id="io.github.friskthefallenhuman.prey2006">
+    <name>Human Head Studios; Ryan C. Gordon; Krispy; Prey2006 Contributors</name>
+    <url>https://github.com/FriskTheFallenHuman/Prey2006/graphs/contributors</url>
+  </developer>
+  <branding>
+    <color type="primary" scheme_preference="light">#739dca</color>
+    <color type="primary" scheme_preference="dark">#393569</color>
+  </branding>
+  <url type="homepage">https://krispy-the-goat.itch.io/prey-2006</url>
+  <url type="bugtracker">https://github.com/FriskTheFallenHuman/Prey2006/issues</url>
+
+  <launchable type="desktop-id">io.github.friskthefallenhuman.prey2006.desktop</launchable>
+
+  <description>
+    <p>Prey tells the story of Tommy, a Cherokee garage mechanic stuck on a reservation
+        going nowhere. Along with his people, he is abducted to a menacing alien mothership.</p>
+    <p>This project is a code integration of the Prey 2006 SDK against the Doom 3 GPL codebase.
+      This means this includes new engine side features that were in the Prey 2006 engine, and
+      some adjustments to the Prey 2006 SDK code.</p>
+    <p>This runs in a semi vanilla Dhewm3 fork that specifically removes imgui, soft particles
+      and joystick support for the time being.</p>
+    <p><em>PLEASE NOTE:</em> This application does <em>not</em> include the Prey game data or
+        a CD key. You will need to supply both. At least the files <code>pak000.pk4</code>
+        through <code>pak004.pk4</code> from a retail installation of Prey must be copied to
+        <code>$HOME/.var/app/io.github.friskthefallenhuman.prey2006/data/prey06/</code>.</p>
+    <p>This build is released as-is with limited support and is missing some features at this
+      point. Currently known issues are:</p>
+    <ul>
+      <li>Death Walk - a key feature of Prey - is missing; this means that some parts of the game
+          can only be progressed using `noclip` cheats</li>
+      <li>Spirit Walk visuals are broken; in parts where spirit walking is mandatory noclip may
+          be needed to progress</li>
+      <li>Multiplayer may work but has not been tested</li>
+    </ul>
+  </description>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://img.itch.zone/aW1hZ2UvMzE0MjE3Mi8xODc3MjEwMC5qcGc=/original/9Za1bQ.jpg</image>
+      <caption>Roadhouse</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://img.itch.zone/aW1hZ2UvMzE0MjE3Mi8xODc3MjEwMS5qcGc=/original/zHVHcT.jpg</image>
+      <caption>Roadhouse B</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://img.itch.zone/aW1hZ2UvMzE0MjE3Mi8xODc3MjQwNS5qcGc=/original/6XOxZY.jpg</image>
+      <caption>Feeding Tower</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://img.itch.zone/aW1hZ2UvMzE0MjE3Mi8xODc3MjQwNC5qcGc=/original/7rr2Qq.jpg</image>
+      <caption>Feeding Tower B</caption>
+    </screenshot>
+  </screenshots>
+
+  <releases>
+    <release version="1.4.0" date="2025-04-24"/>
+  </releases>
+
+  <categories>
+    <category>Game</category>
+    <category>ActionGame</category>
+  </categories>
+  <supports>
+    <control>gamepad</control>
+  </supports>
+  <recommends>
+    <control>keyboard</control>
+    <control>pointing</control>
+  </recommends>
+  <provides>
+    <binary>prey06</binary>
+    <binary>prey06ded</binary>
+  </provides>
+
+  <content_rating type="oars-1.1">
+    <content_attribute id="violence-realistic">intense</content_attribute>
+    <content_attribute id="violence-bloodshed">intense</content_attribute>
+    <content_attribute id="violence-desecration">intense</content_attribute>
+    <content_attribute id="drugs-alcohol">moderate</content_attribute>
+    <content_attribute id="language-discrimination">moderate</content_attribute>
+    <content_attribute id="money-gambling">moderate</content_attribute>
+    <content_attribute id="social-chat">intense</content_attribute>
+    <content_attribute id="social-audio">intense</content_attribute>
+  </content_rating>
+</component>
+

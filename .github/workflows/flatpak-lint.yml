@@ -1,0 +1,41 @@
+---
+name: Lint Flatpak metadata
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "dist/linux/*.metainfo.xml"
+  pull_request:
+
+jobs:
+  metainfo-lint:
+    name: Lint AppStream metadata
+    runs-on: ubuntu-latest
+    container: ghcr.io/flathub/flatpak-builder-lint:latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+
+      - name: Lint metainfo.xml
+        run: |
+          flatpak-builder-lint --gha-format \
+            appstream \
+            $(find dist/linux -name "*.metainfo.xml")
+
+      - name: Check for optional tags
+        run: |
+          METAINFO_FILE=$(find dist/linux -name "*.metainfo.xml")
+          for tag in branding recommends supports provides keywords; do
+            echo "::group::Checking for $tag..."
+            if grep -zo "<$tag>.*</$tag>" "${METAINFO_FILE}"; then
+              echo "OK"
+            else
+              echo "::warning file=${METAINFO_FILE},line=1,col=1::Missing optional tag $tag"
+            fi
+            echo "::endgroup::"
+          done
