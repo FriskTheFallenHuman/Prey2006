@@ -361,7 +361,7 @@ else()
 endif()
 
 set(bindir		"${CMAKE_INSTALL_FULL_BINDIR}")
-set(libdir		"${CMAKE_INSTALL_FULL_LIBDIR}/prey06")
+set(libdir		"${CMAKE_INSTALL_FULL_LIBDIR}")
 set(datadir		"${CMAKE_INSTALL_FULL_DATADIR}/games/prey06")
 
 configure_file(
@@ -1239,7 +1239,7 @@ if(BASE AND NOT HARDLINK_GAME)
 	if(NOT WIN32)
 		install(TARGETS base
 				RUNTIME DESTINATION "${bindir}"
-				LIBRARY DESTINATION "${datadir}"
+				LIBRARY DESTINATION "${datadir}/base"
 				ARCHIVE DESTINATION "${libdir}"
 		)
 		install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../dist/${APPSTREAM_APP_ID}.svg
