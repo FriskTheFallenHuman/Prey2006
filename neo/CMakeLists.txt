@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
+set(APPSTREAM_APP_ID "io.github.friskthefallenhuman.prey2006")
 
 # Only use vcpkg in win32 since there we dont have package managers
 if(WIN32)
@@ -23,8 +24,8 @@ if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE "RelWithDebInfo")
 endif()
 
-set(ENGINE_BINARY "PREY06")
-set(DEDICATED_BINARY "PREY06Ded")
+set(ENGINE_BINARY "prey06")
+set(DEDICATED_BINARY "prey06ded")
 
 include(CheckCXXCompilerFlag)
 include(GNUInstallDirs OPTIONAL RESULT_VARIABLE GNUINSTALLDIRS)
@@ -360,8 +361,12 @@ else()
 endif()
 
 set(bindir		"${CMAKE_INSTALL_FULL_BINDIR}")
-set(libdir		"${CMAKE_INSTALL_FULL_LIBDIR}/prey06")
-set(datadir	"${CMAKE_INSTALL_FULL_DATADIR}/prey06")
+set(libdir		"${CMAKE_INSTALL_FULL_LIBDIR}")
+if (UNIX AND APPLE)
+	set(datadir	"${CMAKE_INSTALL_FULL_DATADIR}/games/prey06")
+else()
+	set(datadir	"${CMAKE_INSTALL_FULL_DATADIR}")
+endif()
 
 configure_file(
 	"${CMAKE_SOURCE_DIR}/config.h.in"
@@ -1238,8 +1243,20 @@ if(BASE AND NOT HARDLINK_GAME)
 	if(NOT WIN32)
 		install(TARGETS base
 				RUNTIME DESTINATION "${bindir}"
-				LIBRARY DESTINATION "${libdir}"
+				LIBRARY DESTINATION "${datadir}/base"
 				ARCHIVE DESTINATION "${libdir}"
 		)
-	endif()
+		install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../dist/${APPSTREAM_APP_ID}.svg
+			DESTINATION share/icons/hicolor/scalable/apps
+			PERMISSIONS WORLD_READ GROUP_READ OWNER_READ OWNER_WRITE)
+		install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../dist/${APPSTREAM_APP_ID}.png
+			DESTINATION share/icons/hicolor/256x256/apps
+			PERMISSIONS WORLD_READ GROUP_READ OWNER_READ OWNER_WRITE)
+		install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../dist/linux/${APPSTREAM_APP_ID}.desktop
+			DESTINATION share/applications
+			PERMISSIONS WORLD_READ GROUP_READ OWNER_READ OWNER_WRITE)
+		install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../dist/linux/${APPSTREAM_APP_ID}.metainfo.xml
+			DESTINATION share/metainfo
+			PERMISSIONS WORLD_READ GROUP_READ OWNER_READ OWNER_WRITE)
+  endif()
 endif()
