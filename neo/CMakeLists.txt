@@ -362,7 +362,11 @@ endif()
 
 set(bindir		"${CMAKE_INSTALL_FULL_BINDIR}")
 set(libdir		"${CMAKE_INSTALL_FULL_LIBDIR}")
-set(datadir		"${CMAKE_INSTALL_FULL_DATADIR}/games/prey06")
+if (UNIX AND APPLE)
+	set(datadir	"${CMAKE_INSTALL_FULL_DATADIR}/games/prey06")
+else()
+	set(datadir	"${CMAKE_INSTALL_FULL_DATADIR}")
+endif()
 
 configure_file(
 	"${CMAKE_SOURCE_DIR}/config.h.in"
