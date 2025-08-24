@@ -362,7 +362,7 @@ endif()
 
 set(bindir		"${CMAKE_INSTALL_FULL_BINDIR}")
 set(libdir		"${CMAKE_INSTALL_FULL_LIBDIR}")
-if (UNIX AND APPLE)
+if (UNIX AND NOT APPLE)
 	set(datadir	"${CMAKE_INSTALL_FULL_DATADIR}/games/prey06")
 else()
 	set(datadir	"${CMAKE_INSTALL_FULL_DATADIR}")
