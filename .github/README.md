@@ -1,6 +1,6 @@
 <p align="center"> <img src="https://cdn2.steamgriddb.com/logo_thumb/c5ab0bc60ac7929182aadd08703f1ec6.png">
 
->[!IMPORTANT]
+>[!CAUTION]
 > You **MUST** source your own legal copy of Prey (2006) to run this, i wouldn't provide any links for this.
 > i've been getting a lot of questions about but, please keep in mind this is just a source port.
 
