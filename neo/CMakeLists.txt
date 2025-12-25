@@ -602,6 +602,8 @@ set(src_ui
 	ui/SliderWindow.cpp
 	ui/TabContainerWindow.cpp
 	ui/TabWindow.cpp
+    ui/BackgroundImage.cpp
+    ui/ButtonWindow.cpp
 	ui/UserInterface.cpp
 	ui/Window.cpp
 	ui/Winvar.cpp

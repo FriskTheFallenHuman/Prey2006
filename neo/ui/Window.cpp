@@ -41,6 +41,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "FieldWindow.h"
 #include "TabWindow.h"
 #include "TabContainerWindow.h"
+#include "ButtonWindow.h"
 
 #ifdef ID_ALLOW_TOOLS
 //
@@ -1974,23 +1975,11 @@ idWinVar *idWindow::GetWinVarByName(const char *_name, bool fixup, drawWin_t** o
 	if (idStr::Icmp(_name, "seperatorLines") == 0) {
 		retVar = &seperatorLines;
 	}
-	if (idStr::Icmp(_name, "activeColor") == 0) {
-		retVar = &activeColor;
-	}
 	if (idStr::Icmp(_name, "seperatorMargin") == 0) {
 		retVar = &seperatorMargin;
 	}
-	if (idStr::Icmp(_name, "activeTab") == 0) {
-		retVar = &activeTab;
-	}
-	if (idStr::Icmp(_name, "sepColor") == 0) {
-		retVar = &sepColor;
-	}
 	if (idStr::Icmp(_name, "hoverBorderColor") == 0) {
 		retVar = &hoverBorderColor;
-	}
-	if (idStr::Icmp(_name, "tabMargins") == 0) {
-		retVar = &tabMargins;
 	}
 	if (idStr::Icmp(_name, "trailOffset") == 0) {
 		retVar = &trailOffset;
@@ -2380,8 +2369,8 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 
 
 		if ( token == "windowDef" || token == "animationDef" ||
-			 token == "superWindowDef" || token == "buttonDef" ||
-			 token == "creditDef" || token == "splineDef" /* || token == "tabContainerDef" || token == "tabDef" //k: TODO: tab */ )  {
+			 token == "superWindowDef" ||
+			 token == "creditDef" || token == "splineDef" )  {
 			if (token == "animationDef") {
 				visible = false;
 				rect = idRectangle(0,0,0,0);
@@ -2525,6 +2514,17 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 			dwt.win = win;
 			drawWindows.Append(dwt);
 		}
+        else if (token == "buttonDef") {
+            hhButtonWindow *win = new hhButtonWindow(dc, gui);
+            SaveExpressionParseState();
+            win->Parse(src, rebuild);
+            RestoreExpressionParseState();
+            AddChild(win);
+            win->SetParent(this);
+            dwt.simp = NULL;
+            dwt.win = win;
+            drawWindows.Append(dwt);
+        }
 //
 //  added new onEvent
 		else if ( token == "onNamedEvent" ) {
