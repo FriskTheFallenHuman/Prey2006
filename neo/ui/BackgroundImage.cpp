@@ -1,3 +1,31 @@
+/*
+===========================================================================
+
+Doom 3 GPL Source Code
+Copyright (C) 1999-2011 id Software LLC, a ZeniMax Media company.
+
+This file is part of the Doom 3 GPL Source Code ("Doom 3 Source Code").
+
+Doom 3 Source Code is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Doom 3 Source Code is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
+
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+
+If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
+
+===========================================================================
+*/
+
 #include "precompiled.h"
 #pragma hdrstop
 
@@ -5,213 +33,202 @@
 #include "Window.h"
 #include "UserInterfaceLocal.h"
 
-void hhBackground::Reset(void) {
-    material = NULL;
-    name = "";
+void hhBackground::Reset( void ) {
+	material = NULL;
+	name = "";
 }
 
-void hhBackground::Setup()
-{
-    if (name.Length()) {
-        material = declManager->FindMaterial(name);
-        material->SetImageClassifications(1);	// just for resource tracking
+void hhBackground::Setup() {
+	if ( name.Length() ) {
+		material = declManager->FindMaterial( name );
+		material->SetImageClassifications( 1 );	// just for resource tracking
 
-        if (material && !material->TestMaterialFlag(MF_DEFAULTED)) {
-            material->SetSort(SS_GUI);
-        }
+		if ( material && !material->TestMaterialFlag( MF_DEFAULTED ) ) {
+			material->SetSort(SS_GUI);
+		}
 
-        name.SetMaterialPtr(&material);
-    }
+		name.SetMaterialPtr( &material );
+	}
 }
 
-void hhBackground::Draw(idDeviceContext *dc, const idRectangle &drawRect, float matScalex, float matScaley, unsigned int flags)
-{
-    if (material) {
-        float scalex, scaley;
+void hhBackground::Draw(idDeviceContext *dc, const idRectangle &drawRect, float matScalex, float matScaley, unsigned int flags ) {
+	if ( material ) {
+		float scalex, scaley;
 
-        if (flags & WIN_NATURALMAT) {
-            scalex = drawRect.w / (float)material->GetImageWidth();
-            scaley = drawRect.h / (float)material->GetImageHeight();
-        } else {
-            scalex = matScalex;
-            scaley = matScaley;
-        }
+		if ( flags & WIN_NATURALMAT ) {
+			scalex = drawRect.w / (float)material->GetImageWidth();
+			scaley = drawRect.h / (float)material->GetImageHeight();
+		} else {
+			scalex = matScalex;
+			scaley = matScaley;
+		}
 
-        //dc->DrawRect(drawRect.x, drawRect.y, drawRect.w, drawRect.h, 2, idVec4(1,0,0,1));
-        dc->DrawMaterial(drawRect.x, drawRect.y, drawRect.w, drawRect.h, material, idVec4(1, 1, 1, 1), scalex, scaley);
-    }
+		//dc->DrawRect(drawRect.x, drawRect.y, drawRect.w, drawRect.h, 2, idVec4(1,0,0,1));
+		dc->DrawMaterial( drawRect.x, drawRect.y, drawRect.w, drawRect.h, material, idVec4(1, 1, 1, 1), scalex, scaley );
+	}
 }
 
-
-
-void hhBackgroundGroup::Reset(void) {
-    left.Reset();
-    middle.Reset();
-    right.Reset();
-    edge = -1.0f;
+void hhBackgroundGroup::Reset( void ) {
+	left.Reset();
+	middle.Reset();
+	right.Reset();
+	edge = -1.0f;
 }
 
-void hhBackgroundGroup::Setup(float ew) {
-    left.Setup();
-    middle.Setup();
-    right.Setup();
-    edge = ew;
+void hhBackgroundGroup::Setup( float ew ) {
+	left.Setup();
+	middle.Setup();
+	right.Setup();
+	edge = ew;
 }
 
-void hhBackgroundGroup::Draw(idDeviceContext *dc, const idRectangle &total, bool vertical, float matScalex, float matScaley, unsigned int flags)
-{
-    idRectangle rects[3];
-    hhBackground *bgs[3] = {
-        &left,
-        &middle,
-        &right,
-    };
-    int mask = CalcRects(total, bgs, rects, vertical, edge);
-/*  f(!vertical)
-    {
-        printf("XXX %s\n", total.ToVec4().ToString());
-        printf("111 %s\n", rects[0].ToVec4().ToString());
-        printf("222 %s\n", rects[1].ToVec4().ToString());
-        printf("333 %s\n", rects[2].ToVec4().ToString());
-    }*/
-    if(mask)
-    {
-        for(int i = 0; i < 3; i++)
-        {
-            if(bgs[i])
-                bgs[i]->Draw(dc, rects[i], matScalex, matScaley, flags);
-        }
-    }
+void hhBackgroundGroup::Draw( idDeviceContext *dc, const idRectangle &total, bool vertical, float matScalex, float matScaley, unsigned int flags ) {
+	idRectangle rects[3];
+	hhBackground *bgs[3] = {
+		&left,
+		&middle,
+		&right,
+	};
+	int mask = CalcRects(total, bgs, rects, vertical, edge);
+	/*
+	if ( !vertical ) {
+		printf( "XXX %s\n", total.ToVec4().ToString() );
+		printf( "111 %s\n", rects[0].ToVec4().ToString() );
+		printf( "222 %s\n", rects[1].ToVec4().ToString() );
+		printf( "333 %s\n", rects[2].ToVec4().ToString() );
+	}
+	*/
+	if ( mask ) {
+		for ( int i = 0; i < 3; i++ ) {
+			if ( bgs[i] ) {
+				bgs[i]->Draw( dc, rects[i], matScalex, matScaley, flags );
+			}
+		}
+	}
 }
 
-int hhBackgroundGroup::CalcRects(const idRectangle &total, hhBackground *bgs[3], idRectangle rects[3], bool vertical, float edgeWidth)
-{
-    const idMaterial *left = bgs[0]->material;
-    const idMaterial *middle = bgs[1]->material;
-    const idMaterial *right = bgs[2]->material;
-    int res = BG_NONE;
+int hhBackgroundGroup::CalcRects( const idRectangle &total, hhBackground *bgs[3], idRectangle rects[3], bool vertical, float edgeWidth ) {
+	const idMaterial* left = bgs[0]->material;
+	const idMaterial* middle = bgs[1]->material;
+	const idMaterial* right = bgs[2]->material;
+	int res = BG_NONE;
+	int c = -1;
 
-    if(left)
-        res |= BG_LEFT;
-    if(middle)
-        res |= BG_MIDDLE;
-    if(right)
-        res |= BG_RIGHT;
-    if(res == 0)
-        return BG_NONE;
+	if ( left ) {
+		res |= BG_LEFT;
+	}
+	if ( middle ) {
+		res |= BG_MIDDLE;
+	}
+	if ( right ) {
+		res |= BG_RIGHT;
+	}
+	if ( res == 0 ) {
+		return BG_NONE;
+	}
 
-    if(res & BG_MIDDLE)
-    {
-        if((res & BG_LEFT) && (res & BG_RIGHT) == 0)
-            res |= BG_LEFT_MIRROR;
-        if((res & BG_RIGHT) && (res & BG_LEFT) == 0)
-            res |= BG_RIGHT_MIRROR;
-    }
-    int c = -1;
-    if(res == BG_LEFT)
-        c = 0;
-    else if(res == BG_MIDDLE)
-        c = 1;
-    else if(res == BG_RIGHT)
-        c = 2;
+	if ( res & BG_MIDDLE ) {
+		if ( (res & BG_LEFT) && (res & BG_RIGHT) == 0 ) {
+			res |= BG_LEFT_MIRROR;
+		}
+		if ( (res & BG_RIGHT) && (res & BG_LEFT) == 0 ) {
+			res |= BG_RIGHT_MIRROR;
+		}
+	}
 
-    if(c == -1)
-    {
-        if(res & BG_LEFT_MIRROR)
-        {
-            right = left;
-            bgs[2] = bgs[0];
-        }
-        else if(res & BG_RIGHT_MIRROR)
-        {
-            left = right;
-            bgs[0] = bgs[2];
-        }
-    }
 
-    if(vertical)
-    {
-        rects[0].x = rects[1].x = rects[2].x = total.x;
-        rects[0].w = rects[1].w = rects[2].w = total.w;
+	if ( res == BG_LEFT ) {
+		c = 0;
+	} else if ( res == BG_MIDDLE ) {
+		c = 1;
+	} else if ( res == BG_RIGHT ) {
+		c = 2;
+	}
 
-        // if full with one part
-        if(c != -1)
-        {
-            for(int i = 0; i < 3; i++)
-            {
-                rects[i].y = i == c ? 0.0f : total.h;
-                rects[i].h = i == c ? total.h : 0.0f;
-                if(i != c)
-                    bgs[i] = NULL;
-            }
-            return res;
-        }
+	if ( c == -1 ) {
+		if ( res & BG_LEFT_MIRROR ) {
+			right = left;
+			bgs[2] = bgs[0];
+		} else if( res & BG_RIGHT_MIRROR ) {
+			left = right;
+			bgs[0] = bgs[2];
+		}
+	}
 
-        float leftH = left ? (float)left->GetImageHeight() / (float)left->GetImageWidth() : 0.0f;
-        float middleH = middle ? (float)middle->GetImageHeight() / (float)middle->GetImageWidth() : 0.0f;
-        float rightH = right ? (float)right->GetImageHeight() / (float)right->GetImageWidth() : 0.0f;
-        float totalH = leftH + middleH + rightH;
-        rects[0].y = 0.0f;
-        rects[0].h = edgeWidth > 0.0f ? edgeWidth : (leftH / totalH) * total.h;
-        rects[2].h = edgeWidth > 0.0f ? edgeWidth : (rightH / totalH) * total.h;
-        rects[2].y = total.h - rects[2].h;
-        rects[1].y = rects[0].h;
-        rects[1].h = total.h - rects[0].h - rects[2].h;
-        rects[0].y += total.y;
-        rects[1].y += total.y;
-        rects[2].y += total.y;
+	if ( vertical ) {
+		rects[0].x = rects[1].x = rects[2].x = total.x;
+		rects[0].w = rects[1].w = rects[2].w = total.w;
 
-        // if left or right missing one
-        if(res & BG_LEFT_MIRROR)
-        {
-            rects[2].h = -rects[2].h;
-        }
-        else if(res & BG_RIGHT_MIRROR)
-        {
-            rects[0].h = -rects[0].h;
-        }
-    }
-    else
-    {
-        rects[0].y = rects[1].y = rects[2].y = total.y;
-        rects[0].h = rects[1].h = rects[2].h = total.h;
+		// if full with one part
+		if ( c != -1 ) {
+			for ( int i = 0; i < 3; i++ ) {
+				rects[i].y = i == c ? 0.0f : total.h;
+				rects[i].h = i == c ? total.h : 0.0f;
+				if ( i != c ) {
+					bgs[i] = NULL;
+				}
+			}
+			return res;
+		}
 
-        // if full with one part
-        if(c != -1)
-        {
-            for(int i = 0; i < 3; i++)
-            {
-                rects[i].x = i == c ? 0.0f : total.w;
-                rects[i].w = i == c ? total.w : 0.0f;
-                if(i != c)
-                    bgs[i] = NULL;
-            }
-            return res;
-        }
+		float leftH = left ? (float)left->GetImageHeight() / (float)left->GetImageWidth() : 0.0f;
+		float middleH = middle ? (float)middle->GetImageHeight() / (float)middle->GetImageWidth() : 0.0f;
+		float rightH = right ? (float)right->GetImageHeight() / (float)right->GetImageWidth() : 0.0f;
+		float totalH = leftH + middleH + rightH;
 
-        float leftW = left ? (float)left->GetImageWidth() / (float)left->GetImageHeight() : 0.0f;
-        float middleW = middle ? (float)middle->GetImageWidth() / (float)middle->GetImageHeight() : 0.0f;
-        float rightW = right ? (float)right->GetImageWidth() / (float)right->GetImageHeight() : 0.0f;
-        float totalW = leftW + middleW + rightW;
-        rects[0].x = 0.0f;
-        rects[0].w = edgeWidth > 0.0f ? edgeWidth : (leftW / totalW) * total.w;
-        rects[2].w = edgeWidth > 0.0f ? edgeWidth : (rightW / totalW) * total.w;
-        rects[2].x = total.w - rects[2].w;
-        rects[1].x = rects[0].w;
-        rects[1].w = total.w - rects[0].w - rects[2].w;
-        rects[0].x += total.x;
-        rects[1].x += total.x;
-        rects[2].x += total.x;
+		rects[0].y = 0.0f;
+		rects[0].h = edgeWidth > 0.0f ? edgeWidth : (leftH / totalH) * total.h;
+		rects[2].h = edgeWidth > 0.0f ? edgeWidth : (rightH / totalH) * total.h;
+		rects[2].y = total.h - rects[2].h;
+		rects[1].y = rects[0].h;
+		rects[1].h = total.h - rects[0].h - rects[2].h;
+		rects[0].y += total.y;
+		rects[1].y += total.y;
+		rects[2].y += total.y;
 
-        // if left or right missing one
-        if(res & BG_LEFT_MIRROR)
-        {
-            rects[2].w = -rects[2].w;
-        }
-        else if(res & BG_RIGHT_MIRROR)
-        {
-            rects[0].w = -rects[0].w;
-        }
-    }
-    return res;
+		// if left or right missing one
+		if ( res & BG_LEFT_MIRROR ) {
+			rects[2].h = -rects[2].h;
+		} else if ( res & BG_RIGHT_MIRROR ) {
+			rects[0].h = -rects[0].h;
+		}
+	} else {
+		rects[0].y = rects[1].y = rects[2].y = total.y;
+		rects[0].h = rects[1].h = rects[2].h = total.h;
+
+		// if full with one part
+		if ( c != -1 ) {
+			for ( int i = 0; i < 3; i++ ) {
+				rects[i].x = i == c ? 0.0f : total.w;
+				rects[i].w = i == c ? total.w : 0.0f;
+				if ( i != c ) {
+					bgs[i] = NULL;
+				}
+			}
+			return res;
+		}
+
+		float leftW = left ? (float)left->GetImageWidth() / (float)left->GetImageHeight() : 0.0f;
+		float middleW = middle ? (float)middle->GetImageWidth() / (float)middle->GetImageHeight() : 0.0f;
+		float rightW = right ? (float)right->GetImageWidth() / (float)right->GetImageHeight() : 0.0f;
+		float totalW = leftW + middleW + rightW;
+
+		rects[0].x = 0.0f;
+		rects[0].w = edgeWidth > 0.0f ? edgeWidth : (leftW / totalW) * total.w;
+		rects[2].w = edgeWidth > 0.0f ? edgeWidth : (rightW / totalW) * total.w;
+		rects[2].x = total.w - rects[2].w;
+		rects[1].x = rects[0].w;
+		rects[1].w = total.w - rects[0].w - rects[2].w;
+		rects[0].x += total.x;
+		rects[1].x += total.x;
+		rects[2].x += total.x;
+
+		// if left or right missing one
+		if ( res & BG_LEFT_MIRROR ) {
+			rects[2].w = -rects[2].w;
+		} else if ( res & BG_RIGHT_MIRROR ) {
+			rects[0].w = -rects[0].w;
+		}
+	}
+	return res;
 }
