@@ -30,24 +30,23 @@ If you have questions concerning this license or the applicable additional terms
 // CTearoffContainerWindow
 
 class CTabsDlg;
-class CTearoffContainerWindow : public CWnd
-{
+class CTearoffContainerWindow : public CWnd {
 	DECLARE_DYNAMIC( CTearoffContainerWindow )
 
 public:
 	CTearoffContainerWindow();
 	virtual ~CTearoffContainerWindow();
 
-	CWnd* m_ContainedDialog;		//dialog that is being docked/undocked
+	CWnd * m_ContainedDialog;		//dialog that is being docked/undocked
 	int m_DialogID;					//identifier for this dialog
-	CTabsDlg* m_DockManager;		//the dialog that contains m_ContainedDialog  when docked
+	CTabsDlg * m_DockManager;		//the dialog that contains m_ContainedDialog  when docked
 
 protected:
 	DECLARE_MESSAGE_MAP()
 	bool m_DragPreviewActive;
 public:
 	afx_msg void OnNcLButtonDblClk( UINT nHitTest, CPoint point );
-	void SetDialog( CWnd* dlg , int ID );
+	void SetDialog( CWnd* dlg, int ID );
 	void SetDockManager( CTabsDlg* dlg );
 	afx_msg void OnClose();
 	BOOL PreTranslateMessage( MSG* pMsg );

@@ -30,8 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 
 //bool GEItemPropsDlg_DoModal	( HWND parent, idWindow* window, idDict& outDict );
 
-class rvGEItemProps
-{
+class rvGEItemProps {
 public:
 	rvGEItemProps();
 	~rvGEItemProps();
@@ -49,16 +48,15 @@ protected:
 
 	HWND				mWnd;
 	HWND				mDlg;
-	rvGEWindowWrapper*	mWrapper;
-	rvGEWorkspace*		mWorkspace;
+	rvGEWindowWrapper	* mWrapper;
+	rvGEWorkspace	*	mWorkspace;
 
 	idDict				mDict;
 	PROPSHEETHEADER		propsh;
 	PROPSHEETPAGE		propsp[4];
 };
 
-ID_INLINE HWND rvGEItemProps::GetWindow( void )
-{
+ID_INLINE HWND rvGEItemProps::GetWindow( void ) {
 	return mWnd;
 }
 

@@ -105,7 +105,7 @@ public:
 
 	// HUMANHEAD pdm: Translation effect
 	//virtual void				SetDemoGuiSource(const char *sourceName) = 0;
-	//virtual void				Translate(const char *fontname) = 0;
+	virtual void				Translate( const char *fontname ) = 0;
 	virtual void				CallStartup() = 0;
 	// HUMANHEAD END
 
@@ -121,6 +121,10 @@ public:
 	virtual float				CursorY() = 0;
 
 	virtual idRectangle			GetScreenRect( void ) = 0;
+
+	// DG: making this static so it doesn't change the vtable (and thus ABI)
+	// returns true if the ui's window is *not* being scaled to 4:3
+	static bool					IsUserInterfaceScaledTo43( const idUserInterface *ui );
 };
 
 

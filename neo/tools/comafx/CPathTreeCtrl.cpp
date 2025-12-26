@@ -37,8 +37,7 @@ If you have questions concerning this license or the applicable additional terms
 CPathTreeCtrl::CPathTreeCtrl
 ================
 */
-CPathTreeCtrl::CPathTreeCtrl()
-{
+CPathTreeCtrl::CPathTreeCtrl() {
 }
 
 /*
@@ -46,8 +45,7 @@ CPathTreeCtrl::CPathTreeCtrl()
 CPathTreeCtrl::~CPathTreeCtrl
 ================
 */
-CPathTreeCtrl::~CPathTreeCtrl()
-{
+CPathTreeCtrl::~CPathTreeCtrl() {
 }
 
 /*
@@ -55,8 +53,7 @@ CPathTreeCtrl::~CPathTreeCtrl()
 CPathTreeCtrl::PreSubclassWindow
 ================
 */
-void CPathTreeCtrl::PreSubclassWindow()
-{
+void CPathTreeCtrl::PreSubclassWindow() {
 	CTreeCtrl::PreSubclassWindow();
 	EnableToolTips( TRUE );
 }
@@ -68,8 +65,7 @@ CPathTreeCtrl::FindItem
 Find the given path in the tree.
 ================
 */
-HTREEITEM CPathTreeCtrl::FindItem( const idStr& pathName )
-{
+HTREEITEM CPathTreeCtrl::FindItem( const idStr& pathName ) {
 	int lastSlash;
 	idStr path, tmpPath, itemName;
 	HTREEITEM item, parentItem;
@@ -79,27 +75,21 @@ HTREEITEM CPathTreeCtrl::FindItem( const idStr& pathName )
 
 	lastSlash = pathName.Last( '/' );
 
-	while( item && lastSlash > path.Length() )
-	{
+	while ( item && lastSlash > path.Length() ) {
 		itemName = GetItemText( item );
 		tmpPath = path + itemName;
-		if( pathName.Icmpn( tmpPath, tmpPath.Length() ) == 0 )
-		{
+		if ( pathName.Icmpn( tmpPath, tmpPath.Length() ) == 0 ) {
 			parentItem = item;
 			item = GetChildItem( item );
 			path = tmpPath + "/";
-		}
-		else
-		{
+		} else {
 			item = GetNextSiblingItem( item );
 		}
 	}
 
-	for( item = GetChildItem( parentItem ); item; item = GetNextSiblingItem( item ) )
-	{
+	for ( item = GetChildItem( parentItem ); item; item = GetNextSiblingItem( item ) ) {
 		itemName = GetItemText( item );
-		if( pathName.Icmp( path + itemName ) == 0 )
-		{
+		if ( pathName.Icmp( path + itemName ) == 0 ) {
 			return item;
 		}
 	}
@@ -115,8 +105,7 @@ Inserts a new item going from the root down the tree only creating paths where n
 This is slow and should only be used to insert single items.
 ================
 */
-HTREEITEM CPathTreeCtrl::InsertPathIntoTree( const idStr& pathName, const int id )
-{
+HTREEITEM CPathTreeCtrl::InsertPathIntoTree( const idStr& pathName, const int id ) {
 	int lastSlash;
 	idStr path, tmpPath, itemName;
 	HTREEITEM item, parentItem;
@@ -126,24 +115,19 @@ HTREEITEM CPathTreeCtrl::InsertPathIntoTree( const idStr& pathName, const int id
 
 	lastSlash = pathName.Last( '/' );
 
-	while( item && lastSlash > path.Length() )
-	{
+	while ( item && lastSlash > path.Length() ) {
 		itemName = GetItemText( item );
 		tmpPath = path + itemName;
-		if( pathName.Icmpn( tmpPath, tmpPath.Length() ) == 0 )
-		{
+		if ( pathName.Icmpn( tmpPath, tmpPath.Length() ) == 0 ) {
 			parentItem = item;
 			item = GetChildItem( item );
 			path = tmpPath + "/";
-		}
-		else
-		{
+		} else {
 			item = GetNextSiblingItem( item );
 		}
 	}
 
-	while( lastSlash > path.Length() )
-	{
+	while ( lastSlash > path.Length() ) {
 		pathName.Mid( path.Length(), pathName.Length(), tmpPath );
 		tmpPath.Left( tmpPath.Find( '/' ), itemName );
 		parentItem = InsertItem( itemName, parentItem );
@@ -165,25 +149,21 @@ Adds a new item to the tree.
 Assumes new paths after the current stack path do not yet exist.
 ================
 */
-HTREEITEM CPathTreeCtrl::AddPathToTree( const idStr& pathName, const int id, idPathTreeStack& stack )
-{
+HTREEITEM CPathTreeCtrl::AddPathToTree( const idStr& pathName, const int id, idPathTreeStack& stack ) {
 	int lastSlash;
 	idStr itemName, tmpPath;
 	HTREEITEM item;
 
 	lastSlash = pathName.Last( '/' );
 
-	while( stack.Num() > 1 )
-	{
-		if( pathName.Icmpn( stack.TopName(), stack.TopNameLength() ) == 0 )
-		{
+	while ( stack.Num() > 1 ) {
+		if ( pathName.Icmpn( stack.TopName(), stack.TopNameLength() ) == 0 ) {
 			break;
 		}
 		stack.Pop();
 	}
 
-	while( lastSlash > stack.TopNameLength() )
-	{
+	while ( lastSlash > stack.TopNameLength() ) {
 		pathName.Mid( stack.TopNameLength(), pathName.Length(), tmpPath );
 		tmpPath.Left( tmpPath.Find( '/' ), itemName );
 		item = InsertItem( itemName, stack.TopItem() );
@@ -206,8 +186,7 @@ Adds the matched tree items to the result tree.
 Returns the number of items added to the result tree.
 ================
 */
-int CPathTreeCtrl::SearchTree( treeItemCompare_t compare, void* data, CPathTreeCtrl& result )
-{
+int CPathTreeCtrl::SearchTree( treeItemCompare_t compare, void * data, CPathTreeCtrl& result ) {
 	idPathTreeStack stack, searchStack;
 	HTREEITEM item, child;
 	idStr name;
@@ -221,11 +200,9 @@ int CPathTreeCtrl::SearchTree( treeItemCompare_t compare, void* data, CPathTreeC
 	searchStack.PushRoot( item );
 	id = 0;
 
-	while( searchStack.Num() > 0 )
-	{
+	while ( searchStack.Num() > 0 ) {
 
-		for( child = GetChildItem( item ); child; child = GetChildItem( child ) )
-		{
+		for ( child = GetChildItem( item ); child; child = GetChildItem( child ) ) {
 			searchStack.Push( item, GetItemText( item ) );
 			item = child;
 		}
@@ -234,18 +211,15 @@ int CPathTreeCtrl::SearchTree( treeItemCompare_t compare, void* data, CPathTreeC
 		name += GetItemText( item );
 		id = GetItemData( item );
 
-		if( compare( data, item, name ) )
-		{
+		if ( compare( data, item, name ) ) {
 			result.AddPathToTree( name, id, stack );
 			numItems++;
 		}
 
-		for( item = GetNextSiblingItem( item ); item == NULL; )
-		{
+		for ( item = GetNextSiblingItem( item ); item == NULL; ) {
 			item = GetNextSiblingItem( searchStack.TopItem() );
 			searchStack.Pop();
-			if( searchStack.Num() <= 0 )
-			{
+			if ( searchStack.Num() <= 0 ) {
 				return numItems;
 			}
 		}
@@ -267,14 +241,12 @@ END_MESSAGE_MAP()
 CPathTreeCtrl::OnToolHitTest
 ================
 */
-INT_PTR CPathTreeCtrl::OnToolHitTest( CPoint point, TOOLINFO* pTI ) const
-{
+INT_PTR CPathTreeCtrl::OnToolHitTest( CPoint point, TOOLINFO* pTI ) const {
 	RECT rect;
 
 	UINT nFlags;
 	HTREEITEM hitem = HitTest( point, &nFlags );
-	if( nFlags & TVHT_ONITEM )
-	{
+	if ( nFlags & TVHT_ONITEM ) {
 		GetItemRect( hitem, &rect, TRUE );
 		pTI->hwnd = m_hWnd;
 		pTI->uId = ( UINT_PTR )hitem;
@@ -290,21 +262,19 @@ INT_PTR CPathTreeCtrl::OnToolHitTest( CPoint point, TOOLINFO* pTI ) const
 CPathTreeCtrl::OnToolTipText
 ================
 */
-BOOL CPathTreeCtrl::OnToolTipText( UINT id, NMHDR* pNMHDR, LRESULT* pResult )
-{
+BOOL CPathTreeCtrl::OnToolTipText( UINT id, NMHDR* pNMHDR, LRESULT* pResult ) {
 	// need to handle both ANSI and UNICODE versions of the message
-	TOOLTIPTEXTA* pTTTA = ( TOOLTIPTEXTA* )pNMHDR;
-	TOOLTIPTEXTW* pTTTW = ( TOOLTIPTEXTW* )pNMHDR;
+	TOOLTIPTEXTA* pTTTA = ( TOOLTIPTEXTA * )pNMHDR;
+	TOOLTIPTEXTW* pTTTW = ( TOOLTIPTEXTW * )pNMHDR;
 
 	UINT nID = pNMHDR->idFrom;
 
 	*pResult = 0;
 
 	// Do not process the message from built in tooltip
-	if( nID == ( UINT_PTR )m_hWnd &&
+	if ( nID == ( UINT_PTR )m_hWnd &&
 			( ( pNMHDR->code == TTN_NEEDTEXTA && pTTTA->uFlags & TTF_IDISHWND ) ||
-			  ( pNMHDR->code == TTN_NEEDTEXTW && pTTTW->uFlags & TTF_IDISHWND ) ) )
-	{
+			  ( pNMHDR->code == TTN_NEEDTEXTW && pTTTW->uFlags & TTF_IDISHWND ) ) ) {
 		return FALSE;
 	}
 
@@ -322,13 +292,11 @@ BOOL CPathTreeCtrl::OnToolTipText( UINT id, NMHDR* pNMHDR, LRESULT* pResult )
 	UINT nFlags;
 	HTREEITEM hitem = HitTest( pt, &nFlags );
 
-	if( nFlags & TVHT_ONITEM )
-	{
+	if ( nFlags & TVHT_ONITEM ) {
 		// relay message to parent
 		pTTTA->hdr.hwndFrom = GetSafeHwnd();
 		pTTTA->hdr.idFrom = ( UINT_PTR ) hitem;
-		if( GetParent()->SendMessage( WM_NOTIFY, ( TTN_NEEDTEXT << 16 ) | GetDlgCtrlID(), ( LPARAM )pTTTA ) == FALSE )
-		{
+		if ( GetParent()->SendMessage( WM_NOTIFY, ( TTN_NEEDTEXT << 16 ) | GetDlgCtrlID(), ( LPARAM )pTTTA ) == FALSE ) {
 			return FALSE;
 		}
 	}

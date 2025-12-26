@@ -43,32 +43,28 @@ END_MESSAGE_MAP()
 * Constructor for FindDialog.
 */
 FindDialog::FindDialog( CWnd* pParent )
-	:	CDialog( FindDialog::IDD, pParent )
-{
+	:	CDialog( FindDialog::IDD, pParent ) {
 	registry.Init( TOOLS_REGISTRY_PATH "MaterialEditor\\Find" );
-	parent = ( MEMainFrame* )pParent;
+	parent = ( MEMainFrame * )pParent;
 }
 
 /**
 * Destructor for FindDialog.
 */
-FindDialog::~FindDialog()
-{
+FindDialog::~FindDialog() {
 }
 
 /**
 * Creates and instance of the find dialog.
 */
-BOOL FindDialog::Create()
-{
+BOOL FindDialog::Create() {
 	return CDialog::Create( FindDialog::IDD, parent );
 }
 
 /**
 * Transfers data to and from the controls in the find dialog.
 */
-void FindDialog::DoDataExchange( CDataExchange* pDX )
-{
+void FindDialog::DoDataExchange( CDataExchange* pDX ) {
 	CDialog::DoDataExchange( pDX );
 
 	CString temp = searchData.searchText;
@@ -83,8 +79,7 @@ void FindDialog::DoDataExchange( CDataExchange* pDX )
 * Called while the dialog is being initialized to load the find parameters
 * from the registry and set the focus to the correct control.
 */
-BOOL FindDialog::OnInitDialog()
-{
+BOOL FindDialog::OnInitDialog() {
 	CDialog::OnInitDialog();
 
 	LoadFindSettings();
@@ -97,8 +92,7 @@ BOOL FindDialog::OnInitDialog()
 /**
 * Triggers a search based on the parameters in the dialog.
 */
-void FindDialog::OnBnClickedFindNext()
-{
+void FindDialog::OnBnClickedFindNext() {
 
 	UpdateData();
 	searchData.searched = false;
@@ -108,8 +102,7 @@ void FindDialog::OnBnClickedFindNext()
 /**
 * Saves the search parameters and closes the find dialog.
 */
-void FindDialog::OnCancel()
-{
+void FindDialog::OnCancel() {
 	SaveFindSettings();
 
 	parent->CloseFind();
@@ -120,8 +113,7 @@ void FindDialog::OnCancel()
 * Loads the search parameters from the registry and makes sure the controls are properly
 * initialized.
 */
-void FindDialog::LoadFindSettings()
-{
+void FindDialog::LoadFindSettings() {
 	registry.Load();
 
 	searchData.searchText = registry.GetString( "searchText" );
@@ -136,8 +128,7 @@ void FindDialog::LoadFindSettings()
 /**
 * Saves the search parameters to the registry.
 */
-void FindDialog::SaveFindSettings()
-{
+void FindDialog::SaveFindSettings() {
 
 	UpdateData();
 

@@ -38,26 +38,22 @@ If you have questions concerning this license or the applicable additional terms
 
 IMPLEMENT_DYNCREATE( CConsoleDlg, CDialog )
 CConsoleDlg::CConsoleDlg( CWnd* pParent )
-	: CDialogEx( CConsoleDlg::IDD )
-{
+	: CDialogEx( CConsoleDlg::IDD ) {
 	currentHistoryPosition = -1;
 	currentCommand = "";
 	saveCurrentCommand = true;
 }
 
-CConsoleDlg::~CConsoleDlg()
-{
+CConsoleDlg::~CConsoleDlg() {
 }
 
-void CConsoleDlg::DoDataExchange( CDataExchange* pDX )
-{
+void CConsoleDlg::DoDataExchange( CDataExchange* pDX ) {
 	CDialogEx::DoDataExchange( pDX );
 	DDX_Control( pDX, IDC_EDIT_CONSOLE, editConsole );
 	DDX_Control( pDX, IDC_EDIT_INPUT, editInput );
 }
 
-void CConsoleDlg::AddText( const char* msg )
-{
+void CConsoleDlg::AddText( const char * msg ) {
 	idStr work;
 	CString work2;
 
@@ -66,8 +62,7 @@ void CConsoleDlg::AddText( const char* msg )
 	work = CEntityDlg::TranslateString( work.c_str() );
 	editConsole.GetWindowText( work2 );
 	int len = work2.GetLength();
-	if( len + work.Length() > ( int )editConsole.GetLimitText() )
-	{
+	if ( len + work.Length() > ( int )editConsole.GetLimitText() ) {
 		work2 = work2.Right( editConsole.GetLimitText() * 0.75 );
 		len = work2.GetLength();
 		editConsole.SetWindowText( work2 );
@@ -85,12 +80,10 @@ END_MESSAGE_MAP()
 
 // CConsoleDlg message handlers
 
-void CConsoleDlg::OnSize( UINT nType, int cx, int cy )
-{
+void CConsoleDlg::OnSize( UINT nType, int cx, int cy ) {
 	CDialogEx::OnSize( nType, cx, cy );
 
-	if( editInput.GetSafeHwnd() == NULL )
-	{
+	if ( editInput.GetSafeHwnd() == NULL ) {
 		return;
 	}
 
@@ -102,27 +95,21 @@ void CConsoleDlg::OnSize( UINT nType, int cx, int cy )
 	editConsole.SetWindowPos( NULL, 4, 4, rect.Width() - 8, rect.Height() - crect.Height() - 8, SWP_SHOWWINDOW );
 }
 
-BOOL CConsoleDlg::PreTranslateMessage( MSG* pMsg )
-{
-	if( pMsg->hwnd == editInput.GetSafeHwnd() )
-	{
-		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE )
-		{
+BOOL CConsoleDlg::PreTranslateMessage( MSG* pMsg ) {
+	if ( pMsg->hwnd == editInput.GetSafeHwnd() ) {
+		if ( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE ) {
 			Select_Deselect();
 			g_pParentWnd->SetFocus();
 			return TRUE;
 		}
 
-		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN )
-		{
+		if ( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN ) {
 			ExecuteCommand();
 			return TRUE;
 		}
 
-		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE )
-		{
-			if( pMsg->wParam == VK_ESCAPE )
-			{
+		if ( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE ) {
+			if ( pMsg->wParam == VK_ESCAPE ) {
 				g_pParentWnd->GetCamera()->SetFocus();
 				Select_Deselect();
 			}
@@ -130,80 +117,66 @@ BOOL CConsoleDlg::PreTranslateMessage( MSG* pMsg )
 			return TRUE;
 		}
 
-		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_UP )
-		{
+		if ( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_UP ) {
 			//save off the current in-progress command so we can get back to it
-			if( saveCurrentCommand == true )
-			{
+			if ( saveCurrentCommand == true ) {
 				CString str;
 				editInput.GetWindowText( str );
 				currentCommand = str.GetBuffer( 0 );
 				saveCurrentCommand = false;
 			}
 
-			if( consoleHistory.Num() > 0 )
-			{
+			if ( consoleHistory.Num() > 0 ) {
 				editInput.SetWindowText( consoleHistory[currentHistoryPosition] );
 
 				int selLocation = consoleHistory[currentHistoryPosition].Length();
-				editInput.SetSel( selLocation , selLocation + 1 );
+				editInput.SetSel( selLocation, selLocation + 1 );
 			}
 
-			if( currentHistoryPosition > 0 )
-			{
+			if ( currentHistoryPosition > 0 ) {
 				--currentHistoryPosition;
 			}
 
 			return TRUE;
 		}
 
-		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_DOWN )
-		{
+		if ( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_DOWN ) {
 			int selLocation = 0;
-			if( currentHistoryPosition < consoleHistory.Num() - 1 )
-			{
+			if ( currentHistoryPosition < consoleHistory.Num() - 1 ) {
 				++currentHistoryPosition;
 				editInput.SetWindowText( consoleHistory[currentHistoryPosition] );
 				selLocation = consoleHistory[currentHistoryPosition].Length();
-			}
-			else
-			{
+			} else {
 				editInput.SetWindowText( currentCommand );
 				selLocation = currentCommand.Length();
 				currentCommand.Clear();
 				saveCurrentCommand = true;
 			}
 
-			editInput.SetSel( selLocation , selLocation + 1 );
+			editInput.SetSel( selLocation, selLocation + 1 );
 
 			return TRUE;
 		}
-		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_TAB )
-		{
+		if ( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_TAB ) {
 			common->Printf( "Command History\n----------------\n" );
-			for( int i = 0 ; i < consoleHistory.Num(); i++ )
-			{
-				common->Printf( "[cmd %d]:  %s\n" , i , consoleHistory[i].c_str() );
+			for ( int i = 0 ; i < consoleHistory.Num(); i++ ) {
+				common->Printf( "[cmd %d]:  %s\n", i, consoleHistory[i].c_str() );
 			}
 			common->Printf( "----------------\n" );
 		}
-		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_NEXT )
-		{
+		if ( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_NEXT ) {
 			editConsole.LineScroll( 10 );
 		}
 
-		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_PRIOR )
-		{
+		if ( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_PRIOR ) {
 			editConsole.LineScroll( -10 );
 		}
 
-		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_HOME )
-		{
+		if ( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_HOME ) {
 			editConsole.LineScroll( -editConsole.GetLineCount() );
 		}
 
-		if( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_END )
-		{
+		if ( pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_END ) {
 			editConsole.LineScroll( editConsole.GetLineCount() );
 		}
 	}
@@ -211,49 +184,38 @@ BOOL CConsoleDlg::PreTranslateMessage( MSG* pMsg )
 	return CDialogEx::PreTranslateMessage( pMsg );
 }
 
-void CConsoleDlg::OnSetFocus( CWnd* pOldWnd )
-{
+void CConsoleDlg::OnSetFocus( CWnd* pOldWnd ) {
 	CDialogEx::OnSetFocus( pOldWnd );
 	editInput.SetFocus();
 }
 
-void CConsoleDlg::SetConsoleText( const idStr& text )
-{
+void CConsoleDlg::SetConsoleText( const idStr& text ) {
 	editInput.Clear();
 	editInput.SetWindowText( text.c_str() );
 }
 
-void CConsoleDlg::ExecuteCommand( const idStr& cmd )
-{
+void CConsoleDlg::ExecuteCommand( const idStr& cmd ) {
 	CString str;
-	if( cmd.Length() > 0 )
-	{
+	if ( cmd.Length() > 0 ) {
 		str = cmd;
-	}
-	else
-	{
+	} else {
 		editInput.GetWindowText( str );
 	}
 
-	if( str != "" )
-	{
+	if ( str != "" ) {
 		editInput.SetWindowText( "" );
 		common->Printf( "%s\n", str.GetBuffer( 0 ) );
 
 		//avoid adding multiple identical commands in a row
 		int index = consoleHistory.Num();
 
-		if( index == 0 || str.GetBuffer( 0 ) != consoleHistory[index - 1] )
-		{
+		if ( index == 0 || str.GetBuffer( 0 ) != consoleHistory[index - 1] ) {
 			//keep the history to 16 commands, removing the oldest command
-			if( consoleHistory.Num() > 16 )
-			{
+			if ( consoleHistory.Num() > 16 ) {
 				consoleHistory.RemoveIndex( 0 );
 			}
 			currentHistoryPosition = consoleHistory.Append( str.GetBuffer( 0 ) );
-		}
-		else
-		{
+		} else {
 			currentHistoryPosition = consoleHistory.Num() - 1;
 		}
 
@@ -262,17 +224,13 @@ void CConsoleDlg::ExecuteCommand( const idStr& cmd )
 		bool propogateCommand = true;
 
 		//process some of our own special commands
-		if( str.CompareNoCase( "clear" ) == 0 )
-		{
-			editConsole.SetSel( 0 , -1 );
+		if ( str.CompareNoCase( "clear" ) == 0 ) {
+			editConsole.SetSel( 0, -1 );
 			editConsole.Clear();
-		}
-		else if( str.CompareNoCase( "edit" ) == 0 )
-		{
+		} else if ( str.CompareNoCase( "edit" ) == 0 ) {
 			propogateCommand = false;
 		}
-		if( propogateCommand )
-		{
+		if ( propogateCommand ) {
 			cmdSystem->BufferCommandText( CMD_EXEC_NOW, str );
 		}
 
@@ -280,12 +238,10 @@ void CConsoleDlg::ExecuteCommand( const idStr& cmd )
 	}
 }
 
-void CConsoleDlg::OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized )
-{
+void CConsoleDlg::OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized ) {
 	CDialogEx::OnActivate( nState, pWndOther, bMinimized );
 
-	if( nState == WA_ACTIVE || nState == WA_CLICKACTIVE )
-	{
+	if ( nState == WA_ACTIVE || nState == WA_CLICKACTIVE ) {
 		editInput.SetFocus();
 	}
 }

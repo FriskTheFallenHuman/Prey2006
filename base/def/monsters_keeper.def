@@ -1,0 +1,502 @@
+/////////////////////////////////////////////////////////////////////////////////////
+//
+// KEEPER
+//
+/////////////////////////////////////////////////////////////////////////////////////
+export all {
+	options		-scale 1 -prefix keeper_
+	mesh		models/monsters/keeper/keeper.ma -destdir models/monsters/keeper
+
+	addoptions	-destdir models/monsters/keeper/anim
+	anim		models/monsters/keeper/anim/idle.ma
+	anim		models/monsters/keeper/anim/focusidle.ma
+	anim		models/monsters/keeper/anim/walk.ma
+	anim		models/monsters/keeper/anim/walk_back.ma
+//	anim		models/monsters/keeper/anim/evaderight.ma
+//	anim		models/monsters/keeper/anim/evadeleft.ma
+	anim		models/monsters/keeper/anim/initial.ma
+	anim		models/monsters/keeper/anim/meleeattack.ma
+	anim		models/monsters/keeper/anim/pain.ma
+	anim		models/monsters/keeper/anim/rangeattack.ma
+	anim		models/monsters/keeper/anim/exita.ma
+	anim		models/monsters/keeper/anim/down.ma
+	anim		models/monsters/keeper/anim/idlehold.ma
+	anim		models/monsters/keeper/anim/pickup.ma
+	anim		models/monsters/keeper/anim/throw.ma
+	anim		models/monsters/keeper/anim/fall.ma
+	anim		models/monsters/keeper/anim/exit64.ma
+	anim		models/monsters/keeper/anim/squirming.ma
+	anim		models/monsters/keeper/anim/strafe_left.ma
+	anim		models/monsters/keeper/anim/strafe_right.ma
+	anim		models/monsters/keeper/anim/portal_in.ma
+	anim		models/monsters/keeper/anim/portalattack.ma
+	anim		models/monsters/keeper/anim/couchidle.ma
+	anim		models/monsters/keeper/anim/cine_walk.ma
+	anim		models/monsters/keeper/anim/exit.ma
+	anim		models/monsters/keeper/anim/exit_fall.ma
+	anim		models/monsters/keeper/anim/exit_land.ma
+	anim		models/monsters/keeper/anim/portal_out.ma
+	anim		models/monsters/keeper/anim/exit_close.ma
+	anim		models/monsters/keeper/anim/exit_long.ma
+	anim		models/monsters/keeper/anim/bed_wake_A.ma
+	anim		models/monsters/keeper/anim/bed_idle_A.ma
+	anim		models/monsters/keeper/anim/bed_shock_A.ma
+	anim		models/monsters/keeper/anim/bed_death_A.ma
+	anim		models/monsters/keeper/anim/bed_shock_B.ma
+	anim		models/monsters/keeper/anim/bed_death_B.ma
+	anim		models/monsters/keeper/anim/bed_shock_C.ma
+	anim		models/monsters/keeper/anim/bed_death_C.ma
+	anim		models/monsters/keeper/anim/bed_wake_pit_A.ma
+	anim		models/monsters/keeper/anim/bed_idle_pit_A.ma
+	anim		models/monsters/keeper/anim/bed_shock_pit_A.ma
+	anim		models/monsters/keeper/anim/bed_death_pit_A.ma
+	anim		models/monsters/keeper/anim/bed_wake_pit_B.ma
+	anim		models/monsters/keeper/anim/bed_idle_pit_B.ma
+	anim		models/monsters/keeper/anim/bed_shock_pit_B.ma
+	anim		models/monsters/keeper/anim/bed_death_pit_B.ma
+	anim		models/monsters/keeper/anim/rangeattack_3strike.ma
+	anim		models/monsters/keeper/anim/looming.ma
+	anim		models/monsters/keeper/anim/looming_wait.ma
+}
+
+model model_monster_keeper {
+	mesh					models/monsters/keeper/keeper.md5mesh		
+	channel torso				(*b2)
+	channel legs				(*origin - *b2)
+
+	anim af_pose					models/monsters/keeper/anim/initial.md5anim
+	anim initial					models/monsters/keeper/anim/initial.md5anim
+	anim cine_walk					models/monsters/keeper/anim/cine_walk.md5anim
+	anim idle						models/monsters/keeper/anim/idle.md5anim
+	anim portal_in					models/monsters/keeper/anim/portal_in.md5anim {
+		frame 1							event keeper_createPortal
+		frame 21						event keeper_EndHeadFx
+	}
+	anim portal_out					models/monsters/keeper/anim/portal_out.md5anim {
+		frame 1							event keeper_disableShield
+		frame 1							event keeper_StartHeadFx
+		frame 12						event hideNoDormant
+		frame 12						event keeper_EndHeadFx
+	}
+	anim portalAttack				models/monsters/keeper/anim/portalattack.md5anim {
+		frame 1							event keeper_createPortal
+		frame 14						launch_missile head projectile_shuttle_cannon
+		frame 39						event hide
+		frame 40						event kill
+	}
+	anim down						models/monsters/keeper/anim/down.md5anim {
+		ai_no_turn
+		frame 1							event disableClip
+		frame 66						event enableClip
+	}
+	anim throw						models/monsters/keeper/anim/throw.md5anim
+	anim exitA						models/monsters/keeper/anim/exita.md5anim
+	anim exit64						models/monsters/keeper/anim/exit64.md5anim
+	anim fall						models/monsters/keeper/anim/fall.md5anim
+	anim keeper_bed_idle			models/monsters/keeper/anim/couchidle.md5anim
+	anim exit_start					models/monsters/keeper/anim/exit.md5anim {
+		ai_no_turn
+		frame 1							event disableClip
+		frame 1							event disableGravity
+		frame 15						event enableClip
+		frame 15						event enableGravity
+	}
+	anim exit_close					models/monsters/keeper/anim/exit_close.md5anim
+	anim exit_long					models/monsters/keeper/anim/exit_long.md5anim
+	anim exit_fall					models/monsters/keeper/anim/exit_fall.md5anim
+	anim exit_land					models/monsters/keeper/anim/exit_land.md5anim
+	anim keeper_bed_exit			models/monsters/keeper/anim/exita.md5anim {
+		ai_no_turn
+	}
+	anim keeper_bed_exit64			models/monsters/keeper/anim/exit64.md5anim {
+		ai_no_turn
+	}
+	anim walk						models/monsters/keeper/anim/walk.md5anim
+	anim run				        models/monsters/keeper/anim/walk.md5anim
+	anim walkback					models/monsters/keeper/anim/walk_back.md5anim
+	anim strafe_right				models/monsters/keeper/anim/strafe_right.md5anim
+	anim strafe_left				models/monsters/keeper/anim/strafe_left.md5anim
+	anim pain						models/monsters/keeper/anim/pain.md5anim
+	anim melee_attack				models/monsters/keeper/anim/meleeattack.md5anim
+
+	anim missile_attack				models/monsters/keeper/anim/rangeattack.md5anim {
+		frame 1							event keeper_disableShield
+		frame 1							event keeper_StartHeadFx
+		frame 15						sound snd_prefire
+		frame 24						sound snd_missile
+		frame 24						sound snd_missile2
+		frame 29						launch_missile Lwrist projectile_keeper
+		frame 29						launch_missile Lwrist projectile_keeper
+		frame 29						launch_missile Lwrist projectile_keeper
+		frame 60						event keeper_EndHeadFx
+	}
+	anim telepathic_throw_raise_simple	models/monsters/keeper/anim/pickup.md5anim {
+		frame 1						sound snd_prefire
+		frame 1								event keeper_UpdateTelepathicThrow
+	}
+	anim telepathic_throw_idle		models/monsters/keeper/anim/idlehold.md5anim
+	anim telepathic_throw_simple		models/monsters/keeper/anim/throw.md5anim {		
+		frame 1							event keeper_disableShield
+		frame 10						event keeper_TelepathicThrow
+		frame 10						event keeper_EndHeadFx
+	}
+	anim telepathic_trigger_idle	models/monsters/keeper/anim/focusidle.md5anim	
+	anim telepathic_trigger			models/monsters/keeper/anim/rangeattack.md5anim {
+		frame 1							event keeper_StartHeadFx
+		frame 70						event keeper_EndHeadFx
+	}
+	anim teleport_gone				models/monsters/keeper/anim/rangeattack.md5anim {
+		ai_no_turn
+		frame 29					event kill	
+	}
+
+	//Keeeper Fortress bed anims
+
+	anim keeper_bed_idle_cin		models/monsters/keeper/anim/couchidle.md5anim {
+		frame 1		event unbind
+		frame 1		event disableGravity
+		frame 1		event disableClip
+	}
+	
+	anim bed_wake_A					models/monsters/keeper/anim/bed_wake_A.md5anim {
+		frame 1		event unbind
+		frame 1		event disableGravity
+		frame 1		event disableClip
+	}
+	anim bed_idle_A					models/monsters/keeper/anim/bed_idle_A.md5anim
+	anim bed_shock_A				models/monsters/keeper/anim/bed_shock_A.md5anim
+	anim bed_death_A				models/monsters/keeper/anim/bed_death_A.md5anim
+
+	anim bed_wake_B					models/monsters/keeper/anim/bed_wake_A.md5anim	{ //uses same wake as A
+		frame 1		event unbind
+		frame 1		event disableGravity
+		frame 1		event disableClip
+	}
+	anim bed_idle_B					models/monsters/keeper/anim/bed_idle_A.md5anim //uses idle wake as A
+	anim bed_shock_B				models/monsters/keeper/anim/bed_shock_B.md5anim
+	anim bed_death_B				models/monsters/keeper/anim/bed_death_B.md5anim
+
+	anim bed_wake_C					models/monsters/keeper/anim/bed_wake_A.md5anim	{ //uses same wake as A
+		frame 1		event unbind
+		frame 1		event disableGravity
+		frame 1		event disableClip
+	}
+	anim bed_idle_C					models/monsters/keeper/anim/bed_idle_A.md5anim //uses idle wake as A
+	anim bed_shock_C				models/monsters/keeper/anim/bed_shock_C.md5anim
+	anim bed_death_C				models/monsters/keeper/anim/bed_death_C.md5anim
+
+	anim bed_wake_pit_A				models/monsters/keeper/anim/bed_wake_pit_A.md5anim {
+		frame 1		event unbind
+		frame 1		event disableGravity
+		frame 1		event disableClip
+	}
+	anim bed_idle_pit_A				models/monsters/keeper/anim/bed_idle_pit_A.md5anim
+	anim bed_shock_pit_A			models/monsters/keeper/anim/bed_shock_pit_A.md5anim
+	anim bed_death_pit_A			models/monsters/keeper/anim/bed_death_pit_A.md5anim
+
+	anim bed_wake_pit_B				models/monsters/keeper/anim/bed_wake_pit_B.md5anim {
+		frame 1		event unbind
+		frame 1		event disableGravity
+		frame 1		event disableClip
+	}
+	anim bed_idle_pit_B				models/monsters/keeper/anim/bed_idle_pit_B.md5anim
+	anim bed_shock_pit_B			models/monsters/keeper/anim/bed_shock_pit_B.md5anim
+	anim bed_death_pit_B			models/monsters/keeper/anim/bed_death_pit_B.md5anim
+	anim looming					models/monsters/keeper/anim/looming.md5anim
+}
+
+
+entityDef monster_keeper {
+	"inherit"				"monster_simple_default"
+	"editor_var portal_attack"	"if set to 1, will hide until triggered.  portal in, attack, then portal out"
+	"editor_var can_throw"		"if set to 0, keeper will never pick up objects and throw them"
+	"editor_var can_teleport"	"if set to 0, keeper will never teleport"
+	"editor_var can_trigger"	"if set to 0, keeper will never trigger entities with reaction_keeper_trigger"
+	"editor_var can_blast"		"if set to 0, keeper will never use blast attack"
+	"editor_var can_move"		"if set to 0, keeper will never move around"
+	"editor_var always_shield"	"if set to 1, keeper will always be shielded"
+	"editor_var	never_shield"	"if set to 1, keeper never puts up his shield"
+	"editor_var teleport_info"	"list of entities that the keeper will teleport to"
+	"editor_var random_trigger"	"if set to 1, keeper will trigger random entities with reaction_keeper_trigger"
+	"editor_color"			"1 .5 0"
+	"editor_mins"			"-64 -64 0"
+	"editor_maxs"			"64 64 128"
+	"spawnclass"			"hhKeeperSimple"
+	"scriptobject"			"monster_keeper_simple"
+	"team"					"7"
+	"health"				"800"
+	"size"					"128 128 128"
+	"use_aas"				"aasKeeper"	
+	"telepathic"			"1"
+	"can_teleport"			"1"
+	"can_dodge"				"1"
+	"can_blast"				"1"
+	"can_trigger"			"1"
+	"can_throw"				"1"
+	"can_move"				"1"
+	"can_missile"			"1"
+	"random_trigger"		"1"
+	"teleport_wait"			"3.0"
+	"has_range_attack"		"1"
+	"has_melee_attack"		"1"
+	"melee_range"			"32"	
+	"projectile_spread"		"20"
+	"attack_accuracy"		"0"
+	"portal_z_offset"		"-61"
+	"portal_closeDelay"		"1"
+	"portal_rotation"		"0 0 1 0 1 0 -1 0 0"
+	"portal_remove_on_close" "1"
+	"immunity" 				"damage_movable20"
+	"ignoreGravityZones"	"1"
+	"dda_throwdelay_min"	"0"
+	"dda_throwdelay_max"	"0.75"
+	"dda_attack_min"		"0.0"
+	"dda_attack_max"		"0.75"
+	"dda_shielddelay_min"	"0.0"
+	"dda_shielddelay_max"	"0.5"
+	"ddaIndex"				"13"
+	"fatal_fall_velocity"	"1400"
+	"telepathic_throw_velocity" "1500"
+
+	"missile_sunbeam"		"0.5" // Keepers are only affected by 50% of the SunBeam's damage
+	"missile_wrench"		"0.5"	// Creature is less vulnerable to wrench attacks
+	"missile_altwrench"		"0.5"	// Creature is less vulnerable to wrench attacks
+	"missile_railgun"		"0.5"
+	"missile_plasma"		"0.3"
+
+	// Look
+	"head_look"				"1"
+	"head_joint"			"head"
+	"look_min"				"-5 -50 0"
+	"look_max"				"5 50 0"
+	"look_joint b3"			"1.0 0.1333 0"
+	"look_joint b1"			"1.0 0.1333 0"
+
+	//
+	// TIM B. - EFFECTS START HERE
+	//
+	"beamAttack"			"beams/keeperblast.beam"
+	"bone_beamAttack"		"Head"
+	
+	"fx_portalstart"		"fx/keeper_target.fx"
+	"portal_start_offset"	"0 0 60"
+	
+	"beamTelepathic"		"beams/keepertelepathic.beam"
+	"bone_beamTelepathic"	"Head"
+	"telepathic_beam_offset" "-10 0 60"
+	
+	"fx_shield"				"fx/keeper_shield.fx"
+	"fx_shield_impact"		"fx/keeper_shield_impact.fx"
+
+	"fx_telepathic"			"fx/keeper_telepathic.fx"
+	"bone_telepathic_fx"	"Head"
+	//
+	// END FX
+	//
+	
+	"chatter_min"			"5"
+	"chatter_max"			"10"
+	"chatter_combat_min"	"3"
+	"chatter_combat_max"	"7"
+	"turn_rate"				"360"
+
+	// Caching
+	"model"					"model_monster_keeper"
+	"ragdoll"				"monster_keeper"
+	"def_projectile"		"projectile_keeper"
+	"def_gibDebrisSpawner"	"debrisSpawner_keeper"
+	"def_dropSoul"			"ammo_lifeforce_large"
+	"def_portal"			"object_keeperbuddyportal"
+	"def_fakeportal"		"object_keeperportal"
+	"def_beamDamage"		"damage_keeperBeam"
+	"beam_attack"			"beams/keeperPreBlast"
+	"beam_damage"			"beams/keeperDamage"
+	"skin_precache1"		"skins/monsters/keeper_nolegs"
+	
+	"skin"					"skins/monsters/keeper"
+	"acidburn"				"1"
+	"skin_acidburn"			"skins/monsters/keeper_acid"
+	"skin_burn"				"skins/monsters/keeper_burned"
+
+	// Sounds
+	"snd_missile"			"monster_keeper_fire"
+	"snd_missile2"			"monster_keeper_fire2"
+	"snd_prefire"			"monster_keeper_prefire"
+	"snd_pain_small"		"monster_keeper_pain"
+	"snd_pain_medium"		"monster_keeper_pain"
+	"snd_pain_large"		"monster_keeper_pain"
+	"snd_pain_huge"			"monster_keeper_pain"
+	"snd_footstep_metal"	"monster_keeper_footstep_metal"
+	"snd_shield_impact"		"monster_keeper_shield_impact"
+}
+
+entityDef damage_keeperBeam {
+	"inherit"			"damage_generic"
+	"damage"			"20"
+}
+
+entityDef object_keeperbuddyportal {
+	//fast version of object_glowportal for portal_buddy use
+	"inherit"				"object_glowportal"
+	"model"					"model_keeper_portal"
+	"fast_open"				"1"
+}
+
+entityDef object_keeperportal {
+	"inherit"				"object_glowportal"
+	"model"					"model_keeper_portal"
+	"skin"					"skins/mapobjects/portal_monster.skin"
+	"fast_open"				"1"
+}
+
+model model_keeper_portal {
+    mesh					models/mapobjects/portal/portal.md5mesh
+	//faster opening animation for keeper
+    anim open				models/mapobjects/portal/anim/keeperopen.md5anim {
+		frame 1				event showGlowPortal
+    }
+    anim close				models/mapobjects/portal/anim/keeperclose.md5anim {
+//		frame 20			event hideGlowPortal
+    }   
+    anim opened				models/mapobjects/portal/anim/idle.md5anim {
+    } 
+}
+
+entityDef missile_keeper {
+	"inherit"			"missile_rifle"
+	"push"				"0"
+	"push_ragdoll"		"0"
+	"damage"			"5"
+	"knockback"			"0"
+	"def_entranceMark_overlay"	"entranceMark_overlay_keeper"
+	"def_entranceMark_decal"	"entranceMark_decal_keeper"
+	"def_entranceWound"			"entranceWound_keeper"
+	"snd_impact_metal"			"projectile_shuttle_impact_metal"
+	"snd_impact_altmetal"		"projectile_shuttle_impact_metal"
+}
+
+entityDef entranceMark_overlay_keeper {
+	"mtr_flesh"					""
+	"mtr_metal"					""
+	"mtr_altmetal"				""
+	"mtr_pipe"					""
+	"mtr_wallwalk"				""
+	"mtr_wood"					""
+	"mtr_stone"					""
+	"mtr_tile"					""
+	"mtr_glass"					""
+	"mtr_forcefield"			""
+	"mtr_cardboard"				""
+	"mtr_liquid"				""
+	"mark_size"					""
+}
+
+entityDef entranceMark_decal_keeper {
+	"mtr_flesh"					"textures/scorches/keeper/metal"
+	"mtr_metal"					"textures/scorches/keeper/metal"
+	"mtr_altmetal"				"textures/scorches/keeper/metal"
+	"mtr_pipe"					"textures/scorches/keeper/metal"
+	"mtr_wallwalk"				"textures/scorches/keeper/metal"
+	"mtr_wood"					"textures/scorches/keeper/metal"
+	"mtr_stone"					"textures/scorches/keeper/metal"
+	"mtr_tile"					"textures/scorches/keeper/metal"
+	"mtr_glass"					"textures/scorches/glassimpact"
+	"mtr_forcefield"			""
+	"mtr_cardboard"				"textures/scorches/keeper/metal"
+	"mtr_liquid"				""
+	"mark_size"					"45 45"
+}
+
+entityDef entranceWound_keeper {
+	"fx_wound_flesh"			"fx/keeper_explosion.fx"
+	"fx_wound_metal"			"fx/keeper_explosion.fx"
+	"fx_wound_altmetal"			"fx/keeper_explosion.fx"
+	"fx_wound_pipe"				"fx/keeper_explosion.fx"
+	"fx_wound_wallwalk"			"fx/keeper_explosion.fx"
+	"fx_wound_wood"				"fx/keeper_explosion.fx"
+	"fx_wound_stone"			"fx/keeper_explosion.fx"
+	"fx_wound_tile"				"fx/keeper_explosion.fx"
+	"fx_wound_glass"			"fx/keeper_explosion.fx"
+	"fx_wound_forcefield"		""
+	"fx_wound_cardboard"		"fx/keeper_explosion.fx"
+	"fx_wound_liquid"			"fx/liquidwound.fx"
+}
+
+entityDef projectile_keeper {
+	"inherit"					"projectile_rifle"
+	"mins"						"-10 -10 -10"
+	"maxs"						"10 10 10"
+	"model"						"keeper_projectile.prt"
+	"def_damage"				"missile_keeper"
+	"fx_fly"					""
+	"velocity"					"750 0 0"
+	"scale"						"1"
+
+	"snd_fly"					"projectile_shuttle_fly"
+	"snd_explode"				"monster_keeper_impact"
+
+	"detonate_on_fuse"			"0"					// whether projectile should detonate when it's fuse runs out
+	"detonate_on_death"			"0"					// whether projectile should detonate when it's "killed" (health runs out)
+	"detonate_on_world"			"1"					// whether projectile should detonate when it hits an obstacle
+	"detonate_on_actor"			"1"					// whether projectile should detonate when it hits a character in the game
+}
+
+
+/***********************************************************************
+
+monster_keeper_superportal
+
+***********************************************************************/
+entityDef monster_keeper_superportal {
+	"inherit"					"monster_keeper"
+	"model"						"model_monster_keeper_superportal"
+	
+	"fx_charge"					"fx/keeper_charge"
+	"fx_attack"					"fx/keeper_attack"
+	
+	"portal_closeDelay"			"0.1"
+	"always_shield"				"1"
+	"fx_shield"					"" //for visability: shield from damage; no fx
+	"fx_shield_impact"			""
+	
+	"snd_looming"				"superportal_keeper_looming"
+	"snd_headBeam"				"superportal_keeper_formsuperportal"
+}
+
+entityDef monster_keeper_superportal_noaas {
+	"inherit"					"monster_keeper_superportal"
+	"use_aas"					""
+	"noaas_warning"				"0"
+}
+
+model model_monster_keeper_superportal {
+	"inherit" 					"model_monster_keeper"
+
+	anim portal_in				models/monsters/keeper/anim/portal_in.md5anim {
+//		frame 1						event show
+		frame 1						event keeper_createPortal
+	}
+	anim portal_out				models/monsters/keeper/anim/portal_out.md5anim {
+		frame 1						event keeper_createPortal
+		frame 12					event hide
+	}
+
+	anim open_superportal		models/monsters/keeper/anim/rangeattack.md5anim {
+//		frame 28					event keeper_StartBlast
+		frame 28					event_args spawnFXAlongBone fx_charge 	Head
+		frame 28					trigger sppKeeperBeamRelay
+		frame 28					sound snd_headBeam
+//		frame 44					event keeper_EndBlast
+		frame 44					event_args spawnFXAlongBone fx_attack 	Head
+//		frame 54					event keeper_createPortal //timing is changing
+	}
+	anim looming				models/monsters/keeper/anim/looming.md5anim {
+		frame 23					sound snd_looming
+		frame 50					event keeper_StartHeadFx
+		frame 50					event keeper_createPortal
+//		frame 50					event keeper_forceDisableShield
+		frame 73					event keeper_EndHeadFx
+		frame 73					event hide
+	}
+	anim looming_wait			models/monsters/keeper/anim/looming_wait.md5anim
+}

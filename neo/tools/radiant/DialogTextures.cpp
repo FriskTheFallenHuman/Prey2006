@@ -37,16 +37,15 @@ If you have questions concerning this license or the applicable additional terms
 #include "EditViewDlg.h"
 
 #ifdef _DEBUG
-	#define new DEBUG_NEW
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
-HTREEITEM FindTreeItem( CTreeCtrl* tree, HTREEITEM root, const char* text, HTREEITEM forceParent );
-extern void Select_SetKeyVal( const char* key, const char* val );
+HTREEITEM FindTreeItem( CTreeCtrl* tree, HTREEITEM root, const char * text, HTREEITEM forceParent );
+extern void Select_SetKeyVal( const char * key, const char * val );
 
-const char* CDialogTextures::TypeNames[] =
-{
+const char * CDialogTextures::TypeNames[] = {
 	"None",
 	"Textures",
 	"Materials",
@@ -60,8 +59,7 @@ const char* CDialogTextures::TypeNames[] =
 };
 
 CDialogTextures::CDialogTextures( CWnd* pParent ) :
-	CDialogEx( CDialogTextures::IDD, pParent )
-{
+	CDialogEx( CDialogTextures::IDD, pParent ) {
 	setTexture  = true;
 	ignoreCollapse = false;
 	mode = TEXTURES;
@@ -69,8 +67,7 @@ CDialogTextures::CDialogTextures( CWnd* pParent ) :
 	editGui = "";
 }
 
-void CDialogTextures::DoDataExchange( CDataExchange* pDX )
-{
+void CDialogTextures::DoDataExchange( CDataExchange* pDX ) {
 	CDialogEx::DoDataExchange( pDX );
 
 	DDX_Control( pDX, IDC_CHECK_HIDEROOT, m_chkHideRoot );
@@ -96,8 +93,7 @@ BEGIN_MESSAGE_MAP( CDialogTextures, CDialogEx )
 	ON_NOTIFY( NM_RCLICK, IDC_TREE_TEXTURES, OnNMRclickTreeTextures )
 END_MESSAGE_MAP()
 
-void CDialogTextures::OnOK()
-{
+void CDialogTextures::OnOK() {
 	//CDialogEx::OnOK();
 }
 
@@ -105,8 +101,7 @@ void CDialogTextures::OnOK()
  =======================================================================================================================
  =======================================================================================================================
  */
-BOOL CDialogTextures::OnInitDialog()
-{
+BOOL CDialogTextures::OnInitDialog() {
 	CDialogEx::OnInitDialog();
 
 	m_treeimageList.Create( 16, 16, ILC_COLOR32, 1, 1 );
@@ -123,50 +118,39 @@ BOOL CDialogTextures::OnInitDialog()
 	return TRUE;
 }
 
-bool CDialogTextures::loadTree( HTREEITEM item, const idStr& name, CWaitDlg* dlg )
-{
-	if( item == NULL )
-	{
+bool CDialogTextures::loadTree( HTREEITEM item, const idStr& name, CWaitDlg* dlg ) {
+	if ( item == NULL ) {
 		return true;
 	}
 
-	if( m_treeTextures.ItemHasChildren( item ) )
-	{
+	if ( m_treeTextures.ItemHasChildren( item ) ) {
 
 		float count = 0.0f;
 		idStr childName;
 		HTREEITEM nextItem;
 		HTREEITEM childItem = m_treeTextures.GetChildItem( item );
 
-		while( childItem != NULL )
-		{
+		while ( childItem != NULL ) {
 			// Terrible hack i'm so sorry
 			count += 0.001f;
 			nextItem = m_treeTextures.GetNextItem( childItem, TVGN_NEXT );
-			childName = name + "/" + ( const char* )m_treeTextures.GetItemText( childItem );
+			childName = name + "/" + ( const char * )m_treeTextures.GetItemText( childItem );
 
-			if( m_treeTextures.ItemHasChildren( childItem ) )
-			{
-				if( !loadTree( childItem, childName, dlg ) )
-				{
+			if ( m_treeTextures.ItemHasChildren( childItem ) ) {
+				if ( !loadTree( childItem, childName, dlg ) ) {
 					return false;
 				}
-			}
-			else
-			{
+			} else {
 				DWORD dw = m_treeTextures.GetItemData( childItem );
-				if( dw == TEXTURES || dw == MATERIALS )
-				{
-					if( dw == TEXTURES )
-					{
+				if ( dw == TEXTURES || dw == MATERIALS ) {
+					if ( dw == TEXTURES ) {
 						childName = "textures/" + childName;
 					}
 					dlg->SetText( childName.c_str(), count );
 					Texture_ForName( childName );
 				}
 			}
-			if( dlg->CancelPressed() )
-			{
+			if ( dlg->CancelPressed() ) {
 				return false;
 			}
 
@@ -177,48 +161,33 @@ bool CDialogTextures::loadTree( HTREEITEM item, const idStr& name, CWaitDlg* dlg
 	return true;
 }
 
-HTREEITEM CDialogTextures::findItem( const char* name, HTREEITEM item, HTREEITEM* foundItem )
-{
-	if( *foundItem || item == NULL )
-	{
+HTREEITEM CDialogTextures::findItem( const char * name, HTREEITEM item, HTREEITEM* foundItem ) {
+	if ( *foundItem || item == NULL ) {
 		return *foundItem;
 	}
-	if( m_treeTextures.ItemHasChildren( item ) )
-	{
+	if ( m_treeTextures.ItemHasChildren( item ) ) {
 		HTREEITEM nextItem;
 		HTREEITEM childItem = m_treeTextures.GetChildItem( item );
-		while( childItem != NULL && *foundItem == NULL )
-		{
+		while ( childItem != NULL && *foundItem == NULL ) {
 			nextItem = childItem;
-			if( m_treeTextures.ItemHasChildren( nextItem ) )
-			{
+			if ( m_treeTextures.ItemHasChildren( nextItem ) ) {
 				findItem( name, nextItem, foundItem );
-			}
-			else
-			{
+			} else {
 				DWORD dw = m_treeTextures.GetItemData( nextItem );
-				if( dw == TEXTURES )
-				{
-					const char* matName = buildItemName( nextItem, TypeNames[TEXTURES] );
-					if( !idStr::Icmpn( name, "textures/", 9 ) && stricmp( name + 9, matName ) == 0 )
-					{
+				if ( dw == TEXTURES ) {
+					const char * matName = buildItemName( nextItem, TypeNames[TEXTURES] );
+					if ( !idStr::Icmpn( name, "textures/", 9 ) && stricmp( name + 9, matName ) == 0 ) {
 						*foundItem = nextItem;
 						return *foundItem;
 					}
-				}
-				else if( dw == MATERIALS )
-				{
-					const char* matName = buildItemName( nextItem, TypeNames[MATERIALS] );
-					if( stricmp( name, matName ) == 0 )
-					{
+				} else if ( dw == MATERIALS ) {
+					const char * matName = buildItemName( nextItem, TypeNames[MATERIALS] );
+					if ( stricmp( name, matName ) == 0 ) {
 						*foundItem = nextItem;
 						return *foundItem;
 					}
-				}
-				else if( dw == SOUNDS )
-				{
-					if( stricmp( name, m_treeTextures.GetItemText( nextItem ) ) == 0 )
-					{
+				} else if ( dw == SOUNDS ) {
+					if ( stricmp( name, m_treeTextures.GetItemText( nextItem ) ) == 0 ) {
 						*foundItem = nextItem;
 						return *foundItem;
 					}
@@ -231,15 +200,12 @@ HTREEITEM CDialogTextures::findItem( const char* name, HTREEITEM item, HTREEITEM
 	return *foundItem;
 }
 
-void CDialogTextures::CollapseChildren( HTREEITEM parent )
-{
+void CDialogTextures::CollapseChildren( HTREEITEM parent ) {
 	HTREEITEM nextItem;
 	HTREEITEM childItem = m_treeTextures.GetChildItem( parent );
-	while( childItem )
-	{
+	while ( childItem ) {
 		nextItem = m_treeTextures.GetNextItem( childItem, TVGN_NEXT );
-		if( m_treeTextures.ItemHasChildren( childItem ) )
-		{
+		if ( m_treeTextures.ItemHasChildren( childItem ) ) {
 			CollapseChildren( childItem );
 			m_treeTextures.Expand( childItem, TVE_COLLAPSE );
 		}
@@ -247,75 +213,58 @@ void CDialogTextures::CollapseChildren( HTREEITEM parent )
 	}
 }
 
-void CDialogTextures::SelectCurrentItem( bool collapse, const char* name, int id )
-{
+void CDialogTextures::SelectCurrentItem( bool collapse, const char * name, int id ) {
 	HTREEITEM root = m_treeTextures.GetRootItem();
 	idStr qt;
-	if( ( id == TEXTURES ) || ( id == MATERIALS ) )
-	{
+	if ( ( id == TEXTURES ) || ( id == MATERIALS ) ) {
 		HTREEITEM matItem = NULL;
 		HTREEITEM* matPtr = &matItem;
 
 		// FIXME: This is a hack.  How should this really work?
-		if( id == MATERIALS && !idStr::Icmpn( name, "textures/", 9 ) )
-		{
+		if ( id == MATERIALS && !idStr::Icmpn( name, "textures/", 9 ) ) {
 			// Texture_SetTexture calls SelectCurrentItem with id == MATERIALS
 			id = TEXTURES;
 		}
 		setTexture = false;
-		if( root )
-		{
-			if( collapse && !ignoreCollapse )
-			{
+		if ( root ) {
+			if ( collapse && !ignoreCollapse ) {
 				CollapseChildren( root );
 			}
 
 			HTREEITEM* check = NULL;
 			qt = TypeNames[id];
 			qt += "/";
-			if( id == TEXTURES && !idStr::Icmpn( name, "textures/", 9 ) )
-			{
+			if ( id == TEXTURES && !idStr::Icmpn( name, "textures/", 9 ) ) {
 				// strip off "textures/"
 				qt += name + 9;
-			}
-			else
-			{
+			} else {
 				qt += name;
 			}
-			if( quickTree.Get( qt, &check ) )
-			{
+			if ( quickTree.Get( qt, &check ) ) {
 				matItem = *check;
 			}
-			if( matItem == NULL )
-			{
+			if ( matItem == NULL ) {
 				matItem = findItem( name, root, matPtr );
 			}
-			if( matItem )
-			{
+			if ( matItem ) {
 				m_treeTextures.SelectItem( matItem );
 			}
 		}
 		setTexture = true;
-	}
-	else if( id == SOUNDS )
-	{
-		if( root )
-		{
-			if( collapse && !ignoreCollapse )
-			{
+	} else if ( id == SOUNDS ) {
+		if ( root ) {
+			if ( collapse && !ignoreCollapse ) {
 				CollapseChildren( root );
 			}
 			HTREEITEM sel = FindTreeItem( &m_treeTextures, root, name, NULL );
-			if( sel )
-			{
+			if ( sel ) {
 				m_treeTextures.SelectItem( sel );
 			}
 		}
 	}
 }
 
-void CDialogTextures::OnLoad()
-{
+void CDialogTextures::OnLoad() {
 	CWaitCursor cursor;
 	CWaitDlg dlg;
 	dlg.AllowCancel( true );
@@ -323,56 +272,47 @@ void CDialogTextures::OnLoad()
 	Texture_HideAll();
 	HTREEITEM item = m_treeTextures.GetSelectedItem();
 	idStr name = buildItemName( item, TypeNames[TEXTURES] );
-	if( !name.Cmpn( TypeNames[MATERIALS], strlen( TypeNames[MATERIALS] ) ) )
-	{
+	if ( !name.Cmpn( TypeNames[MATERIALS], strlen( TypeNames[MATERIALS] ) ) ) {
 		name = buildItemName( item, TypeNames[MATERIALS] );
 	}
 	loadTree( item, name, &dlg );
 }
 
-const char* CDialogTextures::buildItemName( HTREEITEM item, const char* rootName )
-{
+const char * CDialogTextures::buildItemName( HTREEITEM item, const char * rootName ) {
 	itemName = m_treeTextures.GetItemText( item );
 
 	// have to build the name back up
 	HTREEITEM parent = m_treeTextures.GetParentItem( item );
-	while( true )
-	{
+	while ( true ) {
 		idStr strParent = m_treeTextures.GetItemText( parent );
-		if( idStr::Icmp( strParent, rootName ) == 0 )
-		{
+		if ( idStr::Icmp( strParent, rootName ) == 0 ) {
 			break;
 		}
 		strParent += "/";
 		strParent += itemName;
 		itemName = strParent;
 		parent = m_treeTextures.GetParentItem( parent );
-		if( parent == NULL )
-		{
+		if ( parent == NULL ) {
 			break;
 		}
 	}
 	return itemName;
 }
 
-void CDialogTextures::OnRefresh()
-{
+void CDialogTextures::OnRefresh() {
 	quickTree.Clear();
 
 	addModels( true );
 
-	if( mode == TEXTURES )
-	{
+	if ( mode == TEXTURES ) {
 		idStrList textures( 1024 );
 		int count = declManager->GetNumDecls( DECL_MATERIAL );
 		int i;
 		const idMaterial* mat;
 
-		for( i = 0; i < count; i++ )
-		{
+		for ( i = 0; i < count; i++ ) {
 			mat = declManager->MaterialByIndex( i, false );
-			if( mat->IsValid() && mat->TestMaterialFlag( MF_EDITOR_VISIBLE ) && !idStr::Icmpn( mat->GetName(), "textures/", 9 ) )
-			{
+			if ( mat->IsValid() && mat->TestMaterialFlag( MF_EDITOR_VISIBLE ) && !idStr::Icmpn( mat->GetName(), "textures/", 9 ) ) {
 				textures.Append( mat->GetName() );
 			}
 		}
@@ -381,28 +321,22 @@ void CDialogTextures::OnRefresh()
 
 		BuildTree();
 		count = textures.Num();
-		for( i = 0; i < count; i++ )
-		{
+		for ( i = 0; i < count; i++ ) {
 			mat = declManager->FindMaterial( textures[i].c_str() );
-			if( mat )
-			{
+			if ( mat ) {
 				mat->SetMaterialFlag( MF_EDITOR_VISIBLE );
 			}
 		}
 		SelectCurrentItem( false, g_qeglobals.d_texturewin.texdef.name, CDialogTextures::TEXTURES );
-	}
-	else if( mode == MATERIALS )
-	{
+	} else if ( mode == MATERIALS ) {
 		idStrList textures( 1024 );
 		int count = declManager->GetNumDecls( DECL_MATERIAL );
 		int i;
 		const idMaterial* mat;
 
-		for( i = 0; i < count; i++ )
-		{
+		for ( i = 0; i < count; i++ ) {
 			mat = declManager->MaterialByIndex( i, false );
-			if( mat->IsValid() && mat->TestMaterialFlag( MF_EDITOR_VISIBLE ) && idStr::Icmpn( mat->GetName(), "textures/", 9 ) )
-			{
+			if ( mat->IsValid() && mat->TestMaterialFlag( MF_EDITOR_VISIBLE ) && idStr::Icmpn( mat->GetName(), "textures/", 9 ) ) {
 				textures.Append( mat->GetName() );
 			}
 		}
@@ -411,25 +345,19 @@ void CDialogTextures::OnRefresh()
 
 		BuildTree();
 		count = textures.Num();
-		for( i = 0; i < count; i++ )
-		{
+		for ( i = 0; i < count; i++ ) {
 			mat = declManager->FindMaterial( textures[i].c_str() );
-			if( mat )
-			{
+			if ( mat ) {
 				mat->SetMaterialFlag( MF_EDITOR_VISIBLE );
 			}
 		}
 		SelectCurrentItem( false, g_qeglobals.d_texturewin.texdef.name, CDialogTextures::MATERIALS );
-	}
-	else if( mode == SOUNDS || mode == SOUNDPARENT )
-	{
+	} else if ( mode == SOUNDS || mode == SOUNDPARENT ) {
 		HTREEITEM root = m_treeTextures.GetRootItem();
 		HTREEITEM sib = m_treeTextures.GetNextItem( root, TVGN_ROOT );
-		while( sib )
-		{
+		while ( sib ) {
 			idStr str = m_treeTextures.GetItemText( sib );
-			if( str.Icmp( TypeNames[SOUNDS] ) == 0 )
-			{
+			if ( str.Icmp( TypeNames[SOUNDS] ) == 0 ) {
 				CWaitCursor cursor;
 				m_treeTextures.DeleteItem( sib );
 
@@ -443,67 +371,49 @@ void CDialogTextures::OnRefresh()
 	}
 }
 
-HTREEITEM FindTreeItem( CTreeCtrl* tree, HTREEITEM root, const char* text, HTREEITEM forceParent )
-{
+HTREEITEM FindTreeItem( CTreeCtrl* tree, HTREEITEM root, const char * text, HTREEITEM forceParent ) {
 	HTREEITEM	theItem = NULL;
-	if( root )
-	{
-		if( ( theItem = tree->GetNextSiblingItem( root ) ) != NULL )
-		{
+	if ( root ) {
+		if ( ( theItem = tree->GetNextSiblingItem( root ) ) != NULL ) {
 			theItem = FindTreeItem( tree, theItem, text, NULL );
-			if( theItem )
-			{
-				if( forceParent )
-				{
-					if( tree->GetParentItem( theItem ) == forceParent )
-					{
+			if ( theItem ) {
+				if ( forceParent ) {
+					if ( tree->GetParentItem( theItem ) == forceParent ) {
 						return theItem;
 					}
-				}
-				else
-				{
+				} else {
 					return theItem;
 				}
 			}
 		}
 	}
 
-	if( ( theItem = tree->GetChildItem( root ) ) != NULL )
-	{
+	if ( ( theItem = tree->GetChildItem( root ) ) != NULL ) {
 		theItem = FindTreeItem( tree, theItem, text, NULL );
-		if( theItem )
-		{
-			if( forceParent )
-			{
-				if( tree->GetParentItem( theItem ) == forceParent )
-				{
+		if ( theItem ) {
+			if ( forceParent ) {
+				if ( tree->GetParentItem( theItem ) == forceParent ) {
 					return theItem;
 				}
-			}
-			else
-			{
+			} else {
 				return theItem;
 			}
 		}
 	}
 
-	if( text && idStr::Icmp( tree->GetItemText( root ), text ) == 0 )
-	{
+	if ( text && idStr::Icmp( tree->GetItemText( root ), text ) == 0 ) {
 		return root;
 	}
 
-	if( theItem && forceParent )
-	{
-		if( tree->GetParentItem( theItem ) != forceParent )
-		{
+	if ( theItem && forceParent ) {
+		if ( tree->GetParentItem( theItem ) != forceParent ) {
 			theItem = NULL;
 		}
 	}
 	return theItem;
 }
 
-void CDialogTextures::BuildTree()
-{
+void CDialogTextures::BuildTree() {
 	CWaitCursor cursor;
 	m_treeTextures.DeleteAllItems();
 	bool rootItems = m_chkHideRoot.GetCheck() == 0;
@@ -525,8 +435,7 @@ void CDialogTextures::BuildTree()
 	common->Printf( "CDialogTextures::BuildTree() took %.0f milliseconds\n", timer.Milliseconds() );
 }
 
-void CDialogTextures::OnClickTreeTextures( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void CDialogTextures::OnClickTreeTextures( NMHDR* pNMHDR, LRESULT* pResult ) {
 	*pResult = 0;
 
 	CPoint pt;
@@ -534,35 +443,27 @@ void CDialogTextures::OnClickTreeTextures( NMHDR* pNMHDR, LRESULT* pResult )
 	m_treeTextures.ScreenToClient( &pt );
 	HTREEITEM item = m_treeTextures.HitTest( pt );
 
-	if( item )
-	{
+	if ( item ) {
 		DWORD	dw = m_treeTextures.GetItemData( item );
 		mode = dw;
-		if( mode == SOUNDS )
-		{
+		if ( mode == SOUNDS ) {
 			idStr loadName;
-			if( !m_treeTextures.ItemHasChildren( item ) )
-			{
+			if ( !m_treeTextures.ItemHasChildren( item ) ) {
 				loadName = m_treeTextures.GetItemText( item );
 				idStr actionName = m_treeTextures.GetItemText( item );
 				soundSystem->SetMute( false );
 				g_qeglobals.sw->PlayShaderDirectly( actionName );
-			}
-			else
-			{
+			} else {
 				loadName = m_treeTextures.GetItemText( item );
 			}
 
-		}
-		else
-		{
+		} else {
 			g_qeglobals.sw->StopAllSounds();
 		}
 	}
 }
 
-void CDialogTextures::OnSelchangedTreeTextures( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void CDialogTextures::OnSelchangedTreeTextures( NMHDR* pNMHDR, LRESULT* pResult ) {
 	*pResult = 0;
 
 	editMaterial = NULL;
@@ -571,34 +472,28 @@ void CDialogTextures::OnSelchangedTreeTextures( NMHDR* pNMHDR, LRESULT* pResult 
 	currentFile.Empty();
 	m_wndPreview.setDrawable( &m_testDrawable );
 	HTREEITEM	item = m_treeTextures.GetSelectedItem();
-	if( item )
-	{
+	if ( item ) {
 		DWORD	dw = m_treeTextures.GetItemData( item );
 		mode = dw;
-		if( ( dw == TEXTURES ) || ( dw == MATERIALS ) )
-		{
+		if ( ( dw == TEXTURES ) || ( dw == MATERIALS ) ) {
 			idStr matName = m_treeTextures.GetItemText( item );
 
 			// have to build the name back up
 			HTREEITEM parent = m_treeTextures.GetParentItem( item );
-			while( true )
-			{
+			while ( true ) {
 				idStr strParent = m_treeTextures.GetItemText( parent );
-				if( idStr::Icmp( strParent, TypeNames[dw] ) == 0 )
-				{
+				if ( idStr::Icmp( strParent, TypeNames[dw] ) == 0 ) {
 					break;
 				}
 				strParent += "/";
 				strParent += matName;
 				matName = strParent;
 				parent = m_treeTextures.GetParentItem( parent );
-				if( parent == NULL )
-				{
+				if ( parent == NULL ) {
 					break;
 				}
 			}
-			if( dw == TEXTURES )
-			{
+			if ( dw == TEXTURES ) {
 				matName = "textures/" + matName;
 			}
 
@@ -611,26 +506,21 @@ void CDialogTextures::OnSelchangedTreeTextures( NMHDR* pNMHDR, LRESULT* pResult 
 			ignoreCollapse = true;
 			Select_SetDefaultTexture( mat, false, setTexture );
 			ignoreCollapse = false;
-		}
-		else if( dw == MODELS )
-		{
+		} else if ( dw == MODELS ) {
 			idStr strParent;
 			idStr modelName = m_treeTextures.GetItemText( item );
 			// have to build the name back up
 			HTREEITEM parent = m_treeTextures.GetParentItem( item );
-			while( true )
-			{
+			while ( true ) {
 				strParent = m_treeTextures.GetItemText( parent );
-				if( idStr::Icmp( strParent, TypeNames[MODELS] ) == 0 )
-				{
+				if ( idStr::Icmp( strParent, TypeNames[MODELS] ) == 0 ) {
 					break;
 				}
 				strParent += "/";
 				strParent += modelName;
 				modelName = strParent;
 				parent = m_treeTextures.GetParentItem( parent );
-				if( parent == NULL )
-				{
+				if ( parent == NULL ) {
 					break;
 				}
 			}
@@ -641,32 +531,23 @@ void CDialogTextures::OnSelchangedTreeTextures( NMHDR* pNMHDR, LRESULT* pResult 
 			m_wndPreview.setDrawable( &m_drawModel );
 			m_drawModel.SetRealTime( 0 );
 			m_wndPreview.RedrawWindow();
-		}
-		else if( dw == SCRIPTS )
-		{
-		}
-		else if( dw == SOUNDS )
-		{
-		}
-		else if( dw == PARTICLES )
-		{
+		} else if ( dw == SCRIPTS ) {
+		} else if ( dw == SOUNDS ) {
+		} else if ( dw == PARTICLES ) {
 			idStr strParent;
 			idStr modelName = m_treeTextures.GetItemText( item );
 			// have to build the name back up
 			HTREEITEM parent = m_treeTextures.GetParentItem( item );
-			while( true )
-			{
+			while ( true ) {
 				strParent = m_treeTextures.GetItemText( parent );
-				if( idStr::Icmp( strParent, TypeNames[PARTICLES] ) == 0 )
-				{
+				if ( idStr::Icmp( strParent, TypeNames[PARTICLES] ) == 0 ) {
 					break;
 				}
 				strParent += "/";
 				strParent += modelName;
 				modelName = strParent;
 				parent = m_treeTextures.GetParentItem( parent );
-				if( parent == NULL )
-				{
+				if ( parent == NULL ) {
 					break;
 				}
 			}
@@ -677,26 +558,21 @@ void CDialogTextures::OnSelchangedTreeTextures( NMHDR* pNMHDR, LRESULT* pResult 
 			m_drawModel.SetRealTime( 50 );
 			m_wndPreview.setDrawable( &m_drawModel );
 			m_wndPreview.RedrawWindow();
-		}
-		else if( dw == GUIS )
-		{
+		} else if ( dw == GUIS ) {
 			idStr strParent;
 			idStr modelName = m_treeTextures.GetItemText( item );
 			// have to build the name back up
 			HTREEITEM parent = m_treeTextures.GetParentItem( item );
-			while( true )
-			{
+			while ( true ) {
 				strParent = m_treeTextures.GetItemText( parent );
-				if( idStr::Icmp( strParent, TypeNames[GUIS] ) == 0 )
-				{
+				if ( idStr::Icmp( strParent, TypeNames[GUIS] ) == 0 ) {
 					break;
 				}
 				strParent += "/";
 				strParent += modelName;
 				modelName = strParent;
 				parent = m_treeTextures.GetParentItem( parent );
-				if( parent == NULL )
-				{
+				if ( parent == NULL ) {
 					break;
 				}
 			}
@@ -709,26 +585,21 @@ void CDialogTextures::OnSelchangedTreeTextures( NMHDR* pNMHDR, LRESULT* pResult 
 			m_drawMaterial.setScale( 4.4f );
 			m_wndPreview.setDrawable( &m_drawMaterial );
 			m_wndPreview.RedrawWindow();
-		}
-		else if( dw == FX )
-		{
+		} else if ( dw == FX ) {
 			idStr strParent;
 			idStr modelName = m_treeTextures.GetItemText( item );
 			// have to build the name back up
 			HTREEITEM parent = m_treeTextures.GetParentItem( item );
-			while( true )
-			{
+			while ( true ) {
 				strParent = m_treeTextures.GetItemText( parent );
-				if( idStr::Icmp( strParent, TypeNames[FX] ) == 0 )
-				{
+				if ( idStr::Icmp( strParent, TypeNames[FX] ) == 0 ) {
 					break;
 				}
 				strParent += "/";
 				strParent += modelName;
 				modelName = strParent;
 				parent = m_treeTextures.GetParentItem( parent );
-				if( parent == NULL )
-				{
+				if ( parent == NULL ) {
 					break;
 				}
 			}
@@ -744,8 +615,7 @@ void CDialogTextures::OnSelchangedTreeTextures( NMHDR* pNMHDR, LRESULT* pResult 
 
 }
 
-void CDialogTextures::addMaterials( bool rootItems )
-{
+void CDialogTextures::addMaterials( bool rootItems ) {
 	idStrList textures( 1024 );
 	idStrList materials( 1024 );
 
@@ -753,25 +623,18 @@ void CDialogTextures::addMaterials( bool rootItems )
 	materials.SetGranularity( 1024 );
 
 	int count = declManager->GetNumDecls( DECL_MATERIAL );
-	if( count > 0 )
-	{
-		for( int i = 0; i < count; i++ )
-		{
+	if ( count > 0 ) {
+		for ( int i = 0; i < count; i++ ) {
 			const idMaterial* mat = declManager->MaterialByIndex( i, false );
-			if( !rootItems )
-			{
-				if( strchr( mat->GetName(), '/' ) == NULL && strchr( mat->GetName(), '\\' ) == NULL )
-				{
+			if ( !rootItems ) {
+				if ( strchr( mat->GetName(), '/' ) == NULL && strchr( mat->GetName(), '\\' ) == NULL ) {
 					continue;
 				}
 			}
 			// add everything except the textures/ materials
-			if( idStr::Icmpn( mat->GetName(), "textures/", 9 ) == 0 )
-			{
+			if ( idStr::Icmpn( mat->GetName(), "textures/", 9 ) == 0 ) {
 				textures.Append( mat->GetName() );
-			}
-			else
-			{
+			} else {
 				materials.Append( mat->GetName() );
 			}
 		}
@@ -782,19 +645,14 @@ void CDialogTextures::addMaterials( bool rootItems )
 	}
 }
 
-void CDialogTextures::addParticles( bool rootItems )
-{
+void CDialogTextures::addParticles( bool rootItems ) {
 	idStrList list( 1024 );
 	int count = declManager->GetNumDecls( DECL_PARTICLE );
-	if( count > 0 )
-	{
-		for( int i = 0; i < count; i++ )
-		{
+	if ( count > 0 ) {
+		for ( int i = 0; i < count; i++ ) {
 			const idDecl* ips = declManager->DeclByIndex( DECL_PARTICLE, i, false );
-			if( !rootItems )
-			{
-				if( strchr( ips->GetName(), '/' ) == NULL && strchr( ips->GetName(), '\\' ) == NULL )
-				{
+			if ( !rootItems ) {
+				if ( strchr( ips->GetName(), '/' ) == NULL && strchr( ips->GetName(), '\\' ) == NULL ) {
 					continue;
 				}
 			}
@@ -805,37 +663,31 @@ void CDialogTextures::addParticles( bool rootItems )
 	}
 }
 
-void CDialogTextures::addSounds( bool rootItems )
-{
+void CDialogTextures::addSounds( bool rootItems ) {
 	int i, j;
 	idStrList list( 1024 );
 	idStrList list2( 1024 );
 	HTREEITEM base = m_treeTextures.InsertItem( TypeNames[SOUNDS] );
 
-	for( i = 0; i < declManager->GetNumDecls( DECL_SOUND ); i++ )
-	{
+	for ( i = 0; i < declManager->GetNumDecls( DECL_SOUND ); i++ ) {
 		const idSoundShader* poo = declManager->SoundByIndex( i, false );
 		list.AddUnique( poo->GetFileName() );
 	}
 	idStrListSortPaths( list );
 
-	for( i = 0; i < list.Num(); i++ )
-	{
+	for ( i = 0; i < list.Num(); i++ ) {
 		HTREEITEM child = m_treeTextures.InsertItem( list[i], base );
 		m_treeTextures.SetItemData( child, SOUNDPARENT );
 		m_treeTextures.SetItemImage( child, 0, 1 );
 		list2.Clear();
-		for( j = 0; j < declManager->GetNumDecls( DECL_SOUND ); j++ )
-		{
+		for ( j = 0; j < declManager->GetNumDecls( DECL_SOUND ); j++ ) {
 			const idSoundShader* poo = declManager->SoundByIndex( j, false );
-			if( idStr::Icmp( list[i], poo->GetFileName() ) == 0 )
-			{
+			if ( idStr::Icmp( list[i], poo->GetFileName() ) == 0 ) {
 				list2.Append( poo->GetName() );
 			}
 		}
 		idStrListSortPaths( list2 );
-		for( j = 0; j < list2.Num(); j++ )
-		{
+		for ( j = 0; j < list2.Num(); j++ ) {
 			HTREEITEM child2 = m_treeTextures.InsertItem( list2[j], child );
 			m_treeTextures.SetItemData( child2, SOUNDS );
 			m_treeTextures.SetItemImage( child2, 2, 2 );
@@ -844,23 +696,19 @@ void CDialogTextures::addSounds( bool rootItems )
 
 }
 
-void CDialogTextures::addStrList( const char* root, const idStrList& list, int id )
-{
+void CDialogTextures::addStrList( const char * root, const idStrList& list, int id ) {
 	idStr		out, path;
 
 	HTREEITEM base = m_treeTextures.GetRootItem();
-	while( base )
-	{
+	while ( base ) {
 		out = m_treeTextures.GetItemText( base );
-		if( stricmp( root, out ) == 0 )
-		{
+		if ( stricmp( root, out ) == 0 ) {
 			break;
 		}
 		base = m_treeTextures.GetNextSiblingItem( base );
 	}
 
-	if( base == NULL )
-	{
+	if ( base == NULL ) {
 		base = m_treeTextures.InsertItem( root );
 	}
 
@@ -870,8 +718,7 @@ void CDialogTextures::addStrList( const char* root, const idStrList& list, int i
 	int		count = list.Num();
 
 	idStr	last, qt;
-	for( int i = 0; i < count; i++ )
-	{
+	for ( int i = 0; i < count; i++ ) {
 		idStr name = list[i];
 
 		// now break the name down convert to slashes
@@ -880,16 +727,12 @@ void CDialogTextures::addStrList( const char* root, const idStrList& list, int i
 
 		int index;
 		int len = last.Length();
-		if( len == 0 )
-		{
+		if ( len == 0 ) {
 			index = name.Last( '/' );
-			if( index >= 0 )
-			{
+			if ( index >= 0 ) {
 				name.Left( index, last );
 			}
-		}
-		else if( idStr::Icmpn( last, name, len ) == 0 && name.Last( '/' ) <= len )
-		{
+		} else if ( idStr::Icmpn( last, name, len ) == 0 && name.Last( '/' ) <= len ) {
 			name.Right( name.Length() - len - 1, out );
 			add = m_treeTextures.InsertItem( out, item );
 			qt = root;
@@ -899,20 +742,16 @@ void CDialogTextures::addStrList( const char* root, const idStrList& list, int i
 			m_treeTextures.SetItemData( add, id );
 			m_treeTextures.SetItemImage( add, 2, 2 );
 			continue;
-		}
-		else
-		{
+		} else {
 			last.Empty();
 		}
 
 		index = 0;
 		item = base;
 		path = "";
-		while( index >= 0 )
-		{
+		while ( index >= 0 ) {
 			index = name.Find( '/' );
-			if( index >= 0 )
-			{
+			if ( index >= 0 ) {
 				HTREEITEM newItem = NULL;
 				HTREEITEM* check = NULL;
 				name.Left( index, out );
@@ -920,13 +759,11 @@ void CDialogTextures::addStrList( const char* root, const idStrList& list, int i
 				qt = root;
 				qt += "/";
 				qt += path;
-				if( quickTree.Get( qt, &check ) )
-				{
+				if ( quickTree.Get( qt, &check ) ) {
 					newItem = *check;
 				}
 				//HTREEITEM	newItem = FindTreeItem(&m_treeTextures, item, name.Left(index, out), item);
-				if( newItem == NULL )
-				{
+				if ( newItem == NULL ) {
 					newItem = m_treeTextures.InsertItem( out, item );
 					qt = root;
 					qt += "/";
@@ -940,9 +777,7 @@ void CDialogTextures::addStrList( const char* root, const idStrList& list, int i
 				name.Right( name.Length() - index - 1, out );
 				name = out;
 				path += "/";
-			}
-			else
-			{
+			} else {
 				add = m_treeTextures.InsertItem( name, item );
 				qt = root;
 				qt += "/";
@@ -958,45 +793,36 @@ void CDialogTextures::addStrList( const char* root, const idStrList& list, int i
 
 }
 
-void CDialogTextures::addModels( bool rootItems )
-{
+void CDialogTextures::addModels( bool rootItems ) {
 	idFileList* files;
 	files = fileSystem->ListFilesTree( "models", ".ase|.lwo|.ma|.obj", true );
-	if( files->GetNumFiles() )
-	{
+	if ( files->GetNumFiles() ) {
 		addStrList( TypeNames[MODELS], files->GetList(), MODELS );
 	}
 
 	fileSystem->FreeFileList( files );
 }
 
-void CDialogTextures::addGuis( bool rootItems )
-{
+void CDialogTextures::addGuis( bool rootItems ) {
 	idFileList* files;
 
 	files = fileSystem->ListFilesTree( "guis", ".gui", true );
 
-	if( files->GetNumFiles() )
-	{
+	if ( files->GetNumFiles() ) {
 		addStrList( TypeNames[GUIS], files->GetList(), GUIS );
 	}
 
 	fileSystem->FreeFileList( files );
 }
 
-void CDialogTextures::addFXs( bool rootItems )
-{
+void CDialogTextures::addFXs( bool rootItems ) {
 	idStrList list( 1024 );
 	int count = declManager->GetNumDecls( DECL_FX );
-	if( count > 0 )
-	{
-		for( int i = 0; i < count; i++ )
-		{
+	if ( count > 0 ) {
+		for ( int i = 0; i < count; i++ ) {
 			const idDecl* ips = declManager->DeclByIndex( DECL_FX, i, false );
-			if( !rootItems )
-			{
-				if( strchr( ips->GetName(), '/' ) == NULL && strchr( ips->GetName(), '\\' ) == NULL )
-				{
+			if ( !rootItems ) {
+				if ( strchr( ips->GetName(), '/' ) == NULL && strchr( ips->GetName(), '\\' ) == NULL ) {
 					continue;
 				}
 			}
@@ -1007,53 +833,41 @@ void CDialogTextures::addFXs( bool rootItems )
 	}
 }
 
-void CDialogTextures::addScripts( bool rootItems )
-{
+void CDialogTextures::addScripts( bool rootItems ) {
 	idFileList* files;
 
 	files = fileSystem->ListFilesTree( "script", ".script", true );
 
-	if( files->GetNumFiles() )
-	{
+	if ( files->GetNumFiles() ) {
 		addStrList( TypeNames[SCRIPTS], files->GetList(), SCRIPTS );
 	}
 
 	fileSystem->FreeFileList( files );
 }
 
-void CDialogTextures::OnDblclkTreeTextures( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void CDialogTextures::OnDblclkTreeTextures( NMHDR* pNMHDR, LRESULT* pResult ) {
 	CPoint pt;
 	GetCursorPos( &pt );
 	m_treeTextures.ScreenToClient( &pt );
 	HTREEITEM item = m_treeTextures.HitTest( pt );
-	if( item )
-	{
+	if ( item ) {
 		DWORD dw = m_treeTextures.GetItemData( item );
 		mode = dw;
-		if( mode == SOUNDS )
-		{
-			if( !m_treeTextures.ItemHasChildren( item ) )
-			{
+		if ( mode == SOUNDS ) {
+			if ( !m_treeTextures.ItemHasChildren( item ) ) {
 				idStr shaderName = m_treeTextures.GetItemText( item );
 				Select_SetKeyVal( "s_shader", shaderName );
 				idEditorEntity* ent = selected_brushes.next->owner;
-				if( ent )
-				{
+				if ( ent ) {
 					g_Inspectors->UpdateEntitySel( ent->eclass );
 					MessageBeep( MB_OK );
 				}
 			}
-		}
-		else if( mode == MODELS || mode == PARTICLES )
-		{
-			if( mediaName.Length() )
-			{
+		} else if ( mode == MODELS || mode == PARTICLES ) {
+			if ( mediaName.Length() ) {
 				g_Inspectors->entityDlg.UpdateKeyVal( "model", mediaName );
 			}
-		}
-		else if( mode <= MATERIALS )
-		{
+		} else if ( mode <= MATERIALS ) {
 			OnLoad();
 		}
 	}
@@ -1061,8 +875,7 @@ void CDialogTextures::OnDblclkTreeTextures( NMHDR* pNMHDR, LRESULT* pResult )
 	*pResult = 0;
 }
 
-void CDialogTextures::OnPreview()
-{
+void CDialogTextures::OnPreview() {
 	// TODO: Add your control notification handler code here
 }
 
@@ -1078,10 +891,8 @@ void CDialogTextures::OnPreview()
 */
 //}
 
-int CDialogTextures::OnCreate( LPCREATESTRUCT lpCreateStruct )
-{
-	if( CDialogEx::OnCreate( lpCreateStruct ) == -1 )
-	{
+int CDialogTextures::OnCreate( LPCREATESTRUCT lpCreateStruct ) {
+	if ( CDialogEx::OnCreate( lpCreateStruct ) == -1 ) {
 		return -1;
 	}
 
@@ -1090,12 +901,10 @@ int CDialogTextures::OnCreate( LPCREATESTRUCT lpCreateStruct )
 	return 0;
 }
 
-void CDialogTextures::OnSize( UINT nType, int cx, int cy )
-{
+void CDialogTextures::OnSize( UINT nType, int cx, int cy ) {
 	CDialogEx::OnSize( nType, cx, cy );
 
-	if( m_btnLoad.GetSafeHwnd() == NULL )
-	{
+	if ( m_btnLoad.GetSafeHwnd() == NULL ) {
 		return;
 	}
 
@@ -1129,35 +938,27 @@ void CDialogTextures::OnSize( UINT nType, int cx, int cy )
 	RedrawWindow();
 }
 
-BOOL CDialogTextures::PreCreateWindow( CREATESTRUCT& cs )
-{
+BOOL CDialogTextures::PreCreateWindow( CREATESTRUCT& cs ) {
 	return CDialogEx::PreCreateWindow( cs );
 }
 
-void CDialogTextures::OnCheckHideroot()
-{
+void CDialogTextures::OnCheckHideroot() {
 	BuildTree();
 }
 
-void CDialogTextures::CollapseEditor()
-{
-	if( g_qeglobals.d_savedinfo.editorExpanded )
-	{
+void CDialogTextures::CollapseEditor() {
+	if ( g_qeglobals.d_savedinfo.editorExpanded ) {
 	}
 }
 
 
-void CDialogTextures::OnCancel()
-{
+void CDialogTextures::OnCancel() {
 }
 
 
-BOOL CDialogTextures::PreTranslateMessage( MSG* pMsg )
-{
-	if( pMsg->message == WM_KEYDOWN && ( pMsg->wParam == VK_ESCAPE || pMsg->wParam == VK_RETURN ) )
-	{
-		if( pMsg->wParam == VK_ESCAPE )
-		{
+BOOL CDialogTextures::PreTranslateMessage( MSG* pMsg ) {
+	if ( pMsg->message == WM_KEYDOWN && ( pMsg->wParam == VK_ESCAPE || pMsg->wParam == VK_RETURN ) ) {
+		if ( pMsg->wParam == VK_ESCAPE ) {
 			g_pParentWnd->GetCamera()->SetFocus();
 			Select_Deselect();
 		}
@@ -1167,14 +968,12 @@ BOOL CDialogTextures::PreTranslateMessage( MSG* pMsg )
 	return CDialogEx::PreTranslateMessage( pMsg );
 }
 
-void CDialogTextures::OnSetFocus( CWnd* pOldWnd )
-{
+void CDialogTextures::OnSetFocus( CWnd* pOldWnd ) {
 	CDialogEx::OnSetFocus( pOldWnd );
 	RedrawWindow();
 }
 
-void CDialogTextures::OnNMRclickTreeTextures( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void CDialogTextures::OnNMRclickTreeTextures( NMHDR* pNMHDR, LRESULT* pResult ) {
 	*pResult = 0;
 
 	CPoint pt;
@@ -1182,37 +981,30 @@ void CDialogTextures::OnNMRclickTreeTextures( NMHDR* pNMHDR, LRESULT* pResult )
 	m_treeTextures.ScreenToClient( &pt );
 	HTREEITEM item = m_treeTextures.HitTest( pt );
 
-	if( item )
-	{
+	if ( item ) {
 		DWORD	dw = m_treeTextures.GetItemData( item );
 		mode = dw;
-		if( mode == TEXTURES || mode == MATERIALS || mode == GUIS )
-		{
+		if ( mode == TEXTURES || mode == MATERIALS || mode == GUIS ) {
 			m_treeTextures.SelectItem( item );
 			HandlePopup( this, IDR_POPUP_MATERIAL );
 		}
 	}
 }
 
-void CDialogTextures::OnMaterialEdit()
-{
+void CDialogTextures::OnMaterialEdit() {
 	CEditViewDlg dlg;
-	if( ( mode == TEXTURES || mode == MATERIALS ) && editMaterial )
-	{
+	if ( ( mode == TEXTURES || mode == MATERIALS ) && editMaterial ) {
 		dlg.SetMode( CEditViewDlg::MATERIALS );
 		dlg.SetMaterialInfo( editMaterial->GetName(), editMaterial->GetFileName(), editMaterial->GetLineNum() );
 		dlg.DoModal();
-	}
-	else if( mode == GUIS && editGui.Length() )
-	{
+	} else if ( mode == GUIS && editGui.Length() ) {
 		dlg.SetMode( CEditViewDlg::GUIS );
 		dlg.SetGuiInfo( editGui );
 		dlg.DoModal();
 	}
 }
 
-void CDialogTextures::OnMaterialInfo()
-{
+void CDialogTextures::OnMaterialInfo() {
 	/*
 		idStr str;
 		if (editMaterial) {

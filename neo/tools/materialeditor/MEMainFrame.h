@@ -44,15 +44,14 @@ If you have questions concerning this license or the applicable additional terms
 /**
 * The main window for the material editor.
 */
-class MEMainFrame : public CFrameWnd, public MaterialView
-{
+class MEMainFrame : public CFrameWnd, public MaterialView {
 
 public:
 	MEMainFrame();
 	virtual ~MEMainFrame();
 
 	//Public Operations
-	void						PrintConsoleMessage( const char* msg );
+	void						PrintConsoleMessage( const char * msg );
 
 protected:
 	DECLARE_DYNAMIC( MEMainFrame )
@@ -111,7 +110,7 @@ protected:
 	//Methods for Find interactions
 	friend						FindDialog;
 	void						CloseFind();
-	void						FindNext( MaterialSearchData_t* search );
+	void						FindNext( MaterialSearchData_t * search );
 
 	//MaterialView Interface
 	virtual void				MV_OnMaterialSelectionChange( MaterialDoc* pMaterial );
@@ -126,25 +125,25 @@ protected:
 	CSplitterWnd				m_splitterWnd;
 	CSplitterWnd				m_editSplitter;
 	CSplitterWnd				m_previewSplitter;
-	CSplitterWnd*				m_materialEditSplitter;
+	CSplitterWnd		*		m_materialEditSplitter;
 
 	//Child Views
-	MaterialTreeView*			m_materialTreeView;
-	StageView*					m_stageView;
-	MaterialPropTreeView*		m_materialPropertyView;
-	MaterialPreviewView*		m_materialPreviewView;
-	MaterialPreviewPropView*	m_previewPropertyView;
-	ConsoleView*				m_consoleView;
+	MaterialTreeView		*	m_materialTreeView;
+	StageView			*		m_stageView;
+	MaterialPropTreeView	*	m_materialPropertyView;
+	MaterialPreviewView	*	m_materialPreviewView;
+	MaterialPreviewPropView	* m_previewPropertyView;
+	ConsoleView		*		m_consoleView;
 
-	MaterialEditView*			m_materialEditView;
+	MaterialEditView		*	m_materialEditView;
 
 	//Find Data
-	FindDialog*					m_find;
+	FindDialog			*		m_find;
 	MaterialSearchData_t		searchData;
 
 	//Document Management
 	MaterialDocManager			materialDocManager;
-	MaterialDoc*				currentDoc;
+	MaterialDoc		*		currentDoc;
 
 	//Options
 	MEOptions					options;

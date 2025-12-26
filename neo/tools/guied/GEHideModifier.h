@@ -29,14 +29,13 @@ If you have questions concerning this license or the applicable additional terms
 #define GEHIDEMODIFIER_H_
 
 #ifndef GEMODIFIER_H_
-	#include "GEModifier.h"
+#include "GEModifier.h"
 #endif
 
-class rvGEHideModifier : public rvGEModifier
-{
+class rvGEHideModifier : public rvGEModifier {
 public:
 
-	rvGEHideModifier( const char* name, idWindow* window, bool hide );
+	rvGEHideModifier( const char * name, idWindow* window, bool hide );
 
 	virtual bool		Apply();
 	virtual bool		Undo();
@@ -45,7 +44,7 @@ protected:
 
 	bool		mHide;
 	bool		mUndoHide;
-	idWindow*	mParent;
+	idWindow	* mParent;
 };
 
 #endif // GEHIDEMODIFIER_H_

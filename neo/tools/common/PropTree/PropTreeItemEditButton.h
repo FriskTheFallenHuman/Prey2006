@@ -3,7 +3,7 @@
 
 
 #if _MSC_VER > 1000
-	#pragma once
+#pragma once
 #endif // _MSC_VER > 1000
 // PropTreeItemEdit.h : header file
 //
@@ -29,8 +29,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeItemEditButton window
 
-class PROPTREE_API CPropTreeItemEditButton : public CPropTreeItemEdit
-{
+class PROPTREE_API CPropTreeItemEditButton : public CPropTreeItemEdit {
 	// Construction
 public:
 	CPropTreeItemEditButton();
@@ -63,8 +62,7 @@ public:
 	virtual void OnActivate( int activateType, CPoint point );
 
 
-	enum ValueFormat
-	{
+	enum ValueFormat {
 		ValueFormatText,
 		ValueFormatNumber,
 		ValueFormatFloatPointer

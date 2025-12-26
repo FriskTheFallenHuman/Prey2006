@@ -1,0 +1,466 @@
+// moved tables to aaatables. gb 7/18/2002
+
+
+textures/prey_walls/ruins_walla
+{
+	qer_editorimage textures/prey_walls/ruins_walla
+
+	diffusemap textures/prey_walls/ruins_walla_d
+ 	specularmap textures/prey_walls/ruins_walla_s
+ 	bumpmap addnormals (textures/prey_walls/ruins_walla_local, heightmap (textures/prey_walls/ruins_walla_h, 2))
+
+}
+
+textures/prey_walls/ruins_wallb
+{
+	qer_editorimage textures/prey_walls/ruins_wallb
+
+	diffusemap textures/prey_walls/ruins_wallb_d
+ 	specularmap textures/prey_walls/ruins_wallb_s
+ 	bumpmap addnormals (textures/prey_walls/ruins_wallb_local, heightmap (textures/prey_walls/ruins_wallb_h, 2))
+
+}
+
+textures/prey_walls/funky_wall2
+{
+	qer_editorimage textures/prey_walls/funky_wall2
+
+	diffusemap textures/prey_walls/funky_wall2_d
+ 	specularmap textures/prey_walls/funky_wall2_s
+ 	bumpmap addnormals (textures/prey_walls/funky_wall2_local, heightmap (textures/prey_walls/funky_wall2_h, 2))
+
+}
+
+textures/prey_walls/funky_wall2a
+{
+	qer_editorimage textures/prey_walls/funky_wall2
+
+	diffusemap textures/prey_walls/funky_wall2_d
+ 	specularmap textures/prey_walls/funky_wall2_s
+ 	bumpmap addnormals (textures/prey_walls/funky_wall2_local, heightmap (textures/prey_walls/funky_wall2_h, 4))
+
+  	{
+		blend gl_one,gl_one
+		map textures/prey_walls/funky_wall2_add
+//		rgb .5
+//		rgb (.3 * sintable [.15 + time]) +.7
+	}
+}
+
+textures/prey_walls/funky_wall2b
+{
+	qer_editorimage textures/prey_walls/funky_wall2
+
+	diffusemap textures/prey_walls/funky_wall2_d
+ 	specularmap textures/prey_walls/funky_wall2_s
+ 	bumpmap addnormals (textures/prey_walls/funky_wall2_local, heightmap (textures/prey_walls/funky_wall2_h, 4))
+
+  	{
+		blend gl_one,gl_one
+		map textures/prey_walls/funky_wall2_add2
+//		rgb (.3 * sintable [.15 + time]) +.7
+	}
+}
+
+textures/prey_walls/funky_wall2c
+{
+	qer_editorimage textures/prey_walls/funky_wall2
+
+	diffusemap textures/prey_walls/funky_wall2_d
+ 	specularmap textures/prey_walls/funky_wall2_s
+ 	bumpmap addnormals (textures/prey_walls/funky_wall2_local, heightmap (textures/prey_walls/funky_wall2_h, 4))
+
+  	{
+		blend gl_one,gl_one
+		map textures/prey_walls/funky_wall2_add
+//		rgb (.3 * sintable [.15 + time]) +.7
+		rgb .5
+	}
+  	{
+		blend gl_one,gl_one
+		map textures/prey_walls/funky_wall2_add3
+		rgb (.3 * sintable [.15 + time]) +.7
+	}
+}
+
+textures/prey_walls/blob_walla
+{
+	qer_editorimage textures/prey_walls/blob_walla
+
+	diffusemap textures/prey_walls/blob_walla_d
+ 	specularmap textures/prey_walls/blob_walla_s
+ 	bumpmap addnormals (textures/prey_walls/blob_walla_local, heightmap (textures/prey_walls/blob_walla_h, 5))
+  	{
+		blend gl_one,gl_one
+		map textures/prey_walls/blob_walla_add
+		rgb (.3 * sintable [.15 + time]) +.7
+	}
+
+}
+
+textures/prey_walls/blob_wallb
+{
+	qer_editorimage textures/prey_walls/blob_wallb
+
+	diffusemap textures/prey_walls/blob_wallb_d
+// 	specularmap textures/prey_walls/blob_wallb_s
+ 	bumpmap addnormals (textures/prey_walls/blob_wallb_local, heightmap (textures/prey_walls/blob_wallb_h, 5))
+  	{
+		blend gl_one,gl_one
+		map textures/prey_walls/blob_wallb_add
+		rgb (.3 * sintable [.15 + time ]) +.7
+	}
+}
+
+textures/prey_walls/insectwall1
+{
+	qer_editorimage 	textures/prey_walls/insectwall1_d
+
+	bumpmap 		addnormals ( textures/prey_walls/insectwall1_local, heightmap (textures/prey_walls/insectwall1_h, 4))
+	diffusemap	 	textures/prey_walls/insectwall1_d
+	specularmap		textures/prey_walls/insectwall1_s
+
+}
+
+textures/prey_walls/insectwall1_light
+{
+	qer_editorimage 	textures/prey_walls/insectwall1_d
+
+	bumpmap 		addnormals ( textures/prey_walls/insectwall1_local, heightmap (textures/prey_walls/insectwall1_h, 4))
+	diffusemap	 	textures/prey_walls/insectwall1_d
+	specularmap		textures/prey_walls/insectwall1_s
+	{
+		blend add
+		map textures/prey_walls/insectwall1_add
+		rgb (jitter2 [time])
+	}
+
+}
+
+textures/prey_walls/ribbed_walla
+{
+	qer_editorimage 	textures/prey_walls/ribbed_walla
+
+	bumpmap 		addnormals ( textures/prey_walls/ribbed_walla_local, heightmap (textures/prey_walls/ribbed_walla_h, 2))
+	diffusemap	 	textures/prey_walls/ribbed_walla
+	specularmap		textures/prey_walls/ribbed_walla_s
+	{
+		blend add
+		map textures/prey_walls/ribbed_walla_add
+	}
+
+}
+
+textures/prey_walls/ribbed_wallb
+{
+	qer_editorimage 	textures/prey_walls/ribbed_walla
+
+	bumpmap 		addnormals ( textures/prey_walls/ribbed_wallb_local, heightmap (textures/prey_walls/ribbed_walla_h, 2))
+	diffusemap	 	textures/prey_walls/ribbed_walla
+	specularmap		textures/prey_walls/ribbed_walla_s
+
+}
+
+textures/prey_walls/ribbed_wallc
+{
+	qer_editorimage 	textures/prey_walls/ribbed_walla
+
+	bumpmap 		addnormals ( textures/prey_walls/ribbed_walla_local, heightmap (textures/prey_walls/ribbed_walla_h, 2))
+	diffusemap	 	textures/prey_walls/ribbed_walla
+	specularmap		textures/prey_walls/ribbed_walla_s
+	{
+		blend add
+		map textures/prey_walls/ribbed_walla_add
+		rgb (.3 * sintable [.15 + time ]) +.7
+	}
+
+}
+
+textures/prey_walls/cartwall1
+{
+	qer_editorimage 	textures/prey_walls/cartwall1_d
+	bumpmap 		addnormals (textures/prey_walls/cartwall1_local, heightmap (textures/prey_walls/cartwall1_h, 8))
+
+	diffusemap	 	textures/prey_walls/cartwall1_d
+	specularmap		textures/prey_walls/cartwall1_s
+
+}
+
+
+textures/prey_walls/cartwall2
+{
+	qer_editorimage 	textures/prey_walls/cartwall2_d
+	bumpmap 		addnormals (textures/prey_walls/cartwall1_local, heightmap (textures/prey_walls/cartwall2_h, 8))
+
+	diffusemap	 	textures/prey_walls/cartwall2_d
+	specularmap		textures/prey_walls/cartwall2_s
+
+}
+
+
+textures/prey_walls/cartwall2b
+{
+	qer_editorimage 	textures/prey_walls/cartwall2_d
+	bumpmap 		addnormals (textures/prey_walls/cartwall1_local, heightmap (textures/prey_walls/cartwall2_h, 8))
+
+	diffusemap	 	textures/prey_walls/cartwall2_d
+	specularmap		textures/prey_walls/cartwall2_s
+
+	{
+		blend add
+		map textures/prey_walls/cartwall2_add
+		rgb (.3 * sintable [.15 + time * .3 ]) + 0.4
+	}
+}
+
+
+
+
+textures/prey_walls/oozetube1
+{
+	qer_editorimage 	textures/prey_walls/oozetube1_local
+	bumpmap 		textures/prey_walls/oozetube1_local
+	diffusemap	 	textures/prey_walls/oozetube1_d
+	specularmap		textures/prey_walls/oozetube1_s
+	{
+		blend add
+		map textures/prey_walls/oozetube1_add1
+		scroll (0.1 * sintable [time* 0.1]), time * 0.1
+//		rgb (jitter2 [time * 4])
+	}
+	{
+		blend add
+		map textures/prey_walls/oozetube1_add2
+		scroll 0, time * 0.35
+//		rgb (jitter2 [time * 6])
+	}
+	{
+		blend add
+		map textures/prey_walls/oozetube1_add3
+		scroll (0.1 * sintable [time* 0.1]), time * 0.5
+		rgb (jitter2 [time * 1])
+	}
+}
+
+
+textures/prey_walls/circuitwall1
+{
+	qer_editorimage 	textures/prey_walls/circuitwall1_d
+	bumpmap 		addnormals (textures/prey_walls/circuitwall1_local, heightmap (textures/prey_walls/circuitwall1_h, 4))
+
+	diffusemap	 	textures/prey_walls/circuitwall1_d
+	specularmap		textures/prey_walls/circuitwall1_s
+
+}
+
+textures/prey_walls/circuitwall2
+{
+	qer_editorimage 	textures/prey_walls/circuitwall2_d
+	bumpmap 		addnormals (textures/prey_walls/circuitwall2_local, heightmap (textures/prey_walls/circuitwall2_h, 4))
+
+	diffusemap	 	textures/prey_walls/circuitwall2_d
+	specularmap		textures/prey_walls/circuitwall2_s
+
+}
+
+textures/prey_walls/circuitwall3
+{
+	matter_flesh
+	qer_editorimage 	textures/prey_walls/circuitwall3_d
+	bumpmap 		addnormals (textures/prey_walls/circuitwall3_local, heightmap (textures/prey_walls/circuitwall3_h, 4))
+
+	diffusemap	 	textures/prey_walls/circuitwall3_d
+	specularmap		textures/prey_walls/circuitwall3_s
+
+}
+
+textures/prey_walls/circuitwall3b
+{
+	qer_editorimage 	textures/prey_walls/circuitwall3_d
+	bumpmap 		addnormals (textures/prey_walls/circuitwall3_local, heightmap (textures/prey_walls/circuitwall3_h, 4))
+
+	diffusemap	 	textures/prey_walls/circuitwall3_d
+	specularmap		textures/prey_walls/circuitwall3_s
+	{
+		blend add
+		map textures/doomtest/circuitwall3_add
+		rgb (.3 * sintable [.15 + time * .3 ]) + 0.4
+		blue (alpha [time * 8])
+	}
+}
+
+textures/prey_walls/circuitwall4
+{
+	qer_editorimage 	textures/prey_walls/circuitwall4_d
+	bumpmap 		addnormals (textures/prey_walls/circuitwall4_local, heightmap (textures/prey_walls/circuitwall3_h, 4))
+
+	diffusemap	 	textures/prey_walls/circuitwall4_d
+	specularmap		textures/prey_walls/circuitwall3_s
+
+}
+
+textures/prey_walls/circuitwall4b
+{
+	qer_editorimage 	textures/prey_walls/circuitwall4_d
+	bumpmap 		addnormals (textures/prey_walls/circuitwall4_local, heightmap (textures/prey_walls/circuitwall3_h, 4))
+
+	diffusemap	 	textures/prey_walls/circuitwall4_d
+	specularmap		textures/prey_walls/circuitwall3_s
+	{
+		blend add
+		map textures/doomtest/circuitwall3_add
+		rgb (.3 * sintable [.15 + time * .3 ]) + 0.4
+		blue (alpha [time * 8])
+	}
+}
+
+textures/prey_walls/wavepanel1
+{
+	qer_editorimage 	textures/prey_walls/wavepanel1_d
+	bumpmap 		addnormals (textures/prey_walls/wavepanel1_local, heightmap (textures/prey_walls/wavepanel1_h, 12))
+
+	diffusemap	 	textures/prey_walls/wavepanel1_d
+	specularmap		textures/prey_walls/wavepanel1_s
+
+}
+
+textures/prey_walls/shellwall1
+{
+	qer_editorimage 	textures/prey_walls/shellwall1_d
+	bumpmap 		addnormals (textures/prey_walls/shellwall1_local, heightmap (textures/prey_walls/shellwall1_h, 4))
+
+	diffusemap	 	textures/prey_walls/shellwall1_d
+	specularmap		textures/prey_walls/shellwall1_s
+
+}
+
+textures/prey_walls/shellwall2
+{
+	qer_editorimage 	textures/prey_walls/shellwall2_d
+	bumpmap 		addnormals (textures/prey_walls/shellwall2_local, heightmap (textures/prey_walls/shellwall2_h, 4))
+
+	diffusemap	 	textures/prey_walls/shellwall2_d
+	specularmap		textures/prey_walls/shellwall2_s
+
+}
+
+textures/prey_walls/shellwall2b
+{
+	qer_editorimage 	textures/prey_walls/shellwall2b_d
+	bumpmap 		addnormals (textures/prey_walls/shellwall2b_local, heightmap (textures/prey_walls/shellwall2b_h, 4))
+
+	diffusemap	 	textures/prey_walls/shellwall2b_d
+	specularmap		textures/prey_walls/shellwall2b_s
+
+}
+
+textures/prey_walls/goghwall1
+{
+	qer_editorimage 	textures/prey_walls/goghwall1_local
+	bumpmap 		addnormals (textures/prey_walls/goghwall1_local, heightmap (textures/prey_walls/goghwall1_h, 4))
+
+	diffusemap	 	textures/prey_walls/goghwall1_d
+	specularmap		textures/prey_walls/goghwall1_s
+
+}
+
+textures/prey_walls/goghwall2
+{
+	qer_editorimage 	textures/prey_walls/goghwall2_local
+	bumpmap 		addnormals (textures/prey_walls/goghwall2_local, heightmap (textures/prey_walls/goghwall1_h, 4))
+
+	diffusemap	 	textures/prey_walls/goghwall1_d
+	specularmap		textures/prey_walls/goghwall1_s
+
+}
+
+
+
+textures/shane_work/piston2_fix
+{
+	qer_editorimage 	textures/shane_work/piston2_fix_local
+	bumpmap 		addnormals (textures/shane_work/piston2_fix_local, heightmap (textures/shane_work/piston2_fix_h, 4))
+
+	diffusemap	 	textures/shane_work/piston2_fix_d
+	specularmap		textures/shane_work/piston2_fix_s
+
+}
+
+
+
+textures/shane_work/piston_fix
+{
+	qer_editorimage 	textures/shane_work/piston_fix_local
+	bumpmap 		addnormals (textures/shane_work/piston_fix_local, heightmap (textures/shane_work/piston_fix_h, 4))
+
+	diffusemap	 	textures/shane_work/piston_fix_d
+	specularmap		textures/shane_work/piston_fix_s
+
+}
+
+
+
+textures/shane_work/tech_piston_tall
+{
+	qer_editorimage 	textures/shane_work/tech_piston_tall_local
+	bumpmap 		addnormals (textures/shane_work/tech_piston_tall_local, heightmap (textures/shane_work/tech_piston_tall_h, 4))
+
+	diffusemap	 	textures/shane_work/tech_piston_tall_d
+	specularmap		textures/shane_work/tech_piston_tall_s
+
+}
+
+textures/shane_work/ceiling
+{
+	qer_editorimage 	textures/shane_work/ceiling_local
+	bumpmap 		addnormals (textures/shane_work/ceiling_local, heightmap (textures/shane_work/ceiling_h, 4))
+
+	diffusemap	 	textures/shane_work/ceiling_d
+	specularmap		textures/shane_work/ceiling_s
+
+}
+
+textures/tech_wall/org_tech_wall_base
+{
+	qer_editorimage 	textures/tech_wall/org_tech_wall_base_local
+	bumpmap 		addnormals (textures/tech_wall/org_tech_wall_base_local, heightmap (textures/tech_wall/org_tech_wall_base_h, 4))
+
+	diffusemap	 	textures/tech_wall/org_tech_wall_base_d
+	specularmap		textures/tech_wall/org_tech_wall_base_s
+
+}
+
+
+textures/tech_wall/org_tech_wall_top
+{
+	qer_editorimage 	textures/tech_wall/org_tech_wall_top_local
+	bumpmap 		addnormals (textures/tech_wall/org_tech_wall_top_local, heightmap (textures/tech_wall/org_tech_wall_top_h, 4))
+
+	diffusemap	 	textures/tech_wall/org_tech_wall_top_d
+	specularmap		textures/tech_wall/org_tech_wall_top_s
+
+}
+
+textures/tech_wall/org_tech_wall_mid
+{
+	qer_editorimage 	textures/tech_wall/org_tech_wall_mid_local
+	bumpmap 		addnormals (textures/tech_wall/org_tech_wall_mid_local, heightmap (textures/tech_wall/org_tech_wall_mid_h, 4))
+
+	diffusemap	 	textures/tech_wall/org_tech_wall_mid_d
+	specularmap		textures/tech_wall/org_tech_wall_mid_s
+
+}
+
+textures/tech_wall/org_tech_ceiling
+{
+	qer_editorimage 	textures/tech_wall/org_tech_ceiling_local
+	bumpmap 		addnormals (textures/tech_wall/org_tech_ceiling_local, heightmap (textures/tech_wall/org_tech_ceiling_h, 4))
+
+	diffusemap	 	textures/tech_wall/org_tech_ceiling_d
+	specularmap		textures/tech_wall/org_tech_ceiling_s
+
+}
+
+
+
+

@@ -1,0 +1,405 @@
+
+//
+//
+// jetpack harvester
+//
+//
+
+models/monsters/jetpack/jetpack
+{
+	noShadows
+	//noselfshadow
+//	unsmoothedtangents
+	matter_flesh
+	forceOverlays
+
+	renderbump -size 1024 1024 -aa 1 models/monsters/jetpack/jetpack_local models/monsters/jetpack/jetpackhi.lwo
+	diffusemap models/monsters/jetpack/jetpack
+	bumpmap 	addnormals(models/monsters/jetpack/jetpack_local, heightmap(models/monsters/jetpack/jetpack_h, 10 ) )
+	specularmap	models/monsters/jetpack/jetpack_s
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/jetpack/jetpack_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 0.7 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/jetpack/jetpack_dis	// replace this with a monster-specific texture
+		alphaTest 0.7 * (time - parm7)
+		glowStage
+	}
+	{	// Remaining flesh, not alpha masked
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.3		// stage-only polygon offset - ensure that this is lower than the blue burn
+        blend add
+
+		map models/monsters/jetpack/jetpack_dis
+		glowstage
+//		alphaTest 1.0 * (time - parm7)
+//		alphaTest 0 // Necessary, otherwise the other stages will mask out this stage
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.6		// stage-only polygon offset
+//        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/jetpack/jetpack_dis	// replace this with a monster-specific texture
+		alphaTest 0.9 * (time - parm7 + 0.9)
+		glowStage
+	}
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/jetpack/jetpackhead
+{
+	noShadows
+	//noselfshadow
+//	unsmoothedtangents
+	matter_flesh
+	forceOverlays
+
+	renderbump -size 1024 1024 models/monsters/jetpack/jetpackhead_local models/monsters/jetpack/jetpackhi.lwo
+	diffusemap models/monsters/jetpack/jetpackhead
+	bumpmap 	addnormals(models/monsters/jetpack/jetpackhead_local, heightmap(models/monsters/jetpack/jetpackhead_h, 10 ) )
+	specularmap	models/monsters/jetpack/jetpackhead_s
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/jetpack/jetpackhead_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 0.7 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/jetpack/jetpackhead_dis	// replace this with a monster-specific texture
+		alphaTest 0.7 * (time - parm7)
+		glowStage
+	}
+	{	// Remaining flesh, not alpha masked
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.3		// stage-only polygon offset - ensure that this is lower than the blue burn
+        blend add
+
+		map models/monsters/jetpack/jetpackhead_dis
+		glowstage
+//		alphaTest 1.0 * (time - parm7)
+//		alphaTest 0 // Necessary, otherwise the other stages will mask out this stage
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.6		// stage-only polygon offset
+//        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/jetpack/jetpackhead_dis	// replace this with a monster-specific texture
+		alphaTest 0.9 * (time - parm7 + 0.9)
+		glowStage
+	}
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/jetpack/jetpackgui
+{
+	//noselfshadow
+//	unsmoothedtangents
+	twosided
+	matter_metal
+	//translucent
+	{
+		if ( parm7 == 0 )
+		blend diffusemap
+		map models/monsters/jetpack/jetpackhead
+		alphatest	0.5
+	}
+	{
+		if parm7
+		blend diffusemap
+		map models/monsters/jetpack/jetpackhead
+	}
+	//diffusemap models/monsters/jetpack/jetpackhead
+	bumpmap 	models/monsters/jetpack/jetpackhead_local
+	specularmap	models/monsters/jetpack/jetpackhead_s
+	{
+		blend add
+		ignorealphatest
+		//blend	gl_src_alpha, gl_one_minus_src_alpha
+		//alpha 0.8
+		map	models/monsters/jetpack/jetpackhead_a
+		rgb	powersurge [ time * 4 ]
+	}
+	{
+		blend blend
+		map guis/assets/non_interact/a/scanline2
+		//red 	0.8
+		//green	0.9
+		//blue	0.82
+		scroll 0, time*0.7
+		linear
+		ignorealphatest
+	}
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/jetpack/jetpackhead_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 0.7 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/jetpack/jetpackhead_dis	// replace this with a monster-specific texture
+		alphaTest 0.7 * (time - parm7)
+		glowStage
+	}
+	{	// Remaining flesh, not alpha masked
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.3		// stage-only polygon offset - ensure that this is lower than the blue burn
+        blend add
+
+		map models/monsters/jetpack/jetpackhead_dis
+		glowstage
+//		alphaTest 1.0 * (time - parm7)
+//		alphaTest 0 // Necessary, otherwise the other stages will mask out this stage
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.6		// stage-only polygon offset
+//        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/jetpack/jetpackhead_dis	// replace this with a monster-specific texture
+		alphaTest 0.9 * (time - parm7 + 0.9)
+		glowStage
+	}
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/jetpack/jetpackteeth
+
+{
+    //noselfshadow
+    noshadows
+	//twosided
+	//translucent
+	matter_flesh
+	forceOverlays
+
+ 	bumpmap  models/monsters/jetpack/jetpackhead_local
+ 	{
+ 		if ( parm7 == 0 )
+		blend diffusemap
+		map models/monsters/jetpack/jetpackhead
+		alphatest	0.5
+	}
+	{
+		if parm7
+		blend diffusemap
+		map models/monsters/jetpack/jetpackhead
+	}
+ 	//diffusemap models/monsters/jetpack/jetpackhead_d
+	specularmap models/monsters/jetpack/jetpackhead_s
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/jetpack/jetpackhead_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 0.7 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/jetpack/jetpackhead_dis	// replace this with a monster-specific texture
+		alphaTest 0.7 * (time - parm7)
+		glowStage
+	}
+	{	// Remaining flesh, not alpha masked
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.3		// stage-only polygon offset - ensure that this is lower than the blue burn
+        blend add
+
+		map models/monsters/jetpack/jetpackhead_dis
+		glowstage
+//		alphaTest 1.0 * (time - parm7)
+//		alphaTest 0 // Necessary, otherwise the other stages will mask out this stage
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.6		// stage-only polygon offset
+//        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/jetpack/jetpackhead_dis	// replace this with a monster-specific texture
+		alphaTest 0.9 * (time - parm7 + 0.9)
+		glowStage
+	}
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/jetpack/jetpack_frozen
+{
+	unsmoothedtangents
+	matter_stone
+	forceOverlays
+	translucent
+	collision
+	noshadows
+	{
+		shaderLevel1
+
+		program			refraction.vfp
+
+		vertexparm		1       3.5*fadeIce[1+.3*(parm7-time)]			// magnitude of the distortion
+
+		fragmentparm	0		1-.1*fadeIce[1+.3*(parm7-time)], 1-.1*fadeIce[1+.3*(parm7-time)], 1-.04*fadeIce[1+.3*(parm7-time)], 1	// refraction color
+		fragmentparm	1		.8*fadeIce[1+.3*(parm7-time)], .8*fadeIce[1+.3*(parm7-time)], .9*fadeIce[1+.3*(parm7-time)], 1		// reflection color
+		fragmentparm	2		2*fadeIce[1+.3*(parm7-time)]
+
+		fragmentmap		1		addnormals(models/monsters/jetpack/jetpack_local, heightmap(models/monsters/jetpack/jetpack_h, 10 ) )
+		fragmentmap		2       _currentrender
+	}
+	bumpmap	addnormals(models/monsters/jetpack/jetpack_local, heightmap(models/monsters/jetpack/jetpack_h, 10 ) )
+	{
+		blend blend
+		map _white
+		rgb .72
+		alpha .35*fadeIce[1+.3*(parm7-time)]
+	}
+	{
+		blend diffusemap
+		map _white
+		color .34*fadeIce[1+.3*(parm7-time)], .34*fadeIce[1+.3*(parm7-time)], .36*fadeIce[1+.3*(parm7-time)], 1
+	}
+}
+
+models/monsters/jetpack/jetpackhead_frozen
+{
+	unsmoothedtangents
+	matter_stone
+	forceOverlays
+	translucent
+	collision
+	noshadows
+	{
+		shaderLevel1
+
+		program			refraction.vfp
+
+		vertexparm		1       3.5*fadeIce[1+.3*(parm7-time)]			// magnitude of the distortion
+
+		fragmentparm	0		1-.1*fadeIce[1+.3*(parm7-time)], 1-.1*fadeIce[1+.3*(parm7-time)], 1-.04*fadeIce[1+.3*(parm7-time)], 1	// refraction color
+		fragmentparm	1		.8*fadeIce[1+.3*(parm7-time)], .8*fadeIce[1+.3*(parm7-time)], .9*fadeIce[1+.3*(parm7-time)], 1		// reflection color
+		fragmentparm	2		2*fadeIce[1+.3*(parm7-time)]
+
+		fragmentmap		1		addnormals(models/monsters/jetpack/jetpackhead_local, heightmap(models/monsters/jetpack/jetpackhead_h, 10 ) )
+		fragmentmap		2       _currentrender
+	}
+	bumpmap	addnormals(models/monsters/jetpack/jetpackhead_local, heightmap(models/monsters/jetpack/jetpackhead_h, 10 ) )
+	{
+		blend blend
+		map _white
+		rgb .72
+		alpha .35*fadeIce[1+.3*(parm7-time)]
+	}
+	{
+		blend diffusemap
+		map _white
+		color .34*fadeIce[1+.3*(parm7-time)], .34*fadeIce[1+.3*(parm7-time)], .36*fadeIce[1+.3*(parm7-time)], 1
+	}
+}
+
+
+//====================
+// Shadow Meshes
+//====================
+models/monsters/jetpack/jetpack_shadow {
+	diffusemap	textures/editor/shadow
+}
+
+models/monsters/jetpack/jetpackhead_shadow {
+	diffusemap	textures/editor/shadow
+}

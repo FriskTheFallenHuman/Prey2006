@@ -29,8 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SELECT_H_
 #define __SELECT_H_
 
-typedef enum
-{
+typedef enum {
 	sel_brush,
 	// sel_sticky_brush,
 	// sel_face,
@@ -43,24 +42,21 @@ typedef enum
 	sel_editpoint			// for editing points
 } select_t;
 
-class CDragPoint
-{
+class CDragPoint {
 public:
 	idVec3 vec;
-	idEditorBrush* pBrush;
+	idEditorBrush * pBrush;
 	int nType;
 	bool priority;
 	CDragPoint() {};
-	CDragPoint( idEditorBrush* b, idVec3 v, int type, bool p )
-	{
+	CDragPoint( idEditorBrush* b, idVec3 v, int type, bool p ) {
 		pBrush = b;
 		VectorCopy( v, vec );
 		nType = type;
 		priority = p;
 	}
 
-	void Set( idEditorBrush* b, idVec3 v, int type )
-	{
+	void Set( idEditorBrush* b, idVec3 v, int type ) {
 		pBrush = b;
 		VectorCopy( v, vec );
 		nType = type;
@@ -70,11 +66,10 @@ public:
 };
 
 
-typedef struct
-{
-	idEditorBrush*		brush;
-	face_t*		face;
-	CDragPoint* point;
+typedef struct {
+	idEditorBrush	*	brush;
+	face_t	*	face;
+	CDragPoint * point;
 	float		dist;
 	bool	selected;
 } qertrace_t;
@@ -89,7 +84,7 @@ typedef struct
 
 
 qertrace_t Test_Ray( const idVec3& origin, const idVec3& dir, int flags );
-CDragPoint* PointRay( const idVec3& org, const idVec3& dir, float* dist );
+CDragPoint * PointRay( const idVec3& org, const idVec3& dir, float * dist );
 void SelectCurvePointByRay( const idVec3& org, const idVec3& dir, int buttons );
 
 void Select_GetBounds( idVec3& mins, idVec3& maxs );
@@ -100,7 +95,7 @@ void Select_Deselect( bool bDeselectFaces = true );
 void Select_Invert();
 void Select_Clone();
 void Select_Move( idVec3 delta, bool bSnap = true );
-void WINAPI Select_SetTexture( texdef_t* texdef, brushprimit_texdef_t* brushprimit_texdef, bool bFitScale = false, void* pPlugTexdef = NULL, bool update = true );
+void WINAPI Select_SetTexture( texdef_t * texdef, brushprimit_texdef_t * brushprimit_texdef, bool bFitScale = false, void * pPlugTexdef = NULL, bool update = true );
 void Select_FlipAxis( int axis );
 void Select_RotateAxis( int axis, float deg, bool bPaint = true, bool bMouse = false );
 void Select_CompleteTall();
@@ -120,13 +115,13 @@ void Select_WireFrame( bool wireFrame );
 void Select_ForceVisible( bool visible );
 void Select_GetMid( idVec3& mid );
 void Select_SetDefaultTexture( const idMaterial* mat, bool fitScale, bool setTexture );
-void Select_UpdateTextureName( const char* name );
+void Select_UpdateTextureName( const char * name );
 
 void Select_FlipTexture( bool y );
 void Select_SetPatchFit( float dim1, float dim2, float srcWidth, float srcHeight, float rot );
 void Select_SetPatchST( float s1, float t1, float s2, float t2 );
-void Select_ProjectFaceOntoPatch( face_t* face );
-void Select_CopyPatchTextureCoords( patchMesh_t* p );
+void Select_ProjectFaceOntoPatch( face_t * face );
+void Select_CopyPatchTextureCoords( patchMesh_t * p );
 void Select_AllTargets();
 void Select_Scale( float x, float y, float z );
 void Select_RotateTexture( float amt, bool absolute = false );

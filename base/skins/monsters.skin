@@ -1,0 +1,699 @@
+skin skins/monsters/centurion_armless {
+	models/monsters/centurion/centurionguns		textures/common/nodraw
+}
+
+
+
+skin skins/monsters/kidshadow {
+	models/monsters/girl_liquid/girl_liquid			textures/common/shadow
+	models/monsters/girl_liquid/girl_liquid_shadow	textures/common/nodraw
+}
+
+skin skins/monsters/aliengirl {	
+	models/monsters/girl_liquid/girl_liquid			models/monsters/girl/alien
+}
+
+skin skins/monsters/normalgirl {	
+	models/monsters/girl_liquid/girl_liquid			models/monsters/girl_liquid/girl_liquid_normal
+	models/monsters/girl_liquid/girl_liquid_shadow	textures/common/shadow
+}
+
+skin skins/monsters/normalgirl2 {	
+	models/monsters/girl_liquid/girl_liquid			models/monsters/girl_liquid/girl_liquid2_normal
+	models/monsters/girl_liquid/girl_liquid_shadow	textures/common/shadow
+}
+
+skin skins/monsters/normalgirl_blond {	
+	models/monsters/girl_liquid/girl_liquid			models/monsters/girl_liquid/girl_liquid_blond_normal
+	models/monsters/girl_liquid/girl_liquid_shadow	textures/common/shadow
+}
+
+skin skins/monsters/normalgirl_red {	
+	models/monsters/girl_liquid/girl_liquid			models/monsters/girl_liquid/girl_liquid_redhead_normal
+	models/monsters/girl_liquid/girl_liquid_shadow	textures/common/shadow
+}
+
+skin skins/monsters/possessedgirl {
+	models/monsters/girl_liquid/girl_liquid			textures/common/nodraw
+	models/monsters/girl_liquid/girl_liquid_shadow	textures/common/nodraw
+}
+
+skin skins/monsters/possessedgirl2 {
+	models/monsters/girl_liquid/girl_liquid			models/monsters/girl_liquid/girl_liquid2
+	models/monsters/girl_liquid/girl_liquid_shadow	textures/common/nodraw
+}
+
+skin skins/monsters/possessedgirl_blond {	
+	models/monsters/girl_liquid/girl_liquid			models/monsters/girl_liquid/girl_liquid_blond
+	models/monsters/girl_liquid/girl_liquid_shadow	textures/common/nodraw
+}
+
+skin skins/monsters/possessedgirl_redhead {	
+	models/monsters/girl_liquid/girl_liquid			models/monsters/girl_liquid/girl_liquid_redhead
+	models/monsters/girl_liquid/girl_liquid_shadow	textures/common/nodraw
+}
+
+skin skins/monsters/possessed_soul {
+	models/monsters/girl_liquid/girl_liquid			textures/sfx/possessed_girl_soul
+	models/monsters/girl_liquid/girl_liquid_shadow	textures/common/nodraw
+}
+
+skin skins/monsters/boy_normal {	
+	models/monsters/boy/boy							models/monsters/boy/boy_normal
+	models/monsters/boy/boy_shadow					textures/common/shadow
+}
+
+skin skins/monsters/boy_b_normal {	
+	models/monsters/boy/boy							models/monsters/boy/boy_b_normal
+	models/monsters/boy/boy_shadow					textures/common/shadow
+}
+
+skin skins/monsters/possessedboy_b {	
+	models/monsters/boy/boy							models/monsters/boy/boy_b
+	models/monsters/boy/boy_shadow					textures/common/nodraw
+}
+
+skin skins/monsters/possessedboy_nogore {	
+	models/monsters/boy/boy							models/monsters/boy/alien
+}
+
+skin skins/monster/possessedgirl {
+	models/monsters/girl_liquid/girl_liquid			models/monsters/girl_liquid/girl_liquid
+	models/monsters/girl_liquid/girl_liquid_shadow	textures/common/nodraw
+}
+
+skin skins/monster/possessedboy {
+	models/monsters/boy/boy							models/monsters/boy/boy
+	models/monsters/boy/boy_shadow					textures/common/nodraw
+}
+
+skin skins/monsters/creaturex {
+	models/characters/girlfriend/girlfriend_liquid_head 		textures/common/nodraw
+	models/monsters/girlfriend_x/girlfriend_x_body				textures/common/nodraw
+	models/monsters/girlfriend_x/girlfriend_liquid_head_shadow	textures/common/nodraw
+	models/monsters/girlfriend_x/girlfriend_x_body_shadow		textures/common/nodraw
+	models/monsters/creature_x/creature_x_body_shadow			textures/common/shadow
+	models/monsters/creature_x/creature_x_guns_shadow			textures/common/shadow
+	models/monsters/creature_x/creature_x_guns_l_shadow			textures/common/shadow
+	models/monsters/creature_x/creature_x_guns_r_shadow			textures/common/shadow
+}
+
+skin skins/monsters/girlfriendx {
+	models/characters/girlfriend/girlfriend_liquid_head			models/characters/girlfriend/girlfriend_x_head
+	models/monsters/creature_x/creature_x_body					textures/common/nodraw
+	models/monsters/creature_x/creature_x_guns					models/monsters/creature_x/creature_x_guns
+	models/monsters/girlfriend_x/girlfriend_liquid_head_shadow	textures/common/shadow
+	models/monsters/girlfriend_x/girlfriend_x_body_shadow		textures/common/shadow
+	models/monsters/creature_x/creature_x_body_shadow			textures/common/nodraw
+	models/monsters/creature_x/creature_x_guns_shadow			textures/common/shadow
+	models/monsters/creature_x/creature_x_guns_l_shadow			textures/common/shadow
+	models/monsters/creature_x/creature_x_guns_r_shadow			textures/common/shadow
+}
+
+skin skins/monsters/gfx_gun_blink {
+	models/characters/girlfriend/girlfriend_liquid_head			models/characters/girlfriend/girlfriend_x_head
+	models/monsters/creature_x/creature_x_body					textures/common/nodraw
+	models/monsters/creature_x/creature_x_guns					models/monsters/creature_x/creature_x_guns_blink
+	models/monsters/girlfriend_x/girlfriend_liquid_head_shadow	textures/common/shadow
+	models/monsters/girlfriend_x/girlfriend_x_body_shadow		textures/common/shadow
+	models/monsters/creature_x/creature_x_body_shadow			textures/common/nodraw
+	models/monsters/creature_x/creature_x_guns_shadow			textures/common/shadow
+	models/monsters/creature_x/creature_x_guns_l_shadow			textures/common/shadow
+	models/monsters/creature_x/creature_x_guns_r_shadow			textures/common/shadow
+}
+
+skin skins/monsters/gfx_gun_blink_l {
+	models/characters/girlfriend/girlfriend_liquid_head			models/characters/girlfriend/girlfriend_x_head
+	models/monsters/creature_x/creature_x_body					textures/common/nodraw
+	models/monsters/creature_x/creature_x_guns_l				models/monsters/creature_x/creature_x_guns_blink
+	models/monsters/girlfriend_x/girlfriend_liquid_head_shadow	textures/common/shadow
+	models/monsters/girlfriend_x/girlfriend_x_body_shadow		textures/common/shadow
+	models/monsters/creature_x/creature_x_body_shadow			textures/common/nodraw
+	models/monsters/creature_x/creature_x_guns_shadow			textures/common/shadow
+	models/monsters/creature_x/creature_x_guns_l_shadow			textures/common/shadow
+	models/monsters/creature_x/creature_x_guns_r_shadow			textures/common/shadow
+}
+
+skin skins/monsters/gfx_gun_blink_r {
+	models/characters/girlfriend/girlfriend_liquid_head			models/characters/girlfriend/girlfriend_x_head
+	models/monsters/creature_x/creature_x_body					textures/common/nodraw
+	models/monsters/creature_x/creature_x_guns_r				models/monsters/creature_x/creature_x_guns_blink
+	models/monsters/girlfriend_x/girlfriend_liquid_head_shadow	textures/common/shadow
+	models/monsters/girlfriend_x/girlfriend_x_body_shadow		textures/common/shadow
+	models/monsters/creature_x/creature_x_body_shadow			textures/common/nodraw
+	models/monsters/creature_x/creature_x_guns_shadow			textures/common/shadow
+	models/monsters/creature_x/creature_x_guns_l_shadow			textures/common/shadow
+	models/monsters/creature_x/creature_x_guns_r_shadow			textures/common/shadow
+}
+
+skin skins/monsters/gfx_no_gun_l {
+	models/characters/girlfriend/girlfriend_liquid_head			models/characters/girlfriend/girlfriend_x_head
+	models/monsters/creature_x/creature_x_body					textures/common/nodraw
+	models/monsters/creature_x/creature_x_guns_l				textures/common/nodraw
+	models/monsters/girlfriend_x/girlfriend_liquid_head_shadow	textures/common/shadow
+	models/monsters/girlfriend_x/girlfriend_x_body_shadow		textures/common/shadow
+	models/monsters/creature_x/creature_x_body_shadow			textures/common/nodraw
+	models/monsters/creature_x/creature_x_guns_shadow			textures/common/shadow
+	models/monsters/creature_x/creature_x_guns_l_shadow			textures/common/nodraw
+	models/monsters/creature_x/creature_x_guns_r_shadow			textures/common/shadow
+}
+
+skin skins/monsters/gfx_no_gun_r {
+	models/characters/girlfriend/girlfriend_liquid_head			models/characters/girlfriend/girlfriend_x_head
+	models/monsters/creature_x/creature_x_body					textures/common/nodraw
+	models/monsters/creature_x/creature_x_guns_r				textures/common/nodraw
+	models/monsters/girlfriend_x/girlfriend_liquid_head_shadow	textures/common/shadow
+	models/monsters/girlfriend_x/girlfriend_x_body_shadow		textures/common/shadow
+	models/monsters/creature_x/creature_x_body_shadow			textures/common/nodraw
+	models/monsters/creature_x/creature_x_guns_shadow			textures/common/shadow
+	models/monsters/creature_x/creature_x_guns_l_shadow			textures/common/shadow
+	models/monsters/creature_x/creature_x_guns_r_shadow			textures/common/nodraw
+}
+
+skin skins/monsters/gfx_no_gun_both {
+	models/characters/girlfriend/girlfriend_liquid_head			models/characters/girlfriend/girlfriend_x_head
+	models/monsters/creature_x/creature_x_body					textures/common/nodraw
+	models/monsters/creature_x/creature_x_guns_l				textures/common/nodraw
+	models/monsters/creature_x/creature_x_guns_r				textures/common/nodraw
+	models/monsters/girlfriend_x/girlfriend_liquid_head_shadow	textures/common/shadow
+	models/monsters/girlfriend_x/girlfriend_x_body_shadow		textures/common/shadow
+	models/monsters/creature_x/creature_x_body_shadow			textures/common/nodraw
+	models/monsters/creature_x/creature_x_guns_shadow			textures/common/shadow
+	models/monsters/creature_x/creature_x_guns_l_shadow			textures/common/nodraw
+	models/monsters/creature_x/creature_x_guns_r_shadow			textures/common/nodraw
+}
+
+skin skins/monsters/gfx_gun_blink_both {
+	models/characters/girlfriend/girlfriend_liquid_head			models/characters/girlfriend/girlfriend_x_head
+	models/monsters/creature_x/creature_x_body					textures/common/nodraw
+	models/monsters/creature_x/creature_x_guns_l				models/monsters/creature_x/creature_x_guns_blink
+	models/monsters/creature_x/creature_x_guns_r				models/monsters/creature_x/creature_x_guns_blink
+	models/monsters/girlfriend_x/girlfriend_liquid_head_shadow	textures/common/shadow
+	models/monsters/girlfriend_x/girlfriend_x_body_shadow		textures/common/shadow
+	models/monsters/creature_x/creature_x_body_shadow			textures/common/nodraw
+	models/monsters/creature_x/creature_x_guns_shadow			textures/common/shadow
+	models/monsters/creature_x/creature_x_guns_l_shadow			textures/common/shadow
+	models/monsters/creature_x/creature_x_guns_r_shadow			textures/common/shadow
+}
+
+
+
+skin skins/monsters/droid/droid_noadd {
+	models/monsters/droid/droid					models/monsters/droid/droid_noadd
+}
+
+
+
+skin skins/monsters/fodder/arm {
+	models/characters/body_parts/arm/arm		models/characters/body_parts/arm/arm
+	models/monsters/fodder/fodder_shadow		textures/common/shadow
+}
+
+skin skins/monsters/fodder/noarm {
+	models/characters/body_parts/arm/arm		textures/common/nodraw
+	models/monsters/fodder/fodder_shadow		textures/common/shadow
+}
+
+skin skins/monsters/fodder/bloody {
+	models/monsters/fodder/fodder				models/monsters/fodder/fodder_bloody
+	models/monsters/fodder/fodder_teeth			models/monsters/fodder/fodder_teeth_bloody
+	models/characters/body_parts/arm/arm		textures/common/nodraw
+	models/monsters/fodder/fodder_shadow		textures/common/shadow
+}
+
+skin skins/monsters/fodder_frozen {
+	models/monsters/fodder/fodder				models/monsters/fodder/fodder_frozen
+	models/monsters/fodder/fodder_teeth			models/monsters/fodder/fodder_frozen
+	models/characters/body_parts/arm/arm		textures/common/nodraw
+	models/monsters/fodder/fodder_shadow		textures/common/nodraw
+}
+
+skin skins/monsters/fodder_burned {
+	models/monsters/fodder/fodder				textures/sfx/monster_burned
+	models/monsters/fodder/fodder_teeth			textures/sfx/monster_burned
+	models/characters/body_parts/arm/arm		textures/common/nodraw
+	models/monsters/fodder/fodder_shadow		textures/common/shadow
+}
+
+skin skins/monsters/fodder_acid {
+	models/monsters/fodder/fodder				models/monsters/fodder/fodder_hidermelt
+	models/monsters/fodder/fodder_teeth			models/monsters/fodder/fodder_teeth_hidermelt
+	models/characters/body_parts/arm/arm		textures/common/nodraw
+	models/monsters/fodder/fodder_shadow		textures/common/shadow
+}
+
+
+
+skin skins/monsters/gasbag_death {
+	models/monsters/gasbag/gasbag				models/monsters/gasbag/gasbag_death
+}
+
+
+
+skin skins/monsters/harvester_gun {
+	models/weapons/launcher/pickup/launcher_pickup		models/weapons/launcher/pickup/launcher_pickup_noblink
+	models/monsters/harvester/harvester_shadow			textures/common/shadow
+	models/monsters/harvester/harvesterhead_shadow		textures/common/shadow
+}
+
+skin skins/monsters/harvesternogun {
+	models/weapons/launcher/pickup/launcher_pickup		models/monsters/harvester/harvesterguns
+	models/monsters/harvester/harvester_shadow			textures/common/shadow
+	models/monsters/harvester/harvesterhead_shadow		textures/common/shadow
+}
+
+skin skins/monsters/harvester_acid {
+	models/monsters/harvester/harvester					models/monsters/harvester/harvester_hidermelt
+	models/monsters/harvester/harvestertorso			models/monsters/harvester/harvester_hidermelt
+	models/monsters/harvester/harvesterhead 			models/monsters/harvester/harvesterhead_hidermelt
+	models/monsters/harvester/harvesterteeth			models/monsters/harvester/harvesterteeth_hidermelt
+	models/monsters/harvester/harvesterguts				models/monsters/harvester/harvesterguts_hidermelt
+	models/weapons/launcher/pickup/launcher_pickup		models/monsters/harvester/harvesterguns
+	models/monsters/harvester/harvester_shadow			textures/common/shadow
+	models/monsters/harvester/harvesterhead_shadow		textures/common/shadow
+	models/monsters/harvester/harvesterguts_shadow		textures/common/shadow
+}
+
+skin skins/monsters/harvester_burned {
+	models/monsters/harvester/harvester					textures/sfx/monster_burned
+	models/monsters/harvester/harvestertorso			textures/sfx/monster_burned
+	models/monsters/harvester/harvesterhead 			textures/sfx/monster_burned
+	models/weapons/launcher/pickup/launcher_pickup		models/monsters/harvester/harvesterguns
+	models/monsters/harvester/harvester_shadow			textures/common/shadow
+	models/monsters/harvester/harvesterhead_shadow		textures/common/shadow
+}
+
+skin skins/monsters/harvester_frozen {
+	models/monsters/harvester/harvester					models/monsters/harvester/harvester_frozen
+	models/monsters/harvester/harvestertorso			models/monsters/harvester/harvester_frozen
+	models/monsters/harvester/harvesterhead 			models/monsters/harvester/harvesterhead_frozen
+	models/weapons/launcher/pickup/launcher_pickup		models/monsters/harvester/harvesterguns
+	models/monsters/harvester/harvester_shadow			textures/common/nodraw
+	models/monsters/harvester/harvesterhead_shadow		textures/common/nodraw
+}
+
+
+
+skin skins/monsters/hound_bloody {
+	models/monsters/hound/houndhead 			models/monsters/hound/houndhead_bloody
+	models/monsters/hound/houndbody_shadow		textures/common/shadow
+	models/monsters/hound/houndhead_shadow 		textures/common/shadow
+}
+
+skin skins/monsters/hound_acid {
+	models/monsters/hound/houndbody				models/monsters/hound/houndbody_hidermelt
+	models/monsters/hound/houndhead 			models/monsters/hound/houndhead_hidermelt
+	models/monsters/hound/houndbody_shadow		textures/common/shadow
+	models/monsters/hound/houndhead_shadow 		textures/common/shadow
+}
+
+skin skins/monsters/hound_burned {
+	models/monsters/hound/houndbody				textures/sfx/monster_burned
+	models/monsters/hound/houndhead 			textures/sfx/monster_burned
+	models/monsters/hound/houndbody_shadow		textures/common/shadow
+	models/monsters/hound/houndhead_shadow 		textures/common/shadow
+}
+
+skin skins/monsters/hound_frozen {
+	models/monsters/hound/houndbody				models/monsters/hound/houndbody_frozen
+	models/monsters/hound/houndhead 			models/monsters/hound/houndhead_frozen
+	models/monsters/hound/houndbody_shadow		textures/common/nodraw
+	models/monsters/hound/houndhead_shadow 		textures/common/nodraw
+}
+
+skin skins/monsters/houndbloody {
+	models/monsters/hound/hounddrool			models/monsters/hound/hounddroolbloody
+	models/monsters/hound/houndhead 			models/monsters/hound/houndheadbloody
+	models/monsters/hound/houndbody_shadow		textures/common/shadow
+	models/monsters/hound/houndhead_shadow 		textures/common/shadow
+}
+
+skin skins/monsters/houndshadow {
+	models/monsters/hound/houndbody				textures/common/shadow
+	models/monsters/hound/hounddrool			textures/common/shadow
+	models/monsters/hound/houndhead 			textures/common/shadow
+}
+
+skin skins/monsters/hound {
+	models/monsters/hound/houndbody_shadow		textures/common/shadow
+	models/monsters/hound/houndhead_shadow 		textures/common/shadow
+}
+
+skin skins/monsters/hunter {
+	models/weapons/rifle_world/r_rifle 					models/monsters/hunter/hunter_rifle
+	models/monsters/hunter/hunter_liquid_shadow			textures/common/shadow
+	models/monsters/hunter/hunter_liquid_head_shadow	textures/common/shadow
+}
+
+skin skins/monsters/elite_hunter {
+	models/monsters/hunter/hunter_liquid_head			models/monsters/elite_hunter/elite_hunter_head
+	models/monsters/hunter/hunter_liquid				models/monsters/elite_hunter/elite_hunter
+	models/monsters/hunter/hunter_liquid_shadow			textures/common/shadow
+	models/monsters/hunter/hunter_liquid_head_shadow	textures/common/shadow
+}
+
+skin skins/monsters/hunter_gun {
+	models/weapons/rifle/pickup/rifle_pickup			models/weapons/rifle/pickup/rifle_pickup_noblink
+}
+
+skin skins/monsters/hunter_nogun {
+	models/weapons/rifle_world/r_rifle					textures/common/nodraw
+	models/monsters/hunter/hunter_liquid_shadow			textures/common/shadow
+	models/monsters/hunter/hunter_liquid_head_shadow	textures/common/shadow
+}
+
+skin skins/monsters/elite_hunter_nogun {
+	models/monsters/hunter/hunter_liquid_head			models/monsters/elite_hunter/elite_hunter_head
+	models/monsters/hunter/hunter_liquid				models/monsters/elite_hunter/elite_hunter
+	models/weapons/rifle_world/r_rifle					textures/common/nodraw
+	models/monsters/hunter/hunter_liquid_shadow			textures/common/shadow
+	models/monsters/hunter/hunter_liquid_head_shadow	textures/common/shadow
+}
+
+skin skins/monsters/huntercloaked {
+	models/monsters/hunter2/hunter2head 				models/monsters/hunter2/hunter2headcloaked
+	models/monsters/hunter2/hunter2body 				models/monsters/hunter2/hunter2bodycloaked
+	models/monsters/hunter/hunterhead 					models/monsters/hunter2/hunter2headcloaked
+	models/monsters/hunter/hunterbody 					models/monsters/hunter2/hunter2bodycloaked
+	models/weapons/rifle/rifle 							models/weapons/rifle/riflecloaked // used by the monster_weapon_riflecloaked
+}
+
+skin skins/monsters/hunterspirit {
+	models/monsters/hunter/hunterhead					models/monsters/hunter/hunterheadspirit
+	models/monsters/hunter/hunterbody					models/monsters/hunter/hunterbodyspirit
+	models/monsters/hunter2/hunter2head					models/monsters/hunter/hunterheadspirit
+	models/monsters/hunter2/hunter2body					models/monsters/hunter/hunterbodyspirit
+	models/weapons/rifle/rifle							models/weapons/rifle/riflespirit
+	models/monsters/hunter/hunter_liquid_shadow			textures/common/nodraw
+	models/monsters/hunter/hunter_liquid_head_shadow	textures/common/nodraw
+}
+
+skin skins/monsters/hunter_acid {
+	models/monsters/hunter/hunter_liquid				models/monsters/hunter/hunter_hidermelt
+	models/monsters/hunter/hunter_liquid_head			models/monsters/hunter/hunter_head_hidermelt
+	models/weapons/rifle_world/r_rifle					textures/common/nodraw
+	models/monsters/hunter/hunter_liquid_shadow			textures/common/shadow
+	models/monsters/hunter/hunter_liquid_head_shadow	textures/common/shadow
+}
+
+skin skins/monsters/elite_hunter_acid {
+	models/monsters/hunter/hunter_liquid				models/monsters/elite_hunter/elite_hunter_hidermelt
+	models/monsters/hunter/hunter_liquid_head			models/monsters/elite_hunter/elite_hunter_head_hidermelt
+	models/weapons/rifle_world/r_rifle					textures/common/nodraw
+	models/monsters/hunter/hunter_liquid_shadow			textures/common/shadow
+	models/monsters/hunter/hunter_liquid_head_shadow	textures/common/shadow
+}
+
+skin skins/monsters/hunter_burned {
+	models/monsters/hunter/hunter_liquid				textures/sfx/monster_burned
+	models/monsters/hunter/hunter_liquid_head			textures/sfx/monster_burned
+	models/monsters/hunter/hunter_liquid_gib			textures/sfx/monster_burned
+	models/monsters/hunter/hunter_liquid_head_gib		textures/sfx/monster_burned
+	models/weapons/rifle_world/r_rifle					textures/common/nodraw
+	models/monsters/hunter/hunter_liquid_shadow			textures/common/shadow
+	models/monsters/hunter/hunter_liquid_head_shadow	textures/common/shadow
+}
+
+skin skins/monsters/hunter_frozen {
+	models/monsters/hunter/hunter_liquid				models/monsters/hunter/hunter_frozen
+	models/monsters/hunter/hunter_liquid_head			models/monsters/hunter/hunter_head_frozen
+	models/monsters/hunter/hunter_liquid_gib 			models/monsters/hunter/hunter_frozen
+	models/monsters/hunter/hunter_liquid_head_gib 		models/monsters/hunter/hunter_head_frozen
+	models/weapons/rifle_world/r_rifle					textures/common/nodraw
+	models/monsters/hunter/hunter_liquid_shadow			textures/common/nodraw
+	models/monsters/hunter/hunter_liquid_head_shadow	textures/common/nodraw
+}
+
+
+
+skin skins/monsters/jetpack {
+	models/weapons/launcher/pickup/launcher_pickup			models/weapons/launcher/pickup/launcher_pickup_noglow
+	models/monsters/jetpack/jetpack_shadow					textures/common/shadow
+	models/monsters/jetpack/jetpackhead_shadow				textures/common/shadow
+}
+
+skin skins/monsters/jetpack_burned {
+	models/monsters/jetpack/jetpack							textures/sfx/monster_burned
+	models/monsters/jetpack/jetpackhead						textures/sfx/monster_burned
+	models/monsters/jetpack/jetpack_shadow					textures/common/shadow
+	models/monsters/jetpack/jetpackhead_shadow				textures/common/shadow
+}
+
+skin skins/monsters/jetpack_frozen {
+	models/monsters/jetpack/jetpack							models/monsters/jetpack/jetpack_frozen
+	models/monsters/jetpack/jetpackhead						models/monsters/jetpack/jetpackhead_frozen
+	models/monsters/jetpack/jetpack_shadow					textures/common/nodraw
+	models/monsters/jetpack/jetpackhead_shadow				textures/common/nodraw
+}
+
+skin skins/monsters/jetpack_mine {
+	models/projectiles/mine/mine 							models/projectiles/mine/jetpack_mine_b
+}
+
+skin skins/monsters/gfx_recharger {
+	models/projectiles/mine/jetpack_mine_b					models/projectiles/mine/recharger
+}
+
+
+
+skin skins/monsters/keeper_nolegs {
+	models/monsters/keeper/keeperleg			textures/common/nodraw	
+	models/monsters/keeper/keeperbody_shadow	textures/common/shadow
+	models/monsters/keeper/keeperhead_shadow	textures/common/shadow
+	models/monsters/keeper/keeperleg_shadow		textures/common/nodraw
+}
+
+skin skins/monsters/keeper_acid {
+	models/monsters/keeper/keeperbody			models/monsters/keeper/keeperbody_hidermelt
+	models/monsters/keeper/keeperhead			models/monsters/keeper/keeperhead_hidermelt
+	models/monsters/keeper/keeperleg			textures/common/nodraw
+	models/monsters/keeper/keepereye_left		textures/common/nodraw
+	models/monsters/keeper/keepereye_right		textures/common/nodraw
+	models/monsters/keeper/keeperbody_shadow	textures/common/shadow
+	models/monsters/keeper/keeperhead_shadow	textures/common/shadow
+	models/monsters/keeper/keeperleg_shadow		textures/common/nodraw
+}
+
+skin skins/monsters/keeper_burned {
+	models/monsters/keeper/keeperbody			textures/sfx/monster_burned
+	models/monsters/keeper/keeperhead			textures/sfx/monster_burned	
+	models/monsters/keeper/keeperleg			textures/common/nodraw
+	models/monsters/keeper/keepereye_left		textures/sfx/monster_burned
+	models/monsters/keeper/keepereye_right		textures/sfx/monster_burned
+	models/monsters/keeper/keeperbody_shadow	textures/common/shadow
+	models/monsters/keeper/keeperhead_shadow	textures/common/shadow
+	models/monsters/keeper/keeperleg_shadow		textures/common/nodraw
+}
+
+skin skins/monsters/keeper {
+	models/monsters/keeper/keeperbody_shadow	textures/common/shadow
+	models/monsters/keeper/keeperhead_shadow	textures/common/shadow
+	models/monsters/keeper/keeperleg_shadow		textures/common/shadow
+}
+
+skin skins/monsters/mutate_acid {
+	models/monsters/mutate/alienhead			models/monsters/mutate/alienhead_hidermelt
+	models/monsters/mutate/humanhead			models/monsters/mutate/humanhead_hidermelt
+	models/monsters/mutate/mutatebody			models/monsters/mutate/mutatebody_hidermelt
+	models/monsters/mutate/alienhead_shadow		textures/common/shadow
+	models/monsters/mutate/humanhead_shadow		textures/common/shadow
+	models/monsters/mutate/mutatebody_shadow	textures/common/shadow
+	models/monsters/mutate/fluidtube_shadow		textures/common/shadow
+}
+
+skin skins/monsters/mutate_burned {
+	models/monsters/mutate/alienhead			textures/sfx/monster_burned
+	models/monsters/mutate/humanhead			textures/sfx/monster_burned
+	models/monsters/mutate/mutatebody			textures/sfx/monster_burned
+	models/monsters/mutate/alienhead_shadow		textures/common/shadow
+	models/monsters/mutate/humanhead_shadow		textures/common/shadow
+	models/monsters/mutate/mutatebody_shadow	textures/common/shadow
+	models/monsters/mutate/fluidtube_shadow		textures/common/shadow
+}
+
+skin skins/monsters/mutate_frozen {
+	models/monsters/mutate/alienhead			models/monsters/mutate/alienhead_frozen
+	models/monsters/mutate/humanhead			models/monsters/mutate/humanhead_frozen
+	models/monsters/mutate/mutatebody			models/monsters/mutate/mutatebody_frozen
+	models/monsters/mutate/alienhead_shadow		textures/common/nodraw
+	models/monsters/mutate/humanhead_shadow		textures/common/nodraw
+	models/monsters/mutate/mutatebody_shadow	textures/common/nodraw
+	models/monsters/mutate/fluidtube_shadow		textures/common/nodraw
+}
+
+skin skins/monsters/mutate {
+	models/monsters/mutate/alienhead_shadow		textures/common/shadow
+	models/monsters/mutate/humanhead_shadow		textures/common/shadow
+	models/monsters/mutate/mutatebody_shadow	textures/common/shadow
+	models/monsters/mutate/fluidtube_shadow		textures/common/shadow
+}
+
+skin skins/monsters/mutilated {
+	models/monsters/mutilated/mutilated_shadow					textures/common/shadow
+	models/monsters/mutilated/mutilated_head_neck_shadow		textures/common/shadow
+	models/monsters/mutilated/mutilated_guts_left_shadow		textures/common/shadow
+	models/monsters/mutilated/mutilated_guts_right_shadow		textures/common/shadow
+	models/monsters/mutilated/mutilated_leftarm_shadow			textures/common/shadow
+	models/monsters/mutilated/mutilated_leftside_shadow			textures/common/shadow
+	models/monsters/mutilated/mutilated_rightarm_shadow			textures/common/shadow
+	models/monsters/mutilated/mutilated_rightside_shadow		textures/common/shadow
+	models/monsters/mutilated/mutilated_twosided_shadow			textures/common/shadow
+	models/characters/blood_stump/blood_stump_mutilated_shadow	textures/common/shadow
+}
+
+skin skins/monsters/mutilated_acid {
+	models/monsters/mutilated/mutilated_leftarm					models/monsters/mutilated/mutilated_leftarm_hidermelt
+	models/monsters/mutilated/mutilated_rightarm				models/monsters/mutilated/mutilated_rightarm_hidermelt
+	models/monsters/mutilated/mutilated_neck					models/monsters/mutilated/mutilated_neck_hidermelt
+	models/monsters/mutilated/mutilated_leftside				models/monsters/mutilated/mutilated_hidermelt
+	models/monsters/mutilated/mutilated_rightside				models/monsters/mutilated/mutilated_hidermelt
+	models/monsters/mutilated/mutilated_guts_left				models/monsters/mutilated/mutilated_guts_left_hidermelt
+	models/monsters/mutilated/mutilated_guts_right				models/monsters/mutilated/mutilated_guts_right_hidermelt
+	models/monsters/mutilated/mutilated_head_neck				models/monsters/mutilated/mutilated_head_hidermelt
+	models/monsters/mutilated/mutilated_head					models/monsters/mutilated/mutilated_head_hidermelt
+	models/monsters/mutilated/mutilated							models/monsters/mutilated/mutilated_hidermelt
+	models/monsters/mutilated/mutilated_dome  					models/monsters/mutilated/mutilated_dome_hidermelt
+	models/monsters/mutilated/mutilated_shadow					textures/common/shadow
+	models/monsters/mutilated/mutilated_head_neck_shadow		textures/common/shadow
+	models/monsters/mutilated/mutilated_guts_left_shadow		textures/common/shadow
+	models/monsters/mutilated/mutilated_guts_right_shadow		textures/common/shadow
+	models/monsters/mutilated/mutilated_leftarm_shadow			textures/common/shadow
+	models/monsters/mutilated/mutilated_leftside_shadow			textures/common/shadow
+	models/monsters/mutilated/mutilated_rightarm_shadow			textures/common/shadow
+	models/monsters/mutilated/mutilated_rightside_shadow		textures/common/shadow
+	models/monsters/mutilated/mutilated_twosided_shadow			textures/common/shadow
+	models/characters/blood_stump/blood_stump_mutilated_shadow	textures/common/shadow
+}
+
+skin skins/monsters/mutilated_frozen {
+	models/monsters/mutilated/mutilated_leftarm					models/monsters/mutilated/mutilated_frozen
+	models/monsters/mutilated/mutilated_rightarm				models/monsters/mutilated/mutilated_frozen
+	models/monsters/mutilated/mutilated_neck					models/monsters/mutilated/mutilated_frozen
+	models/monsters/mutilated/mutilated_leftside				models/monsters/mutilated/mutilated_frozen
+	models/monsters/mutilated/mutilated_rightside				models/monsters/mutilated/mutilated_frozen
+	models/monsters/mutilated/mutilated_guts_left				models/monsters/mutilated/mutilated_guts_frozen
+	models/monsters/mutilated/mutilated_guts_right				models/monsters/mutilated/mutilated_guts_frozen
+	models/monsters/mutilated/mutilated_head_neck				models/monsters/mutilated/mutilated_head_frozen
+	models/monsters/mutilated/mutilated_head					models/monsters/mutilated/mutilated_head_frozen
+	models/monsters/mutilated/mutilated							models/monsters/mutilated/mutilated_frozen
+	models/monsters/mutilated/mutilated_dome       				models/monsters/mutilated/mutilated_frozen
+	models/monsters/mutilated/mutilated_twosided				models/monsters/mutilated/mutilated_frozen
+	models/monsters/mutilated/mutilated_shadow					textures/common/nodraw
+	models/monsters/mutilated/mutilated_head_neck_shadow		textures/common/nodraw
+	models/monsters/mutilated/mutilated_guts_left_shadow		textures/common/nodraw
+	models/monsters/mutilated/mutilated_guts_right_shadow		textures/common/nodraw
+	models/monsters/mutilated/mutilated_leftarm_shadow			textures/common/nodraw
+	models/monsters/mutilated/mutilated_leftside_shadow			textures/common/nodraw
+	models/monsters/mutilated/mutilated_rightarm_shadow			textures/common/nodraw
+	models/monsters/mutilated/mutilated_rightside_shadow		textures/common/nodraw
+	models/monsters/mutilated/mutilated_twosided_shadow			textures/common/nodraw
+	models/characters/blood_stump/blood_stump_mutilated_shadow	textures/common/nodraw
+}
+
+skin skins/monsters/mutilated_male_damage_1 {
+	models/monsters/mutilated/mutilated_leftarm					textures/common/nodraw_flesh
+	models/monsters/mutilated/mutilated_leftarm_shadow			textures/common/nodraw
+}
+skin skins/monsters/mutilated_male_damage_2 {
+	models/monsters/mutilated/mutilated_rightarm				textures/common/nodraw_flesh
+	models/monsters/mutilated/mutilated_rightarm_shadow			textures/common/nodraw
+}
+skin skins/monsters/mutilated_male_damage_3	{
+	models/monsters/mutilated/mutilated_leftarm					textures/common/nodraw_flesh
+	models/monsters/mutilated/mutilated_rightarm				textures/common/nodraw_flesh
+	models/monsters/mutilated/mutilated_leftarm_shadow			textures/common/nodraw
+	models/monsters/mutilated/mutilated_rightarm_shadow			textures/common/nodraw
+}
+skin skins/monsters/mutilated_male_damage_12 {
+	models/monsters/mutilated/mutilated_leftside				textures/common/nodraw_flesh
+	models/monsters/mutilated/mutilated_rightside				textures/common/nodraw_flesh
+	models/monsters/mutilated/mutilated_leftside_shadow			textures/common/nodraw
+	models/monsters/mutilated/mutilated_rightside_shadow		textures/common/nodraw
+}
+skin skins/monsters/mutilated_male_damage_13 {
+	models/monsters/mutilated/mutilated_leftside				textures/common/nodraw_flesh
+	models/monsters/mutilated/mutilated_rightside				textures/common/nodraw_flesh
+	models/monsters/mutilated/mutilated_leftarm					textures/common/nodraw_flesh
+	models/monsters/mutilated/mutilated_leftside_shadow			textures/common/nodraw
+	models/monsters/mutilated/mutilated_rightside_shadow		textures/common/nodraw
+	models/monsters/mutilated/mutilated_leftarm_shadow			textures/common/nodraw
+}
+skin skins/monsters/mutilated_male_damage_14 {
+	models/monsters/mutilated/mutilated_leftside				textures/common/nodraw_flesh
+	models/monsters/mutilated/mutilated_rightside				textures/common/nodraw_flesh
+	models/monsters/mutilated/mutilated_rightarm				textures/common/nodraw_flesh
+	models/monsters/mutilated/mutilated_leftside_shadow			textures/common/nodraw
+	models/monsters/mutilated/mutilated_rightside_shadow		textures/common/nodraw
+	models/monsters/mutilated/mutilated_rightarm_shadow			textures/common/nodraw
+}
+skin skins/monsters/mutilated_male_damage_15 {
+	models/monsters/mutilated/mutilated_leftside				textures/common/nodraw_flesh
+	models/monsters/mutilated/mutilated_rightside				textures/common/nodraw_flesh
+	models/monsters/mutilated/mutilated_leftarm					textures/common/nodraw_flesh
+	models/monsters/mutilated/mutilated_rightarm				textures/common/nodraw_flesh
+	models/monsters/mutilated/mutilated_leftside_shadow			textures/common/nodraw
+	models/monsters/mutilated/mutilated_rightside_shadow		textures/common/nodraw
+	models/monsters/mutilated/mutilated_leftarm_shadow			textures/common/nodraw
+	models/monsters/mutilated/mutilated_rightarm_shadow			textures/common/nodraw
+}
+
+
+
+skin skins/monsters/spherebossstage2 {
+	models/monsters/sphere_boss/sphere_boss_translucent							models/monsters/sphere_boss/sphere_boss_translucent_nofp
+	models/monsters/sphere_boss/sphere_boss_shadow								textures/common/shadow
+	models/monsters/sphere_boss/sphere_boss_translucent_shadow					textures/common/nodraw	// this is bugged due to transition effect
+	models/monsters/sphere_boss/sphereboss_machine/sphereboss_machine_shadow	textures/common/shadow
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_body_shadow		textures/common/shadow
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_head_shadow		textures/common/shadow
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_headdress_shadow	textures/common/shadow
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_tubes_shadow		textures/common/shadow
+}
+
+skin skins/monsters/spherebossstage3 {
+	models/monsters/sphere_boss/sphere_boss_translucent							textures/common/nodraw
+	models/monsters/sphere_boss/sphere_boss_shadow								textures/common/shadow
+	models/monsters/sphere_boss/sphere_boss_translucent_shadow					textures/common/nodraw
+	models/monsters/sphere_boss/sphereboss_machine/sphereboss_machine_shadow	textures/common/shadow
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_body_shadow		textures/common/shadow
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_head_shadow		textures/common/shadow
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_headdress_shadow	textures/common/shadow
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_tubes_shadow		textures/common/shadow
+}
+
+skin skins/monsters/sphereboss_hide {
+	models/monsters/sphere_boss/sphere_boss										textures/common/nodraw
+	models/monsters/sphere_boss/sphere_boss_translucent							textures/common/nodraw
+	models/monsters/sphere_boss/sphereboss_machine/sphereboss_machine			textures/common/nodraw
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_body				textures/common/nodraw
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_head				textures/common/nodraw
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_headdress			textures/common/nodraw
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_tubes 				textures/common/nodraw
+	models/monsters/sphere_boss/sphere_boss_shadow								textures/common/nodraw
+	models/monsters/sphere_boss/sphere_boss_translucent_shadow					textures/common/nodraw
+	models/monsters/sphere_boss/sphereboss_machine/sphereboss_machine_shadow	textures/common/nodraw
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_body_shadow		textures/common/nodraw
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_head_shadow		textures/common/nodraw
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_headdress_shadow	textures/common/nodraw
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_tubes_shadow		textures/common/nodraw
+}
+
+skin skins/monsters/sphereboss {
+	models/monsters/sphere_boss/sphere_boss_shadow								textures/common/shadow
+	models/monsters/sphere_boss/sphere_boss_translucent_shadow					textures/common/shadow
+	models/monsters/sphere_boss/sphereboss_machine/sphereboss_machine_shadow	textures/common/shadow
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_body_shadow		textures/common/shadow
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_head_shadow		textures/common/shadow
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_headdress_shadow	textures/common/shadow
+	models/monsters/sphere_boss/sphereboss_woman/sphere_boss_tubes_shadow		textures/common/shadow
+}
+
+skin skins/monsters/deathwraith {
+	models/monsters/wraith/wraith			models/monsters/wraith/deathwraith
+	models/monsters/wraith/wraithgut		models/monsters/wraith/deathwraithgut
+}
+
+skin skins/monsters/wraithminion {
+	models/monsters/wraith/wraith			models/monsters/wraith/wraith_minion
+	models/monsters/wraith/wraithgut		models/monsters/wraith/wraithgut_minion
+}

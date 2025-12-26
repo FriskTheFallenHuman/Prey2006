@@ -1,0 +1,56 @@
+// Single player HUD
+
+// Available gui vars:
+//	s_debug						whether to display sound meter
+//	itemicon*					icon materials
+//	itemalpha*					icon alphas
+//	itemwide*					whether an icon is wide
+//	invehicle					whether currently piloting a vehicle
+//	lighter						whether lighter is active
+//	lightertemp					lighter temperature
+//	showspiritpower				whether the spirit bar should show up on the hud
+//	spiritwalking				whether the player is spiritwalking
+//	deathwalking				whether the player is deathwalking
+//	player_ammobar				whether to display the ammo bar
+//	player_altammobar			whether to display the alt ammo bar
+//	player_ammoamounttext		text of ammo amount
+//	player_altammoamounttext	text of alt ammo amount
+//	player_ammopercent			percentage of ammo remaining
+//	player_altammopercent		percentage of alt ammo remaining
+//	player_health				text of health amount
+//	player_spirit				text of spirit power amount
+//	player_healthpercent		percentage of health remaining
+//	player_spiritpercent		percentage of spirit power remaining
+//	idealweapon					ideal weapon index
+//	progress					percentage of progress
+//	tip							tip text
+//	tiptitle					tip title text
+//	playername					name of local player in MP
+//	ismultiplayer				whether in MP
+
+#include "guis/anchors.guifragment"
+
+windowDef desktop {
+	rect			0, 0, 640, 480
+	backcolor		0, 0, 0, 0
+	nocursor		1
+	scaleto43		0
+
+	windowDef NotVisibleInLetterBox {
+		rect		0, 0, 640, 480
+		visible		("gui::letterbox" == 0)
+
+		#include "guis/hud/hud_progressbar.guifragment"
+		#include "guis/hud/hud_ammobars.guifragment"
+		#include "guis/hud/hud_weaponswitchicons.guifragment"
+		#include "guis/hud/hud_itempickups.guifragment"
+		#include "guis/hud/hud_healthbars.guifragment"
+		#include "guis/hud/hud_lighter.guifragment"
+		#include "guis/hud/hud_damageindictor.guifragment"
+	}
+
+	#include "guis/hud/hud_tips.guifragment"
+	#include "guis/hud/hud_subtitles.guifragment"
+	#include "guis/hud/hud_devtools.guifragment"
+	#include "guis/hud/hud_textdebug.guifragment"
+}

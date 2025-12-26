@@ -1,3 +1,26 @@
+# rebb's Doom3 Ambient Light Fix
+#
+# [ Light-Projection Method ]
+# You must fill the alpha-channel of the light-projection image with RGB 1 ( 0-255 scale ) for it to work.
+#
+# This is basically the default Doom3 interaction.vfp,
+# with some changes and additions that improve the way ambient lighting is handled in the Game.
+# I was wondering one day if the awful looks of the D3 ambient light can be helped, and after lots of experimentation and some luck,
+# it boiled down to very few additional Instructions that are needed.
+# This should make using Ambient Lights much more viable :).
+#
+# Huge thanks go out to the following people for testing and helping me find/squash some annoying bugs :
+#
+#    * New Horizon and the DarkMod Team
+#    * Neuling, chumbucket91, The Happy Friar, the TTLG and Doom3World Forums
+#
+# If you want to use it in your Mod, Map or some other way,
+# please remember to give credit ;).
+#
+# Should you find problems, or have suggestions/questions/etc, feel free to contact me.
+#
+# rebb /at/ trisoup /dot/ net
+
 !!ARBvp1.0 OPTION ARB_position_invariant ;
 
 # VPROG_INTERACTION
@@ -75,7 +98,19 @@ DP4		result.texcoord[5].y, vertex.attrib[8], program.env[15];
 # texture 6's texcoords will be the halfangle in texture space
 
 # calculate normalized vector to light in R0
-SUB		R0, program.env[5], vertex.position;
+SUB		R0, program.env[4], vertex.position;
+DP3		R1, R0, R0;
+RSQ		R1, R1.x;
+MUL		R0, R0, R1.x;
+
+# calculate normalized vector to viewer in R1
+SUB		R1, program.env[5], vertex.position;
+DP3		R2, R1, R1;
+RSQ		R2, R2.x;
+MUL		R1, R1, R2.x;
+
+# add together to become the half angle vector in object space (non-normalized)
+ADD		R0, R0, R1;
 
 # put into texture space
 DP3		result.texcoord[6].x, vertex.attrib[9], R0;
@@ -83,6 +118,9 @@ DP3		result.texcoord[6].y, vertex.attrib[10], R0;
 DP3		result.texcoord[6].z, vertex.attrib[11], R0;
 
 # generate the vertex color, which can be 1.0, color, or 1.0 - color
+# for 1.0 : env[16] = 0, env[17] = 1
+# for color : env[16] = 1, env[17] = 0
+# for 1.0-color : env[16] = -1, env[17] = 1
 MAD		result.color, vertex.color, program.env[16], program.env[17];
 
 END
@@ -90,7 +128,7 @@ END
 
 #======================================================================
 
-!!ARBfp1.0 
+!!ARBfp1.0
 OPTION ARB_precision_hint_fastest;
 
 # texture 0 is the cube map
@@ -104,86 +142,99 @@ OPTION ARB_precision_hint_fastest;
 # env[0] is the diffuse modifier
 # env[1] is the specular modifier
 
-TEMP	light, color, R1, R2, localNormal, specular, lightDir, viewDir, lightDirRefl;
+TEMP	light, color, R1, R2, localNormal, specular, amb;
 
-PARAM	subOne = { -1.0, -1.0, -1.0, -1.0 };
-PARAM	scaleTwo = { 2.0, 2.0, 2.0, 2.0 };
-PARAM	consts = { 6.0, 12.0, 0.1, 0.0 };
+PARAM	subOne = { -1, -1, -1, -1 };
+PARAM	scaleTwo = { 2, 2, 2, 2 };
 
-# view dir normalized
-DP3		viewDir, fragment.texcoord[6], fragment.texcoord[6];
-RSQ		viewDir, viewDir.x;
-MUL		viewDir, viewDir.x, fragment.texcoord[6];
+# load the specular half angle first, because
+# the ATI shader gives a "too many indirections" error
+# if this is done right before the texture indirection
 
-# light dir normalized
-DP3		lightDir, fragment.texcoord[0], fragment.texcoord[0];
-RSQ		lightDir, lightDir.x;
-MUL		lightDir, lightDir.x, fragment.texcoord[0];
+#-----------------
+#TEX	specular, fragment.texcoord[6], texture[0], CUBE;
+#MAD	specular, specular, scaleTwo, subOne;
 
-####
-RCP		R1, viewDir.z;
-MUL		R1, R1, viewDir;
-TEX		R2, fragment.texcoord[5], texture[5], 2D;
-SUB		R2, 1.0, R2.w;
-MUL		R2, R2, R1;
-MUL		R2, R2, 0.0125;
 
-# normal
-SUB		R1, fragment.texcoord[1], R2; ####
-TEX		localNormal, R1, texture[1], 2D; #### localNormal, fragment.texcoord[1], texture[1], 2D;
-MOV		localNormal.x, localNormal.a;
-MAD		localNormal, localNormal, scaleTwo, subOne;
+# instead of using the normalization cube map, normalize with math
+DP3		specular, fragment.texcoord[6],fragment.texcoord[6];
+RSQ		specular, specular.x;
+MUL		specular, specular.x, fragment.texcoord[6];
+#-----------------
 
-# normal normalized
-DP3		R1, localNormal, localNormal;
-RSQ		R1, R1.x;
-MUL		localNormal, R1.x, localNormal;
 
-# reflect
-DP3		lightDirRefl, lightDir, localNormal;
-MUL		lightDirRefl, lightDirRefl, localNormal;
-MAD		lightDirRefl, lightDirRefl, scaleTwo.x, -lightDir;
+#
+# the amount of light contacting the fragment is the
+# product of the two light projections and the surface
+# bump mapping
+#
 
-# base light vectors
-DP3		light, lightDir, localNormal;
-DP3		specular, viewDir, lightDirRefl;
-POW		specular, specular.x, consts.x;
-MAX		specular, consts.z, specular;
+# perform the diffuse bump mapping
 
-# half-lambert
-MAD color, light, 0.5, 0.5;
-MUL color, color, color;
-LRP light, 0.35, light, color;
+#-----------------
+TEX	light, fragment.texcoord[0], texture[0], CUBE;
+MAD	light, light, scaleTwo, subOne;
+
+# instead of using the normalization cube map, normalize with math
+#DP3		light, fragment.texcoord[0],fragment.texcoord[0];
+#RSQ		light, light.x;
+#MUL		light, light.x, fragment.texcoord[0];
+#-----------------
+
+TEX	localNormal, fragment.texcoord[1], texture[1], 2D;
+MOV localNormal.x, localNormal.a;
+MAD	localNormal, localNormal, scaleTwo, subOne;
+DP3	light, light, localNormal;
 
 # modulate by the light projection
-TXP		R1, fragment.texcoord[3], texture[3], 2D;
-MUL		light, light, R1;
+TXP	R1, fragment.texcoord[3], texture[3], 2D;
+
+# rebb > projection-image based ambient "detection"
+SUB	amb.x, R1.w, 0.01;
+# super-simple ambient-shading ( localNormal.z ) being used here, modify as needed
+CMP light.xyz, amb.x, localNormal.z, light;
+#
+
+MUL	light, light, R1;
 
 # modulate by the light falloff
-TXP		R1, fragment.texcoord[2], texture[2], 2D;
-MUL		light, light, R1;
+TXP	R1, fragment.texcoord[2], texture[2], 2D;
+MUL	light, light, R1;
+
+
+#
+# the light will be modulated by the diffuse and
+# specular surface characteristics
+#
 
 # modulate by the diffuse map and constant diffuse factor
-SUB		R1, fragment.texcoord[4], R2; ####
-TEX		R1, R1, texture[4], 2D; #### R1, fragment.texcoord[4], texture[4], 2D;
-MUL		color, R1, program.env[0];
+TEX	R1, fragment.texcoord[4], texture[4], 2D;
+MUL	color, R1, program.env[0];
+
+# perform the specular bump mapping
+DP3	specular, specular, localNormal;
+
+# perform a dependent table read for the specular falloff
+TEX	R1, specular, texture[6], 2D;
 
 # modulate by the constant specular factor
-MUL		specular, specular, program.env[1];
-MUL		specular, specular, light;
+MUL	R1, R1, program.env[1];
 
-# modulate by the specular map
-SUB		R1, fragment.texcoord[5], R2; ####
-TEX		R1, R1, texture[5], 2D; #### R1, fragment.texcoord[5], texture[5], 2D;
-MUL		R1, R1, R1;
-MUL		specular, specular, R1;
-MUL		specular, specular, consts.y;
+# modulate by the specular map * 2
+TEX	R2, fragment.texcoord[5], texture[5], 2D;
+ADD	R2, R2, R2;
+MAD	color, R1, R2, color;
 
-# out color
-MUL		color, color, light;
-ADD		color, color, specular;
+
+MUL	color, light, color;
 
 # modify by the vertex color
-MUL		result.color, color, fragment.color;
+
+MUL result.color, color, fragment.color;
+
+# this should be better on future hardware, but current drivers make it slower
+#MUL result.color.xyz, color, fragment.color;
+
 
 END
+

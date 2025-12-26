@@ -1,0 +1,221 @@
+
+// note:  any coronas that we want to fade out over distance (using func_corona)
+// must be set up similar to these shaders, with the dual stages
+
+textures/sfx/corona/corona_a
+{
+	translucent
+	twosided
+	noshadows
+	deform corona 1
+
+	{ // default stage
+		if ( parm6 == 0 )
+		blend add
+		map textures/sfx/flare3
+//		vertexcolor
+		colored
+	}
+	{ // func_corona stage, that fades out over distance
+		if ( distance < ( parm5 + parm6 ) )
+		blend add
+		map textures/sfx/flare3
+//		vertexcolor
+		red		parm0 * ( 1 - ( distance - parm5 ) / parm6 )
+		green	parm1 * ( 1 - ( distance - parm5 ) / parm6 )
+		blue	parm2 * ( 1 - ( distance - parm5 ) / parm6 )
+	}
+}
+
+textures/sfx/corona/corona_b
+{
+	translucent
+	twosided
+	noshadows
+	deform corona 1
+	{ // default stage
+		if ( parm6 == 0 )
+		blend add
+		map textures/sfx/flare4
+//		vertexcolor
+		colored
+	}
+	{ // func_corona stage, that fades out over distance
+		if ( distance < ( parm5 + parm6 ) )
+		blend add
+		map textures/sfx/flare4
+//		vertexcolor
+		red		parm0 * ( 1 - ( distance - parm5 ) / parm6 )
+		green	parm1 * ( 1 - ( distance - parm5 ) / parm6 )
+		blue	parm2 * ( 1 - ( distance - parm5 ) / parm6 )
+	}
+}
+
+textures/sfx/corona/corona_c
+{
+	translucent
+	twosided
+	noshadows
+	deform corona 1
+	{ // default stage
+		if ( parm6 == 0 )
+		blend add
+		map textures/sfx/flare5
+//		vertexcolor
+		colored
+	}
+	{ // func_corona stage, that fades out over distance
+		if ( distance < ( parm5 + parm6 ) )
+		blend add
+		map textures/sfx/flare5
+//		vertexcolor
+		red		parm0 * ( 1 - ( distance - parm5 ) / parm6 )
+		green	parm1 * ( 1 - ( distance - parm5 ) / parm6 )
+		blue	parm2 * ( 1 - ( distance - parm5 ) / parm6 )
+	}
+}
+
+textures/sfx/corona/corona_d
+{
+	translucent
+	twosided
+	noshadows
+	deform corona 1
+	{ // default stage
+		if ( parm6 == 0 )
+		blend add
+		map textures/sfx/flare6
+//		vertexcolor
+		colored
+	}
+	{ // func_corona stage, that fades out over distance
+		if ( distance < ( parm5 + parm6 ) )
+		blend add
+		map textures/sfx/flare6
+//		vertexcolor
+		red		parm0 * ( 1 - ( distance - parm5 ) / parm6 )
+		green	parm1 * ( 1 - ( distance - parm5 ) / parm6 )
+		blue	parm2 * ( 1 - ( distance - parm5 ) / parm6 )
+	}
+}
+
+textures/sfx/corona/corona_e
+{
+	translucent
+	twosided
+	noshadows
+	deform corona 1
+	{ // default stage
+		if ( parm6 == 0 )
+		blend add
+		map textures/sfx/flare7
+//		vertexcolor
+		colored
+	}
+	{ // func_corona stage, that fades out over distance
+		if ( distance < ( parm5 + parm6 ) )
+		blend add
+		map textures/sfx/flare7
+//		vertexcolor
+		red		parm0 * ( 1 - ( distance - parm5 ) / parm6 )
+		green	parm1 * ( 1 - ( distance - parm5 ) / parm6 )
+		blue	parm2 * ( 1 - ( distance - parm5 ) / parm6 )
+	}
+}
+
+textures/sfx/corona/corona_f
+{
+	translucent
+	twosided
+	noshadows
+	deform corona 1
+	{ // default stage
+		if ( parm6 == 0 )
+		blend add
+		map textures/sfx/flare8
+//		vertexcolor
+		colored
+	}
+	{ // func_corona stage, that fades out over distance
+		if ( distance < ( parm5 + parm6 ) )
+		blend add
+		map textures/sfx/flare8
+//		vertexcolor
+		red		parm0 * ( 1 - ( distance - parm5 ) / parm6 )
+		green	parm1 * ( 1 - ( distance - parm5 ) / parm6 )
+		blue	parm2 * ( 1 - ( distance - parm5 ) / parm6 )
+	}
+}
+
+textures/sfx/corona/corona_g
+{
+	translucent
+	twosided
+	noshadows
+	deform corona 1
+	{ // default stage
+		if ( parm6 == 0 )
+		blend add
+		map textures/sfx/flare9
+//		vertexcolor
+		colored
+	}
+	{ // func_corona stage, that fades out over distance
+		if ( distance < ( parm5 + parm6 ) )
+		blend add
+		map textures/sfx/flare9
+//		vertexcolor
+		red		parm0 * ( 1 - ( distance - parm5 ) / parm6 )
+		green	parm1 * ( 1 - ( distance - parm5 ) / parm6 )
+		blue	parm2 * ( 1 - ( distance - parm5 ) / parm6 )
+	}
+}
+
+textures/sfx/corona/corona_h
+{
+	translucent
+	twosided
+	noshadows
+	deform corona 1
+	{ // default stage
+		if ( parm6 == 0 )
+		blend add
+		map textures/sfx/flare2
+//		vertexcolor
+		colored
+	}
+	{ // func_corona stage, that fades out over distance
+		if ( distance < ( parm5 + parm6 ) )
+		blend add
+		map textures/sfx/flare2
+//		vertexcolor
+		red		parm0 * ( 1 - ( distance - parm5 ) / parm6 )
+		green	parm1 * ( 1 - ( distance - parm5 ) / parm6 )
+		blue	parm2 * ( 1 - ( distance - parm5 ) / parm6 )
+	}
+}
+
+textures/sfx/corona/corona_i
+{
+	translucent
+	twosided
+	noshadows
+	deform corona 1
+	{ // default stage
+		if ( parm6 == 0 )
+		blend add
+		map textures/sfx/flare1
+//		vertexcolor
+		colored
+	}
+	{ // func_corona stage, that fades out over distance
+		if ( distance < ( parm5 + parm6 ) )
+		blend add
+		map textures/sfx/flare1
+//		vertexcolor
+
+		red		parm0 * ( 1 - ( distance - parm5 ) / parm6 )
+		green	parm1 * ( 1 - ( distance - parm5 ) / parm6 )
+		blue	parm2 * ( 1 - ( distance - parm5 ) / parm6 )
+	}
+}

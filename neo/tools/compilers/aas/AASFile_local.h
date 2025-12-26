@@ -39,8 +39,7 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 */
 
-class idAASFileLocal : public idAASFile
-{
+class idAASFileLocal : public idAASFile {
 	friend class idAASBuild;
 	friend class idAASReach;
 	friend class idAASCluster;
@@ -61,7 +60,7 @@ public:
 	virtual int					PointReachableAreaNum( const idVec3& origin, const idBounds& searchBounds, const int areaFlags, const int excludeTravelFlags ) const;
 	virtual int					BoundsReachableAreaNum( const idBounds& bounds, const int areaFlags, const int excludeTravelFlags ) const;
 	virtual void				PushPointIntoAreaNum( int areaNum, idVec3& point ) const;
-	virtual bool				Trace( aasTrace_t& trace, const idVec3& start, const idVec3& end ) const;
+	virtual bool				Trace( aasTrace_t & trace, const idVec3& start, const idVec3& end ) const;
 	virtual void				PrintInfo( void ) const;
 
 public:
@@ -79,7 +78,7 @@ public:
 	void						DeleteClusters( void );
 
 private:
-	bool						ParseIndex( idLexer& src, idList<aasIndex_t>& indexes );
+	bool						ParseIndex( idLexer& src, idList<aasIndex_t> & indexes );
 	bool						ParsePlanes( idLexer& src );
 	bool						ParseVertices( idLexer& src );
 	bool						ParseEdges( idLexer& src );
@@ -92,7 +91,7 @@ private:
 
 private:
 	int							BoundsReachableAreaNum_r( int nodeNum, const idBounds& bounds, const int areaFlags, const int excludeTravelFlags ) const;
-	void						MaxTreeDepth_r( int nodeNum, int& depth, int& maxDepth ) const;
+	void						MaxTreeDepth_r( int nodeNum, int & depth, int & maxDepth ) const;
 	int							MaxTreeDepth( void ) const;
 	int							AreaContentsTravelFlags( int areaNum ) const;
 	idVec3						AreaReachableGoal( int areaNum ) const;

@@ -1,0 +1,50 @@
+//--------------------------------------------------------------------
+// spiritvision.mtr
+//
+// materials for creatures / weapons in spirit bow vision mode
+//--------------------------------------------------------------------
+
+//----------------------------------------------
+// hunter
+//----------------------------------------------
+models/monsters/hunter/hunterheadspirit
+{
+	noshadows
+	translucent
+
+	bumpmap	addnormals(models/monsters/hunter/hunterhead_local, heightmap(models/monsters/hunter/hunterhead_h, 5 ) )
+	specularmap models/monsters/hunter/hunterhead_s
+	{
+		blend diffusemap
+		map makeintensity(models/monsters/hunter/hunterhead)
+		rgb 0.5
+	}
+}
+
+models/monsters/hunter/hunterbodyspirit
+{
+	noshadows
+	translucent
+
+	bumpmap	addnormals(models/monsters/hunter/hunterbody_local, heightmap(models/monsters/hunter/hunterbody_h, 5 ) )
+	specularmap models/monsters/hunter/hunterbody_s
+	{
+		blend	diffusemap
+//		map	makeintensity(models/monsters/hunter/hunterbody)
+		map	models/monsters/hunter/hunterbody
+	}
+}
+
+models/weapons/rifle/riflespirit
+{
+	noshadows
+	translucent
+
+	bumpmap		addnormals(models/weapons/rifle/rifle_local, heightmap(models/weapons/rifle/rifle_h, 1 ) )
+	specularmap	models/weapons/rifle/rifle_s
+	{
+		blend diffusemap
+		map makeintensity(models/weapons/rifle/rifle)
+	}
+}
+

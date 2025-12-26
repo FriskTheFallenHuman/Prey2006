@@ -33,9 +33,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "CameraTargetDlg.h"
 
 #ifdef _DEBUG
-	#define new DEBUG_NEW
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
@@ -43,8 +43,7 @@ If you have questions concerning this license or the applicable additional terms
 
 
 CCameraTargetDlg::CCameraTargetDlg( CWnd* pParent /*=NULL*/ )
-	: CDialog( CCameraTargetDlg::IDD, pParent )
-{
+	: CDialog( CCameraTargetDlg::IDD, pParent ) {
 	//{{AFX_DATA_INIT(CCameraTargetDlg)
 	m_nType = 0;
 	m_strName = _T( "" );
@@ -52,8 +51,7 @@ CCameraTargetDlg::CCameraTargetDlg( CWnd* pParent /*=NULL*/ )
 }
 
 
-void CCameraTargetDlg::DoDataExchange( CDataExchange* pDX )
-{
+void CCameraTargetDlg::DoDataExchange( CDataExchange* pDX ) {
 	CDialog::DoDataExchange( pDX );
 	//{{AFX_DATA_MAP(CCameraTargetDlg)
 	DDX_Radio( pDX, IDC_RADIO_FIXED, m_nType );
@@ -71,8 +69,7 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CCameraTargetDlg message handlers
 
-void CCameraTargetDlg::OnPopupNewcameraFixed()
-{
+void CCameraTargetDlg::OnPopupNewcameraFixed() {
 	// TODO: Add your command handler code here
 
 }

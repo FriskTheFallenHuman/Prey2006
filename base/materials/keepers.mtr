@@ -1,0 +1,541 @@
+textures/keepers/keeperfloor1
+{
+	qer_editorimage 	textures/keepers/keeperfloor1_d
+
+	bumpmap 		addnormals (textures/keepers/keeperfloor1_local, heightmap (textures/keepers/keeperfloor1_h, 6))
+
+	diffusemap	 	textures/keepers/keeperfloor1_d
+	specularmap		textures/keepers/keeperfloor1_s
+
+}
+
+textures/keepers/keeperfloor1_add
+{
+	qer_editorimage 	textures/keepers/keeperfloor1_d
+
+	bumpmap 		addnormals (textures/keepers/keeperfloor1_local, heightmap (textures/keepers/keeperfloor1_h, 6))
+
+	diffusemap	 	textures/keepers/keeperfloor1_d
+	specularmap		textures/keepers/keeperfloor1_s
+	{
+		blend add
+		map textures/keepers/keeperfloor1_add
+		rgb (.2 * sintable [.15 + time * .5 ]) + .7
+	}
+}
+
+
+textures/keepers/keeperfloor2
+{
+	qer_editorimage 	textures/keepers/keeperfloor2_d
+
+	bumpmap 		addnormals (textures/keepers/keeperfloor2_local, heightmap (textures/keepers/keeperfloor2_h, 6))
+
+	diffusemap	 	textures/keepers/keeperfloor2_d
+	specularmap		textures/keepers/keeperfloor2_s
+
+}
+
+
+textures/keepers/keeperfloor2_add
+{
+	qer_editorimage 	textures/keepers/keeperfloor2_d
+
+	bumpmap 		addnormals (textures/keepers/keeperfloor2_local, heightmap (textures/keepers/keeperfloor2_h, 6))
+
+	diffusemap	 	textures/keepers/keeperfloor2_d
+	specularmap		textures/keepers/keeperfloor2_s
+	{
+		blend add
+		map textures/keepers/keeperfloor2_add
+		rgb (.2 * sintable [.15 + time * .5 ]) + .7
+	}
+}
+
+
+textures/keepers/keeperfloor3
+{
+	qer_editorimage 	textures/keepers/keeperfloor3_d
+
+	bumpmap 		addnormals (textures/keepers/keeperfloor3_local, heightmap (textures/keepers/keeperfloor3_h, 6))
+
+	diffusemap	 	textures/keepers/keeperfloor3_d
+	specularmap		textures/keepers/keeperfloor3_s
+
+}
+
+textures/keepers/keeperpillar1
+{
+	qer_editorimage 	textures/keepers/keeperpillar1_d
+
+	bumpmap 		addnormals (textures/keepers/keeperpillar1_local, heightmap (textures/keepers/keeperpillar1_h, 6))
+
+	diffusemap	 	textures/keepers/keeperpillar1_d
+	specularmap		textures/keepers/keeperpillar1_s
+
+}
+
+textures/keepers/keepergrate1
+{
+	qer_editorimage 	textures/keepers/keepergrate1_local
+
+
+	{
+		blend bumpmap
+		map 	addnormals (textures/keepers/keepergrate1_local, heightmap (textures/keepers/keepergrate1_h, 6))
+
+	}
+	{
+		blend diffusemap
+		map	textures/keepers/keepergrate1_d
+		alphatest 0.5
+	}
+	{
+		blend specularmap
+		map	textures/keepers/keepergrate1_s
+	}
+
+}
+
+textures/keepers/keeperwall1
+{
+	qer_editorimage 	textures/keepers/keeperwall1_d
+
+	bumpmap 		addnormals (textures/keepers/keeperwall1_local, heightmap (textures/keepers/keeperwall1_h, 6))
+
+	diffusemap	 	textures/keepers/keeperwall1_d
+	specularmap		textures/keepers/keeperwall1_s
+
+}
+
+textures/keepers/keeperwall2
+{
+	qer_editorimage 	textures/keepers/keeperwall2_d
+
+	bumpmap 		addnormals (textures/keepers/keeperwall2_local, heightmap (textures/keepers/keeperwall2_h, 6))
+
+	diffusemap	 	textures/keepers/keeperwall2_d
+	specularmap		textures/keepers/keeperwall2_s
+
+}
+
+textures/keepers/keeperwall3
+{
+	qer_editorimage 	textures/keepers/keeperwall3_d
+
+	bumpmap 		addnormals (textures/keepers/keeperwall3_local, heightmap (textures/keepers/keeperwall3_h, 6))
+
+	diffusemap	 	textures/keepers/keeperwall3_d
+	specularmap		textures/keepers/keeperwall3_s
+
+}
+
+
+textures/keepers/keeperwall3_mask
+{
+	qer_editorimage 	textures/keepers/keeperwall3_d_mask
+
+
+	{
+		blend bumpmap
+		map 	addnormals (textures/keepers/keeperwall3_local, heightmap (textures/keepers/keeperwall3_h, 6))
+
+	}
+	{
+		blend diffusemap
+		map	textures/keepers/keeperwall3_d_mask
+		alphatest 0.5
+	}
+	{
+		blend specularmap
+		map	textures/keepers/keeperwall3_s
+	}
+
+}
+
+textures/keepers/keeperwall4
+{
+	qer_editorimage 	textures/keepers/keeperwall4_d
+
+	bumpmap 		addnormals (textures/keepers/keeperwall4_local, heightmap (textures/keepers/keeperwall4_h, 6))
+
+	diffusemap	 	textures/keepers/keeperwall4_d
+	specularmap		textures/keepers/keeperwall4_s
+
+}
+
+textures/keepers/keeperwall5
+{
+	qer_editorimage 	textures/keepers/keeperwall5_d
+
+	bumpmap 		addnormals (textures/keepers/keeperwall5_local, heightmap (textures/keepers/keeperwall5_h, 6))
+
+	diffusemap	 	textures/keepers/keeperwall5_d
+	specularmap		textures/keepers/keeperwall5_s
+
+}
+
+textures/keepers/keeperwall6
+{
+	qer_editorimage 	textures/keepers/keeperwall6_d
+
+	bumpmap 		addnormals (textures/keepers/keeperwall6_local, heightmap (textures/keepers/keeperwall6_h, 6))
+
+	diffusemap	 	textures/keepers/keeperwall6_d
+	specularmap		textures/keepers/keeperwall6_s
+
+}
+
+textures/keepers/keeperwall6b
+{
+	qer_editorimage 	textures/keepers/keeperwall6b_d
+
+	bumpmap 		addnormals (textures/keepers/keeperwall6b_local, heightmap (textures/keepers/keeperwall6b_h, 6))
+
+	diffusemap	 	textures/keepers/keeperwall6b_d
+	specularmap		textures/keepers/keeperwall6b_s
+
+}
+
+
+textures/keepers/keeperwall7
+{
+	qer_editorimage 	textures/keepers/keeperwall7_d
+
+	bumpmap 		addnormals (textures/keepers/keeperwall7_local, heightmap (textures/keepers/keeperwall7_h, 6))
+
+	diffusemap	 	textures/keepers/keeperwall7_d
+	specularmap		textures/keepers/keeperwall7_s
+
+}
+
+textures/keepers/keeperwall8
+{
+	qer_editorimage 	textures/keepers/keeperwall8_d
+
+	bumpmap 		addnormals (textures/keepers/keeperwall8_local, heightmap (textures/keepers/keeperwall8_h, 6))
+
+	diffusemap	 	textures/keepers/keeperwall8_d
+	specularmap		textures/keepers/keeperwall8_s
+
+}
+
+textures/keepers/keeperwall9
+{
+	qer_editorimage 	textures/keepers/keeperwall9_d
+
+	bumpmap 		addnormals (textures/keepers/keeperwall9_local, heightmap (textures/keepers/keeperwall9_h, 6))
+
+	diffusemap	 	textures/keepers/keeperwall9_d
+	specularmap		textures/keepers/keeperwall9_s
+
+}
+
+
+textures/keepers/keeperwall10
+{
+	qer_editorimage 	textures/keepers/keeperwall10_d
+
+	bumpmap 		addnormals (textures/keepers/keeperwall10_local, heightmap (textures/keepers/keeperwall10_h, 4))
+
+	diffusemap	 	textures/keepers/keeperwall10_d
+	specularmap		textures/keepers/keeperwall10_s
+
+}
+
+textures/keepers/keeperwall11
+{
+	qer_editorimage 	textures/keepers/keeperwall11_d
+
+	bumpmap 		addnormals (textures/keepers/keeperwall11_local, heightmap (textures/keepers/keeperwall11_h, 4))
+
+	diffusemap	 	textures/keepers/keeperwall11_d
+	specularmap		textures/keepers/keeperwall11_s
+
+}
+
+
+textures/keepers/keepertrim1
+{
+	qer_editorimage 	textures/keepers/keepertrim1_d
+
+	bumpmap 		addnormals (textures/keepers/keepertrim1_local, heightmap (textures/keepers/keepertrim1_h, 6))
+
+	diffusemap	 	textures/keepers/keepertrim1_d
+	specularmap		textures/keepers/keepertrim1_s
+
+}
+
+textures/keepers/keepertrim2
+{
+	qer_editorimage 	textures/keepers/keepertrim2_d
+
+	bumpmap 		addnormals (textures/keepers/keepertrim2_local, heightmap (textures/keepers/keepertrim2_h, 6))
+
+	diffusemap	 	textures/keepers/keepertrim2_d
+	specularmap		textures/keepers/keepertrim2_s
+
+}
+
+textures/keepers/keepertrim3
+{
+	qer_editorimage 	textures/keepers/keepertrim3_d
+
+	bumpmap 		addnormals (textures/keepers/keepertrim3_local, heightmap (textures/keepers/keepertrim3_h, 6))
+
+	diffusemap	 	textures/keepers/keepertrim3_d
+	specularmap		textures/keepers/keepertrim3_s
+
+}
+
+textures/keepers/keepertrim3_add
+{
+	qer_editorimage 	textures/keepers/keepertrim3_d
+
+	bumpmap 		addnormals (textures/keepers/keepertrim3_local, heightmap (textures/keepers/keepertrim3_h, 6))
+
+	diffusemap	 	textures/keepers/keepertrim3_d
+	specularmap		textures/keepers/keepertrim3_s
+	{
+		blend add
+		map textures/keepers/keepertrim3_add
+		rgb (.2 * sintable [.15 + time * .5 ]) + .7
+	}
+}
+
+textures/keepers/keepertrim4
+{
+	qer_editorimage 	textures/keepers/keepertrim4_d
+
+	bumpmap 		addnormals (textures/keepers/keepertrim4_local, heightmap (textures/keepers/keepertrim4_h, 6))
+
+	diffusemap	 	textures/keepers/keepertrim4_d
+	specularmap		textures/keepers/keepertrim4_s
+
+}
+
+
+textures/keepers/keepertrim5
+{
+	qer_editorimage 	textures/keepers/keepertrim5_d
+
+	bumpmap 		addnormals (textures/keepers/keepertrim5_local, heightmap (textures/keepers/keepertrim5_h, 6))
+
+	diffusemap	 	textures/keepers/keepertrim5_d
+	specularmap		textures/keepers/keepertrim5_s
+
+}
+
+textures/keepers/keepertrim6
+{
+	qer_editorimage 	textures/keepers/keepertrim6_d
+
+	bumpmap 		addnormals (textures/keepers/keepertrim6_local, heightmap (textures/keepers/keepertrim6_h, 6))
+
+	diffusemap	 	textures/keepers/keepertrim6_d
+	specularmap		textures/keepers/keepertrim6_s
+
+}
+
+textures/keepers/keepertrim7
+{
+	qer_editorimage 	textures/keepers/keepertrim7_d
+
+	bumpmap 		addnormals (textures/keepers/keepertrim7_local, heightmap (textures/keepers/keepertrim7_h, 6))
+
+	diffusemap	 	textures/keepers/keepertrim7_d
+	specularmap		textures/keepers/keepertrim7_s
+
+}
+
+textures/keepers/keepertrim8
+{
+	qer_editorimage 	textures/keepers/keepertrim8_d
+
+	bumpmap 		addnormals (textures/keepers/keepertrim8_local, heightmap (textures/keepers/keepertrim8_h, 6))
+
+	diffusemap	 	textures/keepers/keepertrim8_d
+	specularmap		textures/keepers/keepertrim8_s
+
+}
+
+textures/keepers/keepertrim8b
+{
+	qer_editorimage 	textures/keepers/keepertrim8b_d
+
+	bumpmap 		addnormals (textures/keepers/keepertrim8b_local, heightmap (textures/keepers/keepertrim8_h, 6))
+
+	diffusemap	 	textures/keepers/keepertrim8b_d
+	specularmap		textures/keepers/keepertrim8b_s
+
+}
+
+textures/keepers/keepertrim9
+{
+	qer_editorimage 	textures/keepers/keepertrim9_d
+
+	bumpmap 		addnormals (textures/keepers/keepertrim9_local, heightmap (textures/keepers/keepertrim9_h, 6))
+
+	diffusemap	 	textures/keepers/keepertrim9_d
+	specularmap		textures/keepers/keepertrim9_s
+
+}
+
+
+textures/keepers/keeperlight1
+{
+	qer_editorimage 	textures/keepers/keeperlight1_d
+
+	bumpmap 		addnormals (textures/keepers/keeperlight1_local, heightmap (textures/keepers/keeperlight1_h, 6))
+
+	diffusemap	 	textures/keepers/keeperlight1_d
+	specularmap		textures/keepers/keeperlight1_s
+
+}
+
+textures/keepers/keeperlight1_on
+{
+	qer_editorimage 	textures/keepers/keeperlight1_d
+
+	bumpmap 		addnormals (textures/keepers/keeperlight1_local, heightmap (textures/keepers/keeperlight1_h, 6))
+
+	diffusemap	 	textures/keepers/keeperlight1_d
+	specularmap		textures/keepers/keeperlight1_s
+	{
+		blend add
+		map textures/keepers/keeperlight1_add
+		rgb (.1 * sintable [.15 + time * .5 ]) + .7
+	}
+}
+
+textures/keepers/keeperlight2
+{
+	qer_editorimage 	textures/keepers/keeperlight2_d
+
+	bumpmap 		addnormals (textures/keepers/keeperlight2_local, heightmap (textures/keepers/keeperlight2_h, 6))
+
+	diffusemap	 	textures/keepers/keeperlight2_d
+	specularmap		textures/keepers/keeperlight2_s
+
+}
+
+textures/keepers/keeperlight2_on
+{
+	qer_editorimage 	textures/keepers/keeperlight2_d
+
+	bumpmap 		addnormals (textures/keepers/keeperlight2_local, heightmap (textures/keepers/keeperlight2_h, 6))
+
+	diffusemap	 	textures/keepers/keeperlight2_d
+	specularmap		textures/keepers/keeperlight2_s
+	{
+		blend add
+		map textures/keepers/keeperlight2_add
+		rgb (.1 * sintable [.15 + time * .5 ]) + .7
+	}
+}
+
+textures/keepers/naughtywall1
+{
+	qer_editorimage 	textures/keepers/naughtywall1_d
+
+	bumpmap 		addnormals (textures/keepers/naughtywall1_local, heightmap (textures/keepers/naughtywall1_h, 6))
+
+	diffusemap	 	textures/keepers/naughtywall1_d
+	specularmap		textures/keepers/naughtywall1_s
+
+}
+
+
+textures/keepers/naughtywall1_mask
+{
+	qer_editorimage 	textures/keepers/naughtywall1_d_mask
+
+
+	{
+		blend bumpmap
+		map 	addnormals (textures/keepers/naughtywall1_local, heightmap (textures/keepers/naughtywall1_h, 6))
+
+	}
+	{
+		blend diffusemap
+		map	textures/keepers/naughtywall1_d_mask
+		alphatest 0.1
+	}
+	{
+		blend specularmap
+		map	textures/keepers/naughtywall1_s
+	}
+
+}
+
+
+
+textures/keepers/keeper_ribs1
+{
+	qer_editorimage 	textures/keepers/keeper_ribs1_d
+
+	bumpmap 		addnormals (textures/keepers/keeper_ribs1_local, heightmap (textures/keepers/keeper_ribs1_h, 6))
+
+	diffusemap	 	textures/keepers/keeper_ribs1_d
+	specularmap		textures/keepers/keeper_ribs1_s
+
+}
+
+textures/keepers/kplatewall1
+{
+	qer_editorimage 	textures/keepers/kplatewall1_d
+
+	bumpmap 		addnormals (textures/keepers/kplatewall1_local, heightmap (textures/keepers/kplatewall1_h, 2))
+
+	diffusemap	 	textures/keepers/kplatewall1_d
+	specularmap		textures/keepers/kplatewall1_s
+
+}
+
+textures/keepers/kplatewall1b
+{
+	qer_editorimage 	textures/keepers/kplatewall1b_d
+
+	bumpmap 		addnormals (textures/keepers/kplatewall1b_local, heightmap (textures/keepers/kplatewall1b_h, 2))
+
+	diffusemap	 	textures/keepers/kplatewall1b_d
+	specularmap		textures/keepers/kplatewall1b_s
+
+}
+
+textures/keepers/kplatewall1c
+{
+	qer_editorimage 	textures/keepers/kplatewall1c_d
+
+	bumpmap 		addnormals (textures/keepers/kplatewall1c_local, heightmap (textures/keepers/kplatewall1c_h, 2))
+
+	diffusemap	 	textures/keepers/kplatewall1c_d
+	specularmap		textures/keepers/kplatewall1c_s
+
+}
+
+textures/keepers/kplatewall1d
+{
+	qer_editorimage 	textures/keepers/kplatewall1d_d
+
+	bumpmap 		addnormals (textures/keepers/kplatewall1d_local, heightmap (textures/keepers/kplatewall1d_h, 2))
+
+	diffusemap	 	textures/keepers/kplatewall1d_d
+	specularmap		textures/keepers/kplatewall1d_s
+
+}
+
+textures/keepers/kplatewall1d_add
+{
+	qer_editorimage 	textures/keepers/kplatewall1d_d
+
+	bumpmap 		addnormals (textures/keepers/kplatewall1d_local, heightmap (textures/keepers/kplatewall1d_h, 2))
+
+	diffusemap	 	textures/keepers/kplatewall1d_d
+	specularmap		textures/keepers/kplatewall1d_s
+	{
+		blend add
+		map textures/keepers/kplatewall1d_add
+		rgb (.1 * sintable [.15 + time * .5 ]) + .7
+	}
+}

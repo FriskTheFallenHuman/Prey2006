@@ -163,7 +163,7 @@ void hhTarget_Earthquake::Spawn( void ) {
 	cm = new idClipModel( GetPhysics()->GetClipModel() );
 	if( !cm ) {
 		gameLocal.Error( "hhTarget_Earthquake::Spawn:  Unable to spawn idClipModel\n" );
-		return;		
+		return;
 	}
 	forceField.SetClipModel( cm );
 	// remove the collision model from the physics object
@@ -691,7 +691,7 @@ void hhTarget_FollowPath::Event_Activate(idEntity *activator) {
 	const char			*funcName;
 	idThread			*thread;
 	hhMonsterAI			*entAI;
-	
+
 	funcName = spawnArgs.GetString( "call" );
 	for( i = 0; i < targets.Num(); i++ ) {
 		ent = targets[ i ].GetEntity();

@@ -23,8 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeItemButton window
 
-class PROPTREE_API CPropTreeItemButton : public CPropTreeItem
-{
+class PROPTREE_API CPropTreeItemButton : public CPropTreeItem {
 // Construction
 public:
 	CPropTreeItemButton();

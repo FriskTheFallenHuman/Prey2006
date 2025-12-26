@@ -30,9 +30,9 @@ If you have questions concerning this license or the applicable additional terms
 #define __QE3_H__
 
 #ifdef ID_DEBUG_MEMORY
-	#undef new
-	#undef DEBUG_NEW
-	#define DEBUG_NEW new
+#undef new
+#undef DEBUG_NEW
+#define DEBUG_NEW new
 #endif
 
 #include "QerTypes.h"
@@ -74,14 +74,12 @@ const float	HUGE_DISTANCE = 100000;
 #include "SplashScreen.h"
 #include "../common/AboutBoxDlg.h"
 
-typedef struct
-{
+typedef struct {
 	int		p1, p2;
-	face_t*	f1, *f2;
+	face_t	* f1, * f2;
 } pedge_t;
 
-typedef struct
-{
+typedef struct {
 	int		iSize;
 	int		iTexMenu;		// nearest, linear, etc
 	idVec3	colors[COLOR_LAST];
@@ -102,19 +100,18 @@ typedef struct
 void    Sys_UpdateStatusBar();
 void    Sys_UpdateWindows( int bits );
 double	Sys_DoubleTime();
-void    Sys_GetCursorPos( int* x, int* y );
+void    Sys_GetCursorPos( int * x, int * y );
 void    Sys_SetCursorPos( int x, int y );
-void    Sys_SetTitle( const char* text );
+void    Sys_SetTitle( const char * text );
 void    Sys_BeginWait();
 bool	Sys_Waiting();
 void    Sys_EndWait();
-void    Sys_Status( const char* psz, int part = -1 );
+void    Sys_Status( const char * psz, int part = -1 );
 
 /*
 ** most of the QE globals are stored in this structure
 */
-typedef struct
-{
+typedef struct {
 	bool d_showgrid;
 	float d_gridsize;
 	float d_selectedgridsize;
@@ -134,10 +131,10 @@ typedef struct
 	int       d_numedges;
 
 	int       d_num_move_points;
-	idVec3*    d_move_points[MAX_MOVE_POINTS];
+	idVec3  *  d_move_points[MAX_MOVE_POINTS];
 
 	int			d_num_move_planes;
-	idPlane*		d_move_planes[MAX_MOVE_PLANES];
+	idPlane	*	d_move_planes[MAX_MOVE_PLANES];
 
 	texturewin_t d_texturewin;
 
@@ -147,10 +144,10 @@ typedef struct
 
 	// connect entities uses the last two brushes selected
 	int			 d_select_count;
-	idEditorBrush*		d_select_order[MAX_MAP_ENTITIES];
+	idEditorBrush	*	d_select_order[MAX_MAP_ENTITIES];
 	idVec3       d_select_translate;    // for dragging w/o making new display lists
 	select_t     d_select_mode;
-	idPointListInterface* selectObject;	//
+	idPointListInterface * selectObject;	//
 
 	int		     d_font_list;
 
@@ -169,8 +166,8 @@ typedef struct
 	idVec3  d_vAreaBR;
 
 	// the editor has its own soundWorld and renderWorld, completely distinct from the game
-	idRenderWorld*	rw;
-	idSoundWorld*	sw;
+	idRenderWorld	* rw;
+	idSoundWorld	* sw;
 } QEGlobals_t;
 
 //=========================
@@ -212,11 +209,11 @@ void ConnectEntities();
 //========================
 // win_main.c
 //========================
-extern bool SaveWindowState( HWND hWnd, const char* pszName );
-extern bool LoadWindowState( HWND hWnd, const char* pszName );
+extern bool SaveWindowState( HWND hWnd, const char * pszName );
+extern bool LoadWindowState( HWND hWnd, const char * pszName );
 
-extern bool SaveRegistryInfo( const char* pszName, void* pvBuf, long lSize );
-extern bool LoadRegistryInfo( const char* pszName, void* pvBuf, long* plSize );
+extern bool SaveRegistryInfo( const char * pszName, void * pvBuf, long lSize );
+extern bool LoadRegistryInfo( const char * pszName, void * pvBuf, long * plSize );
 
 //========================
 // win_dlg.c
@@ -266,7 +263,7 @@ extern bool g_bAxialMode;
 extern int g_axialAnchor;
 extern int g_axialDest;
 
-extern void Face_FlipTexture_BrushPrimit( face_t* face, bool y );
+extern void Face_FlipTexture_BrushPrimit( face_t * face, bool y );
 extern void Brush_FlipTexture_BrushPrimit( idEditorBrush* b, bool y );
 
 //========================
@@ -274,21 +271,21 @@ extern void Brush_FlipTexture_BrushPrimit( idEditorBrush* b, bool y );
 // Timo
 //========================
 //void ComputeAxisBase( idVec3 &normal,idVec3 &texS,idVec3 &texT );
-void FaceToBrushPrimitFace( face_t* f );
-void EmitBrushPrimitTextureCoordinates( face_t*, idWinding*, patchMesh_t* patch = NULL );
+void FaceToBrushPrimitFace( face_t * f );
+void EmitBrushPrimitTextureCoordinates( face_t *, idWinding *, patchMesh_t * patch = NULL );
 // EmitTextureCoordinates, is old code used for brush to brush primitive conversion
-void EmitTextureCoordinates( idVec5& xyzst, const idMaterial* q, face_t* f, bool force = false );
-void BrushPrimit_Parse( idEditorBrush*, bool newFormat, const idVec3 origin );
+void EmitTextureCoordinates( idVec5& xyzst, const idMaterial* q, face_t * f, bool force = false );
+void BrushPrimit_Parse( idEditorBrush *, bool newFormat, const idVec3 origin );
 // compute a fake shift scale rot representation from the texture matrix
-void TexMatToFakeTexCoords( float texMat[2][3], float shift[2], float* rot, float scale[2] );
+void TexMatToFakeTexCoords( float texMat[2][3], float shift[2], float * rot, float scale[2] );
 void FakeTexCoordsToTexMat( float shift[2], float rot, float scale[2], float texMat[2][3] );
-void ConvertTexMatWithQTexture( brushprimit_texdef_t* texMat1, const idMaterial* qtex1, brushprimit_texdef_t* texMat2, const idMaterial* qtex2, float sScale = 1.0, float tScale = 1.0 );
+void ConvertTexMatWithQTexture( brushprimit_texdef_t * texMat1, const idMaterial* qtex1, brushprimit_texdef_t * texMat2, const idMaterial* qtex2, float sScale = 1.0, float tScale = 1.0 );
 // texture locking
-void Face_MoveTexture_BrushPrimit( face_t* f, idVec3 delta );
-void Select_ShiftTexture_BrushPrimit( face_t* f, float x, float y, bool autoAdjust );
-void RotateFaceTexture_BrushPrimit( face_t* f, int nAxis, float fDeg, idVec3 vOrigin );
+void Face_MoveTexture_BrushPrimit( face_t * f, idVec3 delta );
+void Select_ShiftTexture_BrushPrimit( face_t * f, float x, float y, bool autoAdjust );
+void RotateFaceTexture_BrushPrimit( face_t * f, int nAxis, float fDeg, idVec3 vOrigin );
 
-void ApplyMatrix_BrushPrimit( face_t* f, idMat3 matrix, idVec3 origin );
+void ApplyMatrix_BrushPrimit( face_t * f, idMat3 matrix, idVec3 origin );
 // low level functions .. put in mathlib?
 #define BPMatCopy(a,b) {b[0][0] = a[0][0]; b[0][1] = a[0][1]; b[0][2] = a[0][2]; b[1][0] = a[1][0]; b[1][1] = a[1][1]; b[1][2] = a[1][2];}
 // apply a scale transformation to the BP matrix
@@ -300,12 +297,12 @@ void BPMatMul( float A[2][3], float B[2][3], float C[2][3] );
 // apply a rotation (degrees)
 void BPMatRotate( float A[2][3], float theta );
 #ifdef _DEBUG
-	void BPMatDump( float A[2][3] );
+void BPMatDump( float A[2][3] );
 #endif
 
 extern bool g_bShowLightVolumes;
 extern bool g_bShowLightTextures;
-extern const idMaterial* Texture_LoadLight( const char* name );
+extern const idMaterial * Texture_LoadLight( const char * name );
 
 #define	FONT_HEIGHT	10
 
@@ -313,17 +310,17 @@ void UniqueTargetName( idStr& rStr );
 
 #define MAP_VERSION 2.0
 
-extern CMainFrame* g_pParentWnd;
+extern CMainFrame * g_pParentWnd;
 extern CString g_strAppPath;
-extern CPrefsDlg& g_PrefsDlg;
-extern CFindTextureDlg& g_dlgFind;
+extern CPrefsDlg & g_PrefsDlg;
+extern CFindTextureDlg & g_dlgFind;
 extern idCVar radiant_entityMode;
 
 // externs
 extern void CleanUpEntities();
 extern void QE_CountBrushesAndUpdateStatusBar();
 extern void	QE_CheckAutoSave();
-extern bool SaveWindowState( HWND hWnd, const char* pszName );
+extern bool SaveWindowState( HWND hWnd, const char * pszName );
 extern void Map_Snapshot();
 extern bool g_bRotateMode;
 extern bool g_bClipMode;
@@ -331,18 +328,18 @@ extern bool g_bScaleMode;
 extern int g_nScaleHow;
 extern bool g_bPathMode;
 
-extern void FindReplaceTextures( const char* pFind, const char* pReplace, bool bSelected, bool bForce );
+extern void FindReplaceTextures( const char * pFind, const char * pReplace, bool bSelected, bool bForce );
 extern bool region_active;
-extern void Map_ImportFile( char* filename );
-extern void Map_SaveSelected( char* pFilename );
+extern void Map_ImportFile( char * filename );
+extern void Map_SaveSelected( char * pFilename );
 extern bool g_bSwitch;
 extern idEditorBrush g_brFrontSplits;
 extern idEditorBrush g_brBackSplits;
 extern CClipPoint g_Clip1;
 extern CClipPoint g_Clip2;
 extern CClipPoint g_Clip3;
-extern CClipPoint* g_pMovingClip;
-extern idEditorBrush* g_pSplitList;
+extern CClipPoint * g_pMovingClip;
+extern idEditorBrush * g_pSplitList;
 extern CClipPoint g_PathPoints[256];
 extern void AcquirePath( int nCount, PFNPathCallback* pFunc );
 extern bool g_bScreenUpdates;
@@ -352,31 +349,31 @@ extern SKeyInfo g_Keys[];
 extern int g_nKeyCount;
 extern void HandlePopup( CWnd* pWindow, unsigned int uId );
 extern z_t z;
-extern void Clamp( float& f, int nClamp );
-extern bool WriteFileString( FILE* fp, char* string, ... );
-extern void MemFile_fprintf( CMemFile* pMemFile, const char* pText, ... );
-extern void SaveWindowPlacement( HWND hwnd, const char* pName );
-extern bool LoadWindowPlacement( HWND hwnd, const char* pName );
+extern void Clamp( float & f, int nClamp );
+extern bool WriteFileString( FILE* fp, char * string, ... );
+extern void MemFile_fprintf( CMemFile* pMemFile, const char * pText, ... );
+extern void SaveWindowPlacement( HWND hwnd, const char * pName );
+extern bool LoadWindowPlacement( HWND hwnd, const char * pName );
 
-void SaveDialogPlacement( CDialog* dlg, const char* pName );
+void SaveDialogPlacement( CDialog* dlg, const char * pName );
 extern bool ConfirmModified();
 extern void DoPatchInspector();
 void UpdatePatchInspector();
 extern int g_nSmartX;
 extern int g_nSmartY;
-extern idEditorBrush* CreateEntityBrush( int x, int y, CXYWnd* pWnd );
+extern idEditorBrush * CreateEntityBrush( int x, int y, CXYWnd* pWnd );
 int PointInMoveList( idVec3* pf );
 
 extern bool ByeByeSurfaceDialog();
 extern void UpdateSurfaceDialog();
 extern void UpdateLightInspector();
 
-int GetCvarInt( const char* name, const int def );
-const char* GetCvarString( const char* name, const char* def );
-void SetCvarInt( const char* name, const int value );
-void SetCvarString( const char* name, const char* value );
-void SetCvarBinary( const char* name, void* pv, int size );
-bool GetCvarBinary( const char* name, void* pv, int size );
+int GetCvarInt( const char * name, const int def );
+const char * GetCvarString( const char * name, const char * def );
+void SetCvarInt( const char * name, const int value );
+void SetCvarString( const char * name, const char * value );
+void SetCvarBinary( const char * name, void * pv, int size );
+bool GetCvarBinary( const char * name, void * pv, int size );
 
 void UpdateRadiantColor( float r, float g, float b, float a );
 

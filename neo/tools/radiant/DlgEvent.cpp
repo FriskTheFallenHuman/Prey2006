@@ -33,21 +33,19 @@ If you have questions concerning this license or the applicable additional terms
 #include "DlgEvent.h"
 
 #ifdef _DEBUG
-	#define new DEBUG_NEW
+#define new DEBUG_NEW
 #endif
 
 // CDlgEvent dialog
 
 CDlgEvent::CDlgEvent( CWnd* pParent )
-	: CDialogEx( CDlgEvent::IDD, pParent )
-{
+	: CDialogEx( CDlgEvent::IDD, pParent ) {
 	m_strParm = _T( "" );
 	m_event = 0;
 }
 
 
-void CDlgEvent::DoDataExchange( CDataExchange* pDX )
-{
+void CDlgEvent::DoDataExchange( CDataExchange* pDX ) {
 	CDialogEx::DoDataExchange( pDX );
 	DDX_Text( pDX, IDC_EDIT_PARAM, m_strParm );
 	DDX_Radio( pDX, IDC_RADIO_EVENT, m_event );

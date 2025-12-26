@@ -32,38 +32,31 @@ If you have questions concerning this license or the applicable additional terms
 #include "GEApp.h"
 #include "GEKeyValueModifier.h"
 
-rvGEKeyValueModifier::rvGEKeyValueModifier( const char* name, idWindow* window, const char* key, const char* value ) :
+rvGEKeyValueModifier::rvGEKeyValueModifier( const char * name, idWindow* window, const char * key, const char * value ) :
 	rvGEModifier( name, window ),
 	mKey( key ),
-	mValue( value )
-{
+	mValue( value ) {
 	mUndoValue = mWrapper->GetStateDict().GetString( mKey );
 }
 
-bool rvGEKeyValueModifier::Apply()
-{
-	if( mValue.Length( ) )
-	{
+bool rvGEKeyValueModifier::Apply() {
+	if ( mValue.Length( ) ) {
 		mWrapper->SetStateKey( mKey, mValue );
-	}
-	else
-	{
+	} else {
 		mWrapper->DeleteStateKey( mKey );
 	}
 
 	return true;
 }
 
-bool rvGEKeyValueModifier::Undo()
-{
+bool rvGEKeyValueModifier::Undo() {
 	mWrapper->SetStateKey( mKey, mValue );
 
 	return true;
 }
 
-bool rvGEKeyValueModifier::Merge( rvGEModifier* mergebase )
-{
-	rvGEKeyValueModifier* merge = ( rvGEKeyValueModifier* ) mergebase;
+bool rvGEKeyValueModifier::Merge( rvGEModifier* mergebase ) {
+	rvGEKeyValueModifier* merge = ( rvGEKeyValueModifier * ) mergebase;
 
 	mValue = merge->mValue;
 

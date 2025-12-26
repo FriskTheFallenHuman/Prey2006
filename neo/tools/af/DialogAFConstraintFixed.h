@@ -29,8 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFConstraintFixed dialog
 
-class DialogAFConstraintFixed : public CDialog
-{
+class DialogAFConstraintFixed : public CDialog {
 
 	DECLARE_DYNAMIC( DialogAFConstraintFixed )
 
@@ -53,8 +52,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	idDeclAF* 			file;
-	idDeclAF_Constraint* constraint;
+	idDeclAF 	*		file;
+	idDeclAF_Constraint * constraint;
 
 	//{{AFX_DATA(DialogAFConstraintHinge)
 	//}}AFX_DATA

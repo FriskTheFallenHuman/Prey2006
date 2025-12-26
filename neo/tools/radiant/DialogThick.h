@@ -30,8 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // CDialogThick dialog
 
-class CDialogThick : public CDialogEx
-{
+class CDialogThick : public CDialogEx {
 public:
 	CDialogThick( CWnd* pParent = NULL );   // standard constructor
 

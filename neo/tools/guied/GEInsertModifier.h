@@ -29,24 +29,23 @@ If you have questions concerning this license or the applicable additional terms
 #define GEINSERTMODIFIER_H_
 
 #ifndef GEMODIFIER_H_
-	#include "GEModifier.h"
+#include "GEModifier.h"
 #endif
 
-class rvGEInsertModifier : public rvGEModifier
-{
+class rvGEInsertModifier : public rvGEModifier {
 public:
 
-	rvGEInsertModifier( const char* name, idWindow* window, idWindow* parent, idWindow* before );
+	rvGEInsertModifier( const char * name, idWindow* window, idWindow* parent, idWindow* before );
 
 	virtual bool		Apply();
 	virtual bool		Undo();
 
 protected:
 
-	idWindow*		mUndoParent;
-	idWindow*		mUndoBefore;
-	idWindow*		mParent;
-	idWindow*		mBefore;
+	idWindow	*	mUndoParent;
+	idWindow	*	mUndoBefore;
+	idWindow	*	mParent;
+	idWindow	*	mBefore;
 	idRectangle		mRect;
 	idRectangle		mUndoRect;
 };

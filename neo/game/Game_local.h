@@ -84,9 +84,9 @@ class idLocationEntity;
 
 #include "anim/Anim.h"
 // HUMANHEAD nla
-#include "../prey/game_anim.h"
-#include "../prey/game_animBlend.h"
-#include "../prey/prey_animator.h"
+#include "../Prey/game_anim.h"
+#include "../Prey/game_animBlend.h"
+#include "../Prey/prey_animator.h"
 // HUMANHEAD END
 
 #include "ai/AAS.h"
@@ -98,8 +98,8 @@ class idLocationEntity;
 #include "MultiplayerGame.h"
 
 // HUMANHEAD
-#include "../prey/prey_camerainterpolator.h"	// HUMANHEAD
-#include "../prey/anim_baseanim.h"				// HUMANHEAD nla - For playing partial animations
+#include "../Prey/prey_camerainterpolator.h"	// HUMANHEAD
+#include "../Prey/anim_baseanim.h"				// HUMANHEAD nla - For playing partial animations
 #define NUM_AAS 3
 // HUMANHEAD END
 
@@ -274,116 +274,6 @@ ID_INLINE void idEntityPtr<type>::Save( idSaveGame *savefile ) const {
 template< class type >
 ID_INLINE void idEntityPtr<type>::Restore( idRestoreGame *savefile ) {
 	savefile->ReadInt( spawnId );
-}
-
-//HUMANHEAD: aob - moved operator= code to this helper function
-#ifdef HUMANHEAD
-template< class type >
-ID_INLINE void idEntityPtr<type>::Clear() {
-	spawnId = 0;
-}
-
-template< class type >
-ID_INLINE bool idEntityPtr<type>::IsEqualTo( const idEntity *ent ) const {
-	return GetEntity() == ent;
-}
-
-template< class type >
-ID_INLINE bool idEntityPtr<type>::IsEqualTo( const idEntityPtr<type> &ent ) const {
-	return IsEqualTo( ent.GetEntity() );
-}
-
-template< class type >
-ID_INLINE bool idEntityPtr<type>::operator==( const idEntity *ent ) const {
-	return IsEqualTo( ent );
-}
-
-template< class type >
-ID_INLINE bool idEntityPtr<type>::operator==( const idEntityPtr<type> &ent ) const {
-	return IsEqualTo( ent );
-}
-
-template< class type >
-ID_INLINE bool idEntityPtr<type>::operator!=( const idEntity *ent ) const {
-	return !IsEqualTo( ent );
-}
-
-template< class type >
-ID_INLINE bool idEntityPtr<type>::operator!=( const idEntityPtr<type> &ent ) const {
-	return !IsEqualTo( ent );
-}
-
-template< class type >
-ID_INLINE idEntityPtr<type> &idEntityPtr<type>::Assign( const idEntityPtr<type> &ent ) {
-	return Assign( ent.GetEntity() );
-}
-
-template< class type >
-ID_INLINE idEntityPtr<type> &idEntityPtr<type>::Assign( const idEntity *ent ) {
-	if ( ent == NULL ) {
-		spawnId = 0;
-	} else {
-		//HUMANHEAD rww - take cent bits into account
-		spawnId = ( gameLocal.spawnIds[ent->entityNumber] << GENTITYNUM_BITS_PLUSCENT ) | ent->entityNumber;
-	}
-	return *this;
-}
-
-template< class type >
-ID_INLINE idEntityPtr<type> &idEntityPtr<type>::operator=( const idEntityPtr<type> &ent ) {
-	return Assign( ent );
-}
-
-template< class type >
-ID_INLINE idEntityPtr<type> &idEntityPtr<type>::operator=( const idEntity *ent ) {
-	return Assign( ent );
-}
-#else
-template< class type >
-ID_INLINE idEntityPtr<type> &idEntityPtr<type>::operator=( type *ent ) {
-	if ( ent == NULL ) {
-		spawnId = 0;
-	} else {
-		spawnId = ( gameLocal.spawnIds[ent->entityNumber] << GENTITYNUM_BITS ) | ent->entityNumber;
-	}
-	return *this;
-}
-#endif
-// HUMANHEAD END
-
-template< class type >
-ID_INLINE bool idEntityPtr<type>::SetSpawnId( int id ) {
-	if ( id == spawnId ) {
-		return false;
-	}
-	//HUMANHEAD rww - take cent bits into account
-	if ( ( id >> GENTITYNUM_BITS_PLUSCENT ) == gameLocal.spawnIds[ id & ( ( 1 << GENTITYNUM_BITS_PLUSCENT ) - 1 ) ] ) {
-		spawnId = id;
-		return true;
-	}
-	return false;
-}
-
-template< class type >
-ID_INLINE bool idEntityPtr<type>::IsValid( void ) const {
-	//HUMANHEAD rww - take cent bits into account
-	return ( gameLocal.spawnIds[ spawnId & ( ( 1 << GENTITYNUM_BITS_PLUSCENT ) - 1 ) ] == ( spawnId >> GENTITYNUM_BITS_PLUSCENT ) );
-}
-
-template< class type >
-ID_INLINE type *idEntityPtr<type>::GetEntity( void ) const {
-	//HUMANHEAD rww - take cent bits into account
-	int entityNum = spawnId & ( ( 1 << GENTITYNUM_BITS_PLUSCENT ) - 1 );
-	if ( ( gameLocal.spawnIds[ entityNum ] == ( spawnId >> GENTITYNUM_BITS_PLUSCENT ) ) ) {
-		return static_cast<type *>( gameLocal.entities[ entityNum ] );
-	}
-	return NULL;
-}
-
-template< class type >
-ID_INLINE int idEntityPtr<type>::GetEntityNum( void ) const {
-	//HUMANHEAD rww - take cent bits into account
-	return ( spawnId & ( ( 1 << GENTITYNUM_BITS_PLUSCENT ) - 1 ) );
 }
 
 //============================================================================
@@ -871,7 +761,7 @@ protected:	// HUMANHEAD
 // HUMANHEAD pdm
 // HUMANHEAD mdl:  Commented out the old gameLocal because it was messing up tagging
 //#ifdef HUMANHEAD
-	#include "../prey/prey_game.h"
+	#include "../Prey/prey_game.h"
 	extern hhGameLocal			gameLocal;
 //#else	// HUMANHEAD
 //extern idGameLocal			gameLocal;
@@ -954,10 +844,10 @@ const int	CINEMATIC_SKIP_DELAY	= SEC2MS( 2.0f );
 
 //HUMANHEAD
 #include "physics/Physics_PreyPlayer.h"			// HUMANHEAD
-#include "../Prey/Physics_PreyParametric.h"		// HUMANHEAD nla
-#include "../Prey/Physics_PreyAI.h"				// HUMANHEAD jrm
+#include "../Prey/physics_preyparametric.h"		// HUMANHEAD nla
+#include "../Prey/physics_preyai.h"				// HUMANHEAD jrm
 #include "../Prey/physics_simple.h"				// HUMANHEAD aob
-#include "../prey/game_woundmanager.h"			// HUMANHEAD: aob - must be before Entity.h
+#include "../Prey/game_woundmanager.h"			// HUMANHEAD: aob - must be before Entity.h
 //HUMANHEAD END
 
 #include "SmokeParticles.h"
@@ -965,8 +855,8 @@ const int	CINEMATIC_SKIP_DELAY	= SEC2MS( 2.0f );
 #include "Entity.h"
 
 //HUMANHEAD
-//#include "../prey/game_renderentity.h"			// should be right after idRenderEntity.h
-#include "../prey/game_animatedentity.h"		// should be right after entity.h
+//#include "../Prey/game_renderentity.h"			// should be right after idRenderEntity.h
+#include "../Prey/game_animatedentity.h"		// should be right after entity.h
 //HUMANHEAD END
 
 #include "GameEdit.h"
@@ -976,41 +866,41 @@ const int	CINEMATIC_SKIP_DELAY	= SEC2MS( 2.0f );
 #include "Misc.h"
 
 // HUMANHEAD
-#include "ai/aas_Local.h"						// HUMANHEAD nla
+#include "ai/AAS_local.h"						// HUMANHEAD nla
 // HUMANHEAD END
 
 #include "Actor.h"
 #include "Projectile.h"
 
 //HUMANHEAD:
-#include "../prey/game_fxinfo.h"				// HUMANHEAD
-#include "../prey/particles_particles.h"
-#include "../prey/game_spherepart.h"			//HUMANHEAD: aob
-#include "../prey/physics_delta.h"				//HUMANHEAD: aob
-#include "../prey/game_animDriven.h"			//HUMANHEAD: aob
-#include "../prey/prey_projectile.h"			//HUMANHEAD: aob
-#include "../prey/prey_projectileautocannon.h"	//HUMANHEAD: aob
-#include "../prey/prey_projectilerifle.h"		//HUMANHEAD: aob
-#include "../prey/prey_projectilesoulcannon.h"		//HUMANHEAD: aob
-#include "../prey/prey_projectiletracking.h"		//HUMANHEAD: aob
-#include "../prey/prey_projectilerocketlauncher.h"	//HUMANHEAD: aob
-#include "../prey/prey_projectilehiderweapon.h"		//HUMANHEAD: aob
-#include "../prey/prey_projectilespiritarrow.h"		//HUMANHEAD: aob
-#include "../prey/prey_projectilecrawlergrenade.h"	//HUMANHEAD: aob
-#include "../prey/prey_projectileshuttle.h"			//HUMANHEAD: aob
-#include "../prey/prey_projectilemine.h"		//HUMANHEAD: aob
-#include "../prey/prey_projectilebugtrigger.h"			//HUMANHEAD: jsh
-#include "../prey/prey_projectilebug.h"			//HUMANHEAD: jsh
-#include "../prey/prey_projectilecocoon.h"			//HUMANHEAD: jsh
-#include "../prey/prey_projectilegasbagpod.h"		//HUMANHEAD: mdl
-#include "../prey/prey_projectilebounce.h"	//HUMANHEAD: aob
-#include "../prey/prey_projectiletrigger.h"			//HUMANHEAD: jsh
-#include "../prey/prey_projectilefreezer.h"			//HUMANHEAD: bjk
-#include "../prey/prey_projectilewrench.h"			//HUMANHEAD: bjk
-#include "item.h"								//HUMANHEAD: aob - must be above weapon.h
-#include "../prey/game_dda.h"
-#include "../prey/game_utils.h"					//HUMANHEAD: aob
-#include "../prey/prey_soundleadincontroller.h" //HUMANHEAD: aob
+#include "../Prey/game_fxinfo.h"				// HUMANHEAD
+#include "../Prey/particles_particles.h"
+#include "../Prey/game_spherepart.h"			//HUMANHEAD: aob
+#include "../Prey/physics_delta.h"				//HUMANHEAD: aob
+#include "../Prey/game_animDriven.h"			//HUMANHEAD: aob
+#include "../Prey/prey_projectile.h"			//HUMANHEAD: aob
+#include "../Prey/prey_projectileautocannon.h"	//HUMANHEAD: aob
+#include "../Prey/prey_projectilerifle.h"		//HUMANHEAD: aob
+#include "../Prey/prey_projectilesoulcannon.h"		//HUMANHEAD: aob
+#include "../Prey/prey_projectiletracking.h"		//HUMANHEAD: aob
+#include "../Prey/prey_projectilerocketlauncher.h"	//HUMANHEAD: aob
+#include "../Prey/prey_projectilehiderweapon.h"		//HUMANHEAD: aob
+#include "../Prey/prey_projectilespiritarrow.h"		//HUMANHEAD: aob
+#include "../Prey/prey_projectilecrawlergrenade.h"	//HUMANHEAD: aob
+#include "../Prey/prey_projectileshuttle.h"			//HUMANHEAD: aob
+#include "../Prey/prey_projectilemine.h"		//HUMANHEAD: aob
+#include "../Prey/prey_projectilebugtrigger.h"			//HUMANHEAD: jsh
+#include "../Prey/prey_projectilebug.h"			//HUMANHEAD: jsh
+#include "../Prey/prey_projectilecocoon.h"			//HUMANHEAD: jsh
+#include "../Prey/prey_projectilegasbagpod.h"		//HUMANHEAD: mdl
+#include "../Prey/prey_projectilebounce.h"	//HUMANHEAD: aob
+#include "../Prey/prey_projectiletrigger.h"			//HUMANHEAD: jsh
+#include "../Prey/prey_projectilefreezer.h"			//HUMANHEAD: bjk
+#include "../Prey/prey_projectilewrench.h"			//HUMANHEAD: bjk
+#include "Item.h"								//HUMANHEAD: aob - must be above weapon.h
+#include "../Prey/game_dda.h"
+#include "../Prey/game_utils.h"					//HUMANHEAD: aob
+#include "../Prey/prey_soundleadincontroller.h" //HUMANHEAD: aob
 //HUMANHEAD END
 
 #include "Weapon.h"
@@ -1021,36 +911,36 @@ const int	CINEMATIC_SKIP_DELAY	= SEC2MS( 2.0f );
 #include "PlayerIcon.h"
 
 // HUMANHEAD
-#include "../prey/game_light.h"					// HUMANHEAD: aob
-#include "../prey/game_playerview.h"
-#include "../prey/prey_firecontroller.h"		// HUMANHEAD: aob
-#include "../prey/prey_weaponfirecontroller.h"	// HUMANHEAD: aob
-#include "../prey/prey_vehiclefirecontroller.h"	// HUMANHEAD: aob
-#include "../prey/prey_baseweapons.h"
-#include "../prey/prey_items.h"					// HUMANHEAD: aob
-#include "../prey/game_hand.h"					// HUMANHEAD nla - must be before guihand
-#include "../prey/game_guihand.h"				// HUMANHEAD nla - must be before Player
-#include "../prey/game_handcontrol.h"			// HUMANHEAD pdm - must be before Player
-#include "../prey/game_weaponhandstate.h"
+#include "../Prey/game_light.h"					// HUMANHEAD: aob
+#include "../Prey/game_playerview.h"
+#include "../Prey/prey_firecontroller.h"		// HUMANHEAD: aob
+#include "../Prey/prey_weaponfirecontroller.h"	// HUMANHEAD: aob
+#include "../Prey/prey_vehiclefirecontroller.h"	// HUMANHEAD: aob
+#include "../Prey/prey_baseweapons.h"
+#include "../Prey/prey_items.h"					// HUMANHEAD: aob
+#include "../Prey/game_hand.h"					// HUMANHEAD nla - must be before guihand
+#include "../Prey/game_guihand.h"				// HUMANHEAD nla - must be before Player
+#include "../Prey/game_handcontrol.h"			// HUMANHEAD pdm - must be before Player
+#include "../Prey/game_weaponHandState.h"
 // HUMANHEAD END
 
 #include "Player.h"
-#include "../prey/physics_vehicle.h"			// HUMANHEAD pdm - must be before game_vehicle.h
-#include "../prey/force_converge.h"				// HUMANHEAD pdm - must be before game_vehicle.h
-#include "../prey/game_vehicle.h"				// HUMANHEAD pdm - must be before game_player.h
-#include "../prey/game_dock.h"					// HUMANHEAD
-#include "../prey/game_shuttle.h"				// HUMANHEAD pdm - must be after game_vehicle.h
-#include "../prey/game_player.h"				// HUMANHEAD nla
+#include "../Prey/physics_vehicle.h"			// HUMANHEAD pdm - must be before game_vehicle.h
+#include "../Prey/force_converge.h"				// HUMANHEAD pdm - must be before game_vehicle.h
+#include "../Prey/game_vehicle.h"				// HUMANHEAD pdm - must be before game_player.h
+#include "../Prey/game_dock.h"					// HUMANHEAD
+#include "../Prey/game_shuttle.h"				// HUMANHEAD pdm - must be after game_vehicle.h
+#include "../Prey/game_player.h"				// HUMANHEAD nla
 #include "Mover.h"
 #include "Camera.h"
 #include "Moveable.h"
 #include "Target.h"
 #include "Trigger.h"
 #include "Sound.h"
-#include "../prey/prey_sound.h"//HUMANHEAD: aob
-#include "../prey/prey_spiritproxy.h"			// HUMANHEAD
+#include "../Prey/prey_sound.h"//HUMANHEAD: aob
+#include "../Prey/prey_spiritproxy.h"			// HUMANHEAD
 #include "Fx.h"
-#include "../prey/game_entityfx.h"				// HUMANHEAD
+#include "../Prey/game_entityfx.h"				// HUMANHEAD
 #include "SecurityCamera.h"
 #include "BrittleFracture.h"
 
@@ -1062,7 +952,117 @@ const int	CINEMATIC_SKIP_DELAY	= SEC2MS( 2.0f );
 #include "script/Script_Thread.h"
 
 //HUMANHEAD: aob - must be after Script_Thread.h
-#include "../prey/prey_script_thread.h"
+#include "../Prey/prey_script_thread.h"
 //HUMANHEAD END
+
+//HUMANHEAD: aob - moved operator= code to this helper function
+#ifdef HUMANHEAD
+template< class type >
+ID_INLINE void idEntityPtr<type>::Clear() {
+	spawnId = 0;
+}
+
+template< class type >
+ID_INLINE bool idEntityPtr<type>::IsEqualTo( const idEntity *ent ) const {
+	return GetEntity() == ent;
+}
+
+template< class type >
+ID_INLINE bool idEntityPtr<type>::IsEqualTo( const idEntityPtr<type> &ent ) const {
+	return IsEqualTo( ent.GetEntity() );
+}
+
+template< class type >
+ID_INLINE bool idEntityPtr<type>::operator==( const idEntity *ent ) const {
+	return IsEqualTo( ent );
+}
+
+template< class type >
+ID_INLINE bool idEntityPtr<type>::operator==( const idEntityPtr<type> &ent ) const {
+	return IsEqualTo( ent );
+}
+
+template< class type >
+ID_INLINE bool idEntityPtr<type>::operator!=( const idEntity *ent ) const {
+	return !IsEqualTo( ent );
+}
+
+template< class type >
+ID_INLINE bool idEntityPtr<type>::operator!=( const idEntityPtr<type> &ent ) const {
+	return !IsEqualTo( ent );
+}
+
+template< class type >
+ID_INLINE idEntityPtr<type> &idEntityPtr<type>::Assign( const idEntityPtr<type> &ent ) {
+	return Assign( ent.GetEntity() );
+}
+
+template< class type >
+ID_INLINE idEntityPtr<type> &idEntityPtr<type>::Assign( const idEntity *ent ) {
+	if ( ent == NULL ) {
+		spawnId = 0;
+	} else {
+		//HUMANHEAD rww - take cent bits into account
+		spawnId = ( gameLocal.spawnIds[ent->entityNumber] << GENTITYNUM_BITS_PLUSCENT ) | ent->entityNumber;
+	}
+	return *this;
+}
+
+template< class type >
+ID_INLINE idEntityPtr<type> &idEntityPtr<type>::operator=( const idEntityPtr<type> &ent ) {
+	return Assign( ent );
+}
+
+template< class type >
+ID_INLINE idEntityPtr<type> &idEntityPtr<type>::operator=( const idEntity *ent ) {
+	return Assign( ent );
+}
+#else
+template< class type >
+ID_INLINE idEntityPtr<type> &idEntityPtr<type>::operator=( type *ent ) {
+	if ( ent == NULL ) {
+		spawnId = 0;
+	} else {
+		spawnId = ( gameLocal.spawnIds[ent->entityNumber] << GENTITYNUM_BITS ) | ent->entityNumber;
+	}
+	return *this;
+}
+#endif
+// HUMANHEAD END
+
+template< class type >
+ID_INLINE bool idEntityPtr<type>::SetSpawnId( int id ) {
+	if ( id == spawnId ) {
+		return false;
+	}
+	//HUMANHEAD rww - take cent bits into account
+	if ( ( id >> GENTITYNUM_BITS_PLUSCENT ) == gameLocal.spawnIds[ id & ( ( 1 << GENTITYNUM_BITS_PLUSCENT ) - 1 ) ] ) {
+		spawnId = id;
+		return true;
+	}
+	return false;
+}
+
+template< class type >
+ID_INLINE bool idEntityPtr<type>::IsValid( void ) const {
+	//HUMANHEAD rww - take cent bits into account
+	return ( gameLocal.spawnIds[ spawnId & ( ( 1 << GENTITYNUM_BITS_PLUSCENT ) - 1 ) ] == ( spawnId >> GENTITYNUM_BITS_PLUSCENT ) );
+}
+
+template< class type >
+ID_INLINE type *idEntityPtr<type>::GetEntity( void ) const {
+	//HUMANHEAD rww - take cent bits into account
+	int entityNum = spawnId & ( ( 1 << GENTITYNUM_BITS_PLUSCENT ) - 1 );
+	if ( ( gameLocal.spawnIds[ entityNum ] == ( spawnId >> GENTITYNUM_BITS_PLUSCENT ) ) ) {
+		return static_cast<type *>( gameLocal.entities[ entityNum ] );
+	}
+	return NULL;
+}
+
+template< class type >
+ID_INLINE int idEntityPtr<type>::GetEntityNum( void ) const {
+	//HUMANHEAD rww - take cent bits into account
+	return ( spawnId & ( ( 1 << GENTITYNUM_BITS_PLUSCENT ) - 1 ) );
+}
 
 #endif	/* !__GAME_LOCAL_H__ */

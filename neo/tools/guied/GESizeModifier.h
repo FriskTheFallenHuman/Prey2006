@@ -28,11 +28,10 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef GESIZEMODIFIER_H_
 #define GESIZEMODIFIER_H_
 
-class rvGESizeModifier : public rvGEModifier
-{
+class rvGESizeModifier : public rvGEModifier {
 public:
 
-	rvGESizeModifier( const char* name, idWindow* window, float l, float t, float r, float b );
+	rvGESizeModifier( const char * name, idWindow* window, float l, float t, float r, float b );
 
 	virtual bool		CanMerge( rvGEModifier* merge );
 	virtual bool		Merge( rvGEModifier* merge );
@@ -48,8 +47,7 @@ protected:
 	idRectangle		mOldRect;
 };
 
-ID_INLINE bool rvGESizeModifier::CanMerge( rvGEModifier* merge )
-{
+ID_INLINE bool rvGESizeModifier::CanMerge( rvGEModifier* merge ) {
 	return true;
 }
 

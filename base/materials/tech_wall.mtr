@@ -1,0 +1,5045 @@
+textures/tech_wall/biotech_200c
+{
+    qer_editorimage     textures/tech_wall/biotech_200c_proxy
+    matter_metal
+    bumpmap
+    addnormals      (textures/tech_wall/biotech_200c_local,
+    heightmap       (textures/tech_wall/biotech_200c_h, 2))
+    diffusemap      textures/tech_wall/biotech_200c
+    specularmap     textures/tech_wall/biotech_200c_s
+}
+textures/tech_wall/biotech_200d
+{
+    qer_editorimage     textures/tech_wall/biotech_200d_proxy
+    matter_metal
+    bumpmap
+    addnormals      (textures/tech_wall/biotech_200d_local,
+    heightmap       (textures/tech_wall/biotech_200d_h, 2))
+    diffusemap      textures/tech_wall/biotech_200d
+    specularmap     textures/tech_wall/biotech_200d_s
+}
+textures/tech_wall/kf_biotech_200e
+{
+    qer_editorimage     textures/tech_wall/biotech_200e
+    matter_metal
+    bumpmap         textures/tech_wall/biotech_200e_local
+    diffusemap      textures/tech_wall/biotech_200e
+    specularmap     textures/tech_wall/biotech_200e_s
+}
+textures/tech_wall/biotech_201b
+{
+    qer_editorimage     textures/tech_wall/biotech_201b_proxy
+    matter_metal
+    bumpmap         textures/tech_wall/biotech_201b_local
+    diffusemap      textures/tech_wall/biotech_201b
+    specularmap     textures/tech_wall/biotech_201b_s
+
+}
+textures/tech_wall/biotech_201b_dissolve
+{
+    qer_editorimage     textures/tech_wall/biotech_201b_proxy
+    matter_metal
+    bumpmap         textures/tech_wall/biotech_201b_local
+    diffusemap      textures/tech_wall/biotech_201b
+    specularmap     textures/tech_wall/biotech_201b_s
+
+    //global alphatest stages
+    {
+        if ( parm5 == 0 )
+        blend none
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest 1 - ( time + parm4 ) * 0.5
+    }
+    {
+        if ( parm5 > 0 ) //fade out
+        blend none
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest ( time + parm4 ) * 0.5
+    }
+
+    //additive fx stage
+    {
+        if ( parm5 == 0 ) //fade out
+        privatepolygonoffset    -1
+        blend add
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest 1 - ( time + parm4 ) * 0.5 + 0.1
+        rgb 2
+        glowStage
+    }
+    {
+        if ( parm5 > 0 ) //fade out
+        privatepolygonoffset    -1
+        blend add
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest ( time + parm4 ) * 0.5 - 0.1
+        rgb 2
+        glowStage
+    }
+}
+textures/tech_wall/techtest1
+{
+    qer_editorimage     textures/tech_wall/techtest1d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techtest1_local, heightmap (textures/tech_wall/techtest1_h, 6))
+
+    diffusemap      textures/tech_wall/techtest1_d
+    specularmap     textures/tech_wall/techtest1_s
+
+}
+
+
+
+
+textures/tech_wall/techpanel_044b_clean
+{
+    qer_editorimage textures/tech_wall/techpanel_044bclean_proxy
+    matter_metal
+    bumpmap         textures/tech_wall/techpanel_044b_local
+    diffusemap      textures/tech_wall/techpanel_044bclean_d
+    specularmap     textures/tech_wall/techpanel_044bclean_s
+}
+
+textures/tech_wall/gtechpipes1
+{
+    qer_editorimage textures/tech_wall/gtechpipes1_proxy
+    matter_metal
+    bumpmap
+        addnormals  (textures/tech_wall/gtechpipes1_local,
+        heightmap   (textures/tech_wall/gtechpipes1_h, 0.75))
+    diffusemap      textures/tech_wall/gtechpipes1
+    specularmap     textures/tech_wall/gtechpipes1_spec
+}
+
+textures/tech_wall/techpipes1
+{
+    qer_editorimage     textures/tech_wall/techpipes1_d
+    matter_metal
+    bumpmap
+        addnormals ( textures/tech_wall/techpipes1_local,
+        heightmap ( textures/tech_wall/techpipes1_h, 6) )
+    diffusemap      textures/tech_wall/techpipes1_d
+    specularmap     textures/tech_wall/techpipes1_s
+
+}
+
+
+textures/tech_wall/techpanel1
+{
+    qer_editorimage     textures/tech_wall/techpanel1_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel1_local, heightmap (textures/tech_wall/techpanel1_h, 6))
+
+    diffusemap      textures/tech_wall/techpanel1_d
+    specularmap     textures/tech_wall/techpanel1_s
+
+}
+
+textures/tech_wall/techpanel2
+{
+    qer_editorimage     textures/tech_wall/techpanel2_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel2_local, heightmap (textures/tech_wall/techpanel2_h, 6))
+
+    diffusemap      textures/tech_wall/techpanel2_d
+    specularmap     textures/tech_wall/techpanel2_s
+
+}
+
+
+textures/tech_wall/techpanel2_breaking
+
+{
+    qer_editorimage     textures/tech_wall/techpanel2_d
+    matter_metal
+
+    bumpmap     addnormals (textures/tech_wall/techpanel2_local, heightmap (textures/tech_wall/techpanel2_h, 6))
+    diffusemap      textures/tech_wall/techpanel2_d
+    specularmap     textures/tech_wall/techpanel2_s
+
+    {if ( parm7 != 0 )
+
+                     blend add
+                     map textures/tech_wall/techpanel2_add
+                     red    parm0 * ( spark1 [time * 1] )
+                     green  parm1 * (spark1 [time * 1] )
+                     blue   parm2 * (spark1 [time * 1] )
+    }
+}
+
+
+
+textures/tech_wall/techpanel3
+{
+    qer_editorimage     textures/tech_wall/techpanel3_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel3_local, heightmap (textures/tech_wall/techpanel3_h, 6))
+
+    diffusemap      textures/tech_wall/techpanel3_d
+    specularmap     textures/tech_wall/techpanel3_s
+
+}
+
+textures/tech_wall/techpanel3b
+{
+    qer_editorimage     textures/tech_wall/techpanel3b_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel3b_local, heightmap (textures/tech_wall/techpanel3b_h, 6))
+
+    diffusemap      textures/tech_wall/techpanel3b_d
+    specularmap     textures/tech_wall/techpanel3b_s
+
+}
+
+textures/tech_wall/techpanel4
+{
+    qer_editorimage     textures/tech_wall/techpanel4_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel4_local, heightmap (textures/tech_wall/techpanel4_h, 6))
+
+    diffusemap      textures/tech_wall/techpanel4_d
+    specularmap     textures/tech_wall/techpanel4_s
+
+}
+
+textures/tech_wall/techpanel5
+{
+    qer_editorimage     textures/tech_wall/techpanel5_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel5_local, heightmap (textures/tech_wall/techpanel5_h, 6))
+
+    diffusemap      textures/tech_wall/techpanel5_d
+    specularmap     textures/tech_wall/techpanel5_s
+
+}
+
+
+textures/tech_wall/techpanel6
+{
+    qer_editorimage     textures/tech_wall/techpanel6_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel6_local, heightmap (textures/tech_wall/techpanel6_h, 6))
+
+    diffusemap      textures/tech_wall/techpanel6_d
+    specularmap     textures/tech_wall/techpanel6_s
+
+}
+
+textures/tech_wall/techpanel7
+{
+    qer_editorimage     textures/tech_wall/techpanel7_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel7_local, heightmap (textures/tech_wall/techpanel7_h, 6))
+    diffusemap      textures/tech_wall/techpanel7_d
+    specularmap     textures/tech_wall/techpanel7_s
+
+}
+
+textures/tech_wall/techpanel8
+{
+    qer_editorimage     textures/tech_wall/techpanel8_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel8_local, heightmap (textures/tech_wall/techpanel8_h, 6))
+    diffusemap      textures/tech_wall/techpanel8_d
+    specularmap     textures/tech_wall/techpanel8_s
+
+}
+
+textures/tech_wall/techpanel9
+{
+    qer_editorimage     textures/tech_wall/techpanel9_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel9_local, heightmap (textures/tech_wall/techpanel9_h, 6))
+    diffusemap      textures/tech_wall/techpanel9_d
+    specularmap     textures/tech_wall/techpanel9_s
+
+}
+
+textures/tech_wall/techpanel10
+{
+    qer_editorimage     textures/tech_wall/techpanel10_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel10_local, heightmap (textures/tech_wall/techpanel10_h, 6))
+    diffusemap      textures/tech_wall/techpanel10_d
+    specularmap     textures/tech_wall/techpanel10_s
+
+}
+
+textures/tech_wall/techpanel11
+{
+    qer_editorimage     textures/tech_wall/techpanel11_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel11_local, heightmap (textures/tech_wall/techpanel11_h, 6))
+    diffusemap      textures/tech_wall/techpanel11_d
+    specularmap     textures/tech_wall/techpanel11_s
+
+}
+
+textures/tech_wall/techpanel12
+{
+    qer_editorimage     textures/tech_wall/techpanel12_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel12_local, heightmap (textures/tech_wall/techpanel12_h, 6))
+    diffusemap      textures/tech_wall/techpanel12_d
+    specularmap     textures/tech_wall/techpanel12_s
+
+}
+
+textures/tech_wall/techpanel13
+{
+    qer_editorimage     textures/tech_wall/techpanel13_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel13_local, heightmap (textures/tech_wall/techpanel13_h, 6))
+    diffusemap      textures/tech_wall/techpanel13_d
+    specularmap     textures/tech_wall/techpanel13_s
+
+}
+
+textures/tech_wall/techpanel14
+{
+    qer_editorimage     textures/tech_wall/techpanel14_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel14_local, heightmap (textures/tech_wall/techpanel14_h, 6))
+//  bumpmap         textures/tech_wall/techpanel14_local
+
+    diffusemap      textures/tech_wall/techpanel14_d
+    specularmap     textures/tech_wall/techpanel14_s
+
+}
+
+textures/tech_wall/techpanel20
+{
+    qer_editorimage     textures/tech_wall/techpanel20_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel20_local, heightmap (textures/tech_wall/techpanel20_h, 6))
+
+    diffusemap      textures/tech_wall/techpanel20_d
+    specularmap     textures/tech_wall/techpanel20_s
+
+}
+textures/tech_wall/techpanel21
+{
+    qer_editorimage     textures/tech_wall/techpanel21_proxy
+    matter_metal
+
+    bumpmap         textures/tech_wall/techpanel21_local
+
+    diffusemap      textures/tech_wall/techpanel21_d
+    specularmap     textures/tech_wall/techpanel21_s
+
+}
+textures/tech_wall/techpanel22
+{
+    qer_editorimage     textures/tech_wall/techpanel22_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techpanel22_local, heightmap (textures/tech_wall/techpanel22_h, 3))
+    diffusemap      textures/tech_wall/techpanel22_d
+    specularmap     textures/tech_wall/techpanel22_s
+
+}
+textures/tech_wall/techpanel22_shuttle
+{
+    qer_editorimage     textures/tech_wall/techpanel22_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techpanel22_local, heightmap (textures/tech_wall/techpanel22_h, 3))
+    diffusemap      textures/tech_wall/techpanel22_d
+    specularmap     textures/tech_wall/techpanel22_s
+
+    {   // Shuttle view stage
+                 blend add
+		map textures/decals/shuttle_flicker_02_blue
+                texgen screen
+		 rgb (fade_pulse [time * .4] * 0.4)
+
+                 scroll time * 10, time * 10.1 * ( parm7 + 10 )
+                shuttleView
+		glowstage
+	}
+
+                {	// Shuttle view stage
+
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		map textures/decals/shuttle_flicker
+		texgen screen
+                 rgb (fade_pulse [time * .4] * 0.2)
+                scale ( forcefieldflicker[ time * 1.0 ] * .01 ) , 0.5
+		scroll time * 10, time * 10.1 * ( parm7 + 10 )
+		shuttleView
+		glowstage
+    }
+}
+textures/tech_wall/techpanel23
+{
+    qer_editorimage     textures/tech_wall/techpanel23_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techpanel23_local, heightmap (textures/tech_wall/techpanel23_h, 3))
+    diffusemap      textures/tech_wall/techpanel23_d
+    specularmap     textures/tech_wall/techpanel23_s
+
+}
+
+textures/tech_wall/techpanel23_nc
+{
+    qer_editorimage     textures/tech_wall/techpanel23_proxy
+    twosided
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techpanel23_local, heightmap (textures/tech_wall/techpanel23_h, 3))
+    diffusemap      textures/tech_wall/techpanel23_d
+    specularmap     textures/tech_wall/techpanel23_s
+
+}
+
+textures/tech_wall/techwall1
+{
+    qer_editorimage     textures/tech_wall/techwall1_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall1_local, heightmap (textures/tech_wall/techwall1_h, 6))
+
+
+    diffusemap      textures/tech_wall/techwall1_d
+    specularmap     textures/tech_wall/techwall1_s
+
+}
+
+textures/tech_wall/techwall1_broken
+{
+    qer_editorimage     textures/tech_wall/techwall1_broken_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall1_broken_local, heightmap (textures/tech_wall/techwall1_broken_h, 6))
+
+
+    diffusemap      textures/tech_wall/techwall1_broken_d
+    specularmap     textures/tech_wall/techwall1_broken_s
+    {
+        blend add
+        map textures/tech_wall/techwall1_broken_add
+        rgb (spark1 [time * 1])
+    }
+}
+
+textures/tech_wall/techwall2
+{
+    qer_editorimage     textures/tech_wall/techwall2_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall2_local, heightmap (textures/tech_wall/techwall2_h, 6))
+    diffusemap      textures/tech_wall/techwall2_d
+    specularmap     textures/tech_wall/techwall2_s
+
+}
+textures/tech_wall/techwall2b
+{
+    qer_editorimage     textures/tech_wall/techwall2_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall2_local, heightmap (textures/tech_wall/techwall2_h, 6))
+    diffusemap      textures/tech_wall/techwall2_d
+    specularmap     textures/tech_wall/techwall2_s
+    {
+        blend add
+        map textures/tech_wall/techwall2_a
+        rgb (jitter1 [time * 2])
+    }
+}
+textures/tech_wall/techwall3
+{
+    qer_editorimage     textures/tech_wall/techwall3_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall3_local, heightmap (textures/tech_wall/techwall3_h, 6))
+//  bumpmap         textures/tech_wall/techwall3_local
+
+    diffusemap      textures/tech_wall/techwall3_d
+    specularmap     textures/tech_wall/techwall3_s
+
+}
+
+textures/tech_wall/techwall4
+{
+    qer_editorimage     textures/tech_wall/techwall4_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall4_local, heightmap (textures/tech_wall/techwall4_h, 6))
+    diffusemap      textures/tech_wall/techwall4_d
+    specularmap     textures/tech_wall/techwall4_s
+
+}
+
+textures/tech_wall/techwall5
+{
+    qer_editorimage     textures/tech_wall/techwall5_d
+    matter_metal
+
+    bumpmap     addnormals (textures/tech_wall/techwall5_local,
+                heightmap (textures/tech_wall/techwall5_h, 6))
+    diffusemap      textures/tech_wall/techwall5_d
+    specularmap     textures/tech_wall/techwall5_s
+
+}
+textures/tech_wall/techwall5_heighttest
+{
+    qer_editorimage     textures/tech_wall/techwall5_d
+    matter_metal
+
+    bumpmap
+                addnormals (textures/tech_wall/techwall5_local,
+                heightmap (textures/tech_wall/techwall5_h2, 6))
+    diffusemap      textures/tech_wall/techwall5_d
+    specularmap     textures/tech_wall/techwall5_s
+
+}
+
+textures/tech_wall/techwall6
+{
+    qer_editorimage     textures/tech_wall/techwall6_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall6_local, heightmap (textures/tech_wall/techwall6_h, 6))
+    diffusemap      textures/tech_wall/techwall6_d
+    specularmap     textures/tech_wall/techwall6_s
+
+}
+
+textures/tech_wall/techwall7
+{
+    qer_editorimage     textures/tech_wall/techwall7_proxy
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall7_local, heightmap (textures/tech_wall/techwall7_h, 6))
+    diffusemap      textures/tech_wall/techwall7_d
+    specularmap     textures/tech_wall/techwall7_s
+
+}
+
+textures/tech_wall/techwall7_scrolling
+{
+    qer_editorimage     textures/tech_wall/techwall7_proxy
+    matter_metal
+    {
+        blend   bumpmap
+        map         addnormals (textures/tech_wall/techwall7_local, heightmap (textures/tech_wall/techwall7_h, 6))
+        scroll          (time * 0.5 ), 0
+    }
+    {
+        blend   diffusemap
+        map     textures/tech_wall/techwall7_d
+        scroll          (time * 0.5 ), 0
+    }
+    {
+        blend   specularmap
+        map     textures/tech_wall/techwall7_s
+        scroll          (time * 0.5 ), 0
+    }
+}
+
+textures/tech_wall/techwall8
+{
+    qer_editorimage     textures/tech_wall/techwall8_proxy
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall8_local, heightmap (textures/tech_wall/techwall8_h, 6))
+    diffusemap      textures/tech_wall/techwall8_d
+    specularmap     textures/tech_wall/techwall8_s
+
+}
+
+textures/tech_wall/techwall8_scrolling
+{
+    qer_editorimage     textures/tech_wall/techwall8_proxy
+    matter_metal
+    {
+        blend   bumpmap
+        map         addnormals (textures/tech_wall/techwall8_local, heightmap (textures/tech_wall/techwall8_h, 6))
+        scroll          (time * 0.5 ), 0
+    }
+    {
+        blend   diffusemap
+        map     textures/tech_wall/techwall8_d
+        scroll          (time * 0.5 ), 0
+    }
+    {
+        blend   specularmap
+        map     textures/tech_wall/techwall8_s
+        scroll          (time * 0.5 ), 0
+    }
+}
+
+
+textures/tech_wall/techwall8_add
+{
+    qer_editorimage     textures/tech_wall/techwall8_proxy
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall8_local, heightmap (textures/tech_wall/techwall8_h, 6))
+    diffusemap      textures/tech_wall/techwall8_d
+    specularmap     textures/tech_wall/techwall8_s
+    {
+        blend add
+        map textures/tech_wall/techwall8_add
+        rgb (jitter1 [time * 2]) - 0.1
+    }
+}
+
+textures/tech_wall/techwall8_add_scrolling
+{
+    qer_editorimage     textures/tech_wall/techwall8_proxy
+    matter_metal
+    {
+        blend   bumpmap
+        map         addnormals (textures/tech_wall/techwall8_local, heightmap (textures/tech_wall/techwall8_h, 6))
+        scroll          (time * 0.5 ), 0
+    }
+    {
+        blend   diffusemap
+        map     textures/tech_wall/techwall8_d
+        scroll          (time * 0.5 ), 0
+    }
+    {
+        blend   specularmap
+        map     textures/tech_wall/techwall8_s
+        scroll          (time * 0.5 ), 0
+    }
+    {
+        blend add
+        map textures/tech_wall/techwall8_add
+        rgb (jitter1 [time * 2]) - 0.1
+        scroll          (time * 0.5 ), 0
+    }
+}
+
+textures/tech_wall/techwall8b
+{
+    qer_editorimage     textures/tech_wall/techwall8b_proxy
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall8b_local, heightmap (textures/tech_wall/techwall8b_h, 6))
+    diffusemap      textures/tech_wall/techwall8b_d
+    specularmap     textures/tech_wall/techwall8b_s
+
+}
+
+textures/tech_wall/techwall8b_scrolling
+{
+    qer_editorimage     textures/tech_wall/techwall8b_proxy
+    matter_metal
+    {
+        blend   bumpmap
+        map         addnormals (textures/tech_wall/techwall8b_local, heightmap (textures/tech_wall/techwall8b_h, 6))
+        scroll          (time * 0.5 ), 0
+    }
+    {
+        blend   diffusemap
+        map     textures/tech_wall/techwall8b_d
+        scroll          (time * 0.5 ), 0
+    }
+    {
+        blend   specularmap
+        map     textures/tech_wall/techwall8b_s
+        scroll          (time * 0.5 ), 0
+    }
+}
+
+
+textures/tech_wall/techwall8b_add
+{
+    qer_editorimage     textures/tech_wall/techwall8b_proxy
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall8b_local, heightmap (textures/tech_wall/techwall8b_h, 6))
+    diffusemap      textures/tech_wall/techwall8b_d
+    specularmap     textures/tech_wall/techwall8b_s
+    {
+        blend add
+        map textures/tech_wall/techwall8_add
+        rgb (jitter1 [time * 2]) - 0.1
+    }
+}
+
+
+textures/tech_wall/techwall8b_add_scrolling
+{
+    qer_editorimage     textures/tech_wall/techwall8b_proxy
+    matter_metal
+    {
+        blend   bumpmap
+        map         addnormals (textures/tech_wall/techwall8b_local, heightmap (textures/tech_wall/techwall8b_h, 6))
+        scroll          (time * 0.5 ), 0
+    }
+    {
+        blend   diffusemap
+        map     textures/tech_wall/techwall8b_d
+        scroll          (time * 0.5 ), 0
+    }
+    {
+        blend   specularmap
+        map     textures/tech_wall/techwall8b_s
+        scroll          (time * 0.5 ), 0
+    }
+    {
+        blend add
+        map textures/tech_wall/techwall8_add
+        rgb (jitter1 [time * 2]) - 0.1
+        scroll          (time * 0.5 ), 0
+    }
+}
+
+textures/tech_wall/techwall9
+{
+    qer_editorimage     textures/tech_wall/techwall9_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall9_local, heightmap (textures/tech_wall/techwall9_h, 6))
+    diffusemap      textures/tech_wall/techwall9_d
+    specularmap     textures/tech_wall/techwall9_s
+
+}
+
+textures/tech_wall/techwall10
+{
+    qer_editorimage     textures/tech_wall/techwall10_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall10_local, heightmap (textures/tech_wall/techwall10_h, 6))
+    diffusemap      textures/tech_wall/techwall10_d
+    specularmap     textures/tech_wall/techwall10_s
+}
+
+textures/tech_wall/techwall11
+{
+    qer_editorimage     textures/tech_wall/techwall11_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall11_local, heightmap (textures/tech_wall/techwall11_h, 6))
+    diffusemap      textures/tech_wall/techwall11_d
+    specularmap     textures/tech_wall/techwall11_s
+}
+
+textures/tech_wall/techwall11b
+{
+    qer_editorimage     textures/tech_wall/techwall11_d
+    matter_metal
+    nooverlays
+
+    {
+        blend   bumpmap
+        map addnormals (textures/tech_wall/techwall11_local, heightmap (textures/tech_wall/techwall11_h, 6))
+        scroll  parm5 * time,0
+    }
+    {
+        blend   diffusemap
+        map textures/tech_wall/techwall11_d
+        scroll  parm5 * time,0
+    }
+    {
+        blend   specularmap
+        map textures/tech_wall/techwall11_s
+        scroll  parm5 * time,0
+    }
+    {
+        blend   add
+        map textures/tech_wall/techwall11_a
+        scroll  parm5 * time,0
+        colored
+    }
+}
+
+textures/tech_wall/techwall11c
+{
+    qer_editorimage     textures/tech_wall/techwall11c_d
+    matter_metal
+
+    {
+        blend   bumpmap
+        map addnormals (textures/tech_wall/techwall11_local, heightmap (textures/tech_wall/techwall11_h, 6))
+    }
+    {
+        blend   diffusemap
+        map textures/tech_wall/techwall11c_d
+    }
+    {
+        blend   specularmap
+        map textures/tech_wall/techwall11c_s
+    }
+    {
+        blend   add
+        map textures/tech_wall/techwall11_a
+        colored
+    }
+}
+
+textures/tech_wall/techwall12
+{
+    qer_editorimage     textures/tech_wall/techwall12_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall12_local, heightmap (textures/tech_wall/techwall12_h, 6))
+    diffusemap      textures/tech_wall/techwall12_d
+    specularmap     textures/tech_wall/techwall12_s
+}
+
+
+
+textures/tech_wall/techwall20
+{
+    qer_editorimage     textures/tech_wall/techwall20_proxy
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall20_local, heightmap (textures/tech_wall/techwall20_h, 2))
+
+    diffusemap      textures/tech_wall/techwall20_d
+    specularmap     textures/tech_wall/techwall20_s
+}
+
+
+textures/tech_wall/techwall20_scrolling
+{
+    qer_editorimage     textures/tech_wall/techwall20_proxy
+    matter_metal
+    {
+        blend   bumpmap
+        map         addnormals (textures/tech_wall/techwall20_local, heightmap (textures/tech_wall/techwall20_h, 2))
+        scroll          (time * 0.5 ), 0
+    }
+    {
+        blend   diffusemap
+        map     textures/tech_wall/techwall20_d
+        scroll          (time * 0.5 ), 0
+    }
+    {
+        blend   specularmap
+        map     textures/tech_wall/techwall20_s
+        scroll          (time * 0.5 ), 0
+    }
+}
+
+textures/tech_wall/techwall21
+{
+    qer_editorimage     textures/tech_wall/techwall21_proxy
+    matter_metal
+
+    bumpmap         textures/tech_wall/techwall21_local
+
+    diffusemap      textures/tech_wall/techwall21_d
+    specularmap     textures/tech_wall/techwall21_s
+
+}
+
+textures/tech_wall/techwall22
+{
+    qer_editorimage     textures/tech_wall/techwall22_proxy
+    matter_metal
+
+    bumpmap         textures/tech_wall/techwall22_local
+
+    diffusemap      textures/tech_wall/techwall22_d
+    specularmap     textures/tech_wall/techwall22_s
+
+}
+
+textures/tech_wall/techwall23
+{
+    qer_editorimage     textures/tech_wall/techwall23_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techwall23_local, heightmap (textures/tech_wall/techwall23_h, 3))
+    diffusemap      textures/tech_wall/techwall23_d
+    specularmap     textures/tech_wall/techwall23_s
+
+}
+
+textures/tech_wall/techwall24
+{
+    qer_editorimage     textures/tech_wall/techwall24_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techwall24_local, heightmap (textures/tech_wall/techwall24_h, 3))
+    diffusemap      textures/tech_wall/techwall24_d
+    specularmap     textures/tech_wall/techwall24_s
+}
+
+textures/tech_wall/techwall24_shuttle
+{
+    qer_editorimage     textures/tech_wall/techwall24_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techwall24_local, heightmap (textures/tech_wall/techwall24_h, 3))
+    diffusemap      textures/tech_wall/techwall24_d
+    specularmap     textures/tech_wall/techwall24_s
+
+{   // Shuttle view stage
+                 blend add
+		map textures/decals/shuttle_flicker_02_blue
+                texgen screen
+		 rgb (fade_pulse [time * .4] * 0.4)
+
+                 scroll time * 10, time * 10.1 * ( parm7 + 10 )
+                shuttleView
+		glowstage
+	}
+
+                {	// Shuttle view stage
+
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		map textures/decals/shuttle_flicker
+		texgen screen
+                 rgb (fade_pulse [time * .4] * 0.2)
+                scale ( forcefieldflicker[ time * 1.0 ] * .01 ) , 0.5
+		scroll time * 10, time * 10.1 * ( parm7 + 10 )
+		shuttleView
+		glowstage
+    }
+}
+
+
+textures/tech_wall/techwall24b
+{
+    qer_editorimage     textures/tech_wall/techwall24b_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techwall24b_local, heightmap (textures/tech_wall/techwall24b_h, 3))
+    diffusemap      textures/tech_wall/techwall24b_d
+    specularmap     textures/tech_wall/techwall24b_s
+}
+
+textures/tech_wall/techwall_025
+{
+    qer_editorimage     textures/tech_wall/techwall_025_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techwall_025_local, heightmap (textures/tech_wall/techwall_025_h, 3))
+    diffusemap      textures/tech_wall/techwall_025_d
+    specularmap     textures/tech_wall/techwall_025_s
+}
+
+textures/tech_wall/techwall_026
+{
+    qer_editorimage     textures/tech_wall/techwall_026_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techwall_026_local, heightmap (textures/tech_wall/techwall_026_h, 3))
+    diffusemap      textures/tech_wall/techwall_026_d
+    specularmap     textures/tech_wall/techwall_026_s
+}
+
+textures/tech_wall/biotech1
+{
+    qer_editorimage     textures/tech_wall/biotech1_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech1_local, heightmap (textures/tech_wall/biotech1_h, 6))
+
+    diffusemap      textures/tech_wall/biotech1_d
+    specularmap     textures/tech_wall/biotech1_s
+}
+
+textures/tech_wall/biotech2
+{
+    qer_editorimage     textures/tech_wall/biotech2_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech2_local, heightmap (textures/tech_wall/biotech2_h, 6))
+
+    diffusemap      textures/tech_wall/biotech2_d
+    specularmap     textures/tech_wall/biotech2_s
+}
+
+textures/tech_wall/biotech3
+{
+    qer_editorimage     textures/tech_wall/biotech3_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech3_local, heightmap (textures/tech_wall/biotech3_h, 6))
+
+    diffusemap      textures/tech_wall/biotech3_d
+    specularmap     textures/tech_wall/biotech3_s
+}
+
+
+textures/tech_wall/biotech4
+{
+    qer_editorimage     textures/tech_wall/biotech4_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech4_local, heightmap (textures/tech_wall/biotech4_h, 6))
+
+    diffusemap      textures/tech_wall/biotech4_d
+    specularmap     textures/tech_wall/biotech4_s
+}
+
+
+textures/tech_wall/biotech5
+{
+    qer_editorimage     textures/tech_wall/biotech5_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech5_local, heightmap (textures/tech_wall/biotech5_h, 6))
+
+    diffusemap      textures/tech_wall/biotech5_d
+    specularmap     textures/tech_wall/biotech5_s
+}
+
+
+textures/tech_wall/biotech5_add
+{
+    qer_editorimage     textures/tech_wall/biotech5_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech5_local, heightmap (textures/tech_wall/biotech5_h, 6))
+
+    diffusemap      textures/tech_wall/biotech5_d
+    specularmap     textures/tech_wall/biotech5_s
+    {
+        blend add
+        map textures/tech_wall/biotech5_add
+        rgb (jitter1 [time * 2]) - 0.3
+    }
+}
+
+textures/tech_wall/biotech5b
+{
+    qer_editorimage     textures/tech_wall/biotech5b_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech5b_local,
+                heightmap (textures/tech_wall/biotech5b_h, 6))
+
+    diffusemap      textures/tech_wall/biotech5b_d
+    specularmap     textures/tech_wall/biotech5b_s
+}
+
+textures/tech_wall/biotech5b_add
+{
+    qer_editorimage     textures/tech_wall/biotech5b_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech5b_local,
+                heightmap (textures/tech_wall/biotech5b_h, 6))
+
+    diffusemap      textures/tech_wall/biotech5b_d
+    specularmap     textures/tech_wall/biotech5b_s
+    {
+        blend add
+        map textures/tech_wall/biotech5b_add
+        red     parm0 * (jitter1 [time * 2])
+        green   parm1 * (jitter1 [time * 2])
+        blue    parm2 * (jitter1 [time * 2])
+//      rgb (jitter1 [time * 2])                //made colorable mf 10/27/05
+    }
+}
+
+textures/tech_wall/biotech5b_scrolling
+{
+    qer_editorimage     textures/tech_wall/biotech5b_d
+    matter_metal
+    {
+        blend   bumpmap
+        map         addnormals (textures/tech_wall/biotech5b_local,
+                heightmap (textures/tech_wall/biotech5b_h, 6))
+        scroll      (time * 0.3 ), 0
+    }
+    {
+        blend   diffusemap
+        map     textures/tech_wall/biotech5b_d
+        scroll      (time * 0.3 ), 0
+    }
+    {
+        blend   specularmap
+        map     textures/tech_wall/biotech5b_s
+        scroll      (time * 0.3 ), 0
+    }
+}
+
+textures/tech_wall/biotech5b_add_scrolling
+{
+    qer_editorimage     textures/tech_wall/biotech5b_d
+    matter_metal
+    {
+        blend   bumpmap
+        map         addnormals (textures/tech_wall/biotech5b_local,
+                heightmap (textures/tech_wall/biotech5b_h, 6))
+        scroll      (time * 0.3 ), 0
+    }
+    {
+        blend   diffusemap
+        map     textures/tech_wall/biotech5b_d
+        scroll      (time * 0.3 ), 0
+    }
+    {
+        blend   specularmap
+        map     textures/tech_wall/biotech5b_s
+        scroll      (time * 0.3 ), 0
+    }
+    {
+        blend add
+        map textures/tech_wall/biotech5b_add
+        rgb (jitter1 [time * 2])
+        scroll      (time * 0.3 ), 0
+    }
+}
+
+textures/tech_wall/biotech6
+{
+    qer_editorimage     textures/tech_wall/biotech6_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech6_local, heightmap (textures/tech_wall/biotech6_h, 6))
+
+    diffusemap      textures/tech_wall/biotech6_d
+    specularmap     textures/tech_wall/biotech6_s
+
+}
+
+textures/tech_wall/biotech6_add
+{
+    qer_editorimage     textures/tech_wall/biotech6_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech6_local, heightmap (textures/tech_wall/biotech6_h, 6))
+
+    diffusemap      textures/tech_wall/biotech6_d
+    specularmap     textures/tech_wall/biotech6_s
+    {
+        blend add
+        map textures/tech_wall/biotech6_add
+        rgb (jitter1 [time * 2]) - 0.3
+    }
+}
+
+textures/tech_wall/biotech6b
+{
+    qer_editorimage     textures/tech_wall/biotech6b_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech6b_local, heightmap (textures/tech_wall/biotech6_h, 6))
+
+    diffusemap      textures/tech_wall/biotech6b_d
+    specularmap     textures/tech_wall/biotech6b_s
+
+}
+
+textures/tech_wall/biotech6b_add
+{
+    qer_editorimage     textures/tech_wall/biotech6b_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech6b_local, heightmap (textures/tech_wall/biotech6_h, 6))
+
+    diffusemap      textures/tech_wall/biotech6b_d
+    specularmap     textures/tech_wall/biotech6b_s
+    {
+        blend add
+        map textures/tech_wall/biotech6_add
+        rgb (jitter1 [time * 2]) - 0.3
+    }
+}
+
+textures/tech_wall/biotech7
+{
+    qer_editorimage     textures/tech_wall/biotech7_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech7_local, heightmap (textures/tech_wall/biotech7_h, 6))
+
+    diffusemap      textures/tech_wall/biotech7_d
+    specularmap     textures/tech_wall/biotech7_s
+
+}
+
+textures/tech_wall/biotech7_add
+{
+    qer_editorimage     textures/tech_wall/biotech7_d
+    matter_metal
+    bumpmap
+    addnormals (textures/tech_wall/biotech7_local,
+    heightmap (textures/tech_wall/biotech7_h, 6))
+    diffusemap      textures/tech_wall/biotech7_d
+    specularmap     textures/tech_wall/biotech7_s
+    {
+        blend add
+        map textures/tech_wall/biotech7_add
+        rgb (jitter1 [time * 2]) - 0.3
+    }
+}
+
+textures/tech_wall/biotech8
+{
+    qer_editorimage     textures/tech_wall/biotech8_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech8_local, heightmap (textures/tech_wall/biotech8_h, 6))
+
+    diffusemap      textures/tech_wall/biotech8_d
+    specularmap     textures/tech_wall/biotech8_s
+
+}
+
+textures/tech_wall/biotech8_add
+{
+    qer_editorimage     textures/tech_wall/biotech8_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech8_local, heightmap (textures/tech_wall/biotech8_h, 6))
+
+    diffusemap      textures/tech_wall/biotech8_d
+    specularmap     textures/tech_wall/biotech8_s
+    {
+        blend add
+        map textures/tech_wall/biotech8_add
+        rgb (jitter1 [time * 2]) - 0.3
+    }
+}
+
+textures/tech_wall/biotech9
+{
+    qer_editorimage     textures/tech_wall/biotech9_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech9_local, heightmap (textures/tech_wall/biotech9_h, 6))
+
+    diffusemap      textures/tech_wall/biotech9_d
+    specularmap     textures/tech_wall/biotech9_s
+
+}
+
+textures/tech_wall/biotech9_add
+{
+    qer_editorimage     textures/tech_wall/biotech9_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech9_local, heightmap (textures/tech_wall/biotech9_h, 6))
+
+    diffusemap      textures/tech_wall/biotech9_d
+    specularmap     textures/tech_wall/biotech9_s
+    {
+        blend add
+        map textures/tech_wall/biotech9_add
+        rgb (jitter1 [time * 2]) - 0.3
+    }
+}
+
+textures/tech_wall/biotech10
+{
+    qer_editorimage     textures/tech_wall/biotech10_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech10_local, heightmap (textures/tech_wall/biotech10_h, 6))
+
+    diffusemap      textures/tech_wall/biotech10_d
+    specularmap     textures/tech_wall/biotech10_s
+
+}
+
+textures/tech_wall/biotech11
+{
+    qer_editorimage     textures/tech_wall/biotech11_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech11_local, heightmap (textures/tech_wall/biotech11_h, 6))
+
+    diffusemap      textures/tech_wall/biotech11_d
+    specularmap     textures/tech_wall/biotech11_s
+
+}
+
+textures/tech_wall/biotech12
+{
+    qer_editorimage     textures/tech_wall/biotech12_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech12_local, heightmap (textures/tech_wall/biotech12_h, 6))
+
+    diffusemap      textures/tech_wall/biotech12_d
+    specularmap     textures/tech_wall/biotech12_s
+
+}
+
+textures/tech_wall/biotech13
+{
+    qer_editorimage     textures/tech_wall/biotech13_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech13_local, heightmap (textures/tech_wall/biotech13_h, 6))
+
+    diffusemap      textures/tech_wall/biotech13_d
+    specularmap     textures/tech_wall/biotech13_s
+
+}
+
+
+textures/tech_wall/biotech_020a
+{
+    qer_editorimage     textures/tech_wall/biotech_020a_proxy
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech_020a_local, heightmap (textures/tech_wall/biotech_020a_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_020a_d
+    specularmap     textures/tech_wall/biotech_020a_s
+
+}
+
+textures/tech_wall/biotech_020b
+{
+    qer_editorimage     textures/tech_wall/biotech_020b_proxy
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech_020b_local, heightmap (textures/tech_wall/biotech_020b_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_020b_d
+    specularmap     textures/tech_wall/biotech_020b_s
+
+}
+
+textures/tech_wall/biotech_020c
+{
+    qer_editorimage     textures/tech_wall/biotech_020c_proxy
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech_020c_local, heightmap (textures/tech_wall/biotech_020c_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_020c_d
+    specularmap     textures/tech_wall/biotech_020c_s
+
+}
+
+textures/tech_wall/biotech_020d
+{
+    qer_editorimage     textures/tech_wall/biotech_020d_proxy
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech_020d_local, heightmap (textures/tech_wall/biotech_020d_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_020d_d
+    specularmap     textures/tech_wall/biotech_020d_s
+
+}
+
+textures/tech_wall/biotech_020d_add
+{
+    qer_editorimage     textures/tech_wall/biotech_020d_proxy
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/biotech_020d_local, heightmap (textures/tech_wall/biotech_020d_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_020d_d
+    specularmap     textures/tech_wall/biotech_020d_s
+    {
+        blend add
+        map textures/tech_wall/biotech_020d_add
+        rgb (.1 * sintable [.15 + time * .5 ]) + .7
+    }
+}
+
+textures/tech_wall/biotech_022
+{
+    qer_editorimage     textures/tech_wall/biotech_022_d
+    matter_metal
+
+    bumpmap         addnormals ( textures/tech_wall/biotech_022_local, heightmap (textures/tech_wall/biotech_022_h, 2))
+    diffusemap      textures/tech_wall/biotech_022_d
+    specularmap     textures/tech_wall/biotech_022_s
+
+}
+
+textures/tech_wall/biotech_023
+{
+    qer_editorimage     textures/tech_wall/biotech_023_d
+    matter_metal
+
+    bumpmap         addnormals ( textures/tech_wall/biotech_023_local, heightmap (textures/tech_wall/biotech_023_h, 2))
+    diffusemap      textures/tech_wall/biotech_023_d
+    specularmap     textures/tech_wall/biotech_023_s
+
+}
+
+textures/tech_wall/biotech_024
+{
+    qer_editorimage     textures/tech_wall/biotech_024_d
+    matter_metal
+
+    bumpmap         addnormals ( textures/tech_wall/biotech_024_local, heightmap (textures/tech_wall/biotech_024_h, 2))
+    diffusemap      textures/tech_wall/biotech_024_d
+    specularmap     textures/tech_wall/biotech_024_s
+
+}
+
+
+
+textures/tech_wall/bl_techwall22
+{
+    qer_editorimage     textures/tech_wall/bl_techwall22_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techwall22_local, heightmap (textures/tech_wall/bl_techwall22_h, 3))
+    diffusemap      textures/tech_wall/bl_techwall22_d
+    specularmap     textures/tech_wall/bl_techwall22_s
+
+}
+textures/tech_wall/bl_techwall22add
+{
+    qer_editorimage     textures/tech_wall/bl_techwall22_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techwall22_local, heightmap (textures/tech_wall/bl_techwall22_h, 3))
+    diffusemap      textures/tech_wall/bl_techwall22_d
+    specularmap     textures/tech_wall/bl_techwall22_s
+    {
+        blend add
+        map textures/tech_wall/bl_techwall22_a
+        rgb (jitter1 [time * 2])
+    }
+}
+textures/tech_wall/bl_techwall23
+{
+    qer_editorimage     textures/tech_wall/bl_techwall23_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techwall23_local, heightmap (textures/tech_wall/bl_techwall23_h, 3))
+    diffusemap      textures/tech_wall/bl_techwall23_d
+    specularmap     textures/tech_wall/bl_techwall23_s
+
+}
+
+
+textures/tech_wall/bl_techwall24
+{
+    qer_editorimage     textures/tech_wall/bl_techwall24_proxy
+    matter_metal
+    bumpmap
+        addnormals ( textures/tech_wall/bl_techwall24_local,
+        heightmap ( textures/tech_wall/bl_techwall24_h, 3) )
+    diffusemap      textures/tech_wall/bl_techwall24_d
+    specularmap     textures/tech_wall/bl_techwall24_s
+
+}
+
+
+textures/tech_wall/bl_techpanel22
+{
+    qer_editorimage     textures/tech_wall/bl_techpanel22_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techpanel22_local, heightmap (textures/tech_wall/bl_techpanel22_h, 2))
+    diffusemap      textures/tech_wall/bl_techpanel22_d
+    specularmap     textures/tech_wall/bl_techpanel22_s
+
+}
+
+textures/tech_wall/bl_techpanel23
+{
+    qer_editorimage     textures/tech_wall/bl_techpanel23_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techpanel23_local, heightmap (textures/tech_wall/bl_techpanel23_h, 3))
+    diffusemap      textures/tech_wall/bl_techpanel23_d
+    specularmap     textures/tech_wall/bl_techpanel23_s
+
+}
+textures/tech_wall/bl_techpanel23b
+{
+    qer_editorimage     textures/tech_wall/bl_techpanel23_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techpanel23_local, heightmap (textures/tech_wall/bl_techpanel23_h, 3))
+    diffusemap      textures/tech_wall/bl_techpanel23_d
+    specularmap     textures/tech_wall/bl_techpanel23_s
+    {
+        blend add
+        map textures/tech_wall/bl_techpanel23_a
+        rgb 0.8+(ramp_halfinvsaw [time * 0.8])
+    }
+}
+textures/tech_wall/bl_techpanel23c
+{
+    qer_editorimage     textures/tech_wall/bl_techpanel23_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techpanel23_local, heightmap (textures/tech_wall/bl_techpanel23_h, 3))
+    diffusemap      textures/tech_wall/bl_techpanel23b_d
+    specularmap     textures/tech_wall/bl_techpanel23_s
+
+}
+textures/tech_wall/bl_techpanel24
+{
+    qer_editorimage     textures/tech_wall/bl_techpanel24_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techpanel24_local, heightmap (textures/tech_wall/bl_techpanel24_h, 3))
+    diffusemap      textures/tech_wall/bl_techpanel24_d
+    specularmap     textures/tech_wall/bl_techpanel24_s
+
+}
+textures/tech_wall/bl_techpanel25
+{
+    qer_editorimage     textures/tech_wall/bl_techpanel25_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techpanel25_local, heightmap (textures/tech_wall/bl_techpanel25_h, 7))
+    diffusemap      textures/tech_wall/bl_techpanel25_d
+    specularmap     textures/tech_wall/bl_techpanel25_s
+
+}
+textures/tech_wall/bl_techpanel26
+{
+    qer_editorimage     textures/tech_wall/bl_techpanel26_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techpanel26_local, heightmap (textures/tech_wall/bl_techpanel26_h, 3))
+    diffusemap      textures/tech_wall/bl_techpanel26_d
+    specularmap     textures/tech_wall/bl_techpanel26_s
+
+}
+
+
+
+
+
+textures/tech_wall/sparkpanel1
+
+{
+
+    qer_editorimage     textures/tech_wall/sparkpanel1_d
+    matter_metal
+
+    bumpmap     addnormals (textures/tech_wall/sparkpanel1_local, heightmap (textures/tech_wall/sparkpanel1_h, 6))
+    diffusemap      textures/tech_wall/sparkpanel1_d
+    specularmap     textures/tech_wall/sparkpanel1_s
+
+    {if ( parm7 != 0 )
+
+                     blend add
+                     map textures/tech_wall/sparkpanel1_add1
+                     red    parm0 * (spark1 [time * 1] )
+                     green  parm1 * (spark1 [time * 1] )
+                     blue   parm2 * (spark1 [time * 1] )
+    }
+    {if ( parm7 != 0 )
+                     blend add
+                     map textures/tech_wall/sparkpanel1_add2
+                     red    parm0 * (spark1 [time * .6] )
+                     green  parm1 * (spark1 [time * .6] )
+                     blue   parm2 * (spark1 [time * .6] )
+    }
+}
+
+textures/tech_wall/sparkpanel1_off
+
+{
+
+    qer_editorimage     textures/tech_wall/sparkpanel1_d
+    matter_metal
+
+    bumpmap     addnormals (textures/tech_wall/sparkpanel1_local, heightmap (textures/tech_wall/sparkpanel1_h, 6))
+    diffusemap      textures/tech_wall/sparkpanel1_d
+    specularmap     textures/tech_wall/sparkpanel1_s
+}
+
+textures/tech_wall/sparkpanel1_off_shuttle
+
+{
+
+    qer_editorimage     textures/tech_wall/sparkpanel1_d
+    matter_metal
+
+    bumpmap     addnormals (textures/tech_wall/sparkpanel1_local, heightmap (textures/tech_wall/sparkpanel1_h, 6))
+    diffusemap      textures/tech_wall/sparkpanel1_d
+    specularmap     textures/tech_wall/sparkpanel1_s
+
+{   // Shuttle view stage
+                 blend add
+		map textures/decals/shuttle_flicker_02_blue
+                texgen screen
+		 rgb (fade_pulse [time * .4] * 0.4)
+
+                 scroll time * 10, time * 10.1 * ( parm7 + 10 )
+                shuttleView
+		glowstage
+	}
+
+                {	// Shuttle view stage
+
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		map textures/decals/shuttle_flicker
+		texgen screen
+                 rgb (fade_pulse [time * .4] * 0.2)
+                scale ( forcefieldflicker[ time * 1.0 ] * .01 ) , 0.5
+		scroll time * 10, time * 10.1 * ( parm7 + 10 )
+		shuttleView
+		glowstage
+    }
+}
+
+
+textures/tech_wall/techwall_063
+{
+    qer_editorimage     textures/tech_wall/techwall_063_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techwall_063_local, heightmap (textures/tech_wall/techwall_063_h, 2))
+    diffusemap      textures/tech_wall/techwall_063_d
+    specularmap     textures/tech_wall/techwall_063_s
+
+}
+
+textures/tech_wall/metalplain1
+{
+    qer_editorimage     textures/tech_wall/metalplain1_d
+    matter_metal
+    bumpmap         heightmap (textures/tech_wall/metalplain1_h, 5)
+    diffusemap      textures/tech_wall/metalplain1_d
+    specularmap     textures/tech_wall/metalplain1_s
+
+}
+
+textures/tech_wall/metalplain2
+{
+    qer_editorimage     textures/tech_wall/metalplain2_d
+    matter_metal
+    bumpmap         heightmap (textures/tech_wall/metalplain2_h, 3)
+    diffusemap      textures/tech_wall/metalplain2_d
+    specularmap     textures/tech_wall/metalplain2_s
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//==========================================
+//
+//
+//
+//  old versions  graveset
+//
+//
+//
+//==========================================
+
+
+
+
+
+
+
+
+
+
+
+
+textures/tech_wall/techpanel_040
+{
+    qer_editorimage     textures/tech_wall/techpanel_040_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel_040_local, heightmap (textures/tech_wall/techpanel_040_h, 6))
+
+    diffusemap      textures/tech_wall/techpanel_040_d
+    specularmap     textures/tech_wall/techpanel_040_s
+
+}
+textures/tech_wall/techpanel_041
+{
+    qer_editorimage     textures/tech_wall/techpanel_041_local
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel_041_local, heightmap (textures/tech_wall/techpanel_041_h, 6))
+
+    diffusemap      textures/tech_wall/techpanel_041_d
+    specularmap     textures/tech_wall/techpanel_041_s
+
+}
+textures/tech_wall/techpanel_042
+{
+    qer_editorimage     textures/tech_wall/techpanel_042_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel_042_local, heightmap (textures/tech_wall/techpanel_042_h, 6))
+
+    diffusemap      textures/tech_wall/techpanel_042_d
+    specularmap     textures/tech_wall/techpanel_042_s
+
+}
+textures/tech_wall/techpanel_043
+{
+    qer_editorimage     textures/tech_wall/techpanel_043_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel_043_local, heightmap (textures/tech_wall/techpanel_043_h, 6))
+
+    diffusemap      textures/tech_wall/techpanel_043_d
+    specularmap     textures/tech_wall/techpanel_043_s
+
+}
+textures/tech_wall/techpanel_043c
+{
+    qer_editorimage     textures/tech_wall/techpanel_043c_proxy
+    matter_metal
+    bumpmap         textures/tech_wall/techpanel_043c_local
+    diffusemap      textures/tech_wall/techpanel_043c_d
+    specularmap     textures/tech_wall/techpanel_043c_s
+}
+textures/tech_wall/techpanel_044
+{
+    qer_editorimage     textures/tech_wall/techpanel_044_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel_044_local, heightmap (textures/tech_wall/techpanel_044_h, 6))
+
+    diffusemap      textures/tech_wall/techpanel_044_d
+    specularmap     textures/tech_wall/techpanel_044_s
+
+}
+textures/tech_wall/techpanel_045
+{
+    qer_editorimage     textures/tech_wall/techpanel_045_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techpanel_045_local, heightmap (textures/tech_wall/techpanel_045_h, 10))
+    diffusemap      textures/tech_wall/techpanel_045_d
+    specularmap     textures/tech_wall/techpanel_045_s
+
+}
+
+textures/tech_wall/techpanel_045_small
+{
+    qer_editorimage     textures/tech_wall/techpanel_045_small_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techpanel_045_small_local, heightmap (textures/tech_wall/techpanel_045_small_h, 10))
+    diffusemap      textures/tech_wall/techpanel_045_small_d
+    specularmap     textures/tech_wall/techpanel_045_small_s
+
+}
+
+
+
+
+
+
+
+
+
+
+
+//--------------------------------------------------------
+textures/tech_wall/techwall_040
+{
+    qer_editorimage     textures/tech_wall/techwall_040_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_040_local, heightmap (textures/tech_wall/techwall_040_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_040_d
+    specularmap     textures/tech_wall/techwall_040_s
+
+}
+textures/tech_wall/techwall_041
+{
+    qer_editorimage     textures/tech_wall/techwall_041_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_041_local, heightmap (textures/tech_wall/techwall_041_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_041_d
+    specularmap     textures/tech_wall/techwall_041_s
+
+}
+
+
+textures/tech_wall/techwall_042
+{
+    qer_editorimage     textures/tech_wall/techwall_042_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_042_local, heightmap (textures/tech_wall/techwall_042_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_042_d
+    specularmap     textures/tech_wall/techwall_042_s
+
+}
+textures/tech_wall/techwall_043
+{
+    qer_editorimage     textures/tech_wall/techwall_043_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_043_local, heightmap (textures/tech_wall/techwall_043_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_043_d
+    specularmap     textures/tech_wall/techwall_043_s
+
+}
+textures/tech_wall/techwall_044
+{
+    qer_editorimage     textures/tech_wall/techwall_044_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_044_local, heightmap (textures/tech_wall/techwall_044_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_044_d
+    specularmap     textures/tech_wall/techwall_044_s
+
+}
+
+
+textures/tech_wall/techwall_045
+{
+    qer_editorimage     textures/tech_wall/techwall_045_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_045_local, heightmap (textures/tech_wall/techwall_045_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_045_d
+    specularmap     textures/tech_wall/techwall_045_s
+
+}
+textures/tech_wall/techwall_046
+{
+    qer_editorimage     textures/tech_wall/techwall_046_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_046_local, heightmap (textures/tech_wall/techwall_046_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_046_d
+    specularmap     textures/tech_wall/techwall_046_s
+
+}
+textures/tech_wall/techwall_047
+{
+    qer_editorimage     textures/tech_wall/techwall_047_local
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_047_local, heightmap (textures/tech_wall/techwall_047_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_047_d
+    specularmap     textures/tech_wall/techwall_047_s
+
+}
+
+textures/tech_wall/techwall_047b
+{
+    qer_editorimage     textures/tech_wall/techwall_047b_local
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_047b_local, heightmap (textures/tech_wall/techwall_047b_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_047b_d
+    specularmap     textures/tech_wall/techwall_047b_s
+
+}
+
+textures/tech_wall/techwall_050
+{
+    qer_editorimage     textures/tech_wall/techwall_050_local
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_050_local, heightmap (textures/tech_wall/techwall_050_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_050_d
+    specularmap     textures/tech_wall/techwall_050_s
+
+}
+
+
+textures/tech_wall/techwall_051
+{
+    qer_editorimage     textures/tech_wall/techwall_051_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techwall_051_local, heightmap (textures/tech_wall/techwall_051_h, 6))
+    diffusemap      textures/tech_wall/techwall_051_d
+    specularmap     textures/tech_wall/techwall_051_s
+
+}
+
+textures/tech_wall/techwall_052
+{
+    qer_editorimage     textures/tech_wall/techwall_052_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techwall_052_local, heightmap (textures/tech_wall/techwall_052_h, 10))
+    diffusemap      textures/tech_wall/techwall_052_d
+    specularmap     textures/tech_wall/techwall_052_s
+
+}
+
+textures/tech_wall/techwall_052_small
+{
+    qer_editorimage     textures/tech_wall/techwall_052_small_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techwall_052_small_local, heightmap (textures/tech_wall/techwall_052_small_h, 10))
+    diffusemap      textures/tech_wall/techwall_052_small_d
+    specularmap     textures/tech_wall/techwall_052_small_s
+
+}
+textures/tech_wall/techwall_053
+{
+    qer_editorimage     textures/tech_wall/techwall_053_local
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_053_local, heightmap (textures/tech_wall/techwall_053_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_053_d
+    specularmap     textures/tech_wall/techwall_053_s
+
+}
+textures/tech_wall/techwall_054
+{
+    qer_editorimage     textures/tech_wall/techwall_054_d
+    matter_metal
+
+    bumpmap         heightmap (textures/tech_wall/techwall_054_h, 8)
+
+    diffusemap      textures/tech_wall/techwall_054_d
+    specularmap     textures/tech_wall/techwall_054_s
+
+}
+textures/tech_wall/techwall_054_b
+{
+    qer_editorimage     textures/tech_wall/techwall_054_b_d
+    matter_metal
+
+    bumpmap         heightmap (textures/tech_wall/techwall_054_b_h, 6)
+
+    diffusemap      textures/tech_wall/techwall_054_b_d
+    specularmap     textures/tech_wall/techwall_054_b_s
+
+}
+textures/tech_wall/techwall_055
+{
+    qer_editorimage     textures/tech_wall/techwall_055_d
+    matter_metal
+    bumpmap         addnormals ( textures/tech_wall/techwall_055_local, heightmap (textures/tech_wall/techwall_055_h, 8))
+    diffusemap      textures/tech_wall/techwall_055_d
+    specularmap     textures/tech_wall/techwall_055_s
+
+}
+textures/tech_wall/techwall_056
+{
+    qer_editorimage     textures/tech_wall/techwall_056_d
+    matter_metal
+    bumpmap         addnormals ( textures/tech_wall/techwall_056_local, heightmap (textures/tech_wall/techwall_056_h, 6))
+    diffusemap      textures/tech_wall/techwall_056_d
+    specularmap     textures/tech_wall/techwall_056_s
+
+}
+
+
+textures/tech_wall/techwall_057
+{
+    qer_editorimage     textures/tech_wall/techwall_057_d
+    matter_metal
+    bumpmap         addnormals ( textures/tech_wall/techwall_057_local, heightmap (textures/tech_wall/techwall_057_h, 6))
+    diffusemap      textures/tech_wall/techwall_057_d
+    specularmap     textures/tech_wall/techwall_057_s
+
+}
+
+
+
+
+
+
+
+
+
+//--------------------------------------------------------
+// harveset old
+//--------------------------------------------------------
+
+
+textures/tech_wall/biotech_040
+{
+    qer_editorimage     textures/tech_wall/biotech_040_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_040_local, heightmap (textures/tech_wall/biotech_040_h, 6))
+//  bumpmap         textures/tech_wall/biotech_040_local
+    diffusemap      textures/tech_wall/biotech_040_d
+    specularmap     textures/tech_wall/biotech_040_s
+
+}
+
+
+textures/tech_wall/biotech_040b
+{
+    qer_editorimage     textures/tech_wall/biotech_040_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_040_local, heightmap (textures/tech_wall/biotech_040_h, 6))
+//  bumpmap         textures/tech_wall/biotech_040_local
+    diffusemap      textures/tech_wall/biotech_040_d
+    specularmap     textures/tech_wall/biotech_040_s
+    {
+        blend add
+        map textures/tech_wall/biotech_040_add
+        rgb (.1 * sintable [.15 + time * .5 ]) + .7
+    }
+}
+
+textures/tech_wall/biotech_041
+{
+    qer_editorimage     textures/tech_wall/biotech_041_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_041_local, heightmap (textures/tech_wall/biotech_041_h, 6))
+    diffusemap      textures/tech_wall/biotech_041_d
+    specularmap     textures/tech_wall/biotech_041_s
+}
+
+textures/tech_wall/biopanel_040
+{
+    qer_editorimage     textures/tech_wall/biopanel_040_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biopanel_040_local, heightmap (textures/tech_wall/biopanel_040_h, 6))
+    diffusemap      textures/tech_wall/biopanel_040_d
+    specularmap     textures/tech_wall/biopanel_040_s
+    {
+        blend add
+        map textures/tech_wall/biopanel_040_add
+        rgb (.1 * sintable [.15 + time * .5 ]) + .7
+    }
+}
+
+
+textures/tech_wall/biopanel_041
+{
+    qer_editorimage     textures/tech_wall/biopanel_041_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biopanel_041_local, heightmap (textures/tech_wall/biopanel_041_h, 6))
+
+    diffusemap      textures/tech_wall/biopanel_041_d
+    specularmap     textures/tech_wall/biopanel_041_s
+
+}
+
+textures/tech_wall/biopanel_041b
+{
+    qer_editorimage     textures/tech_wall/biopanel_041_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biopanel_041_local, heightmap (textures/tech_wall/biopanel_041_h, 6))
+    diffusemap      textures/tech_wall/biopanel_041_d
+    specularmap     textures/tech_wall/biopanel_041_s
+    {
+        blend add
+        map textures/tech_wall/biopanel_041_add
+        rgb (.2 * sintable [.15 + time * .5 ]) + .7
+    }
+}
+textures/tech_wall/biotech_042
+{
+    qer_editorimage     textures/tech_wall/biotech_042_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_042_local, heightmap (textures/tech_wall/biotech_042_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_042_d
+    specularmap     textures/tech_wall/biotech_042_s
+
+}
+
+textures/tech_wall/biotech_043
+{
+    qer_editorimage     textures/tech_wall/biotech_043_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_043_local, heightmap (textures/tech_wall/biotech_043_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_043_d
+    specularmap     textures/tech_wall/biotech_043_s
+
+}
+
+
+
+
+
+
+
+textures/tech_wall/biotech_100
+{
+    qer_editorimage     textures/tech_wall/biotech_100_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_100_local,
+                heightmap  (textures/tech_wall/biotech_100_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_100_d
+    specularmap     textures/tech_wall/biotech_100_s
+
+}
+
+textures/tech_wall/biotech_101
+{
+    qer_editorimage     textures/tech_wall/biotech_101_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_101_local,
+                heightmap  (textures/tech_wall/biotech_101_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_101_d
+    specularmap     textures/tech_wall/biotech_101_s
+
+}
+
+textures/tech_wall/biotech_102
+{
+    qer_editorimage     textures/tech_wall/biotech_102_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_102_local,
+                heightmap  (textures/tech_wall/biotech_102_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_102_d
+    specularmap     textures/tech_wall/biotech_102_s
+
+}
+
+textures/tech_wall/biotech_102b
+{
+    qer_editorimage     textures/tech_wall/biotech_102b_d
+    matter_metal
+
+	{
+		blend bumpmap
+		map addnormals (textures/tech_wall/biotech_102b_local,
+		heightmap  (textures/tech_wall/biotech_102b_h, 6))
+	}
+    {
+        blend diffusemap
+        map textures/tech_wall/biotech_102b_d
+     }
+     {
+        blend specularmap
+        map textures/tech_wall/biotech_102b_s
+     }
+
+}
+
+textures/tech_wall/biotech_102c
+{
+    qer_editorimage     textures/tech_wall/biotech_102c_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_102c_local,
+                heightmap  (textures/tech_wall/biotech_102c_h, 6))
+    diffusemap      textures/tech_wall/biotech_102c_d
+    specularmap     textures/tech_wall/biotech_102c_s
+
+}
+
+textures/tech_wall/biotech_102d
+{
+    qer_editorimage     textures/tech_wall/biotech_102d_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_102d_local,
+                heightmap  (textures/tech_wall/biotech_102_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_102d_d
+    specularmap     textures/tech_wall/biotech_102d_s
+
+}
+textures/tech_wall/biotech_102e
+{
+    qer_editorimage     textures/tech_wall/biotech_102e_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_102_local,
+                heightmap  (textures/tech_wall/biotech_102e_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_102e_d
+    specularmap     textures/tech_wall/biotech_102e_s
+
+}
+textures/tech_wall/biotech_102f
+{
+    qer_editorimage     textures/tech_wall/biotech_102f_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_102b_local,
+                heightmap  (textures/tech_wall/biotech_102f_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_102f_d
+    specularmap     textures/tech_wall/biotech_102f_s
+
+}
+
+textures/tech_wall/biotech_103
+{
+    qer_editorimage     textures/tech_wall/biotech_103_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_103_local,
+                heightmap  (textures/tech_wall/biotech_102c_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_103_d
+    specularmap     textures/tech_wall/biotech_103_s
+
+}
+
+textures/tech_wall/biotech_104
+{
+    qer_editorimage     textures/tech_wall/biotech_104_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_104_local,
+                heightmap  (textures/tech_wall/biotech_104_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_104_d
+    specularmap     textures/tech_wall/biotech_104_s
+
+}
+
+textures/tech_wall/biotech_104b
+{
+    qer_editorimage     textures/tech_wall/biotech_104b_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_104b_local,
+                heightmap  (textures/tech_wall/biotech_104_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_104b_d
+    specularmap     textures/tech_wall/biotech_104b_s
+
+}
+
+textures/tech_wall/biotech_105
+{
+    qer_editorimage     textures/tech_wall/biotech_105_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_105_local,
+                heightmap  (textures/tech_wall/biotech_104_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_105_d
+    specularmap     textures/tech_wall/biotech_105_s
+
+}
+
+textures/tech_wall/biotech_106
+{
+    qer_editorimage     textures/tech_wall/biotech_106_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_106_local,
+                heightmap  (textures/tech_wall/biotech_104_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_106_d
+    specularmap     textures/tech_wall/biotech_106_s
+
+}
+
+textures/tech_wall/biotech_107
+{
+    qer_editorimage     textures/tech_wall/biotech_107_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_107_local,
+                heightmap  (textures/tech_wall/biotech_104_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_107_d
+    specularmap     textures/tech_wall/biotech_107_s
+
+}
+textures/tech_wall/biotech_107dirty
+{
+    qer_editorimage     textures/tech_wall/biotech_107dirty_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_107dirty_local,
+                heightmap  (textures/tech_wall/biotech_104_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_107dirty_d
+    specularmap     textures/tech_wall/biotech_107dirty_s
+
+}
+textures/tech_wall/biotech_108
+{
+    qer_editorimage     textures/tech_wall/biotech_108_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_108_local,
+                heightmap  (textures/tech_wall/biotech_108_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_108_d
+    specularmap     textures/tech_wall/biotech_108_s
+
+}
+textures/tech_wall/biotech_108dirty
+{
+    qer_editorimage     textures/tech_wall/biotech_108dirty_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_108dirty_local,
+                heightmap  (textures/tech_wall/biotech_108dirty_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_108dirty_d
+    specularmap     textures/tech_wall/biotech_108dirty_s
+
+}
+textures/tech_wall/biotech_109
+{
+    qer_editorimage     textures/tech_wall/biotech_109_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_109_local,
+                heightmap  (textures/tech_wall/biotech_104_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_109_d
+    specularmap     textures/tech_wall/biotech_109_s
+
+}
+
+textures/tech_wall/biotech_110
+{
+    qer_editorimage     textures/tech_wall/biotech_110_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_110_local,
+                heightmap  (textures/tech_wall/biotech_104_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_110_d
+    specularmap     textures/tech_wall/biotech_110_s
+
+}
+
+textures/tech_wall/biotech_110_add
+{
+    qer_editorimage     textures/tech_wall/biotech_110_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_110_local,
+                heightmap  (textures/tech_wall/biotech_104_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_110_d
+    specularmap     textures/tech_wall/biotech_110_s
+    {
+        blend add
+        map textures/tech_wall/biotech_110_add
+        color
+        parm0 * (jitter1 [time * 2]),
+        parm1 * (jitter1 [time * 2]),
+        parm2 * (jitter1 [time * 2]),
+        1.0
+    }
+}
+
+textures/tech_wall/biotech_120
+{
+    qer_editorimage     textures/tech_wall/biotech_120_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_120_local,
+                heightmap  (textures/tech_wall/biotech_120_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_120_d
+    specularmap     textures/tech_wall/biotech_120_s
+
+}
+
+textures/tech_wall/biotech_121
+{
+    qer_editorimage     textures/tech_wall/biotech_121_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_121_local,
+                heightmap  (textures/tech_wall/biotech_121_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_121_d
+    specularmap     textures/tech_wall/biotech_121_s
+
+}
+
+textures/tech_wall/biotech_122
+{
+    qer_editorimage     textures/tech_wall/biotech_122_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_122_local,
+                heightmap  (textures/tech_wall/biotech_120_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_122_d
+    specularmap     textures/tech_wall/biotech_122_s
+
+}
+
+textures/tech_wall/biotech_123
+{
+    qer_editorimage     textures/tech_wall/biotech_123_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_123_local,
+                heightmap  (textures/tech_wall/biotech_121_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_123_d
+    specularmap     textures/tech_wall/biotech_123_s
+
+}
+
+textures/tech_wall/biotech_124
+{
+    qer_editorimage     textures/tech_wall/biotech_124_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_124_local,
+                heightmap  (textures/tech_wall/biotech_121_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_124_d
+    specularmap     textures/tech_wall/biotech_124_s
+
+}
+
+textures/tech_wall/biotech_200
+{
+    qer_editorimage     textures/tech_wall/biotech_200_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_200_local, heightmap  (textures/tech_wall/biotech_200_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_200_d
+    specularmap     textures/tech_wall/biotech_200_s
+
+}
+textures/tech_wall/biotech_200dirty
+{
+    qer_editorimage     textures/tech_wall/biotech_200dirty_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_200dirty_local, heightmap  (textures/tech_wall/biotech_200dirty_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_200dirty_d
+    specularmap     textures/tech_wall/biotech_200dirty_s
+
+}
+textures/tech_wall/biotech_200dirty1
+{
+    qer_editorimage     textures/tech_wall/biotech_200dirty1_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_200dirty1_local, heightmap  (textures/tech_wall/biotech_200dirty1_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_200dirty1_d
+    specularmap     textures/tech_wall/biotech_200dirty1_s
+}
+textures/tech_wall/biotech_200dirty2
+{
+    qer_editorimage     textures/tech_wall/biotech_200dirty2_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_200dirty2_local, heightmap  (textures/tech_wall/biotech_200dirty2_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_200dirty2_d
+    specularmap     textures/tech_wall/biotech_200dirty2_s
+}
+textures/tech_wall/biotech_200a
+{
+    qer_editorimage     textures/tech_wall/biotech_200a_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_200a_local, heightmap  (textures/tech_wall/biotech_200a_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_200a_d
+    specularmap     textures/tech_wall/biotech_200a_s
+
+}
+textures/tech_wall/biotech_200b
+{
+    qer_editorimage     textures/tech_wall/biotech_200b_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_200b_local, heightmap  (textures/tech_wall/biotech_200b_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_200b_d
+    specularmap     textures/tech_wall/biotech_200b_s
+
+}
+
+textures/tech_wall/biotech_200f
+{
+    qer_editorimage     textures/tech_wall/biotech_200f_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_200b_local,
+                    heightmap  (textures/tech_wall/biotech_200f_h, 4))
+
+    diffusemap      textures/tech_wall/biotech_200f_d
+    specularmap     textures/tech_wall/biotech_200f_s
+
+}
+
+textures/tech_wall/biotech_201
+{
+    qer_editorimage     textures/tech_wall/biotech_201_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_201_local, heightmap  (textures/tech_wall/biotech_201_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_201_d
+    specularmap     textures/tech_wall/biotech_201_s
+
+}
+/*
+textures/tech_wall/biotech_201dirty
+{
+    qer_editorimage     textures/tech_wall/biotech_201dirty_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_201dirty_local, heightmap  (textures/tech_wall/biotech_201dirty_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_201dirty_d
+    specularmap     textures/tech_wall/biotech_201dirty_s
+
+}
+textures/tech_wall/biotech_201dirty1
+{
+    qer_editorimage     textures/tech_wall/biotech_201dirty1_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_201dirty1_local, heightmap  (textures/tech_wall/biotech_201dirty1_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_201dirty1_d
+    specularmap     textures/tech_wall/biotech_201dirty1_s
+
+}
+textures/tech_wall/biotech_201dirty2
+{
+    qer_editorimage     textures/tech_wall/biotech_201dirty2_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_201dirty2_local, heightmap  (textures/tech_wall/biotech_201dirty2_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_201dirty2_d
+    specularmap     textures/tech_wall/biotech_201dirty2_s
+
+}
+textures/tech_wall/biotech_201dirty3
+{
+    qer_editorimage     textures/tech_wall/biotech_201dirty3_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_201dirty3_local, heightmap  (textures/tech_wall/biotech_201dirty3_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_201dirty3_d
+    specularmap     textures/tech_wall/biotech_201dirty3_s
+
+}
+textures/tech_wall/biotech_201dirty4
+{
+    qer_editorimage     textures/tech_wall/biotech_201dirty4_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_201dirty4_local, heightmap  (textures/tech_wall/biotech_201dirty4_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_201dirty4_d
+    specularmap     textures/tech_wall/biotech_201dirty4_s
+
+}
+*/
+textures/tech_wall/biotech_201a
+{
+    qer_editorimage     textures/tech_wall/biotech_201a_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_201_local, heightmap  (textures/tech_wall/biotech_201a_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_201a_d
+    specularmap     textures/tech_wall/biotech_201a_s
+
+}
+textures/tech_wall/biotech_202
+{
+    qer_editorimage     textures/tech_wall/biotech_202_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_202_local, heightmap  (textures/tech_wall/biotech_202_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_202_d
+    specularmap     textures/tech_wall/biotech_202_s
+
+}
+textures/tech_wall/techwall_058
+{
+    qer_editorimage     textures/tech_wall/techwall_058_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_058_local, heightmap (textures/tech_wall/techwall_058_h, 6))
+    diffusemap      textures/tech_wall/techwall_058_d
+    specularmap     textures/tech_wall/techwall_058_s
+
+}
+
+textures/tech_wall/techwall_058_big
+{
+    qer_editorimage     textures/tech_wall/techwall_058big
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_058big_local,
+                heightmap (textures/tech_wall/techwall_058big_h, 6))
+    diffusemap      textures/tech_wall/techwall_058big
+    specularmap     textures/tech_wall/techwall_058big_s
+
+}
+textures/tech_wall/techwall_059
+{
+    qer_editorimage     textures/tech_wall/techwall_059_local
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_059_local, heightmap (textures/tech_wall/techwall_059_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_059_d
+    specularmap     textures/tech_wall/techwall_059_s
+
+}
+
+textures/tech_wall/techwall_059b
+{
+    qer_editorimage     textures/tech_wall/techwall_059b_local
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_059b_local, heightmap (textures/tech_wall/techwall_059b_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_059b_d
+    specularmap     textures/tech_wall/techwall_059b_s
+
+}
+textures/tech_wall/techwall_060
+{
+    qer_editorimage     textures/tech_wall/techwall_060_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_060_local, heightmap (textures/tech_wall/techwall_060_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_060_d
+    specularmap     textures/tech_wall/techwall_060_s
+
+}
+
+textures/tech_wall/techwall_060_shuttle
+{
+    qer_editorimage     textures/tech_wall/techwall_060_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_060_local, heightmap (textures/tech_wall/techwall_060_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_060_d
+    specularmap     textures/tech_wall/techwall_060_s
+
+    {   // Shuttle view stage
+                 blend add
+		map textures/decals/shuttle_flicker_02_blue
+                texgen screen
+		 rgb (fade_pulse [time * .4] * 0.4)
+
+                 scroll time * 10, time * 10.1 * ( parm7 + 10 )
+                shuttleView
+		glowstage
+	}
+
+                {	// Shuttle view stage
+
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		map textures/decals/shuttle_flicker
+		texgen screen
+                 rgb (fade_pulse [time * .4] * 0.2)
+                scale ( forcefieldflicker[ time * 1.0 ] * .01 ) , 0.5
+		scroll time * 10, time * 10.1 * ( parm7 + 10 )
+		shuttleView
+		glowstage
+    }
+}
+textures/tech_wall/techwall_061
+{
+    qer_editorimage     textures/tech_wall/techwall_061_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_061_local, heightmap (textures/tech_wall/techwall_061_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_061_d
+    specularmap     textures/tech_wall/techwall_061_s
+
+}
+textures/tech_wall/techwall_062
+{
+    qer_editorimage     textures/tech_wall/techwall_062_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_062_local, heightmap (textures/tech_wall/techwall_062_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_062_d
+    specularmap     textures/tech_wall/techwall_062_s
+
+}
+
+textures/tech_wall/techwall_062b
+{
+    qer_editorimage     textures/tech_wall/techwall_062b_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_062b_local, heightmap (textures/tech_wall/techwall_062b_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_062b_d
+    specularmap     textures/tech_wall/techwall_062b_s
+
+}
+
+
+
+
+
+
+
+
+//==========================================
+//
+//
+//
+//  clean revisions
+//
+//
+//
+//==========================================
+
+
+
+textures/tech_wall/techpipesclean1
+{
+    qer_editorimage     textures/tech_wall/techpipesclean1_d
+    matter_metal
+    bumpmap
+        addnormals ( textures/tech_wall/techpipesclean1_local,
+        heightmap ( textures/tech_wall/techpipesclean1_h, 6) )
+    diffusemap      textures/tech_wall/techpipesclean1_d
+    specularmap     textures/tech_wall/techpipesclean1_s
+
+}
+textures/tech_wall/techpipesclean1_small
+{
+    qer_editorimage     textures/tech_wall/techpipesclean1256_d
+    matter_metal
+    bumpmap
+        addnormals ( textures/tech_wall/techpipesclean1256_local,
+        heightmap ( textures/tech_wall/techpipesclean1256_h, 6) )
+    diffusemap      textures/tech_wall/techpipesclean1256_d
+    specularmap     textures/tech_wall/techpipesclean1256_s
+
+}
+
+textures/tech_wall/techwall_040clean
+{
+    qer_editorimage     textures/tech_wall/techwall_040clean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_040_local, heightmap (textures/tech_wall/techwall_040clean_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_040clean_d
+    specularmap     textures/tech_wall/techwall_040clean_s
+
+}
+
+textures/tech_wall/techwall_041clean
+{
+    qer_editorimage     textures/tech_wall/techwall_041clean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_041_local, heightmap (textures/tech_wall/techwall_041clean_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_041clean_d
+    specularmap     textures/tech_wall/techwall_041clean_s
+
+}
+
+textures/tech_wall/techwall_042clean
+{
+    qer_editorimage     textures/tech_wall/techwall_042clean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_042_local, heightmap (textures/tech_wall/techwall_042clean_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_042clean_d
+    specularmap     textures/tech_wall/techwall_042clean_s
+
+}
+
+textures/tech_wall/techwall_043clean
+{
+    qer_editorimage     textures/tech_wall/techwall_043clean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_043_local, heightmap (textures/tech_wall/techwall_043clean_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_043clean_d
+    specularmap     textures/tech_wall/techwall_043clean_s
+
+}
+
+textures/tech_wall/techwall_044clean
+{
+    qer_editorimage     textures/tech_wall/techwall_044clean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_044_local, heightmap (textures/tech_wall/techwall_044clean_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_044clean_d
+    specularmap     textures/tech_wall/techwall_044clean_s
+
+}
+
+textures/tech_wall/techwall_045clean
+{
+    qer_editorimage     textures/tech_wall/techwall_045clean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_045_local, heightmap (textures/tech_wall/techwall_045clean_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_045clean_d
+    specularmap     textures/tech_wall/techwall_045clean_s
+
+}
+
+textures/tech_wall/techwall_046clean
+{
+    qer_editorimage     textures/tech_wall/techwall_046clean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_046_local, heightmap (textures/tech_wall/techwall_046clean_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_046clean_d
+    specularmap     textures/tech_wall/techwall_046clean_s
+
+}
+
+textures/tech_wall/techwall_047bclean
+{
+    qer_editorimage     textures/tech_wall/techwall_047bclean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_047b_local, heightmap (textures/tech_wall/techwall_047bclean_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_047bclean_d
+    specularmap     textures/tech_wall/techwall_047bclean_s
+
+}
+
+textures/tech_wall/techwall_047bclean_add
+{
+    qer_editorimage     textures/tech_wall/techwall_047bclean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_047b_local, heightmap (textures/tech_wall/techwall_047bclean_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_047bclean_d
+    specularmap     textures/tech_wall/techwall_047bclean_s
+    {
+        blend add
+        map textures/tech_wall/techwall_047bclean_add
+        rgb 0.8+(ramp_halfinvsaw [time * 0.8])
+    }
+}
+
+textures/tech_wall/techwall_047cclean
+{
+    qer_editorimage     textures/tech_wall/techwall_047cclean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_047cclean_local, heightmap (textures/tech_wall/techwall_047cclean_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_047cclean_d
+    specularmap     textures/tech_wall/techwall_047cclean_s
+
+}
+
+textures/tech_wall/techwall_047dclean
+{
+    qer_editorimage     textures/tech_wall/techwall_047dclean_d
+    matter_metal
+
+    bumpmap         heightmap (textures/tech_wall/techwall_047dclean_h, 6)
+
+    diffusemap      textures/tech_wall/techwall_047dclean_d
+    specularmap     textures/tech_wall/techwall_047dclean_s
+
+}
+
+textures/tech_wall/techwall_047dclean_noshadow
+{
+    qer_editorimage     textures/tech_wall/techwall_047dclean_d
+    matter_metal
+    noshadows
+    bumpmap         heightmap (textures/tech_wall/techwall_047dclean_h, 6)
+
+    diffusemap      textures/tech_wall/techwall_047dclean_d
+    specularmap     textures/tech_wall/techwall_047dclean_s
+
+}
+
+textures/tech_wall/techwall_047eclean
+{
+    qer_editorimage     textures/tech_wall/techwall_047cclean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_047eclean_local, heightmap (textures/tech_wall/techwall_047cclean_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_047cclean_d
+    specularmap     textures/tech_wall/techwall_047eclean_s
+
+}
+
+
+
+textures/tech_wall/techwall_051clean
+{
+    qer_editorimage     textures/tech_wall/techwall_051clean_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techwall_051_local, heightmap (textures/tech_wall/techwall_051clean_h, 6))
+    diffusemap      textures/tech_wall/techwall_051clean_d
+    specularmap     textures/tech_wall/techwall_051clean_s
+
+}
+
+
+textures/tech_wall/techwall_052clean
+{
+    qer_editorimage     textures/tech_wall/techwall_052clean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_052_local, heightmap (textures/tech_wall/techwall_052clean_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_052clean_d
+    specularmap     textures/tech_wall/techwall_052clean_s
+
+}
+
+textures/tech_wall/techwall_053clean
+{
+    qer_editorimage     textures/tech_wall/techwall_053clean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_053clean_local,
+                heightmap (textures/tech_wall/techwall_053clean_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_053clean_d
+    specularmap     textures/tech_wall/techwall_053clean_s
+
+}
+
+textures/tech_wall/techpanel_040clean
+{
+    qer_editorimage     textures/tech_wall/techpanel_040clean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel_040_local, heightmap (textures/tech_wall/techpanel_040clean_h, 6))
+
+    diffusemap      textures/tech_wall/techpanel_040clean_d
+    specularmap     textures/tech_wall/techpanel_040clean_s
+
+}
+
+textures/tech_wall/techpanel_041clean
+{
+    qer_editorimage     textures/tech_wall/techpanel_041clean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel_041_local, heightmap (textures/tech_wall/techpanel_041clean_h, 6))
+
+    diffusemap      textures/tech_wall/techpanel_041clean_d
+    specularmap     textures/tech_wall/techpanel_041clean_s
+
+}
+
+textures/tech_wall/techpanel_042clean
+{
+    qer_editorimage     textures/tech_wall/techpanel_042clean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel_042_local, heightmap (textures/tech_wall/techpanel_042clean_h, 6))
+
+    diffusemap      textures/tech_wall/techpanel_042clean_d
+    specularmap     textures/tech_wall/techpanel_042clean_s
+
+}
+
+textures/tech_wall/techpanel_043clean
+{
+    qer_editorimage     textures/tech_wall/techpanel_043clean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel_043_local, heightmap (textures/tech_wall/techpanel_043clean_h, 6))
+
+    diffusemap      textures/tech_wall/techpanel_043clean_d
+    specularmap     textures/tech_wall/techpanel_043clean_s
+
+}
+
+textures/tech_wall/techpanel_044clean
+{
+    qer_editorimage     textures/tech_wall/techpanel_044clean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel_044_local, heightmap (textures/tech_wall/techpanel_044clean_h, 6))
+
+    diffusemap      textures/tech_wall/techpanel_044clean_d
+    specularmap     textures/tech_wall/techpanel_044clean_s
+
+}
+
+textures/tech_wall/techpanel_045clean
+{
+    qer_editorimage     textures/tech_wall/techpanel_045clean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techpanel_045_local, heightmap (textures/tech_wall/techpanel_045clean_h, 6))
+
+    diffusemap      textures/tech_wall/techpanel_045clean_d
+    specularmap     textures/tech_wall/techpanel_045clean_s
+
+}
+
+
+//textures/tech_wall/techwall_058_clean
+//{
+//  qer_editorimage     textures/tech_wall/techwall_058_clean_d
+//
+//  bumpmap         addnormals (textures/tech_wall/techwall_058_local, heightmap (textures/tech_wall/techwall_058_clean_h, 6))
+//  diffusemap      textures/tech_wall/techwall_058_clean_d
+//  specularmap     textures/tech_wall/techwall_058_clean_s
+//
+//}
+
+//textures/tech_wall/techwall_058_big_clean
+//{
+//  qer_editorimage     textures/tech_wall/techwall_058big_clean_d
+//
+//  bumpmap         addnormals (textures/tech_wall/techwall_058big_local, heightmap (textures/tech_wall/techwall_058big_clean_h, 6))
+//  diffusemap      textures/tech_wall/techwall_058big_clean_d
+//  specularmap     textures/tech_wall/techwall_058big_clean_s
+//
+//}
+textures/tech_wall/techwall_059_clean
+{
+    qer_editorimage     textures/tech_wall/techwall_059_local
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_059_local, heightmap (textures/tech_wall/techwall_059_clean_h, 3))
+
+    diffusemap      textures/tech_wall/techwall_059_clean_d
+    specularmap     textures/tech_wall/techwall_059_clean_s
+
+}
+
+textures/tech_wall/techwall_059b_clean
+{
+    qer_editorimage     textures/tech_wall/techwall_059b_clean_d
+    matter_metal
+
+    bumpmap         textures/tech_wall/techwall_059b_clean_local
+
+    diffusemap      textures/tech_wall/techwall_059b_clean_d
+    specularmap     textures/tech_wall/techwall_059b_clean_s
+
+}
+textures/tech_wall/techwall_060_clean
+{
+    qer_editorimage     textures/tech_wall/techwall_060_clean_d
+    matter_metal
+
+    bumpmap         textures/tech_wall/techwall_060_local
+
+    diffusemap      textures/tech_wall/techwall_060_clean_d
+    specularmap     textures/tech_wall/techwall_060_clean_s
+
+}
+
+
+textures/tech_wall/techwall_061_clean
+{
+    qer_editorimage     textures/tech_wall/techwall_061_clean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_061_local, heightmap (textures/tech_wall/techwall_061_clean_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_061_clean_d
+    specularmap     textures/tech_wall/techwall_061_clean_s
+
+}
+textures/tech_wall/techwall_062_clean
+{
+    qer_editorimage     textures/tech_wall/techwall_062_clean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_062_local,
+                heightmap (textures/tech_wall/biotech8_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_062_clean_d
+    specularmap     textures/tech_wall/techwall_062_clean_s
+
+}
+
+textures/tech_wall/techwall_062b_clean
+{
+    qer_editorimage     textures/tech_wall/techwall_062b_clean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_062b_local,
+                heightmap (textures/tech_wall/techwall_062b_clean_h, 6))
+
+    diffusemap      textures/tech_wall/techwall_062b_clean_d
+    specularmap     textures/tech_wall/techwall_062b_clean_s
+
+}
+
+
+textures/tech_wall/biotech_040clean
+{
+    qer_editorimage     textures/tech_wall/biotech_040clean_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_040_local,
+                heightmap (textures/tech_wall/biotech_040clean_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_040clean_d
+    specularmap     textures/tech_wall/biotech_040clean_s
+
+}
+
+
+textures/tech_wall/biotech_040cleanb
+{
+    qer_editorimage     textures/tech_wall/biotech_040clean_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_040_local,
+                heightmap (textures/tech_wall/biotech_040clean_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_040clean_d
+    specularmap     textures/tech_wall/biotech_040clean_s
+    {
+        blend add
+        map textures/tech_wall/biotech_040_add
+        rgb (.1 * sintable [.15 + time * .5 ]) + .7
+    }
+}
+
+textures/tech_wall/biotech_041clean
+{
+    qer_editorimage     textures/tech_wall/biotech_041clean_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_041_local, heightmap (textures/tech_wall/biotech_041clean_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_041clean_d
+    specularmap     textures/tech_wall/biotech_041clean_s
+
+}
+
+
+textures/tech_wall/biotech_042clean
+{
+    qer_editorimage     textures/tech_wall/biotech_042clean_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_042_local, heightmap (textures/tech_wall/biotech_042clean_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_042clean_d
+    specularmap     textures/tech_wall/biotech_042clean_s
+
+}
+
+textures/tech_wall/biotech_043clean
+{
+    qer_editorimage     textures/tech_wall/biotech_043clean_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_043clean_local, heightmap (textures/tech_wall/biotech_043clean_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_043clean_d
+    specularmap     textures/tech_wall/biotech_043clean_s
+
+}
+
+textures/tech_wall/biopanel_040clean
+{
+    qer_editorimage     textures/tech_wall/biopanel_040clean_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biopanel_040_local, heightmap (textures/tech_wall/biopanel_040clean_h, 6))
+
+    diffusemap      textures/tech_wall/biopanel_040clean_d
+    specularmap     textures/tech_wall/biopanel_040clean_s
+
+}
+
+textures/tech_wall/biopanel_040cleanb
+{
+    qer_editorimage     textures/tech_wall/biopanel_040clean_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biopanel_040_local, heightmap (textures/tech_wall/biopanel_040clean_h, 6))
+
+    diffusemap      textures/tech_wall/biopanel_040clean_d
+    specularmap     textures/tech_wall/biopanel_040clean_s
+    {
+        blend add
+        map textures/tech_wall/biopanel_040_add
+        rgb (.2 * sintable [.15 + time * .5 ]) + .7
+    }
+}
+
+
+textures/tech_wall/biopanel_041clean
+{
+    qer_editorimage     textures/tech_wall/biopanel_041clean_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biopanel_041_local, heightmap (textures/tech_wall/biopanel_041clean_h, 6))
+
+    diffusemap      textures/tech_wall/biopanel_041clean_d
+    specularmap     textures/tech_wall/biopanel_041clean_s
+
+}
+
+textures/tech_wall/biopanel_041cleanb
+{
+    qer_editorimage     textures/tech_wall/biopanel_041clean_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biopanel_041_local, heightmap (textures/tech_wall/biopanel_041clean_h, 6))
+    diffusemap      textures/tech_wall/biopanel_041clean_d
+    specularmap     textures/tech_wall/biopanel_041clean_s
+    {
+        blend add
+        map textures/tech_wall/biopanel_041_add
+        rgb (.2 * sintable [.15 + time * .5 ]) + .7
+    }
+}
+
+
+
+
+
+textures/tech_wall/biotech_044
+{
+    qer_editorimage     textures/tech_wall/biotech_044_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_044_local, heightmap (textures/tech_wall/biotech_044_h, 6))
+
+    diffusemap      textures/tech_wall/biotech_044_d
+    specularmap     textures/tech_wall/biotech_044_s
+
+}
+
+textures/tech_wall/biotech_045
+{
+    qer_editorimage     textures/tech_wall/biotech_045_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_045_local, heightmap (textures/tech_wall/biotech_045_h, 6))
+    diffusemap      textures/tech_wall/biotech_045_d
+    specularmap     textures/tech_wall/biotech_045_s
+
+}
+
+textures/tech_wall/biotech_046
+{
+    qer_editorimage     textures/tech_wall/biotech_046_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_046_local, heightmap (textures/tech_wall/biotech_046_h, 6))
+    diffusemap      textures/tech_wall/biotech_046_d
+    specularmap     textures/tech_wall/biotech_046_s
+
+}
+
+textures/tech_wall/biotech_047
+{
+    qer_editorimage     textures/tech_wall/biotech_047_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_047_local, heightmap (textures/tech_wall/biotech_047_h, 6))
+    diffusemap      textures/tech_wall/biotech_047_d
+    specularmap     textures/tech_wall/biotech_047_s
+
+}
+
+textures/tech_wall/techpanel_046
+{
+    qer_editorimage     textures/tech_wall/techpanel_046_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techpanel_046_local, heightmap (textures/tech_wall/techpanel_046_h, 6))
+    diffusemap      textures/tech_wall/techpanel_046_d
+    specularmap     textures/tech_wall/techpanel_046_s
+
+}
+
+textures/tech_wall/techpanel_047
+{
+    qer_editorimage     textures/tech_wall/techpanel_047_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techpanel_047_local, heightmap (textures/tech_wall/techpanel_047_h, 6))
+    diffusemap      textures/tech_wall/techpanel_047_d
+    specularmap     textures/tech_wall/techpanel_047_s
+
+}
+
+textures/tech_wall/techpanel_048
+{
+    qer_editorimage     textures/tech_wall/techpanel_048_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techpanel_046_local, heightmap (textures/tech_wall/techpanel_046_h, 6))
+    diffusemap      textures/tech_wall/techpanel_046_d
+    specularmap     textures/tech_wall/techpanel_046_s
+    {
+        blend add
+        map textures/tech_wall/techpanel_048_add
+//      rgb (spark1 [time * 1])
+    }
+
+}
+
+textures/tech_wall/techpanel_049
+{
+    qer_editorimage     textures/tech_wall/techpanel_049_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/techpanel_047_local, heightmap (textures/tech_wall/techpanel_047_h, 6))
+    diffusemap      textures/tech_wall/techpanel_047_d
+    specularmap     textures/tech_wall/techpanel_047_s
+    {
+        blend add
+        map textures/tech_wall/techpanel_049_add
+//      rgb (spark1 [time * 1])
+    }
+
+}
+
+textures/tech_wall/biotech_048
+{
+    qer_editorimage     textures/tech_wall/biotech_048_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_048_local, heightmap (textures/tech_wall/biotech_048_h, 6))
+    diffusemap      textures/tech_wall/biotech_048_d
+    specularmap     textures/tech_wall/biotech_048_s
+
+}
+
+textures/tech_wall/biotech_049
+{
+    qer_editorimage     textures/tech_wall/biotech_049_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_048_local, heightmap (textures/tech_wall/biotech_048_h, 6))
+    diffusemap      textures/tech_wall/biotech_048_d
+    specularmap     textures/tech_wall/biotech_048_s
+    {
+        blend add
+        map textures/tech_wall/biotech_049_add
+    }
+
+}
+
+textures/tech_wall/biotech_050
+{
+    qer_editorimage     textures/tech_wall/biotech_050_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_050_local, heightmap (textures/tech_wall/biotech_050_h, 6))
+    diffusemap      textures/tech_wall/biotech_050_d
+    specularmap     textures/tech_wall/biotech_050_s
+
+}
+
+textures/tech_wall/biotech_051
+{
+    qer_editorimage     textures/tech_wall/biotech_051_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_051_local, heightmap (textures/tech_wall/biotech_051_h, 6))
+    diffusemap      textures/tech_wall/biotech_051_d
+    specularmap     textures/tech_wall/biotech_051_s
+
+}
+
+textures/tech_wall/biotech_052
+{
+    qer_editorimage     textures/tech_wall/biotech_052_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_052_local, heightmap (textures/tech_wall/biotech_052_h, 6))
+    diffusemap      textures/tech_wall/biotech_052_d
+    specularmap     textures/tech_wall/biotech_052_s
+
+}
+
+textures/tech_wall/biotech_053
+{
+    qer_editorimage     textures/tech_wall/biotech_053_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_053_local, heightmap (textures/tech_wall/biotech_053_h, 6))
+    diffusemap      textures/tech_wall/biotech_053_d
+    specularmap     textures/tech_wall/biotech_053_s
+
+}
+
+textures/tech_wall/biotech_054
+{
+    qer_editorimage     textures/tech_wall/biotech_054_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biotech_054_local, heightmap (textures/tech_wall/biotech_054_h, 6))
+    diffusemap      textures/tech_wall/biotech_054_d
+    specularmap     textures/tech_wall/biotech_054_s
+
+}
+
+
+
+
+
+textures/tech_wall/biocircuit_001
+{
+    qer_editorimage     textures/tech_wall/biocircuit_001_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/biocircuit_001_local,
+                heightmap (textures/tech_wall/biocircuit_001_h, 6))
+    diffusemap      textures/tech_wall/biocircuit_001_d
+    specularmap     textures/tech_wall/biocircuit_001_s
+
+}
+
+textures/tech_wall/org_tech_100
+{
+    qer_editorimage     textures/tech_wall/org_tech_100_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/org_tech_100_local, heightmap (textures/tech_wall/org_tech_100_h, 6))
+    diffusemap      textures/tech_wall/org_tech_100_d
+    specularmap     textures/tech_wall/org_tech_100_s
+
+}
+
+
+
+
+textures/tech_wall/bio_wall_350
+{
+    qer_editorimage     textures/tech_wall/bio_wall_350_proxy
+    matter_metal
+    bumpmap         textures/tech_wall/bio_wall_350_local
+    diffusemap      textures/tech_wall/bio_wall_350_d
+    specularmap     textures/tech_wall/bio_wall_350_s
+
+}
+textures/tech_wall/bio_wall_350a
+{
+    qer_editorimage     textures/tech_wall/bio_wall_350a_proxy
+    matter_metal
+    bumpmap         textures/tech_wall/bio_wall_350_local
+    diffusemap      textures/tech_wall/bio_wall_350a_d
+    specularmap     textures/tech_wall/bio_wall_350a_s
+
+}
+textures/tech_wall/bio_wall_350b
+{
+    qer_editorimage     textures/tech_wall/bio_wall_350b_proxy
+    matter_metal
+    bumpmap         textures/tech_wall/bio_wall_350_local
+    diffusemap      textures/tech_wall/bio_wall_350_d
+    specularmap     textures/tech_wall/bio_wall_350b_s
+
+}
+textures/tech_wall/bio_wall_350c
+{
+    qer_editorimage     textures/tech_wall/bio_wall_350c_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bio_wall_350_local, heightmap (textures/tech_wall/bio_wall_350c_h, 6 ))
+    diffusemap      textures/tech_wall/bio_wall_350c_d
+    specularmap     textures/tech_wall/bio_wall_350c_s
+
+}
+textures/tech_wall/bio_wall_350d
+{
+    qer_editorimage     textures/tech_wall/bio_wall_350d_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bio_wall_350d_local, heightmap (textures/tech_wall/bio_wall_350d_h, 6    ))
+    diffusemap      textures/tech_wall/bio_wall_350d_d
+    specularmap     textures/tech_wall/bio_wall_350d_s
+
+}
+textures/tech_wall/bio_panel_350
+{
+    qer_editorimage     textures/tech_wall/bio_panel_350_d
+    matter_metal
+    bumpmap         textures/tech_wall/bio_panel_350_local
+    diffusemap      textures/tech_wall/bio_panel_350_d
+    specularmap     textures/tech_wall/bio_panel_350_s
+
+}
+textures/tech_wall/bio_panel_350b
+{
+    qer_editorimage     textures/tech_wall/bio_panel_350b_d
+    matter_metal
+    bumpmap         textures/tech_wall/bio_panel_350b_local
+    diffusemap      textures/tech_wall/bio_panel_350b_d
+    specularmap     textures/tech_wall/bio_panel_350b_s
+
+}
+textures/tech_wall/metal_plain_03
+{
+    qer_editorimage textures/tech_wall/metal_plain_03_d
+    matter_metal
+
+    diffusemap textures/tech_wall/metal_plain_03_d
+    specularmap textures/tech_wall/metal_plain_03_s
+
+    bumpmap addnormals (textures/tech_wall/metal_plain_04_local,
+        heightmap (textures/tech_wall/metal_plain_03_h, 6))
+}
+textures/tech_wall/metal_plain_04
+{
+    qer_editorimage textures/tech_wall/metal_plain_04_d
+    matter_metal
+
+    diffusemap textures/tech_wall/metal_plain_04_d
+    specularmap textures/tech_wall/metal_plain_04_s
+
+    bumpmap addnormals (textures/tech_wall/metal_plain_04_local,
+        heightmap (textures/tech_wall/metal_plain_04_h, 6))
+}
+
+textures/tech_wall/tech_piston
+{
+    qer_editorimage     textures/tech_wall/tech_piston_local
+    bumpmap         addnormals (textures/tech_wall/tech_piston_local, heightmap (textures/tech_wall/tech_piston_h, 4))
+
+    diffusemap      textures/tech_wall/tech_piston_d
+    specularmap     textures/tech_wall/tech_piston_s
+
+}
+
+textures/tech_wall/tech_piston_side
+{
+    qer_editorimage     textures/tech_wall/tech_piston_side_local
+    bumpmap         addnormals (textures/tech_wall/tech_piston_side_local, heightmap (textures/tech_wall/tech_piston_side_h, 4))
+
+    diffusemap      textures/tech_wall/tech_piston_side_d
+    specularmap     textures/tech_wall/tech_piston_side_s
+
+}
+
+textures/tech_wall/tech_piston_side_b
+{
+    qer_editorimage     textures/tech_wall/tech_piston_side_b_local
+    bumpmap         addnormals (textures/tech_wall/tech_piston_side_b_local, heightmap (textures/tech_wall/tech_piston_side_b_h, 4))
+
+    diffusemap      textures/tech_wall/tech_piston_side_b_d
+    specularmap     textures/tech_wall/tech_piston_side_b_s
+
+}
+
+
+
+//==================================================
+//
+//keeper fortress
+//
+//==================================================
+
+
+
+textures/tech_wall/kf_techwall_047eclean
+{
+    qer_editorimage     textures/tech_wall/kf_techwall_047eclean_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/techwall_047eclean_local,
+                heightmap (textures/tech_wall/techwall_047cclean_h, 6))
+
+    diffusemap      textures/tech_wall/kf_techwall_047eclean_d
+    specularmap     textures/tech_wall/techwall_047eclean_s
+
+}
+
+textures/tech_wall/kf_bio_wall_350
+{
+    qer_editorimage     textures/tech_wall/bio_wall_350_proxy
+    matter_metal
+    bumpmap         textures/tech_wall/bio_wall_350_local
+    diffusemap      textures/tech_wall/bio_wall_350_d
+    specularmap     textures/tech_wall/bio_wall_350_s
+
+}
+
+textures/tech_wall/kf_bio_panel_350
+{
+    qer_editorimage     textures/tech_wall/bio_panel_350_d
+    matter_metal
+    bumpmap         textures/tech_wall/bio_panel_350_local
+    diffusemap      textures/tech_wall/bio_panel_350_d
+    specularmap     textures/tech_wall/bio_panel_350_s
+
+}
+
+textures/tech_wall/kf_biotech_200c
+{
+    qer_editorimage     textures/tech_wall/biotech_200c_proxy
+    matter_metal
+    bumpmap
+    addnormals      (textures/tech_wall/biotech_200c_local,
+    heightmap       (textures/tech_wall/biotech_200c_h, 2))
+    diffusemap      textures/tech_wall/biotech_200c
+    specularmap     textures/tech_wall/biotech_200c_s
+}
+
+textures/tech_wall/kf_biotech_200d
+{
+    qer_editorimage     textures/tech_wall/biotech_200d_proxy
+    matter_metal
+    bumpmap
+    addnormals      (textures/tech_wall/biotech_200d_local,
+    heightmap       (textures/tech_wall/biotech_200d_h, 2))
+    diffusemap      textures/tech_wall/biotech_200d
+    specularmap     textures/tech_wall/biotech_200d_s
+}
+
+textures/tech_wall/kf_biotech_201a
+{
+    qer_editorimage     textures/tech_wall/kf_biotech_201a
+    matter_metal
+    bumpmap         textures/tech_wall/kf_biotech_201a_local
+    diffusemap      textures/tech_wall/kf_biotech_201a
+    specularmap     textures/tech_wall/kf_biotech_201a_s
+
+}
+textures/tech_wall/kf_biotech_201b
+{
+    qer_editorimage     textures/tech_wall/kf_biotech_201b
+    matter_metal
+    bumpmap         textures/tech_wall/biotech_201b_local
+    diffusemap      textures/tech_wall/kf_biotech_201b
+    specularmap     textures/tech_wall/kf_biotech_201b_s
+}
+/*
+textures/tech_wall/kf_biotech_201dirty
+{
+    qer_editorimage     textures/tech_wall/kf_biotech_201dirty_d
+    matter_metal
+    bumpmap         textures/tech_wall/kf_biotech_201dirty_local
+    diffusemap      textures/tech_wall/kf_biotech_201dirty
+    specularmap     textures/tech_wall/kf_biotech_201dirty_s
+
+}
+textures/tech_wall/kf_biotech_201dirty1
+{
+    qer_editorimage     textures/tech_wall/kf_biotech_201dirty1_d
+    matter_metal
+    bumpmap         textures/tech_wall/kf_biotech_201dirty1_local
+    diffusemap      textures/tech_wall/kf_biotech_201dirty1
+    specularmap     textures/tech_wall/kf_biotech_201dirty1_s
+
+}
+textures/tech_wall/kf_biotech_201dirty2
+{
+    qer_editorimage     textures/tech_wall/kf_biotech_201dirty2_d
+    matter_metal
+    bumpmap         textures/tech_wall/kf_biotech_201dirty2_local
+    diffusemap      textures/tech_wall/kf_biotech_201dirty2
+    specularmap     textures/tech_wall/kf_biotech_201dirty2_s
+
+}
+textures/tech_wall/kf_biotech_201dirty3
+{
+    qer_editorimage     textures/tech_wall/kf_biotech_201dirty3_d
+    matter_metal
+    bumpmap         textures/tech_wall/kf_biotech_201dirty3_local
+    diffusemap      textures/tech_wall/kf_biotech_201dirty3
+    specularmap     textures/tech_wall/kf_biotech_201dirty3_s
+
+}
+textures/tech_wall/kf_biotech_201dirty4
+{
+    qer_editorimage     textures/tech_wall/kf_biotech_201dirty4_d
+    matter_metal
+    bumpmap         textures/tech_wall/kf_biotech_201dirty4_local
+    diffusemap      textures/tech_wall/kf_biotech_201dirty4
+    specularmap     textures/tech_wall/kf_biotech_201dirty4_s
+
+}
+
+*/
+textures/tech_wall/kf_biotech_020a
+{
+    qer_editorimage     textures/tech_wall/kf_biotech_020a_proxy
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/kf_biotech_020a_local, heightmap (textures/tech_wall/kf_biotech_020a_h, 6))
+    diffusemap      textures/tech_wall/kf_biotech_020a_d
+    specularmap     textures/tech_wall/kf_biotech_020a_s
+
+}
+
+textures/tech_wall/kf_biotech_020b
+{
+    qer_editorimage     textures/tech_wall/kf_biotech_020b_proxy
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/kf_biotech_020b_local, heightmap (textures/tech_wall/kf_biotech_020b_h, 6))
+    diffusemap      textures/tech_wall/kf_biotech_020b_d
+    specularmap     textures/tech_wall/kf_biotech_020b_s
+
+}
+
+textures/tech_wall/kf_biotech_020c
+{
+    qer_editorimage     textures/tech_wall/kf_biotech_020c_proxy
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/kf_biotech_020c_local, heightmap (textures/tech_wall/kf_biotech_020c_h, 6))
+    diffusemap      textures/tech_wall/kf_biotech_020c_d
+    specularmap     textures/tech_wall/kf_biotech_020c_s
+
+}
+textures/tech_wall/kf_techwall_026
+{
+    qer_editorimage     textures/tech_wall/kf_techwall_026_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_techwall_026_local, heightmap (textures/tech_wall/kf_techwall_026_h, 3))
+    diffusemap      textures/tech_wall/kf_techwall_026_d
+    specularmap     textures/tech_wall/kf_techwall_026_s
+}
+textures/tech_wall/kf_techwall_026_add
+{
+    qer_editorimage     textures/tech_wall/kf_techwall_026_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_techwall_026_local, heightmap (textures/tech_wall/kf_techwall_026_h, 3))
+    diffusemap      textures/tech_wall/kf_techwall_026_d
+    specularmap     textures/tech_wall/kf_techwall_026_s
+    {
+        blend add
+        map textures/tech_wall/kf_techwall_026_a
+    }
+}
+
+
+
+
+
+
+
+
+
+
+//=================================
+// biolabs
+//=================================
+
+textures/tech_wall/bl_wall_00_base
+{
+    qer_editorimage     textures/tech_wall/bl_wall_00_base_d
+    matter_metal
+    bumpmap         heightmap (textures/tech_wall/bl_wall_01_h, 6)
+    diffusemap      textures/tech_wall/bl_wall_00_base_d
+    specularmap     textures/tech_wall/bl_wall_00_base_s
+}
+
+textures/tech_wall/bl_wall_00_baseb
+{
+    qer_editorimage     textures/tech_wall/bl_wall_00_baseb_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/bl_wall_00_baseb_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_00_baseb_d
+    specularmap     textures/tech_wall/bl_wall_00_baseb_s
+}
+
+textures/tech_wall/bl_wall_00_baseb2
+{
+    qer_editorimage     textures/tech_wall/bl_wall_00_baseb_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/bl_wall_00_baseb2_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_00_baseb_d
+    specularmap     textures/tech_wall/bl_wall_00_baseb2_s
+}
+
+textures/tech_wall/bl_wall_00_baseb_add
+{
+    qer_editorimage     textures/tech_wall/bl_wall_00_baseb_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/bl_wall_00_baseb_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_00_baseb_d
+    specularmap     textures/tech_wall/bl_wall_00_baseb_s
+    {
+        blend add
+        map textures/tech_wall/bl_wall_00_baseb_add
+    }
+}
+
+textures/tech_wall/bl_wall_00_baseb2_add
+{
+    qer_editorimage     textures/tech_wall/bl_wall_00_baseb_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/bl_wall_00_baseb2_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_00_baseb_d
+    specularmap     textures/tech_wall/bl_wall_00_baseb2_s
+    {
+        blend add
+        map textures/tech_wall/bl_wall_00_baseb_add
+    }
+}
+
+textures/tech_wall/bl_wall_00_basec
+{
+    qer_editorimage     textures/tech_wall/bl_wall_00_basec_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/bl_wall_00_basec_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_00_basec_d
+    specularmap     textures/tech_wall/bl_wall_00_basec_s
+}
+
+textures/tech_wall/bl_wall_00_basec_add
+{
+    qer_editorimage     textures/tech_wall/bl_wall_00_basec_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/bl_wall_00_basec_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_00_basec_d
+    specularmap     textures/tech_wall/bl_wall_00_basec_s
+    {
+        blend add
+        map textures/tech_wall/bl_wall_00_basec_add
+    }
+}
+
+textures/tech_wall/bl_wall_00_basec2
+{
+    qer_editorimage     textures/tech_wall/bl_wall_00_basec_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/bl_wall_00_basec2_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_00_basec_d
+    specularmap     textures/tech_wall/bl_wall_00_basec2_s
+}
+
+textures/tech_wall/bl_wall_00_basec2_add
+{
+    qer_editorimage     textures/tech_wall/bl_wall_00_basec_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/bl_wall_00_basec2_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_00_basec_d
+    specularmap     textures/tech_wall/bl_wall_00_basec2_s
+    {
+        blend add
+        map textures/tech_wall/bl_wall_00_basec_add
+    }
+}
+
+textures/tech_wall/bl_wall_00_based
+{
+    qer_editorimage     textures/tech_wall/bl_wall_00_based_d
+    matter_metal
+
+    bumpmap         heightmap (textures/tech_wall/bl_wall_00_based_h, 3)
+    diffusemap      textures/tech_wall/bl_wall_00_based_d
+    specularmap     textures/tech_wall/bl_wall_00_based_s
+}
+
+textures/tech_wall/bl_wall_01
+{
+    qer_editorimage     textures/tech_wall/bl_wall_01_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_01_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_01_d
+    specularmap     textures/tech_wall/bl_wall_01_s
+}
+
+textures/tech_wall/bl_wall_01b
+{
+    qer_editorimage     textures/tech_wall/bl_wall_01_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_01b_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_01_d
+    specularmap     textures/tech_wall/bl_wall_01b_s
+}
+
+
+textures/tech_wall/bl_wall_02
+{
+    qer_editorimage     textures/tech_wall/bl_wall_02_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_02_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_02_d
+    specularmap     textures/tech_wall/bl_wall_02_s
+}
+
+textures/tech_wall/bl_wall_02_add
+{
+    qer_editorimage     textures/tech_wall/bl_wall_02_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_02_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_02_d
+    specularmap     textures/tech_wall/bl_wall_02_s
+    {
+        blend add
+        map textures/tech_wall/bl_wall_02_add
+//      rgb (jitter1 [time * 2])
+    }
+}
+
+textures/tech_wall/bl_wall_02b
+{
+    qer_editorimage     textures/tech_wall/bl_wall_02_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_02b_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_02_d
+    specularmap     textures/tech_wall/bl_wall_02b_s
+}
+
+textures/tech_wall/bl_wall_02b_add
+{
+    qer_editorimage     textures/tech_wall/bl_wall_02_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_02b_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_02_d
+    specularmap     textures/tech_wall/bl_wall_02b_s
+    {
+        blend add
+        map textures/tech_wall/bl_wall_02_add
+//      rgb (jitter1 [time * 2])
+    }
+}
+
+textures/tech_wall/bl_wall_03
+{
+    qer_editorimage     textures/tech_wall/bl_wall_03_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_03_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_03_d
+    specularmap     textures/tech_wall/bl_wall_03_s
+}
+
+textures/tech_wall/bl_wall_03b
+{
+    qer_editorimage     textures/tech_wall/bl_wall_03_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_03b_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_03_d
+    specularmap     textures/tech_wall/bl_wall_03b_s
+}
+
+textures/tech_wall/bl_wall_04
+{
+    qer_editorimage     textures/tech_wall/bl_wall_04_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_04_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_04_d
+    specularmap     textures/tech_wall/bl_wall_04_s
+}
+
+textures/tech_wall/bl_wall_04b
+{
+    qer_editorimage     textures/tech_wall/bl_wall_04_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_04b_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_04_d
+    specularmap     textures/tech_wall/bl_wall_04b_s
+}
+
+textures/tech_wall/bl_wall_05
+{
+    qer_editorimage     textures/tech_wall/bl_wall_05_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_05_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_05_d
+    specularmap     textures/tech_wall/bl_wall_05_s
+}
+
+textures/tech_wall/bl_wall_05b
+{
+    qer_editorimage     textures/tech_wall/bl_wall_05_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_05b_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_05_d
+    specularmap     textures/tech_wall/bl_wall_05b_s
+}
+
+textures/tech_wall/bl_wall_05_add
+{
+    qer_editorimage     textures/tech_wall/bl_wall_05_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_05_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_05_d
+    specularmap     textures/tech_wall/bl_wall_05_s
+    {
+        blend add
+        map textures/tech_wall/bl_wall_05_add
+    }
+}
+
+textures/tech_wall/bl_wall_05b_add
+{
+    qer_editorimage     textures/tech_wall/bl_wall_05_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_05b_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_05_d
+    specularmap     textures/tech_wall/bl_wall_05b_s
+    {
+        blend add
+        map textures/tech_wall/bl_wall_05_add
+    }
+}
+
+textures/tech_wall/bl_wall_06
+{
+    qer_editorimage     textures/tech_wall/bl_wall_06_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_06_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_06_d
+    specularmap     textures/tech_wall/bl_wall_06_s
+    {
+        blend add
+        map textures/tech_wall/bl_wall_06_add
+    }
+}
+
+textures/tech_wall/bl_wall_06_cap
+{
+    qer_editorimage     textures/tech_wall/bl_wall_06_cap_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_06_cap_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_06_cap_d
+    specularmap     textures/tech_wall/bl_wall_06_cap_s
+}
+
+textures/tech_wall/bl_wall_07
+{
+    qer_editorimage     textures/tech_wall/bl_wall_07_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_07_local,
+                heightmap (textures/tech_wall/bl_wall_07_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_07_d
+    specularmap     textures/tech_wall/bl_wall_07_s
+}
+
+textures/tech_wall/bl_wall_07_add
+{
+    qer_editorimage     textures/tech_wall/bl_wall_07_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_07_local,
+                heightmap (textures/tech_wall/bl_wall_07_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_07_d
+    specularmap     textures/tech_wall/bl_wall_07_s
+    {
+        blend add
+        map textures/tech_wall/bl_wall_07_add
+    }
+}
+
+textures/tech_wall/bl_wall_07_cap
+{
+    qer_editorimage     textures/tech_wall/bl_wall_07_cap_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_07_cap_local,
+                heightmap (textures/tech_wall/bl_wall_07_cap_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_07_cap_d
+    specularmap     textures/tech_wall/bl_wall_07_cap_s
+}
+
+textures/tech_wall/bl_wall_07_cap_add
+{
+    qer_editorimage     textures/tech_wall/bl_wall_07_cap_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_07_cap_local,
+                heightmap (textures/tech_wall/bl_wall_07_cap_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_07_cap_d
+    specularmap     textures/tech_wall/bl_wall_07_cap_s
+    {
+        blend add
+        map textures/tech_wall/bl_wall_07_cap_add
+    }
+}
+
+textures/tech_wall/bl_wall_08
+{
+    qer_editorimage     textures/tech_wall/bl_wall_08_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_08_local,
+                heightmap (textures/tech_wall/bl_wall_08_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_08_d
+    specularmap     textures/tech_wall/bl_wall_08_s
+}
+
+textures/tech_wall/bl_wall_08b
+{
+    qer_editorimage     textures/tech_wall/bl_wall_08b_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_08b_local,
+                heightmap (textures/tech_wall/bl_wall_08_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_08b_d
+    specularmap     textures/tech_wall/bl_wall_08b_s
+}
+textures/tech_wall/bl_techpanel27
+{
+    qer_editorimage     textures/tech_wall/bl_techpanel27_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techpanel27_local,
+                heightmap (textures/tech_wall/bl_techpanel27_h, 6))
+    diffusemap      textures/tech_wall/bl_techpanel27_d
+    specularmap     textures/tech_wall/bl_techpanel27_s
+}
+textures/tech_wall/bl_techpanel27a
+{
+    qer_editorimage     textures/tech_wall/bl_techpanel27_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techpanel27_local,
+                heightmap (textures/tech_wall/bl_techpanel27_h, 6))
+    diffusemap      textures/tech_wall/bl_techpanel27_d
+    specularmap     textures/tech_wall/bl_techpanel27_s
+    {
+        blend add
+        map     textures/tech_wall/bl_techpanel27_a
+            rgb 0.45
+            glowstage
+    }
+}
+textures/tech_wall/bl_techwall28
+{
+    qer_editorimage     textures/tech_wall/bl_techwall28_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techwall28_local,
+                heightmap (textures/tech_wall/bl_techwall28_h, 6))
+    diffusemap      textures/tech_wall/bl_techwall28_d
+    specularmap     textures/tech_wall/bl_techwall28_s
+}
+textures/tech_wall/bl_techwall29
+{
+    qer_editorimage     textures/tech_wall/bl_techwall29_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techwall29_local,
+                heightmap (textures/tech_wall/bl_techwall29_h, 6))
+    diffusemap      textures/tech_wall/bl_techwall29_d
+    specularmap     textures/tech_wall/bl_techwall29_s
+}
+textures/tech_wall/bl_techwall30
+{
+    qer_editorimage     textures/tech_wall/bl_techwall30_d
+    matter_metal
+    {
+    	blend	bumpmap
+    	map		addnormals( textures/tech_wall/bl_techwall30_local, heightmap( textures/tech_wall/bl_techwall30_h, 6))
+    	highres
+    }
+    {
+    	blend	diffusemap
+    	map		textures/tech_wall/bl_techwall30_d
+    	highres
+    }
+    {
+    	blend	specularmap
+    	map		textures/tech_wall/bl_techwall30_s
+    	highres
+    }
+}
+textures/tech_wall/bl_techwall30_add
+{
+    qer_editorimage     textures/tech_wall/bl_techwall30_d
+    matter_metal
+    {
+    	blend	bumpmap
+    	map		addnormals( textures/tech_wall/bl_techwall30_local, heightmap( textures/tech_wall/bl_techwall30_h, 6))
+    	highres
+    }
+    {
+    	blend	diffusemap
+    	map		textures/tech_wall/bl_techwall30_d
+    	highres
+    }
+    {
+    	blend	specularmap
+    	map		textures/tech_wall/bl_techwall30_s
+    	highres
+    }
+    {
+        blend add
+        map textures/tech_wall/bl_techwall30_add
+        rgb (jitter1 [time * 10]) - 0.1
+    }
+}
+textures/tech_wall/bl_techwallnewset01_add
+{
+    qer_editorimage     textures/tech_wall/bl_techwallnewset01_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techwallnewset01_local,
+                heightmap (textures/tech_wall/bl_techwallnewset01_h, 6))
+    diffusemap      textures/tech_wall/bl_techwallnewset01_d
+    specularmap     textures/tech_wall/bl_techwallnewset01_s
+    {
+        blend add
+        map textures/tech_wall/bl_techwallnewset01_add
+        rgb (jitter1 [time * 10]) - 0.1
+    }
+}
+textures/tech_wall/bl_techwallnewset03_add
+{
+    qer_editorimage     textures/tech_wall/bl_techwallnewset03_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techwallnewset03_local,
+                heightmap (textures/tech_wall/bl_techwallnewset03_h, 6))
+    diffusemap      textures/tech_wall/bl_techwallnewset03_d
+    specularmap     textures/tech_wall/bl_techwallnewset03_s
+    {
+        blend add
+        map textures/tech_wall/bl_techwallnewset03_add
+        rgb (jitter1 [time * 10]) - 0.1
+    }
+}
+textures/tech_wall/bl_techwalltube01
+{
+    qer_editorimage     textures/tech_wall/bl_techwalltube01_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techwalltube01_local,
+                heightmap (textures/tech_wall/bl_techwalltube01_h, 6))
+    diffusemap      textures/tech_wall/bl_techwalltube01_d
+    specularmap     textures/tech_wall/bl_techwalltube01_s
+}
+textures/tech_wall/bl_techwalltube02
+{
+    qer_editorimage     textures/tech_wall/bl_techwalltube02_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techwalltube02_local,
+                heightmap (textures/tech_wall/bl_techwalltube02_h, 6))
+    diffusemap      textures/tech_wall/bl_techwalltube02_d
+    specularmap     textures/tech_wall/bl_techwalltube02_s
+}
+textures/tech_wall/bl_techwalltube03
+{
+    qer_editorimage     textures/tech_wall/bl_techwalltube03_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techwalltube03_local,
+                heightmap (textures/tech_wall/bl_techwalltube03_h, 6))
+    diffusemap      textures/tech_wall/bl_techwalltube03_d
+    specularmap     textures/tech_wall/bl_techwalltube03_s
+}
+
+
+textures/tech_wall/kf_wall001
+{
+    qer_editorimage     textures/tech_wall/kf_wall001_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall001_local,
+                heightmap (textures/tech_wall/kf_wall001_h, 6))
+    diffusemap      textures/tech_wall/kf_wall001_d
+    specularmap     textures/tech_wall/kf_wall001_s
+}
+textures/tech_wall/kf_wall002
+{
+    qer_editorimage     textures/tech_wall/kf_wall002_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall002_local,
+                heightmap (textures/tech_wall/kf_wall002_h, 6))
+    diffusemap      textures/tech_wall/kf_wall002_d
+    specularmap     textures/tech_wall/kf_wall002_s
+}
+
+textures/tech_wall/kf_wall002_shuttle
+{
+    qer_editorimage     textures/tech_wall/kf_wall002_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall002_local,
+                heightmap (textures/tech_wall/kf_wall002_h, 6))
+    diffusemap      textures/tech_wall/kf_wall002_d
+    specularmap     textures/tech_wall/kf_wall002_s
+
+{   // Shuttle view stage
+                 blend add
+		map textures/decals/shuttle_flicker_02_blue
+                texgen screen
+		 rgb (fade_pulse [time * .4] * 0.4)
+
+                 scroll time * 10, time * 10.1 * ( parm7 + 10 )
+                shuttleView
+		glowstage
+	}
+
+                {	// Shuttle view stage
+
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		map textures/decals/shuttle_flicker
+		texgen screen
+                 rgb (fade_pulse [time * .4] * 0.2)
+                scale ( forcefieldflicker[ time * 1.0 ] * .01 ) , 0.5
+		scroll time * 10, time * 10.1 * ( parm7 + 10 )
+		shuttleView
+		glowstage
+    }
+}
+textures/tech_wall/kf_wall002_dissolve
+{
+    qer_editorimage     textures/tech_wall/kf_wall002_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall002_local,
+                heightmap (textures/tech_wall/kf_wall002_h, 6))
+    diffusemap      textures/tech_wall/kf_wall002_d
+    specularmap     textures/tech_wall/kf_wall002_s
+
+    //global alphatest stages
+    {
+        if ( parm5 == 0 )
+        blend none
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest 1 - ( time + parm4 ) * 0.5
+    }
+    {
+        if ( parm5 > 0 ) //fade out
+        blend none
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest ( time + parm4 ) * 0.5
+    }
+
+    //additive fx stage
+    {
+        if ( parm5 == 0 ) //fade out
+        privatepolygonoffset    -1
+        blend add
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest 1 - ( time + parm4 ) * 0.5 + 0.1
+        rgb 2
+        glowStage
+    }
+    {
+        if ( parm5 > 0 ) //fade out
+        privatepolygonoffset    -1
+        blend add
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest ( time + parm4 ) * 0.5 - 0.1
+        rgb 2
+        glowStage
+    }
+}
+textures/tech_wall/kf_wall003
+{
+    qer_editorimage     textures/tech_wall/kf_wall003_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall003_local,
+                heightmap (textures/tech_wall/kf_wall003_h, 6))
+    diffusemap      textures/tech_wall/kf_wall003_d
+    specularmap     textures/tech_wall/kf_wall003_s
+}
+
+textures/tech_wall/kf_wall003grey
+{
+    qer_editorimage     textures/tech_wall/kf_wall003_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall003_local,
+                heightmap (textures/tech_wall/kf_wall003_h, 6))
+    diffusemap      textures/tech_wall/kf_wall003grey_d
+    specularmap     textures/tech_wall/kf_wall003_s
+}
+
+textures/tech_wall/kf_wall004
+{
+    qer_editorimage     textures/tech_wall/kf_wall004_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall004_local,
+                heightmap (textures/tech_wall/kf_wall004_h, 6))
+    diffusemap      textures/tech_wall/kf_wall004_d
+    specularmap     textures/tech_wall/kf_wall004_s
+}
+textures/tech_wall/kf_wall004_lwm
+{
+    qer_editorimage     textures/tech_wall/kf_wall004_d
+    matter_metal
+    lightWholeMesh
+    bumpmap         addnormals (textures/tech_wall/kf_wall004_local,
+                heightmap (textures/tech_wall/kf_wall004_h, 6))
+    diffusemap      textures/tech_wall/kf_wall004_d
+    specularmap     textures/tech_wall/kf_wall004_s
+}
+textures/tech_wall/kf_wall004_shuttle
+{
+    qer_editorimage     textures/tech_wall/kf_wall004_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall004_local,
+                heightmap (textures/tech_wall/kf_wall004_h, 6))
+    diffusemap      textures/tech_wall/kf_wall004_d
+    specularmap     textures/tech_wall/kf_wall004_s
+
+{   // Shuttle view stage
+                 blend add
+		map textures/decals/shuttle_flicker_02_blue
+                texgen screen
+		 rgb (fade_pulse [time * .4] * 0.4)
+
+                 scroll time * 10, time * 10.1 * ( parm7 + 10 )
+                shuttleView
+		glowstage
+	}
+
+                {	// Shuttle view stage
+
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		map textures/decals/shuttle_flicker
+		texgen screen
+                 rgb (fade_pulse [time * .4] * 0.2)
+                scale ( forcefieldflicker[ time * 1.0 ] * .01 ) , 0.5
+		scroll time * 10, time * 10.1 * ( parm7 + 10 )
+		shuttleView
+		glowstage
+    }
+}
+
+textures/tech_wall/kf_wall005
+{
+    qer_editorimage     textures/tech_wall/kf_wall005_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall005_local,
+                heightmap (textures/tech_wall/kf_wall005_h, 6))
+    diffusemap      textures/tech_wall/kf_wall005_d
+    specularmap     textures/tech_wall/kf_wall005_s
+}
+textures/tech_wall/kf_wall005_dissolve
+{
+    qer_editorimage     textures/tech_wall/kf_wall005_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall005_local,
+                heightmap (textures/tech_wall/kf_wall005_h, 6))
+    diffusemap      textures/tech_wall/kf_wall005_d
+    specularmap     textures/tech_wall/kf_wall005_s
+
+    //global alphatest stages
+    {
+        if ( parm5 == 0 )
+        blend none
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest 1 - ( time + parm4 ) * 0.5
+    }
+    {
+        if ( parm5 > 0 ) //fade out
+        blend none
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest ( time + parm4 ) * 0.5
+    }
+
+    //additive fx stage
+    {
+        if ( parm5 == 0 ) //fade out
+        privatepolygonoffset    -1
+        blend add
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest 1 - ( time + parm4 ) * 0.5 + 0.1
+        rgb 2
+        glowStage
+    }
+    {
+        if ( parm5 > 0 ) //fade out
+        privatepolygonoffset    -1
+        blend add
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest ( time + parm4 ) * 0.5 - 0.1
+        rgb 2
+        glowStage
+    }
+}
+textures/tech_wall/kf_wall006
+{
+    qer_editorimage     textures/tech_wall/kf_wall006_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall006_local,
+                heightmap (textures/tech_wall/kf_wall006_h, 6))
+    diffusemap      textures/tech_wall/kf_wall006_d
+    specularmap     textures/tech_wall/kf_wall006_s
+}
+textures/tech_wall/kf_wall006_lwm
+{
+    qer_editorimage     textures/tech_wall/kf_wall006_d
+    matter_metal
+    lightWholeMesh
+    bumpmap         addnormals (textures/tech_wall/kf_wall006_local,
+                heightmap (textures/tech_wall/kf_wall006_h, 6))
+    diffusemap      textures/tech_wall/kf_wall006_d
+    specularmap     textures/tech_wall/kf_wall006_s
+}
+textures/tech_wall/kf_wall007
+{
+    qer_editorimage     textures/tech_wall/kf_wall007_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall007_local,
+                heightmap (textures/tech_wall/kf_wall007_h, 6))
+    diffusemap      textures/tech_wall/kf_wall007_d
+    specularmap     textures/tech_wall/kf_wall007_s
+}
+textures/tech_wall/kf_wall008
+{
+    qer_editorimage     textures/tech_wall/kf_wall008_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall008_local,
+                heightmap (textures/tech_wall/kf_wall008_h, 6))
+    diffusemap      textures/tech_wall/kf_wall008_d
+    specularmap     textures/tech_wall/kf_wall008_s
+}
+textures/tech_wall/kf_wall008b
+{
+    qer_editorimage     textures/tech_wall/kf_wall008b_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall008b_local,
+                heightmap (textures/tech_wall/kf_wall008b_h, 6))
+    diffusemap      textures/tech_wall/kf_wall008b_d
+    specularmap     textures/tech_wall/kf_wall008b_s
+}
+textures/tech_wall/kf_wall0010
+{
+    qer_editorimage     textures/tech_wall/kf_wall0010_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall0010_local,
+                heightmap (textures/tech_wall/kf_wall0010_h, 6))
+    diffusemap      textures/tech_wall/kf_wall0010_d
+    specularmap     textures/tech_wall/kf_wall0010_s
+}
+textures/tech_wall/kf_wall0010b
+{
+    qer_editorimage     textures/tech_wall/kf_wall0010b_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall0010b_local,
+                heightmap (textures/tech_wall/kf_wall0010b_h, 6))
+    diffusemap      textures/tech_wall/kf_wall0010b_d
+    specularmap     textures/tech_wall/kf_wall0010b_s
+}
+textures/tech_wall/kf_wall0011
+{
+    qer_editorimage     textures/tech_wall/kf_wall0011_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall0011_local,
+                heightmap (textures/tech_wall/kf_wall0011_h, 6))
+    diffusemap      textures/tech_wall/kf_wall0011_d
+    specularmap     textures/tech_wall/kf_wall0011_s
+}
+textures/tech_wall/kf_wall0012
+{
+    qer_editorimage     textures/tech_wall/kf_wall0012_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall0012_local,
+                heightmap (textures/tech_wall/kf_wall0012_h, 6))
+    diffusemap      textures/tech_wall/kf_wall0012_d
+    specularmap     textures/tech_wall/kf_wall0012_s
+}
+textures/tech_wall/kf_wall0012_dissolve
+{
+    qer_editorimage     textures/tech_wall/kf_wall0012_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall0012_local,
+                heightmap (textures/tech_wall/kf_wall0012_h, 6))
+    diffusemap      textures/tech_wall/kf_wall0012_d
+    specularmap     textures/tech_wall/kf_wall0012_s
+
+    //global alphatest stages
+    {
+        if ( parm5 == 0 )
+        blend none
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest 1 - ( time + parm4 ) * 0.5
+    }
+    {
+        if ( parm5 > 0 ) //fade out
+        blend none
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest ( time + parm4 ) * 0.5
+    }
+
+    //additive fx stage
+    {
+        if ( parm5 == 0 ) //fade out
+        privatepolygonoffset    -1
+        blend add
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest 1 - ( time + parm4 ) * 0.5 + 0.1
+        rgb 2
+        glowStage
+    }
+    {
+        if ( parm5 > 0 ) //fade out
+        privatepolygonoffset    -1
+        blend add
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest ( time + parm4 ) * 0.5 - 0.1
+        rgb 2
+        glowStage
+    }
+}
+textures/tech_wall/kf_wall0013
+{
+    qer_editorimage     textures/tech_wall/kf_wall0013_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall0013_local,
+                heightmap (textures/tech_wall/kf_wall0013_h, 6))
+    diffusemap      textures/tech_wall/kf_wall0013_d
+    specularmap     textures/tech_wall/kf_wall0013_s
+}
+textures/tech_wall/kf_wall0014
+{
+    qer_editorimage     textures/tech_wall/kf_wall0014_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall0014_local,
+                heightmap (textures/tech_wall/kf_wall0014_h, 6))
+    diffusemap      textures/tech_wall/kf_wall0014_d
+    specularmap     textures/tech_wall/kf_wall0014_s
+}
+textures/tech_wall/kf_wall0015
+{
+    qer_editorimage     textures/tech_wall/kf_wall0015_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall0015_local,
+                heightmap (textures/tech_wall/kf_wall0015_h, 6))
+    diffusemap      textures/tech_wall/kf_wall0015_d
+    specularmap     textures/tech_wall/kf_wall0015_s
+}
+textures/tech_wall/kf_wall0016
+{
+    qer_editorimage     textures/tech_wall/kf_wall0016_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall0016_local,
+                heightmap (textures/tech_wall/kf_wall0016_h, 6))
+    diffusemap      textures/tech_wall/kf_wall0016_d
+    specularmap     textures/tech_wall/kf_wall0016_s
+}
+textures/tech_wall/kf_wall0017
+{
+    qer_editorimage     textures/tech_wall/kf_wall0017_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall0017_local,
+                heightmap (textures/tech_wall/kf_wall0017_h, 6))
+    diffusemap      textures/tech_wall/kf_wall0017_d
+    specularmap     textures/tech_wall/kf_wall0017_s
+}
+textures/tech_wall/kf_wall0018
+{
+    qer_editorimage     textures/tech_wall/kf_wall0018_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/kf_wall0018_local, heightmap (textures/tech_wall/kf_wall0018_h, 1.0))
+//  bumpmap         textures/tech_wall/kf_wall0018_local
+
+    diffusemap      textures/tech_wall/kf_wall0018_d
+    specularmap     textures/tech_wall/kf_wall0018_s
+
+}
+
+textures/tech_wall/kf_wall0018_add
+{
+    qer_editorimage     textures/tech_wall/kf_wall0018_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/kf_wall0018_local, heightmap (textures/tech_wall/kf_wall0018_h, 6))
+
+    diffusemap      textures/tech_wall/kf_wall0018_d
+    specularmap     textures/tech_wall/kf_wall0018_s
+    {
+        blend add
+        map textures/tech_wall/bl_wall_00_baseb_add     // was duplicate image
+        rgb (jitter1 [time * 2]) - 0.3
+    }
+
+}
+
+textures/tech_wall/kf_wall0019
+{
+    qer_editorimage     textures/tech_wall/kf_wall0019_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall0019_local,
+                heightmap (textures/tech_wall/kf_wall0019_h, 6))
+    diffusemap      textures/tech_wall/kf_wall0019_d
+    specularmap     textures/tech_wall/kf_wall0019_s
+}
+
+textures/tech_wall/kf_wall0019_shuttle
+{
+    qer_editorimage     textures/tech_wall/kf_wall0019_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall0019_local,
+                heightmap (textures/tech_wall/kf_wall0019_h, 6))
+    diffusemap      textures/tech_wall/kf_wall0019_d
+    specularmap     textures/tech_wall/kf_wall0019_s
+
+{   // Shuttle view stage
+                 blend add
+		map textures/decals/shuttle_flicker_02_blue
+                texgen screen
+		 rgb (fade_pulse [time * .4] * 0.4)
+
+                 scroll time * 10, time * 10.1 * ( parm7 + 10 )
+                shuttleView
+		glowstage
+	}
+
+                {	// Shuttle view stage
+
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		map textures/decals/shuttle_flicker
+		texgen screen
+                 rgb (fade_pulse [time * .4] * 0.2)
+                scale ( forcefieldflicker[ time * 1.0 ] * .01 ) , 0.5
+		scroll time * 10, time * 10.1 * ( parm7 + 10 )
+		shuttleView
+		glowstage
+    }
+}
+
+textures/tech_wall/kf_wall0019_add
+{
+    qer_editorimage     textures/tech_wall/kf_wall0019_d
+    matter_metal
+
+    bumpmap         addnormals (textures/tech_wall/kf_wall0019_local, heightmap (textures/tech_wall/kf_wall0019_h, 6))
+
+    diffusemap      textures/tech_wall/kf_wall0019_d
+    specularmap     textures/tech_wall/kf_wall0019_s
+    {
+        blend add
+        map textures/tech_wall/kf_wall0019_add
+        rgb (jitter1 [time * 2]) - 0.3
+    }
+
+}
+textures/tech_wall/kf_wall009
+{
+    qer_editorimage     textures/tech_wall/kf_wall009_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall009_local,
+                heightmap (textures/tech_wall/kf_wall009_h, 6))
+    diffusemap      textures/tech_wall/kf_wall009_d
+    specularmap     textures/tech_wall/kf_wall009_s
+}
+textures/tech_wall/kf_wall00fluid_d
+{
+    qer_editorimage     textures/tech_wall/kf_wall00fluid_local
+    matter_metal
+    {
+        blend   bumpmap
+        map         addnormals (textures/tech_wall/kf_wall00fluid_local, heightmap (textures/tech_wall/kf_wall00fluid_h, 6))
+        scroll          (time * 0.5 ), 0
+    }
+    {
+        blend   diffusemap
+        map     textures/tech_wall/kf_wall00fluid_d
+        scroll          (time * 0.5 ), 0
+    }
+    {
+        blend   specularmap
+        map     textures/tech_wall/kf_wall00fluid_s
+        scroll          (time * 0.5 ), 0
+    }
+}
+textures/tech_wall/kf_wall00fluidb
+{
+    qer_editorimage     textures/tech_wall/kf_wall00fluidb_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall00fluidb_local,
+                heightmap (textures/tech_wall/kf_wall00fluidb_h, 6))
+    diffusemap      textures/tech_wall/kf_wall00fluidb_d
+    specularmap     textures/tech_wall/kf_wall00fluidb_s
+        {
+        blend diffusemap
+        map  textures/tech_wall/kf_wall00fluidb_d
+        alphatest 0.5
+    }
+
+}
+// Delete from here to [END] after lighting pass - gb 2/11/2005 3:50P
+// Uncomment block above
+/*
+textures/tech_wall/kf_wall001
+{
+    qer_editorimage     textures/tech_wall/kf_wall001_local
+    matter_metal
+    bumpmap         textures/tech_wall/kf_wall001_local
+    diffusemap      textures/editor/128x128_33
+    specularmap     textures/editor/128x128_33
+}
+textures/tech_wall/kf_wall002
+{
+    qer_editorimage     textures/tech_wall/kf_wall002_local
+    matter_metal
+    bumpmap         textures/tech_wall/kf_wall002_local
+    diffusemap      textures/editor/128x128_33
+    specularmap     textures/editor/128x128_33
+}
+textures/tech_wall/kf_wall003
+{
+    qer_editorimage     textures/tech_wall/kf_wall003_local
+    matter_metal
+    bumpmap         textures/tech_wall/kf_wall003_local
+    diffusemap      textures/editor/128x128_33
+    specularmap     textures/editor/128x128_33
+}
+textures/tech_wall/kf_wall005
+{
+    qer_editorimage     textures/tech_wall/kf_wall005_local
+    matter_metal
+    bumpmap         textures/tech_wall/kf_wall005_local
+    diffusemap      textures/editor/128x128_33
+    specularmap     textures/editor/128x128_33
+}
+textures/tech_wall/kf_wall006
+{
+    qer_editorimage     textures/tech_wall/kf_wall006_local
+    matter_metal
+    bumpmap         textures/tech_wall/kf_wall006_local
+    diffusemap      textures/editor/128x128_33
+    specularmap     textures/editor/128x128_33
+}
+textures/tech_wall/kf_wall007
+{
+    qer_editorimage     textures/tech_wall/kf_wall007_local
+    matter_metal
+    bumpmap         textures/tech_wall/kf_wall007_local
+    diffusemap      textures/editor/128x128_33
+    specularmap     textures/editor/128x128_33
+}
+textures/tech_wall/kf_wall008
+{
+    qer_editorimage     textures/tech_wall/kf_wall008_local
+    matter_metal
+    bumpmap         textures/tech_wall/kf_wall008_local
+    diffusemap      textures/editor/128x128_33
+    specularmap     textures/editor/128x128_33
+}
+textures/tech_wall/kf_wall0011
+{
+    qer_editorimage     textures/tech_wall/kf_wall0011_local
+    matter_metal
+    bumpmap         textures/tech_wall/kf_wall0011_local
+    diffusemap      textures/editor/128x128_33
+    specularmap     textures/editor/128x128_33
+}
+textures/tech_wall/kf_wall0012
+{
+    qer_editorimage     textures/tech_wall/kf_wall0012_local
+    matter_metal
+    bumpmap         textures/tech_wall/kf_wall0012_local
+    diffusemap      textures/editor/128x128_33
+    specularmap     textures/editor/128x128_33
+}
+textures/tech_wall/kf_wall0013
+{
+    qer_editorimage     textures/tech_wall/kf_wall0013_local
+    matter_metal
+    bumpmap         textures/tech_wall/kf_wall0013_local
+    diffusemap      textures/editor/128x128_33
+    specularmap     textures/editor/128x128_33
+}
+textures/tech_wall/kf_wall0014
+{
+    qer_editorimage     textures/tech_wall/kf_wall0014_local
+    matter_metal
+    bumpmap         textures/tech_wall/kf_wall0014_local
+    diffusemap      textures/editor/128x128_33
+    specularmap     textures/editor/128x128_33
+}
+textures/tech_wall/kf_wall0015
+{
+    qer_editorimage     textures/tech_wall/kf_wall0015_local
+    matter_metal
+    bumpmap         textures/tech_wall/kf_wall0015_local
+    diffusemap      textures/editor/128x128_33
+    specularmap     textures/editor/128x128_33
+}
+textures/tech_wall/kf_wall0016
+{
+    qer_editorimage     textures/tech_wall/kf_wall0016_local
+    matter_metal
+    bumpmap         textures/tech_wall/kf_wall0016_local
+    diffusemap      textures/editor/128x128_33
+    specularmap     textures/editor/128x128_33
+}
+textures/tech_wall/kf_wall0017
+{
+    qer_editorimage     textures/tech_wall/kf_wall0017_local
+    matter_metal
+    bumpmap         textures/tech_wall/kf_wall0017_local
+    diffusemap      textures/editor/128x128_33
+    specularmap     textures/editor/128x128_33
+}
+textures/tech_wall/kf_wall0018
+{
+    qer_editorimage     textures/tech_wall/kf_wall0018_local
+    matter_metal
+    bumpmap         textures/tech_wall/kf_wall0018_local
+    diffusemap      textures/editor/128x128_33
+    specularmap     textures/editor/128x128_33
+
+}
+textures/tech_wall/kf_wall0018_add
+{
+    qer_editorimage     textures/tech_wall/kf_wall0018_local
+    matter_metal
+    bumpmap         textures/tech_wall/kf_wall0018_local
+    diffusemap      textures/editor/128x128_33
+    specularmap     textures/editor/128x128_33
+    {
+        blend add
+        map textures/tech_wall/bl_wall_00_baseb_add     // was duplicate image
+        rgb (jitter1 [time * 2]) - 0.3
+    }
+}
+
+// [END]*/
+textures/tech_wall/kf_wall0018b
+{
+    qer_editorimage     textures/tech_wall/kf_wall0018b_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall0018_local,
+                            heightmap (textures/tech_wall/kf_wall0018b_h, 1.0))
+    diffusemap      textures/tech_wall/kf_wall0018b_d
+    specularmap     textures/tech_wall/kf_wall0018b_s
+}
+textures/tech_wall/kf_wall0018c
+{
+    qer_editorimage     textures/tech_wall/kf_wall0018c_proxy
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/kf_wall0018c_local,
+                            heightmap (textures/tech_wall/kf_wall0018c_h, 1.0))
+    diffusemap      textures/tech_wall/kf_wall0018c_d
+    specularmap     textures/tech_wall/kf_wall0018c_s
+}
+textures/tech_wall/kf_wall101
+{
+    qer_editorimage     textures/tech_wall/kf_wall101_local
+    matter_metal
+    bumpmap         textures/tech_wall/kf_wall101_local
+    diffusemap      textures/tech_wall/kf_wall101_d
+    specularmap     textures/tech_wall/kf_wall101_s
+}
+textures/tech_wall/kf_wall102
+{
+    qer_editorimage     textures/tech_wall/kf_wall102_local
+    matter_metal
+    bumpmap         textures/tech_wall/kf_wall102_local
+    diffusemap      textures/editor/128x128_33
+    specularmap     textures/editor/128x128_33
+}
+textures/tech_wall/kf_wall103
+{
+    qer_editorimage     textures/tech_wall/kf_wall103_local
+    matter_metal
+    bumpmap         textures/tech_wall/kf_wall103_local
+    diffusemap      textures/editor/128x128_33
+    specularmap     textures/editor/128x128_33
+}
+textures/tech_wall/bl_techwallminimon_add
+{
+    qer_editorimage     textures/tech_wall/bl_techwallminimon_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_techwallminimon_local,
+                heightmap (textures/tech_wall/bl_techwallminimon_h, 6))
+    diffusemap      textures/tech_wall/bl_techwallminimon_d
+    specularmap     textures/tech_wall/bl_techwallminimon_s
+        {
+        blend diffusemap
+        map  textures/tech_wall/bl_techwallminimon_d
+        alphatest 0.5
+    }
+{
+        blend add
+        map textures/tech_wall/bl_techwallminimon_add
+        rgb (jitter1 [time * 10]) - 0.1
+    }
+}
+textures/tech_wall/bl_wall_09
+{
+    qer_editorimage     textures/tech_wall/bl_wall_09_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_09_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_09_d
+    specularmap     textures/tech_wall/bl_wall_09_s
+}
+textures/tech_wall/bl_wall_09b
+{
+    qer_editorimage     textures/tech_wall/bl_wall_09b_local
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/bl_wall_09b_local,
+                heightmap (textures/tech_wall/bl_wall_01_h, 6))
+    diffusemap      textures/tech_wall/bl_wall_09_d
+    specularmap     textures/tech_wall/bl_wall_09b_s
+}
+
+
+textures/tech_wall/biolabs1
+{
+    qer_editorimage     textures/tech_wall/biolabs1_d
+    matter_metal
+    bumpmap         textures/tech_wall/biolabs1_local
+    diffusemap      textures/tech_wall/biolabs1_d
+    specularmap     textures/tech_wall/biolabs1_s
+
+}
+
+textures/tech_wall/biolabs2
+{
+    qer_editorimage     textures/tech_wall/biolabs2_d
+    matter_metal
+    bumpmap         textures/tech_wall/biolabs1_local
+    diffusemap      textures/tech_wall/biolabs2_d
+    specularmap     textures/tech_wall/biolabs2_s
+
+}
+
+textures/tech_wall/hider_marker01_add
+{
+    qer_editorimage     textures/tech_wall/hider_marker01_d
+    matter_metal
+    bumpmap         addnormals (textures/tech_wall/hider_marker01_local,
+                heightmap (textures/tech_wall/hider_marker01_h, 6))
+    diffusemap      textures/tech_wall/hider_marker01_d
+    specularmap     textures/tech_wall/hider_marker01_s
+        {
+        blend diffusemap
+        map  textures/tech_wall/hider_marker01_d
+        alphatest 0.5
+    }
+{
+        blend add
+        map textures/tech_wall/hider_marker01_add
+        rgb (jitter1 [time * 10]) - 0.1
+    }
+}
+
+textures/tech_wall/hdoor_burn
+{
+    qer_editorimage     textures/tech_wall/hdoor_burn
+    matter_metal
+    {
+    	blend	bumpmap
+    	map	addnormals (textures/tech_wall/hdoor_burn_local,heightmap (textures/tech_wall/hdoor_burn_h, 6))
+    	highres
+    }
+    {
+    	blend	diffusemap
+    	map	textures/tech_wall/hdoor_burn
+    	highres
+    }
+    {
+    	blend   specularmap
+    	map	textures/tech_wall/hdoor_burn_s
+    	highres
+    }
+
+/*    {
+        blend add
+        map textures/tech_wall/hdoor_burn_add
+        rgb (jitter1 [time * 10]) - 0.1
+        glowstage
+    }*/
+
+    //global alphatest stages
+    {
+        if ( parm5 == 0 )
+        blend none
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest 1 - ( time + parm4 ) * 1.75
+    }
+    {
+        if ( parm5 > 0 ) //fade out
+        blend none
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest ( time + parm4 ) * 1.75
+    }
+
+    //additive fx stage
+    {
+        if ( parm5 == 0 ) //fade in
+        privatepolygonoffset    -0.5
+        blend add
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest 1 - ( time + parm4 ) * 1.75 + 0.1
+        rgb 2
+        glowStage
+    }
+    {
+        if ( parm5 > 0 ) //fade out
+        privatepolygonoffset    -0.5
+        blend add
+        map textures/sfx/keeperfortress_ramp_fx_256
+        alphaTest ( time + parm4 ) * 1.75 - 0.1
+        rgb 2
+        glowStage
+    }
+}

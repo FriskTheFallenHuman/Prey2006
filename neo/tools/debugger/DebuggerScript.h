@@ -31,21 +31,20 @@ If you have questions concerning this license or the applicable additional terms
 class idProgram;
 class idUserInterfaceLocal;
 
-class rvDebuggerScript
-{
+class rvDebuggerScript {
 public:
 
 	rvDebuggerScript();
 	~rvDebuggerScript();
 
-	bool	Load( const char* filename );
+	bool	Load( const char * filename );
 	bool	Reload();
 
-	const char*		GetFilename();
-	const char*		GetContents();
-	idProgram*		GetProgram();
+	const char	*	GetFilename();
+	const char	*	GetContents();
+	idProgram	*	GetProgram();
 #if 0// Test code
-	idProgram&		GetProgram();
+	idProgram	&	GetProgram();
 #endif
 
 	bool			IsLineCode( int linenumber );
@@ -54,25 +53,22 @@ public:
 protected:
 	void			Unload();
 
-	idProgram*				mProgram;
-	idUserInterfaceLocal*	mInterface;
-	char*					mContents;
+	idProgram		*		mProgram;
+	idUserInterfaceLocal	* mInterface;
+	char			*		mContents;
 	idStr					mFilename;
 	ID_TIME_T				mModifiedTime;
 };
 
-ID_INLINE const char* rvDebuggerScript::GetFilename()
-{
+ID_INLINE const char * rvDebuggerScript::GetFilename() {
 	return mFilename;
 }
 
-ID_INLINE const char* rvDebuggerScript::GetContents()
-{
+ID_INLINE const char * rvDebuggerScript::GetContents() {
 	return mContents ? mContents : "";
 }
 
-ID_INLINE idProgram* rvDebuggerScript::GetProgram()
-{
+ID_INLINE idProgram * rvDebuggerScript::GetProgram() {
 	return mProgram;
 }
 

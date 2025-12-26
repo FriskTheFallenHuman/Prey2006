@@ -1,0 +1,262 @@
+
+//
+//
+// wraith
+//
+//
+// color the wraiths, but use parm5 to control the brightness
+
+models/monsters/wraith/wraith
+{
+	noshadows
+	translucent
+//	noselfshadow
+	unsmoothedtangents
+	collision
+	matter_flesh
+
+	renderbump -size 1024 1024 -aa 0  models/monsters/wraith/wraith_local models/monsters/wraith/wraithhi.lwo
+
+	{ // normal wraith
+		if ( parm7 == 0 )
+		blend gl_src_alpha, gl_one
+		map models/monsters/wraith/wraith_add
+//		rgb sintable [time * 3]
+		rgb 0.6
+
+		glowStage
+	}
+	{ // possess charge/damaged, turns red
+		if ( parm7 == 1 )
+		blend gl_src_alpha, gl_one
+		map models/monsters/wraith/wraith_add
+		blue 0.3
+		green 0.3
+		red 0.3
+
+		glowStage
+	}
+	bumpmap	models/monsters/wraith/wraith_local
+	specularmap models/monsters/wraith/wraith_s
+}
+
+//
+//
+// wraithgut
+//
+//
+models/monsters/wraith/wraithgut
+{
+	//noselfshadow
+	noshadows
+	translucent
+	unsmoothedtangents
+	matter_flesh
+
+	renderbump -size 512 512 -aa 0  models/monsters/wraith/wraithgut_local models/monsters/wraith/wraithguthi.lwo
+	{
+		blend gl_src_alpha, gl_one
+		map models/monsters/wraith/wraithgut
+		alpha parm3 * parm5 // parm5 controls the brightness
+	}
+	bumpmap	models/monsters/wraith/wraithgut_local
+	specularmap models/monsters/wraith/wraithgut_s
+	{
+		blend	add
+		map	models/monsters/wraith/wraithgut_add
+		rgb sintable [time * .5]
+	}
+	{
+		blend	add
+		map	models/monsters/wraith/wraithgut_add2
+		rgb sintable [time * .5]
+	}
+}
+
+//
+//
+// wraith_minion
+//
+//
+// color the friendly wraiths, but use parm5 to control the brightness
+
+models/monsters/wraith/wraith_minion
+{
+	noshadows
+	translucent
+//	noselfshadow
+	unsmoothedtangents
+	collision
+	matter_flesh
+
+	{ // normal wraith
+		if ( parm7 == 0 )
+		blend gl_src_alpha, gl_one
+		map models/monsters/wraith/wraith_minion_add
+//		rgb sintable [time * 3]
+		glowStage
+	}
+	{ // possess charge/damaged, turns red
+		if ( parm7 == 1 )
+		blend gl_src_alpha, gl_one
+		map models/monsters/wraith/wraith_minion_add
+		blue 0.3
+		green 0.3
+		red 0.3
+		glowStage
+	}
+	bumpmap	models/monsters/wraith/wraith_local
+	specularmap models/monsters/wraith/wraith_s
+}
+
+//
+//
+// wraithgut_minion
+//
+// guts of friendly wraith
+models/monsters/wraith/wraithgut_minion
+{
+	//noselfshadow
+	noshadows
+	translucent
+	unsmoothedtangents
+	matter_flesh
+
+	{
+		blend gl_src_alpha, gl_one
+		map models/monsters/wraith/wraithgut_minion
+		alpha parm3 * parm5 // parm5 controls the brightness
+		glowStage
+	}
+	bumpmap	models/monsters/wraith/wraithgut_local
+	specularmap models/monsters/wraith/wraithgut_s
+	{
+		blend	add
+		map	models/monsters/wraith/wraithgut_add
+		rgb sintable [time * .5]
+		glowStage
+	}
+	{
+		blend	add
+		map	models/monsters/wraith/wraithgut_add2
+		rgb sintable [time * .5]
+		glowStage
+	}
+}
+
+//
+//
+// deathwalk wraith
+//
+//	parm4: time of death
+//	parm5: killed (1==killed)
+//	parm6: attacking (1==attacking)
+//	parm7: (0==stage1, 1==stage2)
+//
+// color the wraiths, but use parm5 to control the brightness
+
+models/monsters/wraith/deathwraith
+{
+//	noshadows
+//	translucent
+	noselfshadow
+	unsmoothedtangents
+	collision
+	matter_flesh
+
+	renderbump -size 1024 1024 -aa 0  models/monsters/wraith/wraith_local models/monsters/wraith/wraithhi.lwo
+	{	if (parm5 == 0)
+		blend diffusemap
+		map models/monsters/wraith/wraith
+		alphatest	0.5
+	}
+	{	if (parm5 != 0)
+		blend diffusemap
+		map models/monsters/wraith/wraith
+	}
+	bumpmap	models/monsters/wraith/wraith_local
+	specularmap models/monsters/wraith/wraith_s
+
+	{	if (parm7 == 0 && parm6 == 0)			// Stage 1, not charging
+		blend gl_src_alpha, gl_one
+		map models/monsters/wraith/death_wraith_add
+		red		0.1
+		green	0.4
+		blue	1.0
+	}
+	{	if (parm7 == 0 && parm6 == 1)			// Stage 1, charging
+		blend gl_src_alpha, gl_one
+		map models/monsters/wraith/death_wraith_add
+		red		0.3
+		green	0.5
+		blue	1.0
+		glowStage
+	}
+	{	if (parm7 == 1 && parm6 == 0)			// Stage 2, not charging
+		blend gl_src_alpha, gl_one
+		map models/monsters/wraith/death_wraith_add
+		red		0.6
+		green	0.0
+		blue	0.0
+	}
+	{	if (parm7 == 1 && parm6 == 1)			// Stage 2, charging
+		blend gl_src_alpha, gl_one
+		map models/monsters/wraith/death_wraith_add
+		red		1.0
+		green	0.2
+		blue	0.2
+		glowStage
+	}
+
+	{	if (parm5 != 0)							// burning corpse effect when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	none			// don't draw anything
+
+		map models/monsters/wraith/wraith_dis	// replace this with a monster-specific texture
+		alphaTest 0.1 + (time - parm4)
+	}
+	{	if (parm5 != 0)							// burning corpse effect when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend gl_one, gl_zero
+		map models/monsters/wraith/wraith_dis	// replace this with a monster-specific texture
+		alphaTest (time - parm4)
+		red		(0.1 * (1-parm7)) + (parm7 * 1.0)		// Color coded for stages
+		green	(0.4 * (1-parm7)) + (parm7 * 0.2)
+		blue	(1.0 * (1-parm7)) + (parm7 * 0.2)
+		glowStage
+	}
+}
+
+//
+//
+// deathwalk wraithgut
+//
+//
+models/monsters/wraith/deathwraithgut
+{
+	//noselfshadow
+	//noshadows
+	//translucent
+	unsmoothedtangents
+	matter_flesh
+
+	renderbump -size 512 512 -aa 0  models/monsters/wraith/wraithgut_local models/monsters/wraith/wraithguthi.lwo
+/*	{
+		blend gl_src_alpha, gl_one
+		map models/monsters/wraith/wraithgut
+		alpha parm3 * parm5 // parm5 controls the brightness
+	}
+	bumpmap	models/monsters/wraith/wraithgut_local
+	specularmap models/monsters/wraith/wraithgut_s
+	{
+		blend	add
+		map	models/monsters/wraith/wraithgut_add
+	}
+	{
+		blend	add
+		map	models/monsters/wraith/wraithgut_add2
+	}*/
+}

@@ -92,7 +92,6 @@ hhSunCorona::~hhSunCorona() {
 //=============================================================================
 
 void hhSunCorona::Draw( hhPlayer *player ) {
-/* Commented out for E3 demo.  Need a better method for visibility, instead of a trace.  -cjr
 	idVec3 v[3];
 	float dot[3];
 	player->viewAngles.ToVectors( &v[0], &v[1], &v[2] );
@@ -119,5 +118,4 @@ void hhSunCorona::Draw( hhPlayer *player ) {
 			renderSystem->DrawStretchPic( sx, sy, 1280, 960, 0, 0, 1, 1, corona );
 		}
 	}
-*/
 }

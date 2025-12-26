@@ -1427,7 +1427,7 @@ bool idAsyncClient::ValidatePureServerChecksums( const netadr_t from, const idBi
 					return false;
 				}
 				// ask the server to send back download info
-				common->DPrintf( "missing %d paks: %s\n", numMissingChecksums, checksums.c_str() );
+				common->DPrintf( "missing '%d' paks: %s\n", numMissingChecksums, checksums.c_str() );
 				// store the requested downloads
 				GetDownloadRequest( missingChecksums, numMissingChecksums );
 				// build the download request message

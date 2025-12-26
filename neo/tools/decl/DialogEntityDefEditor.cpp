@@ -38,16 +38,15 @@ If you have questions concerning this license or the applicable additional terms
 #include "DialogEntityDefEditor.h"
 
 #ifdef ID_DEBUG_MEMORY
-	#undef new
-	#undef DEBUG_NEW
-	#define DEBUG_NEW new
+#undef new
+#undef DEBUG_NEW
+#define DEBUG_NEW new
 #endif
 
 
 // DialogEntityDefEditor dialog
 
-toolTip_t DialogEntityDefEditor::toolTips[] =
-{
+toolTip_t DialogEntityDefEditor::toolTips[] = {
 	{ IDC_DECLEDITOR_BUTTON_TEST, "Test Decl" },
 	{ IDOK, "Save Decl" },
 	{ IDCANCEL, "Cancel" },
@@ -65,8 +64,7 @@ DialogEntityDefEditor::DialogEntityDefEditor
 DialogEntityDefEditor::DialogEntityDefEditor( CWnd* pParent /*=NULL*/ )
 	: CDialog( DialogEntityDefEditor::IDD, pParent )
 	, decl( NULL )
-	, firstLine( 0 )
-{
+	, firstLine( 0 ) {
 }
 
 /*
@@ -74,8 +72,7 @@ DialogEntityDefEditor::DialogEntityDefEditor( CWnd* pParent /*=NULL*/ )
 DialogEntityDefEditor::~DialogEntityDefEditor
 ================
 */
-DialogEntityDefEditor::~DialogEntityDefEditor()
-{
+DialogEntityDefEditor::~DialogEntityDefEditor() {
 }
 
 /*
@@ -83,8 +80,7 @@ DialogEntityDefEditor::~DialogEntityDefEditor()
 DialogEntityDefEditor::DoDataExchange
 ================
 */
-void DialogEntityDefEditor::DoDataExchange( CDataExchange* pDX )
-{
+void DialogEntityDefEditor::DoDataExchange( CDataExchange* pDX ) {
 	CDialog::DoDataExchange( pDX );
 	//{{AFX_DATA_MAP(DialogEntityDefEditor)
 	DDX_Control( pDX, IDC_ENTITYDEFEDITOR_EDIT_DECLNAME, declNameEdit );
@@ -110,12 +106,9 @@ void DialogEntityDefEditor::DoDataExchange( CDataExchange* pDX )
 DialogEntityDefEditor::PreTranslateMessage
 ================
 */
-BOOL DialogEntityDefEditor::PreTranslateMessage( MSG* pMsg )
-{
-	if( WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST )
-	{
-		if( m_hAccel && ::TranslateAccelerator( m_hWnd, m_hAccel, pMsg ) )
-		{
+BOOL DialogEntityDefEditor::PreTranslateMessage( MSG* pMsg ) {
+	if ( WM_KEYFIRST <= pMsg->message && pMsg->message <= WM_KEYLAST ) {
+		if ( m_hAccel && ::TranslateAccelerator( m_hWnd, m_hAccel, pMsg ) ) {
 			return TRUE;
 		}
 	}
@@ -127,8 +120,7 @@ BOOL DialogEntityDefEditor::PreTranslateMessage( MSG* pMsg )
 DialogEntityDefEditor::TestDecl
 ================
 */
-bool DialogEntityDefEditor::TestDecl( const idStr& declText )
-{
+bool DialogEntityDefEditor::TestDecl( const idStr& declText ) {
 	idLexer src( LEXFL_NOSTRINGCONCAT );
 	idToken token;
 	int indent;
@@ -136,25 +128,19 @@ bool DialogEntityDefEditor::TestDecl( const idStr& declText )
 	src.LoadMemory( declText, declText.Length(), "decl text" );
 
 	indent = 0;
-	while( src.ReadToken( &token ) )
-	{
-		if( token == "{" )
-		{
+	while ( src.ReadToken( &token ) ) {
+		if ( token == "{" ) {
 			indent++;
-		}
-		else if( token == "}" )
-		{
+		} else if ( token == "}" ) {
 			indent--;
 		}
 	}
 
-	if( indent < 0 )
-	{
+	if ( indent < 0 ) {
 		MessageBox( "Missing opening brace!", va( "Error saving %s", decl->GetFileName() ), MB_OK | MB_ICONERROR );
 		return false;
 	}
-	if( indent > 0 )
-	{
+	if ( indent > 0 ) {
 		MessageBox( "Missing closing brace!", va( "Error saving %s", decl->GetFileName() ), MB_OK | MB_ICONERROR );
 		return false;
 	}
@@ -166,10 +152,8 @@ bool DialogEntityDefEditor::TestDecl( const idStr& declText )
 DialogEntityDefEditor::UpdateStatusBar
 ================
 */
-void DialogEntityDefEditor::UpdateStatusBar()
-{
-	if( decl )
-	{
+void DialogEntityDefEditor::UpdateStatusBar() {
+	if ( decl ) {
 		statusBar.SetWindowText( "Editing decl" );
 	}
 }
@@ -179,8 +163,7 @@ void DialogEntityDefEditor::UpdateStatusBar()
 DialogEntityDefEditor::LoadDecl
 ================
 */
-void DialogEntityDefEditor::LoadDecl( idDeclEntityDef* decl )
-{
+void DialogEntityDefEditor::LoadDecl( idDeclEntityDef* decl ) {
 	int numLines = 0;
 	CRect rect;
 
@@ -196,18 +179,16 @@ void DialogEntityDefEditor::LoadDecl( idDeclEntityDef* decl )
 
 	// Fill up the inherit box with all entitydefs
 	int numDecls = declManager->GetNumDecls( DECL_ENTITYDEF );
-	for( int i = 0; i < numDecls; i++ )
-	{
+	for ( int i = 0; i < numDecls; i++ ) {
 		const idDecl* d = declManager->DeclByIndex( DECL_ENTITYDEF, i, false );
-		if( d )
-		{
+		if ( d ) {
 			inheritCombo.AddString( d->GetName() );
 		}
 	}
 
 	firstLine = decl->GetLineNum();
 
-	char* declText = ( char* )_alloca( ( decl->GetTextLength() + 1 ) * sizeof( char ) );
+	char * declText = ( char * )_alloca( ( decl->GetTextLength() + 1 ) * sizeof( char ) );
 	decl->GetText( declText );
 
 	PopulateLists( declText );
@@ -230,8 +211,7 @@ void DialogEntityDefEditor::LoadDecl( idDeclEntityDef* decl )
 DialogEntityDefEditor::PopulateLists
 =================
 */
-void DialogEntityDefEditor::PopulateLists( const char* declText, const int textLength )
-{
+void DialogEntityDefEditor::PopulateLists( const char * declText, const int textLength ) {
 	idLexer src;
 	idToken	token, token2;
 
@@ -241,31 +221,25 @@ void DialogEntityDefEditor::PopulateLists( const char* declText, const int textL
 	src.SetFlags( DECL_LEXER_FLAGS );
 	src.SkipUntilString( "{" );
 
-	while( 1 )
-	{
-		if( !src.ReadToken( &token ) )
-		{
+	while ( 1 ) {
+		if ( !src.ReadToken( &token ) ) {
 			break;
 		}
 
-		if( !token.Icmp( "}" ) )
-		{
+		if ( !token.Icmp( "}" ) ) {
 			break;
 		}
-		if( token.type != TT_STRING )
-		{
+		if ( token.type != TT_STRING ) {
 			src.Warning( "Expected quoted string, but found '%s'", token.c_str() );
 			break;
 		}
 
-		if( !src.ReadToken( &token2 ) )
-		{
+		if ( !src.ReadToken( &token2 ) ) {
 			src.Warning( "Unexpected end of file" );
 			break;
 		}
 
-		if( dict.FindKey( token ) )
-		{
+		if ( dict.FindKey( token ) ) {
 			src.Warning( "'%s' already defined", token.c_str() );
 		}
 		dict.Set( token, token2 );
@@ -275,8 +249,7 @@ void DialogEntityDefEditor::PopulateLists( const char* declText, const int textL
 	// We currently don't support multiple inheritence properly, but nothing uses it anyway
 	idStr inherit;
 	const idKeyValue* inheritKeyVal = dict.FindKey( "inherit" );
-	if( inheritKeyVal )
-	{
+	if ( inheritKeyVal ) {
 		inherit = inheritKeyVal->GetValue();
 		dict.Delete( inheritKeyVal->GetKey() );
 	}
@@ -288,11 +261,9 @@ void DialogEntityDefEditor::PopulateLists( const char* declText, const int textL
 
 	// Fill up the list with all the main info
 	size_t numPairs = dict.Size();
-	for( unsigned int i = 0; i < numPairs; i++ )
-	{
+	for ( unsigned int i = 0; i < numPairs; i++ ) {
 		const idKeyValue* keyVal = dict.GetKeyVal( i );
-		if( keyVal )
-		{
+		if ( keyVal ) {
 			keyValsList.AddPropItem( new CPropertyItem( keyVal->GetKey().c_str(), keyVal->GetValue().c_str(), PIT_EDIT, "" ) );
 		}
 	}
@@ -303,8 +274,7 @@ void DialogEntityDefEditor::PopulateLists( const char* declText, const int textL
 
 	declNameEdit.SetWindowText( decl->GetName() );
 	int index = spawnclassCombo.FindString( 0, spawnclass );
-	if( index == CB_ERR )
-	{
+	if ( index == CB_ERR ) {
 		index = spawnclassCombo.AddString( spawnclass );
 	}
 	spawnclassCombo.SetCurSel( index );
@@ -316,17 +286,13 @@ DialogEntityDefEditor::SetInherit
 =================
 */
 
-void DialogEntityDefEditor::SetInherit( idStr& inherit )
-{
+void DialogEntityDefEditor::SetInherit( idStr& inherit ) {
 	CWaitCursor wc;
 
-	for( int i = 0; i < keyValsList.GetCount(); i++ )
-	{
-		CPropertyItem* pItem = ( CPropertyItem* )keyValsList.GetItemDataPtr( i );
-		if( pItem )
-		{
-			if( pItem->m_propName[0] == '*' )
-			{
+	for ( int i = 0; i < keyValsList.GetCount(); i++ ) {
+		CPropertyItem* pItem = ( CPropertyItem * )keyValsList.GetItemDataPtr( i );
+		if ( pItem ) {
+			if ( pItem->m_propName[0] == '*' ) {
 				delete pItem;
 				keyValsList.DeleteString( i );
 				i--;
@@ -336,24 +302,17 @@ void DialogEntityDefEditor::SetInherit( idStr& inherit )
 
 	CString spawnclass;
 	// Fill up the rest of the box with inherited info
-	if( !inherit.IsEmpty() )
-	{
+	if ( !inherit.IsEmpty() ) {
 		const idDecl* temp = declManager->FindType( DECL_ENTITYDEF, inherit, false );
-		const idDeclEntityDef* parent = static_cast<const idDeclEntityDef*>( temp );
-		if( parent )
-		{
+		const idDeclEntityDef* parent = static_cast<const idDeclEntityDef *>( temp );
+		if ( parent ) {
 			size_t numPairs = parent->dict.Size();
-			for( unsigned int i = 0; i < numPairs; i++ )
-			{
+			for ( unsigned int i = 0; i < numPairs; i++ ) {
 				const idKeyValue* keyVal = parent->dict.GetKeyVal( i );
-				if( keyVal )
-				{
-					if( spawnclass.IsEmpty() && keyVal->GetKey() == "spawnclass" )
-					{
+				if ( keyVal ) {
+					if ( spawnclass.IsEmpty() && keyVal->GetKey() == "spawnclass" ) {
 						spawnclass = keyVal->GetValue();
-					}
-					else
-					{
+					} else {
 						CString key = keyVal->GetKey();
 						key = "*" + key;
 						keyValsList.AddPropItem( new CPropertyItem( key, keyVal->GetValue().c_str(), PIT_EDIT, "" ) );
@@ -369,8 +328,7 @@ void DialogEntityDefEditor::SetInherit( idStr& inherit )
 DialogEntityDefEditor::OnInitDialog
 ================
 */
-BOOL DialogEntityDefEditor::OnInitDialog()
-{
+BOOL DialogEntityDefEditor::OnInitDialog() {
 
 	com_editors |= EDITOR_ENTITYDEF;
 
@@ -430,8 +388,7 @@ END_MESSAGE_MAP()
 DialogEntityDefEditor::OnActivate
 ================
 */
-void DialogEntityDefEditor::OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized )
-{
+void DialogEntityDefEditor::OnActivate( UINT nState, CWnd* pWndOther, BOOL bMinimized ) {
 	CDialog::OnActivate( nState, pWndOther, bMinimized );
 }
 
@@ -440,8 +397,7 @@ void DialogEntityDefEditor::OnActivate( UINT nState, CWnd* pWndOther, BOOL bMini
 DialogEntityDefEditor::OnToolTipNotify
 ================
 */
-BOOL DialogEntityDefEditor::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult )
-{
+BOOL DialogEntityDefEditor::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult ) {
 	return DefaultOnToolTipNotify( toolTips, id, pNMHDR, pResult );
 }
 
@@ -450,8 +406,7 @@ BOOL DialogEntityDefEditor::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pR
 DialogEntityDefEditor::OnSetFocus
 ================
 */
-void DialogEntityDefEditor::OnSetFocus( CWnd* pOldWnd )
-{
+void DialogEntityDefEditor::OnSetFocus( CWnd* pOldWnd ) {
 	CDialog::OnSetFocus( pOldWnd );
 }
 
@@ -460,8 +415,7 @@ void DialogEntityDefEditor::OnSetFocus( CWnd* pOldWnd )
 DialogEntityDefEditor::OnDestroy
 ================
 */
-void DialogEntityDefEditor::OnDestroy()
-{
+void DialogEntityDefEditor::OnDestroy() {
 	return CDialog::OnDestroy();
 }
 
@@ -470,10 +424,8 @@ void DialogEntityDefEditor::OnDestroy()
 DialogEntityDefEditor::OnMove
 ================
 */
-void DialogEntityDefEditor::OnMove( int x, int y )
-{
-	if( GetSafeHwnd() )
-	{
+void DialogEntityDefEditor::OnMove( int x, int y ) {
+	if ( GetSafeHwnd() ) {
 		CRect rct;
 		GetWindowRect( rct );
 		// FIXME: save position
@@ -491,8 +443,7 @@ DialogEntityDefEditor::OnSize
 #define CONTROL_HEIGHT		24
 #define TOOLBAR_HEIGHT		24
 
-void DialogEntityDefEditor::OnSize( UINT nType, int cx, int cy )
-{
+void DialogEntityDefEditor::OnSize( UINT nType, int cx, int cy ) {
 	CRect clientRect, rect;
 
 	LockWindowUpdate();
@@ -501,8 +452,7 @@ void DialogEntityDefEditor::OnSize( UINT nType, int cx, int cy )
 
 	GetClientRect( clientRect );
 
-	if( keyValsList.GetSafeHwnd() )
-	{
+	if ( keyValsList.GetSafeHwnd() ) {
 		keyValsList.GetClientRect( rect );
 		rect.left = BORDER_SIZE;
 		rect.right = clientRect.right - BORDER_SIZE;
@@ -519,8 +469,7 @@ void DialogEntityDefEditor::OnSize( UINT nType, int cx, int cy )
 	int buttonRowTop = clientRect.Height() - TOOLBAR_HEIGHT - CONTROL_HEIGHT;
 	int buttonRowBottom = buttonRowTop + CONTROL_HEIGHT;
 
-	if( keyLabel.GetSafeHwnd() )
-	{
+	if ( keyLabel.GetSafeHwnd() ) {
 		keyLabel.GetClientRect( rect );
 		int width = rect.Width();
 		rect.left = BORDER_SIZE;
@@ -530,8 +479,7 @@ void DialogEntityDefEditor::OnSize( UINT nType, int cx, int cy )
 		keyLabel.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
 
-	if( keyEdit.GetSafeHwnd() )
-	{
+	if ( keyEdit.GetSafeHwnd() ) {
 		keyEdit.GetClientRect( rect );
 		rect.left = 40;
 		rect.right = 40 + 200;
@@ -541,8 +489,7 @@ void DialogEntityDefEditor::OnSize( UINT nType, int cx, int cy )
 	}
 
 
-	if( addButton.GetSafeHwnd() )
-	{
+	if ( addButton.GetSafeHwnd() ) {
 		addButton.GetClientRect( rect );
 		int width = rect.Width();
 		rect.left = clientRect.Width() - BORDER_SIZE - BUTTON_SPACE - 2 * width;
@@ -552,8 +499,7 @@ void DialogEntityDefEditor::OnSize( UINT nType, int cx, int cy )
 		addButton.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
 
-	if( delButton.GetSafeHwnd() )
-	{
+	if ( delButton.GetSafeHwnd() ) {
 		delButton.GetClientRect( rect );
 		int width = rect.Width();
 		rect.left = clientRect.Width() - BORDER_SIZE - width;
@@ -563,8 +509,7 @@ void DialogEntityDefEditor::OnSize( UINT nType, int cx, int cy )
 		delButton.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
 
-	if( line.GetSafeHwnd() )
-	{
+	if ( line.GetSafeHwnd() ) {
 		line.GetClientRect( rect );
 		int height = rect.Height();
 		rect.left = BORDER_SIZE;
@@ -574,8 +519,7 @@ void DialogEntityDefEditor::OnSize( UINT nType, int cx, int cy )
 		line.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
 
-	if( testButton.GetSafeHwnd() )
-	{
+	if ( testButton.GetSafeHwnd() ) {
 		testButton.GetClientRect( rect );
 		int width = rect.Width();
 		rect.left = BORDER_SIZE;
@@ -585,8 +529,7 @@ void DialogEntityDefEditor::OnSize( UINT nType, int cx, int cy )
 		testButton.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
 
-	if( okButton.GetSafeHwnd() )
-	{
+	if ( okButton.GetSafeHwnd() ) {
 		okButton.GetClientRect( rect );
 		int width = rect.Width();
 		rect.left = clientRect.Width() - BORDER_SIZE - BUTTON_SPACE - 2 * width;
@@ -596,8 +539,7 @@ void DialogEntityDefEditor::OnSize( UINT nType, int cx, int cy )
 		okButton.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
 
-	if( cancelButton.GetSafeHwnd() )
-	{
+	if ( cancelButton.GetSafeHwnd() ) {
 		cancelButton.GetClientRect( rect );
 		int width = rect.Width();
 		rect.left = clientRect.Width() - BORDER_SIZE - width;
@@ -607,8 +549,7 @@ void DialogEntityDefEditor::OnSize( UINT nType, int cx, int cy )
 		cancelButton.MoveWindow( rect.left, rect.top, rect.Width(), rect.Height() );
 	}
 
-	if( statusBar.GetSafeHwnd() )
-	{
+	if ( statusBar.GetSafeHwnd() ) {
 		rect.left = clientRect.Width() - 2;
 		rect.top = clientRect.Height() - 2;
 		rect.right = clientRect.Width() - 2;
@@ -624,8 +565,7 @@ void DialogEntityDefEditor::OnSize( UINT nType, int cx, int cy )
 DialogEntityDefEditor::OnSizing
 ================
 */
-void DialogEntityDefEditor::OnSizing( UINT nSide, LPRECT lpRect )
-{
+void DialogEntityDefEditor::OnSizing( UINT nSide, LPRECT lpRect ) {
 	/*
 		1 = left
 		2 = right
@@ -639,31 +579,21 @@ void DialogEntityDefEditor::OnSizing( UINT nSide, LPRECT lpRect )
 
 	CDialog::OnSizing( nSide, lpRect );
 
-	if( ( nSide - 1 ) % 3 == 0 )
-	{
-		if( lpRect->right - lpRect->left < initialRect.Width() )
-		{
+	if ( ( nSide - 1 ) % 3 == 0 ) {
+		if ( lpRect->right - lpRect->left < initialRect.Width() ) {
 			lpRect->left = lpRect->right - initialRect.Width();
 		}
-	}
-	else if( ( nSide - 2 ) % 3 == 0 )
-	{
-		if( lpRect->right - lpRect->left < initialRect.Width() )
-		{
+	} else if ( ( nSide - 2 ) % 3 == 0 ) {
+		if ( lpRect->right - lpRect->left < initialRect.Width() ) {
 			lpRect->right = lpRect->left + initialRect.Width();
 		}
 	}
-	if( nSide >= 3 && nSide <= 5 )
-	{
-		if( lpRect->bottom - lpRect->top < initialRect.Height() )
-		{
+	if ( nSide >= 3 && nSide <= 5 ) {
+		if ( lpRect->bottom - lpRect->top < initialRect.Height() ) {
 			lpRect->top = lpRect->bottom - initialRect.Height();
 		}
-	}
-	else if( nSide >= 6 && nSide <= 9 )
-	{
-		if( lpRect->bottom - lpRect->top < initialRect.Height() )
-		{
+	} else if ( nSide >= 6 && nSide <= 9 ) {
+		if ( lpRect->bottom - lpRect->top < initialRect.Height() ) {
 			lpRect->bottom = lpRect->top + initialRect.Height();
 		}
 	}
@@ -674,8 +604,7 @@ void DialogEntityDefEditor::OnSizing( UINT nSide, LPRECT lpRect )
 DialogEntityDefEditor::OnEditChange
 ================
 */
-void DialogEntityDefEditor::OnEditChange( )
-{
+void DialogEntityDefEditor::OnEditChange( ) {
 	testButton.EnableWindow( TRUE );
 	okButton.EnableWindow( TRUE );
 }
@@ -685,22 +614,18 @@ void DialogEntityDefEditor::OnEditChange( )
 DialogEntityDefEditor::OnInheritChange
 ================
 */
-void DialogEntityDefEditor::OnInheritChange( )
-{
+void DialogEntityDefEditor::OnInheritChange( ) {
 	testButton.EnableWindow( TRUE );
 	okButton.EnableWindow( TRUE );
 
 	idStr inherit = "";
 
 	int sel = inheritCombo.GetCurSel();
-	if( sel == CB_ERR )
-	{
+	if ( sel == CB_ERR ) {
 		CString temp;
 		inheritCombo.GetWindowText( temp );
 		inherit = temp;
-	}
-	else
-	{
+	} else {
 		CString temp;
 		inheritCombo.GetLBText( sel, temp );
 		inherit = temp;
@@ -714,12 +639,10 @@ void DialogEntityDefEditor::OnInheritChange( )
 DialogEntityDefEditor::OnEnInputEdit
 ================
 */
-void DialogEntityDefEditor::OnEnInputEdit( NMHDR* pNMHDR, LRESULT* pResult )
-{
-	MSGFILTER* msgFilter = ( MSGFILTER* )pNMHDR;
+void DialogEntityDefEditor::OnEnInputEdit( NMHDR* pNMHDR, LRESULT* pResult ) {
+	MSGFILTER* msgFilter = ( MSGFILTER * )pNMHDR;
 
-	if( msgFilter->msg != 512 && msgFilter->msg != 33 )
-	{
+	if ( msgFilter->msg != 512 && msgFilter->msg != 33 ) {
 		UpdateStatusBar();
 	}
 
@@ -732,8 +655,7 @@ DialogEntityDefEditor::BuildDeclText
 ================
 */
 
-void DialogEntityDefEditor::BuildDeclText( idStr& declText )
-{
+void DialogEntityDefEditor::BuildDeclText( idStr& declText ) {
 	CString declName;
 	declNameEdit.GetWindowText( declName );
 	CString inherit;
@@ -744,14 +666,11 @@ void DialogEntityDefEditor::BuildDeclText( idStr& declText )
 	declText = "entityDef " + declName + "\r{\r";
 	declText += "\"inherit\"\t\t\t\"" + inherit + "\"\r";
 	declText += "\"spawnclass\"\t\t\t\"" + spawnclass + "\"\r";
-	for( int i = 0; i < keyValsList.GetCount(); i++ )
-	{
-		CPropertyItem* pItem = ( CPropertyItem* )keyValsList.GetItemDataPtr( i );
-		if( pItem )
-		{
+	for ( int i = 0; i < keyValsList.GetCount(); i++ ) {
+		CPropertyItem* pItem = ( CPropertyItem * )keyValsList.GetItemDataPtr( i );
+		if ( pItem ) {
 			// Items with a * in front are inherited and shouldn't be written out
-			if( pItem->m_propName[0] == '*' )
-			{
+			if ( pItem->m_propName[0] == '*' ) {
 				break;
 			}
 			declText += "\"" + pItem->m_propName + "\"\t\t\t\"" + pItem->m_curValue + "\"\r";
@@ -769,21 +688,18 @@ void DialogEntityDefEditor::BuildDeclText( idStr& declText )
 DialogEntityDefEditor::OnBnClickedTest
 ================
 */
-void DialogEntityDefEditor::OnBnClickedTest()
-{
+void DialogEntityDefEditor::OnBnClickedTest() {
 	idStr declText, oldDeclText;
 
-	if( decl )
-	{
+	if ( decl ) {
 
 		BuildDeclText( declText );
 
-		if( !TestDecl( declText ) )
-		{
+		if ( !TestDecl( declText ) ) {
 			return;
 		}
 
-		char* oldDeclText = ( char* )_alloca( ( decl->GetTextLength() + 1 ) * sizeof( char ) );
+		char * oldDeclText = ( char * )_alloca( ( decl->GetTextLength() + 1 ) * sizeof( char ) );
 		decl->GetText( oldDeclText );
 		decl->SetText( declText );
 		decl->Invalidate();
@@ -801,24 +717,19 @@ void DialogEntityDefEditor::OnBnClickedTest()
 DialogEntityDefEditor::OnBnClickedOk
 ================
 */
-void DialogEntityDefEditor::OnBnClickedOk()
-{
-	if( decl )
-	{
+void DialogEntityDefEditor::OnBnClickedOk() {
+	if ( decl ) {
 
 		idStr declText;
 		BuildDeclText( declText );
 
-		if( !TestDecl( declText ) )
-		{
+		if ( !TestDecl( declText ) ) {
 			return;
 		}
 
-		if( decl->SourceFileChanged() )
-		{
-			if( MessageBox( va( "Declaration file %s has been modified outside of the editor.\r\nReload declarations and save?", decl->GetFileName() ),
-							va( "Warning saving: %s", decl->GetFileName() ), MB_OKCANCEL | MB_ICONERROR ) != IDOK )
-			{
+		if ( decl->SourceFileChanged() ) {
+			if ( MessageBox( va( "Declaration file %s has been modified outside of the editor.\r\nReload declarations and save?", decl->GetFileName() ),
+							 va( "Warning saving: %s", decl->GetFileName() ), MB_OKCANCEL | MB_ICONERROR ) != IDOK ) {
 				return;
 			}
 			declManager->Reload( false );
@@ -826,8 +737,7 @@ void DialogEntityDefEditor::OnBnClickedOk()
 		}
 
 		decl->SetText( declText );
-		if( !decl->ReplaceSourceFileText() )
-		{
+		if ( !decl->ReplaceSourceFileText() ) {
 			MessageBox( va( "Couldn't save: %s.\r\nMake sure the declaration file is not read-only.", decl->GetFileName() ),
 						va( "Error saving: %s", decl->GetFileName() ), MB_OK | MB_ICONERROR );
 			return;
@@ -843,12 +753,9 @@ void DialogEntityDefEditor::OnBnClickedOk()
 DialogEntityDefEditor::OnBnClickedCancel
 ================
 */
-void DialogEntityDefEditor::OnBnClickedCancel()
-{
-	if( okButton.IsWindowEnabled() )
-	{
-		if( MessageBox( "Cancel changes?", "Cancel", MB_YESNO | MB_ICONQUESTION ) != IDYES )
-		{
+void DialogEntityDefEditor::OnBnClickedCancel() {
+	if ( okButton.IsWindowEnabled() ) {
+		if ( MessageBox( "Cancel changes?", "Cancel", MB_YESNO | MB_ICONQUESTION ) != IDYES ) {
 			return;
 		}
 	}
@@ -860,12 +767,10 @@ void DialogEntityDefEditor::OnBnClickedCancel()
 DialogEntityDefEditor::OnKeyValChange
 ================
 */
-void DialogEntityDefEditor::OnKeyValChange()
-{
+void DialogEntityDefEditor::OnKeyValChange() {
 	int sel = keyValsList.GetCurSel();
-	if( sel >= 0 )
-	{
-		CPropertyItem* pItem = ( CPropertyItem* )keyValsList.GetItemDataPtr( sel );
+	if ( sel >= 0 ) {
+		CPropertyItem* pItem = ( CPropertyItem * )keyValsList.GetItemDataPtr( sel );
 		keyEdit.SetWindowText( pItem->m_propName );
 	}
 }
@@ -875,8 +780,7 @@ void DialogEntityDefEditor::OnKeyValChange()
 DialogEntityDefEditor::OnBnClickedAdd
 ================
 */
-void DialogEntityDefEditor::OnBnClickedAdd()
-{
+void DialogEntityDefEditor::OnBnClickedAdd() {
 	CString newKey;
 	keyEdit.GetWindowText( newKey );
 
@@ -884,35 +788,27 @@ void DialogEntityDefEditor::OnBnClickedAdd()
 	int matchedKey = -1;
 
 	// See if this key already exists
-	for( int i = 0; i < keyValsList.GetCount(); i++ )
-	{
-		CPropertyItem* pItem = ( CPropertyItem* )keyValsList.GetItemDataPtr( i );
-		if( pItem )
-		{
+	for ( int i = 0; i < keyValsList.GetCount(); i++ ) {
+		CPropertyItem* pItem = ( CPropertyItem * )keyValsList.GetItemDataPtr( i );
+		if ( pItem ) {
 			// Items with a * in front are inherited and shouldn't be written out
-			if( pItem->m_propName[0] == '*' )
-			{
-				if( newKey = pItem->m_propName.Mid( 1 ) )
-				{
+			if ( pItem->m_propName[0] == '*' ) {
+				if ( newKey = pItem->m_propName.Mid( 1 ) ) {
 					matchedInherit = i;
 				}
-			}
-			else if( pItem->m_propName == newKey )
-			{
+			} else if ( pItem->m_propName == newKey ) {
 				matchedKey = i;
 				break;
 			}
 		}
 	}
 
-	if( matchedKey >= 0 )
-	{
+	if ( matchedKey >= 0 ) {
 		MessageBox( "Key " + newKey + " already defined" );
 		return;
 	}
 
-	if( matchedInherit >= 0 )
-	{
+	if ( matchedInherit >= 0 ) {
 		delete keyValsList.GetItemDataPtr( matchedInherit );
 		keyValsList.DeleteString( matchedInherit );
 	}
@@ -924,8 +820,7 @@ void DialogEntityDefEditor::OnBnClickedAdd()
 DialogEntityDefEditor::OnBnClickedDelete
 ================
 */
-void DialogEntityDefEditor::OnBnClickedDelete()
-{
+void DialogEntityDefEditor::OnBnClickedDelete() {
 	CString delKey;
 	keyEdit.GetWindowText( delKey );
 
@@ -933,34 +828,25 @@ void DialogEntityDefEditor::OnBnClickedDelete()
 	int matchedKey = -1;
 
 	// See if this key already exists
-	for( int i = 0; i < keyValsList.GetCount(); i++ )
-	{
-		CPropertyItem* pItem = ( CPropertyItem* )keyValsList.GetItemDataPtr( i );
-		if( pItem )
-		{
+	for ( int i = 0; i < keyValsList.GetCount(); i++ ) {
+		CPropertyItem* pItem = ( CPropertyItem * )keyValsList.GetItemDataPtr( i );
+		if ( pItem ) {
 			// Items with a * in front are inherited and shouldn't be written out
-			if( pItem->m_propName[0] == '*' )
-			{
-				if( delKey = pItem->m_propName.Mid( 1 ) )
-				{
+			if ( pItem->m_propName[0] == '*' ) {
+				if ( delKey = pItem->m_propName.Mid( 1 ) ) {
 					matchedInherit = i;
 				}
-			}
-			else if( pItem->m_propName == delKey )
-			{
+			} else if ( pItem->m_propName == delKey ) {
 				matchedKey = i;
 				break;
 			}
 		}
 	}
 
-	if( matchedKey >= 0 )
-	{
+	if ( matchedKey >= 0 ) {
 		delete keyValsList.GetItemDataPtr( matchedKey );
 		keyValsList.DeleteString( matchedKey );
-	}
-	else if( matchedInherit )
-	{
+	} else if ( matchedInherit ) {
 		MessageBox( "Cannot delete an inherited value" );
 	}
 }

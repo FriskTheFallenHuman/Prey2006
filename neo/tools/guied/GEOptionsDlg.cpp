@@ -42,10 +42,8 @@ GEOptionsDlg_GeneralProc
 Dialog procedure for the general options tab
 ================
 */
-static INT_PTR CALLBACK GEOptionsDlg_GeneralProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-	switch( msg )
-	{
+static INT_PTR CALLBACK GEOptionsDlg_GeneralProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam ) {
+	switch ( msg ) {
 		case WM_INITDIALOG:
 			ColorButton_SetColor( GetDlgItem( hwnd, IDC_GUIED_SELECTIONCOLOR ),
 								  RGB( gApp.GetOptions().GetSelectionColor()[0] * 255,
@@ -55,10 +53,8 @@ static INT_PTR CALLBACK GEOptionsDlg_GeneralProc( HWND hwnd, UINT msg, WPARAM wP
 			break;
 
 		case WM_COMMAND:
-			switch( LOWORD( wParam ) )
-			{
-				case IDC_GUIED_SELECTIONCOLOR:
-				{
+			switch ( LOWORD( wParam ) ) {
+				case IDC_GUIED_SELECTIONCOLOR: {
 					CHOOSECOLOR col;
 					ZeroMemory( &col, sizeof( col ) );
 					col.lStructSize = sizeof( col );
@@ -67,8 +63,7 @@ static INT_PTR CALLBACK GEOptionsDlg_GeneralProc( HWND hwnd, UINT msg, WPARAM wP
 					col.hInstance = NULL;
 					col.Flags = CC_RGBINIT;
 					col.rgbResult = ColorButton_GetColor( GetDlgItem( hwnd, IDC_GUIED_SELECTIONCOLOR ) );
-					if( ChooseColor( &col ) )
-					{
+					if ( ChooseColor( &col ) ) {
 						ColorButton_SetColor( GetDlgItem( hwnd, IDC_GUIED_SELECTIONCOLOR ), col.rgbResult );
 					}
 					break;
@@ -81,8 +76,7 @@ static INT_PTR CALLBACK GEOptionsDlg_GeneralProc( HWND hwnd, UINT msg, WPARAM wP
 			return TRUE;
 
 		case WM_NOTIFY:
-			switch( ( ( NMHDR FAR* ) lParam )->code )
-			{
+			switch ( ( ( NMHDR FAR * ) lParam )->code ) {
 				case PSN_APPLY:
 					gApp.GetOptions().SetLastOptionsPage( PropSheet_HwndToIndex( GetParent( hwnd ), PropSheet_GetCurrentPageHwnd( GetParent( hwnd ) ) ) );
 					gApp.GetOptions().SetSelectionColor( ColorButton_GetColor( GetDlgItem( hwnd, IDC_GUIED_SELECTIONCOLOR ) ) );
@@ -102,10 +96,8 @@ GEOptionsDlg_GridProc
 Dialog procedure for the grid settings tab
 ================
 */
-static INT_PTR CALLBACK GEOptionsDlg_GridProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-	switch( msg )
-	{
+static INT_PTR CALLBACK GEOptionsDlg_GridProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam ) {
+	switch ( msg ) {
 		case WM_INITDIALOG:
 			// Copy the options information to the dialog controls
 			ColorButton_SetColor( GetDlgItem( hwnd, IDC_GUIED_GRIDCOLOR ), RGB( gApp.GetOptions().GetGridColor()[0] * 255, gApp.GetOptions().GetGridColor()[1] * 255, gApp.GetOptions().GetGridColor()[2] * 255 ) );
@@ -120,10 +112,8 @@ static INT_PTR CALLBACK GEOptionsDlg_GridProc( HWND hwnd, UINT msg, WPARAM wPara
 			return TRUE;
 
 		case WM_NOTIFY:
-			switch( ( ( NMHDR FAR* ) lParam )->code )
-			{
-				case PSN_APPLY:
-				{
+			switch ( ( ( NMHDR FAR * ) lParam )->code ) {
+				case PSN_APPLY: {
 					char temp[32];
 
 					// Copy the dialog control data back to the options
@@ -140,10 +130,8 @@ static INT_PTR CALLBACK GEOptionsDlg_GridProc( HWND hwnd, UINT msg, WPARAM wPara
 			break;
 
 		case WM_COMMAND:
-			switch( LOWORD( wParam ) )
-			{
-				case IDC_GUIED_GRIDCOLOR:
-				{
+			switch ( LOWORD( wParam ) ) {
+				case IDC_GUIED_GRIDCOLOR: {
 					CHOOSECOLOR col;
 					ZeroMemory( &col, sizeof( col ) );
 					col.lStructSize = sizeof( col );
@@ -152,8 +140,7 @@ static INT_PTR CALLBACK GEOptionsDlg_GridProc( HWND hwnd, UINT msg, WPARAM wPara
 					col.hInstance = NULL;
 					col.Flags = CC_RGBINIT;
 					col.rgbResult = RGB( gApp.GetOptions().GetGridColor()[0] * 255, gApp.GetOptions().GetGridColor()[1] * 255, gApp.GetOptions().GetGridColor()[2] * 255 );
-					if( ChooseColor( &col ) )
-					{
+					if ( ChooseColor( &col ) ) {
 						ColorButton_SetColor( GetDlgItem( hwnd, IDC_GUIED_GRIDCOLOR ), col.rgbResult );
 					}
 					break;
@@ -172,8 +159,7 @@ GEOptionsDlg_DoModal
 Starts the options dialog and updates the global options if ok is pressed
 ================
 */
-bool GEOptionsDlg_DoModal( HWND parent )
-{
+bool GEOptionsDlg_DoModal( HWND parent ) {
 	PROPSHEETHEADER propsh;
 	PROPSHEETPAGE	propsp[2];
 
@@ -201,8 +187,7 @@ bool GEOptionsDlg_DoModal( HWND parent )
 	propsh.nPages			= 2;
 	propsh.ppsp				= ( LPCPROPSHEETPAGE )&propsp;
 
-	if( PropertySheet( &propsh ) )
-	{
+	if ( PropertySheet( &propsh ) ) {
 		gApp.GetOptions().Save( );
 		return true;
 	}

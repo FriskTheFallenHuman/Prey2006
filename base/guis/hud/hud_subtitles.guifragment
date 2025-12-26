@@ -1,0 +1,67 @@
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//  Subtitles
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+	onNamedEvent DisplaySubtitle {
+		if ("gui::subtitlecentered" == 1) {
+			set "Subtitle::textalign" "1";
+		}
+		else {
+			set "Subtitle::textalign" "0";
+		}
+//		resetTime "Subtitle" "0" ;
+		set "Subtitle::forecolor" "1 1 1 0";
+		transition "Subtitle::forecolor" "1 1 1 0" "1 1 1 1" "1000" ;
+	}
+	
+	onNamedEvent RemoveSubtitle {
+		set "Subtitle::forecolor" "1 1 1 1";
+		transition "Subtitle::forecolor" "1 1 1 1" "1 1 1 0" "1000" ;
+	}
+
+	onNamedEvent RemoveSubtitleInstant {
+		set "Subtitle::forecolor" "1 1 1 0";
+		transition "Subtitle::forecolor" "1 1 1 0" "1 1 1 0" "0" ;
+	}
+	
+	windowDef Subtitle {
+		rect		"gui::subtitlex", "gui::subtitley", 640, 50
+		backcolor	0, 0, 0, 0
+		forecolor	1, 1, 1, 0
+		text		"gui::subtitletext"
+		textscale	0.5
+		textalign	1
+		shadow		1
+		notime		1
+		
+//		onTime 0 {
+//			transition "Subtitle::forecolor" "1 1 1 0" "1 1 1 1" "250" ;
+//		}
+	}
+	
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//  Autosave message
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+
+	onNamedEvent DisplayAutosave {
+		set "AutosaveMessage::visible" "1";
+		resetTime "AutosaveMessage" "0";
+	}
+
+	windowDef AutosaveMessage {
+		rect		0, 0, 640, 50
+		text		"gui::autosavetext"
+		forecolor	1, 1, 1, 1
+		textscale	0.33
+		textalign	1
+		textaligny	-5
+		visible		0
+		noTime		1
+		
+		onTime 3000 {
+			set "AutosaveMessage::visible" "0";
+		}
+	}
+	
+	
+	

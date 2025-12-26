@@ -1,0 +1,258 @@
+
+//---------------------------------------------
+// Health / SpiritPower
+//---------------------------------------------
+	#define TOMMYSPIRIT_XPOS				23
+	#define TOMMYSPIRIT_YPOS				369
+	#define TOMMYSPIRIT_WIDTH				35
+	#define TOMMYSPIRIT_HEIGHT				90
+	#define TOMMYSPIRIT_RECT				"23 369 35 90"
+	
+	#define TOMMYHEALTH_XPOS				30
+	#define TOMMYHEALTH_YPOS				373
+	#define TOMMYHEALTH_WIDTH				35
+	#define TOMMYHEALTH_HEIGHT				90
+	#define TOMMYHEALTH_RECT				"30 373 35 90"
+
+	#define HEALTH_SPIRIT_TRANSITION		"700"
+
+	// Color of spirit tommy
+	#define SPIRIT_RGB_COMMAS				0.3, 0.4, 0.7, 1
+	#define SPIRIT_RGB_STRING				"0.3 0.4 0.7 1"
+	#define SPIRIT_RGB_COMMAS_GONE			0.3, 0.4, 0.7, 0
+	#define SPIRIT_RGB_STRING_GONE			"0.3 0.4 0.7 0"
+	#define SPIRIT_R						0.3
+	#define SPIRIT_G						0.4
+	#define SPIRIT_B						0.7
+	
+	// Background color of spirit tommy
+	#define SPIRIT2_RGB_COMMAS				0, 0.1, 0.3, 1
+	#define SPIRIT2_RGB_STRING				"0 0.1 0.3 1"
+	#define SPIRIT2_RGB_COMMAS_GONE			0, 0.1, 0.3, 0
+	#define SPIRIT2_RGB_STRING_GONE			"0 0.1 0.3 0"
+
+	// Colors of health tommy
+	#define HEALTH_RGB_COMMAS				0.6, 0, 0, 1
+	#define HEALTH_RGB_STRING				"0.6 0 0 1"
+	#define HEALTHBG_RGB_COMMAS				0.3, 0, 0, 1
+	#define MAXHEALTH_RGB_COMMAS			0.75, 0.85, 1, 1
+	#define MAXHEALTH_RGB_STRING			"0.75 0.85 1 1"
+
+	// Pulse colors (from pickups)
+	#define HEALTHPULSE_RGB_STRING			"1 0 0 0.5"
+	#define SPIRITPULSE_RGB_STRING			"0.5 0.6 1 1"
+	#define SPIRITPULSE_R					0.5
+	#define SPIRITPULSE_G					0.6
+	#define SPIRITPULSE_B					1.0
+	
+	// Fade out colors for maxhealth
+	#define HEALTHFADE_RGB_STRING			"1 0 0 0"
+
+	windowDef spiritTommyBack {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		TOMMYSPIRIT_XPOS, TOMMYSPIRIT_YPOS, TOMMYSPIRIT_WIDTH, TOMMYSPIRIT_HEIGHT
+		matcolor	SPIRIT2_RGB_COMMAS
+		background	"guis/assets/hud/tommy.tga"
+		visible		("gui::showspiritpower" != 0)
+
+		onNamedEvent SwitchToEthereal {
+			// Fade spirit out
+			transition "spiritTommyBack::matcolor"			SPIRIT2_RGB_STRING		SPIRIT2_RGB_STRING_GONE	HEALTH_SPIRIT_TRANSITION ;
+			transition "spiritTommyBarBack::matcolor"		SPIRIT_RGB_STRING		SPIRIT_RGB_STRING_GONE	HEALTH_SPIRIT_TRANSITION ;
+			transition "spiritTommyOutlineBack::normalalpha" "1" "0" HEALTH_SPIRIT_TRANSITION ;
+			
+			transition "rect" TOMMYSPIRIT_RECT TOMMYHEALTH_RECT HEALTH_SPIRIT_TRANSITION;
+		}
+		onNamedEvent SwitchFromEthereal {
+			// Fade spirit in
+			transition "spiritTommyBack::matcolor"			SPIRIT2_RGB_STRING_GONE	SPIRIT2_RGB_STRING		HEALTH_SPIRIT_TRANSITION ;
+			transition "spiritTommyBarBack::matcolor"		SPIRIT_RGB_STRING_GONE	SPIRIT_RGB_STRING		HEALTH_SPIRIT_TRANSITION ;
+			transition "spiritTommyOutlineBack::normalalpha" "0" "1" HEALTH_SPIRIT_TRANSITION ;
+
+			transition "rect" TOMMYHEALTH_RECT TOMMYSPIRIT_RECT HEALTH_SPIRIT_TRANSITION;
+		}
+
+		windowDef spiritTommyOutlineBack {
+			anchor		ANCHOR_CENTER_CENTER
+			float		normalalpha 1
+			float		pulsealpha 0
+			rect		0, 0, TOMMYSPIRIT_WIDTH, TOMMYSPIRIT_HEIGHT
+			backcolor	0, 0, 0, 0
+			matcolor	SPIRIT_R * "spiritTommyOutlineBack::normalalpha" + SPIRITPULSE_R * "spiritTommyOutlineBack::pulsealpha",
+						SPIRIT_G * "spiritTommyOutlineBack::normalalpha" + SPIRITPULSE_G * "spiritTommyOutlineBack::pulsealpha",
+						SPIRIT_B * "spiritTommyOutlineBack::normalalpha" + SPIRITPULSE_B * "spiritTommyOutlineBack::pulsealpha",
+						"spiritTommyOutlineBack::normalalpha"
+			background	"guis/assets/hud/tommy_outline.tga"
+			noTime		1
+			
+			onTime 0 {
+				transition "pulsealpha" "0" "1" "300";
+			}
+			onTime 300 {
+				transition "pulsealpha" "1" "0" "300";
+			}
+		}
+		windowDef spiritTommyCropBack {
+			rect		0, TOMMYSPIRIT_HEIGHT * (1 - "gui::player_spiritpercent"), TOMMYSPIRIT_WIDTH, TOMMYSPIRIT_HEIGHT
+			
+			windowDef spiritTommyBarBack {
+				rect		TOMMYSPIRIT_WIDTH, TOMMYSPIRIT_HEIGHT * "gui::player_spiritpercent", TOMMYSPIRIT_WIDTH, TOMMYSPIRIT_HEIGHT
+				matcolor	SPIRIT_RGB_COMMAS
+				background	"guis/assets/hud/tommy.tga"
+				invertrect	1
+			}
+		}
+	}
+
+	windowDef healthTommy {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		TOMMYHEALTH_XPOS, TOMMYHEALTH_YPOS, TOMMYHEALTH_WIDTH, TOMMYHEALTH_HEIGHT
+		matcolor	HEALTHBG_RGB_COMMAS
+		background	"guis/assets/hud/tommy.tga"
+		visible		("gui::showhealth" != 0)
+
+		onNamedEvent SwitchToEthereal {
+			transition "rect" TOMMYHEALTH_RECT TOMMYSPIRIT_RECT HEALTH_SPIRIT_TRANSITION;
+		}
+		onNamedEvent SwitchFromEthereal {
+			transition "rect" TOMMYSPIRIT_RECT TOMMYHEALTH_RECT HEALTH_SPIRIT_TRANSITION;
+		}
+
+		windowDef healthTommyOutline {
+			float		pulsealpha 0
+			rect		0, 0, TOMMYHEALTH_WIDTH, TOMMYHEALTH_HEIGHT
+			backcolor	0, 0, 0, 0
+			matcolor	"gui::player_healthR" * (1 - "healthTommyOutline::pulsealpha") + "gui::player_healthPulseR" * "healthTommyOutline::pulsealpha",
+						"gui::player_healthG" * (1 - "healthTommyOutline::pulsealpha") + "gui::player_healthPulseG" * "healthTommyOutline::pulsealpha",
+						"gui::player_healthB" * (1 - "healthTommyOutline::pulsealpha") + "gui::player_healthPulseB" * "healthTommyOutline::pulsealpha",
+						1
+			background	"guis/assets/hud/tommy_outline.tga"
+			noTime		1
+			
+			onTime 0 {
+				transition "healthTommyOutline::pulsealpha" "0" "1" "300" ;
+			}
+			onTime 300 {
+				transition "healthTommyOutline::pulsealpha" "1" "0" "300" ;
+			}
+		}
+		windowDef healthTommyCrop {
+			rect		0, TOMMYHEALTH_HEIGHT * (1 - "gui::player_healthpercent"), TOMMYHEALTH_WIDTH, TOMMYHEALTH_HEIGHT
+			
+			windowDef healthTommyBar {
+				rect		TOMMYHEALTH_WIDTH, TOMMYHEALTH_HEIGHT * "gui::player_healthpercent", TOMMYHEALTH_WIDTH, TOMMYHEALTH_HEIGHT
+				matcolor	"gui::player_healthR" * (1 - "healthTommyOutline::pulsealpha") + "gui::player_healthPulseR" * "healthTommyOutline::pulsealpha",
+							"gui::player_healthG" * (1 - "healthTommyOutline::pulsealpha") + "gui::player_healthPulseG" * "healthTommyOutline::pulsealpha",
+							"gui::player_healthB" * (1 - "healthTommyOutline::pulsealpha") + "gui::player_healthPulseB" * "healthTommyOutline::pulsealpha",
+							1 - (("gui::player_health" <= 25) * alpha[time*0.0015])
+				background	"guis/assets/hud/tommy.tga"
+				invertrect	1
+			}
+		}
+	}
+
+	windowDef spiritTommyFront {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		TOMMYSPIRIT_XPOS, TOMMYSPIRIT_YPOS, TOMMYSPIRIT_WIDTH, TOMMYSPIRIT_HEIGHT
+		matcolor	SPIRIT2_RGB_COMMAS_GONE
+		background	"guis/assets/hud/tommy.tga"
+		visible		("gui::showspiritpower" != 0)
+
+		onNamedEvent SwitchToEthereal {
+			// Fade spirit in
+			transition "spiritTommyFront::matcolor"			SPIRIT2_RGB_STRING_GONE	SPIRIT2_RGB_STRING		HEALTH_SPIRIT_TRANSITION ;
+			transition "spiritTommyBarFront::matcolor"		SPIRIT_RGB_STRING_GONE	SPIRIT_RGB_STRING		HEALTH_SPIRIT_TRANSITION ;
+			transition "spiritTommyOutlineFront::normalalpha" "0" "1" HEALTH_SPIRIT_TRANSITION ;
+
+			transition "rect" TOMMYSPIRIT_RECT TOMMYHEALTH_RECT HEALTH_SPIRIT_TRANSITION;
+		}
+		onNamedEvent SwitchFromEthereal {
+			// Fade spirit out
+			transition "spiritTommyFront::matcolor"			SPIRIT2_RGB_STRING		SPIRIT2_RGB_STRING_GONE	HEALTH_SPIRIT_TRANSITION ;
+			transition "spiritTommyBarFront::matcolor"		SPIRIT_RGB_STRING		SPIRIT_RGB_STRING_GONE	HEALTH_SPIRIT_TRANSITION ;
+			transition "spiritTommyOutlineFront::normalalpha" "1" "0" HEALTH_SPIRIT_TRANSITION ;
+
+			transition "rect" TOMMYHEALTH_RECT TOMMYSPIRIT_RECT HEALTH_SPIRIT_TRANSITION;
+		}
+
+		windowDef spiritTommyOutlineFront {
+			float		normalalpha 0
+			float		pulsealpha 0
+			rect		0, 0, TOMMYSPIRIT_WIDTH, TOMMYSPIRIT_HEIGHT
+			backcolor	0, 0, 0, 0
+			matcolor	SPIRIT_R * "spiritTommyOutlineFront::normalalpha" + SPIRITPULSE_R * "spiritTommyOutlineFront::pulsealpha",
+						SPIRIT_G * "spiritTommyOutlineFront::normalalpha" + SPIRITPULSE_G * "spiritTommyOutlineFront::pulsealpha",
+						SPIRIT_B * "spiritTommyOutlineFront::normalalpha" + SPIRITPULSE_B * "spiritTommyOutlineFront::pulsealpha",
+						"spiritTommyOutlineFront::normalalpha"
+			background	"guis/assets/hud/tommy_outline.tga"
+			noTime		1
+			
+			onTime 0 {
+				transition "pulsealpha" "0" "1" "300";
+			}
+			onTime 300 {
+				transition "pulsealpha" "1" "0" "300";
+			}
+		}
+		windowDef spiritTommyCropFront {
+			rect		0, TOMMYSPIRIT_HEIGHT * (1 - "gui::player_spiritpercent"), TOMMYSPIRIT_WIDTH, TOMMYSPIRIT_HEIGHT
+			
+			windowDef spiritTommyBarFront {
+				rect		TOMMYSPIRIT_WIDTH, TOMMYSPIRIT_HEIGHT * "gui::player_spiritpercent", TOMMYSPIRIT_WIDTH, TOMMYSPIRIT_HEIGHT
+				matcolor	SPIRIT_RGB_COMMAS_GONE
+				background	"guis/assets/hud/tommy.tga"
+				invertrect	1
+			}
+		}
+	}
+
+	// Max health pickup animation
+	#define TOMMYHEALTH_MAX_RECT				// for maxspirit effect
+	windowDef Anim_TommyMaxHealth {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		0, 0, 640, 480
+		noTime		1
+
+		// Used to cover up the existing health bar until anim is complete
+		windowDef MaxHealthCoverup {
+			rect		TOMMYHEALTH_XPOS, TOMMYHEALTH_YPOS, TOMMYHEALTH_WIDTH, TOMMYHEALTH_HEIGHT
+			visible		0
+
+			windowDef CoverupTommyInner {
+				rect		0, 0, TOMMYHEALTH_WIDTH, TOMMYHEALTH_HEIGHT
+				background	"guis/assets/hud/tommy.tga"
+				matcolor	HEALTH_RGB_COMMAS
+			}
+		}
+
+		windowDef MaxHealthEffect {
+			rect		TOMMYHEALTH_XPOS, TOMMYHEALTH_YPOS, TOMMYHEALTH_WIDTH, TOMMYHEALTH_HEIGHT
+			backcolor	0, 0, 0, 0
+			matcolor	1, 1, 1, 0
+			background	"guis/assets/hud/tommy_outline.tga"
+			visible		0
+
+			windowDef TommyInner {
+				rect		0, 0, TOMMYHEALTH_WIDTH, TOMMYHEALTH_HEIGHT
+				background	"guis/assets/hud/tommy.tga"
+				matcolor	1, 1, 1, 0
+			}
+		}
+
+		onTime 0 {
+			set "MaxHealthEffect::visible" "1";
+			set "MaxHealthCoverup::visible" "1";
+			transition "MaxHealthEffect::rect" TOMMYHEALTH_RECT "70 283 70 180" "500" ;
+			transition "TommyInner::rect" "0 0 35 90" "0 0 70 180" "500" ;
+			transition "MaxHealthEffect::matcolor" "0.75 0.85 1 0" MAXHEALTH_RGB_STRING "1300" ;
+			transition "TommyInner::matcolor" "0.75 0.85 1 0" MAXHEALTH_RGB_STRING "1300" ;
+		}
+		onTime 2500 {
+			transition "MaxHealthEffect::rect" "70 283 70 180" TOMMYHEALTH_RECT "300" ;
+			transition "TommyInner::rect" "0 0 70 180" "0 0 35 90" "300" ;
+		}
+		onTime 2800 {
+			set "MaxHealthEffect::visible" "0";
+			set "MaxHealthCoverup::visible" "0";
+		}
+	}

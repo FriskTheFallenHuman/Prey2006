@@ -36,21 +36,16 @@ If you have questions concerning this license or the applicable additional terms
 #include "BrushSidesDlg.h"
 #include "RadiantEditor.h"
 
-class CMainFrame : public CFrameWndEx
-{
+class CMainFrame : public CFrameWndEx {
 	DECLARE_DYNAMIC( CMainFrame )
 public:
 	CMainFrame() noexcept;
 	virtual		~CMainFrame();
 
-	void HandleKey( UINT nChar, UINT nRepCnt, UINT nFlags, bool bDown = true )
-	{
-		if( bDown )
-		{
+	void HandleKey( UINT nChar, UINT nRepCnt, UINT nFlags, bool bDown = true ) {
+		if ( bDown ) {
 			OnKeyDown( nChar, nRepCnt, nFlags );
-		}
-		else
-		{
+		} else {
 			OnKeyUp( nChar, nRepCnt, nFlags );
 		}
 	};
@@ -66,73 +61,60 @@ public:
 	void SetTexValStatus();
 	void SetGridStatus();
 	void RoutineProcessing();
-	CXYWnd* ActiveXY();
+	CXYWnd * ActiveXY();
 	void UpdateWindows( int nBits );
-	void SetStatusText( int nPane, const char* pText );
+	void SetStatusText( int nPane, const char * pText );
 	void UpdateStatusText();
 	void OnPrecisionCursorCycle();
 
-	bool GetNurbMode()
-	{
+	bool GetNurbMode() {
 		return nurbMode;
 	}
 
-	idCurve_NURBS<idVec2>* GetNurb()
-	{
+	idCurve_NURBS<idVec2> * GetNurb() {
 		return &nurb;
 	}
 
-	CXYWnd* GetXYWnd()
-	{
+	CXYWnd * GetXYWnd() {
 		return m_pXYWnd;
 	};
 
-	CXYWnd* GetXZWnd()
-	{
+	CXYWnd * GetXZWnd() {
 		return m_pXZWnd;
 	};
 
-	CXYWnd* GetYZWnd()
-	{
+	CXYWnd * GetYZWnd() {
 		return m_pYZWnd;
 	};
 
-	CCamWnd* GetCamera()
-	{
+	CCamWnd * GetCamera() {
 		return m_pCamWnd;
 	};
 
-	CZWnd* GetZWnd()
-	{
+	CZWnd * GetZWnd() {
 		return m_pZWnd;
 	};
 
-	CMFCStatusBar* GetStatusbarWnd()
-	{
+	CMFCStatusBar * GetStatusbarWnd() {
 		return &m_wndStatusBar;
 	};
 
-	CMFCMenuBar* GetMenuWnd()
-	{
+	CMFCMenuBar * GetMenuWnd() {
 		return &m_wndMenuBar;
 	};
 
-	CMFCToolBar* GetToolbarWnd()
-	{
+	CMFCToolBar * GetToolbarWnd() {
 		return &m_wndToolBar;
 	};
 
-	void SetActiveXY( CXYWnd* p )
-	{
-		if( m_pActiveXY )
-		{
+	void SetActiveXY( CXYWnd* p ) {
+		if ( m_pActiveXY ) {
 			m_pActiveXY->SetActive( false );
 		}
 
 		m_pActiveXY = p;
 
-		if( m_pActiveXY )
-		{
+		if ( m_pActiveXY ) {
 			m_pActiveXY->SetActive( true );
 		}
 
@@ -147,13 +129,13 @@ protected:  // control bar embedded members
 	CMFCStatusBar  m_wndStatusBar;
 	CMFCMenuBar m_wndMenuBar;
 	CMFCToolBar m_wndToolBar;
-	CXYWnd* m_pXYWnd;
-	CXYWnd* m_pYZWnd;
-	CXYWnd* m_pXZWnd;
-	CCamWnd* m_pCamWnd;
-	CZWnd* m_pZWnd;
+	CXYWnd * m_pXYWnd;
+	CXYWnd * m_pYZWnd;
+	CXYWnd * m_pXZWnd;
+	CCamWnd * m_pCamWnd;
+	CZWnd * m_pZWnd;
 	CString m_strStatus[15];
-	CXYWnd* m_pActiveXY;
+	CXYWnd * m_pActiveXY;
 	bool m_bCamPreview;
 	bool busy;
 	bool nurbMode;
@@ -170,8 +152,7 @@ protected:
 
 public:
 	void Nudge( int nDim, float fNudge );
-	void SetBusy( bool b )
-	{
+	void SetBusy( bool b ) {
 		busy = b;
 	}
 

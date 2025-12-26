@@ -37,8 +37,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFView dialog
 
-toolTip_t DialogAFView::toolTips[] =
-{
+toolTip_t DialogAFView::toolTips[] = {
 	{ IDC_CHECK_VIEW_BODIES, "show bodies" },
 	{ IDC_CHECK_VIEW_BODYNAMES, "show body names" },
 	{ IDC_CHECK_VIEW_BODYMASS, "show body mass" },
@@ -110,8 +109,7 @@ DialogAFView::DialogAFView( CWnd* pParent /*=NULL*/ )
 DialogAFView::~DialogAFView
 ================
 */
-DialogAFView::~DialogAFView()
-{
+DialogAFView::~DialogAFView() {
 }
 
 /*
@@ -119,8 +117,7 @@ DialogAFView::~DialogAFView()
 DialogAFView::DoDataExchange
 ================
 */
-void DialogAFView::DoDataExchange( CDataExchange* pDX )
-{
+void DialogAFView::DoDataExchange( CDataExchange* pDX ) {
 	CDialog::DoDataExchange( pDX );
 	//{{AFX_DATA_MAP(DialogAFView)
 	DDX_Check( pDX, IDC_CHECK_VIEW_BODIES, m_showBodies );
@@ -154,8 +151,7 @@ void DialogAFView::DoDataExchange( CDataExchange* pDX )
 DialogAFView::OnToolHitTest
 ================
 */
-INT_PTR DialogAFView::OnToolHitTest( CPoint point, TOOLINFO* pTI ) const
-{
+INT_PTR DialogAFView::OnToolHitTest( CPoint point, TOOLINFO* pTI ) const {
 	CDialog::OnToolHitTest( point, pTI );
 	return DefaultOnToolHitTest( toolTips, this, point, pTI );
 }
@@ -191,176 +187,139 @@ END_MESSAGE_MAP()
 
 // DialogAFView message handlers
 
-BOOL DialogAFView::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult )
-{
+BOOL DialogAFView::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult ) {
 	return DefaultOnToolTipNotify( toolTips, id, pNMHDR, pResult );
 }
 
-void DialogAFView::OnBnClickedCheckViewBodies()
-{
+void DialogAFView::OnBnClickedCheckViewBodies() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showBodies", m_showBodies != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewBodynames()
-{
+void DialogAFView::OnBnClickedCheckViewBodynames() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showBodyNames", m_showBodyNames != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewBodyMass()
-{
+void DialogAFView::OnBnClickedCheckViewBodyMass() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showMass", m_showMass != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewTotalMass()
-{
+void DialogAFView::OnBnClickedCheckViewTotalMass() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showTotalMass", m_showTotalMass != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewInertiatensor()
-{
+void DialogAFView::OnBnClickedCheckViewInertiatensor() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showInertia", m_showInertia != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewVelocity()
-{
+void DialogAFView::OnBnClickedCheckViewVelocity() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showVelocity", m_showVelocity != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewConstraints()
-{
+void DialogAFView::OnBnClickedCheckViewConstraints() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showConstraints", m_showConstraints != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewConstraintnames()
-{
+void DialogAFView::OnBnClickedCheckViewConstraintnames() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showConstraintNames", m_showConstraintNames != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewPrimaryonly()
-{
+void DialogAFView::OnBnClickedCheckViewPrimaryonly() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showPrimaryOnly", m_showPrimaryOnly != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewLimits()
-{
+void DialogAFView::OnBnClickedCheckViewLimits() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showLimits", m_showLimits != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewConstrainedBodies()
-{
+void DialogAFView::OnBnClickedCheckViewConstrainedBodies() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showConstrainedBodies", m_showConstrainedBodies != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckViewTrees()
-{
+void DialogAFView::OnBnClickedCheckViewTrees() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showTrees", m_showTrees != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckMd5Skeleton()
-{
+void DialogAFView::OnBnClickedCheckMd5Skeleton() {
 	UpdateData( TRUE );
-	if( !m_showSkeletonOnly )
-	{
-		if( m_showSkeleton )
-		{
+	if ( !m_showSkeletonOnly ) {
+		if ( m_showSkeleton ) {
 			cvarSystem->SetCVarInteger( "r_showSkel", 1 );
-		}
-		else
-		{
+		} else {
 			cvarSystem->SetCVarInteger( "r_showSkel", 0 );
 		}
 	}
 }
 
-void DialogAFView::OnBnClickedCheckMd5Skeletononly()
-{
+void DialogAFView::OnBnClickedCheckMd5Skeletononly() {
 	UpdateData( TRUE );
-	if( m_showSkeletonOnly )
-	{
+	if ( m_showSkeletonOnly ) {
 		cvarSystem->SetCVarInteger( "r_showSkel", 2 );
-	}
-	else
-	{
-		if( m_showSkeleton )
-		{
+	} else {
+		if ( m_showSkeleton ) {
 			cvarSystem->SetCVarInteger( "r_showSkel", 1 );
-		}
-		else
-		{
+		} else {
 			cvarSystem->SetCVarInteger( "r_showSkel", 0 );
 		}
 	}
 }
 
-void DialogAFView::OnBnClickedCheckLinesDepthtest()
-{
+void DialogAFView::OnBnClickedCheckLinesDepthtest() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "r_debugLineDepthTest", m_debugLineDepthTest != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckLinesUsearrows()
-{
+void DialogAFView::OnBnClickedCheckLinesUsearrows() {
 	UpdateData( TRUE );
-	if( m_debugLineUseArrows )
-	{
+	if ( m_debugLineUseArrows ) {
 		cvarSystem->SetCVarInteger( "r_debugArrowStep", 120 );
-	}
-	else
-	{
+	} else {
 		cvarSystem->SetCVarInteger( "r_debugArrowStep", 0 );
 	}
 }
 
-void DialogAFView::OnBnClickedCheckPhysicsNofriction()
-{
+void DialogAFView::OnBnClickedCheckPhysicsNofriction() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_skipFriction", m_noFriction != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckPhysicsNolimits()
-{
+void DialogAFView::OnBnClickedCheckPhysicsNolimits() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_skipLimits", m_noLimits != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckPhysicsNogravity()
-{
+void DialogAFView::OnBnClickedCheckPhysicsNogravity() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarFloat( "g_gravity", m_noGravity ? 0.0f : m_gravity );
 }
 
-void DialogAFView::OnBnClickedCheckPhysicsNoselfcollision()
-{
+void DialogAFView::OnBnClickedCheckPhysicsNoselfcollision() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_skipSelfCollision", m_noSelfCollision != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckPhysicsTiming()
-{
+void DialogAFView::OnBnClickedCheckPhysicsTiming() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "af_showTimings", m_showTimings != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckPhysicsDragEntities()
-{
+void DialogAFView::OnBnClickedCheckPhysicsDragEntities() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "g_dragEntity", m_dragEntity != FALSE );
 }
 
-void DialogAFView::OnBnClickedCheckPhysicsShowDragSelection()
-{
+void DialogAFView::OnBnClickedCheckPhysicsShowDragSelection() {
 	UpdateData( TRUE );
 	cvarSystem->SetCVarBool( "g_dragShowSelection", m_dragShowSelection != FALSE );
 }

@@ -1,0 +1,370 @@
+
+// ----------------------------------------------------------------
+// damage blobs: parm3 (alpha) recedes over time so use blend blend & colored
+// ----------------------------------------------------------------
+
+textures/damage/harvester_claw
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/damage/harvester_claw
+	{
+		// must use blend blend so alpha can be used to fade it out
+		blend blend
+		map textures/damage/harvester_claw
+		colored
+	}
+}
+
+textures/damage/droid_damage
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/damage/droid_damage
+	{
+		// must use blend blend so alpha can be used to fade it out
+		blend blend
+		map textures/damage/droid_damage
+		colored
+	}
+}
+
+textures/damage/genericdamage
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/damage/generic
+	{
+		// must use blend blend so alpha can be used to fade it out
+		blend blend
+		map textures/damage/generic
+		colored
+	}
+}
+
+textures/damage/vomitdamage
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/damage/vomit
+	{
+		// must use blend blend so alpha can be used to fade it out
+		blend blend
+		map textures/damage/vomit
+		colored
+	}
+}
+
+textures/damage/bloodbash
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/damage/smash
+	{
+		// must use blend blend so alpha can be used to fade it out
+		blend blend
+		map textures/damage/smash
+		colored
+	}
+}
+
+textures/damage/bloodbite
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/damage/bite
+	{
+		// must use blend blend so alpha can be used to fade it out
+		blend blend
+		map textures/damage/bite
+		colored
+	}
+}
+
+textures/damage/gasbag_bite
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/damage/gasbag_bite
+	{
+		// must use blend blend so alpha can be used to fade it out
+		blend blend
+		map textures/damage/gasbag_bite
+		colored
+	}
+}
+
+textures/damage/gasbag_spray
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/damage/gasbag_spray
+	{
+		// must use blend blend so alpha can be used to fade it out
+		blend blend
+		map textures/damage/gasbag_spray
+		colored
+	}
+}
+
+textures/damage/creaturex_bite
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/damage/creaturex_bite
+	{
+		// must use blend blend so alpha can be used to fade it out
+		blend blend
+		map textures/damage/creaturex_bite
+		colored
+	}
+}
+
+textures/damage/creaturex_headbutt
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/damage/creaturex_headbutt
+	{
+		// must use blend blend so alpha can be used to fade it out
+		blend blend
+		map textures/damage/creaturex_headbutt
+		colored
+	}
+}
+
+textures/damage/bloodblob2
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/damage/generic
+	{
+		// must use blend blend so alpha can be used to fade it out
+		blend blend
+		map textures/damage/generic
+		colored
+	}
+}
+
+textures/damage/bloodclaw
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/damage/claw_right
+	{
+		// must use blend blend so alpha can be used to fade it out
+		blend blend
+		map textures/damage/claw_right
+		colored
+	}
+
+}
+
+textures/damage/claw_across
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/damage/claw_across
+	{
+		// must use blend blend so alpha can be used to fade it out
+		blend blend
+		map textures/damage/claw_across
+		colored
+	}
+
+}
+
+textures/damage/claw_diagonal_right
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/claw_diagonal_right
+	{
+		// must use blend blend so alpha can be used to fade it out
+		blend blend
+		map textures/damage/claw_diagonal_right
+		colored
+	}
+
+}
+
+textures/damage/claw_diagonal_left
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/claw_diagonal_left
+	{
+		// must use blend blend so alpha can be used to fade it out
+		blend blend
+		map textures/damage/claw_diagonal_left
+		colored
+	}
+
+}
+
+textures/damage/bloodslash
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/damage/scratch_up
+	{
+		// must use blend blend so alpha can be used to fade it out
+		blend blend
+		map textures/damage/scratch_up
+		colored
+	}
+
+}
+
+textures/damage/scratch_across
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/damage/scratch_across
+	{
+		// must use blend blend so alpha can be used to fade it out
+		blend blend
+		map textures/damage/scratch_across
+		colored
+	}
+}
+
+textures/damage/scratch_right
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/damage/scratch_right
+	{
+		// must use blend blend so alpha can be used to fade it out
+		blend blend
+		map textures/damage/scratch_right
+		colored
+	}
+}
+
+textures/damage/scratch_left
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/damage/scratch_left
+	{
+		// must use blend blend so alpha can be used to fade it out
+		blend blend
+		map textures/damage/scratch_left
+		colored
+	}
+}
+
+textures/damage/bloodflow
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	qer_editorimage	textures/decals/blooddrip1
+	{
+		blend blend
+		map textures/decals/blooddrip1
+		colored
+		rgba elevenstagesnap[time * 0.50 - 0 / 11]
+	}
+	{
+		blend blend
+		map textures/decals/blooddrip2
+		colored
+		rgba elevenstagesnap[time * 0.50 - 1 / 11]
+	}
+	{
+		blend blend
+		map textures/decals/blooddrip3
+		colored
+		rgba elevenstagesnap[time * 0.50 - 2 / 11]
+	}
+	{
+		blend blend
+		map textures/decals/blooddrip4
+		colored
+		rgba elevenstagesnap[time * 0.50 - 3 / 11]
+	}
+	{
+		blend blend
+		map textures/decals/blooddrip5
+		colored
+		rgba elevenstagesnap[time * 0.50 - 4 / 11]
+	}
+	{
+		blend blend
+		map textures/decals/blooddrip6
+		colored
+		rgba elevenstagesnap[time * 0.50 - 5 / 11]
+	}
+	{
+		blend blend
+		map textures/decals/blooddrip7
+		colored
+		rgba elevenstagesnap[time * 0.50 - 6 / 11]
+	}
+	{
+		blend blend
+		map textures/decals/blooddrip8
+		colored
+		rgba elevenstagesnap[time * 0.50 - 7 / 11]
+	}
+	{
+		blend blend
+		map textures/decals/blooddrip9
+		colored
+		rgba elevenstagesnap[time * 0.50 - 8 / 11]
+	}
+	{
+		blend blend
+		map textures/decals/blooddrip10
+		colored
+		rgba elevenstagesnap[time * 0.50 - 9 / 11]
+	}
+	{
+		blend blend
+		map textures/decals/blooddrip11
+		colored
+		rgba elevenstagesnap[time * 0.50 - 10 / 11]
+	}
+}
+

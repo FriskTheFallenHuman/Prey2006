@@ -1,0 +1,216 @@
+textures/skyboxtextures/epilogue_foreground
+{
+	qer_editorimage textures/skyboxtextures/epilogue_foreground
+	noshadows
+	sort 9
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/skyboxtextures/epilogue_foreground
+	}
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/skyboxtextures/epilogue_fog
+		scroll (time / 3), (time / 10)
+		centerscale 3, 5
+		rgb 0.5
+	}
+}
+
+textures/skyboxtextures/epilogue_windmill
+{
+	qer_editorimage textures/skyboxtextures/epilogue_windmill
+	noshadows
+	sort 3
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/skyboxtextures/epilogue_windmill
+		rotate time / 3
+		clamp
+	}
+}
+
+textures/skyboxtextures/epilogue_middleground
+{
+	qer_editorimage textures/skyboxtextures/epilogue_middleground
+	noshadows
+	sort 2
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/skyboxtextures/epilogue_middleground
+	}
+}
+
+textures/skyboxtextures/epilogue_sky
+{
+	qer_editorimage textures/skyboxtextures/epilogue_sky
+	noshadows
+	sort 0
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/skyboxtextures/epilogue_sky
+		scroll (time / 100), time * 0
+	}
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/skyboxtextures/epilogue_sky
+		scroll 0, 1.1
+		scroll (time / 20), time * 0
+		scale 1, 1.2
+	}
+}
+
+textures/skyboxtextures/littlelights_001
+{
+	qer_editorimage 	textures/skyboxtextures/littlelights_001_d
+	matter_metal
+
+	bumpmap 		heightmap (textures/skyboxtextures/littlelights_001_h, 6)
+	diffusemap	 	textures/skyboxtextures/littlelights_001_d
+	specularmap		textures/skyboxtextures/littlelights_001_s
+
+	{
+		blend add
+		map textures/skyboxtextures/littlelights_001_add
+		highres
+	}
+}
+
+textures/skyboxtextures/little_sky_001
+{
+	qer_editorimage 	textures/skyboxtextures/little_sky_001_d
+	matter_metal
+	{
+		blend	bumpmap
+		map 		addnormals (textures/skyboxtextures/little_sky_001_d, heightmap (textures/skyboxtextures/little_sky_001_d, 6))
+		scroll 			(time * 0.03 ), 0
+	}
+	{
+		blend	diffusemap
+		map		textures/skyboxtextures/little_sky_001_d
+		scroll 			(time * 0.03 ), 0
+	}
+	{
+		blend	specularmap
+		map		textures/skyboxtextures/little_sky_001_d
+		scroll 			(time * 0.03 ), 0
+	}
+	{
+		blend add
+		map textures/skyboxtextures/little_sky_001_d
+
+		scroll 			(time * 0.03 ), 0
+	}
+}
+textures/skyboxtextures/littlelights_002
+{
+	qer_editorimage 	textures/skyboxtextures/littlelights_001_d
+	matter_metal
+
+	bumpmap 		heightmap (textures/skyboxtextures/littlelights_001_h, 6)
+	diffusemap	 	textures/skyboxtextures/littlelights_001_d
+	specularmap		textures/skyboxtextures/littlelights_001_s
+
+	{
+		blend add
+		map textures/skyboxtextures/littlelights_002_add
+	}
+}
+
+textures/skyboxtextures/littlelights_003
+{
+	qer_editorimage 	textures/skyboxtextures/littlelights_001_d
+	matter_metal
+
+	bumpmap 		heightmap (textures/skyboxtextures/littlelights_001_h, 6)
+	diffusemap	 	textures/skyboxtextures/littlelights_001_d
+	specularmap		textures/skyboxtextures/littlelights_001_s
+
+	{
+		blend add
+		map textures/skyboxtextures/littlelights_003_add
+	}
+}
+
+textures/skyboxtextures/littlelights_004
+{
+	qer_editorimage 	textures/skyboxtextures/littlelights_004_d
+	matter_metal
+
+	bumpmap 		heightmap (textures/skyboxtextures/littlelights_004_h, 6)
+	diffusemap	 	textures/skyboxtextures/littlelights_004_d
+	specularmap		textures/skyboxtextures/littlelights_004_s
+
+}
+
+
+
+//small versions
+//==========================================================
+
+
+textures/skyboxtextures/littlelights_001b
+{
+	qer_editorimage 	textures/skyboxtextures/littlelights_001b_d
+	matter_metal
+
+	bumpmap 		heightmap (textures/skyboxtextures/littlelights_001b_h, 6)
+	diffusemap	 	textures/skyboxtextures/littlelights_001b_d
+	specularmap		textures/skyboxtextures/littlelights_001b_s
+
+	{
+		blend add
+		map textures/skyboxtextures/littlelights_001b_add
+		glowstage
+	}
+}
+
+textures/skyboxtextures/littlelights_002b
+{
+	qer_editorimage 	textures/skyboxtextures/littlelights_001b_d
+	matter_metal
+
+	bumpmap 		heightmap (textures/skyboxtextures/littlelights_001b_h, 6)
+	diffusemap	 	textures/skyboxtextures/littlelights_001b_d
+	specularmap		textures/skyboxtextures/littlelights_001b_s
+
+	{
+		blend add
+		map textures/skyboxtextures/littlelights_002b_add
+	}
+}
+
+textures/skyboxtextures/littlelights_003b
+{
+	qer_editorimage 	textures/skyboxtextures/littlelights_001b_d
+	matter_metal
+
+	bumpmap 		heightmap (textures/skyboxtextures/littlelights_001b_h, 6)
+	diffusemap	 	textures/skyboxtextures/littlelights_001b_d
+	specularmap		textures/skyboxtextures/littlelights_001b_s
+
+	{
+		blend add
+		map textures/skyboxtextures/littlelights_003b_add
+	}
+}
+
+textures/skyboxtextures/littlelights_004b
+{
+	qer_editorimage 	textures/skyboxtextures/littlelights_004b_d
+	matter_metal
+
+	bumpmap 		heightmap (textures/skyboxtextures/littlelights_004b_h, 6)
+	diffusemap	 	textures/skyboxtextures/littlelights_004b_d
+	specularmap		textures/skyboxtextures/littlelights_004b_s
+
+}
+
+textures/skyboxtextures/CloudsCum_12
+{
+	skybox_macro
+	{
+		cubemap env/CloudsCum_12
+		uncompressed
+		texgen skybox
+	}
+}

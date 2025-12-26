@@ -36,15 +36,13 @@ If you have questions concerning this license or the applicable additional terms
 #include "GEApp.h"
 #include "GEViewer.h"
 
-rvGEViewer::rvGEViewer( )
-{
+rvGEViewer::rvGEViewer( ) {
 	mInterface = NULL;
 	mPaused    = true;
 	mTime	   = 0;
 }
 
-bool rvGEViewer::Create( HWND parent )
-{
+bool rvGEViewer::Create( HWND parent ) {
 	WNDCLASSEX	wndClass;
 
 	// Make sure the alpha slider window class is registered
@@ -71,10 +69,8 @@ bool rvGEViewer::Create( HWND parent )
 	return true;
 }
 
-void rvGEViewer::Play()
-{
-	if( !mPaused )
-	{
+void rvGEViewer::Play() {
+	if ( !mPaused ) {
 		return;
 	}
 
@@ -89,10 +85,8 @@ void rvGEViewer::Play()
 	SendMessage( mToolbar, TB_SETBUTTONINFO, ID_GUIED_VIEWER_PLAY, ( LPARAM )&tbinfo );
 }
 
-void rvGEViewer::Pause()
-{
-	if( mPaused )
-	{
+void rvGEViewer::Pause() {
+	if ( mPaused ) {
 		return;
 	}
 
@@ -107,16 +101,14 @@ void rvGEViewer::Pause()
 }
 
 
-bool rvGEViewer::Destroy()
-{
+bool rvGEViewer::Destroy() {
 	gApp.GetOptions().SetWindowPlacement( "viewer", mWnd );
 
 	DestroyWindow( mWnd );
 	return true;
 }
 
-bool rvGEViewer::OpenFile( const char* filename )
-{
+bool rvGEViewer::OpenFile( const char * filename ) {
 	idStr tempfile;
 	idStr ospath;
 
@@ -139,7 +131,7 @@ bool rvGEViewer::OpenFile( const char* filename )
 	CopyFile( filename, ospath, FALSE );
 	SetFileAttributes( ospath, FILE_ATTRIBUTE_NORMAL );
 
-	mInterface = reinterpret_cast< idUserInterfaceLocal* >( uiManager->FindGui( tempfile, true, true ) );
+	mInterface = reinterpret_cast< idUserInterfaceLocal * >( uiManager->FindGui( tempfile, true, true ) );
 
 	mInterface->SetStateString( "guied_item_0", "guied 1" );
 	mInterface->SetStateString( "guied_item_1", "guied 2" );
@@ -163,37 +155,30 @@ MapKey
 Map from windows to Doom keynums
 =======
 */
-static int MapKey( int key )
-{
+static int MapKey( int key ) {
 	int result;
 	int modified;
 	bool is_extended;
 
 	modified = ( key >> 16 ) & 255;
 
-	if( modified > 127 )
-	{
+	if ( modified > 127 ) {
 		return 0;
 	}
 
-	if( key & ( 1 << 24 ) )
-	{
+	if ( key & ( 1 << 24 ) ) {
 		is_extended = true;
-	}
-	else
-	{
+	} else {
 		is_extended = false;
 	}
 
-	const unsigned char* scanToKey = Win_GetScanTable();
+	const unsigned char * scanToKey = Win_GetScanTable();
 	result = scanToKey[modified];
 
 	// common->Printf( "Key: 0x%08x Modified: 0x%02x Extended: %s Result: 0x%02x\n", key, modified, (is_extended?"Y":"N"), result);
 
-	if( is_extended )
-	{
-		switch( result )
-		{
+	if ( is_extended ) {
+		switch ( result ) {
 			case K_PAUSE:
 				return K_KP_NUMLOCK;
 			case 0x0D:
@@ -203,11 +188,8 @@ static int MapKey( int key )
 			case 0xAF:
 				return K_KP_PLUS;
 		}
-	}
-	else
-	{
-		switch( result )
-		{
+	} else {
+		switch ( result ) {
 			case K_HOME:
 				return K_KP_HOME;
 			case K_UPARROW:
@@ -234,16 +216,13 @@ static int MapKey( int key )
 	return result;
 }
 
-LRESULT CALLBACK rvGEViewer::WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )
-{
-	rvGEViewer* viewer = ( rvGEViewer* ) GetWindowLongPtr( hwnd, GWLP_USERDATA );
+LRESULT CALLBACK rvGEViewer::WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam ) {
+	rvGEViewer* viewer = ( rvGEViewer * ) GetWindowLongPtr( hwnd, GWLP_USERDATA );
 
-	switch( msg )
-	{
+	switch ( msg ) {
 
 		case WM_COMMAND:
-			switch( LOWORD( wParam ) )
-			{
+			switch ( LOWORD( wParam ) ) {
 				case ID_GUIED_VIEWER_PLAY:
 					viewer->Play( );
 					break;
@@ -254,8 +233,7 @@ LRESULT CALLBACK rvGEViewer::WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM
 			}
 			break;
 
-		case WM_SIZE:
-		{
+		case WM_SIZE: {
 			RECT rToolbar;
 			SendMessage( viewer->mToolbar, TB_AUTOSIZE, 0, 0 );
 			GetWindowRect( viewer->mToolbar, &rToolbar );
@@ -276,8 +254,7 @@ LRESULT CALLBACK rvGEViewer::WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM
 			break;
 
 		case WM_LBUTTONDOWN:
-			if( viewer->mInterface )
-			{
+			if ( viewer->mInterface ) {
 				sysEvent_t event;
 				bool       visuals;
 				ZeroMemory( &event, sizeof( event ) ) ;
@@ -289,8 +266,7 @@ LRESULT CALLBACK rvGEViewer::WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM
 			break;
 
 		case WM_LBUTTONUP:
-			if( viewer->mInterface )
-			{
+			if ( viewer->mInterface ) {
 				sysEvent_t event;
 				bool       visuals;
 				ZeroMemory( &event, sizeof( event ) ) ;
@@ -302,8 +278,7 @@ LRESULT CALLBACK rvGEViewer::WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM
 			break;
 
 		case WM_KEYDOWN:
-			if( viewer->mInterface )
-			{
+			if ( viewer->mInterface ) {
 				sysEvent_t event;
 				bool       visuals;
 				ZeroMemory( &event, sizeof( event ) ) ;
@@ -316,8 +291,7 @@ LRESULT CALLBACK rvGEViewer::WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM
 
 		case WM_SYSKEYUP:
 		case WM_KEYUP:
-			if( viewer->mInterface )
-			{
+			if ( viewer->mInterface ) {
 				sysEvent_t event;
 				bool       visuals;
 				ZeroMemory( &event, sizeof( event ) ) ;
@@ -330,14 +304,12 @@ LRESULT CALLBACK rvGEViewer::WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM
 
 		case WM_CHAR:
 
-			if( wParam == VK_ESCAPE )
-			{
+			if ( wParam == VK_ESCAPE ) {
 				SendMessage( hwnd, WM_CLOSE, 0, 0 );
 				break;
 			}
 
-			if( viewer->mInterface )
-			{
+			if ( viewer->mInterface ) {
 				sysEvent_t event;
 				bool       visuals;
 				ZeroMemory( &event, sizeof( event ) ) ;
@@ -349,8 +321,7 @@ LRESULT CALLBACK rvGEViewer::WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM
 			break;
 
 		case WM_MOUSEMOVE:
-			if( viewer->mInterface )
-			{
+			if ( viewer->mInterface ) {
 				float x = ( float )( LOWORD( lParam ) ) / ( float )viewer->mWindowWidth * SCREEN_WIDTH;
 				float y = ( float )( HIWORD( lParam ) ) / ( float )( viewer->mWindowHeight - viewer->mToolbarHeight ) * SCREEN_HEIGHT;
 				sysEvent_t event;
@@ -369,12 +340,11 @@ LRESULT CALLBACK rvGEViewer::WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM
 			gApp.CloseViewer( );
 			return 0;
 
-		case WM_CREATE:
-		{
-			CREATESTRUCT* cs = ( CREATESTRUCT* ) lParam;
+		case WM_CREATE: {
+			CREATESTRUCT* cs = ( CREATESTRUCT * ) lParam;
 			SetWindowLongPtr( hwnd, GWLP_USERDATA, ( LONG_PTR )cs->lpCreateParams );
 
-			viewer = ( rvGEViewer* )cs->lpCreateParams;
+			viewer = ( rvGEViewer * )cs->lpCreateParams;
 			viewer->mWnd = hwnd;
 			viewer->SetupPixelFormat( );
 
@@ -434,8 +404,7 @@ LRESULT CALLBACK rvGEViewer::WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM
 	return DefWindowProc( hwnd, msg, wParam, lParam );
 }
 
-LRESULT rvGEViewer::HandlePaint( WPARAM wParam, LPARAM lParam )
-{
+LRESULT rvGEViewer::HandlePaint( WPARAM wParam, LPARAM lParam ) {
 	HDC			dc;
 	PAINTSTRUCT ps;
 
@@ -455,21 +424,16 @@ rvGEViewer::SetupPixelFormat
 Setup the pixel format for the opengl context
 ================
 */
-bool rvGEViewer::SetupPixelFormat()
-{
+bool rvGEViewer::SetupPixelFormat() {
 	HDC	 hDC    = GetDC( mWnd );
 	bool result = true;
 
 	int pixelFormat = Win_ChoosePixelFormat( hDC );
-	if( pixelFormat > 0 )
-	{
-		if( SetPixelFormat( hDC, pixelFormat, &win32.pfd ) == NULL )
-		{
+	if ( pixelFormat > 0 ) {
+		if ( SetPixelFormat( hDC, pixelFormat, &win32.pfd ) == NULL ) {
 			result = false;
 		}
-	}
-	else
-	{
+	} else {
 		result = false;
 	}
 
@@ -478,21 +442,18 @@ bool rvGEViewer::SetupPixelFormat()
 	return result;
 }
 
-void rvGEViewer::Render( HDC dc )
-{
+void rvGEViewer::Render( HDC dc ) {
 	int	frontEnd;
 	int	backEnd;
 
 	// Switch GL contexts to our dc
-	if( !qwglMakeCurrent( dc, win32.hGLRC ) )
-	{
+	if ( !qwglMakeCurrent( dc, win32.hGLRC ) ) {
 		common->Printf( "ERROR: wglMakeCurrent failed.. Error:%i\n", qglGetError() );
 		common->Printf( "Please restart " EDITOR_WINDOWTEXT " if the Map view is not working\n" );
 		return;
 	}
 
-	if( !mPaused )
-	{
+	if ( !mPaused ) {
 		mTime += eventLoop->Milliseconds() - mLastTime;
 		mLastTime = eventLoop->Milliseconds();
 	}
@@ -519,8 +480,7 @@ void rvGEViewer::Render( HDC dc )
 	qglMatrixMode( GL_MODELVIEW );
 	qglLoadIdentity();
 
-	if( mInterface )
-	{
+	if ( mInterface ) {
 		viewDef_t viewDef;
 		memset( &viewDef, 0, sizeof( viewDef ) );
 		tr.viewDef = &viewDef;
@@ -548,10 +508,8 @@ void rvGEViewer::Render( HDC dc )
 	qwglSwapBuffers( dc );
 }
 
-void rvGEViewer::RunFrame()
-{
-	if( !mPaused )
-	{
+void rvGEViewer::RunFrame() {
+	if ( !mPaused ) {
 		HDC hDC = GetDC( mWnd );
 		Render( hDC );
 		ReleaseDC( mWnd, hDC );

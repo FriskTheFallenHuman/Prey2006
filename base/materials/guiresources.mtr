@@ -1,0 +1,1873 @@
+// these are materials used by the guis.  most of the guis assets are stored in
+// guis/assets/... so that same directory structure is reflected here
+//
+
+//------------------------------------------------------------------------
+// generic gui assets
+//------------------------------------------------------------------------
+
+//HUMANHEAD rww - lack of this was causing gui surfaces to get sorted under the single preview surface in the editor
+guisurfs/guipreview {
+	qer_editorimage	textures/editor/gui
+	guiSurf	guis/mainmenu.gui
+}
+
+guis/assets/bj/diamond
+{
+	{
+		blend blend
+		map guis/assets/bj/diamond
+		colored
+	}
+}
+
+guis/assets/bj/heart
+{
+	{
+		blend blend
+		map guis/assets/bj/heart
+	}
+}
+
+guis/assets/bj/spade
+{
+	{
+		blend blend
+		map guis/assets/bj/spade
+	}
+}
+
+guis/assets/bj/club
+{
+	{
+		blend blend
+		map guis/assets/bj/club
+	}
+}
+
+guis/assets/slots/cherry
+{
+	sort gui
+	{	blend blend
+		map guis/assets/slots/cherry
+		linear
+		colored
+	}
+}
+
+guis/assets/slots/orange
+{
+	sort gui
+	{	blend blend
+		map guis/assets/slots/orange
+		linear
+		colored
+	}
+}
+
+guis/assets/slots/lemon
+{
+	sort gui
+	{	blend blend
+		map guis/assets/slots/lemon
+		linear
+		colored
+	}
+}
+
+guis/assets/slots/apple
+{
+	sort gui
+	{	blend blend
+		map guis/assets/slots/apple
+		linear
+		colored
+	}
+}
+
+guis/assets/slots/grape
+{
+	sort gui
+	{	blend blend
+		map guis/assets/slots/grape
+		linear
+		colored
+	}
+}
+
+guis/assets/slots/melon
+{
+	sort gui
+	{	blend blend
+		map guis/assets/slots/melon
+		linear
+		colored
+	}
+}
+
+guis/assets/slots/bar
+{
+	sort gui
+	{	blend blend
+		map guis/assets/slots/bar
+		linear
+		colored
+	}
+}
+
+guis/assets/slots/barbar
+{
+	sort gui
+	{	blend blend
+		map guis/assets/slots/barbar
+		linear
+		colored
+	}
+}
+
+guis/assets/slots/barbarbar
+{
+	sort gui
+	{	blend blend
+		map guis/assets/slots/barbarbar
+		linear
+		colored
+	}
+}
+
+
+guis/assets/arcade/maskstatic
+{
+	{
+		blend filter
+		map guis/assets/arcade/screen_static
+	}
+}
+
+guis/assets/arcade/cardscreen
+{
+	{
+		blend blend
+		map guis/assets/arcade/cardscreens
+	}
+}
+guis/assets/arcade/slotscreen
+{
+	{
+		blend blend
+		map guis/assets/arcade/slotscreen
+	}
+}
+
+guis/assets/arcade/punkscreen
+{
+	{
+		blend blend
+		map guis/assets/arcade/punkscreen
+	}
+}
+
+guis/assets/arcade/gamelayout
+{
+	{
+		blend blend
+		map guis/assets/arcade/gamelayout
+		linear
+	}
+}
+
+guis/assets/arcade/arcade_marquis
+{
+	{
+		blend blend
+		map models/mapobjects/roadhouse/arcade_marquis
+	}
+}
+
+guis/assets/arcade/arcade_marquis_ragnar
+{
+	{
+		blend blend
+		map models/mapobjects/roadhouse/arcade_marquis
+		red		1
+		green	0.2
+		blue	0
+	}
+}
+
+guis/assets/arcade/arcade_marquis_off
+{
+	{
+		blend blend
+		map models/mapobjects/roadhouse/arcade_marquis
+		rgb 0.35
+	}
+}
+
+guis/assets/static
+{	// testbed for alien static (pick one)
+	{
+		blend blend
+//		map guis/assets/static/static001
+//		map guis/assets/static/static002
+//		map guis/assets/static/static003
+		map guis/assets/static/static004
+//		map guis/assets/static/static005
+//		map guis/assets/static/static006
+		scroll time*5, time*7
+		rotate time*3
+		colored
+	}
+}
+
+guis/assets/damageoverlaystatic
+{
+	{
+		blend blend
+		map guis/assets/static/static001
+		scroll time*5, time*7
+		rotate time*3
+		colored
+		alpha 0.2
+	}
+}
+
+guis/assets/damageoverlayvhold
+{
+	{
+		blend blend
+		map guis/assets/static/beam
+		scroll 0, time*1 + powersurge[parm5 + (0.8 + parm5*0.2) * time*0.3]
+		colored
+		alpha 0.4
+	}
+}
+
+guis/assets/staticoriginal
+{
+	{
+		blend blend
+		map guis/assets/static/static001
+		scroll time*5, time*7
+		rotate time*3
+		colored
+	}
+}
+
+
+guis/assets/damageoverlaystatichh
+{
+	{	// define triangular area to draw effect within
+		blend none
+		map guis/assets/hhand/hh_bckgrnd
+		alphatest 0.5
+	}
+
+	{
+		blend blend
+		map guis/assets/static/static001
+		scroll time*5, time*7
+		rotate time*3
+		colored
+		alpha 0.4
+	}
+}
+
+guis/assets/damageoverlayvholdhh
+{
+	{	// define triangular area to draw effect within
+		blend none
+		map guis/assets/hhand/hh_bckgrnd
+		alphatest 0.5
+	}
+
+	{
+		blend blend
+		map guis/assets/forcefield/beam
+		scroll 0, time*0.5 + guipulse[time*0.3]
+		colored
+		alpha 0.4
+	}
+}
+
+guis/assets/shuttle/crosshair
+{
+	{	// special blend mode to show inverse of the destination so it's always visible
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map guis/assets/shuttle/crosshair
+		linear
+	}
+}
+
+guis/assets/shuttle/crosshairtop
+{
+	{	// special blend mode to show inverse of the destination so it's always visible
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map guis/assets/shuttle/crosshairtop
+		linear
+	}
+}
+guis/assets/shuttle/crosshairleft
+{
+	{	// special blend mode to show inverse of the destination so it's always visible
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map guis/assets/shuttle/crosshairleft
+		linear
+	}
+}
+guis/assets/shuttle/crosshair2
+{
+	{	// special blend mode to show inverse of the destination so it's always visible
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map guis/assets/shuttle/crosshair2
+		linear
+	}
+}
+
+
+//------------------------------------------------------------------------
+// forcefield gui assets
+//------------------------------------------------------------------------
+table forcefieldtable1 { { 1.0, 0.8, 0.6, 0.4, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 } }
+
+guis/assets/forcefield/forcefield1
+{
+	{
+		blend blend
+		map guis/assets/forcefield/forcefield
+		alpha forcefieldtable1[ time * 1.67 ]
+	}
+}
+guis/assets/forcefield/forcefield2
+{
+	{
+		blend blend
+		map guis/assets/forcefield/forcefield
+		alpha forcefieldtable1[ time * 1.67 + 0.33 ]
+	}
+}
+guis/assets/forcefield/forcefield3
+{
+	{
+		blend blend
+		map guis/assets/forcefield/forcefield
+		alpha forcefieldtable1[ time * 1.67 + 0.66]
+	}
+}
+
+
+guis/assets/forcefield/pulsecyan
+{
+	{
+		blend blend
+		map guis/assets/wallwalk/pulse
+		red 	0.18
+		green	0.72
+		blue	0.80
+		clamp
+		scroll -0.5, -0.5
+		scale	2, 2
+		linear
+		alpha pulsetrainc[time*0.5]
+	}
+	{
+		blend blend
+		map guis/assets/wallwalk/pulse
+		red 	0.18
+		green	0.72
+		blue	0.80
+		clamp
+		scroll -0.16, -0.16
+		scale	1.32, 1.32
+		linear
+		alpha pulsetrainb[time*0.5]
+	}
+	{
+		blend blend
+		map guis/assets/wallwalk/pulse
+		red 	0.18
+		green	0.72
+		blue	0.80
+		clamp
+		linear
+		alpha pulsetraina[time*0.5]
+	}
+}
+guis/assets/forcefield/pulsered
+{
+	{
+		blend blend
+		map guis/assets/wallwalk/pulse
+		red 	0.80
+		green	0.00
+		blue	0.00
+		clamp
+		scroll -0.5, -0.5
+		scale	2, 2
+		linear
+		alpha pulsetrainc[time*0.5]
+	}
+	{
+		blend blend
+		map guis/assets/wallwalk/pulse
+		red 	0.80
+		green	0.00
+		blue	0.00
+		clamp
+		scroll -0.16, -0.16
+		scale	1.32, 1.32
+		linear
+		alpha pulsetrainb[time*0.5]
+	}
+	{
+		blend blend
+		map guis/assets/wallwalk/pulse
+		red 	0.80
+		green	0.00
+		blue	0.00
+		clamp
+		linear
+		alpha pulsetraina[time*0.5]
+	}
+}
+
+
+//------------------------------------------------------------------------
+// hunterhand gui assets
+//------------------------------------------------------------------------
+
+
+guis/assets/hhand/scanlineramp
+{
+	{
+		blend blend
+		map _alpharamp
+		rotate 0.25
+	}
+}
+
+
+guis/assets/hhand/hh_rotate
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/hhand/hh_rotate1
+		linear
+		red	0.26
+		green	0.25
+		blue	0.14
+		alpha thirteenstagesnap [1.0 * time + 0 / 13]
+	}
+	{
+		blend blend
+		map guis/assets/hhand/hh_rotate2
+		linear
+		red	0.26
+		green	0.25
+		blue	0.14
+		alpha thirteenstagesnap[1.0 * time + 1 / 13]
+	}
+	{
+		blend blend
+		map guis/assets/hhand/hh_rotate3
+		linear
+		red	0.26
+		green	0.25
+		blue	0.14
+		alpha thirteenstagesnap[1.0 * time + 2 / 13]
+	}
+	{
+		blend blend
+		map guis/assets/hhand/hh_rotate4
+		linear
+		red	0.26
+		green	0.25
+		blue	0.14
+		alpha thirteenstagesnap[1.0 * time + 3 / 13]
+	}
+	{
+		blend blend
+		map guis/assets/hhand/hh_rotate5
+		linear
+		red	0.26
+		green	0.25
+		blue	0.14
+		alpha thirteenstagesnap[1.0 * time + 4 / 13]
+	}
+	{
+		blend blend
+		map guis/assets/hhand/hh_rotate6
+		linear
+		red	0.26
+		green	0.25
+		blue	0.14
+		alpha thirteenstagesnap[1.0 * time + 5 / 13]
+	}
+	{
+		blend blend
+		map guis/assets/hhand/hh_rotate7
+		linear
+		red	0.26
+		green	0.25
+		blue	0.14
+		alpha thirteenstagesnap[1.0 * time + 6 / 13]
+	}
+	{
+		blend blend
+		map guis/assets/hhand/hh_rotate7
+		linear
+		red	0.26
+		green	0.25
+		blue	0.14
+		alpha thirteenstagesnap[1.0 * time + 7 / 13]
+		scale -1, 1
+	}
+	{
+		blend blend
+		map guis/assets/hhand/hh_rotate6
+		linear
+		red	0.26
+		green	0.25
+		blue	0.14
+		alpha thirteenstagesnap[1.0 * time + 8 / 13]
+		scale -1, 1
+	}
+	{
+		blend blend
+		map guis/assets/hhand/hh_rotate5
+		linear
+		red	0.26
+		green	0.25
+		blue	0.14
+		alpha thirteenstagesnap[1.0 * time + 9 / 13]
+		scale -1, 1
+	}
+	{
+		blend blend
+		map guis/assets/hhand/hh_rotate4
+		linear
+		red	0.26
+		green	0.25
+		blue	0.14
+		alpha thirteenstagesnap[1.0 * time + 10 / 13]
+		scale -1, 1
+	}
+	{
+		blend blend
+		map guis/assets/hhand/hh_rotate3
+		linear
+		red	0.26
+		green	0.25
+		blue	0.14
+		alpha thirteenstagesnap[1.0 * time + 11 / 13]
+		scale -1, 1
+	}
+	{
+		blend blend
+		map guis/assets/hhand/hh_rotate2
+		linear
+		red	0.26
+		green	0.25
+		blue	0.14
+		alpha thirteenstagesnap[1.0 * time + 12 / 13]
+		scale -1, 1
+	}
+}
+
+
+
+
+//------------------------------------------------------------------------
+// wallwalk gui assets
+//------------------------------------------------------------------------
+
+table pulsetraina { { 1.0, 0.7, 0.5, 0.0, 0.0, 0.0 } }
+table pulsetrainb { { 0.0, 1.0, 0.7, 0.5, 0.0, 0.0 } }
+table pulsetrainc { { 0.0, 0.0, 1.0, 0.7, 0.5, 0.0 } }
+
+guis/assets/wallwalk/pulsered
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/wallwalk/pulse
+		red		0.78
+		green	0.00
+		blue	0.13
+		clamp
+		scroll -0.5, -0.5
+		scale	2, 2
+		linear
+		alpha pulsetraina[time*1]
+	}
+	{
+		blend blend
+		map guis/assets/wallwalk/pulse
+		red		0.78
+		green	0.00
+		blue	0.13
+		clamp
+		scroll -0.16, -0.16
+		scale	1.32, 1.32
+		linear
+		alpha pulsetrainb[time*1]
+	}
+	{
+		blend blend
+		map guis/assets/wallwalk/pulse
+		red		0.78
+		green	0.00
+		blue	0.13
+		clamp
+		linear
+		alpha pulsetrainc[time*1]
+	}
+}
+
+guis/assets/wallwalk/pulsecyan
+{
+	{
+		blend blend
+		map guis/assets/wallwalk/pulse
+		red 	0.00
+		green	0.89
+		blue	0.82
+		clamp
+		scroll -0.5, -0.5
+		scale	2, 2
+		linear
+		alpha pulsetraina[time*1]
+	}
+	{
+		blend blend
+		map guis/assets/wallwalk/pulse
+		red 	0.00
+		green	0.89
+		blue	0.82
+		clamp
+		scroll -0.16, -0.16
+		scale	1.32, 1.32
+		linear
+		alpha pulsetrainb[time*1]
+	}
+	{
+		blend blend
+		map guis/assets/wallwalk/pulse
+		red 	0.00
+		green	0.89
+		blue	0.82
+		clamp
+		linear
+		alpha pulsetrainc[time*1]
+	}
+}
+
+
+guis/assets/wallwalk/text
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/wallwalk/text
+		red		0.78
+		green	0.00
+		blue	0.13
+		scroll 0, time*-0.3
+		linear
+	}
+}
+
+guis/assets/wallwalk/textcyan
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/wallwalk/text
+		red 	0.00
+		green	0.89
+		blue	0.82
+		scroll 0, time*-0.3
+		linear
+	}
+}
+
+
+//----------------------------------------------
+//  non_interact scan
+//----------------------------------------------
+
+guis/assets/non_interact/a/scan1
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/non_interact/a/scanline
+		//red 	0.8
+		//green	0.9
+		//blue	0.82
+		scroll 0, time*-0.2
+		linear
+	}
+}
+guis/assets/non_interact/a/scan2
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/non_interact/a/scanline2
+		//red 	0.9
+		//green	0.9
+		//blue	0.9
+		scroll 0, time*-0.4
+		linear
+	}
+}
+guis/assets/non_interact/a/text
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/non_interact/a/rout
+		//red 	0.9
+		//green	0.9
+		//blue	0.9
+		scroll 0, time*0.3
+		linear
+	}
+}
+
+
+//----------------------------------------------
+//  earth scan
+//----------------------------------------------
+
+guis/assets/non_interact/earthscan/text
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/non_interact/earthscan/textscr
+		//red 	0.9
+		//green	0.9
+		//blue	0.9
+		scroll -1, time*0.3
+		linear
+	}
+}
+guis/assets/non_interact/scanner/oscope
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/non_interact/scanner/bar
+		red 	0.7
+		green	0.75
+		blue	0.65
+		scroll  time*0.8, -1
+		linear
+	}
+}
+guis/assets/non_interact/scanner/oscope2
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/non_interact/scanner/bar
+		red 	0.7
+		green	0.75
+		blue	0.65
+		scroll  time*1.5, 0
+		linear
+	}
+}
+
+//----------------------------------------------
+//  wave lines
+//----------------------------------------------
+
+guis/assets/non_interact/earthpopscan/wave1
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/non_interact/earthpopscan/wave
+		red 	1.0
+		green	0.35
+		blue	0.0
+		scroll  time*1.5, 0
+		scale 23, 1
+		linear
+	}
+}
+guis/assets/non_interact/earthpopscan/wave2
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/non_interact/earthpopscan/wave
+		red 	1.0
+		green	0.75
+		blue	0.35
+		scroll  time* -2.5, 0
+		scale 18, 1
+		linear
+	}
+}
+guis/assets/non_interact/earthpopscan/warble1
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/non_interact/earthpopscan/warble
+		red 	0.5
+		green	0.55
+		blue	0.45
+		scroll  0, time*0.2
+		scale 16, 8
+//		linear
+	}
+}
+
+
+//----------------------------------------------
+//  generic scan
+//----------------------------------------------
+
+guis/assets/scanline/g_scan
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/scanline/scanline
+		red 	0.7
+		green	0.7
+		blue	0.7
+		alpha   0.5
+		scroll 0, time*-0.5
+		linear
+	}
+}
+guis/assets/scanline/g_scan2
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/scanline/scanline2
+		red 	0.7
+		green	0.5
+		blue	0.3
+		scroll 0, time*-0.2
+		linear
+	}
+}
+guis/assets/scanline/g_scan3
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/scanline/scanline2
+		red 	0.7
+		green	0.5
+		blue	0.3
+		scroll 0, time*-0.3
+		linear
+	}
+}
+guis/assets/scanline/r_scan
+{
+	noshadows
+
+	{
+		blend add
+		map guis/assets/scanline/r_scanline
+		red 	0.7
+		green	0.5
+		blue	0.3
+		scroll time*0.2, 0
+		linear
+	}
+	{
+		blend blend
+		map guis/assets/scanline/r_crop
+		red 	1
+		green	1
+		blue	1
+		linear
+	}
+}
+guis/assets/scanline/r_scan2
+{
+	noshadows
+
+	{
+		blend add
+		map guis/assets/scanline/r_scanline2
+		red 	0.7
+		green	0.5
+		blue	0.3
+		scroll  0, time*0.2
+		linear
+	}
+	{
+		blend blend
+		map guis/assets/scanline/r_crop2
+		rgb		1
+		linear
+	}
+}
+
+
+//---wallwalk effect
+
+guis/assets/wallwalk/heffect
+{
+	{
+		blend	blend
+		map		guis/assets/wallwalk/heffect
+		scroll	time * -2.5 , time * 0
+		color	1, 1, 1, rsurge [ time * 0.9 ]
+		scale	4, 1
+	}
+}
+
+guis/assets/wallwalk/veffect
+{
+	{
+		blend	blend
+		map		guis/assets/wallwalk/veffect
+		scroll	time * 0 , time * 2.5
+		color	1, 1, 1, rsurge [ time * 0.9 ]
+		scale	1, 4
+	}
+}
+
+guis/assets/wallwalk/scanline
+{
+	noshadows
+	{
+		blend add
+		map guis/assets/wallwalk/scanlinew
+		rgb		1
+		scroll  0, time*0.5
+		linear
+	}
+	//{
+	//	blend blend
+	//	map guis/assets/scanline/r_crop2
+	//	rgb		1
+	//	linear
+	//}/
+}
+
+
+// gravity effect
+
+guis/assets/gravity/topeffect
+{
+	{
+		blend	blend
+		map		guis/assets/gravity/grav
+	//	scroll	time * -2.5 , time * 0
+		color	1, 1, 1, rsurge [ time * 1.2 ]
+		scale	1, 1
+	}
+}
+
+
+// loading guis
+guis/assets/loading/flashinghead
+{
+	{
+		blend	blend
+		map		guis/assets/loading/flashinghead
+		color	0.3, 0.6, 0.8, jitter6[time*6]
+		linear
+	}
+}
+
+guis/assets/menu/head
+{
+	{
+		blend	blend
+		map		guis/assets/loading/flashinghead
+		linear
+		clamp
+		colored
+	}
+}
+
+guis/assets/menu/head180
+{
+	{
+		blend	blend
+		map		guis/assets/loading/flashinghead
+		linear
+		rotate	0.5
+		clamp
+		colored
+		map guis/assets/arcade/ragnar
+	}
+}
+
+// arcade game
+guis/assets/arcade/player
+{
+	{
+		blend blend
+		map guis/assets/arcade/ragnar
+		colored
+	}
+}
+
+guis/assets/arcade/playerdying
+{
+	{
+		blend blend
+		map guis/assets/arcade/ragnar
+		colored
+		rotate time
+	}
+}
+
+guis/assets/arcade/pellet
+{
+	{
+		blend blend
+		map guis/assets/arcade/pellet
+		centerscale 2.5, 2.5
+		clamp
+		linear
+		alpha	0.8
+	}
+}
+
+table powerupscale { { 1, 1.5 } }
+
+guis/assets/arcade/powerup
+{
+	{
+		blend blend
+		map guis/assets/arcade/powerup
+		centerscale powerupscale[time], powerupscale[time]
+		colored
+		clamp
+		linear
+	}
+}
+
+guis/assets/arcade/powerup2
+{
+	{
+		blend blend
+		map guis/assets/arcade/powerup
+		colored
+	}
+}
+guis/assets/arcade/fruit
+{
+	{
+		blend blend
+		map guis/assets/arcade/fruit
+		colored
+		clamp
+		linear
+	}
+}
+
+guis/assets/arcade/ghost
+{
+	{
+		blend blend
+		map guis/assets/arcade/goblin
+		colored
+	}
+}
+
+guis/assets/arcade/punk
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/arcade/punk
+		linear
+		colored
+		alpha twostagesnap [3.0 * time + 0 / 2]
+	}
+	{
+		blend blend
+		map guis/assets/arcade/punk2
+		linear
+		colored
+		alpha twostagesnap [3.0 * time + 1 / 2]
+	}
+}
+
+guis/assets/arcade/poweredpunk
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/arcade/goblin
+		linear
+		red 1
+		green 0
+		blue 0
+		alpha twostagesnap [3.0 * time + 0 / 2]
+	}
+	{
+		blend blend
+		map guis/assets/arcade/goblin2
+		linear
+		red 1
+		green 0
+		blue 0
+		alpha twostagesnap [3.0 * time + 1 / 2]
+	}
+}
+
+guis/assets/arcade/flashingpunk
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/arcade/goblin
+		linear
+		red		1
+		green	twostagesnap[time*2]
+		blue	twostagesnap[time*2]
+		alpha twostagesnap [3.0 * time + 0 / 2]
+	}
+	{
+		blend blend
+		map guis/assets/arcade/goblin2
+		linear
+		red		1
+		green	twostagesnap[time*2]
+		blue	twostagesnap[time*2]
+		alpha twostagesnap [3.0 * time + 1 / 2]
+	}
+}
+
+// noninteract_meter.gui
+guis/assets/meter/border
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/meter/border
+		linear
+		clamp
+		colored
+	}
+}
+
+// jukebox.gui
+guis/assets/jukebox/twitcher
+{
+	{
+		blend blend
+		map   guis/assets/jukebox/twitcher
+		colored
+		linear
+	}
+}
+
+// noninteract_meter.gui and jukebox.gui
+guis/assets/meter/testtubefull
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/meter/testtubefull
+		linear
+		clamp
+		colored
+	}
+}
+
+// noninteract_meter.gui
+guis/assets/meter/testtube
+{
+	noshadows
+	{
+		blend blend
+		map guis/assets/meter/testtube
+		linear
+		clamp
+		colored
+	}
+}
+
+guis/assets/hud/lighter {
+	{
+		blend add
+		map guis/assets/hud/lighter
+		rgb 0.2 + random[time] * 0.8
+	}
+}
+
+guis/assets/menu/portalspark
+{
+	noshadows
+	{
+		blend		add
+		map			textures/sfx/flare2
+		colored
+	}
+}
+
+guis/assets/menu/portal
+{
+	noshadows
+	noselfshadow
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add
+		scale 1, 1.0
+		scroll .06 * time, -1 * zerotoonesnap[ time * 2.4 ]
+		rgb		1 * zerotoonesnap[ time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add
+		scale 1, 1.0
+		scroll .052 * time, -1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add
+		scale 1, 1.0
+		scroll .04 * time, -1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add
+		scale 1, 1.0
+		scroll .08 * time, -1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add
+		scale 1, 1.0
+		scroll .075 * time, -1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add
+		scale 1, 1.0
+		scroll .045 * time, -1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add
+		scale 1, 1.0
+		scroll .065 * time, -1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add
+		scale 1, 1.0
+		scroll .03 * time, -1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add
+		scale 1, 1.0
+		scroll .08 * time, -1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add
+		scale 1, 1.0
+		scroll .05 * time, -1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+	}
+			{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add3
+		scale 1, 1.0
+		scroll .035 * time, -1 * zerotoonesnap[ time * 2.4 ]
+		rgb		1 * zerotoonesnap[ time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add3
+		scale 1, 1.0
+		scroll .07 * time, -1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add3
+		scale 1, 1.0
+		scroll .05 * time, -1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add3
+		scale 1, 1.0
+		scroll .06 * time, -1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add3
+		scale 1, 1.0
+		scroll .035 * time, -1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add3
+		scale 1, 1.0
+		scroll .085 * time, -1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add3
+		scale 1, 1.0
+		scroll .045 * time, -1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add3
+		scale 1, 1.0
+		scroll .05 * time, -1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add3
+		scale 1, 1.0
+		scroll .06 * time, -1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add3
+		scale 1, 1.0
+		scroll .08 * time, -1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+	}
+			{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add4
+		scale 1, 1.0
+		scroll .09 * time, -1 * zerotoonesnap[ -0.02 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.02 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add4
+		scale 1, 1.0
+		scroll .032 * time, -1 * zerotoonesnap[ -0.12 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.12 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add4
+		scale 1, 1.0
+		scroll .08 * time, -1 * zerotoonesnap[ -0.22 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.22 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add4
+		scale 1, 1.0
+		scroll .05 * time, -1 * zerotoonesnap[ -0.32 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.32 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add4
+		scale 1, 1.0
+		scroll .045 * time, -1 * zerotoonesnap[ -0.42 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.42 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add4
+		scale 1, 1.0
+		scroll .065 * time, -1 * zerotoonesnap[ -0.52 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.52 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add4
+		scale 1, 1.0
+		scroll .025 * time, -1 * zerotoonesnap[ -0.62 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.62 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add4
+		scale 1, 1.0
+		scroll .06 * time, -1 * zerotoonesnap[ -0.72 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.72 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add4
+		scale 1, 1.0
+		scroll .07 * time, -1 * zerotoonesnap[ -0.82 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.82 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add4
+		scale 1, 1.0
+		scroll .03 * time, -1 * zerotoonesnap[ -0.92 + time * 2.4 ]
+		rgb		1 * zerotoonesnap[ -0.92 + time * 2.4 ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_add5
+		scroll .09 * time, .0 * time
+		clamp
+	}
+	{
+		blend add
+		map models/mapobjects/portal/portal_add2
+		scroll .09 * time, .0 * time
+		rgb		.8 * heartbeat2[ time * 0.85 ]
+		scale 1, 0.74
+	}
+	{
+		blend add
+		map models/mapobjects/portal/portal_add2
+		scroll .05 * time, .0 * time
+		rgb		.8 * heartbeat3[ time * 0.9 ]
+		scale 1, 0.85
+	}
+	{
+		blend add
+		map models/mapobjects/portal/portal_add2
+		scroll .06 * time, .0 * time
+		rgb		.8 * heartbeat4[ time * 0.95 ]
+		scale 1, 0.75
+	}
+}
+
+guis/assets/menu/portal_front
+{
+	noshadows
+	noselfshadow
+	translucent
+	{
+		program			heatHazeWithMaskAndVertex.vfp
+		vertexparm		0       0.2, time * 0.2
+		vertexparm		1       1.9
+		fragmentprogram	heatHazeWithMask.vfp
+		fragmentmap		0       _currentrender
+		fragmentmap		1       textures/glass/vp1
+		fragmentmap		2       models/mapobjects/portal/portal_mask
+	}
+}
+
+guis/assets/menu/portal_back
+{
+	noshadows noselfshadow nooverlays
+	{	// Black background
+		blend blend
+		map _black
+	}
+	{	// Rotating mist around sides
+		blend gl_one, gl_one_minus_src_color
+		map guis/assets/menu/portal_back_add
+		rotate time
+	}
+}
+
+guis/assets/menu/portal_noback
+{
+	noshadows noselfshadow nooverlays
+	{	// Rotating mist around sides
+		blend gl_one, gl_one_minus_src_color
+		map guis/assets/menu/portal_back_add
+		rotate time
+	}
+}
+
+guis/assets/replay/filmstrip
+{
+	{
+		map guis/assets/replay/filmstrip
+	}
+}
+
+guis/assets/replay/replay
+{
+	{
+		blend blend
+		map _replay
+	}
+}
+
+guis/assets/loading/thumbs/nothing
+{	// Missing level screenshot, draw through to text on create server page
+	{
+		blend none
+		map _black
+	}
+}
+
+// Main menu player selection icons
+guis/assets/menu/players/tommy
+{
+	sort gui
+	{
+		blend blend
+		map guis/assets/menu/players/tommy
+		linear
+		colored
+	}
+}
+
+guis/assets/menu/players/mutilated
+{
+	sort gui
+	{
+		blend blend
+		map guis/assets/menu/players/mutilated
+		linear
+		colored
+	}
+}
+
+guis/assets/menu/players/chuck
+{
+	sort gui
+	{
+		blend blend
+		map guis/assets/menu/players/chuck
+		linear
+		colored
+	}
+}
+
+guis/assets/menu/players/dalton
+{
+	sort gui
+	{
+		blend blend
+		map guis/assets/menu/players/dalton
+		linear
+		colored
+	}
+}
+
+guis/assets/menu/players/bob
+{
+	sort gui
+	{
+		blend blend
+		map guis/assets/menu/players/bob
+		linear
+		colored
+	}
+}
+
+guis/assets/menu/players/gramps
+{
+	sort gui
+	{
+		blend blend
+		map guis/assets/menu/players/gramps
+		linear
+		colored
+	}
+}
+
+guis/assets/menu/players/hider
+{
+	sort gui
+	{
+		blend blend
+		map guis/assets/menu/players/hider
+		linear
+		colored
+	}
+}
+
+guis/assets/menu/players/uwear
+{
+	sort gui
+	{
+		blend blend
+		map guis/assets/menu/players/underwearman
+		linear
+		colored
+	}
+}
+
+guis/assets/blankLevelShot
+{
+	{
+		blend blend
+		map _black
+		colored
+	}
+}
+
+guis/assets/help/box
+{
+	sort gui
+	{
+		blend blend
+		map guis/assets/help/box
+		colored
+	}
+}
+
+guis/assets/menu/menuscreenshot
+{
+	sort gui
+	{
+		blend blend
+		map _menushot
+		colored
+		scale	1, -1			// copyteximage makes it upside down
+		translate	0, -1		// move it back to the 0.0 to 1.0 range so clamp works
+	}
+}
+
+guis/assets/menu/button/corner
+{
+	{
+		blend blend
+		map guis/assets/menu/button/corner
+		linear
+		clamp
+		nopicmip
+		uncompressed
+		colored
+	}
+}
+
+guis/assets/menu/button/strip
+{
+	{
+		blend blend
+		map guis/assets/menu/button/strip
+		linear
+		clamp
+		nopicmip
+		uncompressed
+		colored
+	}
+}
+
+guis/assets/menu/button/rollover_corner
+{
+	{
+		blend blend
+		map guis/assets/menu/button/rollover_corner
+		linear
+		clamp
+		nopicmip
+		uncompressed
+		colored
+	}
+}
+
+guis/assets/menu/button/rollover_strip
+{
+	{
+		blend blend
+		map guis/assets/menu/button/rollover_strip
+		linear
+		clamp
+		nopicmip
+		uncompressed
+		colored
+	}
+}
+guis/assets/non_interact/waveform
+{
+	{
+		blend blend
+		map guis/assets/non_interact/art_bell/waveform
+		colored
+		centerscale	1, tubetext2[time * 1]
+		scroll time * .6, 0
+	}
+}
+guis/assets/non_interact/waveform2
+{
+	{
+		blend blend
+		map guis/assets/non_interact/art_bell/waveform
+		colored
+		centerscale	1, tubetext2[time * 0.6]
+		scroll time * .4, 0
+	}
+}
+guis/assets/non_interact/waveform3
+{
+	{
+		blend blend
+		map guis/assets/non_interact/art_bell/waveform
+		colored
+		centerscale	1, tubetext2[time * 1.5]
+		scroll time * .3, 0
+	}
+}
+
+guis/assets/menu/background
+{
+	{
+		blend blend
+		map guis/assets/menu/background
+		linear
+		clamp
+		nopicmip
+	}
+}
+
+
+guis/assets/menu/preymenu/stars
+{
+	{
+		blend add
+		map guis/assets/menu/preymenu/background1
+		scale 2, 2
+	}
+	{
+		blend add
+		map guis/assets/menu/preymenu/background1
+		rotate 20.73-time*0.0005
+		rgb powersurge[time*0.5]
+		scroll 0.25, -0.5
+		scale 2, 2
+	}
+	{
+		blend add
+		map guis/assets/menu/preymenu/background5
+		rotate 70.3+time*0.0005
+		scroll 0.5, 0.5
+		centerscale 1.5+alpha[time*0.01]*0.5, 1.5+alpha[time*0.01]*0.5
+	}
+	{
+		blend add
+		map guis/assets/menu/preymenu/background5
+		rotate -50+time*0.0003
+		scroll 0.5, 1.5
+		centerscale 1.5+alpha[time*0.01]*0.5, 1.5+alpha[time*0.01]*0.3
+	}
+}
+
+guis/assets/menu/preymenu/sphereback
+{
+	{
+		blend blend
+		map guis/assets/menu/preymenu/background4
+		rgb solsurge[time*0.17]
+		linear
+		clamp
+		nopicmip
+	}
+	// Inner sphere clouds
+	{
+		maskcolor
+		map makealpha(guis/assets/menu/preymenu/spherealpha)
+		linear
+		clamp
+		nopicmip
+		centerscale 2,2
+	}
+	{
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		map guis/assets/menu/preymenu/sphereclouds
+		rgb 0.1
+		rotate time*0.01
+		linear
+		zeroclamp
+		nopicmip
+	}
+}
+
+guis/assets/menu/preymenu/sol
+{
+	{
+		blend add
+		map models/mapobjects/skybox/sun1
+		rotate time*0.01
+		rgb solsurge[time*0.17]*1
+		linear
+		clamp
+		nopicmip
+		glowstage
+	}
+}
+
+guis/assets/menu/preymenu/spherefront
+{
+	{
+		blend blend
+		map guis/assets/menu/preymenu/background3
+		linear
+		clamp
+		nopicmip
+	}
+/*	{	// micro noise
+		maskcolor
+		map makealpha(guis/assets/menu/preymenu/spherefrontalpha)
+		linear
+		clamp
+		nopicmip
+	}
+	{
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		//map guis/assets/menu/preymenu/spheresurface
+		map guis/assets/menu/preymenu/sphereclouds
+		rgb 0.05
+		scroll 0-time*0.07, time*0.03
+		scale 160,160
+		linear
+		nopicmip
+	}
+*/
+}
+
+guis/assets/menu/preymenu/earth
+{
+	{
+		blend blend
+		map guis/assets/menu/preymenu/background2
+		linear
+		clamp
+		nopicmip
+	}
+	{
+		maskcolor
+		//map makealpha(guis/assets/menu/preymenu/earthalpha)
+		map guis/assets/menu/preymenu/background2
+		linear
+		clamp
+		nopicmip
+	}
+	{
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		map guis/assets/menu/preymenu/earthclouds
+		rgb 0.2
+		scroll 0-time*0.07, time*0.03
+		scale 4,4
+		linear
+		nopicmip
+	}
+}

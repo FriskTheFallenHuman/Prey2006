@@ -32,8 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // CDlgEvent dialog
 
-class CDlgEvent : public CDialogEx
-{
+class CDlgEvent : public CDialogEx {
 public:
 	CDlgEvent( CWnd* pParent = NULL );   // standard constructor
 

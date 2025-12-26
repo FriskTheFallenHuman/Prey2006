@@ -42,17 +42,15 @@ const int RAD_ALT =     0x02;
 const int RAD_CONTROL = 0x04;
 const int RAD_PRESS   = 0x08;
 
-struct SCommandInfo
-{
-	char* m_strCommand;
+struct SCommandInfo {
+	char * m_strCommand;
 	unsigned int   m_nKey;
 	unsigned int   m_nModifiers;
 	unsigned int m_nCommand;
 };
 
-struct SKeyInfo
-{
-	char* m_strName;
+struct SKeyInfo {
+	char * m_strName;
 	unsigned int m_nVKKey;
 };
 
@@ -67,16 +65,16 @@ extern bool g_editorAlive;
 Radiant "Editor" Implementation
 =================================
 */
-void RadiantPrint( const char* text );
+void RadiantPrint( const char * text );
 void RadiantShutdown();
 void RadiantInit();
 void RadiantRun();
 
-bool SaveRegistryInfo( const char* pszName, void* pvBuf, long lSize );
-bool LoadRegistryInfo( const char* pszName, void* pvBuf, long* plSize );
+bool SaveRegistryInfo( const char * pszName, void * pvBuf, long lSize );
+bool LoadRegistryInfo( const char * pszName, void * pvBuf, long * plSize );
 
-bool SaveWindowState( HWND hWnd, const char* pszName );
-bool LoadWindowState( HWND hWnd, const char* pszName );
+bool SaveWindowState( HWND hWnd, const char * pszName );
+bool LoadWindowState( HWND hWnd, const char * pszName );
 
 void Sys_UpdateStatusBar();
-void Sys_Status( const char* psz, int part );
+void Sys_Status( const char * psz, int part );

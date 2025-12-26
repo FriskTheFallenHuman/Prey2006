@@ -31,8 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "../../sys/win32/rc/resource.h"
 
-class CAboutDlg : public CDialog
-{
+class CAboutDlg : public CDialog {
 public:
 	CAboutDlg( UINT nIDTemplate, CWnd* pParent = nullptr );
 

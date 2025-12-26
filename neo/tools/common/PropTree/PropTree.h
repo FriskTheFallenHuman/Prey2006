@@ -20,7 +20,7 @@
 #define AFX_PROPT_H__386AA426_6FB7_4B4B_9563_C4CC045BB0C9__INCLUDED_
 
 #if _MSC_VER > 1000
-	#pragma once
+#pragma once
 #endif // _MSC_VER > 1000
 
 /*#ifdef _PROPTREE_EXPORT
@@ -67,7 +67,7 @@
 
 class CPropTree;
 
-typedef BOOL ( CALLBACK* ENUMPROPITEMPROC )( CPropTree*, CPropTreeItem*, LPARAM );
+typedef BOOL ( CALLBACK* ENUMPROPITEMPROC )( CPropTree *, CPropTreeItem *, LPARAM );
 
 void InitPropTree( HINSTANCE hInstance );
 
@@ -85,11 +85,10 @@ void InitPropTree( HINSTANCE hInstance );
 #define HTBUTTON					(HTPROPFIRST + 5)
 
 // CPropTree WM_NOTIFY notification structure
-typedef struct _NMPROPTREE
-{
+typedef struct _NMPROPTREE {
 	NMHDR			hdr;
-	CPropTreeItem*	pItem;
-} NMPROPTREE, *PNMPROPTREE, FAR* LPNMPROPTREE;
+	CPropTreeItem	* pItem;
+} NMPROPTREE, * PNMPROPTREE, FAR * LPNMPROPTREE;
 
 // CPropTree specific Notification Codes
 #define PTN_FIRST					(0U-1100U)
@@ -108,8 +107,7 @@ typedef struct _NMPROPTREE
 /////////////////////////////////////////////////////////////////////////////
 // CPropTree window
 
-class PROPTREE_API CPropTree : public CWnd
-{
+class PROPTREE_API CPropTree : public CWnd {
 // Construction
 public:
 	CPropTree();
@@ -119,20 +117,20 @@ public:
 
 // Attributes/Operations
 public:
-	static CFont* GetNormalFont();
-	static CFont* GetBoldFont();
+	static CFont * GetNormalFont();
+	static CFont * GetBoldFont();
 
 	// Returns the root item of the tree
-	CPropTreeItem* GetRootItem();
+	CPropTreeItem * GetRootItem();
 
 	// Returns the focused item or NULL for none
-	CPropTreeItem* GetFocusedItem();
+	CPropTreeItem * GetFocusedItem();
 
 	// Enumerates an item and all its child items
 	BOOL EnumItems( CPropTreeItem* pItem, ENUMPROPITEMPROC proc, LPARAM lParam = 0L );
 
 	// Insert a created CPropTreeItem into the control
-	CPropTreeItem* InsertItem( CPropTreeItem* pItem, CPropTreeItem* pParent = NULL );
+	CPropTreeItem * InsertItem( CPropTreeItem* pItem, CPropTreeItem* pParent = NULL );
 
 	// Delete an item and ALL its children
 	void DeleteItem( CPropTreeItem* pItem );
@@ -162,10 +160,10 @@ public:
 	LONG HitTest( const POINT& pt );
 
 	// find an item by a location
-	CPropTreeItem* FindItem( const POINT& pt );
+	CPropTreeItem * FindItem( const POINT& pt );
 
 	// find an item by item id
-	CPropTreeItem* FindItem( UINT nCtrlID );
+	CPropTreeItem * FindItem( UINT nCtrlID );
 
 protected:
 	// Actual tree control
@@ -184,10 +182,10 @@ protected:
 	CPropTreeItem	m_Root;
 
 	// Linked list of visible items
-	CPropTreeItem*	m_pVisbleList;
+	CPropTreeItem	* m_pVisbleList;
 
 	// Pointer to the focused item (selected)
-	CPropTreeItem*	m_pFocus;
+	CPropTreeItem	* m_pFocus;
 
 	// PropTree scroll position. x = splitter position, y = vscroll position
 	CPoint			m_Origin;
@@ -198,13 +196,13 @@ protected:
 	// Number of CPropTree controls in the current application
 	static UINT		s_nInstanceCount;
 
-	static CFont*	s_pNormalFont;
-	static CFont*	s_pBoldFont;
+	static CFont	* s_pNormalFont;
+	static CFont	* s_pBoldFont;
 
 	BOOL			m_bDisableInput;
 
 	// Used for enumeration
-	static CPropTreeItem*	s_pFound;
+	static CPropTreeItem	* s_pFound;
 
 public:
 	//
@@ -225,24 +223,24 @@ public:
 
 	BOOL IsSingleSelection();
 
-	CPropTreeItem* GetVisibleList();
-	CWnd* GetCtrlParent();
+	CPropTreeItem * GetVisibleList();
+	CWnd * GetCtrlParent();
 
-	const POINT& GetOrigin();
+	const POINT & GetOrigin();
 
 	void SelectItems( CPropTreeItem* pItem, BOOL bSelect = TRUE );
 
 	// Focus on the first visible item
-	CPropTreeItem* FocusFirst();
+	CPropTreeItem * FocusFirst();
 
 	// Focus on the last visible item
-	CPropTreeItem* FocusLast();
+	CPropTreeItem * FocusLast();
 
 	// Focus on the previous item
-	CPropTreeItem* FocusPrev();
+	CPropTreeItem * FocusPrev();
 
 	// Focus on the next item
-	CPropTreeItem* FocusNext();
+	CPropTreeItem * FocusNext();
 
 	LRESULT SendNotify( UINT nNotifyCode, CPropTreeItem* pItem = NULL );
 
@@ -267,9 +265,9 @@ protected:
 // Implementation
 private:
 	static BOOL CALLBACK EnumFindItem( CPropTree* pProp, CPropTreeItem* pItem, LPARAM lParam );
-	static BOOL CALLBACK EnumSelectAll( CPropTree*, CPropTreeItem* pItem, LPARAM lParam );
-	static BOOL CALLBACK EnumMoveAll( CPropTree*, CPropTreeItem* pItem, LPARAM );
-	static BOOL CALLBACK EnumRefreshAll( CPropTree*, CPropTreeItem* pItem, LPARAM );
+	static BOOL CALLBACK EnumSelectAll( CPropTree *, CPropTreeItem* pItem, LPARAM lParam );
+	static BOOL CALLBACK EnumMoveAll( CPropTree *, CPropTreeItem* pItem, LPARAM );
+	static BOOL CALLBACK EnumRefreshAll( CPropTree *, CPropTreeItem* pItem, LPARAM );
 
 	// Generated message map functions
 protected:

@@ -32,19 +32,19 @@ If you have questions concerning this license or the applicable additional terms
 //#include "../../framework/sync/Msg.h"
 
 #ifndef REGISTRYOPTIONS_H_
-	#include "../common/RegistryOptions.h"
+#include "../common/RegistryOptions.h"
 #endif
 
 #ifndef DEBUGGERWINDOW_H_
-	#include "DebuggerWindow.h"
+#include "DebuggerWindow.h"
 #endif
 
 #ifndef DEBUGGERMESSAGES_H_
-	#include "DebuggerMessages.h"
+#include "DebuggerMessages.h"
 #endif
 
 #ifndef DEBUGGERCLIENT_H_
-	#include "DebuggerClient.h"
+#include "DebuggerClient.h"
 #endif
 
 // These were changed to static by ID so to make it easy we just throw them
@@ -52,8 +52,7 @@ If you have questions concerning this license or the applicable additional terms
 // we need a lot to be able to list all threads in mars_city1
 const int MAX_MSGLEN = 8600;
 
-class rvDebuggerApp
-{
+class rvDebuggerApp {
 public:
 
 	rvDebuggerApp( );
@@ -62,9 +61,9 @@ public:
 	bool				Initialize( HINSTANCE hInstance );
 	int					Run();
 
-	rvRegistryOptions&	GetOptions();
-	rvDebuggerClient&	GetClient();
-	rvDebuggerWindow&	GetWindow();
+	rvRegistryOptions	& GetOptions();
+	rvDebuggerClient	& GetClient();
+	rvDebuggerWindow	& GetWindow();
 
 	HINSTANCE			GetInstance();
 
@@ -73,7 +72,7 @@ public:
 protected:
 
 	rvRegistryOptions	mOptions;
-	rvDebuggerWindow*	mDebuggerWindow;
+	rvDebuggerWindow	* mDebuggerWindow;
 	HINSTANCE			mInstance;
 	rvDebuggerClient	mClient;
 	HACCEL				mAccelerators;
@@ -84,23 +83,19 @@ private:
 	bool	ProcessWindowMessages();
 };
 
-ID_INLINE HINSTANCE rvDebuggerApp::GetInstance()
-{
+ID_INLINE HINSTANCE rvDebuggerApp::GetInstance() {
 	return mInstance;
 }
 
-ID_INLINE rvDebuggerClient& rvDebuggerApp::GetClient()
-{
+ID_INLINE rvDebuggerClient & rvDebuggerApp::GetClient() {
 	return mClient;
 }
 
-ID_INLINE rvRegistryOptions& rvDebuggerApp::GetOptions()
-{
+ID_INLINE rvRegistryOptions & rvDebuggerApp::GetOptions() {
 	return mOptions;
 }
 
-ID_INLINE rvDebuggerWindow& rvDebuggerApp::GetWindow()
-{
+ID_INLINE rvDebuggerWindow & rvDebuggerApp::GetWindow() {
 	assert( mDebuggerWindow );
 	return *mDebuggerWindow;
 }

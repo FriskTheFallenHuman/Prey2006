@@ -35,32 +35,27 @@ If you have questions concerning this license or the applicable additional terms
 #include "zclip.h"
 
 
-CZClip::CZClip()
-{
+CZClip::CZClip() {
 	LONG
 	lSize = sizeof( m_bEnabled );
-	if( !LoadRegistryInfo( "radiant_ZClipEnabled",	&m_bEnabled, &lSize ) )
-	{
+	if ( !LoadRegistryInfo( "radiant_ZClipEnabled",	&m_bEnabled, &lSize ) ) {
 		m_bEnabled = false;
 	}
 
 	lSize = sizeof( m_iZClipTop );
-	if( !LoadRegistryInfo( "radiant_ZClipTop",		&m_iZClipTop, &lSize ) )
-	{
+	if ( !LoadRegistryInfo( "radiant_ZClipTop",		&m_iZClipTop, &lSize ) ) {
 		m_iZClipTop = 64;
 	}
 
 	lSize = sizeof( m_iZClipBottom );
-	if( !LoadRegistryInfo( "radiant_ZClipBottom",	&m_iZClipBottom, &lSize ) )
-	{
+	if ( !LoadRegistryInfo( "radiant_ZClipBottom",	&m_iZClipBottom, &lSize ) ) {
 		m_iZClipBottom = -64;
 	}
 
 	Legalise();
 }
 
-CZClip::~CZClip()
-{
+CZClip::~CZClip() {
 	// TODO: registry save
 
 	SaveRegistryInfo( "radiant_ZClipEnabled", &m_bEnabled,		sizeof( m_bEnabled ) );
@@ -68,8 +63,7 @@ CZClip::~CZClip()
 	SaveRegistryInfo( "radiant_ZClipBottom",  &m_iZClipBottom,	sizeof( m_iZClipBottom ) );
 }
 
-void CZClip::Reset()
-{
+void CZClip::Reset() {
 	m_iZClipTop		= 64;		// arb. starting values, but must be at least 64 apart
 	m_iZClipBottom	= -64;
 	m_bEnabled		= false;
@@ -78,22 +72,18 @@ void CZClip::Reset()
 }
 
 
-int	CZClip::GetTop()
-{
+int	CZClip::GetTop() {
 	return m_iZClipTop;
 }
 
-int CZClip::GetBottom()
-{
+int CZClip::GetBottom() {
 	return m_iZClipBottom;
 }
 
-void CZClip::Legalise()
-{
+void CZClip::Legalise() {
 	// need swapping?
 	//
-	if( m_iZClipTop < m_iZClipBottom )
-	{
+	if ( m_iZClipTop < m_iZClipBottom ) {
 		int iTemp = m_iZClipTop;
 		m_iZClipTop = m_iZClipBottom;
 		m_iZClipBottom = iTemp;
@@ -103,35 +93,30 @@ void CZClip::Legalise()
 	//
 #define ZCLIP_MIN_SPACING 64
 
-	if( abs( m_iZClipTop - m_iZClipBottom ) < ZCLIP_MIN_SPACING )
-	{
+	if ( abs( m_iZClipTop - m_iZClipBottom ) < ZCLIP_MIN_SPACING ) {
 		m_iZClipBottom = m_iZClipTop - ZCLIP_MIN_SPACING;
 	}
 }
 
 
-void CZClip::SetTop( int iNewZ )
-{
+void CZClip::SetTop( int iNewZ ) {
 	m_iZClipTop = iNewZ;
 
 	Legalise();
 }
 
-void CZClip::SetBottom( int iNewZ )
-{
+void CZClip::SetBottom( int iNewZ ) {
 	m_iZClipBottom = iNewZ;
 
 	Legalise();
 }
 
-bool CZClip::IsEnabled()
-{
+bool CZClip::IsEnabled() {
 	return m_bEnabled;
 }
 
 
-bool CZClip::Enable( bool bOnOff )
-{
+bool CZClip::Enable( bool bOnOff ) {
 	m_bEnabled = !m_bEnabled;
 	return IsEnabled();
 }
@@ -139,8 +124,7 @@ bool CZClip::Enable( bool bOnOff )
 #define ZCLIP_BAR_THICKNESS 8
 #define ZCLIP_ARROWHEIGHT (ZCLIP_BAR_THICKNESS*8)
 
-void CZClip::Paint()
-{
+void CZClip::Paint() {
 	float	x, y;
 	int	xCam = z.width / 4;	// hmmm, a rather unpleasant and obscure global name, but it was already called that so...
 
@@ -151,12 +135,9 @@ void CZClip::Paint()
 	x = 0;
 	y = m_iZClipTop;
 
-	if( m_bEnabled )
-	{
+	if ( m_bEnabled ) {
 		qglBegin( GL_QUADS );
-	}
-	else
-	{
+	} else {
 		qglBegin( GL_LINE_LOOP );
 	}
 
@@ -168,12 +149,9 @@ void CZClip::Paint()
 
 	qglColor3f( ZCLIP_COLOUR_DIM ); //0.8, 0.0, 0.8);
 
-	if( m_bEnabled )
-	{
+	if ( m_bEnabled ) {
 		qglBegin( GL_TRIANGLES );
-	}
-	else
-	{
+	} else {
 		qglBegin( GL_LINE_LOOP );
 	}
 	qglVertex3f( x, ( y + ZCLIP_BAR_THICKNESS ), 0 );
@@ -187,12 +165,9 @@ void CZClip::Paint()
 	x = 0;
 	y = m_iZClipBottom;
 
-	if( m_bEnabled )
-	{
+	if ( m_bEnabled ) {
 		qglBegin( GL_QUADS );
-	}
-	else
-	{
+	} else {
 		qglBegin( GL_LINE_LOOP );
 	}
 	qglVertex3f( x - xCam, y, 0 );
@@ -203,12 +178,9 @@ void CZClip::Paint()
 
 	qglColor3f( ZCLIP_COLOUR_DIM ); //0.8, 0.0, 0.8);
 
-	if( m_bEnabled )
-	{
+	if ( m_bEnabled ) {
 		qglBegin( GL_TRIANGLES );
-	}
-	else
-	{
+	} else {
 		qglBegin( GL_LINE_LOOP );
 	}
 	qglVertex3f( x, ( y - ZCLIP_BAR_THICKNESS ), 0 );

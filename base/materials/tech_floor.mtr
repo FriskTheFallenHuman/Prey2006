@@ -1,0 +1,896 @@
+
+textures/tech_floor/techfloor20
+{
+	qer_editorimage 	textures/tech_floor/techfloor20_proxy
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/techfloor20_local, heightmap (textures/tech_floor/techfloor20_h, 3))
+
+	diffusemap	 	textures/tech_floor/techfloor20_d
+	specularmap		textures/tech_floor/techfloor20_s
+
+}
+
+textures/tech_floor/techfloor_022
+{
+	qer_editorimage 	textures/tech_floor/techfloor_022_proxy
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/techfloor_022_local, heightmap (textures/tech_floor/techfloor_022_h, 3))
+
+	diffusemap	 	textures/tech_floor/techfloor_022_d
+	specularmap		textures/tech_floor/techfloor_022_s
+
+}
+
+
+textures/tech_floor/biotechfloor1
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor1_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor1_local,
+			heightmap (textures/tech_floor/biotechfloor1_h, 6))
+
+	diffusemap	 	textures/tech_floor/biotechfloor1_d
+	specularmap		textures/tech_floor/biotechfloor1_s
+
+}
+
+textures/tech_floor/biotechfloor1b
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor1b_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor1b_local,
+			heightmap (textures/tech_floor/biotechfloor1_h, 6))
+
+	diffusemap	 	textures/tech_floor/biotechfloor1b_d
+	specularmap		textures/tech_floor/biotechfloor1b_s
+
+}
+
+
+textures/tech_floor/biotechfloor2
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor2_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor2_local,
+			heightmap (textures/tech_floor/biotechfloor2_h, 6))
+
+	diffusemap	 	textures/tech_floor/biotechfloor2_d
+	specularmap		textures/tech_floor/biotechfloor2_s
+
+}
+
+textures/tech_floor/biotechfloor2b
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor2b_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor2b_local,
+			heightmap (textures/tech_floor/biotechfloor2b_h, 6))
+
+	diffusemap	 	textures/tech_floor/biotechfloor2b_d
+	specularmap		textures/tech_floor/biotechfloor2b_s
+
+}
+
+textures/tech_floor/biotechfloor3
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor3_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor3_local,
+			heightmap (textures/tech_floor/biotechfloor3_h, 6))
+
+	diffusemap	 	textures/tech_floor/biotechfloor3_d
+	specularmap		textures/tech_floor/biotechfloor3_s
+
+}
+
+textures/tech_floor/biotechfloor3b
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor3_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor3b_local,
+			heightmap (textures/tech_floor/biotechfloor3_h, 6))
+
+	diffusemap	 	textures/tech_floor/biotechfloor3_d
+	specularmap		textures/tech_floor/biotechfloor3_s
+
+}
+textures/tech_floor/biotechfloor4
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor4_proxy
+	matter_metal
+
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor4_local,
+			heightmap (textures/tech_floor/biotechfloor4_h, 4))
+
+	diffusemap	 	textures/tech_floor/biotechfloor4_d
+	specularmap		textures/tech_floor/biotechfloor4_s
+
+}
+
+
+textures/tech_floor/biotechfloor5
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor5_local
+	matter_metal
+
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor5_local,
+			heightmap (textures/tech_floor/biotechfloor5_h, 6))
+
+	diffusemap	 	textures/tech_floor/biotechfloor5_d
+	specularmap		textures/tech_floor/biotechfloor5_s
+
+}
+
+textures/tech_floor/biotechfloor5b
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor5_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor5b_local,
+			heightmap (textures/tech_floor/biotechfloor5_h, 6))
+
+	diffusemap	 	textures/tech_floor/biotechfloor5_d
+	specularmap		textures/tech_floor/biotechfloor5b_s
+
+}
+
+textures/tech_floor/biotechfloor6
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor6_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor6_local,
+			heightmap (textures/tech_floor/biotechfloor6_h, 6))
+
+	diffusemap	 	textures/tech_floor/biotechfloor6_d
+	specularmap		textures/tech_floor/biotechfloor6_s
+
+}
+
+textures/tech_floor/biotechfloor7
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor7_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor7_local,
+			heightmap (textures/tech_floor/biotechfloor8_h, 6))
+
+	diffusemap	 	textures/tech_floor/biotechfloor7_d
+	specularmap		textures/tech_floor/biotechfloor7_s
+
+}
+
+textures/tech_floor/biotechfloor8
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor8_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor8_local,
+			heightmap (textures/tech_floor/biotechfloor8_h, 6))
+
+	diffusemap	 	textures/tech_floor/biotechfloor8_d
+	specularmap		textures/tech_floor/biotechfloor8_s
+
+}
+
+textures/tech_floor/biotechfloor9
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor9_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor9_local,
+			heightmap (textures/tech_floor/biotechfloor9_h, 6))
+
+	diffusemap	 	textures/tech_floor/biotechfloor9_d
+	specularmap		textures/tech_floor/biotechfloor9_s
+
+}
+
+
+textures/tech_floor/biotechfloor10
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor10_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor10_local,
+			heightmap (textures/tech_floor/biotechfloor10_h, 6))
+
+	diffusemap	 	textures/tech_floor/biotechfloor10_d
+	specularmap		textures/tech_floor/biotechfloor10_s
+
+}
+
+textures/tech_floor/biotechfloor10b
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor10b_proxy
+	matter_metal
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor10b_local,
+			heightmap (textures/tech_floor/biotechfloor10b_h, 0.7))
+	diffusemap	 	textures/tech_floor/biotechfloor10b_d
+	specularmap		textures/tech_floor/biotechfloor10b_s
+}
+textures/tech_floor/kf_floor_06b
+{
+	qer_editorimage 	textures/tech_floor/kf_floor_06b
+	matter_metal
+	bumpmap 	addnormals (textures/tech_floor/kf_floor_06b_local,
+			heightmap (textures/tech_floor/kf_floor_06b_h, 0.7))
+	diffusemap	 	textures/tech_floor/kf_floor_06b_d
+	specularmap		textures/tech_floor/kf_floor_06b_s
+}
+
+textures/tech_floor/kf_techfloor10b
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor10b_local
+	matter_metal
+	bumpmap 		addnormals (textures/tech_floor/biotechfloor10b_local,
+			heightmap (textures/tech_floor/kf_techfloor10b_h, 0.7))
+	diffusemap	 	textures/tech_floor/kf_techfloor10b_d
+	specularmap		textures/tech_floor/kf_techfloor10b_s
+}
+
+textures/tech_floor/kf_techfloor10c
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor10b_local
+	matter_metal
+	bumpmap 		addnormals (textures/tech_floor/biotechfloor10b_local,
+			heightmap (textures/tech_floor/kf_techfloor10b_h, 0.7))
+	diffusemap	 	textures/tech_floor/kf_techfloor10c_d
+	specularmap		textures/tech_floor/kf_techfloor10b_s
+}
+
+textures/tech_floor/biotechfloor11
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor11_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor11_local,
+			heightmap (textures/tech_floor/biotechfloor10_h, 6))
+
+	diffusemap	 	textures/tech_floor/biotechfloor11_d
+	specularmap		textures/tech_floor/biotechfloor11_s
+
+}
+
+textures/tech_floor/biotechfloor12
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor12_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor12_local,
+			heightmap (textures/tech_floor/biotechfloor8_h, 6))
+
+	diffusemap	 	textures/tech_floor/biotechfloor12_d
+	specularmap		textures/tech_floor/biotechfloor12_s
+
+}
+
+textures/tech_floor/biotechfloor13
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor13_d
+	matter_metal
+
+	bumpmap 	heightmap (textures/tech_floor/biotechfloor13_h, 7)
+
+	diffusemap	 	textures/tech_floor/biotechfloor13_d
+	specularmap		textures/tech_floor/biotechfloor13_s
+
+}
+textures/tech_floor/biotechfloor14
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor14_d
+	matter_metal
+
+	bumpmap 	heightmap (textures/tech_floor/biotechfloor14_h, 7)
+
+	diffusemap	 	textures/tech_floor/biotechfloor14_d
+	specularmap		textures/tech_floor/biotechfloor14_s
+
+}
+
+
+
+textures/tech_floor/biotechfloor_100
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor_100_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor_100_local,
+			heightmap (textures/tech_floor/biotechfloor_100_h, 6))
+
+	diffusemap	 	textures/tech_floor/biotechfloor_100_d
+	specularmap		textures/tech_floor/biotechfloor_100_s
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//==========================================
+//
+//
+//
+//	old versions
+//
+//
+//
+//==========================================
+
+
+
+
+
+
+
+
+
+
+
+//----------------------------------------------------------
+textures/tech_floor/techfloor_040
+{
+	qer_editorimage 	textures/tech_floor/techfloor_040_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/techfloor_040_local, heightmap (textures/tech_floor/techfloor_040_h, 6))
+
+	diffusemap	 	textures/tech_floor/techfloor_040_d
+	specularmap		textures/tech_floor/techfloor_040_s
+
+}
+
+
+textures/tech_floor/techfloor_040_add
+{
+	qer_editorimage 	textures/tech_floor/techfloor_040_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/techfloor_040_local, heightmap (textures/tech_floor/techfloor_040_h, 6))
+
+	diffusemap	 	textures/tech_floor/techfloor_040_d
+	specularmap		textures/tech_floor/techfloor_040_s
+
+	{
+		blend add
+		map textures/tech_floor/techfloor_040_add
+		rgb (.2 * sintable [.15 + time * .5 ]) + .7
+	}
+}
+
+textures/tech_floor/techfloor_041
+{
+	qer_editorimage 	textures/tech_floor/techfloor_041_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/techfloor_041_local, heightmap (textures/tech_floor/techfloor_041_h, 6))
+
+	diffusemap	 	textures/tech_floor/techfloor_041_d
+	specularmap		textures/tech_floor/techfloor_041_s
+
+}
+textures/tech_floor/techfloor_042
+{
+	qer_editorimage 	textures/tech_floor/techfloor_042_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/techfloor_042_local, heightmap (textures/tech_floor/techfloor_042_h, 6))
+
+	diffusemap	 	textures/tech_floor/techfloor_042_d
+	specularmap		textures/tech_floor/techfloor_042_s
+
+}
+textures/tech_floor/techfloor_043
+{
+	matter_altmetal
+	noshadows
+	twosided
+	qer_editorimage 	textures/tech_floor/techfloor_043_local
+
+
+	{
+		blend bumpmap
+		map 	addnormals (textures/tech_floor/techfloor_043_local, heightmap (textures/tech_floor/techfloor_043_h, 6))
+
+	}
+	{
+		blend diffusemap
+		map	textures/tech_floor/techfloor_043_d
+		alphatest 0.3
+	}
+	{
+		blend specularmap
+		map	textures/tech_floor/techfloor_043_s
+	}
+
+}
+textures/tech_floor/techfloor_044
+{
+	qer_editorimage		textures/tech_floor/techfloor_044_d
+	matter_metal
+
+	bumpmap			addnormals (textures/tech_floor/techfloor_044_local, heightmap (textures/tech_floor/techfloor_044_h, 6))
+
+	diffusemap		textures/tech_floor/techfloor_044_d
+	specularmap		textures/tech_floor/techfloor_044_s
+}
+
+
+//==========================================
+//
+//
+//
+//	clean revisions
+//
+//
+//
+//==========================================
+
+
+textures/tech_floor/techfloor_040clean
+{
+	qer_editorimage 	textures/tech_floor/techfloor_040clean_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/techfloor_040clean_local, heightmap (textures/tech_floor/techfloor_040clean_h, 6))
+
+	diffusemap	 	textures/tech_floor/techfloor_040clean_d
+	specularmap		textures/tech_floor/techfloor_040clean_s
+
+}
+
+textures/tech_floor/techfloor_041clean
+{
+	qer_editorimage 	textures/tech_floor/techfloor_041_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/techfloor_041_local, heightmap (textures/tech_floor/techfloor_041clean_h, 6))
+
+	diffusemap	 	textures/tech_floor/techfloor_041clean_d
+	specularmap		textures/tech_floor/techfloor_041clean_s
+
+}
+
+textures/tech_floor/techfloor_042clean
+{
+	qer_editorimage 	textures/tech_floor/techfloor_042clean_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/techfloor_042clean_local, heightmap (textures/tech_floor/techfloor_042clean_h, 6))
+
+	diffusemap	 	textures/tech_floor/techfloor_042clean_d
+	specularmap		textures/tech_floor/techfloor_042clean_s
+
+}
+
+textures/tech_floor/techfloor_043clean
+{
+	qer_editorimage 	textures/tech_floor/techfloor_043_local
+	matter_altmetal
+
+	bumpmap 		addnormals (textures/tech_floor/techfloor_043_local, heightmap (textures/tech_floor/techfloor_043clean_h, 6))
+
+	{
+		blend diffusemap
+		map	textures/tech_floor/techfloor_043clean_d
+		alphatest 0.3
+	}
+	specularmap		textures/tech_floor/techfloor_043clean_s
+}
+
+
+
+//==================================================
+//
+//keeper fortress
+//
+//==================================================
+
+textures/tech_floor/kf_biotechfloor10b
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor10b_proxy
+	matter_metal
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor10b_local,
+			heightmap (textures/tech_floor/biotechfloor10b_h, 0.7))
+	diffusemap	 	textures/tech_floor/biotechfloor10b_d
+	specularmap		textures/tech_floor/biotechfloor10b_s
+}
+
+textures/tech_floor/kf_biotechfloor10b_dissolve
+{
+	qer_editorimage 	textures/tech_floor/biotechfloor10b_proxy
+	matter_metal
+	bumpmap
+	addnormals			(textures/tech_floor/biotechfloor10b_local,
+	heightmap			(textures/tech_floor/biotechfloor10b_h, 0.7))
+	diffusemap	 		textures/tech_floor/biotechfloor10b_d
+	specularmap			textures/tech_floor/biotechfloor10b_s
+	{
+		if ( parm5 == 0 )
+		blend none
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest 1 - ( time + parm4 ) * 0.5
+	}
+	{
+		if ( parm5 > 0 ) //fade out
+		blend none
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest ( time + parm4 ) * 0.5
+	}
+		{
+		if ( parm5 == 0 ) //fade out
+		privatepolygonoffset	-1
+		blend add
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest 1 - ( time + parm4 ) * 0.5 + 0.1
+		rgb 2
+		glowStage
+	}
+	{
+		if ( parm5 > 0 ) //fade out
+		privatepolygonoffset	-1
+		blend add
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest ( time + parm4 ) * 0.5 - 0.1
+		rgb 2
+		glowStage
+	}
+}
+
+textures/tech_floor/kf_biotechfloor11
+{
+	qer_editorimage 	textures/tech_floor/kf_biotechfloor11_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/tech_floor/biotechfloor11_local,
+			heightmap (textures/tech_floor/biotechfloor10_h, 6))
+
+	diffusemap	 	textures/tech_floor/kf_biotechfloor11_d
+	specularmap		textures/tech_floor/kf_biotechfloor11_s
+
+}
+
+
+textures/tech_floor/kf_techfloor_041clean
+{
+	qer_editorimage 	textures/tech_floor/techfloor_041_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/techfloor_041_local,
+				heightmap (textures/tech_floor/techfloor_041clean_h, 6))
+
+	diffusemap	 	textures/tech_floor/techfloor_041clean_d
+	specularmap		textures/tech_floor/techfloor_041clean_s
+
+}
+
+
+textures/tech_floor/kf_techfloor_041bclean
+{
+	qer_editorimage 	textures/tech_floor/kf_techfloor_041bclean_d
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/kf_techfloor_041bclean_local,
+				heightmap (textures/tech_floor/kf_techfloor_041bclean_h, 6))
+
+	diffusemap	 	textures/tech_floor/kf_techfloor_041bclean_d
+	specularmap		textures/tech_floor/kf_techfloor_041bclean_s
+
+}
+textures/tech_floor/kf_biotechfloor_001
+{
+	qer_editorimage 	textures/tech_floor/kf_biotechfloor_001_proxy
+	matter_metal
+
+	bumpmap 		textures/tech_floor/kf_biotechfloor_001_local
+	diffusemap	 	textures/tech_floor/kf_biotechfloor_001_d
+	specularmap		textures/tech_floor/kf_biotechfloor_001_s
+
+}
+textures/tech_floor/bl_floor_01
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_01_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_01_local,
+					heightmap (textures/tech_floor/bl_floor_02_h, 6))
+
+	diffusemap	 	textures/tech_floor/bl_floor_01_d
+	specularmap		textures/tech_floor/bl_floor_01_s
+
+}
+textures/tech_floor/bl_floor_01b
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_01b_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_01b_local,
+					heightmap (textures/tech_floor/bl_floor_02_h, 6))
+
+	diffusemap	 	textures/tech_floor/bl_floor_01_d
+	specularmap		textures/tech_floor/bl_floor_01b_s
+
+}
+textures/tech_floor/bl_floor_01c
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_01c_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_01c_local,
+					heightmap (textures/tech_floor/bl_floor_01c_h, 6))
+
+	diffusemap	 	textures/tech_floor/bl_floor_01c_d
+	specularmap		textures/tech_floor/bl_floor_01c_s
+
+}
+
+textures/tech_floor/bl_floor_02
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_02_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_02_local,
+					heightmap (textures/tech_floor/bl_floor_02_h, 6))
+
+	diffusemap	 	textures/tech_floor/bl_floor_02_d
+	specularmap		textures/tech_floor/bl_floor_02_s
+
+}
+
+textures/tech_floor/bl_floor_02b
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_02_local
+	matter_metal
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_02_local,
+					heightmap (textures/tech_floor/bl_floor_02_h, 6))
+	diffusemap	 	textures/tech_floor/bl_floor_02_d
+	specularmap		textures/tech_floor/bl_floor_02_s
+	{
+		blend add
+		map textures/tech_floor/bl_floor_02b_add
+	}
+}
+
+textures/tech_floor/bl_floor_02c
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_02c_local
+	matter_metal
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_02c_local,
+					heightmap (textures/tech_floor/bl_floor_02_h, 6))
+	diffusemap	 	textures/tech_floor/bl_floor_02_d
+	specularmap		textures/tech_floor/bl_floor_02c_s
+}
+
+textures/tech_floor/bl_floor_03
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_03_d
+	matter_metal
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_03_local,
+				heightmap (textures/tech_floor/bl_floor_02_h, 6))
+	diffusemap	 	textures/tech_floor/bl_floor_03_d
+	specularmap		textures/tech_floor/bl_floor_03_s
+	{
+		blend add
+		map textures/tech_floor/bl_floor_03_add
+	}
+}
+
+textures/tech_floor/bl_floor_04
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_04_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_04_local,
+					heightmap (textures/tech_floor/bl_floor_04_h, 6))
+
+	diffusemap	 	textures/tech_floor/bl_floor_04_d
+	specularmap		textures/tech_floor/bl_floor_04_s
+
+}
+
+textures/tech_floor/bl_floor_04b
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_04b_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_04b_local,
+					heightmap (textures/tech_floor/bl_floor_04_h, 6))
+
+	diffusemap	 	textures/tech_floor/bl_floor_04_d
+	specularmap		textures/tech_floor/bl_floor_04b_s
+
+}
+
+textures/tech_floor/bl_floor_05
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_05_d
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_05_local,
+				heightmap (textures/tech_wall/bl_wall_01_h, 6))
+
+	diffusemap	 	textures/tech_floor/bl_floor_05_d
+	specularmap		textures/tech_floor/bl_floor_05_s
+
+}
+
+textures/tech_floor/bl_floor_05b
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_05b_d
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_05b_local,
+				heightmap (textures/tech_wall/bl_wall_01_h, 6))
+
+	diffusemap	 	textures/tech_floor/bl_floor_05b_d
+	specularmap		textures/tech_floor/bl_floor_05b_s
+
+}
+
+textures/tech_floor/bl_floor_05b_add
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_05b_d
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_05b_local,
+				heightmap (textures/tech_wall/bl_wall_01_h, 6))
+
+	diffusemap	 	textures/tech_floor/bl_floor_05b_d
+	specularmap		textures/tech_floor/bl_floor_05b_s
+	{
+		blend add
+		map textures/tech_floor/bl_floor_05b_add
+	}
+}
+
+textures/tech_floor/bl_floor_06
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_06_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_06_local,
+				heightmap (textures/tech_floor/bl_floor_06_h, 6))
+
+	diffusemap	 	textures/tech_floor/bl_floor_06_d
+	specularmap		textures/tech_floor/bl_floor_06_s
+
+}
+textures/tech_floor/bl_floor_06b
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_06b_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_06b_local,
+				heightmap (textures/tech_floor/bl_floor_06_h, 6))
+
+	diffusemap	 	textures/tech_floor/bl_floor_06_d
+	specularmap		textures/tech_floor/bl_floor_06b_s
+
+}
+textures/tech_floor/bl_floor_07
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_07_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_07_local,
+				heightmap (textures/tech_floor/bl_floor_07_h, 6))
+
+	diffusemap	 	textures/tech_floor/bl_floor_07_d
+	specularmap		textures/tech_floor/bl_floor_07_s
+
+}
+textures/tech_floor/bl_floor_07b
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_07b_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_07b_local,
+				heightmap (textures/tech_floor/bl_floor_07b_h, 6))
+
+	diffusemap	 	textures/tech_floor/bl_floor_07b_d
+	specularmap		textures/tech_floor/bl_floor_07b_s
+
+}
+textures/tech_floor/bl_floor_08
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_08_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_08_local,
+				heightmap (textures/tech_floor/bl_floor_08_h, 6))
+
+	diffusemap	 	textures/tech_floor/bl_floor_08_d
+	specularmap		textures/tech_floor/bl_floor_08_s
+
+}
+textures/tech_floor/bl_floor_08b
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_08b_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_08b_local,
+				heightmap (textures/tech_floor/bl_floor_08_h, 6))
+
+	diffusemap	 	textures/tech_floor/bl_floor_08_d
+	specularmap		textures/tech_floor/bl_floor_08b_s
+
+}
+textures/tech_floor/bl_floor_09
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_09_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_09_local,
+				heightmap (textures/tech_floor/bl_floor_09_h, 6))
+
+	diffusemap	 	textures/tech_floor/bl_floor_09_d
+	specularmap		textures/tech_floor/bl_floor_09_s
+
+}
+textures/tech_floor/bl_floor_09b
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_09b_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_09b_local,
+				heightmap (textures/tech_floor/bl_floor_09b_h, 6))
+
+	diffusemap	 	textures/tech_floor/bl_floor_09b_d
+	specularmap		textures/tech_floor/bl_floor_09b_s
+
+}
+textures/tech_floor/bl_floor_10
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_10_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_10_local,
+				heightmap (textures/tech_floor/bl_floor_01c_h, 6))
+
+	diffusemap	 	textures/tech_floor/bl_floor_10_d
+	specularmap		textures/tech_floor/bl_floor_10_s
+
+}
+textures/tech_floor/bl_floor_10b
+{
+	qer_editorimage 	textures/tech_floor/bl_floor_10b_d
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/bl_floor_10b_local,
+				heightmap (textures/tech_wall/bl_wall_01_h, 6))
+
+	diffusemap	 	textures/tech_floor/bl_floor_10b_d
+	specularmap		textures/tech_floor/bl_floor_10b_s
+
+}
+
+// for dmwallwalk2
+
+textures/tech_floor/techfloor_040dark
+{
+	qer_editorimage 	textures/tech_floor/techfloor_040clean_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_floor/techfloor_040clean_local, heightmap (textures/tech_floor/techfloor_040clean_h, 6))
+
+	diffusemap	 	textures/tech_floor/techfloor_040dark_d
+	specularmap		textures/tech_floor/techfloor_040dark_s
+
+}

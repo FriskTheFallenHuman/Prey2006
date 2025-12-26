@@ -33,8 +33,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogDeclBrowser dialog
 
-class DialogDeclBrowser : public CDialog
-{
+class DialogDeclBrowser : public CDialog {
 
 	DECLARE_DYNAMIC( DialogDeclBrowser )
 
@@ -43,7 +42,7 @@ public:
 	virtual				~DialogDeclBrowser();
 
 	void				ReloadDeclarations();
-	bool				CompareDecl( HTREEITEM item, const char* name ) const;
+	bool				CompareDecl( HTREEITEM item, const char * name ) const;
 
 	//{{AFX_VIRTUAL(DialogDeclBrowser)
 	virtual BOOL		OnInitDialog();
@@ -96,18 +95,18 @@ private:
 	idStr				findNameString;
 	idStr				findTextString;
 
-	TCHAR* 				m_pchTip;
-	WCHAR* 				m_pwchTip;
+	TCHAR 		*		m_pchTip;
+	WCHAR 		*		m_pwchTip;
 
 private:
-	void				AddDeclTypeToTree( declType_t type, const char* root, CPathTreeCtrl& tree );
+	void				AddDeclTypeToTree( declType_t type, const char * root, CPathTreeCtrl& tree );
 	void				AddScriptsToTree( CPathTreeCtrl& tree );
 	void				AddGUIsToTree( CPathTreeCtrl& tree );
 	void				InitBaseDeclTree();
 
 	void				GetDeclName( HTREEITEM item, idStr& typeName, idStr& declName ) const;
-	const idDecl* 		GetDeclFromTreeItem( HTREEITEM item ) const;
-	const idDecl* 		GetSelectedDecl() const;
+	const idDecl 	*	GetDeclFromTreeItem( HTREEITEM item ) const;
+	const idDecl 	*	GetSelectedDecl() const;
 	void				EditSelected() const;
 };
 

@@ -31,13 +31,11 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "GEApp.h"
 
-rvGEModifier::rvGEModifier( const char* name, idWindow* window )
-{
+rvGEModifier::rvGEModifier( const char * name, idWindow* window ) {
 	mWindow  = window;
 	mName    = name;
 
-	if( mWindow )
-	{
+	if ( mWindow ) {
 		mWrapper = rvGEWindowWrapper::GetWrapper( window );
 	}
 }

@@ -112,7 +112,7 @@ protected:	// HUMANHEAD
 // idPDAItem (HUMANHEAD pdm: removed)
 
 // HUMANHEAD pdm: Now inherits from our hhItem
-#include "../prey/prey_items.h"
+#include "../Prey/prey_items.h"
 class idMoveableItem : public hhItem {
 /*
 class idMoveableItem : public idItem {

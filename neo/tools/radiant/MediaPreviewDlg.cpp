@@ -34,7 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "mediapreviewdlg.h"
 
 #ifdef _DEBUG
-	#define new DEBUG_NEW
+#define new DEBUG_NEW
 #endif
 
 // CMediaPreviewDlg dialog
@@ -44,26 +44,20 @@ IMPLEMENT_DYNAMIC( CMediaPreviewDlg, CDialogEx )
 CMediaPreviewDlg::CMediaPreviewDlg( CWnd* pParent )
 	: CDialogEx( CMediaPreviewDlg::IDD, pParent ),
 	  mode( MATERIALS ),
-	  media( "" )
-{
+	  media( "" ) {
 }
 
-void CMediaPreviewDlg::SetMedia( const char* _media )
-{
+void CMediaPreviewDlg::SetMedia( const char * _media ) {
 	media = _media;
 	Refresh();
 }
 
-void CMediaPreviewDlg::Refresh()
-{
-	if( mode == GUIS )
-	{
+void CMediaPreviewDlg::Refresh() {
+	if ( mode == GUIS ) {
 		const idMaterial* mat = declManager->FindMaterial( "guisurfs/guipreview" );
 		mat->SetGui( media );
 		drawMaterial.setMedia( "guisurfs/guipreview" );
-	}
-	else
-	{
+	} else {
 		drawMaterial.setMedia( media );
 	}
 	drawMaterial.setScale( 20.0f );
@@ -73,12 +67,10 @@ void CMediaPreviewDlg::Refresh()
 	RedrawWindow();
 }
 
-CMediaPreviewDlg::~CMediaPreviewDlg()
-{
+CMediaPreviewDlg::~CMediaPreviewDlg() {
 }
 
-void CMediaPreviewDlg::DoDataExchange( CDataExchange* pDX )
-{
+void CMediaPreviewDlg::DoDataExchange( CDataExchange* pDX ) {
 	CDialogEx::DoDataExchange( pDX );
 	DDX_Control( pDX, IDC_PREVIEW, wndPreview );
 }
@@ -93,15 +85,13 @@ END_MESSAGE_MAP()
 
 // CMediaPreviewDlg message handlers
 
-BOOL CMediaPreviewDlg::OnInitDialog()
-{
+BOOL CMediaPreviewDlg::OnInitDialog() {
 	CDialogEx::OnInitDialog();
 
 	wndPreview.setDrawable( &testDrawable );
 	CRect rct;
 	LONG lSize = sizeof( rct );
-	if( LoadRegistryInfo( "Radiant::EditPreviewWindow", &rct, &lSize ) )
-	{
+	if ( LoadRegistryInfo( "Radiant::EditPreviewWindow", &rct, &lSize ) ) {
 		SetWindowPos( nullptr, rct.left, rct.top, rct.Width(), rct.Height(), SWP_SHOWWINDOW );
 	}
 
@@ -112,16 +102,14 @@ BOOL CMediaPreviewDlg::OnInitDialog()
 	return TRUE;
 }
 
-void CMediaPreviewDlg::OnSize( UINT nType, int cx, int cy )
-{
+void CMediaPreviewDlg::OnSize( UINT nType, int cx, int cy ) {
 
 	float scaling_factor = Win_GetWindowScalingFactor( GetSafeHwnd() );
 	int s8 = int( 8 * scaling_factor );
 	int s4 = int( 4 * scaling_factor );
 
 	CDialogEx::OnSize( nType, cx, cy );
-	if( wndPreview.GetSafeHwnd() == nullptr )
-	{
+	if ( wndPreview.GetSafeHwnd() == nullptr ) {
 		return;
 	}
 	CRect rect;
@@ -130,10 +118,8 @@ void CMediaPreviewDlg::OnSize( UINT nType, int cx, int cy )
 	wndPreview.SetWindowPos( nullptr, s4, s4, rect.Width() - s8, h, SWP_SHOWWINDOW );
 }
 
-void CMediaPreviewDlg::OnDestroy()
-{
-	if( GetSafeHwnd() )
-	{
+void CMediaPreviewDlg::OnDestroy() {
+	if ( GetSafeHwnd() ) {
 		CRect rct;
 		GetWindowRect( rct );
 		SaveRegistryInfo( "radiant_editpreviewwindow", &rct, sizeof( rct ) );
@@ -142,13 +128,10 @@ void CMediaPreviewDlg::OnDestroy()
 	CDialogEx::OnDestroy();
 }
 
-void CMediaPreviewDlg::OnLButtonDown( UINT nFlags, CPoint point )
-{
-	if( mode == GUIS )
-	{
+void CMediaPreviewDlg::OnLButtonDown( UINT nFlags, CPoint point ) {
+	if ( mode == GUIS ) {
 		idUserInterface* gui = uiManager->FindGui( media );
-		if( gui )
-		{
+		if ( gui ) {
 			sysEvent_t ev;
 			memset( &ev, 0, sizeof( ev ) );
 			ev.evType = SE_KEY;
@@ -160,13 +143,10 @@ void CMediaPreviewDlg::OnLButtonDown( UINT nFlags, CPoint point )
 	CDialogEx::OnLButtonDown( nFlags, point );
 }
 
-void CMediaPreviewDlg::OnLButtonUp( UINT nFlags, CPoint point )
-{
-	if( mode == GUIS )
-	{
+void CMediaPreviewDlg::OnLButtonUp( UINT nFlags, CPoint point ) {
+	if ( mode == GUIS ) {
 		idUserInterface* gui = uiManager->FindGui( media );
-		if( gui )
-		{
+		if ( gui ) {
 			sysEvent_t ev;
 			memset( &ev, 0, sizeof( ev ) );
 			ev.evType = SE_KEY;
@@ -178,13 +158,10 @@ void CMediaPreviewDlg::OnLButtonUp( UINT nFlags, CPoint point )
 	CDialogEx::OnLButtonUp( nFlags, point );
 }
 
-void CMediaPreviewDlg::OnMouseMove( UINT nFlags, CPoint point )
-{
-	if( mode == GUIS )
-	{
+void CMediaPreviewDlg::OnMouseMove( UINT nFlags, CPoint point ) {
+	if ( mode == GUIS ) {
 		idUserInterface* gui = uiManager->FindGui( media );
-		if( gui )
-		{
+		if ( gui ) {
 			CRect rct;
 			wndPreview.GetClientRect( rct );
 			sysEvent_t ev;

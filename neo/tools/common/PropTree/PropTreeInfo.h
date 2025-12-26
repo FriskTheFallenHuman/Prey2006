@@ -2,7 +2,7 @@
 #define AFX_PROPTREEINFO_H__22BD9C18_A68C_4BB8_B7FC_C4A7DA0E1EBF__INCLUDED_
 
 #if _MSC_VER > 1000
-	#pragma once
+#pragma once
 #endif // _MSC_VER > 1000
 // PropTreeInfo.h : header file
 //
@@ -28,8 +28,7 @@ class CPropTree;
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeInfo window
 
-class PROPTREE_API CPropTreeInfo : public CStatic
-{
+class PROPTREE_API CPropTreeInfo : public CStatic {
 // Construction
 public:
 	CPropTreeInfo();
@@ -40,7 +39,7 @@ public:
 	void SetPropOwner( CPropTree* pProp );
 
 protected:
-	CPropTree*		m_pProp;
+	CPropTree	*	m_pProp;
 
 // Operations
 public:

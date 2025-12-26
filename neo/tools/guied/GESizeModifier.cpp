@@ -32,9 +32,8 @@ If you have questions concerning this license or the applicable additional terms
 #include "GEApp.h"
 #include "GESizeModifier.h"
 
-rvGESizeModifier::rvGESizeModifier( const char* name, idWindow* window, float l, float t, float r, float b ) :
-	rvGEModifier( name, window )
-{
+rvGESizeModifier::rvGESizeModifier( const char * name, idWindow* window, float l, float t, float r, float b ) :
+	rvGEModifier( name, window ) {
 	mOldRect = mWrapper->GetClientRect( );
 
 	mNewRect[0] = mOldRect[0] + l;
@@ -43,33 +42,28 @@ rvGESizeModifier::rvGESizeModifier( const char* name, idWindow* window, float l,
 	mNewRect[3] = mOldRect[3] + b - t;
 }
 
-bool rvGESizeModifier::Merge( rvGEModifier* mergebase )
-{
-	rvGESizeModifier* merge = ( rvGESizeModifier* ) mergebase;
+bool rvGESizeModifier::Merge( rvGEModifier* mergebase ) {
+	rvGESizeModifier* merge = ( rvGESizeModifier * ) mergebase;
 
 	mNewRect = merge->mNewRect;
 
 	return true;
 }
 
-bool rvGESizeModifier::Apply()
-{
+bool rvGESizeModifier::Apply() {
 	mWrapper->SetRect( mNewRect );
 
 	return true;
 }
 
-bool rvGESizeModifier::Undo()
-{
+bool rvGESizeModifier::Undo() {
 	mWrapper->SetRect( mOldRect );
 
 	return true;
 }
 
-bool rvGESizeModifier::IsValid()
-{
-	if( !mWindow->GetParent( ) )
-	{
+bool rvGESizeModifier::IsValid() {
+	if ( !mWindow->GetParent( ) ) {
 		return false;
 	}
 

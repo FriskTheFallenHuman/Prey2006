@@ -52,12 +52,12 @@ If you have questions concerning this license or the applicable additional terms
 //     no_namespace: no longer using this option, which avoids variable redifinition compile errors on Vista
 //#define GENERATE_TLH
 #ifdef GENERATE_TLH
-	#import "riched20.dll" raw_interfaces_only, raw_native_types, named_guids, no_auto_exclude, no_implementation, rename( "FindText", "FindShit" )
+#import "riched20.dll" raw_interfaces_only, raw_native_types, named_guids, no_auto_exclude, no_implementation, rename( "FindText", "FindShit" )
 #else
-	#include "riched20.tlh"
+#include "riched20.tlh"
 #endif
 
-static const char* 		FONT_NAME				= "Courier";
+static const char 	*	FONT_NAME				= "Courier";
 static const int		FONT_HEIGHT				= 10;
 static const int		FONT_WIDTH				= 8;
 static const int		TAB_SIZE				= 4;
@@ -81,19 +81,17 @@ static const COLORREF	SRE_COLOR_DARK_GREEN	= RGB( 0, 128,   0 );
 static const COLORREF	SRE_COLOR_DARK_CYAN		= RGB( 0, 150, 150 );
 static const COLORREF	SRE_COLOR_DARK_YELLOW	= RGB( 220, 200,  20 );
 
-typedef struct
-{
-	const char* 		keyWord;
+typedef struct {
+	const char 	*	keyWord;
 	COLORREF			color;
-	const char* 		description;
+	const char 	*	description;
 } keyWord_t;
 
-typedef bool ( *objectMemberCallback_t )( const char* objectName, CListBox& listBox );
-typedef bool ( *toolTipCallback_t )( const char* name, CString& string );
+typedef bool ( *objectMemberCallback_t )( const char * objectName, CListBox& listBox );
+typedef bool ( *toolTipCallback_t )( const char * name, CString& string );
 
 
-class CSyntaxRichEditCtrl : public CRichEditCtrl
-{
+class CSyntaxRichEditCtrl : public CRichEditCtrl {
 public:
 	CSyntaxRichEditCtrl();
 	~CSyntaxRichEditCtrl();
@@ -104,7 +102,7 @@ public:
 	void					AllowPathNames( bool allow );
 	void					EnableKeyWordAutoCompletion( bool enable );
 	void					SetKeyWords( const keyWord_t kws[] );
-	bool					LoadKeyWordsFromFile( const char* fileName );
+	bool					LoadKeyWordsFromFile( const char * fileName );
 	void					SetObjectMemberCallback( objectMemberCallback_t callback );
 	void					SetFunctionParmCallback( toolTipCallback_t callback );
 	void					SetToolTipCallback( toolTipCallback_t callback );
@@ -117,17 +115,17 @@ public:
 	COLORREF				GetForeColor( int charIndex ) const;
 	COLORREF				GetBackColor( int charIndex ) const;
 
-	void					GetCursorPos( int& line, int& column, int& character ) const;
+	void					GetCursorPos( int & line, int & column, int & character ) const;
 	CHARRANGE				GetVisibleRange() const;
 
 	void					GetText( idStr& text ) const;
 	void					GetText( idStr& text, int startCharIndex, int endCharIndex ) const;
-	void					SetText( const char* text );
+	void					SetText( const char * text );
 
 	void					GoToLine( int line );
-	bool					FindNext( const char* find, bool matchCase, bool matchWholeWords, bool searchForward );
-	int						ReplaceAll( const char* find, const char* replace, bool matchCase, bool matchWholeWords );
-	void					ReplaceText( int startCharIndex, int endCharIndex, const char* replace );
+	bool					FindNext( const char * find, bool matchCase, bool matchWholeWords, bool searchForward );
+	int						ReplaceAll( const char * find, const char * replace, bool matchCase, bool matchWholeWords );
+	void					ReplaceText( int startCharIndex, int endCharIndex, const char * replace );
 
 protected:
 	virtual INT_PTR			OnToolHitTest( CPoint point, TOOLINFO* pTI ) const;
@@ -156,8 +154,7 @@ protected:
 	COLORREF				literalColor;
 	COLORREF				braceHighlightColor;
 
-	typedef enum
-	{
+	typedef enum {
 		CT_WHITESPACE,
 		CT_COMMENT,
 		CT_STRING,
@@ -169,10 +166,10 @@ protected:
 
 	int						charType[256];
 
-	idList<keyWord_t>		keyWordsFromFile;
-	const keyWord_t* 		keyWords;
-	int* 					keyWordLengths;
-	COLORREF* 				keyWordColors;
+	idList < keyWord_t >		keyWordsFromFile;
+	const keyWord_t 	*	keyWords;
+	int 		*			keyWordLengths;
+	COLORREF 		*		keyWordColors;
 	idHashIndex				keyWordHash;
 
 	bool					caseSensitive;
@@ -184,8 +181,8 @@ protected:
 	toolTipCallback_t		GetToolTip;
 
 	// run-time variables
-	tom::ITextDocument* 	m_TextDoc;
-	tom::ITextFont* 		m_DefaultFont;
+	tom::ITextDocument *	m_TextDoc;
+	tom::ITextFont 	*	m_DefaultFont;
 
 	CHARRANGE				updateRange;
 	bool					updateSyntaxHighlighting;
@@ -201,9 +198,9 @@ protected:
 	int						bracedSection[2];
 
 	CPoint					mousePoint;
-	CToolTipCtrl* 			keyWordToolTip;
-	TCHAR* 					m_pchTip;
-	WCHAR* 					m_pwchTip;
+	CToolTipCtrl 	*		keyWordToolTip;
+	TCHAR 		*			m_pchTip;
+	WCHAR 		*			m_pwchTip;
 
 protected:
 	void					InitFont();
@@ -213,12 +210,12 @@ protected:
 	void					SetColor( int startCharIndex, int endCharIndex, COLORREF foreColor, COLORREF backColor, bool bold );
 
 	void					FreeKeyWordsFromFile();
-	int						FindKeyWord( const char* keyWord, int length ) const;
+	int						FindKeyWord( const char * keyWord, int length ) const;
 
 	void					HighlightSyntax( int startCharIndex, int endCharIndex );
 	void					UpdateVisibleRange();
 
-	bool					GetNameBeforeCurrentSelection( CString& name, int& charIndex ) const;
+	bool					GetNameBeforeCurrentSelection( CString& name, int & charIndex ) const;
 	bool					GetNameForMousePosition( idStr& name ) const;
 
 	void					AutoCompleteInsertText();
@@ -226,7 +223,7 @@ protected:
 	void					AutoCompleteShow( int charIndex );
 	void					AutoCompleteHide();
 
-	void					ToolTipShow( int charIndex, const char* string );
+	void					ToolTipShow( int charIndex, const char * string );
 	void					ToolTipHide();
 
 	bool					BracedSectionStart( char braceStartChar, char braceEndChar );

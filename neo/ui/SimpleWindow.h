@@ -62,6 +62,7 @@ protected:
 	void			SetupTransforms(float x, float y);
 	void			DrawBackground(const idRectangle &drawRect);
 	void			DrawBorderAndCaption(const idRectangle &drawRect);
+	void            Translate(int tFontNum = -1);
 
 	idUserInterfaceLocal *gui;
 	idDeviceContext *dc;
@@ -96,6 +97,14 @@ protected:
 	idWindow *		mParent;
 
 	idWinBool	hideCursor;
+
+	// Anchor system - from cstDoom3
+	idWinInt	anchor;
+	idWinInt	anchorTo;		// for anchor transitions
+	idWinFloat	anchorFactor;	// for anchor transitions
+	bool		noClipBackground;
+
+	int			translateFontNum;
 };
 
 #endif /* !__SIMPLEWIN_H__ */

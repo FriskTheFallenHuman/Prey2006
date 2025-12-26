@@ -42,7 +42,20 @@ void idChoiceWindow::InitVars( ) {
 	if ( cvarStr.Length() ) {
 		cvar = cvarSystem->Find( cvarStr );
 		if ( !cvar ) {
-			if (strcmp(cvarStr.c_str(), "s_driver") && strcmp(cvarStr.c_str(), "net_serverAllowServerMod"))
+			if (strcmp(cvarStr.c_str(), "s_driver") &&
+				strcmp(cvarStr.c_str(), "net_serverAllowServerMod") &&
+				strcmp(cvarStr.c_str(), "com_profanity") &&
+				strcmp(cvarStr.c_str(), "r_shaderlevel") &&
+				strcmp(cvarStr.c_str(), "r_correctspecular") &&
+				strcmp(cvarStr.c_str(), "gui_filter_pb") &&
+				strcmp(cvarStr.c_str(), "r_normalizebumpmap") &&
+				strcmp(cvarStr.c_str(), "r_lowParticleDetail") &&
+				strcmp(cvarStr.c_str(), "r_useFastSkinning") &&
+				strcmp(cvarStr.c_str(), "s_musicvolume_dB") &&
+				strcmp(cvarStr.c_str(), "s_useOpenAL") &&
+				strcmp(cvarStr.c_str(), "r_skipGlowOverlay") &&
+				strcmp(cvarStr.c_str(), "s_deviceName")
+				)
 				common->Warning( "idChoiceWindow::InitVars: gui '%s' window '%s' references undefined cvar '%s'", gui->GetSourceFile(), name.c_str(), cvarStr.c_str() );
 			return;
 		}

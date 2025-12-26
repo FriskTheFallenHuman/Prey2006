@@ -29,8 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // CMediaPreviewDlg dialog
 
-class CMediaPreviewDlg : public CDialogEx
-{
+class CMediaPreviewDlg : public CDialogEx {
 
 	DECLARE_DYNAMIC( CMediaPreviewDlg )
 
@@ -39,12 +38,11 @@ public:
 	CMediaPreviewDlg( CWnd* pParent = nullptr );   // standard constructor
 	virtual ~CMediaPreviewDlg();
 
-	void SetMode( int _mode )
-	{
+	void SetMode( int _mode ) {
 		mode = _mode;
 	}
 
-	void SetMedia( const char* _media );
+	void SetMedia( const char * _media );
 	void Refresh();
 
 	// Dialog Data

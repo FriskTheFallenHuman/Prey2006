@@ -4,8 +4,8 @@
 
 #include "Game_local.h"
 
-#include "../prey/ai_speech.h"
-#include "../prey/ai_reaction.h"
+#include "../Prey/ai_speech.h"
+#include "../Prey/ai_reaction.h"
 
 // HUMANHEAD additions to the idEntity class
 

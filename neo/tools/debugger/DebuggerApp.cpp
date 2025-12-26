@@ -51,10 +51,8 @@ rvDebuggerApp::rvDebuggerApp( )  //:
 rvDebuggerApp::~rvDebuggerApp
 ================
 */
-rvDebuggerApp::~rvDebuggerApp( )
-{
-	if( mAccelerators )
-	{
+rvDebuggerApp::~rvDebuggerApp( ) {
+	if ( mAccelerators ) {
 		DestroyAcceleratorTable( mAccelerators );
 	}
 }
@@ -66,8 +64,7 @@ rvDebuggerApp::Initialize
 Initializes the debugger application by creating the debugger window
 ================
 */
-bool rvDebuggerApp::Initialize( HINSTANCE instance )
-{
+bool rvDebuggerApp::Initialize( HINSTANCE instance ) {
 	INITCOMMONCONTROLSEX ex;
 	ex.dwICC = ICC_USEREX_CLASSES | ICC_LISTVIEW_CLASSES | ICC_WIN95_CLASSES;
 	ex.dwSize = sizeof( INITCOMMONCONTROLSEX );
@@ -78,15 +75,13 @@ bool rvDebuggerApp::Initialize( HINSTANCE instance )
 
 	mDebuggerWindow = new rvDebuggerWindow;
 
-	if( !mDebuggerWindow->Create( instance ) )
-	{
+	if ( !mDebuggerWindow->Create( instance ) ) {
 		delete mDebuggerWindow;
 		return false;
 	}
 
 	// Initialize the network connection for the debugger
-	if( !mClient.Initialize( ) )
-	{
+	if ( !mClient.Initialize( ) ) {
 		return false;
 	}
 
@@ -102,19 +97,15 @@ rvDebuggerApp::ProcessWindowMessages
 Process windows messages
 ================
 */
-bool rvDebuggerApp::ProcessWindowMessages()
-{
+bool rvDebuggerApp::ProcessWindowMessages() {
 	MSG	msg;
 
-	while( PeekMessage( &msg, NULL, 0, 0, PM_NOREMOVE ) )
-	{
-		if( !GetMessage( &msg, NULL, 0, 0 ) )
-		{
+	while ( PeekMessage( &msg, NULL, 0, 0, PM_NOREMOVE ) ) {
+		if ( !GetMessage( &msg, NULL, 0, 0 ) ) {
 			return false;
 		}
 
-		if( !TranslateAccelerator( &msg ) )
-		{
+		if ( !TranslateAccelerator( &msg ) ) {
 			TranslateMessage( &msg );
 			DispatchMessage( &msg );
 		}
@@ -130,10 +121,8 @@ rvDebuggerApp::TranslateAccelerator
 Translate any accelerators destined for this window
 ================
 */
-bool rvDebuggerApp::TranslateAccelerator( LPMSG msg )
-{
-	if( mDebuggerWindow && ::TranslateAccelerator( mDebuggerWindow->GetWindow(), mAccelerators, msg ) )
-	{
+bool rvDebuggerApp::TranslateAccelerator( LPMSG msg ) {
+	if ( mDebuggerWindow && ::TranslateAccelerator( mDebuggerWindow->GetWindow(), mAccelerators, msg ) ) {
 		return true;
 	}
 
@@ -147,11 +136,9 @@ rvDebuggerApp::Run
 Main Loop for the debugger application
 ================
 */
-int rvDebuggerApp::Run()
-{
+int rvDebuggerApp::Run() {
 	// Main message loop:
-	while( ProcessWindowMessages( ) )
-	{
+	while ( ProcessWindowMessages( ) ) {
 		mClient.ProcessMessages( );
 
 		Sleep( 0 );

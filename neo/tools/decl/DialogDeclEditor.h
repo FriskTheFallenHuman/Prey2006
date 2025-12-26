@@ -35,8 +35,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogDeclEditor dialog
 
-class DialogDeclEditor : public CDialog
-{
+class DialogDeclEditor : public CDialog {
 
 	DECLARE_DYNAMIC( DialogDeclEditor )
 
@@ -90,13 +89,13 @@ private:
 
 	HACCEL				m_hAccel;
 	CRect				initialRect;
-	CFindReplaceDialog* findDlg;
+	CFindReplaceDialog * findDlg;
 	CString				findStr;
 	CString				replaceStr;
 	bool				matchCase;
 	bool				matchWholeWords;
 	bool				searchForward;
-	idDecl* 			decl;
+	idDecl 	*		decl;
 	int					firstLine;
 
 private:

@@ -1,0 +1,773 @@
+textures/greg/poc
+{
+	nonsolid
+	deform sprite
+	{
+		map		textures/editor/poc
+		colored
+		alphaTest	0.5
+		scale		0.5, 1
+		scroll		twostagesnap[time], 0
+	}
+}
+
+textures/greg/masktest
+{
+	translucent
+	nonsolid
+	{
+		maskcolor
+		map	makealpha( textures/greg/alphamasktest )
+	}
+	{
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		map	textures/greg/addtest
+		scroll	time * 0.2, 0
+	}
+}
+
+textures/greg/sptest
+{
+	bumpmap heightmap( textures/sfx/sphere_skin, 6 )
+	{
+		blend diffusemap
+		map textures/sfx/sphere_skin
+		rgb 1
+	}
+	{
+		blend specularmap
+		map textures/sfx/sphere_skin
+		rgb 0.1
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+textures/greg/bl_techpanel27
+{
+	bumpmap textures/greg/bl_techpanel27_local
+	specularmap	textures/greg/bl_techpanel27_s
+	diffusemap textures/greg/bl_techpanel27_d
+}
+
+textures/greg/test1
+{
+	{
+		blend	diffusemap
+		map	_white
+		rgb	0.35
+	}
+	{
+		blend	specularmap
+		map	_white
+		rgb	0.35
+	}
+	{
+		blend	bumpmap
+		map	textures/tech_trim/bltrim0_hi_local
+	}
+}
+
+textures/greg/test
+{
+	{
+		blend	gl_one_minus_dst_color,gl_zero
+		map	_white
+		color	0.3, 0.275, 0.25, 0
+	}
+}
+
+
+//--------------------------------------------------------------------------
+//	common
+//uedit  _common
+//--------------------------------------------------------------------------
+textures/organic_wall/wrinklewall_tile
+{
+        noselfShadow
+	qer_editorimage textures/organic_wall/wrinklewall_tile
+	{
+		blend 		bumpmap
+		map		textures/organic_wall/wrinklewall_tile_local
+//		translate	.01*sintable[ time *.1 ],  	.02*sintable[ time *.1 ]
+	}
+	{
+		blend 		diffusemap
+		map		textures/organic_wall/wrinklewall_tile
+//		translate	.01*sintable[ time *.1 ], 	.02*sintable[ time *.1 ]
+	}
+	{
+		blend 		diffusemap
+		map		textures/organic_wall/wrinklewall_tile_ss
+//		translate	.005*sintable[ time *.1 ], 	.01*sintable[ time *.1 ]
+	}
+	{
+		blend		specularmap
+		map		textures/organic_wall/wrinklewall_tile_s
+//		translate 	.01*sintable[ time *.1 ],	.02*sintable[ time *.1 ]
+	}
+}
+
+
+
+textures/organic_wall/test1
+{
+	qer_editorimage textures/organic_wall/test1_d
+	matter_flesh
+	{
+		blend bumpmap
+		map		textures/organic_wall/test1_local
+		scale 0.5,0.5
+	}
+	{
+		blend diffusemap
+		map	textures/organic_wall/test1_d
+		scale 0.5,0.5
+	}
+	{
+		blend specularmap
+		map	textures/organic_wall/test1_s
+		scale 0.5,0.5
+	}
+}
+
+textures/organic_wall/test2
+{
+	qer_editorimage textures/organic_wall/test2_d
+	matter_flesh
+	{
+		blend bumpmap
+		map	addnormals( textures/organic_wall/test2_local, heightmap( textures/organic_wall/test2_h, 5.73 ))
+		scale 0.5,0.5
+	}
+	{
+		blend diffusemap
+		map	textures/organic_wall/test2_d
+		scale 0.5,0.5
+	}
+	{
+		blend specularmap
+		map	textures/organic_wall/test2_s
+		scale 0.5,0.5
+	}
+}
+
+textures/sfx/beef
+{
+	qer_editorimage textures/editor/beef
+	matter_flesh
+	bumpmap		_flat
+	diffusemap	textures/editor/beef
+}
+
+
+// 7/18/2003 5:56pm -gb prototyping
+textures/common/aproto_wall
+{
+	qer_editorimage	textures/common/bwall
+	matter_flesh
+	diffusemap		textures/common/bwall
+}
+textures/common/aproto_ceiling
+{
+	qer_editorimage	textures/common/bceil
+	matter_flesh
+	diffusemap		textures/common/bceil
+}
+textures/common/aproto_floor
+{
+	qer_editorimage	textures/common/bfloor
+	matter_flesh
+	diffusemap		textures/common/bfloor
+}
+textures/common/aproto_grate
+{
+	qer_editorimage	textures/common/bgrate
+	matter_flesh
+	noshadows
+	twosided
+	{
+		blend		diffusemap
+		map			textures/common/bgrate
+		alphatest	0.25
+	}
+}
+textures/common/aproto_glass
+{
+	qer_editorimage	textures/common/bglass
+	glass_macro
+
+	bumpmap			textures/common/bglass_local
+	diffusemap		textures/common/bglass
+	specularmap		textures/common/bglass_spec
+}
+textures/common/aproto_gibable
+{
+	qer_editorimage	textures/common/bgib
+	matter_flesh
+	diffusemap		textures/common/bgib
+}
+
+//--------------------------------------------------------------------------
+textures/common/flatblack
+{
+	qer_editorimage	textures/editor/black
+	noimpact
+	nosteps
+	{
+		blend	diffusemap
+		map	_black
+		rgb 0
+	}
+}
+
+
+
+
+textures/common/flatgray
+{
+	matter_metal
+	qer_editorimage	_white
+	{
+		blend	gl_one, gl_zero
+		map	_white
+		rgb	0.5
+	}
+}
+
+textures/editor/blockout_gray
+{
+	qer_editorimage	textures/editor/blockout
+	{
+		blend gl_one, gl_zero
+		map	textures/editor/blockout
+	}
+}
+
+textures/editor/blockout_blue
+{
+	qer_editorimage	textures/editor/blockout
+	{
+		blend gl_one, gl_zero
+		map	textures/editor/blockout
+		color
+		0.75,
+		0.75,
+		1.00,
+		1.0
+	}
+}
+
+textures/editor/blockout_green
+{
+	qer_editorimage	textures/editor/blockout
+	{
+		blend gl_one, gl_zero
+		map	textures/editor/blockout
+		color
+		0.75,
+		1.00,
+		0.75,
+		1.0
+	}
+}
+
+textures/editor/blockout_red
+{
+	qer_editorimage	textures/editor/blockout
+	{
+		blend gl_one, gl_zero
+		map	textures/editor/blockout
+		color
+		1.00,
+		0.75,
+		0.75,
+		1.0
+	}
+}
+
+textures/editor/blockout_yellow
+{
+	qer_editorimage	textures/editor/blockout
+	{
+		blend gl_one, gl_zero
+		map	textures/editor/blockout
+		color
+		1.00,
+		1.00,
+		0.75,
+		1.0
+	}
+}
+
+textures/editor/tile
+{
+	forceshadows
+	diffusemap	textures/editor/tile
+}
+
+//--------------------------------------------------------------------------
+//	materials
+//uedit  _materials
+//--------------------------------------------------------------------------
+textures/harvesters/harvwall_trim3_alt
+{
+	qer_editorimage 	textures/harvesters/harvwall_trim3_d2
+	bumpmap 		addnormals (textures/harvesters/harvwall_trim3_local, heightmap (textures/harvesters/harvwall_trim3_h, 6))
+	diffusemap	 	textures/harvesters/harvwall_trim3_d2
+	specularmap		textures/harvesters/harvwall_trim3_s
+}
+
+textures/harvesters/harvwall_trim3_alt2
+{
+	qer_editorimage 	textures/harvesters/harvwall_trim3_d3
+	bumpmap 		addnormals (textures/harvesters/harvwall_trim3_local, heightmap (textures/harvesters/harvwall_trim3_h, 6))
+	diffusemap	 	textures/harvesters/harvwall_trim3_d3
+	specularmap		textures/harvesters/harvwall_trim3_s
+}
+
+textures/harvesters/harvwall_trim3_alt3
+{
+	qer_editorimage 	textures/harvesters/harvwall_trim3_d4
+	bumpmap 		addnormals (textures/harvesters/harvwall_trim3_local, heightmap (textures/harvesters/harvwall_trim3_h, 6))
+	diffusemap	 	textures/harvesters/harvwall_trim3_d4
+	specularmap		textures/harvesters/harvwall_trim3_s
+}
+
+textures/harvesters/harv_metpipe1
+{
+	qer_editorimage textures/harvesters/harv_metpipe1_diff
+	matter_pipe
+	bumpmap		textures/harvesters/harv_metpipe1_local
+	diffusemap	textures/harvesters/harv_metpipe1_diff
+	specularmap	textures/harvesters/harv_metpipe1_spec
+}
+
+textures/harvesters/harv_mettrim1
+{
+	qer_editorimage textures/harvesters/harv_mettrim1_diff
+	bumpmap		addnormals( textures/harvesters/harv_mettrim1_local, heightmap( textures/harvesters/harv_mettrim1_hght, 4 ))
+	diffusemap	textures/harvesters/harv_mettrim1_diff
+	specularmap	textures/harvesters/harv_mettrim1_spec
+}
+
+textures/harvesters/harv_mettrim1_alpha
+{
+	qer_editorimage textures/harvesters/harv_mettrim1_diff
+	translucent
+	noshadows
+	twosided
+	bumpmap		addnormals( textures/harvesters/harv_mettrim1_local, heightmap( textures/harvesters/harv_mettrim1_hght, 4 ))
+	{
+		blend		diffusemap
+		map			textures/harvesters/harv_mettrim1_diff
+		alphatest 	0.5
+	}
+	specularmap	textures/harvesters/harv_mettrim1_spec
+}
+
+textures/harvesters/harv_mettrim1_cyanglow
+{
+	qer_editorimage textures/harvesters/harv_mettrim1_diff
+	bumpmap		addnormals( textures/harvesters/harv_mettrim1_local, heightmap( textures/harvesters/harv_mettrim1_hght, 4 ))
+	diffusemap	textures/harvesters/harv_mettrim1_diff
+	specularmap	textures/harvesters/harv_mettrim1_spec
+	{
+		blend	add
+		map		textures/harvesters/harv_mettrim1_glow
+		color	0.623529 * ( 0.75 + ( 0.25 * sintable [ time * 0.5 ] )),
+				0.909804 * ( 0.75 + ( 0.25 * sintable [ time * 0.5 ] )),
+				1.000000 * ( 0.75 + ( 0.25 * sintable [ time * 0.5 ] )),
+				1.0
+	}
+}
+
+textures/harvesters/harv_mettrim1_orngglow
+{
+	qer_editorimage textures/harvesters/harv_mettrim1_diff
+	bumpmap		addnormals( textures/harvesters/harv_mettrim1_local, heightmap( textures/harvesters/harv_mettrim1_hght, 4 ))
+	diffusemap	textures/harvesters/harv_mettrim1_diff
+	specularmap	textures/harvesters/harv_mettrim1_spec
+	{
+		blend	add
+		map		textures/harvesters/harv_mettrim1_glow
+		color	1.000000 * ( 0.75 + ( 0.25 * sintable [ time * 0.5 ] )),
+				0.613726 * ( 0.75 + ( 0.25 * sintable [ time * 0.5 ] )),
+				0.000424 * ( 0.75 + ( 0.25 * sintable [ time * 0.5 ] )),
+				1.0
+	}
+}
+
+textures/harvesters/harv_mettrim1_grenglow
+{
+	qer_editorimage textures/harvesters/harv_mettrim1_diff
+	bumpmap		addnormals( textures/harvesters/harv_mettrim1_local, heightmap( textures/harvesters/harv_mettrim1_hght, 4 ))
+	diffusemap	textures/harvesters/harv_mettrim1_diff
+	specularmap	textures/harvesters/harv_mettrim1_spec
+	{
+		blend	add
+		map		textures/harvesters/harv_mettrim1_glow
+		color	0.580392 * ( 0.75 + ( 0.25 * sintable [ time * 0.5 ] )),
+				1.000000 * ( 0.75 + ( 0.25 * sintable [ time * 0.5 ] )),
+				0.372549 * ( 0.75 + ( 0.25 * sintable [ time * 0.5 ] )),
+				1.0
+	}
+}
+
+textures/harvesters/harv_mettrim1_redglow
+{
+	qer_editorimage textures/harvesters/harv_mettrim1_diff
+	bumpmap		addnormals( textures/harvesters/harv_mettrim1_local, heightmap( textures/harvesters/harv_mettrim1_hght, 4 ))
+	diffusemap	textures/harvesters/harv_mettrim1_diff
+	specularmap	textures/harvesters/harv_mettrim1_spec
+	{
+		blend	add
+		map		textures/harvesters/harv_mettrim1_glow
+		color	1.000000 * ( 0.75 + ( 0.25 * sintable [ time * 0.5 ] )),
+				0.247059 * ( 0.75 + ( 0.25 * sintable [ time * 0.5 ] )),
+				0.223529 * ( 0.75 + ( 0.25 * sintable [ time * 0.5 ] )),
+				1.0
+	}
+}
+
+textures/harvesters/harv_flat2
+{
+	qer_editorimage textures/harvesters/flat2_d
+	bumpmap			heightmap( textures/harvesters/flat2_h, 0.5 )
+	diffusemap		textures/harvesters/flat2_d
+	specularmap		textures/harvesters/flat2_s
+}
+
+textures/harvesters/harv_flat3
+{
+	qer_editorimage textures/harvesters/flat3_d
+	bumpmap			heightmap( textures/harvesters/flat3_h, 0.5 )
+	diffusemap		textures/harvesters/flat3_d
+	specularmap		textures/harvesters/flat3_s
+}
+
+textures/harvesters/harv_strut1
+{
+	qer_editorimage textures/harvesters/linktemp
+	translucent
+	noshadows
+	noimpact
+	twosided
+	bumpmap			heightmap( textures/harvesters/flat3_h, 0.5 )
+	{
+		blend		diffusemap
+		map			textures/harvesters/linktemp
+		alphatest 	0.5
+	}
+	specularmap		textures/harvesters/flat3_s
+}
+
+
+textures/harvesters/harv_floortile1
+{
+	qer_editorimage textures/harvesters/floortile1_diff
+	bumpmap		addnormals( textures/harvesters/floortile1_local, heightmap( textures/harvesters/floortile1_hght, 6 ))
+	diffusemap	textures/harvesters/floortile1_diff
+	specularmap	textures/harvesters/floortile1_spec
+}
+
+textures/harvesters/tetherstrip
+{
+	qer_editorimage textures/harvesters/tether2_d
+	bumpmap			addnormals( textures/harvesters/pipebevel_local, heightmap( textures/harvesters/pipebevel_h, 4 ))
+	diffusemap		textures/harvesters/tether2_d
+	specularmap		textures/harvesters/pipebevel_s
+}
+
+//--------------------------------------------------------------------------
+//	effects
+//uedit  _effects
+//--------------------------------------------------------------------------
+textures/harvesters/harv_energy1
+{
+	qer_editorimage textures/sfx/energy2
+	translucent
+	noshadows
+	nonsolid
+	noimpact
+	twosided
+	discrete
+	{
+		blend	add
+		map		textures/sfx/energy2
+		scale	1.0, 0.5
+		scroll	0.0, time * 0.5
+		color	0.15, 0.25, 0.15, 1.0
+		linear
+	}
+	{
+		blend	add
+		map		textures/sfx/energy2
+		scroll	0.0, time * 0.4
+		color	0.15, 0.25, 0.15, 1.0
+		linear
+	}
+}
+
+//--------------------------------------------------------------------------
+//	decals
+//uedit  _decals
+//--------------------------------------------------------------------------
+textures/harvesters/harvlight1_decal
+{
+	qer_editorimage textures/harvesters/harv_light1decal_g
+//	decal_macro
+	discrete
+	noshadows
+	translucent
+	sort 1
+	bumpmap			heightmap( textures/harvesters/harv_light1decal_h, 4 )
+	{
+		blend		diffusemap
+		map			textures/harvesters/harv_light1decal_d
+		alphatest 	0.5
+	}
+	specularmap		textures/harvesters/harv_light1decal_s
+	{
+		blend 		add
+		map			textures/harvesters/harv_light1decal_g
+	}
+}
+
+textures/harvesters/pipebevel_decal
+{
+	qer_editorimage textures/harvesters/pipebevel_d
+//	decal_macro
+	discrete
+	noshadows
+	translucent
+	sort 1
+	bumpmap			addnormals( textures/harvesters/pipebevel_local, heightmap( textures/harvesters/pipebevel_h, 4 ))
+	{
+		blend		diffusemap
+		map			textures/harvesters/pipebevel_d
+		alphatest 	0.5
+	}
+	specularmap		textures/harvesters/pipebevel_s
+}
+
+textures/decals/tetherpoint
+{
+	qer_editorimage textures/harvesters/tether_d
+//	decal_macro
+	discrete
+	noshadows
+	translucent
+	sort 1
+	bumpmap			addnormals( textures/harvesters/pipebevel_local, heightmap( textures/harvesters/pipebevel_h, 4 ))
+	{
+		blend		diffusemap
+		map			textures/harvesters/tether_d
+		alphatest 	0.5
+	}
+	specularmap		textures/harvesters/pipebevel_s
+}
+
+textures/harvesters/scratch_decal
+{
+	qer_editorimage textures/harvesters/scratch_local
+//	decal_macro
+	discrete
+	noshadows
+	translucent
+	sort 1
+	{
+		blend		diffusemap
+		map			textures/harvesters/scratch_d
+		alphatest 	0.5
+	}
+	specularmap		textures/harvesters/scratch_s
+	bumpmap			textures/harvesters/scratch_local
+}
+
+//--------------------------------------------------------------------------
+//	ase specific
+//uedit  _ase
+//--------------------------------------------------------------------------
+textures/harvesters/harvwall2_nocull
+{
+	qer_editorimage 	textures/harvesters/harvwall2_d
+	twosided
+	bumpmap 		addnormals (textures/harvesters/harvwall2_local, heightmap (textures/harvesters/harvwall2_h, 6))
+	diffusemap	 	textures/harvesters/harvwall2_d
+	specularmap		textures/harvesters/harvwall2_s
+}
+
+textures/harvesters/flatpanel1_nocull
+{
+	qer_editorimage 	textures/harvesters/flatpanel1_d
+	twosided
+	bumpmap 		addnormals (textures/harvesters/flatpanel1_local, heightmap (textures/harvesters/flatpanel1_h, 6))
+	diffusemap	 	textures/harvesters/flatpanel1_d
+	specularmap		textures/harvesters/flatpanel1_s
+}
+
+//--------------------------------------------------------------------------
+//	test
+//uedit  _tests
+//--------------------------------------------------------------------------
+
+
+textures/harvesters/harvwall1_noh
+{
+	qer_editorimage 	textures/harvesters/harvwall1_d
+	bumpmap 		textures/harvesters/harvwall1_local
+	diffusemap	 	textures/harvesters/harvwall1_d
+	specularmap		textures/harvesters/harvwall1_s
+}
+
+textures/harvesters/harvwall_trim1_noh
+{
+	qer_editorimage 	textures/harvesters/harvwall_trim1_d
+	bumpmap 		textures/harvesters/harvwall_trim1_local
+	diffusemap	 	textures/harvesters/harvwall_trim1_d
+	specularmap		textures/harvesters/harvwall_trim1_s
+}
+
+textures/harvesters/harvwall_trim2_noh
+{
+	qer_editorimage 	textures/harvesters/harvwall_trim2_d
+	bumpmap 		textures/harvesters/harvwall_trim2_local
+	diffusemap	 	textures/harvesters/harvwall_trim2_d
+	specularmap		textures/harvesters/harvwall_trim2_s
+}
+
+textures/harvesters/harvwall_trim2b_noh
+{
+	qer_editorimage 	textures/harvesters/harvwall_trim2b_d
+	bumpmap 		textures/harvesters/harvwall_trim2b_local
+	diffusemap	 	textures/harvesters/harvwall_trim2b_d
+	specularmap		textures/harvesters/harvwall_trim2b_s
+}
+
+textures/harvesters/harvwall_trim2b_add_noh
+{
+	qer_editorimage 	textures/harvesters/harvwall_trim2b_d
+	bumpmap 		textures/harvesters/harvwall_trim2b_local
+	diffusemap	 	textures/harvesters/harvwall_trim2b_d
+	specularmap		textures/harvesters/harvwall_trim2b_s
+	{
+		blend add
+		map textures/harvesters/harvwall_trim2b_add
+		rgb (spark1 [time * 1])
+	}
+}
+
+textures/harvesters/harvwall_trim3_noh
+{
+	qer_editorimage 	textures/harvesters/harvwall_trim3_d
+	bumpmap 		textures/harvesters/harvwall_trim3_local
+	diffusemap	 	textures/harvesters/harvwall_trim3_d
+	specularmap		textures/harvesters/harvwall_trim3_s
+}
+
+textures/harvesters/harvwall_trim3b_noh
+{
+	qer_editorimage 	textures/harvesters/harvwall_trim3b_d
+	bumpmap 		textures/harvesters/harvwall_trim3b_local
+	diffusemap	 	textures/harvesters/harvwall_trim3b_d
+	specularmap		textures/harvesters/harvwall_trim3b_s
+}
+
+textures/harvesters/harvwall2_noh
+{
+	qer_editorimage 	textures/harvesters/harvwall2_d
+	bumpmap 		textures/harvesters/harvwall2_local
+	diffusemap	 	textures/harvesters/harvwall2_d
+	specularmap		textures/harvesters/harvwall2_s
+}
+
+textures/harvesters/harvwall2b_noh
+{
+	qer_editorimage 	textures/harvesters/harvwall2b_d
+	bumpmap 		textures/harvesters/harvwall2b_local
+	diffusemap	 	textures/harvesters/harvwall2b_d
+	specularmap		textures/harvesters/harvwall2b_s
+}
+
+textures/greg/vblend
+{
+	qer_editorimage		textures/organic_wall/bio_floor2_d
+
+	// white verts
+	{
+		blend		bumpmap
+		map			addnormals (textures/organic_wall/bio_floor2_local, heightmap  (textures/organic_wall/bio_floor2_h, 2))
+	}
+	{
+		blend		diffusemap
+		map			textures/organic_wall/bio_floor2_d
+		vertexcolor
+	}
+	{
+		blend		specularmap
+		map			textures/organic_wall/bio_floor2_s
+		vertexcolor
+	}
+	// black verts
+	{
+		blend		bumpmap
+		map			addnormals 	(textures/organic_wall/orgwall22_local, heightmap	(textures/organic_wall/orgwall22_h,10))
+		translate	time * .015 , time * -.03
+	}
+	{
+		blend		diffusemap
+		map			textures/organic_wall/orgwall22_d
+		translate	time * .015 , time * -.03
+		inversevertexcolor
+	}
+	{
+		blend		specularmap
+		map			textures/organic_wall/orgwall22_s
+		translate	time * .015 , time * -.03
+		inversevertexcolor
+	}
+}
+
+textures/greg/cmtest
+{
+	//fixme: should this be glass_macro?
+	noshadows
+	matter_glass
+	translucent
+	seethru
+	sort medium
+	{
+		blend diffusemap
+		map	textures/sfx/g1
+		color 0.2,0.1,0.025,0
+	}
+	{
+		blend specularmap
+		map	textures/sfx/g1s
+		color 0.12,0.10,0.05,0
+	}
+	{
+		blend add
+		cubemap	env/gs2
+		texgen reflect
+		color 0.12,0.13,0.14,0
+	}
+}
+//--------------------------------------------------------------------------
+//uedit  eof

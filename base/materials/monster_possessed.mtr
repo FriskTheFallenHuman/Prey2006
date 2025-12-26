@@ -1,0 +1,1040 @@
+
+//
+//
+// a little girl named jane
+//
+models/monsters/jane/jane
+{
+	noShadows
+	//noselfshadow
+	unsmoothedtangents
+	matter_flesh
+
+	renderbump -size 512 512 models/monsters/jane/jane_local models/monsters/jane/janehi.lwo
+	diffusemap models/monsters/jane/jane
+	bumpmap	addnormals(models/monsters/jane/jane_local, heightmap(models/monsters/jane/jane_h, 7 ) )
+	bumpmap	models/monsters/jane/jane_local
+	specularmap models/monsters/jane/jane_s
+}
+
+//
+//
+// a little boy named peter
+//
+models/monsters/peter/peter
+{
+	noShadows
+	//noselfshadow
+	unsmoothedtangents
+	matter_flesh
+
+	renderbump -size 512 512 models/monsters/peter/peter_local models/monsters/peter/peterhi.lwo
+	diffusemap models/monsters/peter/peter
+	bumpmap	addnormals(models/monsters/peter/peter_local, heightmap(models/monsters/peter/peter_h, 7 ) )
+	bumpmap	models/monsters/peter/peter_local
+	specularmap models/monsters/peter/peter_s
+}
+
+//
+//
+// bob body
+//
+models/monsters/bob/bobbody/bobbody
+{
+	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/bob/bobbody/bobbody_local models/monsters/bob/bobbody/bobhi.lwo
+	diffusemap models/monsters/bob/bobbody/bobbody
+	bumpmap	addnormals(models/monsters/bob/bobbody/bobbody_local, heightmap(models/monsters/bob/bobbody/bobbody_h, 7 ) )
+//	bumpmap	models/monsters/bob/bobbody/bobbody_local
+	specularmap models/monsters/bob/bobbody/bobbody_s
+}
+
+//
+//
+// bob head
+//
+models/monsters/bob/bobhead/bobhead
+{
+	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/bob/bobhead/bobhead_local models/monsters/bob/bobhead/bobhi.lwo
+	diffusemap models/monsters/bob/bobhead/bobhead
+	bumpmap	addnormals(models/monsters/bob/bobhead/bobhead_local, heightmap(models/monsters/bob/bobhead/bobhead_h, 3 ) )
+//	bumpmap	models/monsters/bob/bobhead/bobhead_local
+	specularmap models/monsters/bob/bobhead/bobhead_s
+}
+
+//
+//
+// mouth
+//
+models/mouth
+{
+	//noselfshadow
+	unsmoothedtangents
+	matter_flesh
+
+	renderbump -size 256 256  -trace 0.03 -colormap models/mouth/mouth_local models/mouth/mouthhi.lwo
+	diffusemap models/mouth/mouth
+	bumpmap	addnormals(models/mouth/mouth_local, heightmap(models/mouth/mouth_h, 7 ) )
+//	bumpmap	models/mouth/mouth_local
+//	specularmap models/mouth/mouth_s
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// girl_liquid
+//
+//////////////////////////////////////////////////////////////////////////////
+
+models/monsters/girl_liquid/girl_liquid_normal
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/girl_liquid/girl_liquid_local models/monsters/girl_liquid/girl_liquidhi.lwo
+
+	{ // Normal girl
+		blend diffusemap
+		map models/monsters/girl_liquid/girl_liquid
+		alphatest 0.5
+	}
+	{
+		blend	bumpmap
+		map	addnormals(models/monsters/girl_liquid/girl_liquid_local, heightmap(models/monsters/girl_liquid/girl_liquid_h, 7 ) )
+		highres
+	}
+	specularmap models/monsters/girl_liquid/girl_liquid_s
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/girl_liquid/girl_liquid2_normal
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/girl_liquid/girl_liquid_local models/monsters/girl_liquid/girl_liquidhi.lwo
+
+	{ // Normal girl
+		blend diffusemap
+		map models/monsters/girl_liquid/girl_liquid2
+		alphatest 0.5
+	}
+	{
+		blend	bumpmap
+		map	addnormals(models/monsters/girl_liquid/girl_liquid_local, heightmap(models/monsters/girl_liquid/girl_liquid_h, 7 ) )
+		highres
+	}
+	specularmap models/monsters/girl_liquid/girl_liquid_s
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/girl_liquid/girl_liquid_redhead_normal
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/girl_liquid/girl_liquid_local models/monsters/girl_liquid/girl_liquidhi.lwo
+
+	{ // Normal girl
+		blend diffusemap
+		map models/monsters/girl_liquid/girl_liquid_red
+		alphatest 0.5
+	}
+	{
+		blend	bumpmap
+		map	addnormals(models/monsters/girl_liquid/girl_liquid_local, heightmap(models/monsters/girl_liquid/girl_liquid_h, 7 ) )
+		highres
+	}
+	specularmap models/monsters/girl_liquid/girl_liquid_s
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/girl_liquid/girl_liquid_blond_normal
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/girl_liquid/girl_liquid_local models/monsters/girl_liquid/girl_liquidhi.lwo
+
+	{ // Normal girl
+		blend diffusemap
+		map models/monsters/girl_liquid/girl_liquid_blond
+		alphatest 0.5
+	}
+	{
+		blend	bumpmap
+		map	addnormals(models/monsters/girl_liquid/girl_liquid_local, heightmap(models/monsters/girl_liquid/girl_liquid_h, 7 ) )
+		highres
+	}
+	specularmap models/monsters/girl_liquid/girl_liquid_s
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// girl_liquid possessed spirit
+//
+//////////////////////////////////////////////////////////////////////////////
+
+models/monsters/girl_liquid/girl_liquid
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	translucent
+	matter_flesh
+	collision
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/girl_liquid/girl_liquid_local models/monsters/girl_liquid/girl_liquidhi.lwo
+
+/*	{ // Normal girl
+		if ( parm7 == 0 ) && ( parm6 != 0 )
+		blend diffusemap
+		map models/monsters/girl_liquid/girl_liquid
+		alphatest 0.5
+	}*/
+
+	{ // Possessed girl, about to burn out
+//		if parm7 && ( parm6 == 0 )
+		blend diffusemap
+		map models/monsters/girl_liquid/girl_liquid
+		rgb (ZeroToOneClamp [(parm4 + time) * 0.6])
+	}
+/*	{
+		blend gl_dst_color, gl_src_color
+		map models/monsters/girl_liquid/girl_liquid
+	}
+	{ // Possessed girl, not about to burn out
+		if ( parm7 == 0 ) && ( parm6 == 0 )
+		blend diffusemap
+		map models/monsters/girl_liquid/girl_liquid
+		alphatest 0.5
+	}*/
+
+	{ // Possessed girl vein additive
+		if parm6 == 0
+		blend add
+		map models/monsters/girl_liquid/girl_liquid
+		glowStage
+		rgb 0.1
+	}
+	{ // Possessed girl vein additive
+		if parm6 == 0
+		blend add
+		map models/monsters/girl_liquid/girl_veins
+		glowStage
+		rgb (ZeroToOneClamp [(parm4 + time) * 0.6])
+	}
+	{ // Possessed girl, about to burn out
+		if parm7 && ( parm6 == 0 )
+		blend add
+		map _white
+		red		0.058
+		green	0.058
+		blue	0.072
+		glowStage
+	}
+	{ // Possessed girl eyes
+		if parm6 == 0
+		blend add
+		map models/monsters/girl_liquid/girl_eyes
+		privatePolygonOffset 1.5
+		rgb 0.75 * crawlerBlink[ time * 0.2 ]
+		glowStage
+		ignoreAlphaTest
+	}
+
+	{
+		blend	bumpmap
+		map	addnormals(models/monsters/girl_liquid/girl_liquid_local, heightmap(models/monsters/girl_liquid/girl_liquid_h, 7 ) )
+		highres
+	}
+	specularmap models/monsters/girl_liquid/girl_liquid_s
+
+/*	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/girl_liquid/girl_liquid_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 1.4 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/girl_liquid/girl_liquid_dis	// replace this with a monster-specific texture
+		alphaTest 1.4 * (time - parm7)
+		glowStage
+	}
+	{	// Remaining flesh, not alpha masked
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.3		// stage-only polygon offset - ensure that this is lower than the blue burn
+        blend gl_zero, gl_zero
+        blend gl_one, gl_zero
+
+		map models/monsters/girl_liquid/girl_liquid_dis_muscle	// replace this with a monster-specific texture
+//		alphaTest 1.0 * (time - parm7)
+//		alphaTest 0 // Necessary, otherwise the other stages will mask out this stage
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.6		// stage-only polygon offset
+//        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/girl_liquid/girl_liquid_dis_muscle	// replace this with a monster-specific texture
+		alphaTest 1.5 * (time - parm7 + 0.2)
+//		glowStage
+	}*/
+
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/girl_liquid/girl_liquid2
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	translucent
+	collision
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/girl_liquid/girl_liquid_local models/monsters/girl_liquid/girl_liquidhi.lwo
+
+	{
+		blend diffusemap
+		map models/monsters/girl_liquid/girl_liquid2
+		rgb (ZeroToOneClamp [(parm4 + time) * 0.6])
+	}
+	{ // Possessed girl vein additive
+		if parm6 == 0
+		blend add
+		map models/monsters/girl_liquid/girl_veins
+		glowStage
+		rgb (ZeroToOneClamp [(parm4 + time) * 0.6])
+	}
+	{ // Possessed girl vein additive
+		if parm6 == 0
+		blend add
+		map models/monsters/girl_liquid/girl_liquid
+		glowStage
+		rgb 0.1
+	}
+	{ // Possessed girl, about to burn out
+		if parm7 && ( parm6 == 0 )
+		blend add
+		map _white
+		red		0.058
+		green	0.058
+		blue	0.072
+		glowStage
+	}
+	{ // Possessed girl eyes
+		if parm6 == 0
+		blend add
+		map models/monsters/girl_liquid/girl_eyes
+		privatePolygonOffset 1.5
+		rgb 0.75 * crawlerBlink[ time * 0.2 ]
+		glowStage
+		ignoreAlphaTest
+	}
+	{
+		blend	bumpmap
+		map	addnormals(models/monsters/girl_liquid/girl_liquid_local, heightmap(models/monsters/girl_liquid/girl_liquid_h, 7 ) )
+		highres
+	}
+	specularmap models/monsters/girl_liquid/girl_liquid_s
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/girl_liquid/girl_liquid_redhead
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	translucent
+	collision
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/girl_liquid/girl_liquid_local models/monsters/girl_liquid/girl_liquidhi.lwo
+
+	{
+		blend diffusemap
+		map models/monsters/girl_liquid/girl_liquid_red
+		rgb (ZeroToOneClamp [(parm4 + time) * 0.6])
+	}
+	{ // Possessed girl vein additive
+		if parm6 == 0
+		blend add
+		map models/monsters/girl_liquid/girl_veins
+		glowStage
+		rgb (ZeroToOneClamp [(parm4 + time) * 0.6])
+	}
+	{ // Possessed girl vein additive
+		if parm6 == 0
+		blend add
+		map models/monsters/girl_liquid/girl_liquid
+		glowStage
+		rgb 0.1
+	}
+	{ // Possessed girl, about to burn out
+		if parm7 && ( parm6 == 0 )
+		blend add
+		map _white
+		red		0.058
+		green	0.058
+		blue	0.072
+		glowStage
+	}
+	{ // Possessed girl eyes
+		if parm6 == 0
+		blend add
+		map models/monsters/girl_liquid/girl_eyes
+		privatePolygonOffset 1.5
+		rgb 0.75 * crawlerBlink[ time * 0.2 ]
+		glowStage
+		ignoreAlphaTest
+	}
+	{
+		blend	bumpmap
+		map	addnormals(models/monsters/girl_liquid/girl_liquid_local, heightmap(models/monsters/girl_liquid/girl_liquid_h, 7 ) )
+		highres
+	}
+	specularmap models/monsters/girl_liquid/girl_liquid_s
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/girl_liquid/girl_liquid_blond
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	translucent
+	collision
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/girl_liquid/girl_liquid_local models/monsters/girl_liquid/girl_liquidhi.lwo
+
+	{
+		blend diffusemap
+		map models/monsters/girl_liquid/girl_liquid_blond
+		rgb (ZeroToOneClamp [(parm4 + time) * 0.6])
+	}
+	{ // Possessed girl vein additive
+		if parm6 == 0
+		blend add
+		map models/monsters/girl_liquid/girl_veins
+		glowStage
+		rgb (ZeroToOneClamp [(parm4 + time) * 0.6])
+	}
+	{ // Possessed girl vein additive
+		if parm6 == 0
+		blend add
+		map models/monsters/girl_liquid/girl_liquid
+		glowStage
+		rgb 0.1
+	}
+	{ // Possessed girl, about to burn out
+		if parm7 && ( parm6 == 0 )
+		blend add
+		map _white
+		red		0.058
+		green	0.058
+		blue	0.072
+		glowStage
+	}
+	{ // Possessed girl eyes
+		if parm6 == 0
+		blend add
+		map models/monsters/girl_liquid/girl_eyes
+		privatePolygonOffset 1.5
+		rgb 0.75 * crawlerBlink[ time * 0.2 ]
+		glowStage
+		ignoreAlphaTest
+	}
+	{
+		blend	bumpmap
+		map	addnormals(models/monsters/girl_liquid/girl_liquid_local, heightmap(models/monsters/girl_liquid/girl_liquid_h, 7 ) )
+		highres
+	}
+	specularmap models/monsters/girl_liquid/girl_liquid_s
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/eyes/girl/left_blue
+{
+	noshadows
+	translucent
+	deform eyeball
+	matter_flesh
+
+	{
+		clamp
+		blend gl_dst_color, gl_src_color
+		map models/eyes/left_blue
+		centerscale 1.0, 0.5
+	}
+}
+
+models/eyes/girl/right_blue
+{
+	noshadows
+	translucent
+	deform eyeball
+	matter_flesh
+
+	{
+		clamp
+		blend gl_dst_color, gl_src_color
+		map models/eyes/left_blue
+		centerscale 1.0, 0.5
+	}
+}
+
+models/eyes/girl/left_brown
+{
+	noshadows
+	translucent
+	deform eyeball
+	matter_flesh
+
+	{
+		blend gl_dst_color, gl_src_color
+		map models/eyes/left_brown
+		centerscale 1.0, 0.5
+	}
+}
+
+models/eyes/girl/right_brown
+{
+	noshadows
+	translucent
+	deform eyeball
+	matter_flesh
+
+	{
+		blend gl_dst_color, gl_src_color
+		map models/eyes/left_brown
+		centerscale 1.0, 0.5
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// boy
+//
+//////////////////////////////////////////////////////////////////////////////
+
+models/monsters/boy/boy_normal
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/girl_liquid/girl_liquid_local models/monsters/girl_liquid/girl_liquidhi.lwo
+
+	{ // Normal boy
+		blend diffusemap
+		map models/monsters/boy/boy
+		alphatest 0.5
+	}
+	bumpmap	addnormals(models/monsters/boy/boy_local, heightmap(models/monsters/boy/boy_h, 7 ) )
+	specularmap models/monsters/boy/boy_s
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/boy/boy_b_normal
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/girl_liquid/girl_liquid_local models/monsters/girl_liquid/girl_liquidhi.lwo
+
+	{ // Normal boy
+		blend diffusemap
+		map models/monsters/boy/boy_b
+		alphatest 0.5
+	}
+	bumpmap	addnormals(models/monsters/boy/boy_local, heightmap(models/monsters/boy/boy_h, 7 ) )
+	specularmap models/monsters/boy/boy_s
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// boy possessed spirit
+//
+//////////////////////////////////////////////////////////////////////////////
+
+models/monsters/boy/boy
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	translucent
+	collision
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/girl_liquid/girl_liquid_local models/monsters/girl_liquid/girl_liquidhi.lwo
+
+	{
+		blend diffusemap
+		map models/monsters/boy/boy
+		rgb (ZeroToOneClamp [(parm4 + time) * 0.6])
+	}
+	{ // Possessed boy vein additive
+		if parm6 == 0
+		blend add
+		map models/monsters/girl_liquid/girl_veins
+		glowStage
+		rgb (ZeroToOneClamp [(parm4 + time) * 0.6])
+	}
+	{ // Possessed girl, about to burn out
+		if parm7 && ( parm6 == 0 )
+		blend add
+		map _white
+		red		0.058
+		green	0.058
+		blue	0.072
+		glowStage
+	}
+	{ // Possessed boy eyes
+		if parm6 == 0
+		blend add
+		map models/monsters/girl_liquid/girl_eyes
+		privatePolygonOffset 1.5
+		rgb 0.75 * crawlerBlink[ time * 0.2 ]
+		glowStage
+		ignoreAlphaTest
+	}
+	bumpmap	addnormals(models/monsters/boy/boy_local, heightmap(models/monsters/boy/boy_h, 7 ) )
+	specularmap models/monsters/boy/boy_s
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/boy/boy_b
+{
+	noShadows
+//	noselfshadow
+	unsmoothedtangents
+	matter_flesh
+	translucent
+	collision
+
+	renderbump -size 1024 1024 -trace 0.03 -colormap models/monsters/girl_liquid/girl_liquid_local models/monsters/girl_liquid/girl_liquidhi.lwo
+
+	{
+		blend diffusemap
+		map models/monsters/boy/boy_b
+	}
+	{ // Possessed boy vein additive
+		if parm6 == 0
+		blend add
+		map models/monsters/girl_liquid/girl_veins
+		glowStage
+	}
+	{ // Possessed girl, about to burn out
+		if parm7 && ( parm6 == 0 )
+		blend add
+		map _white
+		red		0.058
+		green	0.058
+		blue	0.072
+		glowStage
+	}
+	{ // Possessed boy eyes
+		if parm6 == 0
+		blend add
+		map models/monsters/girl_liquid/girl_eyes
+		privatePolygonOffset 1.5
+		rgb 0.75 * crawlerBlink[ time * 0.2 ]
+		glowStage
+		ignoreAlphaTest
+	}
+	bumpmap	addnormals(models/monsters/boy/boy_local, heightmap(models/monsters/boy/boy_h, 7 ) )
+	specularmap models/monsters/boy/boy_s
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/eyes/boy/left_blue
+{
+	noshadows
+	translucent
+	deform eyeball
+	matter_flesh
+
+	{
+		clamp
+		blend gl_dst_color, gl_src_color
+		map models/eyes/left_blue
+		centerscale 1.0, 0.5
+	}
+}
+
+models/eyes/boy/right_blue
+{
+	noshadows
+	translucent
+	deform eyeball
+	matter_flesh
+
+	{
+		clamp
+		blend gl_dst_color, gl_src_color
+		map models/eyes/left_blue
+		centerscale 1.0, 0.5
+	}
+}
+
+models/eyes/boy/left_brown
+{
+	noshadows
+	translucent
+	deform eyeball
+	matter_flesh
+
+	{
+		blend gl_dst_color, gl_src_color
+		map models/eyes/left_brown
+		centerscale 1.0, 0.5
+	}
+}
+
+models/eyes/boy/right_brown
+{
+	noshadows
+	translucent
+	deform eyeball
+	matter_flesh
+
+	{
+		blend gl_dst_color, gl_src_color
+		map models/eyes/left_brown
+		centerscale 1.0, 0.5
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//
+// possessed alien
+//
+//////////////////////////////////////////////////////////////////////////////
+
+models/monsters/boy/alien
+{
+	unsmoothedtangents
+	matter_flesh
+	collision
+
+
+	diffusemap models/monsters/boy/alien
+	bumpmap	addnormals(models/monsters/boy/alien_local, heightmap(models/monsters/boy/alien_h, 12 ) )
+	specularmap models/monsters/boy/alien_s
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/girl_liquid/girl_liquid_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 1.4 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/girl_liquid/girl_liquid_dis	// replace this with a monster-specific texture
+		alphaTest 1.4 * (time - parm7)
+		glowStage
+	}
+	{	// Remaining flesh, not alpha masked
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.3		// stage-only polygon offset - ensure that this is lower than the blue burn
+        blend gl_zero, gl_zero
+        blend gl_one, gl_zero
+
+		map models/monsters/girl_liquid/girl_liquid_dis_muscle	// replace this with a monster-specific texture
+//		alphaTest 1.0 * (time - parm7)
+//		alphaTest 0 // Necessary, otherwise the other stages will mask out this stage
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.6		// stage-only polygon offset
+//        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/girl_liquid/girl_liquid_dis_muscle	// replace this with a monster-specific texture
+		alphaTest 1.5 * (time - parm7 + 0.2)
+//		glowStage
+	}
+	{ // Possessed girl eyes
+		if parm6 == 0
+		blend add
+		map models/monsters/girl_liquid/girl_eyes
+		privatePolygonOffset 1.5
+		glowStage
+		ignoreAlphaTest
+	}
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+models/monsters/girl/alien
+{
+	unsmoothedtangents
+	matter_flesh
+	collision
+	noselfshadow
+
+
+//	diffusemap models/monsters/boy/alien
+	{
+		blend diffusemap
+		map models/monsters/boy/alien
+		alphaTest 0.5
+	}
+	bumpmap	addnormals(models/monsters/boy/alien_local, heightmap(models/monsters/boy/alien_h, 12 ) )
+	specularmap models/monsters/boy/alien_s
+
+	{	// Burning flesh effect - burns away the diffuse map
+		if	parm7			// only when dead
+
+		// make a burned away alpha test for the normal skin
+		blend	gl_zero, gl_one			// don't draw anything
+
+		map models/monsters/girl_liquid/girl_liquid_dis	// replace this with a monster-specific texture
+		alphaTest 0.05 + 1.4 * (time - parm7)
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1		// stage-only polygon offset
+        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/girl_liquid/girl_liquid_dis	// replace this with a monster-specific texture
+		alphaTest 1.4 * (time - parm7)
+		glowStage
+	}
+	{	// Remaining flesh, not alpha masked
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.3		// stage-only polygon offset - ensure that this is lower than the blue burn
+        blend gl_zero, gl_zero
+        blend gl_one, gl_zero
+
+		map models/monsters/girl_liquid/girl_liquid_dis_muscle	// replace this with a monster-specific texture
+//		alphaTest 1.0 * (time - parm7)
+//		alphaTest 0 // Necessary, otherwise the other stages will mask out this stage
+	}
+	{	// burning corpse effect - blueish effect that trails the burnout
+		if parm7			// only when dead
+
+		// draw the fire burn at a negative polygonOffset, so it is behind the other stages
+		privatePolygonOffset	-1.6		// stage-only polygon offset
+//        blend add
+        blend gl_one, gl_zero
+
+		map models/monsters/girl_liquid/girl_liquid_dis_muscle	// replace this with a monster-specific texture
+		alphaTest 1.5 * (time - parm7 + 0.2)
+//		glowStage
+	}
+	{ // Possessed girl eyes
+		if parm6 == 0
+		blend add
+		map models/monsters/girl_liquid/girl_eyes
+		privatePolygonOffset 1.5
+		glowStage
+		ignoreAlphaTest
+	}
+
+	{ // Scope view texture
+		blend add
+		map textures/sfx/monsterSniperView
+		texgen screen
+		scroll 0.5, 0.5
+		scale 0.5, 0.5
+		clamp
+		glowStage
+		scopeView	// Only visible in the rifle scope view
+	}
+}
+
+
+//====================
+// Shadow Meshes
+//====================
+models/monsters/boy/boy_shadow {
+	diffusemap	textures/editor/shadow
+}
+
+models/monsters/girl_liquid/girl_liquid_shadow {
+	diffusemap	textures/editor/shadow
+}

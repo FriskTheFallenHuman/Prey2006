@@ -1,0 +1,397 @@
+entityDef monster_mutate {
+	"inherit"				"monster_simple_default"
+	"editor_color"			"1 .5 0"
+	"editor_mins"			"-48 -48 0"
+	"editor_maxs"			"48 48 96"
+
+	"health"				"500"
+	"gibhealth"				"0"
+	"size"					"96 96 96"
+	"use_aas"				"aas96"
+	"scriptobject"			"monster_mutate"
+	"spawnclass"			"hhMutate"
+	"melee_range"			"80"
+	"run_distance"			"1"
+	"full_body_melee"		"1"
+	"smart_knockback"		"1"
+	"team"					"7"
+	"fov"					"200"
+	"chatter_min"			"5"
+	"chatter_max"			"10"
+	"chatter_combat_min"	"3"
+	"chatter_combat_max"	"7"
+	"turn_rate"				"250"
+	"death_look_at"			"1"
+	"death_look_at_bone"	"head"
+	"death_camera_bone"		"joint1"
+	"dda_pause_min"			"1"
+	"dda_pause_max"			"4"
+	"dda_dodge_min"			"0.4"
+	"dda_dodge_max"			"0.8"
+	"ddaIndex"				"6"
+	"pain_delay"			"0"
+	"bTalonAttack"			"1" // Talon can attack this creature
+	"damage_zone head"			"*wormNeck_3"
+	"damage_zone human_head"	"*Head"
+	"damage_scale head"			"1.5"
+	"damage_scale human_head"	"1.5"
+
+	// Look
+	"head_look"				"1"
+	"look_min"				"0 -50 0"
+	"look_max"				"0 50 0"
+	"look_joint wormNeck_1"	"1 1 0"
+	"head_focus_rate"		"0.75"
+	"eye_turn_min"			"0 0 0"
+	"eye_turn_max"			"0 0 0"
+
+	// Caching
+	"model"					"model_monster_mutate"
+	"ragdoll"				"monster_mutate"
+	"def_gibDebrisSpawner"	"debrisSpawner_mutate" 
+	"def_dropsSoul"			"ammo_lifeforce_medium"
+	"fx_drool"				"fx/mutate_drool.fx"
+	"fx_deatheffect"		"fx/centurion_decay.fx"
+	"fx_burn"				"fx/centurion_burn.fx"
+	"fx_spike"				"fx/mutate_spike.fx"
+
+	"skin"					"skins/monsters/mutate.skin"
+	"skin_freeze"			"skins/monsters/mutate_frozen.skin"
+	"skin_acidburn"			"skins/monsters/mutate_acid"
+	"skin_burn"				"skins/monsters/mutate_burned.skin"
+
+	"acidburn"				"1"
+	"can_freeze"			"1"
+
+	// Sounds
+	"snd_sight_human"				"monster_mutate_sight_human"
+	"snd_sight_monster"				"monster_mutate_sight_monster"
+	"snd_meleeimpact"				"moveable_metal_bounce"
+	"snd_chatter"					"monster_mutate_chatter_ambient"
+	"snd_chatter_combat_human"		"monster_mutate_chatter_combat_human"
+	"snd_chatter_combat_monster"	"monster_mutate_chatter_combat_monster"
+	//"snd_pain_monster"				"monster_mutate_pain_monster"
+	"snd_pain_human"				"monster_mutate_pain_human"	
+	"snd_pain_monster"				"monster_mutilated_male2_melee_miss"
+	"snd_meleeattack_human"			"monster_mutate_meleeattack_human"
+	"snd_meleeattack_monster"		"monster_mutate_meleeattack_monster"
+	"snd_death_human"				"monster_mutate_die_human"
+	"snd_death_monster"				"monster_mutate_die_monster"
+	"snd_footstep"			"monster_mutate_male2_footstep"
+}
+
+entityDef melee_mutate_stuck {
+	"inherit"			"melee_generic"
+	
+	"mtr_blob"			"textures/damage/bloodClaw"
+	"blob_x"			"320"	//640 by 480 pixels
+	"blob_directional"	"0"
+	
+	"damage"			"20"
+	
+	"knockback"			"150"
+	"kickDir"			"0 -1 -0.5"
+	"kick_time"			"250"
+	"kick_amplitude"	"3"
+
+	"mb_time"			"350"
+	"mb_amplitude"		"1"
+	
+	//"snd_hit"			"monster_mutilated_male2_melee_hit"
+	//"snd_miss"			"monster_mutilated_male2_melee_miss"
+
+	"melee_boundmin"	"0 -10 0"
+	"melee_boundmax"	"140 10 90"
+}
+
+entityDef melee_mutate_spin {
+	"inherit"			"melee_mutate_stuck"
+	"mtr_blob"			"textures/damage/claw_across"
+	"blob_x"			"320"	//640 by 480 pixels
+	"blob_directional"	"0"
+
+	"melee_boundmin"	"0 -100 0"
+	"melee_boundmax"	"120 0 90"
+
+	"damage"			"35"
+	
+	"knockback"			"150"
+	"kickDir"			"0 1 -0.5"
+	"kick_time"			"250"
+	"kick_amplitude"	"3"
+}
+
+entityDef melee_mutate_spin_test {
+	"inherit"			"melee_mutate_spin"
+
+	"melee_boundmin"	"0 -30 0"
+	"melee_boundmax"	"200 30 90"
+}
+
+entityDef melee_mutate_quick {
+	"inherit"			"melee_mutate_stuck"
+	"mtr_blob"			"textures/damage/claw_diagonal_right"
+	"blob_x"			"320"	//640 by 480 pixels
+	"blob_directional"	"1"
+	
+	"melee_boundmin"	"0 -50 60"
+	"melee_boundmax"	"60 50 90"
+}
+
+entityDef melee_mutate_quick_test {
+	"inherit"			"melee_mutate_stuck"
+
+	"melee_boundmin"	"0 -50 0"
+	"melee_boundmax"	"60 50 90"
+}
+
+entityDef melee_mutate_fat {
+	"inherit"			"melee_mutate_stuck"
+
+	"melee_boundmin"	"-40 0 0"
+	"melee_boundmax"	"20 40 90"
+
+	"knockback"			"0"
+	"kickDir"			"0 0 0"
+	"kick_time"			"0"
+	"kick_amplitude"	"0"
+}
+
+export all {
+	options		-scale 1 -prefix mutate_ -keep Waist FX_canisterdrip1 FX_bellyventA FX_bellyventB FX_canisterdrip fx_canister fx_wormMouth -rename joint2 Rshldr
+
+
+	mesh		models/monsters/mutate/mutate.ma -destdir models/monsters/mutate
+    
+   
+	addoptions	-destdir models/monsters/mutate/anim
+	
+//	anim		models/monsters/mutate/anim/birth.ma
+//	anim		models/monsters/mutate/anim/birthIdle.ma
+
+	 addoptions  -prefix mutate_
+	 anim		models/monsters/mutate/anim/initial.ma
+	 anim		models/monsters/mutate/anim/idle.ma
+	 anim		models/monsters/mutate/anim/run.ma
+	 anim		models/monsters/mutate/anim/run2.ma
+	 anim		models/monsters/mutate/anim/walkback.ma
+	 anim		models/monsters/mutate/anim/start_run.ma
+	 anim		models/monsters/mutate/anim/attack.ma
+	 anim		models/monsters/mutate/anim/runattack1.ma
+	 anim		models/monsters/mutate/anim/runattack2.ma
+	 anim		models/monsters/mutate/anim/attack_overhead.ma
+	 anim		models/monsters/mutate/anim/attack_overhead_stuck.ma
+	 anim		models/monsters/mutate/anim/attack_uppercut_fast.ma
+	 anim		models/monsters/mutate/anim/fat_attack.ma
+	 anim		models/monsters/mutate/anim/walk.ma
+	 anim		models/monsters/mutate/anim/start_walk.ma
+	 anim		models/monsters/mutate/anim/pain_head.ma
+	 anim		models/monsters/mutate/anim/pain_rightside.ma
+	 anim		models/monsters/mutate/anim/pain_leftside.ma
+	 anim		models/monsters/mutate/anim/run_pain1.ma
+	 anim		models/monsters/mutate/anim/evade_left.ma
+	 anim		models/monsters/mutate/anim/evade_right.ma
+	 anim		models/monsters/mutate/anim/strafe_left.ma
+	 anim		models/monsters/mutate/anim/strafe_right.ma
+	 anim		models/monsters/mutate/anim/bed_idle.ma
+	 anim		models/monsters/mutate/anim/bed_wake.ma
+	 anim		models/monsters/mutate/anim/360attack.ma
+	 anim		models/monsters/mutate/anim/attack_LRswipe.ma
+	 anim		models/monsters/mutate/anim/surprised.ma
+	 anim		models/monsters/mutate/anim/breath.ma
+	 anim		models/monsters/mutate/anim/turn.ma
+	 anim		models/monsters/mutate/anim/mutate_PR1.ma
+}
+model model_monster_mutate {
+	mesh							models/monsters/mutate/mutate.md5mesh
+	channel torso					(*wormNeck_1 *Lback_3)
+	channel legs					(*origin -*back_2 *joint35 Rback_3 )
+
+	anim af_pose					models/monsters/mutate/anim/initial.md5anim
+	anim ik_pose					models/monsters/mutate/anim/initial.md5anim
+	anim initial					models/monsters/mutate/anim/initial.md5anim
+	anim mutate_pr1					models/monsters/mutate/anim/mutate_PR1.md5anim
+	anim run2					models/monsters/mutate/anim/run2.md5anim	{
+	
+		frame 1						sound snd_footstep
+		frame 20					sound snd_footstep
+		frame 34					sound snd_footstep
+	
+	}
+	anim runattack2					models/monsters/mutate/anim/runattack2.md5anim	{
+		frame 2						sound snd_footstep
+		frame 21					sound snd_footstep
+		frame 24						sound snd_footstep
+	}
+	anim breath						models/monsters/mutate/anim/breath.md5anim {
+		frame 1						event_args spawnFXAlongBone fx_drool fx_wormMouth
+	}
+	anim turn						models/monsters/mutate/anim/turn.md5anim {
+		frame 1							disableWalkIK
+		frame 13						sound snd_footstep
+		frame 17						sound snd_footstep
+		frame 17						enableWalkIK
+	}
+	anim portal						models/monsters/mutate/anim/run.md5anim {
+		frame 1							disableWalkIK
+		frame 8							sound_body snd_sight_monster
+		frame 9							sound_voice snd_sight_human
+		frame 17						enableWalkIK
+		frame 19						sound snd_footstep
+		frame 34						sound snd_footstep
+		frame 37						sound snd_footstep
+	}  
+	anim idle						models/monsters/mutate/anim/idle.md5anim {
+		ai_no_turn
+		frame 1						event_args spawnFXAlongBone fx_drool fx_wormMouth
+	}
+	anim evade_left					models/monsters/mutate/anim/evade_left.md5anim {
+		frame 1							sound snd_footstep
+		frame 2							disableWalkIK
+		frame 11						sound snd_footstep
+		frame 16						sound snd_footstep
+		frame 14						enableWalkIK
+	}
+	anim evade_right				models/monsters/mutate/anim/evade_right.md5anim {
+		frame 1							sound snd_footstep
+		frame 2							disableWalkIK
+		frame 11						sound snd_footstep
+		frame 16						sound snd_footstep
+		frame 14						enableWalkIK
+	}
+	anim run						models/monsters/mutate/anim/run.md5anim {
+		frame 1							disableWalkIK
+		frame 17						enableWalkIK
+		frame 19						sound snd_footstep
+		frame 34						sound snd_footstep
+		frame 37						sound snd_footstep
+		
+	}  
+	anim walkback					models/monsters/mutate/anim/walkback.md5anim {
+		frame 4							disableWalkIK
+		frame 12					sound snd_footstep
+		frame 15						enableWalkIK
+		frame 17					sound snd_footstep
+	}
+	anim spinattack2				models/monsters/mutate/anim/runattack1.md5anim {
+		ai_no_turn
+		frame 1							disableWalkIK
+		frame 1							sound_body snd_meleeattack_monster
+		frame 10						melee melee_mutate_quick
+		frame 21						sound snd_footstep
+		frame 23						enableWalkIK
+		frame 23.1						sound snd_footstep
+	}
+	anim spinattack1				models/monsters/mutate/anim/360attack.md5anim {
+		ai_no_turn
+		frame 1							sound_body snd_meleeattack_monster
+		frame 5							disableWalkIK
+		frame 6							melee melee_mutate_quick
+		frame 22						enableWalkIK
+		frame 23						melee melee_mutate_spin	
+		frame 23.1						sound snd_footstep
+		frame 24						sound snd_footstep
+		frame 30						melee melee_mutate_quick
+	}
+	anim fatswing					models/monsters/mutate/anim/fat_attack.md5anim {
+		frame 3							sound_voice snd_meleeattack_human
+		frame 4							melee melee_mutate_fat
+	}
+	anim attack_overhead_stuck						models/monsters/mutate/anim/attack_overhead_stuck.md5anim {
+		ai_no_turn
+		frame 1							sound_body snd_meleeattack_monster
+		frame 19						melee melee_mutate_stuck
+		frame 17						sound snd_meleeimpact
+		frame 17						event_args spawnFXAlongBone fx_spike joint75
+		frame 38						sound_voice snd_sight_human
+	}
+	anim attack_uppercut_fast						models/monsters/mutate/anim/attack_uppercut_fast.md5anim {
+		frame 15							sound_body snd_meleeattack_monster
+		frame 17							melee melee_mutate_quick
+	}
+	anim attack_LRswipe					models/monsters/mutate/anim/attack_LRswipe.md5anim {
+		frame 7								sound_body snd_meleeattack_monster
+		frame 7							melee melee_mutate_quick
+		frame 16							melee melee_mutate_quick
+		frame 17							sound_voice snd_meleeattack_monster
+	}
+	anim walk						models/monsters/mutate/anim/walk.md5anim {
+		frame 2							rightfoot
+		frame 13						leftfoot
+	}		
+	anim pain_head					models/monsters/mutate/anim/pain_head.md5anim	{
+	
+		frame 1					sound_voice snd_pain_human
+		frame 2					sound_body snd_pain_monster
+		
+	}
+	anim pain_rightSide				models/monsters/mutate/anim/pain_rightside.md5anim	{
+	
+		frame 1					sound_body snd_pain_monster
+	
+	}
+	anim pain           			models/monsters/mutate/anim/pain_rightside.md5anim	{	
+	
+		frame 1					sound_body snd_pain_monster
+	
+	}
+	anim run_pain1           			models/monsters/mutate/anim/run_pain1.md5anim	{	
+	
+		frame 1					sound_body snd_pain_monster
+	
+	}
+	anim pain_leftSide				models/monsters/mutate/anim/pain_leftside.md5anim	{
+	
+		frame 1					sound_voice snd_pain_human
+	
+	}
+	anim strafe_left					models/monsters/mutate/anim/strafe_left.md5anim {
+		frame 3							disableWalkIK
+		frame 11						enableWalkIK
+		frame 12						leftfoot
+		frame 14						rightfoot
+	}
+	anim strafe_right				models/monsters/mutate/anim/strafe_right.md5anim {
+		frame 3							disableWalkIK
+		frame 11						enableWalkIK
+		frame 12						leftfoot
+		frame 13						rightfoot
+	}
+//Bed Anims FIXME: replace with actual anims [ mf 12/1/04 ]
+
+	anim bed_idle					models/monsters/mutate/anim/bed_idle.md5anim
+	anim bed_wake					models/monsters/mutate/anim/bed_wake.md5anim	{
+	
+		frame 30				sound_body snd_sight_monster
+		frame 39				sound_voice snd_sight_human
+		
+	}
+//	anim bed_idle						models/monsters/mutate/anim/idle.md5anim
+
+	
+/*	anim birth						models/monsters/mutate/anim/birth.md5anim
+//		frame birth:1" 					"sound snd_table_birth"
+//	anim birthIdle					models/monsters/mutate/anim/birthidle.md5anim
+//	anim kick						models/monsters/mutate/anim/attack.md5anim
+//		frame kick:9"					"impulse Rclav 8000" // TEMP! RIGHT HAND
+
+	//frame death:1"					"sound snd_death"
+	//frame death:1.1"					"sound snd_dead_body_hit"
+
+	// These for animating within tank (not offset)
+//	anim tank_idle_inplace			models/monsters/mutate/anim/idle.md5anim
+	//	anim tank_twitch   				models/monsters/mutate/anim/pain.md5anim	//until the twitch is NOT offset
+//	anim tank_twitch   				models/monsters/mutate/anim/tank_twitch.md5anim {
+//		frame 1							sound_voice snd_twitch1
+			// Frame 8 is the head going down frame
+//	}
+	// These are offset for breakout intro
+//	anim tank_idle					models/monsters/mutate/anim/tank_idle.ma
+//	anim tank_breakout 				models/monsters/mutate/anim/tank_breakout.ma {
+//		frame 25						sound_voice snd_breakout
+		// 7 = glass broken
+		// 25 = Mutate out and screaming	
+	}	
+	
+*/
+}

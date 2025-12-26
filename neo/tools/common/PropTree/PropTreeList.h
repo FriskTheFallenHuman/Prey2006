@@ -2,7 +2,7 @@
 #define AFX_PROPTREELIST_H__2E09E831_09F5_44AA_B41D_9C4BF495873C__INCLUDED_
 
 #if _MSC_VER > 1000
-	#pragma once
+#pragma once
 #endif // _MSC_VER > 1000
 // PropTreeList.h : header file
 //
@@ -27,8 +27,7 @@ class CPropTree;
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeList window
 
-class PROPTREE_API CPropTreeList : public CWnd
-{
+class PROPTREE_API CPropTreeList : public CWnd {
 // Construction
 public:
 	CPropTreeList();
@@ -42,7 +41,7 @@ public:
 
 protected:
 	// CPropTree class that this class belongs
-	CPropTree*		m_pProp;
+	CPropTree	*	m_pProp;
 
 	// bitmap back buffer for flicker free drawing
 	CBitmap			m_BackBuffer;

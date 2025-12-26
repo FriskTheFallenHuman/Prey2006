@@ -37,9 +37,8 @@ If you have questions concerning this license or the applicable additional terms
 // DialogName dialog
 
 
-DialogName::DialogName( const char* pName, CWnd* pParent /*=NULL*/ )
-	: CDialog( DialogName::IDD, pParent )
-{
+DialogName::DialogName( const char * pName, CWnd* pParent /*=NULL*/ )
+	: CDialog( DialogName::IDD, pParent ) {
 	//{{AFX_DATA_INIT(DialogName)
 	m_strName = _T( "" );
 	//}}AFX_DATA_INIT
@@ -47,16 +46,14 @@ DialogName::DialogName( const char* pName, CWnd* pParent /*=NULL*/ )
 }
 
 
-void DialogName::DoDataExchange( CDataExchange* pDX )
-{
+void DialogName::DoDataExchange( CDataExchange* pDX ) {
 	CDialog::DoDataExchange( pDX );
 	//{{AFX_DATA_MAP(DialogName)
 	DDX_Text( pDX, IDC_TOOLS_EDITNAME, m_strName );
 	//}}AFX_DATA_MAP
 }
 
-BOOL DialogName::OnInitDialog()
-{
+BOOL DialogName::OnInitDialog() {
 	CDialog::OnInitDialog();
 
 	SetWindowText( m_strCaption );
@@ -73,7 +70,6 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // DialogName message handlers
 
-void DialogName::OnOK()
-{
+void DialogName::OnOK() {
 	CDialog::OnOK();
 }

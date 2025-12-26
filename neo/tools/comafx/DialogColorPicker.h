@@ -52,43 +52,36 @@ If you have questions concerning this license or the applicable additional terms
 
 struct HSVType;
 
-struct RGBType
-{
-	COLORREF		color()
-	{
+struct RGBType {
+	COLORREF		color() {
 		return RGB( r, g, b );
 	}
 	HSVType			toHSV();
 	int				r, g, b;
 };
 
-struct HSVType
-{
+struct HSVType {
 	RGBType			toRGB();
 	int				h, s, v;
 };
 
-struct LineDesc
-{
+struct LineDesc {
 	double			x, y;
 	double			slope;
 	double			c;
 };
 
 
-class CDialogColorPicker : public CDialog
-{
+class CDialogColorPicker : public CDialog {
 // Construction
 public:
 	CDialogColorPicker( COLORREF c, CWnd* pParent = NULL ); // standard constructor
 	~CDialogColorPicker();
 
-	COLORREF		GetColor()
-	{
+	COLORREF		GetColor() {
 		return color.color();
 	};
-	float			GetOverBright()
-	{
+	float			GetOverBright() {
 		return overBright;
 	};
 
@@ -199,6 +192,6 @@ protected:
 	float			overBright;
 };
 
-bool DoColor( int* i1, int* i2, int* i3, float* overBright, void ( *Update )( float, float, float, float ) = NULL );
+bool DoColor( int * i1, int * i2, int * i3, float * overBright, void ( *Update )( float, float, float, float ) = NULL );
 
 #endif /* !__DIALOGCOLORPICKER__ */

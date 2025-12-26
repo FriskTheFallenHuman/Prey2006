@@ -2,7 +2,7 @@
 #define AFX_PROPTREEITEMCOMBO_H__9916BC6F_751F_4B15_996F_3C9F6334A259__INCLUDED_
 
 #if _MSC_VER > 1000
-	#pragma once
+#pragma once
 #endif // _MSC_VER > 1000
 // PropTreeItemCombo.h : header file
 //
@@ -27,8 +27,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeItemCombo window
 
-class PROPTREE_API CPropTreeItemCombo : public CComboBox, public CPropTreeItem
-{
+class PROPTREE_API CPropTreeItemCombo : public CComboBox, public CPropTreeItem {
 // Construction
 public:
 	CPropTreeItemCombo();

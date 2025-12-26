@@ -2070,7 +2070,7 @@ void idEventQueue::Enqueue( entityNetEvent_t *event, outOfOrderBehaviour_t behav
 		// any out-of-order events
 		while ( end && end->time > event->time ) {
 			entityNetEvent_t *outOfOrder = RemoveLast();
-			common->DPrintf( "WARNING: new event with id %d ( time %d ) caused removal of event with id %d ( time %d ), game time = %d.\n", event->event, event->time, outOfOrder->event, outOfOrder->time, gameLocal.time );
+			common->DWarning( "new event with id %d ( time %d ) caused removal of event with id %d ( time %d ), game time = %d.\n", event->event, event->time, outOfOrder->event, outOfOrder->time, gameLocal.time );
 			Free( outOfOrder );
 		}
 	} else if ( behaviour == OUTOFORDER_SORT && end ) {

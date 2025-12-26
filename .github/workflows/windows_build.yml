@@ -1,0 +1,66 @@
+name: Windows Auto-Builds
+on:
+  push:
+    branches:
+      - 'main'
+    paths-ignore:
+      - .github/workflows/freebsd_build.yml
+      - .github/workflows/linux_build.yml
+  pull_request:
+    types:
+      - edited
+      - opened
+      - synchronize
+    paths-ignore:
+      - .github/workflows/freebsd_build.yml
+      - .github/workflows/linux_build.yml
+  workflow_dispatch:
+concurrency:
+  # Cancel concurrent workflows for the same PR or commit hash.
+  group: ${{github.workflow}}-${{github.event_name == 'pull_request' && github.head_ref || github.sha}}
+  cancel-in-progress: true
+
+jobs:
+  job:
+    name: Windows Github Auto-Builds
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Get latest CMake if possible
+        uses: lukka/get-cmake@latest
+
+      - name: Restore from cache and setup vcpkg executable and data files.
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgDirectory: '${{github.workspace}}/vcpkg'
+          runVcpkgInstall: true
+          vcpkgJsonGlob: '**/neo/vcpkg.json'
+
+      - name: Run CMake+vcpkg+Ninja to build the engine.
+        uses: lukka/run-cmake@v10
+        with:
+          cmakeListsTxtPath: '${{github.workspace}}/neo/CMakeLists.txt'
+          configurePreset: 'ninja-multi-vcpkg'
+          buildPreset: 'ninja-vcpkg-release'
+
+      - name: Copy base files to the output folder
+        shell: pwsh
+        run: |
+          cd ${{github.workspace}}
+          Copy-Item -Path "base" -Destination "output/windows/base" -Recurse
+          Copy-Item -Path ".github/Changelog.md" -Destination "output/windows"
+          Copy-Item -Path ".github/Configuration.md" -Destination "output/windows"
+          Copy-Item -Path ".github/README.md" -Destination "output/windows"
+
+      - name: Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: prey2006-windows
+          path: output/windows/

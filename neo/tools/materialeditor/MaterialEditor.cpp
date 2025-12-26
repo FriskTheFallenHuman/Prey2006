@@ -34,18 +34,17 @@ If you have questions concerning this license or the applicable additional terms
 #include "MEMainFrame.h"
 
 #ifdef _DEBUG
-	#define new DEBUG_NEW
+#define new DEBUG_NEW
 #endif
 
-MEMainFrame* meMainFrame = NULL;
+MEMainFrame * meMainFrame = NULL;
 
-CFont* materialEditorFont = NULL;
+CFont * materialEditorFont = NULL;
 
 /**
 * Initializes the material editor tool.
 */
-void MaterialEditorInit()
-{
+void MaterialEditorInit() {
 
 	InitPropTree( win32.hInstance );
 
@@ -57,8 +56,7 @@ void MaterialEditorInit()
 	InitCommonControls();
 
 	// Initialize OLE libraries
-	if( !AfxOleInit() )
-	{
+	if ( !AfxOleInit() ) {
 		return;
 	}
 	AfxEnableControlContainer();
@@ -104,16 +102,13 @@ void MaterialEditorInit()
 /**
 * Called every frame by the doom engine to allow the material editor to process messages.
 */
-void MaterialEditorRun()
-{
+void MaterialEditorRun() {
 
 	MSG* msg = AfxGetCurrentMessage();
 
-	while( ::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) )
-	{
+	while ( ::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) ) {
 		// pump message
-		if( !AfxGetApp()->PumpMessage() )
-		{
+		if ( !AfxGetApp()->PumpMessage() ) {
 		}
 	}
 }
@@ -121,8 +116,7 @@ void MaterialEditorRun()
 /**
 * Called by the doom engine when the material editor needs to be destroyed.
 */
-void MaterialEditorShutdown()
-{
+void MaterialEditorShutdown() {
 
 	delete meMainFrame;
 
@@ -134,11 +128,9 @@ void MaterialEditorShutdown()
 /**
 * Allows the doom engine to reflect console output to the material editors console.
 */
-void MaterialEditorPrintConsole( const char* msg )
-{
+void MaterialEditorPrintConsole( const char * msg ) {
 	//meMainFrame can be null when starting immedeatly from commandline.
-	if( meMainFrame && com_editors & EDITOR_MATERIAL )
-	{
+	if ( meMainFrame && com_editors & EDITOR_MATERIAL ) {
 		meMainFrame->PrintConsoleMessage( msg );
 	}
 }
@@ -146,7 +138,6 @@ void MaterialEditorPrintConsole( const char* msg )
 /**
 * Returns the handle to the main Material Editor Window
 */
-HWND GetMaterialEditorWindow()
-{
+HWND GetMaterialEditorWindow() {
 	return meMainFrame->GetSafeHwnd();
 }

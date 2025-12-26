@@ -33,7 +33,7 @@ constexpr int MAXTOKEN = 256;
 extern	char	token[MAXTOKEN];
 extern	int		scriptline;
 
-void StartTokenParsing( const char* data );
+void StartTokenParsing( const char * data );
 bool GetToken( bool crossline );
 void UngetToken();
 bool TokenAvailable();

@@ -30,7 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 #define __DIALOGNAME_H__
 
 #if _MSC_VER > 1000
-	#pragma once
+#pragma once
 #endif // _MSC_VER > 1000
 // NameDlg.h : header file
 //
@@ -38,12 +38,11 @@ If you have questions concerning this license or the applicable additional terms
 /////////////////////////////////////////////////////////////////////////////
 // DialogName dialog
 
-class DialogName : public CDialog
-{
+class DialogName : public CDialog {
 	CString m_strCaption;
 // Construction
 public:
-	DialogName( const char* pName, CWnd* pParent = NULL ); // standard constructor
+	DialogName( const char * pName, CWnd* pParent = NULL ); // standard constructor
 
 // Dialog Data
 	//{{AFX_DATA(DialogName)

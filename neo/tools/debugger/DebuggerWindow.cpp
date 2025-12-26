@@ -56,20 +56,17 @@ If you have questions concerning this license or the applicable additional terms
 
 #define ID_DBG_FILE_MRU1		10000
 
-class CAboutDebuggerDlg : public CAboutDlg
-{
+class CAboutDebuggerDlg : public CAboutDlg {
 public:
 	CAboutDebuggerDlg();
 	virtual BOOL OnInitDialog();
 };
 
-CAboutDebuggerDlg::CAboutDebuggerDlg() : CAboutDlg( IDD_ABOUT )
-{
+CAboutDebuggerDlg::CAboutDebuggerDlg() : CAboutDlg( IDD_ABOUT ) {
 	SetDialogTitle( _T( "About Script Debugger" ) );
 }
 
-BOOL CAboutDebuggerDlg::OnInitDialog()
-{
+BOOL CAboutDebuggerDlg::OnInitDialog() {
 	CAboutDlg::OnInitDialog();
 
 	CString buffer;
@@ -79,25 +76,20 @@ BOOL CAboutDebuggerDlg::OnInitDialog()
 	return TRUE;
 }
 
-static INT_PTR CALLBACK AboutDebugerDlgProc( HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam )
-{
+static INT_PTR CALLBACK AboutDebugerDlgProc( HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam ) {
 	static CAboutDebuggerDlg* pDlg = nullptr;
 
-	if( message == WM_INITDIALOG )
-	{
-		pDlg = reinterpret_cast<CAboutDebuggerDlg*>( lParam );
+	if ( message == WM_INITDIALOG ) {
+		pDlg = reinterpret_cast<CAboutDebuggerDlg *>( lParam );
 		pDlg->Attach( hDlg ); // Attach the HWND to the MFC dialog
 		pDlg->OnInitDialog();
 		return TRUE;
 	}
 
-	if( pDlg )
-	{
-		switch( message )
-		{
+	if ( pDlg ) {
+		switch ( message ) {
 			case WM_COMMAND:
-				if( LOWORD( wParam ) == IDOK || LOWORD( wParam ) == IDCANCEL )
-				{
+				if ( LOWORD( wParam ) == IDOK || LOWORD( wParam ) == IDCANCEL ) {
 					EndDialog( hDlg, LOWORD( wParam ) );
 					return TRUE;
 				}
@@ -110,8 +102,7 @@ static INT_PTR CALLBACK AboutDebugerDlgProc( HWND hDlg, UINT message, WPARAM wPa
 	return FALSE;
 }
 
-static void ShowAboutDebuggerDialog( HINSTANCE hInstance, HWND hParent )
-{
+static void ShowAboutDebuggerDialog( HINSTANCE hInstance, HWND hParent ) {
 	CAboutDebuggerDlg aboutDlg;
 	DialogBoxParam( hInstance, MAKEINTRESOURCE( IDD_ABOUT ), hParent, AboutDebugerDlgProc, reinterpret_cast<LPARAM>( &aboutDlg ) );
 }
@@ -123,8 +114,7 @@ rvDebuggerWindow::rvDebuggerWindow
 Constructor
 ================
 */
-rvDebuggerWindow::rvDebuggerWindow( )
-{
+rvDebuggerWindow::rvDebuggerWindow( ) {
 	mWnd		   = NULL;
 	mWndScript	   = NULL;
 	mInstance	   = NULL;
@@ -147,22 +137,18 @@ rvDebuggerWindow::~rvDebuggerWindow
 Destructor
 ================
 */
-rvDebuggerWindow::~rvDebuggerWindow( )
-{
+rvDebuggerWindow::~rvDebuggerWindow( ) {
 	int i;
 
-	if( mWnd )
-	{
+	if ( mWnd ) {
 		DestroyWindow( mWnd );
 	}
 
-	if( mImageList )
-	{
+	if ( mImageList ) {
 		ImageList_Destroy( mImageList );
 	}
 
-	for( i = 0; i < mScripts.Num(); i ++ )
-	{
+	for ( i = 0; i < mScripts.Num(); i ++ ) {
 		delete mScripts[i];
 	}
 }
@@ -175,8 +161,7 @@ Registers the window class used by the debugger window.  This is called when
 the window is created.
 ================
 */
-bool rvDebuggerWindow::RegisterClass()
-{
+bool rvDebuggerWindow::RegisterClass() {
 	WNDCLASSEX wcex;
 
 	wcex.cbSize = sizeof( WNDCLASSEX );
@@ -203,12 +188,10 @@ rvDebuggerWindow::Create
 Creates the debugger window
 ================
 */
-bool rvDebuggerWindow::Create( HINSTANCE instance )
-{
+bool rvDebuggerWindow::Create( HINSTANCE instance ) {
 	mInstance = instance;
 
-	if( !RegisterClass( ) )
-	{
+	if ( !RegisterClass( ) ) {
 		return false;
 	}
 
@@ -220,8 +203,7 @@ bool rvDebuggerWindow::Create( HINSTANCE instance )
 						 WS_OVERLAPPEDWINDOW,
 						 CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, mInstance, this );
 
-	if( !mWnd )
-	{
+	if ( !mWnd ) {
 		return false;
 	}
 
@@ -248,12 +230,10 @@ the word that someone is over with their mouse cursor.  Since the default window
 doesnt understand the delimiters of the scripting language it had to be overridden.
 ================
 */
-int CALLBACK rvDebuggerWindow::ScriptWordBreakProc( LPTSTR text, int current, int max, int action )
-{
+int CALLBACK rvDebuggerWindow::ScriptWordBreakProc( LPTSTR text, int current, int max, int action ) {
 	static TCHAR delimiters[] = TEXT( "!@#$%^&*()-+=[]{}|\\;:'\"/,.<>? \t\r\n" ) ;
 
-	switch( action )
-	{
+	switch ( action ) {
 		default:
 			break;
 
@@ -266,12 +246,10 @@ int CALLBACK rvDebuggerWindow::ScriptWordBreakProc( LPTSTR text, int current, in
 			current--;
 
 			// Run as long as the current index is valid.
-			while( current > 0 )
-			{
+			while ( current > 0 ) {
 				// If we hit a delimiter then return the index + 1 since
 				// it was the last character we were on that was valid
-				if( _tcschr( delimiters, *( text + current * 2 ) ) )
-				{
+				if ( _tcschr( delimiters, *( text + current * 2 ) ) ) {
 					return current + 1;
 				}
 
@@ -285,17 +263,14 @@ int CALLBACK rvDebuggerWindow::ScriptWordBreakProc( LPTSTR text, int current, in
 		case WB_RIGHT:
 
 			// If we are already on a delimiter then just return the current index
-			if( _tcschr( delimiters, *( text + current * 2 ) ) )
-			{
+			if ( _tcschr( delimiters, *( text + current * 2 ) ) ) {
 				return current;
 			}
 
 			// Run until we hit the end of the control
-			while( current < max )
-			{
+			while ( current < max ) {
 				// If we found a delimiter then return the index we are on
-				if( _tcschr( delimiters, *( text + current * 2 ) ) )
-				{
+				if ( _tcschr( delimiters, *( text + current * 2 ) ) ) {
 					return current;
 				}
 
@@ -308,20 +283,17 @@ int CALLBACK rvDebuggerWindow::ScriptWordBreakProc( LPTSTR text, int current, in
 	return 0;
 }
 
-LRESULT CALLBACK rvDebuggerWindow::ScriptWndProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam )
-{
+LRESULT CALLBACK rvDebuggerWindow::ScriptWndProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam ) {
 	static int		  lastStart = -1;
 	static int		  lastEnd   = -1;
-	rvDebuggerWindow* window    = ( rvDebuggerWindow* )GetWindowLongPtr( wnd, GWLP_USERDATA );
+	rvDebuggerWindow* window    = ( rvDebuggerWindow * )GetWindowLongPtr( wnd, GWLP_USERDATA );
 	WNDPROC			  wndproc   = window->mOldScriptProc;
 
-	switch( msg )
-	{
+	switch ( msg ) {
 		case WM_RBUTTONUP:
 			return SendMessage( wnd, WM_LBUTTONUP, wparam, lparam );
 
-		case WM_RBUTTONDOWN:
-		{
+		case WM_RBUTTONDOWN: {
 			POINT point = { LOWORD( lparam ), HIWORD( lparam ) };
 			HMENU menu;
 			SendMessage( wnd, WM_LBUTTONDOWN, wparam, lparam );
@@ -332,8 +304,7 @@ LRESULT CALLBACK rvDebuggerWindow::ScriptWndProc( HWND wnd, UINT msg, WPARAM wpa
 			return 0;
 		}
 
-		case WM_MOUSEMOVE:
-		{
+		case WM_MOUSEMOVE: {
 			// Figure out the start and end of the mouse is over
 			POINTL pos   = {LOWORD( lparam ), HIWORD( lparam )};
 			int    c     = SendMessage( wnd, EM_CHARFROMPOS, 0, ( WPARAM )&pos );
@@ -342,8 +313,7 @@ LRESULT CALLBACK rvDebuggerWindow::ScriptWndProc( HWND wnd, UINT msg, WPARAM wpa
 
 			// If the start and the end of the word we are over havent changed
 			// then the word hasnt changed so no need to re-setup the tool tip
-			if( lastStart == start && lastEnd == end )
-			{
+			if ( lastStart == start && lastEnd == end ) {
 				break;
 			}
 
@@ -352,8 +322,7 @@ LRESULT CALLBACK rvDebuggerWindow::ScriptWndProc( HWND wnd, UINT msg, WPARAM wpa
 			lastEnd   = end;
 
 			// Get rid of the last tool tip if there is one
-			if( window->mTooltipVar.Length() )
-			{
+			if ( window->mTooltipVar.Length() ) {
 				TOOLINFO ti;
 				ti.cbSize = sizeof( TOOLINFO );
 				ti.hwnd   = wnd;
@@ -363,8 +332,7 @@ LRESULT CALLBACK rvDebuggerWindow::ScriptWndProc( HWND wnd, UINT msg, WPARAM wpa
 			}
 
 			// If there is no word then ignore it
-			if( start == end )
-			{
+			if ( start == end ) {
 				break;
 			}
 
@@ -372,7 +340,7 @@ LRESULT CALLBACK rvDebuggerWindow::ScriptWndProc( HWND wnd, UINT msg, WPARAM wpa
 			TOOLINFO	ti;
 
 			// grab the actual word from the edit control
-			char* temp = new char[end - start + 10];
+			char * temp = new char[end - start + 10];
 			range.chrg.cpMin = start;
 			range.chrg.cpMax = end;
 			range.lpstrText  = temp;
@@ -411,8 +379,7 @@ LRESULT CALLBACK rvDebuggerWindow::ScriptWndProc( HWND wnd, UINT msg, WPARAM wpa
 
 			break;
 		}
-		case WM_SIZE:
-		{
+		case WM_SIZE: {
 			float scaling_factor = Win_GetWindowScalingFactor( wnd );
 			int s18 = int( 18 * scaling_factor );
 			int s10 = int( 10 * scaling_factor );
@@ -433,27 +400,23 @@ LRESULT CALLBACK rvDebuggerWindow::ScriptWndProc( HWND wnd, UINT msg, WPARAM wpa
 	return CallWindowProc( wndproc, wnd, msg, wparam, lparam );
 }
 
-LRESULT CALLBACK rvDebuggerWindow::MarginWndProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam )
-{
-	rvDebuggerWindow* window = ( rvDebuggerWindow* ) GetWindowLongPtr( wnd, GWLP_USERDATA );
+LRESULT CALLBACK rvDebuggerWindow::MarginWndProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam ) {
+	rvDebuggerWindow* window = ( rvDebuggerWindow * ) GetWindowLongPtr( wnd, GWLP_USERDATA );
 
-	switch( msg )
-	{
+	switch ( msg ) {
 		case WM_RBUTTONDOWN:
 			return SendMessage( window->mWndScript, WM_RBUTTONDOWN, wparam, lparam );
 
 		case WM_RBUTTONUP:
 			return SendMessage( window->mWndScript, WM_RBUTTONUP, wparam, lparam );
 
-		case WM_LBUTTONDBLCLK:
-		{
+		case WM_LBUTTONDBLCLK: {
 			int result = SendMessage( window->mWndScript, WM_LBUTTONDBLCLK, wparam, lparam );
 			window->ToggleBreakpoint( );
 			return result;
 		}
 
-		case WM_LBUTTONDOWN:
-		{
+		case WM_LBUTTONDOWN: {
 			int result = SendMessage( window->mWndScript, WM_LBUTTONDOWN, wparam, lparam );
 			window->ToggleBreakpoint( );
 			return result;
@@ -462,8 +425,7 @@ LRESULT CALLBACK rvDebuggerWindow::MarginWndProc( HWND wnd, UINT msg, WPARAM wpa
 		case WM_LBUTTONUP:
 			return SendMessage( window->mWndScript, WM_LBUTTONUP, wparam, lparam );
 
-		case WM_PAINT:
-		{
+		case WM_PAINT: {
 			HDC dc;
 			float scaling_factor = Win_GetWindowScalingFactor( wnd );
 			int s2 = int( 2 * scaling_factor );
@@ -498,11 +460,10 @@ LRESULT CALLBACK rvDebuggerWindow::MarginWndProc( HWND wnd, UINT msg, WPARAM wpa
 			lnrRect.right = lnrRect.left + lnrWidth;
 			FillRect( dc, &lnrRect, WHITE_BRUSH );
 
-			for( int i = 0; i < iMaxNumberOfLines; ++i )
-			{
+			for ( int i = 0; i < iMaxNumberOfLines; ++i ) {
 				int		c;
 				POINTL	pos;
-				c = SendMessage( window->mWndScript, EM_LINEINDEX, iFirstVisibleLine + i , 0 );
+				c = SendMessage( window->mWndScript, EM_LINEINDEX, iFirstVisibleLine + i, 0 );
 				SendMessage( window->mWndScript, EM_POSFROMCHAR, ( WPARAM ) &pos, c );
 
 				RECT t = lnrRect;
@@ -516,15 +477,12 @@ LRESULT CALLBACK rvDebuggerWindow::MarginWndProc( HWND wnd, UINT msg, WPARAM wpa
 			DeleteObject( hf );
 
 			//draw breakpoints
-			if( window->mScripts.Num( ) )
-			{
-				for( int i = 0; i < window->mClient->GetBreakpointCount(); i ++ )
-				{
+			if ( window->mScripts.Num( ) ) {
+				for ( int i = 0; i < window->mClient->GetBreakpointCount(); i ++ ) {
 					rvDebuggerBreakpoint* bp = window->mClient->GetBreakpoint( i );
 					assert( bp );
 
-					if( !idStr::Icmp( window->mScripts[window->mActiveScript]->GetFilename( ), bp->GetFilename( ) ) )
-					{
+					if ( !idStr::Icmp( window->mScripts[window->mActiveScript]->GetFilename( ), bp->GetFilename( ) ) ) {
 						int		c;
 						POINTL	pos;
 
@@ -535,11 +493,9 @@ LRESULT CALLBACK rvDebuggerWindow::MarginWndProc( HWND wnd, UINT msg, WPARAM wpa
 					}
 				}
 
-				if( window->mClient->IsStopped( ) )
-				{
-					if( !idStr::Icmp( window->mClient->GetBreakFilename(),
-									  window->mScripts[window->mActiveScript]->GetFilename( ) ) )
-					{
+				if ( window->mClient->IsStopped( ) ) {
+					if ( !idStr::Icmp( window->mClient->GetBreakFilename(),
+									   window->mScripts[window->mActiveScript]->GetFilename( ) ) ) {
 						int		c;
 						POINTL	pos;
 
@@ -549,10 +505,8 @@ LRESULT CALLBACK rvDebuggerWindow::MarginWndProc( HWND wnd, UINT msg, WPARAM wpa
 					}
 				}
 
-				if( window->mCurrentStackDepth != 0 )
-				{
-					if( !window->mClient->GetCallstack()[window->mCurrentStackDepth]->mFilename.Icmp( window->mScripts[window->mActiveScript]->GetFilename( ) ) )
-					{
+				if ( window->mCurrentStackDepth != 0 ) {
+					if ( !window->mClient->GetCallstack()[window->mCurrentStackDepth]->mFilename.Icmp( window->mScripts[window->mActiveScript]->GetFilename( ) ) ) {
 						int		c;
 						POINTL	pos;
 
@@ -588,37 +542,26 @@ rvDebuggerWindow::UpdateTitle
 Updates the window title of the script debugger to show a few states
 ================
 */
-void rvDebuggerWindow::UpdateTitle()
-{
+void rvDebuggerWindow::UpdateTitle() {
 	idStr title;
 
 	title = "Script Debugger - ";
 
-	if( mClient->IsConnected( ) )
-	{
-		if( mClient->IsStopped( ) )
-		{
+	if ( mClient->IsConnected( ) ) {
+		if ( mClient->IsStopped( ) ) {
 			title += "[break]";
-		}
-		else
-		{
+		} else {
 			title += "[run]";
 		}
-	}
-	else
-	{
+	} else {
 		title += "[disconnected]";
 	}
 
-	if( mScripts.Num( ) )
-	{
+	if ( mScripts.Num( ) ) {
 		title += " - [";
-		if( mActiveScript != -1 )
-		{
+		if ( mActiveScript != -1 ) {
 			title += idStr( mScripts[mActiveScript]->GetFilename() ).StripPath( );
-		}
-		else
-		{
+		} else {
 			title += "Load Error";
 		}
 		title += "]";
@@ -634,13 +577,11 @@ rvDebuggerWindow::UpdateScript
 Updates the edit window to contain the current script
 ================
 */
-void rvDebuggerWindow::UpdateScript()
-{
+void rvDebuggerWindow::UpdateScript() {
 	UpdateTitle( );
 
 	// Dont reupdate if the given active script is the one being displayed.
-	if( mActiveScript == mLastActiveScript )
-	{
+	if ( mActiveScript == mLastActiveScript ) {
 		return;
 	}
 
@@ -648,13 +589,10 @@ void rvDebuggerWindow::UpdateScript()
 
 	// Show and hide the script window depending on whether or not
 	// there are loaded scripts
-	if( mScripts.Num( ) < 1 )
-	{
+	if ( mScripts.Num( ) < 1 ) {
 		ShowWindow( mWndScript, SW_HIDE );
 		return;
-	}
-	else
-	{
+	} else {
 		ShowWindow( mWndScript, SW_SHOW );
 	}
 
@@ -672,21 +610,17 @@ rvDebuggerWindow::UpdateWindowMenu
 Updates the windows displayed in the window menu
 ================
 */
-void rvDebuggerWindow::UpdateWindowMenu()
-{
-	while( GetMenuItemCount( mWindowMenu ) > mWindowMenuPos )
-	{
+void rvDebuggerWindow::UpdateWindowMenu() {
+	while ( GetMenuItemCount( mWindowMenu ) > mWindowMenuPos ) {
 		DeleteMenu( mWindowMenu, mWindowMenuPos, MF_BYPOSITION );
 	}
 
-	if( mScripts.Num() )
-	{
+	if ( mScripts.Num() ) {
 		AppendMenu( mWindowMenu, MF_SEPARATOR, 0, "" );
 	}
 
 	int i;
-	for( i = 0; i < mScripts.Num(); i ++ )
-	{
+	for ( i = 0; i < mScripts.Num(); i ++ ) {
 		idStr name;
 		name = mScripts[i]->GetFilename( );
 		name.StripPath( );
@@ -702,15 +636,13 @@ rvDebuggerWindow::UpdateCallstack
 Updates the contents of teh callastack
 ================
 */
-void rvDebuggerWindow::UpdateCallstack()
-{
+void rvDebuggerWindow::UpdateCallstack() {
 	LVITEM item;
 	ListView_DeleteAllItems( mWndCallstack );
 	ZeroMemory( &item, sizeof( item ) );
 	item.mask = LVIF_TEXT | LVIF_IMAGE;
 
-	for( int i = 0; i < mClient->GetCallstack().Num(); i ++ )
-	{
+	for ( int i = 0; i < mClient->GetCallstack().Num(); i ++ ) {
 		rvDebuggerCallstack* entry = mClient->GetCallstack()[i];
 		item.iItem = ListView_GetItemCount( mWndCallstack );
 		item.pszText = "";
@@ -723,24 +655,20 @@ void rvDebuggerWindow::UpdateCallstack()
 	}
 }
 
-void rvDebuggerWindow::UpdateScriptList()
-{
+void rvDebuggerWindow::UpdateScriptList() {
 	LVITEM item;
 	ListView_DeleteAllItems( mWndScriptList );
 	ZeroMemory( &item, sizeof( item ) );
 	item.mask = LVIF_TEXT | LVIF_IMAGE;
 
 	idStrList& scripts = mClient->GetServerScripts();
-	for( int i = 0; i < scripts.Num(); i++ )
-	{
+	for ( int i = 0; i < scripts.Num(); i++ ) {
 		item.iItem = ListView_GetItemCount( mWndScriptList );
 		item.pszText = "";
 		//find in activeScripts
 		item.iImage = 0;
-		for( int j = 0; j < mScripts.Num(); j++ )
-		{
-			if( !idStr::Icmp( mScripts[j]->GetFilename(), scripts[i] ) )
-			{
+		for ( int j = 0; j < mScripts.Num(); j++ ) {
+			if ( !idStr::Icmp( mScripts[j]->GetFilename(), scripts[i] ) ) {
 				item.iImage = 1;
 				break;
 			}
@@ -751,16 +679,14 @@ void rvDebuggerWindow::UpdateScriptList()
 }
 
 
-void rvDebuggerWindow::UpdateBreakpointList()
-{
+void rvDebuggerWindow::UpdateBreakpointList() {
 	LVITEM item;
 	ListView_DeleteAllItems( mWndBreakList );
 	ZeroMemory( &item, sizeof( item ) );
 	item.mask = LVIF_TEXT | LVIF_IMAGE;
 
 	int numBreakPoints = mClient->GetBreakpointCount();
-	for( int i = 0; i < numBreakPoints; i++ )
-	{
+	for ( int i = 0; i < numBreakPoints; i++ ) {
 		rvDebuggerBreakpoint* bp = mClient->GetBreakpoint( i );
 		item.iItem = ListView_GetItemCount( mWndBreakList );
 		item.pszText = "";
@@ -780,13 +706,11 @@ rvDebuggerWindow::UpdateWatch
 Updates the contents of the watch window
 ================
 */
-void rvDebuggerWindow::UpdateWatch()
-{
+void rvDebuggerWindow::UpdateWatch() {
 	int i;
 
 	// Inspect all the variables we are watching
-	for( i = 0; i < mWatches.Num(); i ++ )
-	{
+	for ( i = 0; i < mWatches.Num(); i ++ ) {
 		mWatches[i]->mModified = false;
 		mClient->InspectVariable( mWatches[i]->mVariable, mCurrentStackDepth );
 	}
@@ -802,8 +726,7 @@ rvDebuggerWindow::HandleInitMenu
 Handles the initialization of the main menu
 ================
 */
-int rvDebuggerWindow::HandleInitMenu( WPARAM wParam, LPARAM lParam )
-{
+int rvDebuggerWindow::HandleInitMenu( WPARAM wParam, LPARAM lParam ) {
 	int		cMenuItems = GetMenuItemCount( ( HMENU )wParam );
 	int		nPos;
 	int		id;
@@ -814,41 +737,32 @@ int rvDebuggerWindow::HandleInitMenu( WPARAM wParam, LPARAM lParam )
 
 	// Run through all the menu items in the menu and see if any of them need
 	// modification in any way
-	for( nPos = 0; nPos < cMenuItems; nPos++ )
-	{
+	for ( nPos = 0; nPos < cMenuItems; nPos++ ) {
 		id    = GetMenuItemID( hmenu, nPos );
 		flags = 0;
 
 		// Handle popup menus too
-		if( id < 0 )
-		{
+		if ( id < 0 ) {
 			HMENU sub = GetSubMenu( hmenu, nPos );
-			if( sub )
-			{
+			if ( sub ) {
 				HandleInitMenu( ( WPARAM ) sub, 0 );
 				continue;
 			}
 		}
 
 		// Handle the dynamic menu items specially
-		if( id >= ID_DBG_WINDOWMIN && id <= ID_DBG_WINDOWMAX )
-		{
-			if( id - ID_DBG_WINDOWMIN == mActiveScript )
-			{
+		if ( id >= ID_DBG_WINDOWMIN && id <= ID_DBG_WINDOWMAX ) {
+			if ( id - ID_DBG_WINDOWMIN == mActiveScript ) {
 				CheckMenuItem( hmenu, nPos, MF_BYPOSITION | MF_CHECKED );
-			}
-			else
-			{
+			} else {
 				CheckMenuItem( hmenu, nPos, MF_BYPOSITION | MF_UNCHECKED );
 			}
 			continue;
 		}
 
 		// Menu items that are completely unrelated to the workspace
-		switch( id )
-		{
-			case ID_DBG_DEBUG_RUN:
-			{
+		switch ( id ) {
+			case ID_DBG_DEBUG_RUN: {
 				MENUITEMINFO info;
 				idStr		 run;
 
@@ -856,13 +770,10 @@ int rvDebuggerWindow::HandleInitMenu( WPARAM wParam, LPARAM lParam )
 				info.fMask = MIIM_TYPE | MIIM_STATE;
 				info.fType = MFT_STRING;
 
-				if( !mClient->IsConnected() )
-				{
+				if ( !mClient->IsConnected() ) {
 					run = "Run";
 					info.fState = MFS_ENABLED;
-				}
-				else
-				{
+				} else {
 					run = "Continue";
 					info.fState = mClient->IsStopped() ? MFS_ENABLED : MFS_GRAYED;
 				}
@@ -878,13 +789,10 @@ int rvDebuggerWindow::HandleInitMenu( WPARAM wParam, LPARAM lParam )
 			}
 
 			case ID_DBG_DEBUG_BREAK:
-				if( !mClient->IsConnected() || mClient->IsStopped() )
-				{
+				if ( !mClient->IsConnected() || mClient->IsStopped() ) {
 					EnableMenuItem( hmenu, nPos, MF_GRAYED | MF_BYPOSITION );
 					SendMessage( mWndToolbar, TB_ENABLEBUTTON, id, MAKELONG( FALSE, 0 ) );
-				}
-				else
-				{
+				} else {
 					EnableMenuItem( hmenu, nPos, MF_ENABLED | MF_BYPOSITION );
 					SendMessage( mWndToolbar, TB_ENABLEBUTTON, id, MAKELONG( TRUE, 0 ) );
 				}
@@ -896,13 +804,10 @@ int rvDebuggerWindow::HandleInitMenu( WPARAM wParam, LPARAM lParam )
 			case ID_DBG_DEBUG_STEPINTO:
 			case ID_DBG_DEBUG_SHOWNEXTSTATEMENT:
 			case ID_DBG_DEBUG_QUICKWATCH:
-				if( !mClient->IsConnected() || !mClient->IsStopped() )
-				{
+				if ( !mClient->IsConnected() || !mClient->IsStopped() ) {
 					EnableMenuItem( hmenu, nPos, MF_GRAYED | MF_BYPOSITION );
 					SendMessage( mWndToolbar, TB_ENABLEBUTTON, id, MAKELONG( FALSE, 0 ) );
-				}
-				else
-				{
+				} else {
 					EnableMenuItem( hmenu, nPos, MF_ENABLED | MF_BYPOSITION );
 					SendMessage( mWndToolbar, TB_ENABLEBUTTON, id, MAKELONG( TRUE, 0 ) );
 				}
@@ -921,8 +826,7 @@ int rvDebuggerWindow::HandleInitMenu( WPARAM wParam, LPARAM lParam )
 }
 
 
-void rvDebuggerWindow::ResizeImageList( int& widthOut, int& heightOut )
-{
+void rvDebuggerWindow::ResizeImageList( int & widthOut, int & heightOut ) {
 	//mTmpImageList
 	float scaling_factor = Win_GetWindowScalingFactor( mWnd );
 	int s16 = int( 16 * scaling_factor );
@@ -938,7 +842,7 @@ void rvDebuggerWindow::ResizeImageList( int& widthOut, int& heightOut )
 	width *= scaling_factor;
 
 	ImageList_Destroy( mTmpImageList );
-	mTmpImageList = ImageList_Create( width, height, ILC_COLOR | ILC_MASK , 0, 2 );
+	mTmpImageList = ImageList_Create( width, height, ILC_COLOR | ILC_MASK, 0, 2 );
 	ImageList_AddIcon( mTmpImageList, ( HICON )LoadImage( mInstance, MAKEINTRESOURCE( IDI_DBG_EMPTY ), IMAGE_ICON, width, height, LR_DEFAULTSIZE | LR_DEFAULTCOLOR ) );
 	ImageList_AddIcon( mTmpImageList, ( HICON )LoadImage( mInstance, MAKEINTRESOURCE( IDI_DBG_CURRENT ), IMAGE_ICON, width, height, LR_DEFAULTSIZE | LR_DEFAULTCOLOR ) );
 	ImageList_AddIcon( mTmpImageList, ( HICON )LoadImage( mInstance, MAKEINTRESOURCE( IDI_DBG_BREAKPOINT ), IMAGE_ICON, width, height, LR_DEFAULTSIZE | LR_DEFAULTCOLOR ) );
@@ -948,8 +852,7 @@ void rvDebuggerWindow::ResizeImageList( int& widthOut, int& heightOut )
 	heightOut = height;
 }
 
-float rvDebuggerWindow::GetMarginWidth()
-{
+float rvDebuggerWindow::GetMarginWidth() {
 	TEXTMETRIC	tm;
 	HDC			dc;
 
@@ -967,8 +870,7 @@ rvDebuggerWindow::HandleCreate
 Handles the WM_CREATE command
 ================
 */
-int rvDebuggerWindow::HandleCreate( WPARAM wparam, LPARAM lparam )
-{
+int rvDebuggerWindow::HandleCreate( WPARAM wparam, LPARAM lparam ) {
 	UINT		tabsize = 16;
 	TEXTMETRIC	tm;
 	HDC			dc;
@@ -1176,11 +1078,9 @@ int rvDebuggerWindow::HandleCreate( WPARAM wparam, LPARAM lparam )
 	HandleInitMenu( ( WPARAM )GetMenu( mWnd ), 0 );
 
 	// Read in the watches
-	for( i = 0; ; i ++ )
-	{
-		const char* s = gDebuggerApp.GetOptions().GetString( va( "watch%d", i ) );
-		if( !s || !s[0] )
-		{
+	for ( i = 0; ; i ++ ) {
+		const char * s = gDebuggerApp.GetOptions().GetString( va( "watch%d", i ) );
+		if ( !s || !s[0] ) {
 			break;
 		}
 
@@ -1201,44 +1101,37 @@ rvDebuggerWindow::HandleCommand
 Handles the WM_COMMAND message for this window
 ================
 */
-int rvDebuggerWindow::HandleCommand( WPARAM wparam, LPARAM lparam )
-{
+int rvDebuggerWindow::HandleCommand( WPARAM wparam, LPARAM lparam ) {
 	int event = HIWORD( wparam );
 	int id    = LOWORD( wparam );
 
 	// The window menu list needs to be handled specially
-	if( id >= ID_DBG_WINDOWMIN && id <= ID_DBG_WINDOWMAX )
-	{
+	if ( id >= ID_DBG_WINDOWMIN && id <= ID_DBG_WINDOWMAX ) {
 		mActiveScript = id - ID_DBG_WINDOWMIN;
 		UpdateScript( );
 		return 0;
 	}
 
 	// The recent file list needs to be handled specially
-	if( LOWORD( wparam ) >= ID_DBG_FILE_MRU1 && LOWORD( wparam ) < ID_DBG_FILE_MRU1 + rvRegistryOptions::MAX_MRU_SIZE )
-	{
+	if ( LOWORD( wparam ) >= ID_DBG_FILE_MRU1 && LOWORD( wparam ) < ID_DBG_FILE_MRU1 + rvRegistryOptions::MAX_MRU_SIZE ) {
 		idStr filename;
 		filename = gDebuggerApp.GetOptions().GetRecentFile( gDebuggerApp.GetOptions().GetRecentFileCount() - ( LOWORD( wparam ) - ID_DBG_FILE_MRU1 ) - 1 );
-		if( !OpenScript( filename ) )
-		{
+		if ( !OpenScript( filename ) ) {
 			MessageBoxA( mWnd, va( "Failed to open script '%s'", filename.c_str() ), "Quake 4 Script Debugger", MB_OK );
 		}
 		return 0;
 	}
 
-	switch( id )
-	{
-		case ID_DBG_SEND_COMMAND:
-		{
-			if( mClient->IsConnected( ) && GetFocus( ) == mWndConsoleInput )
-			{
+	switch ( id ) {
+		case ID_DBG_SEND_COMMAND: {
+			if ( mClient->IsConnected( ) && GetFocus( ) == mWndConsoleInput ) {
 				GETTEXTLENGTHEX textLen;
 				int				chars;
 				textLen.flags = GTL_DEFAULT | GTL_USECRLF;
 				textLen.codepage = CP_ACP;
 				chars = SendMessage( mWndConsoleInput, EM_GETTEXTLENGTHEX, ( WPARAM ) &textLen, 0 );
 
-				char* text = new char[chars + 1];
+				char * text = new char[chars + 1];
 
 				GETTEXTEX getText;
 				getText.cb = chars + 1;
@@ -1259,16 +1152,14 @@ int rvDebuggerWindow::HandleCommand( WPARAM wparam, LPARAM lparam )
 			break;
 		}
 
-		case ID_DBG_EDIT_FINDSELECTED:
-		{
+		case ID_DBG_EDIT_FINDSELECTED: {
 			idStr text;
 			GetSelectedText( text );
 			FindNext( text );
 			break;
 		}
 
-		case ID_DBG_EDIT_FINDSELECTEDPREV:
-		{
+		case ID_DBG_EDIT_FINDSELECTEDPREV: {
 			idStr text;
 			GetSelectedText( text );
 			FindPrev( text );
@@ -1283,8 +1174,7 @@ int rvDebuggerWindow::HandleCommand( WPARAM wparam, LPARAM lparam )
 			FindPrev( );
 			break;
 
-		case ID_DBG_DEBUG_QUICKWATCH:
-		{
+		case ID_DBG_DEBUG_QUICKWATCH: {
 			idStr text;
 
 			GetSelectedText( text );
@@ -1313,8 +1203,7 @@ int rvDebuggerWindow::HandleCommand( WPARAM wparam, LPARAM lparam )
 
 		case ID_DBG_DEBUG_RUN:
 			// Run the game if its not running
-			if( !mClient->IsConnected( ) )
-			{
+			if ( !mClient->IsConnected( ) ) {
 				char exeFile[MAX_PATH];
 				char curDir[MAX_PATH];
 
@@ -1327,15 +1216,13 @@ int rvDebuggerWindow::HandleCommand( WPARAM wparam, LPARAM lparam )
 				GetCurrentDirectory( MAX_PATH, curDir );
 
 				GetModuleFileName( NULL, exeFile, MAX_PATH );
-				const char* s = va( "%s +set fs_game %s +set fs_cdpath %s +set com_enableDebuggerServer 1", exeFile, cvarSystem->GetCVarString( "fs_game" ), cvarSystem->GetCVarString( "fs_cdpath" ) );
+				const char * s = va( "%s +set fs_game %s +set fs_cdpath %s +set com_enableDebuggerServer 1", exeFile, cvarSystem->GetCVarString( "fs_game" ), cvarSystem->GetCVarString( "fs_cdpath" ) );
 				CreateProcess( NULL, ( LPSTR )s,
 							   NULL, NULL, FALSE, 0, NULL, curDir, &startup, &process );
 
 				CloseHandle( process.hThread );
 				CloseHandle( process.hProcess );
-			}
-			else if( mClient->IsStopped() )
-			{
+			} else if ( mClient->IsStopped() ) {
 				EnableWindows( FALSE );
 				mClient->Resume( );
 				UpdateToolbar( );
@@ -1345,22 +1232,18 @@ int rvDebuggerWindow::HandleCommand( WPARAM wparam, LPARAM lparam )
 
 			break;
 
-		case IDC_DBG_SCRIPT:
-		{
+		case IDC_DBG_SCRIPT: {
 			RECT	t;
 			LONG	num;
 			LONG	dem;
 
 			SendMessage( mWndScript, EM_GETZOOM, ( WPARAM )&num, ( LPARAM )&dem );
-			if( num != mZoomScaleNum || dem != mZoomScaleDem )
-			{
+			if ( num != mZoomScaleNum || dem != mZoomScaleDem ) {
 				mZoomScaleNum = num;
 				mZoomScaleDem = dem;
 				GetClientRect( mWndScript, &t );
-				SendMessage( mWndScript, WM_SIZE, 0, MAKELPARAM( t.right - t.left , t.bottom - t.top ) );
-			}
-			else
-			{
+				SendMessage( mWndScript, WM_SIZE, 0, MAKELPARAM( t.right - t.left, t.bottom - t.top ) );
+			} else {
 				InvalidateRect( mWndMargin, NULL, TRUE );
 			}
 			break;
@@ -1376,12 +1259,10 @@ int rvDebuggerWindow::HandleCommand( WPARAM wparam, LPARAM lparam )
 			break;
 
 		case ID_DBG_FILE_CLOSE:
-			if( mScripts.Num() )
-			{
+			if ( mScripts.Num() ) {
 				delete mScripts[mActiveScript];
 				mScripts.RemoveIndex( mActiveScript );
-				if( mActiveScript >= mScripts.Num( ) )
-				{
+				if ( mActiveScript >= mScripts.Num( ) ) {
 					mActiveScript --;
 				}
 				UpdateWindowMenu( );
@@ -1390,11 +1271,9 @@ int rvDebuggerWindow::HandleCommand( WPARAM wparam, LPARAM lparam )
 			break;
 
 		case ID_DBG_FILE_NEXT:
-			if( mScripts.Num( ) > 0 )
-			{
+			if ( mScripts.Num( ) > 0 ) {
 				mActiveScript++;
-				if( mActiveScript >= mScripts.Num( ) )
-				{
+				if ( mActiveScript >= mScripts.Num( ) ) {
 					mActiveScript = 0;
 				}
 				UpdateWindowMenu( );
@@ -1402,8 +1281,7 @@ int rvDebuggerWindow::HandleCommand( WPARAM wparam, LPARAM lparam )
 			}
 			break;
 
-		case ID_DBG_FILE_OPEN:
-		{
+		case ID_DBG_FILE_OPEN: {
 			OPENFILENAME ofn;
 			char		 szFile[MAX_PATH] = "";
 
@@ -1421,27 +1299,22 @@ int rvDebuggerWindow::HandleCommand( WPARAM wparam, LPARAM lparam )
 			ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
 			// Display the Open dialog box.
-			if( GetOpenFileName( &ofn ) == TRUE )
-			{
+			if ( GetOpenFileName( &ofn ) == TRUE ) {
 				OpenScript( ofn.lpstrFile );
 			}
 			break;
 		}
 
-		case ID_DBG_EDIT_FIND:
-		{
+		case ID_DBG_EDIT_FIND: {
 			rvDebuggerFindDlg dlg;
-			if( dlg.DoModal( this ) )
-			{
+			if ( dlg.DoModal( this ) ) {
 				FindNext( dlg.GetFindText( ) );
 			}
 			break;
 		}
 
-		case ID_DBG_WINDOW_CLOSEALL:
-		{
-			for( int i = 0; i < mScripts.Num(); i ++ )
-			{
+		case ID_DBG_WINDOW_CLOSEALL: {
+			for ( int i = 0; i < mScripts.Num(); i ++ ) {
 				delete mScripts[i];
 			}
 
@@ -1454,14 +1327,13 @@ int rvDebuggerWindow::HandleCommand( WPARAM wparam, LPARAM lparam )
 		}
 
 		// DG: support "Run To Cursor" from context menu
-		case ID_DBG_DEBUG_RUNTOCURSOR:
-		{
+		case ID_DBG_DEBUG_RUNTOCURSOR: {
 			// Find the currently selected line
 			DWORD sel;
 			SendMessage( mWndScript, EM_GETSEL, ( WPARAM )&sel, 0 );
 			int lineNumber = SendMessage( mWndScript, EM_LINEFROMCHAR, sel, 0 ) + 1;
 
-			const char* filename = mScripts[mActiveScript]->GetFilename();
+			const char * filename = mScripts[mActiveScript]->GetFilename();
 			mClient->AddBreakpoint( filename, lineNumber, true );
 			mClient->Resume();
 			break;
@@ -1481,26 +1353,22 @@ rvDebuggerWindow::WndProc
 Window procedure for the deubgger window
 ================
 */
-LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam )
-{
-	rvDebuggerWindow* window = ( rvDebuggerWindow* ) GetWindowLongPtr( wnd, GWLP_USERDATA );
+LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam ) {
+	rvDebuggerWindow* window = ( rvDebuggerWindow * ) GetWindowLongPtr( wnd, GWLP_USERDATA );
 
-	switch( msg )
-	{
+	switch ( msg ) {
 		case WM_INITMENUPOPUP:
 			window->HandleInitMenu( wparam, lparam );
 			break;
 
-		case WM_DESTROY:
-		{
+		case WM_DESTROY: {
 			gDebuggerApp.GetOptions().SetColumnWidths( "cw_callstack", window->mWndCallstack );
 			gDebuggerApp.GetOptions().SetColumnWidths( "cw_threads", window->mWndThreads );
 			gDebuggerApp.GetOptions().SetColumnWidths( "cw_watch", window->mWndWatch );
 			gDebuggerApp.GetOptions().SetWindowPlacement( "wp_main", wnd );
 
 			int i;
-			for( i = 0; i < window->mWatches.Num( ); i ++ )
-			{
+			for ( i = 0; i < window->mWatches.Num( ); i ++ ) {
 				gDebuggerApp.GetOptions().SetString( va( "watch%d", i ), window->mWatches[i]->mVariable );
 			}
 			gDebuggerApp.GetOptions().SetString( va( "watch%d", i ), "" );
@@ -1517,21 +1385,18 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, L
 			window->HandleCommand( wparam, lparam );
 			break;
 
-		case WM_SETCURSOR:
-		{
+		case WM_SETCURSOR: {
 			POINT point;
 			GetCursorPos( &point );
 			ScreenToClient( wnd, &point );
-			if( PtInRect( &window->mSplitterRect, point ) )
-			{
+			if ( PtInRect( &window->mSplitterRect, point ) ) {
 				SetCursor( LoadCursor( NULL, IDC_SIZENS ) );
 				return true;
 			}
 			break;
 		}
 
-		case WM_SIZE:
-		{
+		case WM_SIZE: {
 			float scaling_factor = Win_GetWindowScalingFactor( wnd );
 			int s18 = int( 18 * scaling_factor );
 			int s4 = int( 4 * scaling_factor );
@@ -1574,14 +1439,12 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, L
 			break;
 		}
 
-		case WM_PAINT:
-		{
+		case WM_PAINT: {
 			PAINTSTRUCT ps;
 			HDC dc = BeginPaint( wnd, &ps );
 			FillRect( dc, &window->mSplitterRect, GetSysColorBrush( COLOR_3DFACE ) );
 
-			if( !window->mScripts.Num() )
-			{
+			if ( !window->mScripts.Num() ) {
 				RECT rect;
 				GetClientRect( wnd, &rect );
 				rect.bottom = window->mSplitterRect.top;
@@ -1592,11 +1455,9 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, L
 			break;
 		}
 
-		case WM_LBUTTONDOWN:
-		{
+		case WM_LBUTTONDOWN: {
 			POINT pt = { LOWORD( lparam ), HIWORD( lparam ) };
-			if( PtInRect( &window->mSplitterRect, pt ) )
-			{
+			if ( PtInRect( &window->mSplitterRect, pt ) ) {
 				window->mSplitterDrag = true;
 				SetCapture( wnd );
 
@@ -1606,8 +1467,7 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, L
 			}
 			break;
 		}
-		case WM_MOUSEWHEEL:
-		{
+		case WM_MOUSEWHEEL: {
 			HDC dc = GetDC( wnd );
 			DrawFocusRect( dc, &window->mSplitterRect );
 			ReleaseDC( wnd, dc );
@@ -1618,8 +1478,7 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, L
 
 		}
 		case WM_LBUTTONUP:
-			if( window->mSplitterDrag )
-			{
+			if ( window->mSplitterDrag ) {
 				HDC dc = GetDC( wnd );
 				DrawFocusRect( dc, &window->mSplitterRect );
 				ReleaseDC( wnd, dc );
@@ -1636,16 +1495,13 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, L
 			}
 			break;
 
-		case WM_MOUSEMOVE:
-		{
-			if( window->mSplitterDrag )
-			{
+		case WM_MOUSEMOVE: {
+			if ( window->mSplitterDrag ) {
 				HDC dc = GetDC( wnd );
 				DrawFocusRect( dc, &window->mSplitterRect );
 				ReleaseDC( wnd, dc );
 
-				if( GetCapture( ) != wnd )
-				{
+				if ( GetCapture( ) != wnd ) {
 					break;
 				}
 
@@ -1653,12 +1509,9 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, L
 				GetClientRect( wnd, &client );
 
 				window->mSplitterRect.top = HIWORD( lparam );
-				if( window->mSplitterRect.top < client.top )
-				{
+				if ( window->mSplitterRect.top < client.top ) {
 					window->mSplitterRect.top = client.top;
-				}
-				else if( window->mSplitterRect.top + 4 > client.bottom )
-				{
+				} else if ( window->mSplitterRect.top + 4 > client.bottom ) {
 					window->mSplitterRect.top = client.bottom - 4;
 				}
 				window->mSplitterRect.bottom = window->mSplitterRect.top + 4;
@@ -1674,10 +1527,9 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, L
 			window->HandleDrawItem( wparam, lparam );
 			break;
 
-		case WM_CREATE:
-		{
-			CREATESTRUCT* cs = ( CREATESTRUCT* ) lparam;
-			window = ( rvDebuggerWindow* ) cs->lpCreateParams;
+		case WM_CREATE: {
+			CREATESTRUCT* cs = ( CREATESTRUCT * ) lparam;
+			window = ( rvDebuggerWindow * ) cs->lpCreateParams;
 			SetWindowLongPtr( wnd, GWLP_USERDATA, ( LONG_PTR )cs->lpCreateParams );
 
 			window->mWnd = wnd;
@@ -1690,48 +1542,39 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, L
 			window->HandleActivate( wparam, lparam );
 			break;
 
-		case WM_NOTIFY:
-		{
+		case WM_NOTIFY: {
 			NMHDR*	hdr;
-			hdr = ( NMHDR* )lparam;
+			hdr = ( NMHDR * )lparam;
 
 			// Tool tips
-			if( hdr->code == TTN_GETDISPINFO )
-			{
+			if ( hdr->code == TTN_GETDISPINFO ) {
 				window->HandleTooltipGetDispInfo( wparam, lparam );
 				break;
 			}
 
-			switch( hdr->idFrom )
-			{
+			switch ( hdr->idFrom ) {
 				case IDC_DBG_WATCH:
-					switch( hdr->code )
-					{
-						case LVN_KEYDOWN:
-						{
-							NMLVKEYDOWN* key = ( NMLVKEYDOWN* ) hdr;
-							switch( key->wVKey )
-							{
-								case VK_DELETE:
-								{
+					switch ( hdr->code ) {
+						case LVN_KEYDOWN: {
+							NMLVKEYDOWN* key = ( NMLVKEYDOWN * ) hdr;
+							switch ( key->wVKey ) {
+								case VK_DELETE: {
 									int sel = ListView_GetNextItem( hdr->hwndFrom, -1, LVNI_SELECTED );
-									if( sel != -1 && sel != ListView_GetItemCount( hdr->hwndFrom ) - 1 )
-									{
+									if ( sel != -1 && sel != ListView_GetItemCount( hdr->hwndFrom ) - 1 ) {
 										LVITEM item;
 										item.iItem = sel;
 										item.mask = LVIF_PARAM;
 										ListView_GetItem( hdr->hwndFrom, &item );
 										ListView_DeleteItem( hdr->hwndFrom, sel );
 
-										window->mWatches.Remove( ( rvDebuggerWatch* )item.lParam );
-										delete( rvDebuggerWatch* )item.lParam;
+										window->mWatches.Remove( ( rvDebuggerWatch * )item.lParam );
+										delete ( rvDebuggerWatch * )item.lParam;
 
 										ListView_SetItemState( hdr->hwndFrom,
 															   sel,
 															   LVIS_SELECTED, LVIS_SELECTED );
 
-										if( ListView_GetNextItem( hdr->hwndFrom, -1, LVNI_SELECTED ) == -1 )
-										{
+										if ( ListView_GetNextItem( hdr->hwndFrom, -1, LVNI_SELECTED ) == -1 ) {
 											ListView_SetItemState( hdr->hwndFrom,
 																   ListView_GetItemCount( hdr->hwndFrom ) - 1,
 																   LVIS_SELECTED, LVIS_SELECTED );
@@ -1740,11 +1583,9 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, L
 									break;
 								}
 
-								case VK_RETURN:
-								{
+								case VK_RETURN: {
 									int sel = ListView_GetNextItem( hdr->hwndFrom, -1, LVNI_SELECTED );
-									if( sel != -1 )
-									{
+									if ( sel != -1 ) {
 										ListView_EditLabel( hdr->hwndFrom, sel );
 									}
 									break;
@@ -1753,42 +1594,34 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, L
 							break;
 						}
 
-						case LVN_BEGINLABELEDIT:
-						{
-							NMLVDISPINFO* di = ( NMLVDISPINFO* )hdr;
+						case LVN_BEGINLABELEDIT: {
+							NMLVDISPINFO* di = ( NMLVDISPINFO * )hdr;
 
 							DWORD style = GetWindowLong( ListView_GetEditControl( hdr->hwndFrom ), GWL_STYLE );
 							SetWindowLong( ListView_GetEditControl( hdr->hwndFrom ), GWL_STYLE, style & ( ~WS_BORDER ) );
 
-							rvDebuggerWatch* watch = ( rvDebuggerWatch* )di->item.lParam;
-							if( watch )
-							{
+							rvDebuggerWatch* watch = ( rvDebuggerWatch * )di->item.lParam;
+							if ( watch ) {
 								SetWindowText( ListView_GetEditControl( hdr->hwndFrom ), watch->mVariable );
 							}
 
 							return FALSE;
 						}
 
-						case LVN_ENDLABELEDIT:
-						{
-							NMLVDISPINFO* di = ( NMLVDISPINFO* )hdr;
+						case LVN_ENDLABELEDIT: {
+							NMLVDISPINFO* di = ( NMLVDISPINFO * )hdr;
 
-							if( di->item.iItem == ListView_GetItemCount( hdr->hwndFrom ) - 1 )
-							{
-								if( !di->item.pszText || !di->item.pszText[0] )
-								{
+							if ( di->item.iItem == ListView_GetItemCount( hdr->hwndFrom ) - 1 ) {
+								if ( !di->item.pszText || !di->item.pszText[0] ) {
 									return FALSE;
 								}
 
-								window->AddWatch( ( ( NMLVDISPINFO* )hdr )->item.pszText );
+								window->AddWatch( ( ( NMLVDISPINFO * )hdr )->item.pszText );
 								window->UpdateWatch( );
 								return FALSE;
-							}
-							else
-							{
-								rvDebuggerWatch* watch = ( rvDebuggerWatch* ) di->item.lParam;
-								if( watch && di->item.pszText && di->item.pszText[0] )
-								{
+							} else {
+								rvDebuggerWatch* watch = ( rvDebuggerWatch * ) di->item.lParam;
+								if ( watch && di->item.pszText && di->item.pszText[0] ) {
 									watch->mVariable = di->item.pszText;
 								}
 							}
@@ -1798,11 +1631,9 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, L
 					}
 					break;
 				case IDC_DBG_CALLSTACK:
-					if( hdr->code == NM_DBLCLK )
-					{
+					if ( hdr->code == NM_DBLCLK ) {
 						int sel = ListView_GetNextItem( hdr->hwndFrom, -1, LVNI_SELECTED );
-						if( sel != -1 )
-						{
+						if ( sel != -1 ) {
 							window->mCurrentStackDepth = sel;
 							window->UpdateCallstack( );
 							window->UpdateWatch( );
@@ -1812,12 +1643,10 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, L
 					}
 					break;
 				case IDC_DBG_SCRIPTLIST:
-					if( hdr->code == NM_DBLCLK )
-					{
+					if ( hdr->code == NM_DBLCLK ) {
 						int sel = ListView_GetNextItem( hdr->hwndFrom, -1, LVNI_SELECTED );
 
-						if( sel != -1 )
-						{
+						if ( sel != -1 ) {
 							LVITEM item = { 0 };
 							char   temp[1024] = { 0 };
 							item.mask = LVIF_TEXT;
@@ -1828,8 +1657,7 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, L
 
 							ListView_GetItem( hdr->hwndFrom, &item );
 
-							if( strlen( item.pszText ) > 0 )
-							{
+							if ( strlen( item.pszText ) > 0 ) {
 								window->OpenScript( item.pszText );
 								window->UpdateScriptList();
 							}
@@ -1838,39 +1666,29 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, L
 					break;
 
 				case IDC_DBG_BREAKLIST:
-					if( hdr->code == NM_DBLCLK || hdr->code == NM_CLICK )
-					{
+					if ( hdr->code == NM_DBLCLK || hdr->code == NM_CLICK ) {
 						LPNMITEMACTIVATE ia = ( LPNMITEMACTIVATE )lparam;
 						int sel = ia->iItem;
-						if( sel != -1 )
-						{
+						if ( sel != -1 ) {
 							rvDebuggerBreakpoint* bp = window->mClient->GetBreakpoint( sel );
-							if( bp != NULL )
-							{
-								if( hdr->code == NM_DBLCLK )
-								{
+							if ( bp != NULL ) {
+								if ( hdr->code == NM_DBLCLK ) {
 									// double clicked breakpoint => show it in its file
 									window->OpenScript( bp->GetFilename(), bp->GetLineNumber() - 1 );
-								}
-								else if( ia->iSubItem == 0 )
-								{
+								} else if ( ia->iSubItem == 0 ) {
 									// clicked breakpoint symbol => delete breakpoint
 									window->mClient->RemoveBreakpoint( bp->GetID() );
 									window->UpdateBreakpointList();
 								}
 							}
 						}
-					}
-					else if( hdr->code == LVN_KEYDOWN )
-					{
+					} else if ( hdr->code == LVN_KEYDOWN ) {
 						// when user selects a breakpoints and presses the Del key, remove the breakpoint
 						int sel = ListView_GetNextItem( hdr->hwndFrom, -1, LVNI_SELECTED );
-						if( sel != -1 )
-						{
+						if ( sel != -1 ) {
 							LPNMLVKEYDOWN kd = ( LPNMLVKEYDOWN )lparam;
 							rvDebuggerBreakpoint* bp = window->mClient->GetBreakpoint( sel );
-							if( kd->wVKey == VK_DELETE && bp != NULL )
-							{
+							if ( kd->wVKey == VK_DELETE && bp != NULL ) {
 								window->mClient->RemoveBreakpoint( bp->GetID() );
 								window->UpdateBreakpointList();
 							}
@@ -1879,8 +1697,7 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, L
 					break;
 
 				case IDC_DBG_TABS:
-					if( hdr->code == TCN_SELCHANGE )
-					{
+					if ( hdr->code == TCN_SELCHANGE ) {
 						ShowWindow( window->mWndOutput, SW_HIDE );
 						ShowWindow( window->mWndConsole, SW_HIDE );
 						ShowWindow( window->mWndConsoleInput, SW_HIDE );
@@ -1889,8 +1706,7 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, L
 						ShowWindow( window->mWndThreads, SW_HIDE );
 						ShowWindow( window->mWndScriptList, SW_HIDE );
 						ShowWindow( window->mWndBreakList, SW_HIDE );
-						switch( TabCtrl_GetCurSel( hdr->hwndFrom ) )
-						{
+						switch ( TabCtrl_GetCurSel( hdr->hwndFrom ) ) {
 							case 0:
 								ShowWindow( window->mWndOutput, SW_SHOW );
 								break;
@@ -1927,10 +1743,8 @@ LRESULT CALLBACK rvDebuggerWindow::WndProc( HWND wnd, UINT msg, WPARAM wparam, L
 		}
 
 		case WM_CLOSE:
-			if( window->mClient->IsConnected( ) )
-			{
-				if( IDNO == MessageBoxA( wnd, "The debugger is currently connected to a running version of the game.  Are you sure you want to close now?", "Script Debugger", MB_YESNO | MB_ICONQUESTION ) )
-				{
+			if ( window->mClient->IsConnected( ) ) {
+				if ( IDNO == MessageBoxA( wnd, "The debugger is currently connected to a running version of the game.  Are you sure you want to close now?", "Script Debugger", MB_YESNO | MB_ICONQUESTION ) ) {
 					return 0;
 				}
 			}
@@ -1949,13 +1763,11 @@ Static method that will activate the currently running debugger.  If one is foun
 and activated then true will be returned.
 ================
 */
-bool rvDebuggerWindow::Activate()
-{
+bool rvDebuggerWindow::Activate() {
 	HWND find;
 
 	find = FindWindow( DEBUGGERWINDOWCLASS, NULL );
-	if( !find )
-	{
+	if ( !find ) {
 		return false;
 	}
 
@@ -1971,14 +1783,12 @@ rvDebuggerWindow::ProcessNetMessage
 Process an incoming network message
 ================
 */
-void rvDebuggerWindow::ProcessNetMessage( idBitMsg* msg )
-{
+void rvDebuggerWindow::ProcessNetMessage( idBitMsg* msg ) {
 	short command;
 
 	command = msg->ReadShort( );
 
-	switch( command )
-	{
+	switch ( command ) {
 		case DBMSG_REMOVEBREAKPOINT:
 			MessageBeep( MB_ICONEXCLAMATION );
 			InvalidateRect( mWndScript, NULL, FALSE );
@@ -1990,8 +1800,7 @@ void rvDebuggerWindow::ProcessNetMessage( idBitMsg* msg )
 			UpdateToolbar( );
 			break;
 
-		case DBMSG_INSPECTVARIABLE:
-		{
+		case DBMSG_INSPECTVARIABLE: {
 			char temp[1024];
 			char temp2[1024];
 			int	 i;
@@ -1999,8 +1808,7 @@ void rvDebuggerWindow::ProcessNetMessage( idBitMsg* msg )
 			msg->ReadShort( );
 			msg->ReadString( temp, 1024 );
 			msg->ReadString( temp2, 1024 );
-			if( mTooltipVar.Icmp( temp ) == 0 )
-			{
+			if ( mTooltipVar.Icmp( temp ) == 0 ) {
 				mTooltipValue = temp2;
 
 				TOOLINFO info;
@@ -2014,19 +1822,16 @@ void rvDebuggerWindow::ProcessNetMessage( idBitMsg* msg )
 			}
 
 			// See if any of the watches were updated by this inspect
-			for( i = 0; i < mWatches.Num(); i ++ )
-			{
+			for ( i = 0; i < mWatches.Num(); i ++ ) {
 				rvDebuggerWatch* watch = mWatches[i];
 
 				// See if the name matches the variable
-				if( watch->mVariable.Cmp( temp ) )
-				{
+				if ( watch->mVariable.Cmp( temp ) ) {
 					continue;
 				}
 
 				// Has the value changed?
-				if( !watch->mValue.Cmp( temp2 ) )
-				{
+				if ( !watch->mValue.Cmp( temp2 ) ) {
 					continue;
 				}
 
@@ -2034,14 +1839,12 @@ void rvDebuggerWindow::ProcessNetMessage( idBitMsg* msg )
 				watch->mValue = temp2;
 
 				// Find the list view item that is storing this watch info and redraw it
-				for( int l = 0; l < ListView_GetItemCount( mWndWatch ); l ++ )
-				{
+				for ( int l = 0; l < ListView_GetItemCount( mWndWatch ); l ++ ) {
 					LVITEM item;
 					item.mask = LVIF_PARAM;
 					item.iItem = l;
 					ListView_GetItem( mWndWatch, &item );
-					if( item.lParam == ( LPARAM ) watch )
-					{
+					if ( item.lParam == ( LPARAM ) watch ) {
 						ListView_RedrawItems( mWndWatch, l, l );
 						UpdateWindow( mWndWatch );
 						break;
@@ -2065,12 +1868,11 @@ void rvDebuggerWindow::ProcessNetMessage( idBitMsg* msg )
 			Printf( "Disconnected...\n" );
 			break;
 
-		case DBMSG_PRINT:
-		{
+		case DBMSG_PRINT: {
 			HWND prevFocus = GetFocus();
 			SetFocus( mWndConsole );
 			SendMessage( mWndConsole, EM_SETSEL, -1, -1 );
-			SendMessage( mWndConsole, EM_REPLACESEL, 0, ( LPARAM )( const char* )( msg->GetData() ) + msg->GetReadCount() );
+			SendMessage( mWndConsole, EM_REPLACESEL, 0, ( LPARAM )( const char * )( msg->GetData() ) + msg->GetReadCount() );
 			SendMessage( mWndConsole, EM_SETSEL, -1, -1 );
 			SendMessage( mWndConsole, EM_SCROLLCARET, 0, 0 );
 			UpdateWindow( mWndConsole );
@@ -2078,8 +1880,7 @@ void rvDebuggerWindow::ProcessNetMessage( idBitMsg* msg )
 			break;
 		}
 
-		case DBMSG_BREAK:
-		{
+		case DBMSG_BREAK: {
 			Printf( "Break:  line=%d  file='%s'\n", mClient->GetBreakLineNumber( ), mClient->GetBreakFilename() );
 
 			mCurrentStackDepth = 0;
@@ -2093,26 +1894,22 @@ void rvDebuggerWindow::ProcessNetMessage( idBitMsg* msg )
 			SetForegroundWindow( mWnd );
 			break;
 		}
-		case DBMSG_INSPECTSCRIPTS:
-		{
+		case DBMSG_INSPECTSCRIPTS: {
 			UpdateScriptList( );
 			break;
 		}
-		case DBMSG_INSPECTCALLSTACK:
-		{
+		case DBMSG_INSPECTCALLSTACK: {
 			UpdateCallstack( );
 			break;
 		}
 
-		case DBMSG_INSPECTTHREADS:
-		{
+		case DBMSG_INSPECTTHREADS: {
 			LVITEM item;
 			ListView_DeleteAllItems( mWndThreads );
 			ZeroMemory( &item, sizeof( item ) );
 			item.mask = LVIF_TEXT | LVIF_IMAGE;
 
-			for( int i = 0; i < mClient->GetThreads().Num(); i ++ )
-			{
+			for ( int i = 0; i < mClient->GetThreads().Num(); i ++ ) {
 				rvDebuggerThread* entry = mClient->GetThreads()[i];
 				item.iItem = ListView_GetItemCount( mWndThreads );
 				item.pszText = "";
@@ -2122,20 +1919,13 @@ void rvDebuggerWindow::ProcessNetMessage( idBitMsg* msg )
 				ListView_SetItemText( mWndThreads, item.iItem, 1, ( LPSTR )va( "%d", entry->mID ) );
 				ListView_SetItemText( mWndThreads, item.iItem, 2, ( LPSTR )entry->mName.c_str() );
 
-				if( entry->mDying )
-				{
+				if ( entry->mDying ) {
 					ListView_SetItemText( mWndThreads, item.iItem, 3, "Dying" );
-				}
-				else if( entry->mWaiting )
-				{
+				} else if ( entry->mWaiting ) {
 					ListView_SetItemText( mWndThreads, item.iItem, 3, "Waiting" );
-				}
-				else if( entry->mDoneProcessing )
-				{
+				} else if ( entry->mDoneProcessing ) {
 					ListView_SetItemText( mWndThreads, item.iItem, 3, "Stopped" );
-				}
-				else
-				{
+				} else {
 					ListView_SetItemText( mWndThreads, item.iItem, 3, "Running" );
 				}
 			}
@@ -2151,8 +1941,7 @@ rvDebuggerWindow::Printf
 Sends a formatted message to the output window
 ================
 */
-void rvDebuggerWindow::Printf( const char* fmt, ... )
-{
+void rvDebuggerWindow::Printf( const char * fmt, ... ) {
 	va_list		argptr;
 	char		msg[4096];
 
@@ -2173,8 +1962,7 @@ Opens the script with the given filename and will scroll to the given line
 number if one is specified
 ================
 */
-bool rvDebuggerWindow::OpenScript( const char* filename, int lineNumber, idProgram* program )
-{
+bool rvDebuggerWindow::OpenScript( const char * filename, int lineNumber, idProgram* program ) {
 	int i;
 
 	SetCursor( LoadCursor( NULL, IDC_WAIT ) );
@@ -2182,12 +1970,9 @@ bool rvDebuggerWindow::OpenScript( const char* filename, int lineNumber, idProgr
 	mActiveScript = -1;
 
 	// See if the script is already loaded
-	for( i = 0; i < mScripts.Num(); i ++ )
-	{
-		if( !idStr::Icmp( mScripts[i]->GetFilename( ), filename ) )
-		{
-			if( mActiveScript != i )
-			{
+	for ( i = 0; i < mScripts.Num(); i ++ ) {
+		if ( !idStr::Icmp( mScripts[i]->GetFilename( ), filename ) ) {
+			if ( mActiveScript != i ) {
 				mActiveScript = i;
 				break;
 			}
@@ -2195,13 +1980,11 @@ bool rvDebuggerWindow::OpenScript( const char* filename, int lineNumber, idProgr
 	}
 
 	// If the script isnt open already then open it
-	if( mActiveScript == -1 )
-	{
+	if ( mActiveScript == -1 ) {
 		rvDebuggerScript* script = new rvDebuggerScript;
 
 		// Load the script
-		if( !script->Load( filename ) )
-		{
+		if ( !script->Load( filename ) ) {
 			SetCursor( LoadCursor( NULL, IDC_ARROW ) );
 			return false;
 		}
@@ -2215,9 +1998,8 @@ bool rvDebuggerWindow::OpenScript( const char* filename, int lineNumber, idProgr
 	// Test code that will place a breakpoint on all valid lines of code
 #if 0
 
-	for( i = 0; i < mScripts[mActiveScript]->GetProgram().NumStatements(); i ++ )
-	{
-		dstatement_t* st = &mScripts[mActiveScript]->GetProgram().GetStatement( i );
+	for ( i = 0; i < mScripts[mActiveScript]->GetProgram().NumStatements(); i ++ ) {
+		dstatement_t * st = &mScripts[mActiveScript]->GetProgram().GetStatement( i );
 		rvDebuggerBreakpoint* bp = new rvDebuggerBreakpoint( filename, st->linenumber );
 		mBreakpoints.Append( bp );
 	}
@@ -2228,8 +2010,7 @@ bool rvDebuggerWindow::OpenScript( const char* filename, int lineNumber, idProgr
 	UpdateWindowMenu( );
 
 	// Move to a specific line number?
-	if( lineNumber != -1 )
-	{
+	if ( lineNumber != -1 ) {
 		long	c;
 
 		// Put the caret on the line number specified and scroll it into position.
@@ -2243,9 +2024,7 @@ bool rvDebuggerWindow::OpenScript( const char* filename, int lineNumber, idProgr
 		SendMessage( mWndScript, EM_SCROLLCARET, 0, 0 );
 		c = SendMessage( mWndScript, EM_LINEINDEX, ( long )lineNumber, 0 );
 		SendMessage( mWndScript, EM_SETSEL, c, c );
-	}
-	else
-	{
+	} else {
 		SendMessage( mWndScript, EM_SETSEL, 0, 0 );
 	}
 
@@ -2265,8 +2044,7 @@ rvDebuggerWindow::ToggleBreakpoint
 Toggles the breakpoint on the current script line
 ================
 */
-void rvDebuggerWindow::ToggleBreakpoint()
-{
+void rvDebuggerWindow::ToggleBreakpoint() {
 	rvDebuggerBreakpoint* bp;
 	DWORD				  sel;
 	int				      line;
@@ -2278,19 +2056,15 @@ void rvDebuggerWindow::ToggleBreakpoint()
 	// If there is already a breakpoint there then just remove it, otherwise
 	// we need to create a new breakpoint
 	bp = mClient->FindBreakpoint( mScripts[mActiveScript]->GetFilename( ), line );
-	if( !bp )
-	{
+	if ( !bp ) {
 		// Make sure the line is code before letting them add a breakpoint there
-		if( !mScripts[mActiveScript]->IsLineCode( line ) )
-		{
+		if ( !mScripts[mActiveScript]->IsLineCode( line ) ) {
 			MessageBeep( MB_ICONEXCLAMATION );
 			return;
 		}
 
 		mClient->AddBreakpoint( mScripts[mActiveScript]->GetFilename(), line );
-	}
-	else
-	{
+	} else {
 		mClient->RemoveBreakpoint( bp->GetID( ) );
 	}
 
@@ -2307,10 +2081,8 @@ rvDebuggerWindow::AboutDlgProc
 Dialog box procedure for the about box
 ================
 */
-INT_PTR CALLBACK rvDebuggerWindow::AboutDlgProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam )
-{
-	switch( msg )
-	{
+INT_PTR CALLBACK rvDebuggerWindow::AboutDlgProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam ) {
+	switch ( msg ) {
 		case WM_COMMAND:
 			EndDialog( wnd, 0 );
 			break;
@@ -2326,8 +2098,7 @@ rvDebuggerWindow::CreateToolbar
 Create the toolbar and and all of its buttons
 ================
 */
-void rvDebuggerWindow::CreateToolbar()
-{
+void rvDebuggerWindow::CreateToolbar() {
 	// Create the toolbar control
 	mWndToolbar = CreateWindowEx( 0, TOOLBARCLASSNAME, "", WS_CHILD | WS_VISIBLE, 0, 0, 0, 0, mWnd, ( HMENU )IDC_DBG_TOOLBAR, mInstance, NULL );
 
@@ -2376,11 +2147,9 @@ Handle the getdispinfo notification message for tooltips by responding with the
 tooptip text for the given toolbar button.
 ================
 */
-void rvDebuggerWindow::HandleTooltipGetDispInfo( WPARAM wparam, LPARAM lparam )
-{
-	NMTTDISPINFO* ttdi = ( NMTTDISPINFO* ) lparam;
-	switch( ttdi->hdr.idFrom )
-	{
+void rvDebuggerWindow::HandleTooltipGetDispInfo( WPARAM wparam, LPARAM lparam ) {
+	NMTTDISPINFO* ttdi = ( NMTTDISPINFO * ) lparam;
+	switch ( ttdi->hdr.idFrom ) {
 		case ID_DBG_FILE_OPEN:
 			strcpy( ttdi->szText, "Open Script" );
 			break;
@@ -2402,12 +2171,9 @@ void rvDebuggerWindow::HandleTooltipGetDispInfo( WPARAM wparam, LPARAM lparam )
 			break;
 
 		case ID_DBG_DEBUG_RUN:
-			if( mClient->IsConnected() )
-			{
+			if ( mClient->IsConnected() ) {
 				strcpy( ttdi->szText, "Continue" );
-			}
-			else
-			{
+			} else {
 				strcpy( ttdi->szText, "Run" );
 			}
 			break;
@@ -2427,28 +2193,22 @@ have been modified since the last time they were loaded.  If they have then relo
 them and adjust all breakpoints that now fall on invalid lines.
 ================
 */
-int rvDebuggerWindow::HandleActivate( WPARAM wparam, LPARAM lparam )
-{
+int rvDebuggerWindow::HandleActivate( WPARAM wparam, LPARAM lparam ) {
 	int i;
 
 	// We are only interested in the activation, not deactivation
-	if( !LOWORD( wparam ) )
-	{
+	if ( !LOWORD( wparam ) ) {
 		return 0;
 	}
 
 	// Run through all of the loaded scripts and see if any of them have been modified
-	for( i = 0; i < mScripts.Num(); i ++ )
-	{
-		if( mScripts[i]->IsFileModified( true ) )
-		{
-			if( IDYES == MessageBoxA( mWnd, va( "%s\n\nThis file has been modified outside of the debugger.\nDo you want to reload it?", mScripts[i]->GetFilename() ), "Quake 4 Script Debugger", MB_YESNO | MB_ICONQUESTION ) )
-			{
+	for ( i = 0; i < mScripts.Num(); i ++ ) {
+		if ( mScripts[i]->IsFileModified( true ) ) {
+			if ( IDYES == MessageBoxA( mWnd, va( "%s\n\nThis file has been modified outside of the debugger.\nDo you want to reload it?", mScripts[i]->GetFilename() ), "Quake 4 Script Debugger", MB_YESNO | MB_ICONQUESTION ) ) {
 				mScripts[i]->Reload( );
 
 				// Update the script if it was the active one
-				if( mActiveScript == i )
-				{
+				if ( mActiveScript == i ) {
 					mLastActiveScript = -1;
 					UpdateScript( );
 				}
@@ -2456,15 +2216,12 @@ int rvDebuggerWindow::HandleActivate( WPARAM wparam, LPARAM lparam )
 				// Loop through the breakpoints and see if any of them have
 				// moved to invalid lines within the script.  If so then just remove
 				// them.
-				for( int b = mClient->GetBreakpointCount() - 1; b >= 0 ; b-- )
-				{
+				for ( int b = mClient->GetBreakpointCount() - 1; b >= 0 ; b-- ) {
 					rvDebuggerBreakpoint* bp = mClient->GetBreakpoint( b );
 					assert( bp );
 
-					if( !idStr::Icmp( bp->GetFilename(), mScripts[i]->GetFilename() ) )
-					{
-						if( !mScripts[i]->IsLineCode( bp->GetLineNumber( ) ) )
-						{
+					if ( !idStr::Icmp( bp->GetFilename(), mScripts[i]->GetFilename() ) ) {
+						if ( !mScripts[i]->IsLineCode( bp->GetLineNumber( ) ) ) {
 							mClient->RemoveBreakpoint( bp->GetID( ) );
 						}
 					}
@@ -2485,8 +2242,7 @@ Enables and disables all windows with a enable state dependent on the current
 connected and paused state of the debugger.
 ================
 */
-void rvDebuggerWindow::EnableWindows( bool state )
-{
+void rvDebuggerWindow::EnableWindows( bool state ) {
 	EnableWindow( mWndCallstack, state );
 	EnableWindow( mWndThreads, state );
 	EnableWindow( mWndWatch, state );
@@ -2500,8 +2256,7 @@ Add a variable to the watch window.  If update is set to true then also query th
 debugger client for the value
 ================
 */
-void rvDebuggerWindow::AddWatch( const char* varname, bool update )
-{
+void rvDebuggerWindow::AddWatch( const char * varname, bool update ) {
 	rvDebuggerWatch* watch;
 
 	watch = new rvDebuggerWatch;
@@ -2519,8 +2274,7 @@ void rvDebuggerWindow::AddWatch( const char* varname, bool update )
 	ListView_InsertItem( mWndWatch, &item );
 
 	// If update is set then request the value from the debugger client
-	if( update )
-	{
+	if ( update ) {
 		mClient->InspectVariable( varname, mCurrentStackDepth );
 	}
 }
@@ -2533,18 +2287,15 @@ Finds the file menu and the location within it where the MRU should
 be added.
 ================
 */
-bool rvDebuggerWindow::InitRecentFiles()
-{
+bool rvDebuggerWindow::InitRecentFiles() {
 	int	i;
 	int count;
 
 	mRecentFileMenu = GetSubMenu( GetMenu( mWnd ), 0 );
 	count			= GetMenuItemCount( mRecentFileMenu );
 
-	for( i = 0; i < count; i ++ )
-	{
-		if( GetMenuItemID( mRecentFileMenu, i ) == ID_DBG_FILE_MRU )
-		{
+	for ( i = 0; i < count; i ++ ) {
+		if ( GetMenuItemID( mRecentFileMenu, i ) == ID_DBG_FILE_MRU ) {
 			mRecentFileInsertPos = i;
 			DeleteMenu( mRecentFileMenu, mRecentFileInsertPos, MF_BYPOSITION );
 			return true;
@@ -2561,40 +2312,34 @@ rvDebuggerWindow::UpdateRecentFiles
 Updates the mru in the menu
 ================
 */
-void rvDebuggerWindow::UpdateRecentFiles()
-{
+void rvDebuggerWindow::UpdateRecentFiles() {
 	int i;
 	int j;
 
 	// Make sure everything is initialized
-	if( !mRecentFileMenu )
-	{
+	if ( !mRecentFileMenu ) {
 		InitRecentFiles( );
 	}
 
 	// Delete all the old recent files from the menu's
-	for( i = 0; i < rvRegistryOptions::MAX_MRU_SIZE; i ++ )
-	{
+	for ( i = 0; i < rvRegistryOptions::MAX_MRU_SIZE; i ++ ) {
 		DeleteMenu( mRecentFileMenu, ID_DBG_FILE_MRU1 + i, MF_BYCOMMAND );
 	}
 
 	// Make sure there is a separator after the recent files
-	if( gDebuggerApp.GetOptions().GetRecentFileCount() )
-	{
+	if ( gDebuggerApp.GetOptions().GetRecentFileCount() ) {
 		MENUITEMINFO info;
 		ZeroMemory( &info, sizeof( info ) );
 		info.cbSize = sizeof( info );
 		info.fMask = MIIM_FTYPE;
 		GetMenuItemInfo( mRecentFileMenu, mRecentFileInsertPos + 1, TRUE, &info );
-		if( !( info.fType & MFT_SEPARATOR ) )
-		{
+		if ( !( info.fType & MFT_SEPARATOR ) ) {
 			InsertMenu( mRecentFileMenu, mRecentFileInsertPos, MF_BYPOSITION | MF_SEPARATOR | MF_ENABLED, 0, NULL );
 		}
 	}
 
 	// Add the recent files to the menu now
-	for( j = 0, i = gDebuggerApp.GetOptions().GetRecentFileCount( ) - 1; i >= 0; i --, j++ )
-	{
+	for ( j = 0, i = gDebuggerApp.GetOptions().GetRecentFileCount( ) - 1; i >= 0; i --, j++ ) {
 		UINT id = ID_DBG_FILE_MRU1 + j;
 		idStr str = va( "&%d ", j + 1 );
 		str.Append( gDebuggerApp.GetOptions().GetRecentFile( i ) );
@@ -2610,20 +2355,17 @@ Function to retrieve the text that is currently selected in the
 script control
 ================
 */
-int rvDebuggerWindow::GetSelectedText( idStr& text )
-{
+int rvDebuggerWindow::GetSelectedText( idStr& text ) {
 	TEXTRANGE	range;
 	int			start;
 	int			end;
-	char*		temp;
+	char	*	temp;
 
 	text.Empty( );
 
-	if( mScripts.Num( ) )
-	{
+	if ( mScripts.Num( ) ) {
 		SendMessage( mWndScript, EM_GETSEL, ( WPARAM )&start, ( LPARAM )&end );
-		if( start == end )
-		{
+		if ( start == end ) {
 			end   = SendMessage( mWndScript, EM_FINDWORDBREAK, WB_RIGHT, start );
 			start = SendMessage( mWndScript, EM_FINDWORDBREAK, WB_LEFT, start );
 		}
@@ -2651,24 +2393,20 @@ always relative to the current selection.  If the text parameter is NULL
 then the last text used will be searched for.
 ================
 */
-bool rvDebuggerWindow::FindNext( const char* text )
-{
+bool rvDebuggerWindow::FindNext( const char * text ) {
 	long	 start;
 	FINDTEXT ft;
 
-	if( text )
-	{
+	if ( text ) {
 		mFind = text;
 	}
 
-	if( !mFind.Length( ) )
-	{
+	if ( !mFind.Length( ) ) {
 		return false;
 	}
 
 	SendMessage( mWndScript, EM_GETSEL, ( WPARAM )&start, ( LPARAM )0 );
-	if( start < 0 )
-	{
+	if ( start < 0 ) {
 		start = 0;
 	}
 
@@ -2677,15 +2415,13 @@ bool rvDebuggerWindow::FindNext( const char* text )
 	ft.lpstrText = mFind.c_str();
 	start = SendMessage( mWndScript, EM_FINDTEXT, FR_DOWN, ( LPARAM )&ft );
 
-	if( start < 0 )
-	{
+	if ( start < 0 ) {
 		ft.chrg.cpMin = 0;
 		ft.chrg.cpMax = -1;
 		ft.lpstrText = mFind.c_str();
 		start = SendMessage( mWndScript, EM_FINDTEXT, FR_DOWN, ( LPARAM )&ft );
 
-		if( start < 0 )
-		{
+		if ( start < 0 ) {
 			return false;
 		}
 	}
@@ -2705,24 +2441,20 @@ always relative to the current selection.  If the text parameter is NULL
 then the last text used will be searched for.
 ================
 */
-bool rvDebuggerWindow::FindPrev( const char* text )
-{
+bool rvDebuggerWindow::FindPrev( const char * text ) {
 	long	 start;
 	FINDTEXT ft;
 
-	if( text )
-	{
+	if ( text ) {
 		mFind = text;
 	}
 
-	if( !mFind.Length( ) )
-	{
+	if ( !mFind.Length( ) ) {
 		return false;
 	}
 
 	SendMessage( mWndScript, EM_GETSEL, ( WPARAM )&start, ( LPARAM )0 );
-	if( start < 0 )
-	{
+	if ( start < 0 ) {
 		start = 0;
 	}
 
@@ -2731,8 +2463,7 @@ bool rvDebuggerWindow::FindPrev( const char* text )
 	ft.lpstrText = mFind.c_str();
 	start = SendMessage( mWndScript, EM_FINDTEXT, 0, ( LPARAM )&ft );
 
-	if( start < 0 )
-	{
+	if ( start < 0 ) {
 		GETTEXTLENGTHEX gtl;
 		gtl.flags = GTL_DEFAULT;
 		gtl.codepage = CP_ACP;
@@ -2741,8 +2472,7 @@ bool rvDebuggerWindow::FindPrev( const char* text )
 		ft.lpstrText = mFind.c_str();
 		start = SendMessage( mWndScript, EM_FINDTEXT, 0, ( LPARAM )&ft );
 
-		if( start < 0 )
-		{
+		if ( start < 0 ) {
 			return false;
 		}
 	}
@@ -2760,8 +2490,7 @@ rvDebuggerWindow::HandleDrawItem
 Handled the WM_DRAWITEM message.  The watch window is custom drawn so a grid can be displayed.
 ================
 */
-int rvDebuggerWindow::HandleDrawItem( WPARAM wparam, LPARAM lparam )
-{
+int rvDebuggerWindow::HandleDrawItem( WPARAM wparam, LPARAM lparam ) {
 	DRAWITEMSTRUCT*		dis;
 	LVCOLUMN			col;
 	int					index;
@@ -2770,8 +2499,8 @@ int rvDebuggerWindow::HandleDrawItem( WPARAM wparam, LPARAM lparam )
 	rvDebuggerWatch*	watch;
 	bool				selected;
 
-	dis        = ( DRAWITEMSTRUCT* ) lparam;
-	watch	   = ( rvDebuggerWatch* )dis->itemData;
+	dis        = ( DRAWITEMSTRUCT * ) lparam;
+	watch	   = ( rvDebuggerWatch * )dis->itemData;
 
 	col.mask   = LVCF_WIDTH;
 	rect       = dis->rcItem;
@@ -2782,43 +2511,34 @@ int rvDebuggerWindow::HandleDrawItem( WPARAM wparam, LPARAM lparam )
 	selected = ( ( dis->itemState & ODS_SELECTED ) && GetFocus() == mWndWatch );
 
 	// Set the colors based on the selected state and draw the item background
-	if( selected )
-	{
+	if ( selected ) {
 		FillRect( dis->hDC, &dis->rcItem, GetSysColorBrush( COLOR_HIGHLIGHT ) );
-	}
-	else
-	{
+	} else {
 		FillRect( dis->hDC, &dis->rcItem, GetSysColorBrush( IsWindowEnabled( mWndWatch ) ? COLOR_WINDOW : COLOR_3DFACE ) );
 	}
 
 	// Run through the columns and draw each with a frame around it and the text
 	// vertically centered in it
-	for( index = 0; ListView_GetColumn( mWndWatch, index, &col ); index ++ )
-	{
+	for ( index = 0; ListView_GetColumn( mWndWatch, index, &col ); index ++ ) {
 		rect.right = rect.left + col.cx;
 		FrameRect( dis->hDC, &rect, GetSysColorBrush( COLOR_3DFACE ) );
 
 		// Draw info on the watch if available
-		if( watch )
-		{
+		if ( watch ) {
 			RECT textrect;
 			textrect = rect;
 			textrect.left += 5;
 
-			switch( index )
-			{
+			switch ( index ) {
 				case 0:
 					SetTextColor( dis->hDC, GetSysColor( selected ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT ) );
 					DrawTextA( dis->hDC, watch->mVariable, -1, &textrect, DT_LEFT | DT_VCENTER );
 					break;
 
 				case 1:
-					if( watch && watch->mModified && ( IsWindowEnabled( mWndWatch ) ) )
-					{
+					if ( watch && watch->mModified && ( IsWindowEnabled( mWndWatch ) ) ) {
 						SetTextColor( dis->hDC, RGB( 255, 50, 50 ) );
-					}
-					else
-					{
+					} else {
 						SetTextColor( dis->hDC, GetSysColor( selected ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT ) );
 					}
 					DrawTextA( dis->hDC, watch->mValue, -1, &textrect, DT_LEFT | DT_VCENTER );

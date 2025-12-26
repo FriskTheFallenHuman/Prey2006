@@ -28,15 +28,13 @@ If you have questions concerning this license or the applicable additional terms
 
 #pragma once
 
-typedef enum
-{
+typedef enum {
 	cd_wire,
 	cd_solid,
 	cd_texture
 } camera_draw_mode;
 
-typedef struct
-{
+typedef struct {
 	int			width, height;
 
 	idVec3		origin;
@@ -54,8 +52,7 @@ class CXYWnd;
 
 // CCamWnd window
 
-class CCamWnd : public CDialogEx
-{
+class CCamWnd : public CDialogEx {
 	DECLARE_DYNCREATE( CCamWnd );
 public:
 	CCamWnd();
@@ -66,10 +63,9 @@ protected:
 
 public:
 	void OnCancel() {}
-	void ShiftTexture_BrushPrimit( face_t* f, int x, int y );
+	void ShiftTexture_BrushPrimit( face_t * f, int x, int y );
 	void SetXYFriend( CXYWnd* pWnd );
-	camera_t& Camera()
-	{
+	camera_t & Camera() {
 		return m_Camera;
 	};
 	void Cam_MouseControl( float dtime );
@@ -85,43 +81,36 @@ public:
 	void UpdateCameraView();
 
 	void BuildEntityRenderState( idEditorEntity* ent, bool update );
-	bool GetRenderMode()
-	{
+	bool GetRenderMode() {
 		return renderMode;
 	}
-	bool GetRebuildMode()
-	{
+	bool GetRebuildMode() {
 		return rebuildMode;
 	}
-	bool GetEntityMode()
-	{
+	bool GetEntityMode() {
 		return entityMode;
 	}
-	bool GetAnimationMode()
-	{
+	bool GetAnimationMode() {
 		return animationMode;
 	}
-	bool GetSelectMode()
-	{
+	bool GetSelectMode() {
 		return selectMode;
 	}
-	bool GetSoundMode()
-	{
+	bool GetSoundMode() {
 		return soundMode;
 	}
 
 	bool UpdateRenderEntities();
 	void MarkWorldDirty();
 
-	void SetView( const idVec3& origin, const idAngles& angles )
-	{
+	void SetView( const idVec3& origin, const idAngles& angles ) {
 		m_Camera.origin = origin;
 		m_Camera.angles = angles;
 	}
 
 	void Cam_BuildMatrix();
 
-	CXYWnd* m_pXYFriend;
+	CXYWnd * m_pXYFriend;
 
 protected:
 	void Cam_Init();
@@ -143,7 +132,7 @@ protected:
 	void	DrawEntityData();
 
 	qhandle_t	worldModelDef;
-	idRenderModel*	worldModel;		// createRawModel of the brush and patch geometry
+	idRenderModel	* worldModel;		// createRawModel of the brush and patch geometry
 	bool	worldDirty;
 	bool	renderMode;
 	bool	rebuildMode;
@@ -161,7 +150,7 @@ protected:
 	CPoint m_ptButton;
 	CPoint m_ptCursor;
 	CPoint m_ptLastCursor;
-	face_t* m_pSide_select;
+	face_t * m_pSide_select;
 	idVec3 m_vCull1;
 	idVec3 m_vCull2;
 	int m_nCullv1[3];

@@ -1,0 +1,94 @@
+// Various Dev tools shared by HUDs
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//  Comment controller - dev only
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+	onNamedEvent showViewComments {
+		set "ViewComments::visible" "1";
+	}
+	
+	onNamedEvent hideViewComments {
+		set "ViewComments::visible" "0";
+	}
+
+	windowDef ViewComments {
+		anchor		ANCHOR_CENTER_CENTER
+		rect 2, 5, 638, 200
+		backcolor 0, 0, 0, 0
+		forecolor 0.9, 0.9, 0.0, 0.9
+		visible 0
+		textscale 0.25
+		text	"gui::viewcomments"
+	}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//  Projectile Hits - Dev only
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	windowDef Hits {
+		anchor		ANCHOR_CENTER_CENTER
+		rect 0, 50, 640, 30
+		text "gui::projectilepct"
+		forecolor 1, 1, 1, 1
+		visible "gui::g_showProjectilePct"
+		textscale 0.25
+		textalign 2
+	}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//  Sound debugger - dev only
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+	windowDef SoundScape {				// Waveform
+		anchor		ANCHOR_CENTER_CENTER
+		rect		75, 400, 100, 25
+		matcolor 	1, 1, 1, 1
+		background	"gui/soundwave"
+		shear		0, -0.4
+		visible		(("gui::s_debug" == 2) || ("gui::s_debug" == 3))
+	}
+	windowDef SoundScapeOverlay {		// Waveform overlay
+		anchor		ANCHOR_CENTER_CENTER
+		rect		75, 400, 100, 25
+		bordersize	1
+		bordercolor 0.2, 0.4, 0.3, 1
+		shear		0, -0.4
+		visible		(("gui::s_debug" == 2) || ("gui::s_debug" == 3))
+	}
+	windowDef SoundMeter {				// Level Meter
+		anchor		ANCHOR_CENTER_CENTER
+		rect		5, 280, 128, 64
+		background	"guis/assets/soundmeter/audiobg"
+		matcolor	1, 1, 1, 1
+		visible		(("gui::s_debug" == 1) || ("gui::s_debug" == 3))
+	}
+	windowDef SoundMeterOverlay {		// Level Meter Overlay
+		anchor		ANCHOR_CENTER_CENTER
+		rect		5, 280, 128, 64
+   		background	"guis/assets/soundmeter/audioverlay"
+		matcolor	1 ,1 ,1 ,1
+		visible		(("gui::s_debug" == 1) || ("gui::s_debug" == 3))
+	}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//  LOCATION (dev only)
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	windowDef LocationText {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		160, 440, 320, 30
+		text		"gui::location"
+		backcolor	0, 0, 0, 0
+		forecolor	1, 1, 1, 0.4
+		textscale	0.45
+		textalign	1
+		textaligny	-3
+		visible		("gui::invehicle" == 0 && "gui::showlocations" != 0)
+	}
+	windowDef LocationArea {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		160, 420, 320, 20
+		text		"gui::areanum"
+		forecolor	1, 1, 1, 0.4
+		textscale	0.33
+		textalign	1
+		textaligny	-3
+		visible		("gui::invehicle" == 0 && "gui::showlocations" != 0)
+	}

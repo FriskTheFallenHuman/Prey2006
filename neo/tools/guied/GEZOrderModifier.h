@@ -29,22 +29,20 @@ If you have questions concerning this license or the applicable additional terms
 #define GEZORDERMODIFIER_H_
 
 #ifndef GEMODIFIER_H_
-	#include "GEModifier.h"
+#include "GEModifier.h"
 #endif
 
-class rvGEZOrderModifier : public rvGEModifier
-{
+class rvGEZOrderModifier : public rvGEModifier {
 public:
 
-	enum EZOrderChange
-	{
+	enum EZOrderChange {
 		ZO_FORWARD,
 		ZO_BACKWARD,
 		ZO_FRONT,
 		ZO_BACK,
 	};
 
-	rvGEZOrderModifier( const char* name, idWindow* window, EZOrderChange change );
+	rvGEZOrderModifier( const char * name, idWindow* window, EZOrderChange change );
 
 	virtual bool		Apply();
 	virtual bool		Undo();
@@ -52,8 +50,8 @@ public:
 
 protected:
 
-	idWindow*	mBefore;
-	idWindow*	mUndoBefore;
+	idWindow	* mBefore;
+	idWindow	* mUndoBefore;
 };
 
 #endif // GEZORDERMODIFIER_H_

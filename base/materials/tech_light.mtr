@@ -1,0 +1,899 @@
+
+textures/tech_light/biotech5_trim1
+{
+	qer_editorimage 	textures/tech_light/biotech5_trim1_d
+	matter_metal
+
+	bumpmap 		textures/tech_light/biotech5_trim1_local
+	diffusemap	 	textures/tech_light/biotech5_trim1_d
+	specularmap		textures/tech_light/biotech5_trim1_s
+
+}
+
+textures/tech_light/biotech5a_trim1
+{
+	qer_editorimage 	textures/tech_light/biotech5a_trim1
+	matter_metal
+	bumpmap 		textures/tech_light/biotech5a_trim1_local
+	diffusemap	 	textures/tech_light/biotech5a_trim1
+	specularmap		textures/tech_light/biotech5a_trim1_s
+	{
+		blend add
+		map			textures/tech_light/biotech5a_trim1_a
+		colored
+	}
+}
+
+textures/tech_light/biotech5_trim1_add
+{
+	qer_editorimage 	textures/tech_light/biotech5_trim1_d
+	matter_metal
+
+	bumpmap 		textures/tech_light/biotech5_trim1_local
+	diffusemap	 	textures/tech_light/biotech5_trim1_d
+	specularmap		textures/tech_light/biotech5_trim1_s
+	{if ( parm4 == 0 )
+		blend add
+		map textures/tech_light/biotech5_trim1_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+		{if ( parm4 != 0 )
+		blend add
+		map textures/tech_light/biotech5_trim1_add
+		rgb flicker_off1 [ (time + parm4) * ( 0.50 + parm6) ]
+	}
+}
+
+textures/tech_light/biotech5_trim1_colored
+{
+	qer_editorimage 	textures/tech_light/biotech5_trim1_d
+	matter_metal
+	bumpmap 		textures/tech_light/biotech5_trim1_local
+	diffusemap	 	textures/tech_light/biotech5_trim1_d
+	specularmap		textures/tech_light/biotech5_trim1_s
+	{
+		blend add
+		map textures/tech_light/biotech5_trim1_a2
+		color
+		parm0 * ((jitter1 [time * 2]) - 0.1),
+		parm1 * ((jitter1 [time * 2]) - 0.1),
+		parm2 * ((jitter1 [time * 2]) - 0.1),
+		1.0
+	}
+}
+
+
+textures/tech_light/canisterglow1
+{
+	qer_editorimage 	textures/tech_light/canisterglow1_d
+	matter_metal
+
+	bumpmap 		textures/tech_light/canisterglow1_local
+	diffusemap	 	textures/tech_light/canisterglow1_d
+	specularmap		textures/tech_light/canisterglow1_s
+
+}
+
+textures/tech_light/canisterglow1_add
+{
+	qer_editorimage 	textures/tech_light/canisterglow1_d
+	matter_metal
+
+	bumpmap 		textures/tech_light/canisterglow1_local
+	diffusemap	 	textures/tech_light/canisterglow1_d
+	specularmap		textures/tech_light/canisterglow1_s
+	{
+		blend add
+		map textures/tech_light/canisterglow1_add
+		rgb (parm5 * jitter1 [time * 2]) - 0.1
+//		rgb ( jitter1 [time * 2]) - 0.1
+	}
+}
+
+
+//-----------------------------------------------
+textures/tech_light/techlight_040
+{
+	qer_editorimage 	textures/tech_light/techlight_040_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_light/techlight_040_local, heightmap (textures/tech_light/techlight_040_h, 6))
+
+	diffusemap	 	textures/tech_light/techlight_040_d
+	specularmap		textures/tech_light/techlight_040_s
+
+}
+
+textures/tech_light/techlight_040_add
+{
+	qer_editorimage 	textures/tech_light/techlight_040_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_light/techlight_040_local, heightmap (textures/tech_light/techlight_040_h, 6))
+
+	diffusemap	 	textures/tech_light/techlight_040_d
+	specularmap		textures/tech_light/techlight_040_s
+	{
+		blend add
+		map textures/tech_light/techlight_040_clean_add
+		rgb (.2 * sintable [.15 + time * .5 ]) + .7
+	}
+}
+
+textures/tech_light/techlight_041
+{
+	qer_editorimage 	textures/tech_light/techlight_041_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_light/techlight_041_local, heightmap (textures/tech_light/techlight_041_h, 6))
+
+	diffusemap	 	textures/tech_light/techlight_041_d
+	specularmap		textures/tech_light/techlight_041_s
+
+}
+
+textures/tech_light/techlight_041_add
+{
+	qer_editorimage 	textures/tech_light/techlight_041_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_light/techlight_041_local, heightmap (textures/tech_light/techlight_041_h, 6))
+
+	diffusemap	 	textures/tech_light/techlight_041_d
+	specularmap		textures/tech_light/techlight_041_s
+	{
+		blend add
+		map textures/tech_light/techlight_041_clean_add2
+		rgb (.2 * sintable [.15 + time * .5 ]) + .7
+		colored
+	}
+}
+
+textures/tech_light/techlight_041_add2_white
+{
+	translucent
+	noshadows
+	qer_editorimage 	textures/tech_light/techlight_041_clean_add2
+	matter_metal
+
+	{	// orange
+		blend add
+//		blend gl_one_minus_dst_color, gl_one
+		map	textures/tech_light/techlight_041_clean_add2
+		colored
+//		zeroclamp
+	}
+}
+
+textures/tech_light/techlight_041_add2_orange
+{
+	translucent
+	noshadows
+	qer_editorimage 	textures/tech_light/techlight_041_clean_add2
+	matter_metal
+
+	{	// orange
+		blend add
+//		blend gl_one_minus_dst_color, gl_one
+		map	textures/tech_light/techlight_041_clean_add2
+		colored
+		color 0.6,0.4,0,0
+//		zeroclamp
+	}
+}
+
+textures/tech_light/techlight_041_add2_red
+{
+	translucent
+	noshadows
+	qer_editorimage 	textures/tech_light/techlight_041_clean_add2
+	matter_metal
+
+	{	// orange
+		blend add
+//		blend gl_one_minus_dst_color, gl_one
+		map	textures/tech_light/techlight_041_clean_add2
+		colored
+		color 1,0,0,0
+//		zeroclamp
+	}
+}
+
+textures/tech_light/techlight_041_break
+{
+	qer_editorimage		textures/tech_light/techlight_041_break_d
+	matter_metal
+
+	{if ( parm7 == 0 )
+		blend		bumpmap
+		map		addnormals (textures/tech_light/techlight_041_local2, heightmap (textures/tech_light/techlight_041_h2, 6) )
+	}
+	{if ( parm7 == 0 )
+		blend		diffusemap
+		map		textures/tech_light/techlight_041_d2
+	}
+	{if ( parm7 == 0 )
+		blend		specularmap
+		map		textures/tech_light/techlight_041_s2
+	}
+	{if ( parm7 == 0 )
+		blend		gl_one,gl_one
+		map		textures/tech_light/techlight_041_add2
+		red 		parm0 * 2
+		green 		parm1 * 2
+		blue 		parm2 * 2
+	}
+
+	{if ( parm7 != 0 )
+		blend		bumpmap
+		map		addnormals (textures/tech_light/techlight_041_break_local, heightmap (textures/tech_light/techlight_041_break_h, 6) )
+	}
+	{if ( parm7 != 0 )
+		blend		diffusemap
+		map		textures/tech_light/techlight_041_break_d
+	}
+	{if ( parm7 != 0 )
+		blend		specularmap
+		map		textures/tech_light/techlight_041_break_s
+	}
+	{if ( parm7 != 0 )
+		blend		gl_one,gl_one
+		map		textures/tech_light/techlight_041_break_add
+		red 		parm0 * 2
+		green 		parm1 * 2
+		blue 		parm2 * 2
+	}
+}
+
+///---------------------------------------------
+// harveset old
+//-----------------------------------------------
+
+textures/tech_light/techlight_046
+{
+	qer_editorimage 	textures/tech_light/techlight_046_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_light/techlight_046_local, heightmap (textures/tech_light/techlight_046_h, 6))
+
+	diffusemap	 	textures/tech_light/techlight_046_d
+	specularmap		textures/tech_light/techlight_046_s
+	{
+		blend add
+		map textures/tech_light/techlight_046_add
+		rgb (.2 * sintable [.15 + time * .5 ]) + .7
+	}
+}
+
+textures/tech_light/techlight_046B
+{
+	qer_editorimage 	textures/tech_light/techlight_046_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_light/techlight_046_local, heightmap (textures/tech_light/techlight_046_h, 6))
+//	bumpmap 		textures/tech_light/techlight_046_local
+	diffusemap	 	textures/tech_light/techlight_046_d
+	specularmap		textures/tech_light/techlight_046_s
+
+}
+
+
+textures/tech_light/techlight_046patch
+{
+	qer_editorimage 	textures/tech_light/techlight_046patch_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_light/techlight_046patch_local, heightmap (textures/tech_light/techlight_046patch_h, 6))
+
+	diffusemap	 	textures/tech_light/techlight_046patch_d
+	specularmap		textures/tech_light/techlight_046patch_s
+	{
+		blend add
+		map textures/tech_light/techlight_046patch_add
+		rgb (.2 * sintable [.15 + time * .5 ]) + .7
+	}
+}
+
+textures/tech_light/techlight_046patchB
+{
+	qer_editorimage 	textures/tech_light/techlight_046patch_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_light/techlight_046patch_local, heightmap (textures/tech_light/techlight_046patch_h, 6))
+
+	diffusemap	 	textures/tech_light/techlight_046patch_d
+	specularmap		textures/tech_light/techlight_046patch_s
+
+}
+
+
+
+//-------------------------------------------------
+//  Clean versions
+//-------------------------------------------------
+
+textures/tech_light/techlight_040_clean
+{
+	qer_editorimage 	textures/tech_light/techlight_040_clean_d
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_light/techlight_040_local, heightmap (textures/tech_light/techlight_040_clean_h, 6))
+
+	diffusemap	 	textures/tech_light/techlight_040_clean_d
+	specularmap		textures/tech_light/techlight_040_clean_s
+
+}
+
+textures/tech_light/techlight_040_add_clean
+{
+	qer_editorimage 	textures/tech_light/techlight_040_clean_proxy
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_light/techlight_040_local, heightmap (textures/tech_light/techlight_040_clean_h, 6))
+
+	diffusemap	 	textures/tech_light/techlight_040_clean_d
+	specularmap		textures/tech_light/techlight_040_clean_s
+	{
+		blend add
+		map textures/tech_light/techlight_040_clean_add
+		color		1*parm0, 1*parm1, 1*parm2, 1.0
+	}
+}
+
+textures/tech_light/techlight_041_clean
+{
+	qer_editorimage 	textures/tech_light/techlight_041_clean_d
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_light/techlight_041_local, heightmap (textures/tech_light/techlight_041_clean_h, 6))
+
+	diffusemap	 	textures/tech_light/techlight_041_clean_d
+	specularmap		textures/tech_light/techlight_041_clean_s
+
+}
+
+textures/tech_light/techlight_041_add_clean
+{
+	qer_editorimage 	textures/tech_light/techlight_041_clean_proxy
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_light/techlight_041_local, heightmap (textures/tech_light/techlight_041_clean_h, 6))
+
+	diffusemap	 	textures/tech_light/techlight_041_clean_d
+	specularmap		textures/tech_light/techlight_041_clean_s
+	{
+		blend add
+		map textures/tech_light/techlight_041_clean_add
+		color		1*parm0, 1*parm1, 1*parm2, 1.0
+	}
+}
+textures/tech_light/techlight_041_add_clean_shuttle
+{
+	qer_editorimage 	textures/tech_light/techlight_041_clean_proxy
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_light/techlight_041_local, heightmap (textures/tech_light/techlight_041_clean_h, 6))
+
+	diffusemap	 	textures/tech_light/techlight_041_clean_d
+	specularmap		textures/tech_light/techlight_041_clean_s
+	{
+		blend add
+		map textures/tech_light/techlight_041_clean_add
+		color		1*parm0, 1*parm1, 1*parm2, 1.0
+	}
+	{	// Shuttle view stage
+                 blend add
+		map textures/decals/shuttle_flicker_02_blue
+                texgen screen
+		 rgb (fade_pulse [time * .4] * 0.7)
+
+                 scroll time * 10, time * 10.1 * ( parm7 + 10 )
+                shuttleView
+		glowstage
+	}
+
+                {	// Shuttle view stage
+
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		map textures/decals/shuttle_flicker
+		texgen screen
+                 rgb (fade_pulse [time * .4] * 0.5)
+                scale ( forcefieldflicker[ time * 1.0 ] * .01 ) , 0.5
+		scroll time * 10, time * 10.1 * ( parm7 + 10 )
+		shuttleView
+		glowstage
+	}
+}
+textures/tech_light/techlight_041_clean_break
+{
+	qer_editorimage		textures/tech_light/techlight_041_clean_break_d
+	matter_metal
+
+	{if ( parm7 == 0 )
+		blend		bumpmap
+		map		addnormals (textures/tech_light/techlight_041_clean_local2, heightmap (textures/tech_light/techlight_041_clean_h2, 6) )
+	}
+	{if ( parm7 == 0 )
+		blend		diffusemap
+		map		textures/tech_light/techlight_041_clean_d2
+	}
+	{if ( parm7 == 0 )
+		blend		specularmap
+		map		textures/tech_light/techlight_041_clean_s2
+	}
+	{if ( parm7 == 0 )
+		blend		gl_one,gl_one
+		map		textures/tech_light/techlight_041_clean_add2
+		red 		parm0 * 2
+		green 		parm1 * 2
+		blue 		parm2 * 2
+	}
+
+	{if ( parm7 != 0 )
+		blend		bumpmap
+		map		addnormals (textures/tech_light/techlight_041_clean_break_local, heightmap (textures/tech_light/techlight_041_clean_break_h, 6) )
+	}
+	{if ( parm7 != 0 )
+		blend		diffusemap
+		map		textures/tech_light/techlight_041_clean_break_d
+	}
+	{if ( parm7 != 0 )
+		blend		specularmap
+		map		textures/tech_light/techlight_041_clean_break_s
+	}
+	{if ( parm7 != 0 )
+		blend		gl_one,gl_one
+		map		textures/tech_light/techlight_041_clean_break_add
+		red 		parm0 * 2
+		green 		parm1 * 2
+		blue 		parm2 * 2
+	}
+}
+
+textures/tech_light/techlight_045_clean
+{
+	qer_editorimage 	textures/tech_light/techlight_045_clean_proxy
+	matter_metal
+
+	bumpmap 		textures/tech_trim/techtrim23_local	// was duplicate image
+	diffusemap	 	textures/tech_light/techlight_045_clean_d
+	specularmap		textures/tech_light/techlight_045_clean_s
+	{
+		blend add
+		map textures/tech_light/techlight_045_clean_a
+		color		1*parm0, 1*parm1, 1*parm2, 1.0
+		rgb (.2 * sintable [.15 + time * .7 ]) + .9
+	}
+}
+
+textures/tech_light/techlight_046_clean
+{
+	qer_editorimage 	textures/tech_light/techlight_046_clean_proxy
+
+	bumpmap 		addnormals (textures/tech_light/techlight_046_local, heightmap (textures/tech_light/techlight_046_clean_h, 6))
+
+	diffusemap	 	textures/tech_light/techlight_046_clean_d
+	specularmap		textures/tech_light/techlight_046_clean_s
+	{
+		blend add
+		map textures/tech_light/techlight_041_clean_add
+		color		1*parm0, 1*parm1, 1*parm2, 1.0
+	}
+}
+
+textures/tech_light/techlight_047_clean
+{
+	qer_editorimage 	textures/tech_light/techlight_047_clean_proxy
+
+	bumpmap 		addnormals (textures/tech_light/techlight_047_local, heightmap (textures/tech_light/techlight_047_clean_h, 6))
+
+	diffusemap	 	textures/tech_light/techlight_047_clean_d
+	specularmap		textures/tech_light/techlight_047_clean_s
+	{
+		blend add
+		map textures/tech_light/techlight_047_clean_add
+		color		1*parm0, 1*parm1, 1*parm2, 1.0
+	}
+}
+
+//==================================================
+//
+//KEEPER FORTRESS
+//
+//=================================================
+
+textures/tech_light/kf_techlight_046
+{
+	qer_editorimage 	textures/tech_light/kf_techlight_046_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_light/techlight_046_local, heightmap (textures/tech_light/techlight_046_h, 6))
+
+	diffusemap	 	textures/tech_light/kf_techlight_046_d
+	specularmap		textures/tech_light/kf_techlight_046_s
+	{
+		blend add
+		map textures/tech_light/kf_techlight_046_add
+		rgb (.2 * sintable [.15 + time * .5 ]) + .7
+	}
+}
+textures/tech_light/kf_techlight_046patch
+{
+	qer_editorimage 	textures/tech_light/kf_techlight_046patch_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_light/kf_techlight_046patch_local, heightmap (textures/tech_light/techlight_046patch_h, 6))
+
+	diffusemap	 	textures/tech_light/kf_techlight_046patch_d
+	specularmap		textures/tech_light/kf_techlight_046patch_s
+	{
+		blend add
+		map textures/tech_light/kf_techlight_046patch_add
+		rgb (.2 * sintable [.15 + time * .5 ]) + .7
+	}
+}
+
+textures/tech_light/kf_biotech5a_trim1
+{
+	qer_editorimage 	textures/tech_light/kf_biotech5a_trim1
+	matter_metal
+	bumpmap 		textures/tech_light/kf_biotech5a_trim1_local
+	diffusemap	 	textures/tech_light/kf_biotech5a_trim1
+	specularmap		textures/tech_light/kf_biotech5a_trim1_s
+	{
+		blend add
+		map			textures/tech_light/kf_biotech5a_trim1_a
+		colored
+	}
+}
+
+textures/tech_light/kf_biotech5a_trim1_sound
+{
+	qer_editorimage 	textures/tech_light/kf_biotech5a_trim1
+	matter_metal
+	bumpmap 		textures/tech_light/kf_biotech5a_trim1_local
+	diffusemap	 	textures/tech_light/kf_biotech5a_trim1
+	specularmap		textures/tech_light/kf_biotech5a_trim1_s
+	{if ( parm6 == 0 )
+		blend add
+		map			textures/tech_light/kf_biotech5a_trim1_a
+		color parm0 * sound,
+			  parm1 * sound,
+			  parm2 * sound,
+			  1
+	}
+	{if ( parm6 != 0 )
+		blend add
+		map			textures/tech_light/kf_biotech5a_trim1_a
+		color parm0 * parm6,
+			  parm1 * parm6,
+			  parm2 * parm6,
+			  1
+	}
+}
+
+textures/tech_light/kf_biotech5a_trim1_1minussound
+{
+	qer_editorimage 	textures/tech_light/kf_biotech5a_trim1
+	matter_metal
+	bumpmap 		textures/tech_light/kf_biotech5a_trim1_local
+	diffusemap	 	textures/tech_light/kf_biotech5a_trim1
+	specularmap		textures/tech_light/kf_biotech5a_trim1_s
+	{
+		blend add
+		map			textures/tech_light/kf_biotech5a_trim1_a
+		color parm0 * ( 1 - sound ),
+			  parm1 * ( 1 - sound ),
+			  parm2 * ( 1 - sound ),
+			  1
+	}
+}
+
+textures/tech_light/kf_biotech5a_trim1_flicker
+{
+	qer_editorimage 	textures/tech_light/kf_biotech5a_trim1
+	matter_metal
+	bumpmap 		textures/tech_light/kf_biotech5a_trim1_local
+	diffusemap	 	textures/tech_light/kf_biotech5a_trim1
+	specularmap		textures/tech_light/kf_biotech5a_trim1_s
+	{
+		blend add
+		map			textures/tech_light/kf_biotech5a_trim1_a
+		color parm0 * flicker6[ time * 7 ],
+			  parm1 * flicker6[ time * 7 ],
+			  parm2 * flicker6[ time * 7 ],
+			  1.0
+	}
+}
+
+textures/tech_light/kf_biotech5a_trim1_roadhouse
+{
+	qer_editorimage 	textures/tech_light/kf_biotech5a_trim1
+	matter_metal
+	bumpmap 		textures/tech_light/kf_biotech5a_trim1_local
+	diffusemap	 	textures/tech_light/kf_biotech5a_trim1
+	specularmap		textures/tech_light/kf_biotech5a_trim1_s
+	{ if ( parm7 != 2 )
+		blend add
+		map			textures/tech_light/kf_biotech5a_trim1_a
+		colored
+	}
+}
+
+textures/tech_light/kf_biotech_n1
+{
+	qer_editorimage 	textures/tech_light/kf_biotech_n1_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_light/kf_biotech_n1_local, heightmap (textures/tech_light/kf_biotech_n1_h, 6))
+
+	diffusemap	 	textures/tech_light/kf_biotech_n1_d
+	specularmap		textures/tech_light/kf_biotech_n1_s
+	{
+		blend add
+		map textures/tech_light/kf_biotech_n1_add
+		rgb (.2 * sintable [.15 + time * .5 ]) + .7
+	}
+}
+textures/tech_light/kf_biotech_n2
+{
+	qer_editorimage 	textures/tech_light/kf_biotech_n2_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_light/kf_biotech_n2_local, heightmap (textures/tech_light/kf_biotech_n2_h, 6))
+
+	diffusemap	 	textures/tech_light/kf_biotech_n2_d
+	specularmap		textures/tech_light/kf_biotech_n2_s
+	{
+		blend add
+		map textures/tech_light/kf_biotech_n2_add
+		rgb (.2 * sintable [.15 + time * .5 ]) + .7
+	}
+}
+textures/tech_light/kf_biotech_n3
+{
+	qer_editorimage 	textures/tech_light/kf_biotech_n3_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_light/kf_biotech_n3_local, heightmap (textures/tech_light/kf_biotech_n3_h, 6))
+
+	diffusemap	 	textures/tech_light/kf_biotech_n3_d
+	specularmap		textures/tech_light/kf_biotech_n3_s
+	{
+		blend add
+		map textures/tech_light/kf_biotech_n3_add
+		rgb (.2 * sintable [.15 + time * .5 ]) + .7
+	}
+}
+textures/tech_light/kf_biotech_n4
+{
+	qer_editorimage 	textures/tech_light/kf_biotech_n4_local
+	matter_metal
+
+	bumpmap 		addnormals (textures/tech_light/kf_biotech_n4_local, heightmap (textures/tech_light/kf_biotech_n3_h, 6))
+
+	diffusemap	 	textures/tech_light/kf_biotech_n4_d
+	specularmap		textures/tech_light/kf_biotech_n4_s
+	{
+		blend add
+		map textures/tech_light/kf_biotech_n4_add
+		rgb (.2 * sintable [.15 + time * .5 ]) + .7
+	}
+}
+
+
+textures/tech_light/tech_rect1
+{
+	qer_editorimage 	textures/tech_light/tech_rect1_a
+	matter_metal
+
+	bumpmap 		textures/tech_light/tech_rect1_local
+
+	specularmap		textures/tech_light/tech_rect1_s
+	{
+		blend diffusemap
+		map	 	textures/tech_light/tech_rect1_d
+		alphatest 0.5
+	}
+	{
+		blend add
+		map textures/tech_light/tech_rect1_a
+		colored
+	}
+}
+
+textures/tech_light/tech_rect1_sound
+{
+	qer_editorimage 	textures/tech_light/tech_rect1_a
+	matter_metal
+
+	bumpmap 		textures/tech_light/tech_rect1_local
+
+	specularmap		textures/tech_light/tech_rect1_s
+	{
+		blend diffusemap
+		map	 	textures/tech_light/tech_rect1_d
+		alphatest 0.5
+	}
+	{
+		blend add
+		map textures/tech_light/tech_rect1_a
+		color		parm0 * sound,
+				parm1 * sound,
+				parm2 * sound,
+				1.0
+	}
+}
+
+textures/tech_light/tech_rect2
+{
+	qer_editorimage 	textures/tech_light/tech_rect2_a
+	matter_metal
+
+	bumpmap 		textures/tech_light/tech_rect2_local
+
+	diffusemap	 	textures/tech_light/tech_rect2_d
+	specularmap		textures/tech_light/tech_rect2_s
+	{
+		blend add
+		map textures/tech_light/tech_rect2_a
+		colored
+	}
+}
+
+textures/tech_light/tech_rect2_sound
+{
+	qer_editorimage 	textures/tech_light/tech_rect2_a
+	matter_metal
+
+	bumpmap 		textures/tech_light/tech_rect2_local
+
+	diffusemap	 	textures/tech_light/tech_rect2_d
+	specularmap		textures/tech_light/tech_rect2_s
+	{if ( parm6 == 0 )
+		blend add
+		map textures/tech_light/tech_rect2_a
+		color	parm0 * sound,
+				parm1 * sound,
+				parm2 * sound,
+				1.0
+	}
+	{if ( parm6 != 0 )
+		blend add
+		map textures/tech_light/tech_rect2_a
+		color	parm0 * parm6,
+				parm1 * parm6,
+				parm2 * parm6,
+				1.0
+	}
+}
+
+textures/tech_light/tech_round1
+{
+	qer_editorimage 	textures/tech_light/tech_round1_a
+	matter_metal
+
+	bumpmap 		textures/tech_light/tech_round1_local
+
+	{
+		blend diffusemap
+		map	 	textures/tech_light/tech_round1_d
+		alphatest 0.5
+	}
+	specularmap		textures/tech_light/tech_round1_s
+	{
+		blend add
+		map textures/tech_light/tech_round1_a
+		colored
+	}
+}
+
+textures/tech_light/tech_round1_sound
+{
+	qer_editorimage 	textures/tech_light/tech_round1_a
+	matter_metal
+
+	bumpmap 		textures/tech_light/tech_round1_local
+
+	{
+		blend diffusemap
+		map	 	textures/tech_light/tech_round1_d
+		alphatest 0.5
+	}
+	specularmap		textures/tech_light/tech_round1_s
+	{
+		blend add
+		map textures/tech_light/tech_round1_a
+		color		parm0 * sound,
+				parm1 * sound,
+				parm2 * sound,
+				1.0
+	}
+}
+
+textures/tech_light/tech_round2
+{
+	qer_editorimage 	textures/tech_light/tech_round2_a
+	matter_metal
+
+	bumpmap 		textures/tech_light/tech_round2_local
+
+	{
+		blend diffusemap
+		map	 	textures/tech_light/tech_round2_d
+		alphatest 0.5
+	}
+	specularmap		textures/tech_light/tech_round2_s
+	{
+		blend add
+		map textures/tech_light/tech_round2_a
+		colored
+	}
+}
+
+textures/tech_light/tech_round2_sound
+{
+	qer_editorimage 	textures/tech_light/tech_round2_a
+	matter_metal
+
+	bumpmap 		textures/tech_light/tech_round2_local
+
+	{
+		blend diffusemap
+		map	 	textures/tech_light/tech_round2_d
+		alphatest 0.5
+	}
+	specularmap		textures/tech_light/tech_round2_s
+	{
+		blend add
+		map textures/tech_light/tech_round2_a
+		color		parm0 * sound,
+				parm1 * sound,
+				parm2 * sound,
+				1.0
+	}
+}
+
+textures/tech_light/tech_round3
+{
+	qer_editorimage 	textures/tech_light/tech_round3_a
+	matter_metal
+
+	bumpmap 		textures/tech_light/tech_round3_local
+
+	{
+		blend diffusemap
+		map	 	textures/tech_light/tech_round3_d
+		alphatest 0.5
+	}
+	specularmap		textures/tech_light/tech_round3_s
+	{
+		blend add
+		map textures/tech_light/tech_round3_a
+		colored
+	}
+}
+
+textures/tech_light/tech_round3_sound
+{
+	qer_editorimage 	textures/tech_light/tech_round3_a
+	matter_metal
+
+	bumpmap 		textures/tech_light/tech_round3_local
+
+	{
+		blend diffusemap
+		map	 	textures/tech_light/tech_round3_d
+		alphatest 0.5
+	}
+	specularmap		textures/tech_light/tech_round3_s
+	{
+		blend add
+		map textures/tech_light/tech_round3_a
+		color		parm0 * sound,
+				parm1 * sound,
+				parm2 * sound,
+				1.0
+	}
+}

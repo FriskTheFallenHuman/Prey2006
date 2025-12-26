@@ -28,8 +28,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #pragma once
 
-class CSplashScreen : public CWnd
-{
+class CSplashScreen : public CWnd {
 public:
 	CSplashScreen();
 	~CSplashScreen();
@@ -43,7 +42,7 @@ protected:
 	BOOL Create( CWnd* pParentWnd = NULL );
 	void DrawSplash( CDC* pDC );
 
-	static CSplashScreen* c_pSplashWnd;
+	static CSplashScreen * c_pSplashWnd;
 	CBitmap m_bitmap;
 
 	DECLARE_MESSAGE_MAP()

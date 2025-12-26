@@ -2,15 +2,14 @@
 #define __PROP_TREE_ITEM_FILE_EDIT_H__
 
 #if _MSC_VER > 1000
-	#pragma once
+#pragma once
 #endif
 
 
 //#include "PropTreeItem.h"
 //#include "PropTreeItemEdit.h"
 
-class PROPTREE_API CPropTreeItemFileEdit : public CPropTreeItemEdit
-{
+class PROPTREE_API CPropTreeItemFileEdit : public CPropTreeItemEdit {
 	// Construction
 public:
 	CPropTreeItemFileEdit();

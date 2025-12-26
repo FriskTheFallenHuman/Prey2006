@@ -137,6 +137,7 @@ public:
 	virtual void				VPrintf( const char *fmt, va_list arg );
 	virtual void				DPrintf( const char *fmt, ... ) id_attribute((format(printf,2,3)));
 	virtual void				VerbosePrintf( const char *fmt, ... ) id_attribute((format(printf,2,3)));
+	virtual void				VerboseWarning( const char *fmt, ... ) id_attribute((format(printf,2,3)));
 	virtual void				Warning( const char *fmt, ... ) id_attribute((format(printf,2,3)));
 	virtual void				DWarning( const char *fmt, ...) id_attribute((format(printf,2,3)));
 	virtual void				PrintWarnings( void );
@@ -202,7 +203,7 @@ private:
 	void						LoadGameDLL( void );
 	void						LoadGameDLLbyName( const char *dll, idStr& s );
 	void						UnloadGameDLL( void );
-	void						PrintLoadingMessage( const char *msg );
+	void						DrawSplashScreen( void );
 	void						FilterLangList( idStrList* list, idStr lang );
 
 	bool						com_fullyInitialized;
@@ -385,7 +386,7 @@ void idCommonLocal::VPrintf( const char *fmt, va_list args ) {
 		if ( com_editors & EDITOR_DEBUGGER )
 			DebuggerServerPrint( msg );
 		else
-			// only echo to dedicated console and early console when debugger is not running so no 
+			// only echo to dedicated console and early console when debugger is not running so no
 			// deadlocks occur if engine functions called from the debuggerthread trace stuff..
 			Sys_Printf( "%s", msg );
 	} else {
@@ -464,6 +465,22 @@ void idCommonLocal::VerbosePrintf( const char *fmt, ... ) {
 
 /*
 ==================
+idCommonLocal::VerboseWarning
+==================
+*/
+void idCommonLocal::VerboseWarning( const char *fmt, ... ) {
+	if( !dmapGlobals.verbose ) {
+		return;
+	}
+
+	va_list argptr;
+	va_start( argptr, fmt );
+	Warning( fmt, argptr );
+	va_end( argptr );
+}
+
+/*
+==================
 idCommonLocal::DPrintf
 
 prints message that only shows up if the "developer" cvar is set
@@ -486,7 +503,7 @@ void idCommonLocal::DPrintf( const char *fmt, ... ) {
 	bool temp = com_refreshOnPrint;
 	com_refreshOnPrint = false;
 
-	Printf( S_COLOR_RED"%s", msg );
+	Printf( S_COLOR_GRAY"%s", msg );
 
 	com_refreshOnPrint = temp;
 }
@@ -511,7 +528,7 @@ void idCommonLocal::DWarning( const char *fmt, ... ) {
 	va_end( argptr );
 	msg[sizeof(msg)-1] = '\0';
 
-	Printf( S_COLOR_YELLOW"WARNING: %s\n", msg );
+	Printf( S_COLOR_YELLOW"WARNING: " S_COLOR_GRAY "%s\n", msg );
 }
 
 /*
@@ -1152,7 +1169,7 @@ Com_ScriptDebugger_f
 static void Com_ScriptDebugger_f( const idCmdArgs &args ) {
 	// Make sure it wasnt on the command line
 	if ( !( com_editors & EDITOR_DEBUGGER ) ) {
-		
+
 		//start debugger server if needed
 		if ( !com_enableDebuggerServer.GetBool() )
 			com_enableDebuggerServer.SetBool( true );
@@ -2353,22 +2370,18 @@ void idCommonLocal::InitRenderSystem( void ) {
 	}
 
 	renderSystem->InitOpenGL();
-	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04343" ) );
+	DrawSplashScreen();
 }
 
 /*
 =================
-idCommonLocal::PrintLoadingMessage
+idCommonLocal::DrawSplashScreen
 =================
 */
-void idCommonLocal::PrintLoadingMessage( const char *msg ) {
-	if ( !( msg && *msg ) ) {
-		return;
-	}
+void idCommonLocal::DrawSplashScreen( void ) {
+
 	renderSystem->BeginFrame( renderSystem->GetScreenWidth(), renderSystem->GetScreenHeight() );
 	renderSystem->DrawStretchPic( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 1, 1, declManager->FindMaterial( "splashScreen" ) );
-	int len = strlen( msg );
-	renderSystem->DrawSmallStringExt( ( 640 - len * SMALLCHAR_WIDTH ) / 2, 410, msg, idVec4( 0.0f, 0.81f, 0.94f, 1.0f ), true, declManager->FindMaterial( "textures/bigchars" ) );
 	renderSystem->EndFrame( NULL, NULL );
 }
 
@@ -3124,7 +3137,7 @@ void idCommonLocal::InitGame( void ) {
 	// initialize string database right off so we can use it for loading messages
 	InitLanguageDict();
 
-	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04344" ) );
+	DrawSplashScreen();
 
 	// load the font, etc
 	console->LoadGraphics();
@@ -3132,7 +3145,7 @@ void idCommonLocal::InitGame( void ) {
 	// init journalling, etc
 	eventLoop->Init();
 
-	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04345" ) );
+	DrawSplashScreen();
 
 	// exec the startup scripts
 	cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "exec editor.cfg\n" );
@@ -3159,12 +3172,12 @@ void idCommonLocal::InitGame( void ) {
 	// init the user command input code
 	usercmdGen->Init();
 
-	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04346" ) );
+	DrawSplashScreen();
 
 	// start the sound system, but don't do any hardware operations yet
 	soundSystem->Init();
 
-	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04347" ) );
+	DrawSplashScreen();
 
 	// init async network
 	idAsyncNetwork::Init();
@@ -3178,17 +3191,17 @@ void idCommonLocal::InitGame( void ) {
 		cvarSystem->SetCVarBool( "s_noSound", true );
 	} else {
 		// init OpenGL, which will open a window and connect sound and input hardware
-		PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04348" ) );
+		DrawSplashScreen();
 		InitRenderSystem();
 	}
 #endif
 
-	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04349" ) );
+	DrawSplashScreen();
 
 	// initialize the user interfaces
 	uiManager->Init();
 
-	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04350" ) );
+	DrawSplashScreen();
 
 	// load the game dll
 	LoadGameDLL();
@@ -3197,7 +3210,7 @@ void idCommonLocal::InitGame( void ) {
 	if ( com_enableDebuggerServer.GetBool( ) )
 		DebuggerServerInit( );
 
-	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04351" ) );
+	DrawSplashScreen();
 
 	// init the session
 	session->Init();
@@ -3228,7 +3241,7 @@ void idCommonLocal::ShutdownGame( bool reloading ) {
 	}
 
 	// shutdown the script debugger
-	if ( com_enableDebuggerServer.GetBool() )	
+	if ( com_enableDebuggerServer.GetBool() )
 		DebuggerServerShutdown();
 
 	idAsyncNetwork::client.Shutdown();
@@ -3299,7 +3312,7 @@ static bool isDemo( void )
 
 static bool updateDebugger( idInterpreter *interpreter, idProgram *program, int instructionPointer )
 {
-	if (com_editors & EDITOR_DEBUGGER) 
+	if (com_editors & EDITOR_DEBUGGER)
 	{
 		DebuggerServerCheckBreakpoint( interpreter, program, instructionPointer );
 		return true;
@@ -3352,46 +3365,48 @@ void idGameCallbacks::Reset()
 	reloadImagesUserArg = NULL;
 }
 
-extern const char * IN_FirstKeyFromBinding(const char *binding, int *keycode = NULL);
-void idCommonLocal::MaterialKeyForBinding(const char *binding, char *keyMaterial, char *key, bool &isBound)
-{
-    // 256 length see game/Prey/prey_game.cpp::GetTip
+/*
+===================
+idCommonLocal::MaterialKeyForBinding
+===================
+*/
+extern const char * IN_FirstKeyFromBinding( const char *binding, int *keycode = NULL );
+void idCommonLocal::MaterialKeyForBinding( const char *binding, char *keyMaterial, char *key, bool &isBound ) {
+	// 256 length see game/Prey/prey_game.cpp::GetTip
 #define MAX_KEY_MATERIAL_LENGTH 256
 #define MAX_KEY_NAME_LENGTH 256
-    const char *k;
-    int i = -1;
+	const char *k;
+	int i = -1;
 
-    //karin: only get first binding key
-    k = IN_FirstKeyFromBinding(binding, &i);
-    isBound = false;
+	//karin: only get first binding key
+	k = IN_FirstKeyFromBinding( binding, &i );
+	isBound = false;
 
-    if(k && k[0])
-    {
-        if(i == K_MOUSE1)
-            idStr::Copynz(keyMaterial, "textures/interface/tips/mouse1", MAX_KEY_MATERIAL_LENGTH);
-        else if(i == K_MOUSE2)
-            idStr::Copynz(keyMaterial, "textures/interface/tips/mouse2", MAX_KEY_MATERIAL_LENGTH);
-        else if(i == K_MOUSE3)
-            idStr::Copynz(keyMaterial, "textures/interface/tips/mouse3", MAX_KEY_MATERIAL_LENGTH);
-        else if(i == K_MWHEELDOWN)
-            idStr::Copynz(keyMaterial, "textures/interface/tips/mousedn", MAX_KEY_MATERIAL_LENGTH);
-        else if(i == K_MWHEELUP)
-            idStr::Copynz(keyMaterial, "textures/interface/tips/mouseup", MAX_KEY_MATERIAL_LENGTH);
-        else
-        {
-            isBound = strlen(k) > 1;
-            idStr::Copynz(key, k, MAX_KEY_NAME_LENGTH);
-            idStr::ToLower(key);
-        }
-    }
+	if ( k && k[0] ) {
+		if ( i == K_MOUSE1 ) {
+			idStr::Copynz( keyMaterial, "textures/interface/tips/mouse1", MAX_KEY_MATERIAL_LENGTH );
+		} else if ( i == K_MOUSE2 ) {
+			idStr::Copynz( keyMaterial, "textures/interface/tips/mouse2", MAX_KEY_MATERIAL_LENGTH );
+		} else if ( i == K_MOUSE3 ) {
+			idStr::Copynz( keyMaterial, "textures/interface/tips/mouse3", MAX_KEY_MATERIAL_LENGTH );
+		} else if ( i == K_MWHEELDOWN ) {
+			idStr::Copynz( keyMaterial, "textures/interface/tips/mousedn", MAX_KEY_MATERIAL_LENGTH );
+		} else if ( i == K_MWHEELUP ) {
+			idStr::Copynz( keyMaterial, "textures/interface/tips/mouseup", MAX_KEY_MATERIAL_LENGTH );
+		} else {
+			isBound = strlen( k ) > 1;
+			idStr::Copynz( key, k, MAX_KEY_NAME_LENGTH );
+			idStr::ToLower( key );
+		}
+	}
 
-    if(!keyMaterial[0])
-    {
-        if(isBound)
-            idStr::Copynz(keyMaterial, "textures/interface/tips/keywide", MAX_KEY_MATERIAL_LENGTH);
-        else
-            idStr::Copynz(keyMaterial, "textures/interface/tips/key", MAX_KEY_MATERIAL_LENGTH);
-    }
+	if ( !keyMaterial[0] ) {
+		if ( isBound ) {
+			idStr::Copynz( keyMaterial, "textures/interface/tips/keywide", MAX_KEY_MATERIAL_LENGTH );
+		} else {
+			idStr::Copynz( keyMaterial, "textures/interface/tips/key", MAX_KEY_MATERIAL_LENGTH );
+		}
+	}
 #undef MAX_KEY_MATERIAL_LENGTH
 #undef MAX_KEY_NAME_LENGTH
 }

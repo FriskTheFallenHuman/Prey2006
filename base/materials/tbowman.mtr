@@ -1,0 +1,125 @@
+textures/tbowman/metaldivider
+{
+	diffusemap		textures/tbowman/metaldivider_d
+//	{
+//	blend bumpmap
+//	map addnormals (textures/metaldivider_h,  heightmap (textures/metaldivider2_h, 7))
+//	heightmap (textures/tbowman/metaldivider2_h, 7)
+//	scale (jitter3 [time * .15]), (jitter3 [time * .15])
+//	}
+	bumpmap			heightmap(textures/tbowman/metaldivider_h, 7)
+	specularmap		textures/tbowman/metaldivider_s
+
+}
+
+textures/tbowman/pooltable
+{
+	qer_editorimage 	textures/tbowman/pooltable_d
+	diffusemap		textures/tbowman/pooltable_d
+	bumpmap			heightmap(textures/tbowman/pooltable_h, 4 )
+	specularmap		textures/tbowman/pooltable_s
+
+}
+
+textures/tbowman/ceilingtile
+{
+	qer_editorimage 	textures/tbowman/ceilingtile_d
+	diffusemap		textures/tbowman/ceilingtile_d
+	bumpmap			addnormals( textures/tbowman/ceilingtile_local, heightmap( textures/tbowman/ceilingtile_h, 7 ) )
+	specularmap		textures/tbowman/ceilingtile_s
+
+}
+
+textures/tbowman/bartop
+{
+	qer_editorimage 	textures/tbowman/bartop_d
+	diffusemap		textures/tbowman/bartop_d
+	bumpmap			heightmap(textures/tbowman/bartop_h, 7)
+	specularmap		textures/tbowman/bartop_s
+
+}
+
+textures/tbowman/panelsmall
+{
+	qer_editorimage 	textures/tbowman/panelsmall_d
+	diffusemap		textures/tbowman/panelsmall_d
+	bumpmap			heightmap(textures/tbowman/panelsmall_h, 7)
+	specularmap		textures/tbowman/panelsmall_s
+
+}
+
+textures/tbowman/blood1
+{
+
+	{
+			blend 	gl_dst_color, gl_src_color
+			 map	textures/tbowman/blood1
+
+	}
+}
+
+textures/tbowman/fossil1
+{
+	qer_editorimage textures/tbowman/fossil1_d
+	bumpmap			textures/tbowman/fossil1_local
+	diffusemap		textures/tbowman/fossil1_d
+	specularmap		textures/tbowman/fossil1_s
+}
+
+textures/tbowman/fossil2
+{
+	qer_editorimage textures/tbowman/fossil2_d
+	bumpmap			textures/tbowman/fossil2_local
+	diffusemap		textures/tbowman/fossil2_d
+	specularmap		textures/tbowman/fossil2_s
+}
+
+textures/tbowman/fossil3
+{
+	qer_editorimage textures/tbowman/fossil3_d
+	bumpmap			textures/tbowman/fossil3_local
+	diffusemap		textures/tbowman/fossil3_d
+	specularmap		textures/tbowman/fossil3_s
+}
+
+
+textures/tbowman/fossil4
+{
+	qer_editorimage textures/tbowman/fossil4_d
+	bumpmap			textures/tbowman/fossil4_local
+	diffusemap		textures/tbowman/fossil4_d
+	specularmap		textures/tbowman/fossil4_s
+}
+
+textures/tbowman/harvestertest1
+{
+	qer_editorimage textures/tbowman/harvestertest1_d
+//	bumpmap			textures/tbowman/harvestertest1_local
+	bumpmap			addnormals( textures/tbowman/harvestertest1_local, heightmap( textures/tbowman/harvestertest1_local, 7 ) )
+	diffusemap		textures/tbowman/harvestertest1_d
+	specularmap		textures/tbowman/harvestertest1_s
+}
+
+textures/tbowman/harvestertest2
+{
+	qer_editorimage textures/tbowman/harvestertest2_d
+	bumpmap			textures/tbowman/harvestertest2_local
+	diffusemap		textures/tbowman/harvestertest2_d
+	specularmap		textures/tbowman/harvestertest2_s
+}
+
+textures/tbowman/harvestertest3
+{
+	qer_editorimage textures/tbowman/harvestertest3_d
+	bumpmap			textures/tbowman/harvestertest3_local
+	diffusemap		textures/tbowman/harvestertest3_d
+	specularmap		textures/tbowman/harvestertest3_s
+}
+
+textures/tbowman/harvestertest4
+{
+	qer_editorimage textures/tbowman/harvestertest4_d
+	bumpmap			textures/tbowman/harvestertest4_local
+	diffusemap		textures/tbowman/harvestertest4_d
+	specularmap		textures/tbowman/harvestertest4_s
+}

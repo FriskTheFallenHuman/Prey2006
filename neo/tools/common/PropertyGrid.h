@@ -34,21 +34,18 @@ If you have questions concerning this license or the applicable additional terms
 #define PGS_HEADERS			0x00000001
 #define PGS_ALLOWINSERT		0x00000002
 
-typedef struct
-{
+typedef struct {
 	NMHDR			hdr;
 	int				mItem;
-	const char*		mName;
-	const char*		mValue;
+	const char	*	mName;
+	const char	*	mValue;
 
 } NMPROPGRID;
 
-class rvPropertyGrid
-{
+class rvPropertyGrid {
 public:
 
-	enum EItemType
-	{
+	enum EItemType {
 		PGIT_STRING,
 		PGIT_HEADER,
 		PGIT_MAX
@@ -62,7 +59,7 @@ public:
 
 	bool	ReflectMessage( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
 
-	int		AddItem( const char* name, const char* value, EItemType type = PGIT_STRING );
+	int		AddItem( const char * name, const char * value, EItemType type = PGIT_STRING );
 
 	void	RemoveItem( int index );
 	void	RemoveAllItems();
@@ -71,13 +68,12 @@ public:
 	int		GetCurSel();
 
 	HWND			GetWindow();
-	const char*		GetItemName( int index );
-	const char*		GetItemValue( int index );
+	const char	*	GetItemName( int index );
+	const char	*	GetItemValue( int index );
 
 protected:
 
-	enum EState
-	{
+	enum EState {
 		STATE_FINISHEDIT,
 		STATE_EDIT,
 		STATE_NORMAL,
@@ -104,18 +100,15 @@ private:
 	static LRESULT CALLBACK WndProc( HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam );
 };
 
-inline HWND rvPropertyGrid::GetWindow()
-{
+inline HWND rvPropertyGrid::GetWindow() {
 	return mWindow;
 }
 
-inline int rvPropertyGrid::GetCurSel()
-{
+inline int rvPropertyGrid::GetCurSel() {
 	return SendMessage( mWindow, LB_GETCURSEL, 0, 0 );
 }
 
-inline void rvPropertyGrid::SetCurSel( int index )
-{
+inline void rvPropertyGrid::SetCurSel( int index ) {
 	SendMessage( mWindow, LB_SETCURSEL, index, 0 );
 	mSelectedItem = index;
 }

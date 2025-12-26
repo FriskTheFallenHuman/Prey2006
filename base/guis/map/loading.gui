@@ -1,0 +1,71 @@
+// Level loading gui, can have a unique one for each map
+
+windowDef Desktop {
+	rect		0, 0, 640, 480
+	//backcolor	0.20, 0.20, 0.40, 1
+	//forecolor	1, 1, 0, 1
+	nocursor	1
+	menugui		1
+	scaleto43	0
+	
+	windowDef Background {
+		rect		0, 0, 640, 480
+		background	"gui::image"
+		naturalscale 1
+	}
+
+/*
+	windowDef FadeIn {
+		rect		0, 0, 640, 480
+		backcolor	0, 0, 0, (1 - "gui::map_loading")
+	}
+*/
+
+	windowDef FriendlyBack {
+		rect		0, 10, 640, 35
+		background	"textures/gfx/colors/white"
+		matcolor	0.0, 0.0, 0, 0.55
+	}
+
+	windowDef FriendlyName {
+		anchor		ANCHOR_TOP_CENTER
+		rect		0 + "gui::horPad", 10, 640, 30
+		forecolor	0.65, 0.75, 1, 0.8
+		text		"gui::friendlyname"
+		textscale	0.65
+		textalign	1
+		textaligny	-5
+		shadow		1
+		font		"fonts/menu"
+	}
+
+	// Progress Bar
+	windowDef ProgressBarClip {
+		anchor		ANCHOR_BOTTOM_CENTER
+		rect	192 + "gui::horPad", 455, ("gui::map_loading" * 256), 12
+		
+		windowDef ProgressBarFill {
+			rect		0, 0, 256, 12
+			background	"textures/gfx/colors/white"
+			matcolor	0.35, 0.35, 1, 0.65
+		}
+	}
+	windowDef baroutline {
+		anchor		ANCHOR_BOTTOM_CENTER
+		rect		168 + "gui::horPad", 443, 304, 30
+		background	"guis/assets/menu/bottombar"
+		matcolor	1, 1, 1, 1
+	}
+
+/*
+	windowDef loadingtext {
+		rect		470, 446, 150, 40
+		text		"gui::demo"			// Displays "Loading...", "Precaching...", etc.
+		textscale	0.4
+		textalign	2
+		shadow		1
+		backcolor	0, 0, 0, 0
+		forecolor	0.65, 0.75, 1, 0.4 + jitter6[time * 0.2] * 0.4
+	}
+*/
+}

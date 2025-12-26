@@ -32,25 +32,22 @@ If you have questions concerning this license or the applicable additional terms
 
 // CPreviewDlg dialog
 
-struct CommentedItem
-{
+struct CommentedItem {
 	idStr Name;
 	idStr Path;
 	idStr Comments;
 };
 
-class CPreviewDlg : public CDialogEx
-{
+class CPreviewDlg : public CDialogEx {
 public:
 	enum { MODELS, GUIS, SOUNDS, MATERIALS, SCRIPTS, SOUNDPARENT, WAVES, PARTICLES, MODELPARENT, GUIPARENT, COMMENTED, SKINS };
 
 	CPreviewDlg( CWnd* pParent = NULL );   // standard constructor
 	virtual ~CPreviewDlg();
 	void SetOnlyFilter( bool gOnly, idStr filter );
-	void SetMode( int mode, const char* preSelect = NULL );
-	void RebuildTree( const char* data );
-	void SetDisablePreview( bool b )
-	{
+	void SetMode( int mode, const char * preSelect = NULL );
+	void RebuildTree( const char * data );
+	void SetDisablePreview( bool b ) {
 		disablePreview = b;
 	}
 
@@ -86,7 +83,7 @@ private:
 protected:
 	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
 	void BuildTree();
-	void AddStrList( const char* root, const idStrList& list, int type );
+	void AddStrList( const char * root, const idStrList& list, int type );
 	void AddSounds( bool rootItems );
 	void AddMaterials( bool rootItems );
 	void AddParticles( bool rootItems );

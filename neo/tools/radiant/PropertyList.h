@@ -47,8 +47,7 @@ If you have questions concerning this license or the applicable additional terms
 
 //CPropertyList Items
 
-class CPropertyItem
-{
+class CPropertyItem {
 public:
 	CString m_propName;
 	CString m_curValue;
@@ -58,24 +57,21 @@ public:
 
 public:
 	CPropertyItem( CString propName, CString curValue,
-				   int nItemType, CString cmbItems )
-	{
+				   int nItemType, CString cmbItems ) {
 		m_propName = propName;
 		m_curValue = curValue;
 		m_nItemType = nItemType;
 		m_cmbItems = cmbItems;
 		data = -1;
 	}
-	void SetData( int d )
-	{
+	void SetData( int d ) {
 		data = d;
 	}
 };
 
 // CPropertyList window
 
-class CPropertyList : public CListBox
-{
+class CPropertyList : public CListBox {
 public:
 	CPropertyList();
 
@@ -83,16 +79,13 @@ public:
 	int AddItem( CString txt );
 	int AddPropItem( CPropertyItem* pItem );
 	void ResetContent();
-	CEdit* GetEditBox()
-	{
+	CEdit * GetEditBox() {
 		return &m_editBox;
 	}
-	void SetUpdateInspectors( bool b )
-	{
+	void SetUpdateInspectors( bool b ) {
 		updateInspectors = b;
 	}
-	void SetDivider( int div )
-	{
+	void SetDivider( int div ) {
 		m_nDivider = div;
 	}
 	afx_msg void OnKillfocusEditBox();
@@ -142,6 +135,6 @@ protected:
 	BOOL m_bDivIsSet;
 	HCURSOR m_hCursorArrow;
 	HCURSOR m_hCursorSize;
-	CPropertyItem* measureItem;
+	CPropertyItem * measureItem;
 	bool updateInspectors;
 };

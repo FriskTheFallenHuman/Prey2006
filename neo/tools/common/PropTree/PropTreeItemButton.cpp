@@ -24,9 +24,9 @@
 #include "PropTreeItemButton.h"
 
 #ifdef _DEBUG
-	#define new DEBUG_NEW
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 #define BUTTON_SIZE 17
@@ -34,21 +34,18 @@
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeItemButton
 
-CPropTreeItemButton::CPropTreeItemButton()
-{
+CPropTreeItemButton::CPropTreeItemButton() {
 	mouseDown = false;
 }
 
-CPropTreeItemButton::~CPropTreeItemButton()
-{
+CPropTreeItemButton::~CPropTreeItemButton() {
 }
 
 
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeItemButton message handlers
 
-LONG CPropTreeItemButton::DrawItem( CDC* pDC, const RECT& rc, LONG x, LONG y )
-{
+LONG CPropTreeItemButton::DrawItem( CDC* pDC, const RECT& rc, LONG x, LONG y ) {
 	CSize	textSize;
 	CRect	textRect;
 	LONG	nTotal = 0;
@@ -68,12 +65,9 @@ LONG CPropTreeItemButton::DrawItem( CDC* pDC, const RECT& rc, LONG x, LONG y )
 
 	UINT buttonStyle;
 
-	if( ( m_dwState & TreeItemChecked ) )
-	{
+	if ( ( m_dwState & TreeItemChecked ) ) {
 		buttonStyle = DFCS_BUTTONPUSH | DFCS_PUSHED;
-	}
-	else
-	{
+	} else {
 		buttonStyle = DFCS_BUTTONPUSH;
 	}
 	pDC->DrawFrameControl( &buttonRect, DFC_BUTTON, buttonStyle );
@@ -90,28 +84,23 @@ LONG CPropTreeItemButton::DrawItem( CDC* pDC, const RECT& rc, LONG x, LONG y )
 	return nTotal;
 }
 
-void CPropTreeItemButton::DrawAttribute( CDC* pDC, const RECT& rc )
-{
+void CPropTreeItemButton::DrawAttribute( CDC* pDC, const RECT& rc ) {
 }
 
 
-LPARAM CPropTreeItemButton::GetItemValue()
-{
+LPARAM CPropTreeItemButton::GetItemValue() {
 	return ( LPARAM )0;
 }
 
 
-void CPropTreeItemButton::SetItemValue( LPARAM lParam )
-{
+void CPropTreeItemButton::SetItemValue( LPARAM lParam ) {
 }
 
 
-BOOL CPropTreeItemButton::HitButton( const POINT& pt )
-{
+BOOL CPropTreeItemButton::HitButton( const POINT& pt ) {
 	return hitTestRect.PtInRect( pt );
 }
 
-void CPropTreeItemButton::SetButtonText( LPCSTR text )
-{
+void CPropTreeItemButton::SetButtonText( LPCSTR text ) {
 	buttonText = text;
 }

@@ -30,10 +30,10 @@ If you have questions concerning this license or the applicable additional terms
 
 void		ColorButton_DrawItem( HWND hWnd, LPDRAWITEMSTRUCT dis );
 void		ColorButton_SetColor( HWND hWnd, COLORREF color );
-void		ColorButton_SetColor( HWND hWnd, const char* color );
+void		ColorButton_SetColor( HWND hWnd, const char * color );
 COLORREF	ColorButton_GetColor( HWND hWnd );
 
-void		AlphaButton_SetColor( HWND hWnd, const char* color );
+void		AlphaButton_SetColor( HWND hWnd, const char * color );
 
 void		AlphaButton_OpenPopup( HWND button );
 

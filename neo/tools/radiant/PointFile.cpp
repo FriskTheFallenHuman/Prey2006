@@ -36,8 +36,7 @@ static idVec3	s_pointvecs[MAX_POINTFILE];
 static int		s_num_points = 0;
 static int		s_check_point = 0;
 
-void Pointfile_Delete()
-{
+void Pointfile_Delete() {
 	char	name[1024];
 
 	strcpy( name, currentmap );
@@ -48,10 +47,8 @@ void Pointfile_Delete()
 }
 
 // advance camera to next point
-void Pointfile_Next()
-{
-	if( s_check_point >= s_num_points - 2 )
-	{
+void Pointfile_Next() {
+	if ( s_check_point >= s_num_points - 2 ) {
 		Sys_Status( "End of pointfile", 0 );
 		return;
 	}
@@ -70,10 +67,8 @@ void Pointfile_Next()
 }
 
 // advance camera to previous point
-void Pointfile_Prev()
-{
-	if( s_check_point == 0 )
-	{
+void Pointfile_Prev() {
+	if ( s_check_point == 0 ) {
 		Sys_Status( "Start of pointfile", 0 );
 		return;
 	}
@@ -91,8 +86,7 @@ void Pointfile_Prev()
 	Sys_UpdateWindows( W_ALL );
 }
 
-void Pointfile_Check()
-{
+void Pointfile_Check() {
 	char	name[1024];
 	FILE*	f;
 	idVec3	v;
@@ -102,42 +96,36 @@ void Pointfile_Check()
 	strcat( name, ".lin" );
 
 	f = fopen( name, "r" );
-	if( !f )
-	{
+	if ( !f ) {
 		return;
 	}
 
 	common->Printf( "Reading pointfile %s\n", name );
 
 	s_num_points = 0;
-	do
-	{
+	do {
 		const int n = fscanf( f, "%f %f %f\n", &v[0], &v[1], &v[2] );
-		if( n != 3  || s_num_points >= MAX_POINTFILE )
-		{
+		if ( n != 3  || s_num_points >= MAX_POINTFILE ) {
 			break;
 		}
 
 		s_pointvecs[s_num_points] = v;
 		s_num_points++;
 
-	}
-	while( 1 );
+	} while ( 1 );
 
 	s_check_point = 0;
 	fclose( f );
 }
 
-void Pointfile_Draw()
-{
+void Pointfile_Draw() {
 	qglColor3f( 1.0F, 0.0F, 0.0F );
 	qglDisable( GL_TEXTURE_2D );
 	qglDisable( GL_TEXTURE_1D );
 	qglLineWidth( 2 );
 	qglBegin( GL_LINE_STRIP );
 
-	for( int i = 0; i < s_num_points; i++ )
-	{
+	for ( int i = 0; i < s_num_points; i++ ) {
 		qglVertex3fv( s_pointvecs[i].ToFloatPtr() );
 	}
 
@@ -145,7 +133,6 @@ void Pointfile_Draw()
 	qglLineWidth( 0.5 );
 }
 
-void Pointfile_Clear()
-{
+void Pointfile_Clear() {
 	s_num_points = 0;
 }

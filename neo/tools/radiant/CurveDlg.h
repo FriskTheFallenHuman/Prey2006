@@ -30,8 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // CCurveDlg dialog
 
-class CCurveDlg : public CDialogEx
-{
+class CCurveDlg : public CDialogEx {
 	DECLARE_DYNAMIC( CCurveDlg )
 
 public:

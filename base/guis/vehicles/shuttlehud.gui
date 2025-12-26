@@ -1,0 +1,628 @@
+// Shuttle HUD
+
+// Available gui vars:
+//	s_debug						whether to display sound meter
+//	itemicon*					icon materials
+//	itemalpha*					icon alphas
+//	itemwide*					whether an icon is wide
+//	invehicle					whether currently piloting a vehicle
+//	lighter						whether lighter is active
+//	lightertemp					lighter temperature
+//	showspiritpower				whether the spirit bar should show up on the hud
+//	spiritwalking				whether the player is spiritwalking
+//	deathwalking				whether the player is deathwalking
+//	player_ammobar				whether to display the ammo bar
+//	player_altammobar			whether to display the alt ammo bar
+//	player_ammoamounttext		text of ammo amount
+//	player_altammoamounttext	text of alt ammo amount
+//	player_ammopercent			percentage of ammo remaining
+//	player_altammopercent		percentage of alt ammo remaining
+//	player_health				text of health amount
+//	player_spirit				text of spirit power amount
+//	player_healthpercent		percentage of health remaining
+//	player_spiritpercent		percentage of spirit power remaining
+//	idealweapon					ideal weapon index
+//	progress					percentage of progress
+//	tip							tip text
+//	tiptitle					tip title text
+//	playername					name of local player in MP
+//	ismultiplayer				whether in MP
+//	docked						bool whether vehicle is currently docked
+//	dockedtransporter			bool whether vehicle is currently docked in transporter
+//	docklocked					bool whether locked in dock/transporter
+//	yaw, pitch, roll			vehicle orientation
+//	yawToEnemy					yaw to last attacker
+//	powerfraction				fraction of power remaining
+//	healthfraction				fraction of health remaining
+//	velocityfraction			current fraction of maximum velocity
+//	crosshair					whether the crosshair should be used
+//	hastractor					whether vehicle has a tractor beam
+//	tractorsighted				whether tractor beam has an available target
+//	tractoractive				whether tractor beam is active
+//	tractorlocked				whether tractor beam is locked on to a target
+//	tractormass					mass of tractor locked target
+//	tractormasstext				"mass = <mass>" since can't combine text with numbers on the fly
+
+#include "guis/anchors.guifragment"
+
+#define HEALTH_LOW_R		1
+#define HEALTH_LOW_G		0
+#define HEALTH_LOW_B		0
+#define HEALTH_LOW_A		1
+#define HEALTH_HIGH_R		1
+#define HEALTH_HIGH_G		0.8
+#define HEALTH_HIGH_B		0.3
+#define HEALTH_HIGH_A		0.9
+
+#define POWER_LOW_R			1
+#define POWER_LOW_G			1
+#define POWER_LOW_B			1
+#define POWER_LOW_A			0.7
+#define POWER_HIGH_R		0
+#define POWER_HIGH_G		0.6
+#define POWER_HIGH_B		1
+#define POWER_HIGH_A		0.9
+
+windowDef desktop {
+	rect			0, 0, 640, 480
+	backcolor		0, 0, 0, 0
+	nocursor		1
+	menugui			1
+	scaleto43		0
+
+	onTrigger {
+		// Just acquired a pilot
+	}
+
+	onActivate {
+		// Transition HUD parts in
+		transition "moverTop::rect" "0 -200 640 480" "0 0 640 480" "1000";
+		transition "moverBottom::rect" "0 480 640 280" "0 200 640 280" "1000";
+		transition "moverLeft::rect" "-300 0 640 480" "0 0 640 480" "1000";
+		transition "moverRight::rect" "300 0 640 480" "0 0 640 480" "1000";
+		transition "SmallCompass::matcolor" "1 1 1 0" "1 1 1 0.3" "1000";
+	}
+
+	#include "guis/hud/hud_progressbar.guifragment"
+//	#include "guis/hud/hud_tips.guifragment"
+	#include "guis/hud/hud_subtitles.guifragment"
+	#include "guis/hud/hud_devtools.guifragment"
+	#include "guis/hud/hud_healthbars.guifragment"
+
+	//-----------------------------------------------------------------		
+	//	Compass
+	//-----------------------------------------------------------------
+
+	windowDef SmallCompass {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		90, 50, 50, 50
+		background	"guis/assets/shuttle/compass"
+		matcolor	1, 1, 1, 0.7 + powersurge2[time*0.0001]
+		rotate		(0 - "gui::yaw")
+	}
+	windowDef SmallCompassShowDamage0 {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		90, 50, 50, 50
+		rotate		"gui::yawToEnemy0"
+
+		windowDef SmallLastDamage0 {
+			rect		23, 2, 4, 4
+			backcolor	0, 0, 0, 0
+			matcolor	1, 1, 1, 0
+			background	"guis/assets/shuttle/enemy"
+
+			onNamedEvent Attacked0 {
+				transition "matcolor" "1 1 1 1" "1 1 1 0" "3000" ;
+			}
+		}
+	}
+	windowDef SmallCompassShowDamage1 {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		90, 50, 50, 50
+		rotate		"gui::yawToEnemy1"
+
+		windowDef SmallLastDamage1 {
+			rect		23, 2, 4, 4
+			backcolor	0, 0, 0, 0
+			matcolor	1, 1, 1, 0
+			background	"guis/assets/shuttle/enemy"
+
+			onNamedEvent Attacked1 {
+				transition "matcolor" "1 1 1 1" "1 1 1 0" "3000" ;
+			}
+		}
+	}
+	windowDef SmallCompassShowDamage2 {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		90, 50, 50, 50
+		rotate		"gui::yawToEnemy2"
+
+		windowDef SmallLastDamage2 {
+			rect		23, 2, 4, 4
+			backcolor	0, 0, 0, 0
+			matcolor	1, 1, 1, 0
+			background	"guis/assets/shuttle/enemy"
+
+			onNamedEvent Attacked2 {
+				transition "matcolor" "1 1 1 1" "1 1 1 0" "3000" ;
+			}
+		}
+	}
+
+	// This stuff moves in from the bottom
+	windowDef moverBottom {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		0, 480, 640, 280
+		
+		//-----------------------------------------------------------------		
+		//	Crosshairs
+		//-----------------------------------------------------------------
+
+		windowDef crosshair_main {
+			rect		0, 0, 640, 480
+			visible		"gui::crosshair"
+
+			windowDef crosshairtop {
+				rect		319.2, 13, 2, 12								// 320-0.8, 40-31, 2, 18
+				background	"guis/assets/shuttle/crosshairtop"
+			}
+			windowDef crosshairbottom {
+				rect		319.2, 33, 2, -12							// 320-0.8, 40-(-13), 2, -18
+				background	"guis/assets/shuttle/crosshairtop"
+			}
+			windowDef crosshairright {
+				rect		324, 28, 12, 2							// 320-0.8, 40-(-13), 2, -18
+				background	"guis/assets/shuttle/crosshairleft"
+			}
+			windowDef crosshairleft {
+				rect		304, 28, -12, 2							// 320-0.8, 40-(-13), 2, -18
+				background	"guis/assets/shuttle/crosshairleft"
+			}
+		}
+
+		windowDef crosshairDamage {
+			rect		0, 0, 640, 480
+			visible		("gui::tractorsighted" && "gui::tractorlocked" == 0)
+
+			windowDef crosshairtl {
+				rect		292.5, 16, 18, 12							// 320-31.5, 40-15, 20, 14
+				background	"guis/assets/shuttle/crosshair"
+			}
+			windowDef crosshairtr {
+				rect		330, 16, -18, 12							// 320-(-12), 40-15, -20, 14
+				background	"guis/assets/shuttle/crosshair"
+			}
+			windowDef crosshairbl {
+				rect		292.5, 30, 18, -12							// 320-31.5, 40-(-1), 20, -14
+				background	"guis/assets/shuttle/crosshair"
+			}
+			windowDef crosshairbr {
+				rect		330, 30, -18, -12							// 320-(-12), 40-(-1), -20, -14
+				background	"guis/assets/shuttle/crosshair"
+			}
+		}
+
+		windowDef crosshairTractorLocked {
+			rect		0, 0, 640, 480
+			visible		("gui::tractorlocked" == 1)
+			
+			windowDef crosshair2 {
+				rect		287.3, 30, 22, 19
+				background	"guis/assets/shuttle/crosshair2.tga"
+			}
+			windowDef crosshair3 {
+				rect		287.3, 9, 22, -19
+				background	"guis/assets/shuttle/crosshair2.tga"
+			}
+			windowDef crosshair4 {
+				rect		331, 30, -22, 19
+				background	"guis/assets/shuttle/crosshair2.tga"
+			}
+			windowDef crosshair5 {
+				rect		331, 9, -22, -19
+				background	"guis/assets/shuttle/crosshair2.tga"
+			}
+		}
+	}
+
+	// This stuff moves in from the top
+	windowDef moverTop {
+		anchor		ANCHOR_CENTER_CENTER
+		// Container windowdef for panning windows in
+		rect		0, -200, 640, 480
+		
+		windowDef status_border {
+			rect		242, 9, 155, 49
+			background	"guis/assets/shuttle/status_border"
+			matcolor	1, 1, 1, 0.5 + powersurge2[time*0.001]
+			visible		1
+		}
+
+		windowDef dockingStatus {
+			rect		0, 8, 640, 26
+			text		"#str_20405"
+			textscale	0.3
+			textalign	1
+			textaligny	2
+			backcolor	0, 0, 0, 0
+			forecolor	1, 1, 0.95, 0.42
+			font		"fonts/alien"
+			visible		"gui::docked"
+			
+			onTime 0 {
+				transition "forecolor" "1 1 0.95 0.42" "1 1 0.95 0.9" "300";
+			}
+			onTime 300 {
+				transition "forecolor" "1 1 0.95 0.9" "1 1 0.95 0.3" "600";
+			}
+			onTime 800 {
+				transition "forecolor" "1 1 0.95 0.3" "1 1 0.95 0.9" "300";
+			}
+			onTime 1100 {
+				transition "forecolor" "1 1 0.95 0.9" "1 1 0.95 0.42" "600";
+			}
+			onTime 3000 {
+				resetTime "0";
+			}
+		}
+		windowDef transportStatus {
+			rect		0, 70, 640, 75
+			text		"#str_20407"
+			textscale	0.45
+			textalign	1
+			backcolor	0, 0, 0, 0
+			forecolor	1, 1, 0.95, 0.42
+			font		"fonts/alien"
+			visible		(("gui::dockedtransporter" == 1) && ("gui::docklocked" == 1))
+			
+			onTime 0 {
+				transition "forecolor" "1 1 0.95 0.42" "1 1 0.95 0.9" "300";
+			}
+			onTime 300 {
+				transition "forecolor" "1 1 0.95 0.9" "1 1 0.95 0.3" "600";
+			}
+			onTime 900 {
+				resetTime "0";
+			}
+		}
+		windowDef transportInfo {
+			rect		0, 150, 640, 75
+			text		"#str_20408"
+			textscale	0.5
+			textalign	1
+			backcolor	0, 0, 0, 0
+			forecolor	1, 1, 0.95, 0.42
+			font		"fonts/alien"
+			visible		(("gui::dockedtransporter" == 1) && ("gui::docklocked" != 1))
+			
+			onTime 0 {
+				transition "forecolor" "1 1 0.95 0.42" "1 1 0.95 0.9" "300";
+			}
+			onTime 300 {
+				transition "forecolor" "1 1 0.95 0.9" "1 1 0.95 0.3" "600";
+			}
+			onTime 900 {
+				resetTime "0";
+			}
+		}
+		windowDef rechargeStatus {
+			rect		0, 40, 640, 30
+			text		"#str_20409"
+			textscale	0.25
+			textalign	1
+			textaligny	3
+			backcolor	0, 0, 0, 0
+			forecolor	1, 1, 0.95, 0
+			font		"fonts/alien"
+			visible		"gui::recharging"
+			onTime 0 {
+				transition "forecolor" "1 1 0.95 0" "1 1 0.95 1" "200";
+			}
+			onTime 800 {
+				transition "forecolor" "1 1 0.95 1" "1 1 0.95 0" "200";
+			}
+			onTime 1600 {
+				resetTime "0";
+			}
+		}
+		windowDef rechargeStatus2 {
+			rect		0, 40, 640, 30
+			text		"#str_20410"
+			textscale	0.25
+			textalign	1
+			textaligny	3
+			backcolor	0, 0, 0, 0
+			forecolor	1, 1, 0.95, 0.7 + powersurge2[time*0.001]
+			font		"fonts/alien"
+			visible		( ("gui::docked" == 1) && ("gui::recharging" == 0) )
+		}
+		windowDef crashingStatus1 {
+			rect		0, 120, 640, 80
+			text		"#str_20411"
+			textscale	1.3
+			textalign	1
+			backcolor	0, 0, 0, 0
+			forecolor	1, 0.1, 0, 0
+			font		"fonts/alien"
+			visible		"gui::dying"
+			onTime 0 {
+				transition "forecolor" "1 0.1 0 0" "1 0.1 0 1" "100";
+			}
+			onTime 250 {
+				transition "forecolor" "1 0.1 0 1" "1 0.1 0 0" "100";
+			}
+			onTime 500 {
+				resetTime "0";
+			}
+		}
+		windowDef crashingStatus2 {
+			rect		0, 200, 640, 50
+			text		"#str_20412"
+			textscale	0.8
+			textalign	1
+			backcolor	0, 0, 0, 0
+			forecolor	1, 0.1, 0, 0
+			font		"fonts/alien"
+			visible		"gui::dying"
+			onTime 0 {
+				transition "forecolor" "1 0.1 0 0" "1 0.1 0 0.9" "100";
+			}
+			onTime 250 {
+				transition "forecolor" "1 0.1 0 0.9" "1 00.1 0 0" "100";
+			}
+			onTime 500 {
+				resetTime "0";
+			}
+		}
+		windowDef tractorStatus1 {
+			rect		0, 8, 640, 26
+			backcolor	0, 0, 0, 0
+			forecolor	1, 1, 0.95, 0.55 + powersurge2[time*0.001]
+			text		"#str_20413"
+			textscale	0.3
+			textalign	1
+			textaligny	2
+			font		"fonts/alien"
+			visible		( ("gui::hastractor" == 1) && ("gui::docked" != 1) )
+		}
+		windowDef tractorStatusActive {
+			rect		0, 40, 640, 24
+			backcolor	0, 0, 0, 0
+			forecolor	1, 1, 0.95, 0.55 + powersurge2[time*0.001]
+			text		"#str_20414"
+			textscale	0.25
+			textalign	1
+			textaligny	3
+			font		"fonts/alien"
+			visible		( ("gui::tractoractive" == 1) && ("gui::tractorlocked" != 1) && ("gui::docked" != 1) )
+		}
+		windowDef tractorStatusLocked {
+			rect		0, 40, 640, 24
+			backcolor	0, 0, 0, 0
+			forecolor	1, 1, 0.95, 0.55 + powersurge2[time*0.001]
+			text		"#str_41161"
+			textscale	0.25
+			textalign	1
+			textaligny	3
+			font		"fonts/alien"
+			visible		( ("gui::tractorlocked" == 1) && ("gui::docked" != 1) )
+		}
+		windowDef tractorStatusTarget {
+			rect		0, 40, 640, 24
+			backcolor	0, 0, 0, 0
+			forecolor	1, 1, 0.95, 0.55 + powersurge2[time*0.001]
+			text		"#str_20416"
+			textscale	0.25
+			textalign	1
+			textaligny	3
+			font		"fonts/alien"
+			visible		( ("gui::tractoractive" != 1) && ("gui::tractorsighted" == 1) && ("gui::docked" != 1) )
+		}
+		windowDef tractorStatusNoTarget {
+			rect		0, 40, 640, 24
+			backcolor	0, 0, 0, 0
+			forecolor	1, 1, 0.95, 0.55 + powersurge2[time*0.001]
+			text		"#str_20417"
+			textscale	0.25
+			textalign	1
+			textaligny	3
+			font		"fonts/alien"
+			visible		( ("gui::hastractor" == 1) && ("gui::tractorallowed" == 1) && ("gui::tractoractive" != 1) && ("gui::tractorsighted" != 1) && ("gui::docked" != 1) )
+		}
+		windowDef tractorStatusImpotent {
+			rect		0, 40, 640, 24
+			backcolor	0, 0, 0, 0
+			forecolor	1, 1, 0.95, 0.55 + powersurge2[time*0.001]
+			text		"#str_20418"
+			textscale	0.25
+			textalign	1
+			textaligny	3
+			font		"fonts/alien"
+			visible		( ("gui::hastractor" == 1) && ("gui::tractorallowed" != 1) && ("gui::docked" != 1) )
+		}
+
+	}
+
+
+	// This stuff translates in from the left
+	windowDef moverLeft {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		-300, 0, 640, 480
+
+		windowDef compass_guideL {
+			rect		140, 278, 60, 50
+			background	"guis/assets/shuttle/compass_guide"
+			matcolor	1, 1, 1, 0.8 + powersurge2[time*0.001]
+			visible		1
+		}
+		
+		windowDef levelsL {
+			rect		35, 295, 70, 80
+			background	"guis/assets/shuttle/levels.tga"
+			matcolor	1, 1, 1, 0.5 + powersurge2[time*0.001]
+		}
+		
+		windowDef velocityL {
+			rect		38.7, 299.3 + 68.7 * (1 - "gui::velocityfraction"), 35, 75
+			
+			windowDef velocity_barL {
+				rect		31.5, 68.7 * ("gui::velocityfraction"), 31.5, 68.7
+				matcolor	"gui::velocityfraction", 1 - "gui::velocityfraction", 0, 0.9
+				background	"guis/assets/shuttle/velocity_bar"
+				invertrect	1
+			}
+		}
+
+		windowDef health_crop {
+			rect		45.8, 299.5 + 63.3 * (1 - "gui::healthfraction"), 35, 75
+			
+			windowDef health_bar {
+				rect		30, 63.3 * ("gui::healthfraction"), 30, 63.3
+				matcolor	HEALTH_HIGH_R * "gui::healthfraction" + HEALTH_LOW_R * (1 - "gui::healthfraction"),
+							HEALTH_HIGH_G * "gui::healthfraction" + HEALTH_LOW_G * (1 - "gui::healthfraction"),
+							HEALTH_HIGH_B * "gui::healthfraction" + HEALTH_LOW_B * (1 - "gui::healthfraction"),
+							HEALTH_HIGH_A * "gui::healthfraction" + HEALTH_LOW_A * (1 - "gui::healthfraction")
+				background	"guis/assets/shuttle/health_power_bar"
+				invertrect	1
+			}
+		}
+		
+		windowDef healthlow {
+			rect		75, 335, 180, 25
+			backcolor	0, 0, 0, 0
+			forecolor	1, 0.23, 0.1, 1
+			text		"#str_20419"
+			textscale	0.28
+			textalign	0
+			textaligny	-1
+			visible		"gui::lowhealth"
+		   	onTime 0 {
+		   		if ("gui::lowhealth") {
+		   			localsound "vehicle_shuttle_lowpower" ;
+					transition "forecolor" "1 0.23 0.1 0.2" "1 0.23 0.1 1" "250";
+		   		}
+			}
+			onTime 500 {
+		   		if ("gui::lowhealth") {
+					transition "forecolor" "1 0.23 0.1 1" "1 0.23 0.1 0.2" "250";
+				}
+			}
+			onTime 1000 {
+				resetTime "0";
+			}
+		}
+		windowDef healthstatus {
+			rect		75, 335, 180, 25
+			backcolor	0, 0, 0, 0
+			forecolor	1, 1, 0.9, 0.3
+			text		"#str_20420"
+			textscale	0.28
+			textalign	0
+			textaligny	5
+			font		"fonts/alien"
+			visible		("gui::lowhealth" == 0)
+			
+			onTime 600 {
+				transition "forecolor" "1 1 0.90 0.5" "1 1 0.90 0.3" "2000";
+			}
+			onTime 2600 {
+				resetTime "0";
+			}
+		}
+	}
+	
+	// This stuff translates in from the right
+	windowDef moverRight {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		300, 0, 640, 480
+
+		windowDef compass_guideR {
+			rect		440, 278, -60, 50
+			background	"guis/assets/shuttle/compass_guide"
+			matcolor	1, 1, 1, 0.8 + powersurge2[time*0.001]
+			visible		1
+		}
+	
+		windowDef levelsR {
+			rect		535, 295, -70, 80
+			background	"guis/assets/shuttle/levels.tga"
+			matcolor	1, 1, 1, 0.5 + powersurge2[time*0.001]
+		}
+	
+		windowDef velocityR {
+			rect		570.2, 299.3 + 68.7 * (1 - "gui::velocityfraction"), 35, 69
+			
+			windowDef velocity_barR {
+				rect		-30.8, 68.7 * ("gui::velocityfraction"), -30.8, 68.7
+				matcolor	"gui::velocityfraction", 1 - "gui::velocityfraction", 0, 0.9
+				background	"guis/assets/shuttle/velocity_bar"
+				invertrect	1
+			}
+		}
+
+		windowDef power_crop {
+			rect		564, 299.5 + 63.3 * (1 - "gui::powerfraction"), 35, 75
+			
+			windowDef power_bar {
+				rect		-30, 63.3 * ("gui::powerfraction"), -30, 63.3
+				matcolor	POWER_HIGH_R * "gui::powerfraction" + POWER_LOW_R * (1 - "gui::powerfraction"),
+							POWER_HIGH_G * "gui::powerfraction" + POWER_LOW_G * (1 - "gui::powerfraction"),
+							POWER_HIGH_B * "gui::powerfraction" + POWER_LOW_B * (1 - "gui::powerfraction"),
+							POWER_HIGH_A * "gui::powerfraction" + POWER_LOW_A * (1 - "gui::powerfraction")
+				background	"guis/assets/shuttle/health_power_bar"
+				invertrect	1
+			}
+		}
+		
+		windowDef powerlow {
+			rect		382, 335, 180, 25
+			backcolor	0, 0, 0, 0
+			forecolor	1, 0.23, 0.1, 0.9
+			text		"#str_20421"
+			textscale	0.28
+			textalign	2
+			textaligny	-1
+			visible		"gui::lowpower"
+
+		   	onTime 0 {
+		   		if ("gui::lowpower") {
+		   			localsound "vehicle_shuttle_lowpower" ;
+					transition "forecolor" "1 0.23 0.1 0.2" "1 0.23 0.1 1" "250";
+		   		}
+			}
+			onTime 500 {
+		   		if ("gui::lowpower") {
+					transition "forecolor" "1 0.23 0.1 1" "1 0.23 0.1 0.2" "250";
+				}
+			}
+			onTime 1000 {
+				resetTime "0";
+			}
+		}
+		windowDef powerstatus {
+			rect		382, 335, 180, 25
+			backcolor	0, 0, 0, 0
+			forecolor	1, 1, 0.9, 0.3
+			text		"#str_20422"
+			textscale	0.28
+			textalign	2
+			textaligny	5
+			font		"fonts/alien"
+			visible		("gui::lowpower" == 0)
+			
+			onTime 600 {
+				transition "forecolor" "1 1 0.90 0.5" "1 1 0.90 0.3" "2000";
+			}
+			onTime 2600 {
+				resetTime "0";
+			}
+		}
+	}
+		
+	// MULTIPLAYER SPECIFIC ELEMENTS
+	#include "guis/hud/hud_mpmisc.guifragment"
+	#include "guis/hud/hud_playeridentity.guifragment"
+
+	#include "guis/hud/hud_damageindictor.guifragment"
+	#include "guis/hud/hud_shuttletips.guifragment"
+}

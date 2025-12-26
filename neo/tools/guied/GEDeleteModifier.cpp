@@ -32,9 +32,8 @@ If you have questions concerning this license or the applicable additional terms
 #include "GEApp.h"
 #include "GEDeleteModifier.h"
 
-rvGEDeleteModifier::rvGEDeleteModifier( const char* name, idWindow* window ) :
-	rvGEModifier( name, window )
-{
+rvGEDeleteModifier::rvGEDeleteModifier( const char * name, idWindow* window ) :
+	rvGEModifier( name, window ) {
 }
 
 /*
@@ -44,8 +43,7 @@ rvGEDeleteModifier::Apply
 Apply the delete modifier by setting the deleted flag in the wrapper
 ================
 */
-bool rvGEDeleteModifier::Apply()
-{
+bool rvGEDeleteModifier::Apply() {
 	mWrapper->SetDeleted( true );
 
 	return true;
@@ -58,8 +56,7 @@ rvGEDeleteModifier::Undo
 Undo the delete modifier by unsetting the deleted flag in the wrapper
 ================
 */
-bool rvGEDeleteModifier::Undo()
-{
+bool rvGEDeleteModifier::Undo() {
 	mWrapper->SetDeleted( false );
 
 	return true;

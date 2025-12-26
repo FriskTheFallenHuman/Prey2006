@@ -34,25 +34,20 @@ If you have questions concerning this license or the applicable additional terms
 #include "FindTextureDlg.h"
 
 #ifdef _DEBUG
-	#define new DEBUG_NEW
+#define new DEBUG_NEW
 #endif
 
 // CFindTextureDlg dialog
 
 CFindTextureDlg g_TexFindDlg;
-CFindTextureDlg& g_dlgFind = g_TexFindDlg;
+CFindTextureDlg & g_dlgFind = g_TexFindDlg;
 static bool g_bFindActive = true;
 
-void CFindTextureDlg::updateTextures( const char* p )
-{
-	if( isOpen() )
-	{
-		if( g_bFindActive )
-		{
+void CFindTextureDlg::updateTextures( const char * p ) {
+	if ( isOpen() ) {
+		if ( g_bFindActive ) {
 			setFindStr( p );
-		}
-		else
-		{
+		} else {
 			setReplaceStr( p );
 		}
 	}
@@ -64,12 +59,10 @@ CFindTextureDlg::CFindTextureDlg( CWnd* pParent )
 	  m_strFind( _T( "" ) ),
 	  m_strReplace( _T( "" ) ),
 	  m_bForce( FALSE ),
-	  m_bLive( TRUE )
-{
+	  m_bLive( TRUE ) {
 }
 
-void CFindTextureDlg::DoDataExchange( CDataExchange* pDX )
-{
+void CFindTextureDlg::DoDataExchange( CDataExchange* pDX ) {
 	CDialogEx::DoDataExchange( pDX );
 	DDX_Check( pDX, IDC_CHECK_SELECTED, m_bSelectedOnly );
 	DDX_Text( pDX, IDC_EDIT_FIND, m_strFind );
@@ -86,8 +79,7 @@ BEGIN_MESSAGE_MAP( CFindTextureDlg, CDialogEx )
 	ON_EN_SETFOCUS( IDC_EDIT_REPLACE, &CFindTextureDlg::OnSetfocusEditReplace )
 END_MESSAGE_MAP()
 
-void CFindTextureDlg::OnBtnApply()
-{
+void CFindTextureDlg::OnBtnApply() {
 	UpdateData( TRUE );
 	CRect rct;
 	GetWindowRect( rct );
@@ -95,8 +87,7 @@ void CFindTextureDlg::OnBtnApply()
 	FindReplaceTextures( m_strFind, m_strReplace, m_bSelectedOnly != FALSE, m_bForce != FALSE );
 }
 
-void CFindTextureDlg::OnOK()
-{
+void CFindTextureDlg::OnOK() {
 	UpdateData( TRUE );
 	CRect rct;
 	GetWindowRect( rct );
@@ -105,64 +96,51 @@ void CFindTextureDlg::OnOK()
 	CDialogEx::OnOK();
 }
 
-void CFindTextureDlg::show()
-{
-	if( !g_dlgFind.GetSafeHwnd() || !IsWindow( g_dlgFind.GetSafeHwnd() ) )
-	{
+void CFindTextureDlg::show() {
+	if ( !g_dlgFind.GetSafeHwnd() || !IsWindow( g_dlgFind.GetSafeHwnd() ) ) {
 		g_dlgFind.Create( IDD_DIALOG_FINDREPLACE );
 		g_dlgFind.ShowWindow( SW_SHOW );
-	}
-	else
-	{
+	} else {
 		g_dlgFind.ShowWindow( SW_SHOW );
 	}
 	CRect rct;
 	LONG lSize = sizeof( rct );
-	if( LoadRegistryInfo( "radiant_texturefindwindow", &rct, &lSize ) )
-	{
+	if ( LoadRegistryInfo( "radiant_texturefindwindow", &rct, &lSize ) ) {
 		g_dlgFind.SetWindowPos( nullptr, rct.left, rct.top, 0, 0, SWP_NOSIZE | SWP_SHOWWINDOW );
 	}
 }
 
-bool CFindTextureDlg::isOpen()
-{
+bool CFindTextureDlg::isOpen() {
 	return g_dlgFind.GetSafeHwnd() && ::IsWindowVisible( g_dlgFind.GetSafeHwnd() );
 }
 
-void CFindTextureDlg::setFindStr( const char* p )
-{
+void CFindTextureDlg::setFindStr( const char * p ) {
 	g_dlgFind.UpdateData( TRUE );
-	if( g_dlgFind.m_bLive )
-	{
+	if ( g_dlgFind.m_bLive ) {
 		g_dlgFind.m_strFind = p;
 		g_dlgFind.UpdateData( FALSE );
 	}
 }
 
-void CFindTextureDlg::setReplaceStr( const char* p )
-{
+void CFindTextureDlg::setReplaceStr( const char * p ) {
 	g_dlgFind.UpdateData( TRUE );
-	if( g_dlgFind.m_bLive )
-	{
+	if ( g_dlgFind.m_bLive ) {
 		g_dlgFind.m_strReplace = p;
 		g_dlgFind.UpdateData( FALSE );
 	}
 }
 
-void CFindTextureDlg::OnCancel()
-{
+void CFindTextureDlg::OnCancel() {
 	CRect rct;
 	GetWindowRect( rct );
 	SaveRegistryInfo( "radiant_texturefindwindow", &rct, sizeof( rct ) );
 	CDialogEx::OnCancel();
 }
 
-void CFindTextureDlg::OnSetfocusEditFind()
-{
+void CFindTextureDlg::OnSetfocusEditFind() {
 	g_bFindActive = true;
 }
 
-void CFindTextureDlg::OnSetfocusEditReplace()
-{
+void CFindTextureDlg::OnSetfocusEditReplace() {
 	g_bFindActive = false;
 }

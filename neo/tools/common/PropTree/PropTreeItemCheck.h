@@ -23,8 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeItemCheck window
 
-class PROPTREE_API CPropTreeItemCheck : public CButton, public CPropTreeItem
-{
+class PROPTREE_API CPropTreeItemCheck : public CButton, public CPropTreeItem {
 // Construction
 public:
 	CPropTreeItemCheck();
@@ -57,8 +56,7 @@ public:
 
 	bool CreateCheckBox();
 
-	BOOL		GetCheckState()
-	{
+	BOOL		GetCheckState() {
 		return checkState;
 	};
 	void	SetCheckState( BOOL state );

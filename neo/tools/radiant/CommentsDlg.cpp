@@ -40,16 +40,13 @@ CCommentsDlg::CCommentsDlg( CWnd* pParent )
 	: CDialogEx( CCommentsDlg::IDD, pParent )
 	, strName( _T( "" ) )
 	, strPath( _T( "" ) )
-	, strComments( _T( "" ) )
-{
+	, strComments( _T( "" ) ) {
 }
 
-CCommentsDlg::~CCommentsDlg()
-{
+CCommentsDlg::~CCommentsDlg() {
 }
 
-void CCommentsDlg::DoDataExchange( CDataExchange* pDX )
-{
+void CCommentsDlg::DoDataExchange( CDataExchange* pDX ) {
 	CDialogEx::DoDataExchange( pDX );
 	DDX_Text( pDX, IDC_EDIT_NAME, strName );
 	DDX_Text( pDX, IDC_EDIT_PATH, strPath );

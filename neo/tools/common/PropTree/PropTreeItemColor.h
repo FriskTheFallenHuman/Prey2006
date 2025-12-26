@@ -2,7 +2,7 @@
 #define AFX_PROPTREEITEMCOLOR_H__50C09AC0_1F02_4150_AA6A_5151345D87A2__INCLUDED_
 
 #if _MSC_VER > 1000
-	#pragma once
+#pragma once
 #endif // _MSC_VER > 1000
 // PropTreeItemColor.h : header file
 //
@@ -27,8 +27,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeItemColor window
 
-class PROPTREE_API CPropTreeItemColor : public CWnd, public CPropTreeItem
-{
+class PROPTREE_API CPropTreeItemColor : public CWnd, public CPropTreeItem {
 // Construction
 public:
 	CPropTreeItemColor();
@@ -67,7 +66,7 @@ protected:
 	BOOL				m_bButton;
 	BOOL				m_bInDialog;
 
-	static COLORREF*	s_pColors;
+	static COLORREF	* s_pColors;
 
 // Overrides
 	// ClassWizard generated virtual function overrides

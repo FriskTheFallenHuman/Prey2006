@@ -30,8 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // CEntityListDlg dialog
 
-class CEntityListDlg : public CDialogEx
-{
+class CEntityListDlg : public CDialogEx {
 public:
 	CEntityListDlg( CWnd* pParent = NULL );   // standard constructor
 	void UpdateList();

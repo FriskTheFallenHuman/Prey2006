@@ -29,8 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFConstraintSpring dialog
 
-class DialogAFConstraintSpring : public CDialog
-{
+class DialogAFConstraintSpring : public CDialog {
 
 	DECLARE_DYNAMIC( DialogAFConstraintSpring )
 
@@ -87,8 +86,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	idDeclAF* 			file;
-	idDeclAF_Constraint* constraint;
+	idDeclAF 	*		file;
+	idDeclAF_Constraint * constraint;
 
 	//{{AFX_DATA(DialogAFConstraintSpring)
 	CComboBox			m_comboAnchorJoint;

@@ -1,0 +1,96 @@
+
+//------------------------------------
+// Ammo Bars
+//------------------------------------
+
+#define AMMO_BAR_WIDTH		8
+#define AMMO_BAR_HEIGHT		66
+
+#define ALTAMMO_BAR_WIDTH	8
+#define ALTAMMO_BAR_HEIGHT	66
+
+	windowDef Ammo_parent {
+		anchor		ANCHOR_CENTER_CENTER
+		// If altammo isn't displayed, move this bar over to the right 18 units
+		rect		592 + 18 * (1-"gui::player_altammobar"), 368, 21, 100
+		visible		"gui::player_ammobar"
+
+		windowDef fb_dot1 {
+			rect		7, 85.3, 6, 6
+			background	"guis/assets/hud/feedback_dot"
+			matcolor	1, 0, 0, alpha[time*0.003]
+			visible		"gui::player_ammolow"
+		}
+		windowDef AmmoBar_tintedbg {
+			rect		7, 10, AMMO_BAR_WIDTH, AMMO_BAR_HEIGHT
+			//matcolor	0.55, 0.65, 0.8, 0.3
+			matcolor 	1,"gui::player_ammopercent">0, "gui::player_ammopercent">0, 0.2
+			background	"guis/assets/hud/ammo_bar"
+		}
+		windowDef AmmoBG {
+			rect	0, 0, 21, 100
+			background	"guis/assets/hud/meter_bar"
+			matcolor	1, "gui::player_ammopercent">0, "gui::player_ammopercent">0, 0.75
+		}
+		windowDef AmmoBG_low {
+			rect		0, 0, 21, 100
+			background	"guis/assets/hud/meter_bar"
+			matcolor	1, 0.1, 0, randTable2[0.2*time*0.003]
+			visible		"gui::player_ammolow"
+		}
+	}
+
+	windowDef AltAmmo_parent {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		610, 368, 21, 100
+		visible		"gui::player_altammobar"
+
+		windowDef fb_dot2 {
+			rect		7, 85.3, 6, 6
+			background	"guis/assets/hud/feedback_dot"
+			matcolor	1, 0, 0, alpha[time*0.003]
+			visible		"gui::player_altammolow"
+		}
+		windowDef AltBar_tintedbg {
+			rect		7.5, 10, AMMO_BAR_WIDTH, AMMO_BAR_HEIGHT
+			//matcolor	0.4, 0.5, 0.8, 0.3
+			matcolor 	1,"gui::player_altammopercent">0, "gui::player_altammopercent">0, 0.2
+			background	"guis/assets/hud/ammo_bar"
+		}
+		windowDef AltAmmoBG {
+			rect	0, 0, 21, 100
+			background	"guis/assets/hud/meter_bar"
+			matcolor	1, "gui::player_altammopercent">0, "gui::player_altammopercent">0, 0.75
+		}
+		windowDef AltAmmoBG_low {
+			rect		0, 0, 21, 100
+			background	"guis/assets/hud/meter_bar"
+			matcolor	1, 0.1, 0, randTable2[0.2*time*0.003]
+			visible		"gui::player_altammolow"
+		}
+	}
+	windowDef AmmoCrop {
+		anchor		ANCHOR_CENTER_CENTER
+		// If altammo isn't displayed, move this bar over to the right 18 units
+		rect		599 + 18.5 * (1-"gui::player_altammobar"), 378 + AMMO_BAR_HEIGHT * (1 - "gui::player_ammopercent"), AMMO_BAR_WIDTH, AMMO_BAR_HEIGHT
+		visible		"gui::player_ammobar"
+
+		windowDef AmmoBar {
+			rect		AMMO_BAR_WIDTH, AMMO_BAR_HEIGHT * "gui::player_ammopercent", AMMO_BAR_WIDTH, AMMO_BAR_HEIGHT
+			matcolor	0.55, 0.65, 0.8, 0.73
+			background	"guis/assets/hud/ammo_bar"
+			invertrect	1
+		}
+	}
+	windowDef AltAmmoCrop {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		617.5, 378 + ALTAMMO_BAR_HEIGHT * (1 - "gui::player_altammopercent"), ALTAMMO_BAR_WIDTH, ALTAMMO_BAR_HEIGHT
+		visible		"gui::player_altammobar"
+
+		windowDef AltAmmoBar {
+			rect		ALTAMMO_BAR_WIDTH, ALTAMMO_BAR_HEIGHT * "gui::player_altammopercent", ALTAMMO_BAR_WIDTH, ALTAMMO_BAR_HEIGHT
+			matcolor	0.35, 0.45, 0.75, 0.75
+			background	"guis/assets/hud/ammo_bar"
+			invertrect	1
+		}
+	}

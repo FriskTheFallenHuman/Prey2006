@@ -1,0 +1,3166 @@
+
+table portalstep { snap { 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } }
+
+table portalstepopen { snap {	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+							0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } }
+
+table portalstepclose { snap { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 } }
+
+table portaldistancefade { clamp { 1, 1, 1, 1, 1, 1, 1, 1, 0.9, 0.7, 0.5, 0 } }
+
+//============================================================================
+//
+// generic non-glowing portal
+//
+//============================================================================
+
+textures/portals/portal
+{
+	qer_editorimage	textures/editor/portal
+	noshadows noselfshadow nooverlays
+
+	directportal parm5
+
+	{ // Draw a black texture if the draw distance is too far
+		if ( parm5 > 0 && distance > parm5 )
+		map _black
+		alphatest 0 // This texture must be alphatested, otherwise r_clear will show through
+	}
+	{ // Draw a black texture if the draw distance is too far
+		if ( parm5 > 0 && parm6 > parm5 ) // near-fade distance is beyond the far-fade distance, only use far fade
+		map _black
+		blend blend
+		alpha ( distance / parm5 )
+	}
+	{ // Draw a black texture if the draw distance is too far
+		if ( parm5 > 0 && distance > parm6 && parm6 < parm5 )
+		map _black
+		blend blend
+		alpha ( ( distance - parm6 ) / ( parm5 - parm6 ) )
+	}
+	{ // Draw nothing, let the directportal do all the rendering
+		blend add
+		map _black
+	}
+}
+
+//============================================================================
+//
+// generic non-glowing portal
+//
+// Direct render version
+//============================================================================
+
+textures/portals/directportal
+{
+	qer_editorimage	textures/editor/portal
+	noshadows noselfshadow nooverlays
+
+	directportal parm5
+
+	{ // Draw a black texture if the draw distance is too far
+		if ( parm5 > 0 && distance > parm5 )
+		map _black
+		alphatest 0 // This texture must be alphatested, otherwise r_clear will show through
+	}
+	{ // Draw a black texture if the draw distance is too far
+		if ( parm5 > 0 && parm6 > parm5 ) // near-fade distance is beyond the far-fade distance, only use far fade
+		map _black
+		blend blend
+		alpha ( distance / parm5 )
+	}
+	{ // Draw a black texture if the draw distance is too far
+		if ( parm5 > 0 && distance > parm6 && parm6 < parm5 )
+		map _black
+		blend blend
+		alpha ( ( distance - parm6 ) / ( parm5 - parm6 ) )
+	}
+	{ // Draw nothing, let the directportal do all the rendering
+		blend add
+		map _black
+	}
+}
+
+//============================================================================
+//
+// animated glow portal
+//
+// Direct render version
+//============================================================================
+
+models/mapobjects/portal/portal
+{
+	noshadows
+	noselfshadow
+//	twosided
+	translucent
+
+	/*{
+		program	distort.vfp
+
+		vertexparm		0		1,.5,0,-.5
+		//vertexparm		1		2.5*(cosTable[.5 * time]+1)			// magnitude of the distortion
+		vertexparm		1		3			// magnitude of the distortion
+
+		fragmentparm	0		2		// facing effect
+
+		fragmentmap		0		_currentrender
+		fragmentmap		1		models/mapobjects/portal/displace
+	}*/
+
+		{
+			maskcolor
+			map makealpha(models/mapobjects/portal/portal_falloff)
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ time * 2.4 ]
+			rgb		1 * zerotoonesnap[ time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .052 * time, -1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .04 * time, -1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .075 * time, -1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .045 * time, -1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .065 * time, -1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .03 * time, -1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .035 * time, -1 * zerotoonesnap[ time * 2.4 ]
+			rgb		1 * zerotoonesnap[ time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .07 * time, -1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .035 * time, -1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .085 * time, -1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .045 * time, -1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			linear
+		}
+				{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .09 * time, -1 * zerotoonesnap[ -0.02 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.02 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .032 * time, -1 * zerotoonesnap[ -0.12 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.12 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.22 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.22 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.32 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.32 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .045 * time, -1 * zerotoonesnap[ -0.42 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.42 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .065 * time, -1 * zerotoonesnap[ -0.52 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.52 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .025 * time, -1 * zerotoonesnap[ -0.62 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.62 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ -0.72 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.72 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .07 * time, -1 * zerotoonesnap[ -0.82 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.82 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .03 * time, -1 * zerotoonesnap[ -0.92 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.92 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add5
+			scroll .09 * time, .0 * time
+			clamp
+			linear
+		}
+		{
+			maskcolor
+			clamp
+			map makealpha(models/mapobjects/portal/portal_falloff2)
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			map models/mapobjects/portal/portal_add2
+			scale 4, 0.976
+			scroll .09 * time, -0.0
+			rgb		.8 * heartbeat2[ time * 0.85 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			map models/mapobjects/portal/portal_add2
+			scale 4, 0.976
+			scroll .05 * time, -0.0
+			rgb		.8 * heartbeat3[ time * 0.9 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			map models/mapobjects/portal/portal_add2
+			scale 4, 0.976
+			scroll -.06 * time, -0.0
+			rgb		.8 * heartbeat4[ time * 0.95 ]
+			linear
+		}
+}
+
+models/mapobjects/portal/portal_fx
+{
+	qer_editorimage textures/particles/portal_mist
+	translucent
+	noshadows
+	sort 10
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+		rgb .25 * oneThirdTable [time * 0.85]
+		centerscale 1.30, 1.30
+		rotate time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+		rgb .25 * oneThirdTable [0.25 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 0.15 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+		rgb .25 * oneThirdTable [0.50 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 0.30 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+		rgb .25 * oneThirdTable [0.75 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 0.45 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+		rgb .25 * oneThirdTable [1.00 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 0.60 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+		rgb .25 * oneThirdTable [1.25 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 0.75 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+		rgb .25 * oneThirdTable [1.50 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 0.90 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+		rgb .25 * oneThirdTable [1.75 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 1.05 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+		rgb .25 * oneThirdTable [2.00 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 1.20 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+		rgb .25 * oneThirdTable [2.25 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 1.35 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+		rgb .25 * oneThirdTable [2.50 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 1.50 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+		rgb .25 * oneThirdTable [2.75 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 1.65 + time * -0.05
+		glowStage
+		clamp
+	}
+
+	// Portal lightning
+	// Controlled via parm7 from code
+	{
+		if ( parm7 == 1 )
+
+      	blend add
+		map textures/particles/portal_lightning1
+		rgb 0.5
+		centerscale 1.50, 1.50
+		rotate time * 0.1
+		glowStage
+		clamp
+	}
+	{
+		if ( parm7 == 2 )
+
+      	blend add
+		map textures/particles/portal_lightning2
+		rgb 0.4
+		centerscale 1.50, 1.50
+		rotate time * 0.1
+		glowStage
+		clamp
+	}
+	{
+		if ( parm7 == 3 )
+
+      	blend add
+		map textures/particles/portal_lightning3
+		rgb 0.4
+		centerscale 1.50, 1.50
+		rotate time * 0.1
+		glowStage
+		clamp
+	}
+	{
+		if ( parm7 == 4 )
+
+      	blend add
+		map textures/particles/portal_lightning4
+		rgb 0.4
+		centerscale 1.50, 1.50
+		rotate time * 0.1
+		glowStage
+		clamp
+	}
+}
+
+models/mapobjects/portal/portal_innerwarp
+{
+	noshadows noselfshadow nooverlays
+
+	directportal parm5
+
+	{ // Draw a black texture if the draw distance is too far
+		if ( parm5 > 0 && distance > parm5 )
+		map _black
+		alphatest 0 // This texture must be alphatested, otherwise r_clear will show through
+	}
+	{ // Draw a black texture if the draw distance is too far
+		if ( parm5 > 0 && parm6 > parm5 ) // near-fade distance is beyond the far-fade distance, only use far fade
+		map _black
+		blend blend
+		alpha ( distance / parm5 )
+	}
+	{ // Draw a black texture if the draw distance is too far
+		if ( parm5 > 0 && distance > parm6 && parm6 < parm5 )
+		map _black
+		blend blend
+		alpha ( ( distance - parm6 ) / ( parm5 - parm6 ) )
+	}
+	{
+		blend none
+		map _black
+	}
+}
+
+models/mapobjects/portal/portal_outerwarp
+{
+	noshadows
+	noselfshadow
+//	twosided
+	translucent
+
+	{
+		shaderlevel2
+		program	distort.vfp
+
+		vertexparm		0		1,1,0,0
+		vertexparm		1		8			// magnitude of the distortion
+
+		fragmentmap		0		_currentrender
+		fragmentmap		1		models/mapobjects/portal/displace
+	}
+	{
+		shaderlevel2
+		blend diffusemap
+		map _black
+	}
+}
+
+models/mapobjects/portal/portal_behind
+{
+	noshadows
+	noselfshadow
+//	twosided
+	//translucent
+
+	/*{
+		program	distort.vfp
+
+		vertexparm		0		1,1,0,0
+		//vertexparm		1		2.5*(cosTable[.5 * time]+1)			// magnitude of the distortion
+		vertexparm		1		-15			// magnitude of the distortion
+
+		fragmentparm	0		2		// facing effect
+
+		fragmentmap		0		_currentrender
+		fragmentmap		1		models/mapobjects/portal/portal_back_distort
+	}*/
+}
+
+models/mapobjects/portal/portal_front
+{
+	noshadows
+	noselfshadow
+//	twosided
+	translucent
+}
+
+models/mapobjects/portal/portal_back
+{
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_back_add
+		rotate 0.06 * time
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_back_add
+		rotate 0.04 * time
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_back_add
+		rotate 0.02 * time
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_back_add
+		rotate 0.03 * time
+	}
+}
+
+
+///red portal for end of levels
+models/mapobjects/portal/portal_red
+{
+	noshadows
+	noselfshadow
+//	twosided
+	translucent
+
+		{
+			maskcolor
+			map makealpha(models/mapobjects/portal/portal_falloff)
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ time * 2.4 ]
+			red		2 * zerotoonesnap[ time * 2.4 ]
+			green	0.6 * zerotoonesnap[ time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .052 * time, -1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			red		2 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .04 * time, -1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			red		2 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			red		2 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .075 * time, -1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			red		2 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .045 * time, -1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			red		2 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .065 * time, -1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			red		2 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .03 * time, -1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			red		2 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			red		2 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			red		2 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .035 * time, -1 * zerotoonesnap[ time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ time * 2.4 ]
+			red		1 * zerotoonesnap[ time * 2.4 ]
+			green	0.6 * zerotoonesnap[ time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .07 * time, -1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .035 * time, -1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .085 * time, -1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .045 * time, -1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .09 * time, -1 * zerotoonesnap[ -0.02 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.02 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.02 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.02 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.02 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .032 * time, -1 * zerotoonesnap[ -0.12 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.12 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.12 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.12 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.12 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.22 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.22 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.22 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.22 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.22 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.32 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.32 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.32 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.32 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.32 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .045 * time, -1 * zerotoonesnap[ -0.42 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.42 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.42 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.42 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.42 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .065 * time, -1 * zerotoonesnap[ -0.52 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.52 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.52 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.52 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.52 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .025 * time, -1 * zerotoonesnap[ -0.62 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.62 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.62 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.62 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.62 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ -0.72 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.72 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.72 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.72 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.72 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .07 * time, -1 * zerotoonesnap[ -0.82 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.82 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.82 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.82 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.82 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .03 * time, -1 * zerotoonesnap[ -0.92 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.92 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.92 + time * 2.4 ]
+			green	0.6 * zerotoonesnap[ -0.92 + time * 2.4 ]
+			blue	0.5 * zerotoonesnap[ -0.92 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add5
+			scroll .09 * time, .0 * time
+			red		1
+			green	0.6
+			blue	0.5
+			clamp linear
+		}
+		{
+			maskcolor
+			clamp
+			map makealpha(models/mapobjects/portal/portal_falloff2)
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			map models/mapobjects/portal/portal_add2
+			scale 4, 0.976
+			scroll .09 * time, 0.0
+//			rgb		.8 * heartbeat2[ time * 0.85 ]
+			red		.8 * heartbeat2[ time * 0.85 ]
+			green	.34 * heartbeat2[ time * 0.85 ]
+			blue	.44 * heartbeat2[ time * 0.85 ]
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			map models/mapobjects/portal/portal_add2
+			scale 4, 0.976
+			scroll .05 * time, 0.0
+//			rgb		.8 * heartbeat3[ time * 0.9 ]
+			red		.8 * heartbeat2[ time * 0.9 ]
+			green	.34 * heartbeat2[ time * 0.9 ]
+			blue	.44 * heartbeat2[ time * 0.9 ]
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			map models/mapobjects/portal/portal_add2
+			scale 4, 0.976
+			scroll -.06 * time, 0.0
+//			rgb		.8 * heartbeat4[ time * 0.95 ]
+			red		.8 * heartbeat2[ time * 0.95 ]
+			green	.34 * heartbeat2[ time * 0.95 ]
+			blue	.44 * heartbeat2[ time * 0.95 ]
+		}
+}
+
+models/mapobjects/portal/portal_red_fx
+{
+	qer_editorimage textures/particles/portal_mist
+	translucent
+	noshadows
+	sort 10
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [time * 0.85]
+		red		.35 * oneThirdTable [time * 0.85]
+		green	.175 * oneThirdTable [time * 0.85]
+		blue	.175 * oneThirdTable [time * 0.85]
+		centerscale 1.30, 1.30
+		rotate time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [0.25 + time * 0.85]
+		red		.35 * oneThirdTable [0.25 + time * 0.85]
+		green	.175 * oneThirdTable [0.25 + time * 0.85]
+		blue	.175 * oneThirdTable [0.25 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 0.15 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [0.50 + time * 0.85]
+		red		.35 * oneThirdTable [0.50 + time * 0.85]
+		green	.175 * oneThirdTable [0.50 + time * 0.85]
+		blue	.175 * oneThirdTable [0.50 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 0.30 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [0.75 + time * 0.85]
+		red		.35 * oneThirdTable [0.75 + time * 0.85]
+		green	.175 * oneThirdTable [0.75 + time * 0.85]
+		blue	.175 * oneThirdTable [0.75 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 0.45 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [1.00 + time * 0.85]
+		red		.35 * oneThirdTable [1.00 + time * 0.85]
+		green	.175 * oneThirdTable [1.00 + time * 0.85]
+		blue	.175 * oneThirdTable [1.00 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 0.60 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [1.25 + time * 0.85]
+		red		.35 * oneThirdTable [1.25 + time * 0.85]
+		green	.175 * oneThirdTable [1.25 + time * 0.85]
+		blue	.175 * oneThirdTable [1.25 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 0.75 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [1.50 + time * 0.85]
+		red		.35 * oneThirdTable [1.50 + time * 0.85]
+		green	.175 * oneThirdTable [1.50 + time * 0.85]
+		blue	.175 * oneThirdTable [1.50 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 0.90 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [1.75 + time * 0.85]
+		red		.35 * oneThirdTable [1.75 + time * 0.85]
+		green	.175 * oneThirdTable [1.75 + time * 0.85]
+		blue	.175 * oneThirdTable [1.75 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 1.05 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [2.00 + time * 0.85]
+		red		.35 * oneThirdTable [2.00 + time * 0.85]
+		green	.175 * oneThirdTable [2.00 + time * 0.85]
+		blue	.175 * oneThirdTable [2.00 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 1.20 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [2.25 + time * 0.85]
+		red		.35 * oneThirdTable [2.25 + time * 0.85]
+		green	.175 * oneThirdTable [2.25 + time * 0.85]
+		blue	.175 * oneThirdTable [2.25 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 1.35 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [2.50 + time * 0.85]
+		red		.35 * oneThirdTable [2.50 + time * 0.85]
+		green	.175 * oneThirdTable [2.50 + time * 0.85]
+		blue	.175 * oneThirdTable [2.50 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 1.50 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [2.75 + time * 0.85]
+		red		.35 * oneThirdTable [2.75 + time * 0.85]
+		green	.175 * oneThirdTable [2.75 + time * 0.85]
+		blue	.175 * oneThirdTable [2.75 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 1.65 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend add
+		map textures/particles/portal_lightning1
+//		rgb		portal_lightning [0.00 + time * 2.90]
+		red		1 * portal_lightning [0.00 + time * 2.90]
+		green	0.4 * portal_lightning [0.00 + time * 2.90]
+		blue	0.4 * portal_lightning [0.00 + time * 2.90]
+		centerscale 1.50, 1.50
+		rotate time * 0.1
+		glowStage
+		clamp
+	}
+	{
+      	blend add
+		map textures/particles/portal_lightning2
+//		rgb		.6 * portal_lightning [0.1 + time * 2.90]
+		red		.6 * portal_lightning [0.10 + time * 2.90]
+		green	.28 * portal_lightning [0.10 + time * 2.90]
+		blue	.28 * portal_lightning [0.10 + time * 2.90]
+		centerscale 1.50, 1.50
+		rotate time * 0.1
+		glowStage
+		clamp
+	}
+	{
+      	blend add
+		map textures/particles/portal_lightning3
+//		rgb		.6 * portal_lightning [1.00 + time * 3.00]
+		red		.6 * portal_lightning [1.00 + time * 3.00]
+		green	.28 * portal_lightning [1.00 + time * 3.00]
+		blue	.28 * portal_lightning [1.00 + time * 3.00]
+		centerscale 1.50, 1.50
+		rotate time * 0.1
+		glowStage
+		clamp
+	}
+	{
+      	blend add
+		map textures/particles/portal_lightning4
+//		rgb		.6 * portal_lightning [1.1 + time * 3.00]
+		red		.6 * portal_lightning [1.10 + time * 3.00]
+		green	.28 * portal_lightning [1.10 + time * 3.00]
+		blue	.28 * portal_lightning [1.10 + time * 3.00]
+		centerscale 1.50, 1.50
+		rotate time * 0.1
+		glowStage
+		clamp
+	}
+}
+
+models/mapobjects/portal/portal_red_back
+{
+	noshadows noselfshadow nooverlays
+
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_back_add
+		rotate 0.06 * time
+		red		1.0
+		green	0.25
+		blue	0.25
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_back_add
+		rotate 0.04 * time
+		red		1.0
+		green	0.25
+		blue	0.25
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_back_add
+		rotate 0.02 * time
+		red		1.0
+		green	0.25
+		blue	0.25
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_back_add
+		rotate 0.03 * time
+		red		1.0
+		green	0.25
+		blue	0.25
+	}
+}
+
+//////spin portal portal/////
+
+models/mapobjects/superportal/superportal
+{
+	noshadows
+	noselfshadow
+//	twosided
+	translucent
+
+	/*{
+		program	distort.vfp
+
+		vertexparm		0		1,.5,0,-.5
+		//vertexparm		1		2.5*(cosTable[.5 * time]+1)			// magnitude of the distortion
+		vertexparm		1		3			// magnitude of the distortion
+
+		fragmentparm	0		2		// facing effect
+
+		fragmentmap		0		_currentrender
+		fragmentmap		1		models/mapobjects/portal/displace
+	}*/
+
+		{
+			maskcolor
+			map makealpha(models/mapobjects/portal/portal_falloff)
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ time * 2.4 ]
+			rgb		1 * zerotoonesnap[ time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .052 * time, -1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .04 * time, -1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .075 * time, -1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .045 * time, -1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .065 * time, -1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .03 * time, -1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			linear
+		}
+				{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .035 * time, -1 * zerotoonesnap[ time * 2.4 ]
+			rgb		1 * zerotoonesnap[ time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .07 * time, -1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .035 * time, -1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .085 * time, -1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .045 * time, -1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			linear
+		}
+				{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .09 * time, -1 * zerotoonesnap[ -0.02 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.02 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .032 * time, -1 * zerotoonesnap[ -0.12 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.12 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.22 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.22 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.32 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.32 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .045 * time, -1 * zerotoonesnap[ -0.42 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.42 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .065 * time, -1 * zerotoonesnap[ -0.52 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.52 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .025 * time, -1 * zerotoonesnap[ -0.62 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.62 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ -0.72 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.72 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .07 * time, -1 * zerotoonesnap[ -0.82 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.82 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .03 * time, -1 * zerotoonesnap[ -0.92 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.92 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add5
+			scroll .09 * time, .0 * time
+			clamp
+			linear
+		}
+		{
+			maskcolor
+			clamp
+			map makealpha(models/mapobjects/portal/portal_falloff2)
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			map models/mapobjects/superportal/superportal_add2
+			scale 7, 0.976
+			scroll .09 * time, 0.0
+			rgb		.8 * heartbeat2[ time * 0.85 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			map models/mapobjects/superportal/superportal_add2
+			scale 7, 0.976
+			scroll .05 * time, 0.0
+			rgb		.8 * heartbeat3[ time * 0.9 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			map models/mapobjects/superportal/superportal_add2
+			scale 7, 0.976
+			scroll -.06 * time, 0.0
+			rgb		.8 * heartbeat4[ time * 0.95 ]
+			linear
+		}
+}
+
+models/mapobjects/superportal/superportal_fx
+{
+	qer_editorimage models/mapobjects/superportal/superportal_mist
+	translucent
+	noshadows
+	sort 10
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [time * 0.85]
+		centerscale 1.30, 1.30
+		rotate time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [0.25 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 0.15 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [0.50 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 0.30 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [0.75 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 0.45 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [1.00 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 0.60 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [1.25 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 0.75 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [1.50 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 0.90 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [1.75 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 1.05 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [2.00 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 1.20 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [2.25 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 1.35 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [2.50 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 1.50 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [2.75 + time * 0.85]
+		centerscale 1.30, 1.30
+		rotate 1.65 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend add
+		map models/mapobjects/superportal/superportal_lightning1
+		rgb		portal_lightning [0.00 + time * 2.90]
+		centerscale 1.50, 1.50
+		rotate time * 0.1
+		glowStage
+		clamp
+	}
+	{
+      	blend add
+		map models/mapobjects/superportal/superportal_lightning2
+		rgb		.6 * portal_lightning [0.1 + time * 2.90]
+		centerscale 1.50, 1.50
+		rotate time * 0.1
+		glowStage
+		clamp
+	}
+	{
+      	blend add
+		map models/mapobjects/superportal/superportal_lightning3
+		rgb		.6 * portal_lightning [1.00 + time * 3.00]
+		centerscale 1.50, 1.50
+		rotate time * 0.1
+		glowStage
+		clamp
+	}
+	{
+      	blend add
+		map models/mapobjects/superportal/superportal_lightning4
+		rgb		.6 * portal_lightning [1.1 + time * 3.00]
+		centerscale 1.50, 1.50
+		rotate time * 0.1
+		glowStage
+		clamp
+	}
+}
+models/mapobjects/superportal/superportal_back
+{
+	noshadows noselfshadow nooverlays
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_back_add
+		rotate 0.06 * time
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_back_add
+		rotate 0.04 * time
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_back_add
+		rotate 0.02 * time
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_back_add
+		rotate 0.03 * time
+	}
+}
+
+//////menu portal/////
+
+models/mapobjects/portal/portal_menu
+{
+	noshadows
+	noselfshadow
+//	twosided
+	translucent
+
+	/*{
+		program	distort.vfp
+
+		vertexparm		0		1,.5,0,-.5
+		//vertexparm		1		2.5*(cosTable[.5 * time]+1)			// magnitude of the distortion
+		vertexparm		1		3			// magnitude of the distortion
+
+		fragmentparm	0		2		// facing effect
+
+		fragmentmap		0		_currentrender
+		fragmentmap		1		models/mapobjects/portal/displace
+	}*/
+
+		{
+			maskcolor
+			map makealpha(models/mapobjects/portal/portal_falloff)
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ time * 2.4 ]
+			rgb		1 * zerotoonesnap[ time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .052 * time, -1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .04 * time, -1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .075 * time, -1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .045 * time, -1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .065 * time, -1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .03 * time, -1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			linear
+		}
+				{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .035 * time, -1 * zerotoonesnap[ time * 2.4 ]
+			rgb		1 * zerotoonesnap[ time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .07 * time, -1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .035 * time, -1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .085 * time, -1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .045 * time, -1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add3
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			linear
+		}
+				{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .09 * time, -1 * zerotoonesnap[ -0.02 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.02 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .032 * time, -1 * zerotoonesnap[ -0.12 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.12 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.22 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.22 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.32 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.32 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .045 * time, -1 * zerotoonesnap[ -0.42 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.42 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .065 * time, -1 * zerotoonesnap[ -0.52 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.52 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .025 * time, -1 * zerotoonesnap[ -0.62 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.62 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ -0.72 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.72 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .07 * time, -1 * zerotoonesnap[ -0.82 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.82 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/superportal/superportal_add4
+			scale 1, 1.0
+			scroll .03 * time, -1 * zerotoonesnap[ -0.92 + time * 2.4 ]
+			rgb		1 * zerotoonesnap[ -0.92 + time * 2.4 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map guis/assets/menu/portal/menuportal_add5
+			scroll .09 * time, .0 * time
+			clamp
+			linear
+		}
+		{
+			maskcolor
+			clamp
+			map makealpha(models/mapobjects/portal/portal_falloff2)
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			map guis/assets/menu/portal/menuportal_add2
+			scale 7, 0.976
+			scroll .09 * time, 0.0
+			rgb		.8 * heartbeat2[ time * 0.85 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			map guis/assets/menu/portal/menuportal_add2
+			scale 7, 0.976
+			scroll .05 * time, 0.0
+			rgb		.8 * heartbeat3[ time * 0.9 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			map guis/assets/menu/portal/menuportal_add2
+			scale 7, 0.976
+			scroll -.06 * time, 0.0
+			rgb		.8 * heartbeat4[ time * 0.95 ]
+			linear
+		}
+}
+
+// BIOLABS Ring Portal
+
+textures/portals/bio_ring
+{
+	qer_editorimage	textures/editor/portal
+	noshadows noselfshadow nooverlays
+
+	directportal parm5
+
+	{ // Draw a black texture if the draw distance is too far
+		if ( parm5 > 0 && distance > parm5 )
+		map _black
+		alphatest 0 // This texture must be alphatested, otherwise r_clear will show through
+	}
+	{
+		blend none
+		map models/mapobjects/portal/bio_ring_mask
+		alphatest 0.9
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [time * 0.85]
+		centerscale 0.95, 0.95
+		rotate time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [0.25 + time * 0.85]
+		centerscale 0.950, 0.950
+		rotate 0.15 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [0.50 + time * 0.85]
+		centerscale 0.950, 0.950
+		rotate 0.30 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [0.75 + time * 0.85]
+		centerscale 0.950, 0.950
+		rotate 0.45 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [1.00 + time * 0.85]
+		centerscale 0.950, 0.950
+		rotate 0.60 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [1.25 + time * 0.85]
+		centerscale 0.950, 0.950
+		rotate 0.75 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [1.50 + time * 0.85]
+		centerscale 0.950, 0.950
+		rotate 0.90 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [1.75 + time * 0.85]
+		centerscale 0.950, 0.950
+		rotate 1.05 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [2.00 + time * 0.85]
+		centerscale 0.950, 0.950
+		rotate 1.20 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [2.25 + time * 0.85]
+		centerscale 0.950, 0.950
+		rotate 0.135 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [2.50 + time * 0.85]
+		centerscale 0.950, 0.950
+		rotate 1.50 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		rgb .25 * oneThirdTable [2.75 + time * 0.85]
+		centerscale 0.950, 0.950
+		rotate 1.65 + time * -0.05
+		glowStage
+		clamp
+	}
+
+	{
+      	blend add
+		map models/mapobjects/superportal/superportal_lightning1
+		rgb		portal_lightning [0.00 + time * 2.90]
+		centerscale 1.50, 1.50
+		rotate time * 0.1
+		glowStage
+		clamp
+	}
+	{
+      	blend add
+		map models/mapobjects/superportal/superportal_lightning2
+		rgb		.6 * portal_lightning [0.1 + time * 2.90]
+		centerscale 1.50, 1.50
+		rotate time * 0.1
+		glowStage
+		clamp
+	}
+	{
+      	blend add
+		map models/mapobjects/superportal/superportal_lightning3
+		rgb		.6 * portal_lightning [1.00 + time * 3.00]
+		centerscale 1.50, 1.50
+		rotate time * 0.1
+		glowStage
+		clamp
+	}
+	{
+      	blend add
+		map models/mapobjects/superportal/superportal_lightning4
+		rgb		.6 * portal_lightning [1.1 + time * 3.00]
+		centerscale 1.50, 1.50
+		rotate time * 0.1
+		glowStage
+		clamp
+	}
+}
+
+// MONSTER PORTAL - doesn't render as a portal, faked with a texture
+models/mapobjects/portal/portal_monster
+{
+	noshadows noselfshadow nooverlays
+
+	{
+		map models/mapobjects/portal/portal_monster
+		rotate 0.012 // compensate for a slight error in the u/v coordinates of the glow portal
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_back_add
+		rotate 0.06 * time
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_back_add
+		rotate 0.04 * time
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_back_add
+		rotate 0.02 * time
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_back_add
+		rotate 0.03 * time
+	}
+}
+
+
+//////hider portal portal/////
+
+
+models/mapobjects/portal/hiderportal
+{
+	noshadows
+	noselfshadow
+//	twosided
+	translucent
+
+	/*{
+		program	distort.vfp
+
+		vertexparm		0		1,.5,0,-.5
+		//vertexparm		1		2.5*(cosTable[.5 * time]+1)			// magnitude of the distortion
+		vertexparm		1		3			// magnitude of the distortion
+
+		fragmentparm	0		2		// facing effect
+
+		fragmentmap		0		_currentrender
+		fragmentmap		1		models/mapobjects/portal/displace
+	}*/
+
+		{
+			maskcolor
+			map makealpha(models/mapobjects/portal/portal_falloff)
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ time * 2.4 ]
+			red		1 * zerotoonesnap[ time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ time * 2.4 ]
+			blue	.2 * zerotoonesnap[ time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .052 * time, -1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.10 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.10 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .04 * time, -1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.20 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.20 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.30 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.30 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .075 * time, -1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.40 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.40 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .045 * time, -1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.50 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.50 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .065 * time, -1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.60 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.60 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .03 * time, -1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.70 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.70 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.80 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.80 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.90 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.90 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .035 * time, -1 * zerotoonesnap[ time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ time * 2.4 ]
+			red		1 * zerotoonesnap[ time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ time * 2.4 ]
+			blue	.2 * zerotoonesnap[ time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .07 * time, -1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.10 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.10 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.10 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.20 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.20 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.20 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.30 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.30 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.30 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .035 * time, -1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.40 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.40 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.40 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .085 * time, -1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.50 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.50 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.50 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .045 * time, -1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.60 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.60 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.60 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.70 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.70 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.70 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.80 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.80 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.80 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add3
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.90 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.90 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.90 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+				{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .09 * time, -1 * zerotoonesnap[ -0.02 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.02 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.02 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.02 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.02 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .032 * time, -1 * zerotoonesnap[ -0.12 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.12 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.12 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.12 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.12 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .08 * time, -1 * zerotoonesnap[ -0.22 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.22 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.22 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.22 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.22 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .05 * time, -1 * zerotoonesnap[ -0.32 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.32 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.32 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.32 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.32 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .045 * time, -1 * zerotoonesnap[ -0.42 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.42 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.42 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.42 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.42 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .065 * time, -1 * zerotoonesnap[ -0.52 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.52 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.52 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.52 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.52 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .025 * time, -1 * zerotoonesnap[ -0.62 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.62 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.62 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.62 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.62 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .06 * time, -1 * zerotoonesnap[ -0.72 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.72 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.72 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.72 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.72 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .07 * time, -1 * zerotoonesnap[ -0.82 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.82 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.82 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.82 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.82 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add4
+			scale 1, 1.0
+			scroll .03 * time, -1 * zerotoonesnap[ -0.92 + time * 2.4 ]
+//			rgb		1 * zerotoonesnap[ -0.92 + time * 2.4 ]
+			red		1 * zerotoonesnap[ -0.92 + time * 2.4 ] * keeperEye[ time * .3 ]
+			green	0.40 * zerotoonesnap[ -0.92 + time * 2.4 ]
+			blue	.2 * zerotoonesnap[ -0.92 + time * 2.4 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			maskalpha
+			map models/mapobjects/portal/portal_add5
+			scroll .09 * time, .0 * time
+			red		1 * keeperEye[ time * .3 ]
+			green	0.4
+			blue	.2 * keeperEye[ time * .1 ]
+			clamp
+			linear
+		}
+		{
+			maskcolor
+			clamp
+			map makealpha(models/mapobjects/portal/portal_falloff2)
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			map models/mapobjects/portal/portal_add2
+			scale 4, 0.976
+			scroll .09 * time, -0.0
+//			rgb		.8 * heartbeat2[ time * 0.85 ]
+			red		.8 * heartbeat2[ time * 0.85 ] * keeperEye[ time * .3 ]
+			green	.4 * heartbeat2[ time * 0.85 ]
+			blue	.1 * heartbeat2[ time * 0.85 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			map models/mapobjects/portal/portal_add2
+			scale 4, 0.976
+			scroll .05 * time, -0.0
+//			rgb		.8 * heartbeat3[ time * 0.9 ]
+			red		.8 * heartbeat3[ time * 0.9 ] * keeperEye[ time * .3 ]
+			green	.4 * heartbeat3[ time * 0.9 ]
+			blue	.1 * heartbeat3[ time * 0.9 ] * keeperEye[ time * .1 ]
+			linear
+		}
+		{
+			blend gl_dst_alpha, gl_one
+			map models/mapobjects/portal/portal_add2
+			scale 4, 0.976
+			scroll -.06 * time, -0.0
+//			rgb		.8 * heartbeat4[ time * 0.95 ]
+			red		.8 * heartbeat4[ time * 0.95 ] * keeperEye[ time * .3 ]
+			green	.4 * heartbeat4[ time * 0.95 ]
+			blue	.1 * heartbeat4[ time * 0.95 ] * keeperEye[ time * .1 ]
+			linear
+		}
+}
+
+models/mapobjects/portal/hiderportal_fx
+{
+	qer_editorimage textures/particles/portal_mist
+	translucent
+	noshadows
+	sort 10
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [time * 0.85]
+		red		.25 * oneThirdTable [time * 0.85] * keeperEye[ time * .3 ]
+		green	.10 * oneThirdTable [time * 0.85]
+		blue	.05 * oneThirdTable [time * 0.85] * keeperEye[ time * .1 ]
+		centerscale 1.30, 1.30
+		rotate time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [0.25 + time * 0.85]
+		red		.25 * oneThirdTable [0.25 + time * 0.85] * keeperEye[ time * .3 ]
+		green	.10 * oneThirdTable [0.25 + time * 0.85]
+		blue	.05 * oneThirdTable [0.25 + time * 0.85] * keeperEye[ time * .1 ]
+		centerscale 1.30, 1.30
+		rotate 0.15 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [0.50 + time * 0.85]
+		red		.25 * oneThirdTable [0.50 + time * 0.85] * keeperEye[ time * .3 ]
+		green	.10 * oneThirdTable [0.50 + time * 0.85]
+		blue	.05 * oneThirdTable [0.50 + time * 0.85] * keeperEye[ time * .1 ]
+		centerscale 1.30, 1.30
+		rotate 0.30 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [0.75 + time * 0.85]
+		red		.25 * oneThirdTable [0.75 + time * 0.85] * keeperEye[ time * .3 ]
+		green	.10 * oneThirdTable [0.75 + time * 0.85]
+		blue	.05 * oneThirdTable [0.75 + time * 0.85] * keeperEye[ time * .1 ]
+		centerscale 1.30, 1.30
+		rotate 0.45 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [1.00 + time * 0.85]
+		red		.25 * oneThirdTable [1.00 + time * 0.85] * keeperEye[ time * .3 ]
+		green	.10 * oneThirdTable [1.00 + time * 0.85]
+		blue	.05 * oneThirdTable [1.00 + time * 0.85] * keeperEye[ time * .1 ]
+		centerscale 1.30, 1.30
+		rotate 0.60 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [1.25 + time * 0.85]
+		red		.25 * oneThirdTable [1.25 + time * 0.85] * keeperEye[ time * .3 ]
+		green	.10 * oneThirdTable [1.25 + time * 0.85]
+		blue	.05 * oneThirdTable [1.25 + time * 0.85] * keeperEye[ time * .1 ]
+		centerscale 1.30, 1.30
+		rotate 0.75 + time * 0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [1.50 + time * 0.85]
+		red		.25 * oneThirdTable [1.50 + time * 0.85] * keeperEye[ time * .3 ]
+		green	.10 * oneThirdTable [1.50 + time * 0.85]
+		blue	.05 * oneThirdTable [1.50 + time * 0.85] * keeperEye[ time * .1 ]
+		centerscale 1.30, 1.30
+		rotate 0.90 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [1.75 + time * 0.85]
+		red		.25 * oneThirdTable [1.75 + time * 0.85] * keeperEye[ time * .3 ]
+		green	.10 * oneThirdTable [1.75 + time * 0.85]
+		blue	.05 * oneThirdTable [1.75 + time * 0.85] * keeperEye[ time * .1 ]
+		centerscale 1.30, 1.30
+		rotate 1.05 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [2.00 + time * 0.85]
+		red		.25 * oneThirdTable [2.00 + time * 0.85] * keeperEye[ time * .3 ]
+		green	.10 * oneThirdTable [2.00 + time * 0.85]
+		blue	.05 * oneThirdTable [2.00 + time * 0.85] * keeperEye[ time * .1 ]
+		centerscale 1.30, 1.30
+		rotate 1.20 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [2.25 + time * 0.85]
+		red		.25 * oneThirdTable [2.25 + time * 0.85] * keeperEye[ time * .3 ]
+		green	.10 * oneThirdTable [2.25 + time * 0.85]
+		blue	.05 * oneThirdTable [2.25 + time * 0.85] * keeperEye[ time * .1 ]
+		centerscale 1.30, 1.30
+		rotate 1.35 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [2.50 + time * 0.85]
+		red		.25 * oneThirdTable [2.50 + time * 0.85] * keeperEye[ time * .3 ]
+		green	.10 * oneThirdTable [2.50 + time * 0.85]
+		blue	.05 * oneThirdTable [2.50 + time * 0.85] * keeperEye[ time * .1 ]
+		centerscale 1.30, 1.30
+		rotate 1.50 + time * -0.05
+		glowStage
+		clamp
+	}
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+//		rgb .25 * oneThirdTable [2.75 + time * 0.85]
+		red		.25 * oneThirdTable [2.75 + time * 0.85] * keeperEye[ time * .3 ]
+		green	.10 * oneThirdTable [2.75 + time * 0.85]
+		blue	.05 * oneThirdTable [2.75 + time * 0.85] * keeperEye[ time * .1 ]
+		centerscale 1.30, 1.30
+		rotate 1.65 + time * -0.05
+		glowStage
+		clamp
+	}
+
+	// Portal lightning
+	// Controlled via parm7 from code
+	{
+		if ( parm7 == 1 )
+
+      	blend add
+		map textures/particles/portal_lightning1
+//		rgb 0.5
+		red		0.5 * keeperEye[ time * .3 ]
+		green	0.2
+		blue	0.1 * keeperEye[ time * .1 ]
+		centerscale 1.50, 1.50
+		rotate time * 16.005
+		glowStage
+		clamp
+	}
+	{
+		if ( parm7 == 2 )
+
+      	blend add
+		map textures/particles/portal_lightning2
+//		rgb 0.4
+		red		0.4 * keeperEye[ time * .3 ]
+		green	0.2
+		blue	0.1 * keeperEye[ time * .1 ]
+		centerscale 1.50, 1.50
+		rotate time * 17.005
+		glowStage
+		clamp
+	}
+	{
+		if ( parm7 == 3 )
+
+      	blend add
+		map textures/particles/portal_lightning3
+//		rgb 0.4
+		red		0.4 * keeperEye[ time * .3 ]
+		green	0.2
+		blue	0.1 * keeperEye[ time * .1 ]
+		centerscale 1.50, 1.50
+		rotate time * 17.005
+		glowStage
+		clamp
+	}
+	{
+		if ( parm7 == 4 )
+
+      	blend add
+		map textures/particles/portal_lightning4
+//		rgb 0.4
+		red		0.4 * keeperEye[ time * .3 ]
+		green	0.2
+		blue	0.1 * keeperEye[ time * .1 ]
+		centerscale 1.50, 1.50
+		rotate time * 17.005
+		glowStage
+		clamp
+	}
+}
+
+models/mapobjects/portal/hiderportal_innerwarp
+{
+	noshadows noselfshadow nooverlays
+
+	directportal parm5
+
+	{ // Draw a black texture if the draw distance is too far
+		if ( parm5 > 0 && distance > parm5 )
+		map _black
+		alphatest 0 // This texture must be alphatested, otherwise r_clear will show through
+	}
+	{ // Draw a black texture if the draw distance is too far
+		if ( parm5 > 0 && parm6 > parm5 ) // near-fade distance is beyond the far-fade distance, only use far fade
+		map _black
+		blend blend
+		alpha ( distance / parm5 )
+	}
+	{ // Draw a black texture if the draw distance is too far
+		if ( parm5 > 0 && distance > parm6 && parm6 < parm5 )
+		map _black
+		blend blend
+		alpha ( ( distance - parm6 ) / ( parm5 - parm6 ) )
+	}
+	{
+		blend none
+		map _black
+	}
+}
+
+models/mapobjects/portal/hiderportal_outerwarp
+{
+	noshadows
+	noselfshadow
+//	twosided
+	translucent
+
+	{
+		shaderlevel2
+		program	distort.vfp
+
+		vertexparm		0		1,1,0,0
+		vertexparm		1		8			// magnitude of the distortion
+
+		fragmentmap		0		_currentrender
+		fragmentmap		1		models/mapobjects/portal/displace
+	}
+	{
+		shaderlevel2
+		blend diffusemap
+		map _black
+	}
+}
+
+models/mapobjects/portal/hiderportal_behind
+{
+	noshadows
+	noselfshadow
+//	twosided
+	//translucent
+
+	/*{
+		program	distort.vfp
+
+		vertexparm		0		1,1,0,0
+		//vertexparm		1		2.5*(cosTable[.5 * time]+1)			// magnitude of the distortion
+		vertexparm		1		-15			// magnitude of the distortion
+
+		fragmentparm	0		2		// facing effect
+
+		fragmentmap		0		_currentrender
+		fragmentmap		1		models/mapobjects/portal/portal_back_distort
+	}*/
+}
+
+models/mapobjects/portal/hiderportal_front
+{
+	noshadows
+	noselfshadow
+//	twosided
+	translucent
+}
+
+models/mapobjects/portal/hiderportal_back
+{
+	noshadows noselfshadow nooverlays
+
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_back_add
+		red		1.00 * keeperEye[ time * .3 ]
+		green	0.4
+		blue	0.20 * keeperEye[ time * .1 ]
+		rotate 0.06 * time
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_back_add
+		red		1.00 * keeperEye[ time * .3 ]
+		green	0.4
+		blue	0.20 * keeperEye[ time * .1 ]
+		rotate 0.04 * time
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_back_add
+		red		1.00 * keeperEye[ time * .3 ]
+		green	0.40
+		blue	0.20 * keeperEye[ time * .1 ]
+		rotate 0.02 * time
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/portal/portal_back_add
+		red		1.00 * keeperEye[ time * .3 ]
+		green	0.4
+		blue	0.20 * keeperEye[ time * .1 ]
+		rotate 0.03 * time
+	}
+}

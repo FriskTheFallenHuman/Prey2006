@@ -34,8 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 * console. It allows users to view console output as well as issue
 * console commands to the engine.
 */
-class ConsoleView : public CFormView
-{
+class ConsoleView : public CFormView {
 
 public:
 	enum { IDD = IDD_CONSOLE_FORM };
@@ -53,7 +52,7 @@ public:
 	virtual			~ConsoleView();
 
 	//Public Operations
-	void			AddText( const char* msg );
+	void			AddText( const char * msg );
 	void			SetConsoleText( const idStr& text );
 	void			ExecuteCommand( const idStr& cmd = "" );
 
@@ -72,7 +71,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 	//Protected Operations
-	const char*		TranslateString( const char* buf );
+	const char	*	TranslateString( const char * buf );
 
 
 };

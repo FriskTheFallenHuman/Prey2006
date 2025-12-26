@@ -1,0 +1,280 @@
+/*
+	Sniper Overlay
+*/
+
+#include "guis/anchors.guifragment"
+
+// Available gui vars:
+//	yaw	-	weapon orientation
+#define TIP_TEXT_COLOR		0.627, 0.698, 0.792, 1
+
+windowDef desktop {
+	rect			0, 0, 640, 480 
+	backcolor		0, 0, 0, 0 
+	notime			1
+	nocursor		1
+	menugui			1
+	scaleto43		0
+
+	onNamedEvent zoomIn {
+		// Sniper rifle just activated
+		resetTime "0";
+	}
+
+	onTime 0 {	
+		transition "barrel_clamps::rect"		"320 240 0 0"	"70 -1 540 540" "300" ;
+		transition "barrel_clamps::matcolor"	"0.7 0.3 0.0 1"		"0.6 0.1 0.0 1" "1000" ;
+		transition "rifle_number1::matcolor"	"0 0 0 0"		"1 1 1 0.5" "2000" ;
+		transition "rifle_number2::matcolor"	"0 0 0 0"		"1 1 1 1" "1000" ;
+		transition "FieldOfViewBar::matcolor"	"0 0 0 0"		"1 1 1 1" "1000" ;
+		transition "bars::matcolor"				"0 0 0 0"		"0.3 0.3 0.3 0.3" "400" ;
+		
+		set "compass::rect" "320 240 0 0" ;
+		set "barrel::rect" "320 240 0 0" ;
+		set "barrel2::rect" "320 240 0 0" ;
+		set "barrel3::rect" "320 240 0 0" ;
+		set "scope::matcolor" "0.0 0.0 0.0 0.0" ;
+		set "scope::rect" "288 208 64 64" ;
+	}
+	
+	onTime 300 {
+		transition "compass::rect" "320 240 0 0" "77 -3 480 480" "300" ;
+		transition "barrel::rect" "320 240 0 0" "96 25 480 480" "200" ;
+		transition "barrel2::rect" "320 240 0 0" "96 25 480 480" "200" ;
+		transition "barrel3::rect" "320 240 0 0" "288 208 64 64" "200" ;
+		transition "scope::matcolor"			"0 0 0 0"		"1.0 1.0 1.0 1.0" "500" ;
+	}
+	
+	windowDef overlay {
+		rect		0, 0, 640, 480
+		background	"models/weapons/rifle/scopeview"
+		matcolor	1, 1, 1, "gui::fov"
+		naturalscale	2
+		matscalex	1
+		matscaley	1
+	}
+	
+	windowDef FieldOfViewParent {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		80, 0, 480, 480
+		// FOV comes in the range [0.3-1.0] so that's why this is a little complex
+		rotate		45 - ((("gui::fov" - 0.3) * 1.4) * 90)
+		
+		windowDef FieldOfViewBar {
+			rect		0, 224, 32, 16
+			matcolor	1, 1, 1, 1
+			background	"textures/interface/crosshairs/rifle_number3"
+		}
+	}
+	
+	windowDef compass {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		320, 240, 0, 0
+		matcolor	1, 1, 1, 1
+		background	"models/weapons/rifle/rifle_letters"
+		rotate		"gui::yaw"	//time //(0 - "gui::yaw")
+	}
+	
+	windowDef bars {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		79, 0, 480, 480
+		matcolor	1, 1, 1, 1
+		background	"models/weapons/rifle/scopeviewbars"
+	}
+	
+	windowDef barrel {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		320, 240, 0, 0
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/rifle_barrel1"
+	}
+	
+	windowDef barrel2 {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		320, 240, 0, 0
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/rifle_barrel2"
+	}
+
+	windowDef barrel_clamps {
+		anchor		ANCHOR_CENTER_CENTER
+		rect	100, 31, 480, 480
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/rifle_barrel_clamps"
+	}
+	
+	windowDef rifle_number1 {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		540, 130, 74, 96
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/rifle_number1"
+	}
+	
+	windowDef rifle_number2 {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		35, 26, 177.29, 480
+		background	"textures/interface/crosshairs/rifle_number2"
+		matcolor	1, 1, 1, 1
+	}
+	
+	windowDef scope {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		320, 240, 0, 0
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/rifle_barrel"
+	}
+	
+	windowDef barrel3 {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		320, 240, 0, 0
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/rifle_barrel3"
+	}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//  Tips
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	onNamedEvent tipWindowUp {
+		resetTime "tipWindowShow" "0";
+	}
+	
+	onNamedEvent tipWindowDown {
+		set "tipWindow::visible" "0";
+//		resetTime "tipWindowHide" "0";
+	}
+
+	windowDef tipWindowShow {		// Show anim
+		anchor	ANCHOR_CENTER_CENTER
+		rect	0, 0, 0, 0
+		noTime	1
+		onTime 0 {
+			set "tipWindow::showing" "1";
+			set "TipKey1::matcolor" "0 0 0 0" ;
+			set "TipKey2::matcolor" "0 0 0 0" ;
+			set "TipKeyText1::forecolor" "1 1 1 0" ;
+			set "TipKeyText2::forecolor" "1 1 1 0" ;
+			set "TipKeyTextWide1::forecolor" "1 1 1 0" ;
+			set "TipKeyTextWide2::forecolor" "1 1 1 0" ;
+			set "TipText1::forecolor" "1 1 1 0" ;
+			set "TipText2::forecolor" "1 1 1 0" ;
+			set "tipWindow::visible" "1";
+			transition "TipKey1::matcolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "TipKey2::matcolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "TipKeyText1::forecolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "TipKeyText2::forecolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "TipKeyTextWide1::forecolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "TipKeyTextWide2::forecolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "TipText1::forecolor" "1 1 1 0" "1 1 1 1" "300" ;
+			transition "TipText2::forecolor" "1 1 1 0" "1 1 1 1" "300" ;
+		}
+	}
+	windowDef tipWindowHide {		// Hide anim
+		anchor	ANCHOR_CENTER_CENTER
+		rect	0, 0, 0, 0
+		noTime	1
+		onTime 0 {
+			set "tipWindow::showing" "0";
+			transition "TipKey1::matcolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "TipKey2::matcolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "TipKeyText1::forecolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "TipKeyText2::forecolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "TipKeyTextWide1::forecolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "TipKeyTextWide2::forecolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "TipText1::forecolor" "1 1 1 1" "1 1 1 0" "300" ;
+			transition "TipText2::forecolor" "1 1 1 1" "1 1 1 0" "300" ;
+		}
+		onTime 300 {
+			if ("tipWindow::showing" == 0) {
+				set "tipWindow::visible" "0";
+			}
+		}
+	}
+
+	windowDef tipWindow {
+		anchor		ANCHOR_CENTER_CENTER
+		rect		400, 30, 420, 100
+		float		showing 0
+		visible		0
+
+		windowDef Tip1 {
+			rect		0, 0, 420, 50
+			
+			windowDef TipKey1 {
+				rect		0, 0, 96, 48
+				matcolor	1, 1, 1, 1
+				background	"gui::tip1_keymaterial"
+			}
+			windowDef TipKeyTextWide1 {
+				rect		10, 8, 80, 30
+				backcolor	0, 0, 0, 0
+				forecolor	1, 1, 1, 1
+				textscale	0.3
+				textalign	1
+				textaligny	-2
+				shear		0, 0.22
+				text		"gui::tip1_key"
+				visible		"gui::tip1_keywide"
+			}
+			windowDef TipKeyText1 {
+				rect		54, 4, 34, 32
+				backcolor	0, 0, 0, 0
+				forecolor	1, 1, 1, 1
+				textscale	0.3
+				textalign	1
+				textaligny	2
+				shear		0, 0.22
+				text		"gui::tip1_key"
+				visible		("gui::tip1_keywide" == 0)
+			}
+			windowDef TipText1 {
+				rect		100, 10, 400, 30
+				forecolor	TIP_TEXT_COLOR
+				textscale	0.4
+				textalign	0
+				textaligny	-5
+				shadow		1
+				text		"gui::tip1_tip"
+			}
+		}
+		windowDef Tip2 {
+			rect		0, 45, 420, 50
+			
+			windowDef TipKey2 {
+				rect		0, 0, 96, 48
+				matcolor	1, 1, 1, 1
+				background	"gui::tip2_keymaterial"
+			}
+			windowDef TipKeyTextWide2 {
+				rect		10, 8, 80, 30
+				backcolor	0, 0, 0, 0
+				forecolor	1, 1, 1, 1
+				textscale	0.3
+				textalign	1
+				textaligny	-2
+				shear		0, 0.22
+				text		"gui::tip2_key"
+				visible		"gui::tip2_keywide"
+			}
+			windowDef TipKeyText2 {
+				rect		54, 4, 34, 32
+				backcolor	0, 0, 0, 0
+				forecolor	1, 1, 1, 1
+				textscale	0.3
+				textalign	1
+				textaligny	2
+				shear		0, 0.22
+				text		"gui::tip2_key"
+				visible		("gui::tip2_keywide" == 0)
+			}
+			windowDef TipText2 {
+				rect		100, 10, 400, 30
+				forecolor	TIP_TEXT_COLOR
+				textscale	0.4
+				textalign	0
+				textaligny	-5
+				shadow		1
+				text		"gui::tip2_tip"
+			}
+		}
+	}
+}

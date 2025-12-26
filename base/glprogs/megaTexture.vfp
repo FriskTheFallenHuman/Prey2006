@@ -1,0 +1,85 @@
+!!ARBvp1.0 
+OPTION ARB_position_invariant ;
+
+# texture 0 = _borderClamp
+# texture 2 = 1/2 domain
+# texture 3 = 1/4 domain
+# texture 4 = 1/8 domain
+# texture 5 = 1/16 domain
+
+
+# masks have a scale and offset
+MAD		result.texcoord[0], vertex.texcoord, program.local[0].w, program.local[0];
+MAD		result.texcoord[1], vertex.texcoord, program.local[1].w, program.local[1];
+MAD		result.texcoord[2], vertex.texcoord, program.local[2].w, program.local[2];
+MAD		result.texcoord[3], vertex.texcoord, program.local[3].w, program.local[3];
+MAD		result.texcoord[4], vertex.texcoord, program.local[4].w, program.local[4];
+MAD		result.texcoord[5], vertex.texcoord, program.local[5].w, program.local[5];
+MAD		result.texcoord[6], vertex.texcoord, program.local[6].w, program.local[6];
+
+# images just have a scale
+MUL		result.texcoord[7], vertex.texcoord, program.local[7].w;
+
+END;
+
+#======================================================================
+
+!!ARBfp1.0 
+OPTION ARB_precision_hint_fastest;
+
+TEMP	mask1, invMask1, mask2, invMask2, R2, combined, scaled;
+
+# load masks
+TEX	mask1.x, fragment.texcoord[0], texture[0], 2D;
+TEX	mask1.y, fragment.texcoord[1], texture[0], 2D;
+TEX	mask1.z, fragment.texcoord[2], texture[0], 2D;
+TEX	mask1.w, fragment.texcoord[3], texture[0], 2D;
+
+TEX	mask2.x, fragment.texcoord[4], texture[0], 2D;
+TEX	mask2.y, fragment.texcoord[5], texture[0], 2D;
+TEX	mask2.z, fragment.texcoord[6], texture[0], 2D;
+
+# calculate inverse mask
+SUB	invMask1, 1, mask1;
+SUB	invMask2, 1, mask2;
+
+# load the minimum quality image first, which will be used
+# if none of the other textures have a valid mask
+MOV		combined, 0;
+
+MOV		scaled, fragment.texcoord[7];
+
+# load the multi-resolution textures and sum up with the masks
+TEX		R2, scaled, texture[1], 2D;  # lowest quality moving image
+MUL		scaled, scaled, 2;
+MUL		combined, combined, invMask1.x;
+MAD		combined, R2, mask1.x, combined;
+TEX		R2, scaled, texture[2], 2D;
+MUL		scaled, scaled, 2;
+MUL		combined, combined, invMask1.y;
+MAD		combined, R2, mask1.y, combined;
+TEX		R2, scaled, texture[3], 2D;
+MUL		scaled, scaled, 2;
+MUL		combined, combined, invMask1.z;
+MAD		combined, R2, mask1.z, combined;
+TEX		R2, scaled, texture[4], 2D;
+MUL		scaled, scaled, 2;
+MUL		combined, combined, invMask1.w;
+MAD		combined, R2, mask1.w, combined;
+TEX		R2, scaled, texture[5], 2D;
+MUL		scaled, scaled, 2;
+MUL		combined, combined, invMask2.x;
+MAD		combined, R2, mask2.x, combined;
+TEX		R2, scaled, texture[6], 2D;
+MUL		scaled, scaled, 2;
+MUL		combined, combined, invMask2.y;
+MAD		combined, R2, mask2.y, combined;
+TEX		R2, scaled, texture[7], 2D;
+MUL		scaled, scaled, 2;
+MUL		combined, combined, invMask2.z;
+MAD		combined, R2, mask2.z, combined;
+
+MOV		result.color.xyz, combined;
+
+END;
+

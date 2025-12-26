@@ -30,8 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // CMapInfo dialog
 
-class CMapInfo : public CDialogEx
-{
+class CMapInfo : public CDialogEx {
 public:
 	CMapInfo( CWnd* pParent = NULL );   // standard constructor
 

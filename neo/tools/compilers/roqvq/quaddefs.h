@@ -66,15 +66,13 @@ If you have questions concerning this license or the applicable additional terms
 #define RoQ_QUAD_JPEG	0x1012
 #define RoQ_QUAD_CODEBOOK		0x1002
 
-typedef struct
-{
+typedef struct {
 	byte	size;				//	32, 16, 8, or 4
 	word	xat;				// where is it at on the screen
 	word	yat;				//
 } shortQuadCel;
 
-typedef struct
-{
+typedef struct {
 	byte	size;				//	32, 16, 8, or 4
 	word	xat;				// where is it at on the screen
 	word	yat;				//
@@ -104,21 +102,18 @@ typedef struct
 	float			snr[DEAD + 1];				// snrssss
 } quadcel;
 
-typedef struct
-{
+typedef struct {
 	float			snr[DEAD + 1];				// snrssss
 	unsigned int	cols[8];
 	unsigned int	bitmaps[7];				// ccc bitmap
 } dataQuadCel;
 
-typedef struct
-{
+typedef struct {
 	float				normal;
 	unsigned short int	index;
 } norm;
 
-typedef struct
-{
+typedef struct {
 	unsigned char dtlMap[256];
 	int	r[4];
 	int g[4];
@@ -127,8 +122,7 @@ typedef struct
 	float ymean;
 } dtlCel;
 
-typedef struct
-{
+typedef struct {
 	byte	r, g, b, a;
 } pPixel;
 

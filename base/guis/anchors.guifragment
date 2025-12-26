@@ -1,0 +1,43 @@
+// don't anchor to anything, stretch over whole screen
+// (the default, you'll probably don't set this explicitly)
+#define ANCHOR_NONE                -1
+
+// anchor to top left corner, scale to 4:3
+#define ANCHOR_TOP_LEFT            0
+// anchor to top center, scale to 4:3
+#define ANCHOR_TOP_CENTER        1
+// anchor to top right corner, scale to 4:3
+#define ANCHOR_TOP_RIGHT        2
+
+// anchor to the center of the left window border, scale to 4:3
+#define ANCHOR_CENTER_LEFT        3
+
+// anchor to the center of the screen, scale to 4:3
+// (if used with "rect 0, 0, 640, 480", that will always touch
+//  either the left/right or upper/lower window borders,
+//  depending on the aspect ratio of Doom3's current resolution)
+#define ANCHOR_CENTER_CENTER    4
+
+// anchor to the center of the right window border, scale to 4:3
+#define ANCHOR_CENTER_RIGHT        5
+
+// anchor to bottom left corner, scale to 4:3
+#define ANCHOR_BOTTOM_LEFT        6
+// anchor to bottom center, scale to 4:3
+#define ANCHOR_BOTTOM_CENTER    7
+// anchor to bottom right corner, scale to 4:3
+#define ANCHOR_BOTTOM_RIGHT        8
+
+// anchor to the top of the screen, stretch over whole width
+#define ANCHOR_TOP                9
+// anchor to the vertical center of the screen, stretch over whole width
+#define ANCHOR_VCENTER            10
+// anchor to the bottom of the screen, stretch over whole width
+#define ANCHOR_BOTTOM            11
+
+// anchor to the left border of the screen, stretch over whole height
+#define ANCHOR_LEFT                12
+// anchor to the horizontal center of the screen, stretch over whole height
+#define ANCHOR_HCENTER            13
+// anchor to the right border of the screen, stretch over whole height
+#define ANCHOR_RIGHT            14

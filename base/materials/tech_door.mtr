@@ -1,0 +1,418 @@
+
+textures/tech_door/biotechdoor1
+{
+	qer_editorimage 	textures/tech_door/biotechdoor1_d
+	matter_altmetal
+
+	bumpmap 		addnormals (textures/tech_door/biotechdoor1_local, heightmap (textures/tech_door/biotechdoor1_h, 6))
+
+	diffusemap	 	textures/tech_door/biotechdoor1_d
+	specularmap		textures/tech_door/biotechdoor1_s
+}
+
+
+textures/tech_door/biotechdoor1_add
+{
+	qer_editorimage 	textures/tech_door/biotechdoor1_d
+	matter_altmetal
+
+	bumpmap 		addnormals (textures/tech_door/biotechdoor1_local, heightmap (textures/tech_door/biotechdoor1_h, 6))
+
+	diffusemap	 	textures/tech_door/biotechdoor1_d
+	specularmap		textures/tech_door/biotechdoor1_s
+	{
+		blend add
+		map textures/tech_door/biotechdoor1_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+}
+
+textures/tech_door/biotechdoor1_256
+{
+	qer_editorimage 	textures/tech_door/biotechdoor256_d
+	matter_altmetal
+
+	bumpmap 		addnormals (textures/tech_door/biotechdoor256_local, heightmap (textures/tech_door/biotechdoor256_h, 6))
+
+	diffusemap	 	textures/tech_door/biotechdoor256_d
+	specularmap		textures/tech_door/biotechdoor256_s
+}
+
+
+textures/tech_door/biotechdoor1_256_add
+{
+	qer_editorimage 	textures/tech_door/biotechdoor256_d
+	matter_altmetal
+
+	bumpmap 		addnormals (textures/tech_door/biotechdoor256_local, heightmap (textures/tech_door/biotechdoor256_h, 6))
+
+	diffusemap	 	textures/tech_door/biotechdoor256_d
+	specularmap		textures/tech_door/biotechdoor256_s
+	{
+		blend add
+		map textures/tech_door/biotechdoor256_a
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+}
+
+
+textures/tech_door/biotechdoor2
+{
+	qer_editorimage 	textures/tech_door/biotechdoor2_d
+	matter_altmetal
+
+	bumpmap 		addnormals (textures/tech_door/biotechdoor2_local,
+				heightmap (textures/tech_door/biotechdoor2_h, 6))
+
+	diffusemap	 	textures/tech_door/biotechdoor2_d
+	specularmap		textures/tech_door/biotechdoor2_s
+}
+
+textures/tech_door/biotechdoor2_add
+{
+	qer_editorimage 	textures/tech_door/biotechdoor2_d
+	matter_altmetal
+
+	bumpmap 		addnormals (textures/tech_door/biotechdoor2_local,
+				heightmap (textures/tech_door/biotechdoor2_h, 6))
+
+	diffusemap	 	textures/tech_door/biotechdoor2_d
+	specularmap		textures/tech_door/biotechdoor2_s
+	{
+		blend add
+		map textures/tech_door/biotechdoor2_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+}
+
+textures/tech_door/biotechdoor2b
+{
+	qer_editorimage 	textures/tech_door/biotechdoor2b_d
+	matter_altmetal
+
+	bumpmap 		addnormals (textures/tech_door/biotechdoor2b_local,
+				heightmap (textures/tech_door/biotechdoor2b_h, 6))
+
+	diffusemap	 	textures/tech_door/biotechdoor2b_d
+	specularmap		textures/tech_door/biotechdoor2b_s
+}
+
+textures/tech_door/biotechdoor2b_add
+{
+	qer_editorimage 	textures/tech_door/biotechdoor2b_d
+	matter_altmetal
+
+	bumpmap 		addnormals (textures/tech_door/biotechdoor2b_local,
+				heightmap (textures/tech_door/biotechdoor2b_h, 6))
+
+	diffusemap	 	textures/tech_door/biotechdoor2b_d
+	specularmap		textures/tech_door/biotechdoor2b_s
+	{
+		blend add
+		map textures/tech_door/biotechdoor2b_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+}
+textures/tech_door/techpanel8door
+
+//copy of techpanel8, which i think would work well as a door - eq
+{
+	qer_editorimage 	textures/tech_wall/techpanel8_d
+	matter_altmetal
+
+	bumpmap 		addnormals (textures/tech_wall/techpanel8_local, heightmap (textures/tech_wall/techpanel8_h, 6))
+	diffusemap	 	textures/tech_wall/techpanel8_d
+	specularmap		textures/tech_wall/techpanel8_s
+}
+
+
+
+textures/tech_door/biotechdoor3
+{
+	qer_editorimage 	textures/tech_door/biotechdoor3_d
+	matter_altmetal
+
+	bumpmap 		addnormals (textures/tech_door/biotechdoor3_local,
+				heightmap (textures/tech_door/biotechdoor3_h, 6))
+
+	diffusemap	 	textures/tech_door/biotechdoor3_d
+	specularmap		textures/tech_door/biotechdoor3_s
+}
+
+textures/tech_door/biotechdoor3_add
+{
+	qer_editorimage 	textures/tech_door/biotechdoor3_d
+	matter_altmetal
+
+	bumpmap 		addnormals (textures/tech_door/biotechdoor3_local,
+				heightmap (textures/tech_door/biotechdoor3_h, 6))
+
+	diffusemap	 	textures/tech_door/biotechdoor3_d
+	specularmap		textures/tech_door/biotechdoor3_s
+
+//	{ if ( parm7 == 0 && parm6 == 0 )
+//		blend add
+//		map textures/tech_door/biotechdoor3_add
+//		color
+//		parm0 * ((jitter1 [time * 2])),
+//		parm1 * ((jitter1 [time * 2])),
+//		parm2 * ((jitter1 [time * 2])),
+//		1.0
+//	}
+
+	{ if ( parm7 < 2 && parm6 == 0)
+		blend add
+		map textures/tech_door/biotechdoor3_add
+		red 	0.35 * ((jitter1 [time * 2]))
+		green	0.83 * ((jitter1 [time * 2]))
+		blue 	1	 * ((jitter1 [time * 2]))	// cdoor_add_open
+	}
+
+	{ if ( parm7 < 2 && parm6 == 1 )
+		blend add
+		map textures/tech_door/biotechdoor3_add
+		red 	0.35	* ( airlockwaittable [ time * 0.8 ] )		// cdoor_add_open_waiting
+		green	0.83 	* ( airlockwaittable [ time * 0.8 ] )	// cdoor_add_open_waiting
+		blue 	1		* ( airlockwaittable [ time * 0.8 ] )		// cdoor_add_open_waiting
+	}
+
+	{ if ( parm7 == 2 && parm6 == 0 )
+		blend add
+		map textures/tech_door/biotechdoor3_add
+		red 0.884 	* ((jitter1 [time * 2]))
+		green  0.0 	* ((jitter1 [time * 2]))
+		blue 0.0	* ((jitter1 [time * 2]))	// locked
+	}
+
+	{ if ( parm7 == 2 && parm6 == 1 )
+		blend add
+		map textures/tech_door/biotechdoor3_add
+		red 0.884 * ( airlockwaittable [ time * 0.8 ] )	//locked
+		green  0.0
+		blue 0.0		// cdoor_add_neveropen
+	}
+
+	{ if ( parm7 == 3 )
+		blend add
+		map textures/tech_door/biotechdoor3_add
+		red 	0
+		green	0
+		blue	0
+	}
+}
+
+textures/tech_door/biotechdoor3_status
+{
+	qer_editorimage 	textures/tech_door/biotechdoor3_d
+	matter_altmetal
+
+	bumpmap 		addnormals (textures/tech_door/biotechdoor3_local,
+				heightmap (textures/tech_door/biotechdoor3_h, 6))
+
+	diffusemap	 	textures/tech_door/biotechdoor3_d
+	specularmap		textures/tech_door/biotechdoor3_s
+
+//	{ if ( parm7 == 0 && parm6 == 0 )
+//		blend add
+//		map textures/tech_door/biotechdoor3_add
+////		red 0.9 	green 0.95 		blue 0.1		// cdoor_add_locked
+//		colored
+//	}
+
+	{ if ( parm7 < 2 && parm6 == 0)
+		blend add
+		map textures/tech_door/biotechdoor3_add
+		red		0.35
+		green	0.83
+		blue	1		// cdoor_add_open
+	}
+
+	{ if ( parm7 < 2 && parm6 == 1 )
+		blend add
+		map textures/tech_door/biotechdoor3_add
+		red 	0.35 * ( airlockwaittable [ time * 0.8 ] )		// cdoor_add_open_waiting
+		green 	0.83 * ( airlockwaittable [ time * 0.8 ] )	// cdoor_add_open_waiting
+		blue 	1	 * ( airlockwaittable [ time * 0.8 ] )		// cdoor_add_open_waiting
+	}
+
+	{ if ( parm7 == 2 && parm6 == 0 )
+		blend add
+		map textures/tech_door/biotechdoor3_add
+		red 0.884 	green  0.0 		blue 0.0		// locked
+	}
+
+	{ if ( parm7 == 2 && parm6 == 1 )
+		blend add
+		map textures/tech_door/biotechdoor3_add
+		red 0.884 * ( airlockwaittable [ time * 0.8 ] )	//locked
+		green  0.0
+		blue 0.0		// cdoor_add_neveropen
+	}
+
+	{ if ( parm7 == 3 )
+		blend add
+		map textures/tech_door/biotechdoor3_add
+		red 	0
+		green	0
+		blue	0
+	}
+}
+textures/tech_door/small_door_add
+{
+	qer_editorimage 	models/mapobjects/small_door/small_door_local
+	matter_metal
+
+	bumpmap
+		addnormals	( models/mapobjects/small_door/small_door_local,
+		heightmap	( models/mapobjects/small_door/small_door_h, 6 ))
+	diffusemap	 	models/mapobjects/small_door/small_door_d
+	specularmap		models/mapobjects/small_door/small_door_s
+
+//	{ if ( parm7 == 0 && parm6 == 0 )
+//		blend add
+//		map models/mapobjects/small_door/small_door_add
+//		colored
+//		glowStage
+//	}
+
+	{ if ( parm7 < 2 && parm6 == 0 )
+		blend		add
+		map models/mapobjects/small_door/small_door_add
+		red 	0.35
+		green  	0.83
+		blue 	1		// cdoor_add_open
+		glowStage
+	}
+
+	{ if ( parm7 < 2 && parm6 == 1 )
+		blend		add
+		map models/mapobjects/small_door/small_door_add
+		red 0.35 * ( airlockwaittable [ time * 0.8 ] )		// cdoor_add_open_waiting
+		green 0.83 * ( airlockwaittable [ time * 0.8 ] )	// cdoor_add_open_waiting
+		blue 1 * ( airlockwaittable [ time * 0.8 ] )		// cdoor_add_open_waiting
+		glowStage
+	}
+
+	{ if ( parm7 == 2 && parm6 == 0 )
+		blend		add
+		map models/mapobjects/small_door/small_door_add
+		red 0.884 	green  0.0 		blue 0.0		// locked
+		glowStage
+	}
+
+	{ if ( parm7 == 2 && parm6 == 1 )
+		blend		add
+		map models/mapobjects/small_door/small_door_add
+		red 0.884 * ( airlockwaittable [ time * 0.8 ] )		// locked
+		green 0.0
+		blue 0.0
+		glowStage
+	}
+
+	{ if ( parm7 ==3 )
+		blend		add
+		map models/mapobjects/small_door/small_door_add
+		red		0
+		green	0
+		blue	0
+		glowStage
+	}
+
+/*	{
+		blend add
+		map models/mapobjects/small_door/small_door_add
+		rgb (jitter1 [time * 2]) - 0.3
+		glowstage
+	}*/
+}
+
+
+//----------------------------------------
+textures/tech_door/techdoor_040
+{
+	qer_editorimage 	textures/tech_door/techdoor_040_local
+	matter_altmetal
+
+	bumpmap 		addnormals (textures/tech_door/techdoor_040_local, heightmap (textures/tech_door/techdoor_040_h, 6))
+
+	diffusemap	 	textures/tech_door/techdoor_040_d
+	specularmap		textures/tech_door/techdoor_040_s
+}
+
+
+
+
+
+
+
+
+
+
+
+
+//----------------------------------------
+//  cleaner versions
+//----------------------------------------
+textures/tech_door/techdoor_040_clean
+{
+	qer_editorimage 	textures/tech_door/techdoor_040_clean_local
+	matter_altmetal
+
+	bumpmap 		addnormals (textures/tech_door/techdoor_040_clean_local, heightmap (textures/tech_door/techdoor_040_clean_h, 6))
+
+	diffusemap	 	textures/tech_door/techdoor_040_clean_d
+	specularmap		textures/tech_door/techdoor_040_clean_s
+
+
+	{ if ( parm7 < 2 && parm6 == 0 )
+		blend		add
+		map textures/tech_door/techdoor_040_clean_a
+		red 	0.35
+		green  	0.83
+		blue 	1		// cdoor_add_open
+		glowStage
+	}
+
+	{ if ( parm7 < 2 && parm6 == 1 )
+		blend		add
+		map textures/tech_door/techdoor_040_clean_a
+		red 0.35 * ( airlockwaittable [ time * 0.8 ] )		// cdoor_add_open_waiting
+		green 0.83 * ( airlockwaittable [ time * 0.8 ] )	// cdoor_add_open_waiting
+		blue 1 * ( airlockwaittable [ time * 0.8 ] )		// cdoor_add_open_waiting
+		glowStage
+	}
+
+	{ if ( parm7 == 2 && parm6 == 0 )
+		blend		add
+		map textures/tech_door/techdoor_040_clean_a
+		red 0.884 	green  0.0 		blue 0.0		// locked
+		glowStage
+	}
+
+	{ if ( parm7 == 2 && parm6 == 1 )
+		blend		add
+		map textures/tech_door/techdoor_040_clean_a
+		red 0.884 * ( airlockwaittable [ time * 0.8 ] )		// locked
+		green 0.0
+		blue 0.0
+		glowStage
+	}
+
+	{ if ( parm7 ==3 )
+		blend		add
+		map textures/tech_door/techdoor_040_clean_a
+		red		0
+		green	0
+		blue	0
+		glowStage
+	}
+
+
+/*	{
+		blend add
+		map textures/tech_door/techdoor_040_clean_a
+		rgb (jitter3b [time * 4]) - 0.1
+	}*/
+}
+
+

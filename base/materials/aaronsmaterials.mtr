@@ -1,0 +1,38 @@
+
+
+models/weapons/launcher/flameeffect
+{
+	noshadows
+	//noselfshadow
+	translucent
+	//twosided
+	//deform sprite
+
+	//{
+	//	blend 	add
+	//	map 	textures/particles/puff2
+	//	vertexcolor
+		//rgb 	muzzleflashrandom[time]
+	//	rotate	3 * time
+	//	clamp
+	//}
+	{
+		blend 	add
+		map 	textures/particles/puff2invert
+		vertexcolor
+	//	rgb 	muzzleflashrandom[time]
+		rotate	-2 * time
+		clamp
+	}
+}
+
+textures/special/glasstest {
+	glass_macro
+	twosided
+
+	qer_editorimage textures/prey_defaults/default_floor
+
+	diffusemap textures/prey_defaults/default_floor_d
+ 	specularmap textures/prey_defaults/default_floor_s
+ 	bumpmap addnormals (textures/prey_defaults/default_floor_local, heightmap (textures/prey_defaults/default_floor_h, 1))
+}

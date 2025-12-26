@@ -1,0 +1,49 @@
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//  Ready Tip
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	windowDef Ready_TipWindow {
+		rect		220, 340, 420, 164
+		visible		"gui::readytipvisible"
+
+		windowDef Ready_TipKey {
+			rect		0, 103, 96, 38
+			matcolor	1, 1, 1, 1
+			background	"gui::readykeymaterial"
+		}
+		windowDef Ready_TipKeyTextWide {
+			rect		10, 108, 80, 25
+			backcolor	0, 0, 0, 0
+			forecolor	1, 1, 1, 1
+			textscale	0.3
+			textalign	1
+			textaligny	-2
+			shear		0, 0.22
+			shadow		1
+			text		"gui::readykey"
+			visible		"gui::readykeywide"
+		}
+		windowDef Ready_TipKeyText {
+			rect		54, 104, 34, 25
+			backcolor	0, 0, 0, 0
+			forecolor	1, 1, 1, 1
+			textscale	0.3
+			textalign	1
+			textaligny	2
+			shadow		1
+			shear		0, 0.22
+			text		"gui::readykey"
+			visible		("gui::readykeywide" == 0)
+		}
+
+		windowDef Ready_TipText {
+			rect		100, 108, 270, 40
+			forecolor	0.627, 0.698, 0.792, 1
+			textscale	0.4
+			textalign	0
+			textaligny	0
+			shadow		1
+			text		"#str_41131"
+		}
+	}	

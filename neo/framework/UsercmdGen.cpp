@@ -939,7 +939,7 @@ usercmd_t idUsercmdGenLocal::TicCmd( int ticNumber ) {
 	if ( ticNumber <= com_ticNumber - MAX_BUFFERED_USERCMD ) {
 		// this can happen when something in the game code hitches badly, allowing the
 		// async code to overflow the buffers
-		//common->Printf( "warning: idUsercmdGenLocal::TicCmd ticNumber <= com_ticNumber - MAX_BUFFERED_USERCMD\n" );
+		//common->Printf( "idUsercmdGenLocal::TicCmd ticNumber <= com_ticNumber - MAX_BUFFERED_USERCMD\n" );
 	}
 
 	return buffered[ ticNumber & (MAX_BUFFERED_USERCMD-1) ];

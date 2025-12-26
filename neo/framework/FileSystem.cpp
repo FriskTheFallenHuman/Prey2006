@@ -795,7 +795,7 @@ const char *idFileSystemLocal::BuildOSPath( const char *base, const char *game, 
 
 		if ( testPath.HasUpper() ) {
 
-			common->DPrintf( "Non-portable: path contains uppercase characters: %s\n", testPath.c_str() );
+			//common->DPrintf( "Non-portable: path contains uppercase characters: %s\n", testPath.c_str() );	// Too noisy
 
 			// attempt a fixup on the fly
 			if ( fs_caseSensitiveOS.GetBool() ) {
@@ -804,7 +804,7 @@ const char *idFileSystemLocal::BuildOSPath( const char *base, const char *game, 
 				fileName.StripPath();
 				sprintf( newPath, "%s/%s/%s", base, testPath.c_str(), fileName.c_str() );
 				ReplaceSeparators( newPath );
-				common->DPrintf( "Fixed up to %s\n", newPath.c_str() );
+				common->DPrintf( "Fixed up to '%s'\n", newPath.c_str() );
 				idStr::Copynz( OSPath, newPath, sizeof( OSPath ) );
 				return OSPath;
 			}
@@ -1053,7 +1053,7 @@ int idFileSystemLocal::ReadFile( const char *relativePath, void **buffer, ID_TIM
 			loadCount++;
 			loadStack++;
 
-			common->DPrintf( "Loading %s from journal file.\n", relativePath );
+			common->DPrintf( "Loading '%s' from journal file.\n", relativePath );
 			len = 0;
 			r = eventLoop->com_journalDataFile->Read( &len, sizeof( len ) );
 			if ( r != sizeof( len ) ) {
@@ -1109,7 +1109,7 @@ int idFileSystemLocal::ReadFile( const char *relativePath, void **buffer, ID_TIM
 
 	// if we are journalling and it is a config file, write it to the journal file
 	if ( isConfig && eventLoop && eventLoop->JournalLevel() == 1 ) {
-		common->DPrintf( "Writing %s to journal file.\n", relativePath );
+		common->DPrintf( "Writing '%s' to journal file.\n", relativePath );
 		eventLoop->com_journalDataFile->Write( &len, sizeof( len ) );
 		eventLoop->com_journalDataFile->Write( buf, len );
 		eventLoop->com_journalDataFile->Flush();
@@ -2456,7 +2456,7 @@ int idFileSystemLocal::ValidateDownloadPakForChecksum( int checksum, char path[ 
 	name = pak->pakFilename;
 	name.StripPath();
 	if ( strstr( name.c_str(), "pak" ) == name.c_str() ) {
-		common->DPrintf( "%s is not a donwloadable pak\n", pak->pakFilename.c_str() );
+		common->DPrintf( "'%s' is not a donwloadable pak\n", pak->pakFilename.c_str() );
 		return 0;
 	}
 
@@ -3213,7 +3213,7 @@ idFile *idFileSystemLocal::OpenFileWrite( const char *relativePath, const char *
 	// so just flush everything
 	ClearDirCache();
 
-	common->DPrintf( "writing to: %s\n", OSpath.c_str() );
+	common->DPrintf( "writing to: '%s'\n", OSpath.c_str() );
 	CreateOSPath( OSpath );
 
 	f = new idFile_Permanent();
@@ -3244,10 +3244,10 @@ idFile *idFileSystemLocal::OpenExplicitFileRead( const char *OSPath ) {
 	}
 
 	if ( fs_debug.GetInteger() ) {
-		common->Printf( "idFileSystem::OpenExplicitFileRead: %s\n", OSPath );
+		common->Printf( "idFileSystem::OpenExplicitFileRead: '%s'\n", OSPath );
 	}
 
-	common->DPrintf( "idFileSystem::OpenExplicitFileRead - reading from: %s\n", OSPath );
+	common->DPrintf( "idFileSystem::OpenExplicitFileRead - reading from: '%s'\n", OSPath );
 
 	f = new idFile_Permanent();
 	f->o = OpenOSFile( OSPath, "rb" );
@@ -3277,10 +3277,10 @@ idFile *idFileSystemLocal::OpenExplicitFileWrite( const char *OSPath ) {
 	}
 
 	if ( fs_debug.GetInteger() ) {
-		common->Printf( "idFileSystem::OpenExplicitFileWrite: %s\n", OSPath );
+		common->Printf( "idFileSystem::OpenExplicitFileWrite: '%s'\n", OSPath );
 	}
 
-	common->DPrintf( "writing to: %s\n", OSPath );
+	common->DPrintf( "writing to: '%s'\n", OSPath );
 	CreateOSPath( OSPath );
 
 	f = new idFile_Permanent();

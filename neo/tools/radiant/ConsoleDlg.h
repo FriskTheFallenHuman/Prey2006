@@ -30,8 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // CConsoleDlg dialog
 
-class CConsoleDlg : public CDialogEx
-{
+class CConsoleDlg : public CDialogEx {
 	DECLARE_DYNCREATE( CConsoleDlg )
 
 public:
@@ -47,7 +46,7 @@ protected:
 public:
 	CEdit editConsole;
 	CEdit editInput;
-	void AddText( const char* msg );
+	void AddText( const char * msg );
 	void SetConsoleText( const idStr& text );
 	void ExecuteCommand( const idStr& cmd = "" );
 

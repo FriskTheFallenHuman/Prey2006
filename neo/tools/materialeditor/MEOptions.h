@@ -34,8 +34,7 @@ If you have questions concerning this license or the applicable additional terms
 * settings to the registry. Settings are written to
 * TOOLS_REGISTRY_PATH\\MaterialEditor
 */
-class MEOptions
-{
+class MEOptions {
 
 public:
 	MEOptions();
@@ -48,21 +47,19 @@ public:
 	* Sets the flag that determines if the settings need to be saved because
 	* they where modified.
 	*/
-	void				SetModified( bool mod = true )
-	{
+	void				SetModified( bool mod = true ) {
 		modified = mod;
 	};
 	/**
 	* Get the flag that determines if the settings need to be saved because
 	* they where modified.
 	*/
-	bool				GetModified()
-	{
+	bool				GetModified() {
 		return modified;
 	};
 
-	void				SetWindowPlacement( const char* name, HWND hwnd );
-	bool				GetWindowPlacement( const char* name, HWND hwnd );
+	void				SetWindowPlacement( const char * name, HWND hwnd );
+	bool				GetWindowPlacement( const char * name, HWND hwnd );
 
 	void				SetMaterialTreeWidth( int width );
 	int					GetMaterialTreeWidth();
@@ -96,78 +93,64 @@ protected:
 };
 
 
-ID_INLINE void MEOptions::SetWindowPlacement( const char* name, HWND hwnd )
-{
+ID_INLINE void MEOptions::SetWindowPlacement( const char * name, HWND hwnd ) {
 	registry.SetWindowPlacement( name, hwnd );
 }
 
-ID_INLINE bool MEOptions::GetWindowPlacement( const char* name, HWND hwnd )
-{
+ID_INLINE bool MEOptions::GetWindowPlacement( const char * name, HWND hwnd ) {
 	return registry.GetWindowPlacement( name, hwnd );
 }
 
-ID_INLINE void MEOptions::SetMaterialTreeWidth( int width )
-{
+ID_INLINE void MEOptions::SetMaterialTreeWidth( int width ) {
 	materialTreeWidth = width;
 	SetModified( true );
 }
 
-ID_INLINE int MEOptions::GetMaterialTreeWidth()
-{
+ID_INLINE int MEOptions::GetMaterialTreeWidth() {
 	return materialTreeWidth;
 }
 
-ID_INLINE void MEOptions::SetStageWidth( int width )
-{
+ID_INLINE void MEOptions::SetStageWidth( int width ) {
 	stageWidth = width;
 	SetModified( true );
 }
 
-ID_INLINE int MEOptions::GetStageWidth()
-{
+ID_INLINE int MEOptions::GetStageWidth() {
 	return stageWidth;
 }
 
-ID_INLINE void MEOptions::SetPreviewPropertiesWidth( int width )
-{
+ID_INLINE void MEOptions::SetPreviewPropertiesWidth( int width ) {
 	previewPropertiesWidth = width;
 	SetModified( true );
 }
 
-ID_INLINE int MEOptions::GetPreviewPropertiesWidth()
-{
+ID_INLINE int MEOptions::GetPreviewPropertiesWidth() {
 	return previewPropertiesWidth;
 }
 
-ID_INLINE void MEOptions::SetMaterialEditHeight( int height )
-{
+ID_INLINE void MEOptions::SetMaterialEditHeight( int height ) {
 	materialEditHeight = height;
 	SetModified( true );
 }
 
-ID_INLINE int MEOptions::GetMaterialEditHeight()
-{
+ID_INLINE int MEOptions::GetMaterialEditHeight() {
 	return materialEditHeight;
 }
 
-ID_INLINE void MEOptions::SetMaterialPropHeadingWidth( int width )
-{
+ID_INLINE void MEOptions::SetMaterialPropHeadingWidth( int width ) {
 	materialPropHeadingWidth = width;
 	SetModified( true );
 }
 
-ID_INLINE int MEOptions::GetMaterialPropHeadingWidth()
-{
+ID_INLINE int MEOptions::GetMaterialPropHeadingWidth() {
 	return materialPropHeadingWidth;
 }
 
-ID_INLINE void MEOptions::SetPreviewPropHeadingWidth( int width )
-{
+ID_INLINE void MEOptions::SetPreviewPropHeadingWidth( int width ) {
 	previewPropHeadingWidth = width;
 	SetModified( true );
 }
 
-ID_INLINE int MEOptions::GetPreviewPropHeadingWidth()
-{
+ID_INLINE int MEOptions::GetPreviewPropHeadingWidth() {
 	return previewPropHeadingWidth;
 }

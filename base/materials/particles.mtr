@@ -1,0 +1,6248 @@
+textures/particles/smokey_explosion
+{
+	qer_editorimage textures/particles/smokey_explosion
+	noshadows
+	sort farthest
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/smokey_explosion
+		glowstage
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/cloud_thick
+{
+	qer_editorimage textures/particles/cloud
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_src_alpha, gl_one
+		map textures/particles/cloud
+		vertexcolor
+	}
+}
+
+textures/particles/smokey_explosion2
+{
+	qer_editorimage textures/particles/smokey_explosion2
+	noshadows
+	sort farthest
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/smokey_explosion2
+		glowstage
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/smokey_explosion2_sort
+{
+	qer_editorimage textures/particles/smokey_explosion2
+	noshadows
+	sort		10
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/smokey_explosion2
+		glowstage
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/colorable_explosion
+{
+	translucent
+	noshadows
+	sort 10
+	qer_editorimage textures/particles/colorable_explosion
+	{
+		blend add
+		map textures/particles/colorable_explosion
+		vertexcolor
+		colored
+		glowstage
+		rgb 0.8
+	}
+}
+
+textures/particles/colorable_fire_sort10
+{
+	qer_editorimage textures/particles/colorable_fire
+	noshadows
+	sort 10
+	{
+		map textures/particles/colorable_fire
+		blend add
+		vertexColor
+		colored
+		rgb .8
+	}
+	{
+		map textures/particles/colorable_fire
+		blend add
+		vertexColor
+		glowstage
+		colored
+		rgb .8
+	}
+}
+
+textures/particles/smoke_sort3
+{
+	qer_editorimage textures/particles/smoke
+	sort 3
+	translucent
+	noshadows
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/smoke
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/blood_drop
+{
+	qer_editorimage textures/particles/blood_drop
+	translucent
+	noshadows
+	{
+		blend	gl_zero,gl_one_minus_src_color
+		rgb 2.0
+		map textures/particles/blood_drop
+		rotate (time * 7)
+		clamp
+		vertexcolor
+	}
+}
+textures/particles/blood_drop_ghost_child
+{
+	qer_editorimage textures/particles/blood_drop_ghost_child
+	translucent
+	noshadows
+	sort nearest
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/blood_drop_ghost_child
+		vertexcolor
+		glowstage
+                colored
+	}
+}
+textures/particles/sniper_blood_drop
+{
+	qer_editorimage textures/particles/blood_drop
+	translucent
+	noshadows
+	{
+		blend	gl_zero,gl_one_minus_src_color
+		rgb 2.0
+		map textures/particles/blood_drop
+		rotate (time * 7)
+		clamp
+		vertexcolor
+	}
+	{
+		blend add
+		map textures/particles/blood_drop
+		red 1
+		green 0.3
+		blue 0.05
+		glowstage
+		scopeView
+	}
+}
+
+
+
+textures/particles/flame_curl
+{
+	qer_editorimage textures/particles/flame_curl
+	noshadows
+	twosided
+	{
+		map textures/particles/flame_curl
+		blend gl_one,gl_one_minus_src_color
+		vertexColor
+		glowstage
+		colored
+		rgb .8
+	}
+}
+
+textures/particles/cloud
+{
+	qer_editorimage textures/particles/cloud
+	translucent
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/cloud
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/smoke_wisp
+{
+	qer_editorimage textures/particles/smoke_wisp
+	translucent
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/smoke_wisp
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/smoke_wisp_glow
+{
+	qer_editorimage textures/particles/smoke_wisp
+	translucent
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/smoke_wisp
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/smoke_wisp_thick
+{
+	qer_editorimage textures/particles/smoke_wisp
+	translucent
+	noshadows
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/smoke_wisp
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/smoke_wisp2
+{
+	qer_editorimage textures/particles/smoke_wisp2
+	translucent
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/smoke_wisp2
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/smoke_wisp2_glow
+{
+	qer_editorimage textures/particles/smoke_wisp2
+	translucent
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/smoke_wisp2
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/smoke_wisp2_thick
+{
+	qer_editorimage textures/particles/smoke_wisp2
+	translucent
+	noshadows
+	sort farthest
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/smoke_wisp2
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/smoke
+{
+	qer_editorimage textures/particles/smoke
+	sort farthest
+	translucent
+	noshadows
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/smoke
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/lightning
+{
+	qer_editorimage textures/particles/lightning
+	translucent
+	noshadows
+	{
+		maskcolor
+		map	makealpha(textures/particles/lightning_mask)
+		glowstage
+	}
+	{
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		map textures/particles/lightning
+		scroll (time / 0), (time * 50)
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/lightning_reverse
+{
+	qer_editorimage textures/particles/lightning
+	translucent
+	noshadows
+	{
+		maskcolor
+		map	makealpha(textures/particles/lightning_mask)
+		glowstage
+	}
+	{
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		map textures/particles/lightning
+		scroll (time / 0), (time * -50)
+		vertexcolor
+		centerscale 1, 2
+		colored
+		glowstage
+	}
+}
+
+textures/particles/lightning_flicker
+{
+	qer_editorimage textures/particles/lightning
+	translucent
+	noshadows
+	{
+		maskcolor
+		map	makealpha(textures/particles/lightning_mask)
+		glowstage
+	}
+	{
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		map textures/particles/lightning
+		scroll (time / 0), (time * 50)
+		vertexcolor
+		color
+			parm0 * ( jenflash2 [time * 5]),
+			parm1 * ( jenflash2 [time * 5]),
+			parm2 * ( jenflash2 [time * 5]), 0
+		glowstage
+	}
+}
+
+textures/particles/lightning_flicker2
+{
+	qer_editorimage textures/particles/lightning
+	translucent
+	noshadows
+	{
+		maskcolor
+		map	makealpha(textures/particles/lightning_mask)
+		glowstage
+	}
+	{
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		map textures/particles/lightning
+		scroll (time / 0), (time * 60)
+		vertexcolor
+		color
+			parm0 * ( jenflash2 [time * 11]),
+			parm1 * ( jenflash2 [time * 11]),
+			parm2 * ( jenflash2 [time * 11]), 0
+		glowstage
+	}
+}
+
+textures/particles/lightning2
+{
+	qer_editorimage textures/particles/lightning2
+	translucent
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/lightning2
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/lightning2_flicker
+{
+	qer_editorimage textures/particles/lightning2
+	translucent
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/lightning2
+		vertexcolor
+		color
+			parm0 * ( jenflash2 [time * 6]),
+			parm1 * ( jenflash2 [time * 6]),
+			parm2 * ( jenflash2 [time * 6]), 0
+		glowstage
+	}
+}
+
+textures/particles/lightning3
+{
+	qer_editorimage textures/particles/lightning3
+	translucent
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/lightning3
+		vertexcolor
+		colored
+		glowstage
+		rgb 0.7
+	}
+}
+
+textures/particles/lightning3_flicker
+{
+	qer_editorimage textures/particles/lightning3
+	translucent
+	noshadows
+	{
+    blend add
+		map textures/particles/lightning3
+		vertexcolor
+		color
+			parm0 * ( jenflash2 [time * 7]),
+			parm1 * ( jenflash2 [time * 7]),
+			parm2 * ( jenflash2 [time * 7]), 0
+		glowstage
+	}
+}
+
+textures/particles/lightning4
+{
+	translucent
+	noshadows
+	//seeThru
+	twosided
+	qer_editorimage textures/particles/lightning4
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/lightning4
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/smokey
+{
+	qer_editorimage textures/particles/smokey
+	noshadows
+	{
+		if fragmentprograms == 0
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/smokey
+		vertexcolor
+		colored
+	}
+	{
+		if fragmentprograms == 1
+		maskDepth
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		program	depthsprite.vfp
+
+		fragmentmap		0		textures/particles/smokey
+		fragmentmap		2		textures/particles/smokey_depth
+	}
+}
+
+textures/particles/smokey2
+{
+	qer_editorimage textures/particles/smokey2
+	noshadows
+	{
+		if fragmentprograms == 0
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/smokey2
+		vertexcolor
+		colored
+	}
+	{
+		if fragmentprograms == 1
+		maskDepth
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		program	depthsprite.vfp
+
+		fragmentmap		0		textures/particles/smokey2
+		fragmentmap		2		textures/particles/smokey2_depth
+	}
+}
+
+textures/particles/spacecloud
+{
+	qer_editorimage textures/particles/spacecloud
+	translucent
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/spacecloud
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/spacecloud2
+{
+	qer_editorimage textures/particles/spacecloud2
+	translucent
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/spacecloud2
+		vertexcolor
+		colored
+		glowstage
+		rgb 0.8
+	}
+}
+
+textures/particles/spacecloud3
+{
+	qer_editorimage textures/particles/spacecloud3
+	translucent
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/spacecloud3
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/dirt_chunk
+{
+	qer_editorimage textures/particles/dirt_chunk
+	noshadows
+	{
+		blend blend
+		map textures/particles/dirt_chunk
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/meat_chunk
+{
+	qer_editorimage textures/particles/meat_chunk
+	noshadows
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/meat_chunk
+		vertexcolor
+		colored
+	}
+}
+textures/particles/meat_chunk_ghost_child
+{
+	qer_editorimage textures/particles/meat_chunk_ghost_child
+	noshadows
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/meat_chunk
+		vertexcolor
+		glowstage
+                colored
+	}
+}
+textures/particles/sniper_meat_chunk
+{
+	qer_editorimage textures/particles/meat_chunk
+	noshadows
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/meat_chunk
+		vertexcolor
+		colored
+	}
+	{
+		blend add
+		map textures/particles/meat_chunk
+		red 1
+		green 0.6
+		blue 0.2
+		glowstage
+		scopeView
+	}
+}
+
+
+textures/particles/tech_chunk
+{
+	qer_editorimage textures/particles/tech_chunk
+	noshadows
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/tech_chunk
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/ice_chunk
+{
+	qer_editorimage textures/particles/ice_chunk
+	noshadows
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/ice_chunk
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/ice_cloud
+{
+	qer_editorimage textures/particles/ice_cloud
+	noshadows
+	sort		10
+	translucent
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/ice_cloud
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/ice_crystals
+{
+	qer_editorimage textures/particles/ice_crystals
+	noshadows
+	sort		10
+	translucent
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/ice_crystals
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/ash
+{
+	qer_editorimage textures/particles/ash
+	noshadows
+	{
+		blend blend
+		map textures/particles/ash
+		vertexcolor
+		glowstage
+		colored
+	}
+}
+
+textures/particles/smoke2
+{
+	qer_editorimage textures/particles/smoke2
+	noshadows
+	sort farthest
+	{
+		blend blend
+		map textures/particles/smoke2
+		vertexcolor
+		glowstage
+		colored
+	}
+}
+
+textures/particles/smoke2_sound
+{
+	qer_editorimage textures/particles/smoke2
+	noshadows
+	sort farthest
+	{
+		blend blend
+		map textures/particles/smoke2
+		vertexcolor
+		glowstage
+		rgb ( 1 + ( sound * 0.5 ) ) * parm6
+	}
+}
+
+textures/particles/energy_ripple2
+{
+	qer_editorimage textures/particles/energy_ripple2
+	translucent
+	noshadows
+	twosided
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy_ripple2
+		vertexcolor
+		colored
+		glowstage
+		rgb 0.4
+	}
+}
+
+textures/particles/energy_ripple3
+{
+	qer_editorimage textures/particles/energy_ripple3
+	translucent
+	noshadows
+	twosided
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy_ripple3
+		vertexcolor
+		colored
+		glowstage
+		rgb 0.4
+	}
+}
+
+textures/particles/energy_ripple3_abduct
+{
+	qer_editorimage textures/particles/energy_ripple3
+	translucent
+	noshadows
+	twosided
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy_ripple3
+		vertexcolor
+		glowstage
+		color 0.1036 * parm0,
+			  0.2304 * parm1,
+			  0.116 * parm2,
+			  1.000
+	}
+}
+
+textures/particles/colorable_fire
+{
+	qer_editorimage textures/particles/colorable_fire
+	noshadows
+	twosided
+	{
+		map textures/particles/colorable_fire
+		blend add
+		vertexColor
+		colored
+		rgb .8
+	}
+	{
+		map textures/particles/colorable_fire
+		blend add
+		vertexColor
+		glowstage
+		colored
+		rgb .8
+	}
+}
+
+textures/particles/flame_little
+{
+	qer_editorimage textures/particles/flame_little
+	noshadows
+	twosided
+	{
+		map textures/particles/flame_little
+		blend gl_one,gl_one_minus_src_color
+		vertexColor
+		glowstage
+		colored
+		rgb .8
+	}
+}
+
+textures/particles/vortex
+{
+	qer_editorimage textures/particles/vortex
+	translucent
+	noshadows
+	twosided
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/vortex
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/vortex_sound
+{
+	qer_editorimage textures/particles/vortex
+	translucent
+	noshadows
+	twosided
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/vortex
+		vertexcolor
+		rgb ( 1 + ( sound * 0.5 ) ) * parm6
+	}
+}
+
+textures/particles/vortex2
+{
+	qer_editorimage textures/particles/vortex2
+	translucent
+	noshadows
+	twosided
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/vortex2
+		vertexcolor
+		colored
+		glowstage
+		rgb 0.5
+	}
+}
+
+textures/particles/vortex3
+{
+	qer_editorimage textures/particles/vortex3
+	translucent
+	noshadows
+	twosided
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/vortex3
+		vertexcolor
+		colored
+		glowstage
+		rgb 0.4
+	}
+}
+
+textures/particles/vortex4
+{
+	qer_editorimage textures/particles/vortex4
+	translucent
+	noshadows
+	twosided
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/vortex4
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/vortex4_spirit
+{
+	qer_editorimage textures/particles/vortex4
+	translucent
+	noshadows
+	twosided
+
+
+	{	if ( distance < ( 200 ) )
+
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/vortex4
+		glowStage
+		rgb 1
+		spiritWalk
+		vertexcolor
+
+	}
+	{if ( distance <= ( 400 ) && distance >= ( 200 ) )
+
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/vortex4
+		glowStage
+		rgb  1 - ( ( distance - (200 ) ) / ( (400 ) - (200 ) ) )
+		spiritWalk
+		vertexcolor
+
+
+	}
+	{if ( distance > 400 )
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/vortex4
+		glowStage
+		rgb 0
+		spiritWalk
+		vertexcolor
+	}
+}
+
+textures/particles/vortex5
+{
+	qer_editorimage textures/particles/vortex5
+	translucent
+	noshadows
+	twosided
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/vortex5
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/blood_splat
+{
+	qer_editorimage textures/decals/blood_splat
+	noshadows
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map textures/particles/blood_splat
+		vertexcolor
+	}
+}
+textures/particles/blood_splat_ghost_child
+{
+	qer_editorimage textures/particles/blood_splat_ghost_child
+	translucent
+	noshadows
+	sort nearest
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/blood_splat_ghost_child
+		vertexcolor
+		glowstage
+                colored
+	}
+}
+textures/particles/sniper_blood_splat
+{
+	qer_editorimage textures/decals/blood_splat
+	noshadows
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map textures/particles/blood_splat
+		vertexcolor
+	}
+	{
+		blend add
+		map textures/particles/blood_splat
+		red 1
+		green 0.15
+		blue 0.05
+		glowstage
+		scopeView
+	}
+}
+
+
+textures/particles/blood_splat2
+{
+	qer_editorimage textures/decals/blood_splat2
+	noshadows
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		rgb 2.0
+		map textures/particles/blood_splat2
+		vertexcolor
+	}
+}
+
+textures/particles/splat
+{
+	qer_editorimage textures/particles/splat
+	translucent
+	noshadows
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/splat
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/splat_glow
+{
+	qer_editorimage textures/particles/splat
+	translucent
+	noshadows
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/splat
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/spurt
+{
+	qer_editorimage textures/particles/spurt
+	translucent
+	noshadows
+	twosided
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/spurt
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/blood_sprits
+{
+	qer_editorimage textures/particles/blood_sprits
+	translucent
+	noshadows
+	twosided
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		rgb 2.0
+		map textures/particles/blood_sprits
+		vertexcolor
+	}
+}
+textures/particles/blood_sprits_ghost_child
+{
+	qer_editorimage textures/particles/blood_sprits_ghost_child
+	translucent
+	noshadows
+	sort nearest
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/blood_sprits_ghost_child
+		vertexcolor
+		glowstage
+                colored
+	}
+}
+textures/particles/sniper_blood_sprits
+{
+	qer_editorimage textures/particles/blood_sprits
+	translucent
+	noshadows
+	twosided
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		rgb 2.0
+		map textures/particles/blood_sprits
+		vertexcolor
+	}
+	{
+		blend add
+		map textures/particles/blood_sprits
+		red 1
+		green 0.3
+		blue 0.05
+		glowstage
+		scopeView
+	}
+}
+
+
+
+
+textures/particles/dirt_cloud2
+{
+	qer_editorimage textures/particles/dirt_cloud2
+	translucent
+	noshadows
+	twosided
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/dirt_cloud2
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/sprits
+{
+	qer_editorimage textures/particles/sprits
+	translucent
+	noshadows
+	twosided
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/sprits
+		vertexcolor
+		colored
+	}
+}
+textures/particles/sprits_ghost_child
+{
+	qer_editorimage textures/particles/sprits_ghost_child
+	translucent
+	noshadows
+	twosided
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/sprits
+		vertexcolor
+		glowstage
+                colored
+	}
+}
+textures/particles/sniper_sprits
+{
+	qer_editorimage textures/particles/sprits
+	translucent
+	noshadows
+	twosided
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/sprits
+		vertexcolor
+		colored
+	}
+	{
+		blend add
+		map textures/particles/sprits
+		red 1
+		green 0.6
+		blue 0.2
+		glowstage
+		scopeView
+	}
+
+}
+
+textures/particles/sprits_glow
+{
+	qer_editorimage textures/particles/sprits
+	translucent
+	noshadows
+	twosided
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/sprits
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/blood_splat3
+{
+	qer_editorimage textures/particles/blood_splat3
+	translucent
+	noshadows
+	sort nearest
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/blood_splat3
+		vertexcolor
+		colored
+	}
+}
+textures/particles/blood_splat3_ghost_child
+{
+	qer_editorimage textures/particles/blood_splat3
+	translucent
+	noshadows
+	sort nearest
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/blood_splat3_ghost_child
+		vertexcolor
+		glowstage
+                colored
+	}
+}
+textures/particles/sniper_blood_splat3
+{
+	qer_editorimage textures/particles/blood_splat3
+	translucent
+	noshadows
+	sort nearest
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/blood_splat3
+		vertexcolor
+		colored
+	}
+	{
+		blend add
+		map textures/particles/blood_splat3
+		red 0.3
+		green 1
+		blue 1
+		glowstage
+		scopeView
+	}
+}
+
+
+textures/particles/dirt_cloud
+{
+	qer_editorimage textures/particles/dirt_cloud
+	translucent
+	noshadows
+	twosided
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/dirt_cloud
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/dirt_cloud3
+{
+	qer_editorimage textures/particles/dirt_cloud3
+	translucent
+	noshadows
+	twosided
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/dirt_cloud3
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/sparks2
+{
+	qer_editorimage textures/particles/sparks2
+	translucent
+	noshadows
+	twosided
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/sparks2
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/dirt
+{
+	qer_editorimage textures/particles/dirt
+	translucent
+	noshadows
+	{
+		blend blend
+		map textures/particles/dirt
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/ripple
+{
+	translucent
+    {
+    	program         heatHazeWithMaskAndVertex.vfp
+    	vertexParm      0   0                           // texture scrolling
+    	vertexParm      1   10                          // magnitude of the distortion
+    	fragmentMap		0   _currentRender
+    	fragmentMap		1   textures/particles/ripple2			// the normal map for distortion
+    	fragmentMap     2	textures/particles/pinch_alpha   	// the distortion blend map
+    }
+}
+
+textures/particles/pinch
+{
+	translucent
+    {
+    	program         heatHazeWithMaskAndVertex.vfp
+    	vertexParm      0   0                           // texture scrolling
+    	vertexParm      1   10                          // magnitude of the distortion
+    	fragmentMap		0   _currentRender
+    	fragmentMap		1   textures/particles/pinch			// the normal map for distortion
+    	fragmentMap     2	textures/particles/pinch_alpha   	// the distortion blend map
+    }
+}
+
+textures/particles/bulge
+{
+	translucent
+    {
+    	program         heatHazeWithMaskAndVertex.vfp
+    	vertexParm      0   0                           // texture scrolling
+    	vertexParm      1   15                          // magnitude of the distortion
+    	fragmentMap		0   _currentRender
+    	fragmentMap		1   textures/particles/bulge			// the normal map for distortion
+    	fragmentMap     2	textures/particles/pinch_alpha   	// the distortion blend map
+    }
+}
+
+textures/particles/distort
+{
+	noshadows
+	noselfshadow
+	translucent
+		{
+                program         heatHazeWithMaskAndVertex.vfp
+                //vertexProgram           heatHazeWithMask.vfp
+                vertexParm              0       0 , 0		// texture scrolling
+                vertexParm              1       5				// magnitude of the distortion
+                //fragmentProgram			heatHazeWithMask.vfp
+                fragmentMap             0       _currentRender
+                fragmentMap             1       textures/particles/distort
+                fragmentMap             2       textures/particles/distort_alpha
+        }
+}
+
+textures/particles/distort2
+{
+	noshadows
+	noselfshadow
+	translucent
+		{
+                program         heatHazeWithMaskAndVertex.vfp
+                //vertexProgram           heatHazeWithMask.vfp
+                vertexParm              0       0 , 0		// texture scrolling
+                vertexParm              1       2.5				// magnitude of the distortion
+                //fragmentProgram			heatHazeWithMask.vfp
+                fragmentMap             0       _currentRender
+                fragmentMap             1       textures/particles/distort
+                fragmentMap             2       textures/particles/distort_alpha
+        }
+}
+
+textures/particles/debris
+{
+	qer_editorimage textures/particles/debris
+	noshadows
+	twosided
+
+	{
+		blend blend
+		map textures/particles/debris
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/debris2
+{
+	qer_editorimage textures/particles/debris2
+	noshadows
+	twosided
+
+	{
+		blend blend
+		map textures/particles/debris2
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/flake
+{
+	qer_editorimage textures/particles/flake
+	noshadows
+	twosided
+
+	{
+		blend blend
+		map textures/particles/flake
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/sparky
+{
+	translucent
+	noshadows
+	seeThru
+	twosided
+	qer_editorimage textures/particles/sparky
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/sparky
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/sparky_spirit
+{
+	translucent
+	noshadows
+	seeThru
+	twosided
+	qer_editorimage textures/particles/sparky
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/sparky
+		vertexcolor
+		colored
+		glowstage
+		spiritWalk
+	}
+}
+
+textures/particles/sparky_abduct
+{
+	translucent
+	noshadows
+	seeThru
+	twosided
+	qer_editorimage textures/particles/sparky
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/sparky
+		vertexcolor
+		color	0.161 * parm0,
+			    0.467 * parm1,
+			    0.161 * parm2,
+			    1.000
+		glowstage
+	}
+}
+
+textures/particles/sparky_sound
+{
+	translucent
+	noshadows
+	seeThru
+	twosided
+	qer_editorimage textures/particles/sparky
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/sparky
+		vertexcolor
+		rgb ( 1 + ( sound * 0.5 ) ) * parm6
+		glowstage
+	}
+}
+
+textures/particles/energy_cloud
+{
+	translucent
+	noshadows
+	seeThru
+	twosided
+	qer_editorimage textures/particles/energy_cloud
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/energy_cloud
+		vertexcolor
+		colored
+		glowstage
+		rgb 0.7
+	}
+}
+
+textures/particles/energy_cloud_spirit
+{
+	qer_editorimage textures/particles/energy_cloud
+	translucent
+	noshadows
+	twosided
+	{	if ( distance < ( 200 ) )
+
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/energy_cloud
+		glowStage
+		rgb 1
+		spiritWalk
+		vertexcolor
+
+
+	}
+	{if ( distance <= ( 400 ) && distance >= ( 200 ) )
+
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/energy_cloud
+		glowStage
+		rgb  1 - ( ( distance - (200 ) ) / ( (400 ) - (200 ) ) )
+		spiritWalk
+		vertexcolor
+
+
+	}
+	{if ( distance > 400 )
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/energy_cloud
+		glowStage
+		rgb 0
+		spiritWalk
+		vertexcolor
+	}
+}
+
+textures/particles/smokering
+{
+	qer_editorimage textures/particles/smokering
+	translucent
+	noshadows
+	twosided
+
+	{
+		blend blend
+		map textures/particles/smokering
+		colored
+		vertexcolor
+	}
+}
+
+textures/particles/smoke_curl
+{
+	qer_editorimage textures/particles/smoke_curl
+	translucent
+	noshadows
+	twosided
+
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/smoke_curl
+		colored
+		vertexcolor
+	}
+}
+
+textures/particles/energy_shards
+{
+	translucent
+	noshadows
+	seeThru
+	twosided
+	qer_editorimage textures/particles/energy_shards
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/energy_shards
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/chunk
+{
+	noshadows
+	qer_editorimage textures/particles/chunk
+	twosided
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/chunk
+		colored
+		vertexcolor
+		glowstage
+		rgb 0.7
+	}
+}
+
+textures/particles/chunks
+{
+	noshadows
+	twosided
+	qer_editorimage textures/particles/chunks
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/chunks
+		vertexcolor
+		colored
+		glowstage
+		rgb 0.7
+	}
+}
+
+textures/particles/flame3
+{
+	translucent
+	noshadows
+	twosided
+	qer_editorimage textures/particles/flame3
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/flame3
+		vertexcolor
+		glowstage
+		rgb 0.8
+		colored
+	}
+}
+
+textures/particles/flame3_abduct
+{
+	translucent
+	noshadows
+	twosided
+	qer_editorimage textures/particles/flame3
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/flame3
+		vertexcolor
+		glowstage
+		color	0.072 * parm0,
+				0.264 * parm1,
+				0.104 * parm2,
+				1.000
+	}
+}
+
+textures/particles/flame2
+{
+	translucent
+	noshadows
+	seeThru
+	twosided
+	qer_editorimage textures/particles/flame2
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/flame2
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/flame2_spirit
+{
+	translucent
+	noshadows
+	seeThru
+	twosided
+	qer_editorimage textures/particles/flame2
+
+	{	if ( distance < ( 200 ) )
+
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/flame2
+		rgb 1
+		spiritWalk
+		vertexcolor
+
+	}
+	{if ( distance <= ( 400 ) && distance >= ( 200 ) )
+
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/flame2
+		rgb  1 - ( ( distance - (200 ) ) / ( (400 ) - (200 ) ) )
+		spiritWalk
+		vertexcolor
+
+	}
+	{if ( distance > 400 )
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/flame2
+		//glowStage
+		rgb 0
+		spiritWalk
+		vertexcolor
+	}
+}
+
+textures/particles/flame
+{
+	translucent
+	noshadows
+	seeThru
+	twosided
+	qer_editorimage textures/particles/flame
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/flame
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/explosion4
+{
+	qer_editorimage textures/particles/explosion4
+	noshadows
+	{
+		blend blend
+		map textures/particles/explosion4
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/explosion5
+{
+	qer_editorimage textures/particles/explosion5
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/explosion5
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/explosion5_thick
+{
+	qer_editorimage textures/particles/explosion5
+	noshadows
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/explosion5
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/explosion5_thick_sort
+{
+	qer_editorimage textures/particles/explosion5
+	noshadows
+	sort 10
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+		map textures/particles/explosion5
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/energy_splat
+{
+	translucent
+	noshadows
+	twosided
+	qer_editorimage textures/particles/energy_splat
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy_splat
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/vomit_splat
+{
+	sort nearest
+	twosided
+	qer_editorimage textures/particles/vomit_splat
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/vomit_splat
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/vomit_chunks2
+{
+	qer_editorimage textures/particles/vomit_chunks2
+	twosided
+	{
+		blend blend
+		map textures/particles/vomit_chunks2
+		colored
+		vertexcolor
+	}
+}
+
+textures/particles/vomit_chunk
+{
+	qer_editorimage textures/particles/vomit_chunk
+	twosided
+	{
+		blend blend
+		map textures/particles/vomit_chunk
+		colored
+		vertexcolor
+	}
+}
+
+textures/particles/vomit_mist
+{
+	twosided
+	qer_editorimage textures/particles/vomit_mist
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/vomit_mist
+		colored
+		vertexcolor
+	}
+}
+
+textures/particles/vomit_chunks
+{
+	sort almostnearest
+	twosided
+	qer_editorimage textures/particles/vomit_chunks
+	{
+		blend blend
+		map textures/particles/vomit_chunks
+		colored
+		vertexcolor
+	}
+}
+
+textures/particles/energy_cloud2
+{
+	qer_editorimage textures/particles/energy_cloud2
+	twosided
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy_cloud2
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/shockwave
+{
+	qer_editorimage textures/particles/shockwave
+	twosided
+	translucent
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/shockwave
+		vertexcolor
+		colored
+		glowstage
+		rgb 0.6
+	}
+}
+
+textures/particles/shockwave2
+{
+	qer_editorimage textures/particles/shockwave2
+	translucent
+	twosided
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/shockwave2
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/shockwave2_sort
+{
+	qer_editorimage textures/particles/shockwave3
+	twosided
+	translucent
+	noshadows
+	sort 15
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/shockwave2
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/shockwave3
+{
+	qer_editorimage textures/particles/shockwave3
+	translucent
+	twosided
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/shockwave3
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/shockwave4
+{
+	qer_editorimage textures/particles/shockwave4
+	translucent
+	twosided
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/shockwave4
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/energy
+{
+	qer_editorimage textures/particles/energy
+	twosided
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/energy2
+{
+	qer_editorimage textures/particles/energy2
+	twosided
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy2
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/energy2_notspiritwalk
+{
+	qer_editorimage textures/particles/energy2
+	twosided
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy2
+		vertexcolor
+		colored
+		glowstage
+		notspiritwalk
+	}
+}
+
+textures/particles/energy3
+{
+	qer_editorimage textures/particles/energy3
+	twosided
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy3
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/energy4
+{
+	qer_editorimage textures/particles/energy4
+	twosided
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy4
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/energy_blast
+{
+	qer_editorimage textures/particles/energy_blast
+	twosided
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy_blast
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/energy_blast_sound
+{
+	qer_editorimage textures/particles/energy_blast
+	twosided
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy_blast
+		vertexcolor
+		rgb ( 1 + ( sound * 0.5 ) ) * parm6
+		glowstage
+	}
+}
+
+textures/particles/sparks
+{
+	qer_editorimage textures/particles/sparks
+	translucent
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/sparks
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/fly
+{
+	qer_editorimage 	textures/particles/fly
+	{
+		blend filter
+		map  textures/particles/fly
+		}
+		{
+			blend gl_one,gl_one_minus_src_color
+			map textures/particles/fly_glow
+			glowstage
+			rgb 	(flicker_elec2 [time * 6])
+	}
+}
+
+textures/particles/fly2
+{
+	qer_editorimage 	textures/particles/fly
+	{
+		blend filter
+		map  textures/particles/fly
+		}
+		{
+			blend gl_one,gl_one_minus_src_color
+			map textures/particles/fly_glow
+			glowstage
+			rgb 	(flicker_elec2 [0.5 + time * 6.25])
+	}
+}
+
+textures/particles/cloud_blast
+{
+	qer_editorimage textures/particles/cloud_blast
+	translucent
+	noshadows
+	twosided
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/cloud_blast
+		vertexcolor
+		colored
+	}
+}
+
+textures/particles/cloud_blast_notspiritwalk
+{
+	qer_editorimage textures/particles/cloud_blast
+	translucent
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/cloud_blast
+		vertexcolor
+		colored
+		notSpiritWalk
+	}
+}
+
+textures/particles/energy_ripple
+{
+	qer_editorimage textures/particles/energy_ripple
+	translucent
+	twosided
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy_ripple
+		colored
+		vertexcolor
+		glowstage
+		rgb .8
+	}
+}
+
+textures/particles/energy_sparks
+{
+	qer_editorimage textures/particles/energy_sparks
+	twosided
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy_sparks
+		colored
+		vertexcolor
+		glowstage
+		rgb 0.4
+	}
+}
+
+textures/particles/reargas
+{
+	qer_editorimage textures/particles/smokepuff6
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_src_alpha, gl_one
+		map textures/particles/smokepuff6
+		vertexcolor
+	}
+}
+
+textures/particles/coldsteam
+{
+	qer_editorimage textures/particles/smokepuff10
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_src_alpha, gl_one
+		map textures/particles/smokepuff10
+		vertexcolor
+	}
+}
+
+textures/particles/coldsteam2
+{
+	qer_editorimage textures/particles/rolling_smoke2
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_src_alpha, gl_one
+		map textures/particles/rolling_smoke2
+		vertexcolor
+	}
+}
+
+textures/particles/coldsteam_depth
+{
+	qer_editorimage textures/particles/smokepuff10
+	translucent
+	noshadows
+	sort		10
+	{
+		if fragmentprograms == 0
+		blend gl_src_alpha, gl_one
+		map textures/particles/rolling_smoke2
+		vertexcolor
+	}
+	{
+		if fragmentprograms == 1
+		maskDepth
+		blend gl_src_alpha, gl_one
+		program	depthsprite.vfp
+
+		fragmentmap		0		textures/particles/rolling_smoke2
+		fragmentmap		2		textures/particles/rolling_smoke2
+	}
+}
+
+textures/particles/coldsteam2_glow
+{
+	qer_editorimage textures/particles/smokepuff10
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_src_alpha, gl_one
+		map textures/particles/rolling_smoke2
+		vertexcolor
+		glowStage
+	}
+}
+
+textures/particles/coldsteam2_sound
+{
+	qer_editorimage textures/particles/smokepuff10
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_src_alpha, gl_one
+		map textures/particles/rolling_smoke2
+		color parm0 * sound,
+			  parm1 * sound,
+			  parm2 * sound,
+			  1.0
+	}
+}
+
+textures/particles/coldsteam2_1minussound
+{
+	qer_editorimage textures/particles/smokepuff10
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_src_alpha, gl_one
+		map textures/particles/rolling_smoke2
+		color	parm0 * (1 - sound ),
+					parm1 * (1 - sound ),
+					parm2 * (1 - sound ),
+					1.0
+	}
+}
+
+textures/particles/coldsteam2_roadhouse_sound
+{
+	qer_editorimage textures/particles/smokepuff10
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_src_alpha, gl_one
+		map textures/particles/rolling_smoke2
+		red			( parm0 * 0.5 ) + ( parm0 * 0.5 * sound )
+		green		( parm1 * 0.5 ) + ( parm1 * 0.5 * sound )
+		blue		( parm2 * 0.5 ) + ( parm2 * 0.5 * sound )
+		vertexcolor
+	}
+}
+
+textures/particles/spark
+{
+	qer_editorimage textures/particles/soul
+	translucent
+	noshadows
+	{
+		blend add
+		map textures/particles/soul
+		vertexcolor
+	}
+}
+
+textures/particles/barrelsmoke
+{
+	qer_editorimage textures/particles/smokepuff8
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_one_minus_src_alpha, gl_one_minus_src_color //graying blend (white smoke)
+		map textures/particles/smokepuff8
+		vertexcolor
+	}
+}
+
+textures/particles/rifle_barrel_smoke
+{
+	qer_editorimage textures/particles/smokepuff8
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_one_minus_src_alpha, gl_one_minus_src_color //graying blend (white smoke)
+		map textures/particles/smokepuff8
+		vertexcolor
+	}
+}
+
+textures/particles/rifle_barrel_wisp
+{
+	qer_editorimage textures/particles/smokepuff8
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_one_minus_src_alpha, gl_one_minus_src_color //graying blend (white smoke)
+		map textures/particles/smokepuff8
+		vertexcolor
+	}
+}
+
+textures/particles/rifle_barrel_flash
+{
+	qer_editorimage textures/particles/rifle_flash
+	translucent
+	noshadows
+	sort		10
+	{
+		blend add
+		map textures/particles/rifle_flash
+		vertexcolor
+	}
+}
+
+textures/particles/rifle_impact_spark
+{
+	qer_editorimage textures/particles/spark_orange
+	translucent
+	noshadows
+	{
+		blend add
+		map textures/particles/spark_orange
+		vertexcolor
+		glowstage
+	}
+}
+
+textures/particles/rifle_spark
+{
+	qer_editorimage textures/particles/rifle_spark
+	translucent
+	noshadows
+	{
+		blend add
+		map textures/particles/rifle_spark
+		vertexcolor
+		glowstage
+	}
+}
+
+textures/particles/rifle_impact_smoke
+{
+	qer_editorimage textures/particles/smokepuff8
+	translucent
+	noshadows
+	{
+      		blend gl_zero, gl_one_minus_src_color
+		map textures/particles/smokepuff8
+		vertexcolor
+	}
+}
+
+textures/particles/grenade_ember
+{
+	qer_editorimage textures/particles/spark_ember
+	translucent
+	noshadows
+	sort 	5
+	{
+		blend add
+		map textures/particles/spark_ember
+		vertexcolor
+	}
+}
+
+textures/particles/grenade_ember_white
+{
+	qer_editorimage textures/particles/spark_ember_white
+	translucent
+	noshadows
+	sort 	5
+	{
+		blend add
+		map textures/particles/spark_ember_white
+		vertexcolor
+	}
+}
+
+textures/particles/autoexplosion
+{
+	qer_editorimage textures/particles/autoex
+	translucent
+	noshadows
+	sort		10
+	{
+		//blend add
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/autoex
+		vertexcolor
+	}
+}
+
+textures/particles/autoexplosion2
+{
+	qer_editorimage textures/particles/autoex3
+	translucent
+	noshadows
+//	sort		10
+	{
+		//blend add
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/autoex3
+		vertexcolor
+	}
+}
+
+textures/particles/autoexplosion3
+{
+	qer_editorimage textures/particles/autoex3
+	translucent
+	noshadows
+	twosided
+	sort		10
+	{
+		//blend add
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/autoex3
+		vertexcolor
+	}
+}
+
+textures/particles/autoexplosion_smoke
+{
+	qer_editorimage textures/particles/smokepuff4
+	translucent
+	noshadows
+	sort	8
+	{
+      		blend gl_zero, gl_one_minus_src_color
+		map textures/particles/smokepuff4
+		vertexcolor
+	}
+}
+
+textures/particles/autoexplosionspark
+{
+	qer_editorimage textures/particles/autoex_spark1
+	translucent
+	noshadows
+	sort		10
+	{
+		//blend add
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/autoex_spark1
+		vertexcolor
+	}
+}
+
+textures/particles/autoexplosionspark2
+{
+	qer_editorimage textures/particles/autoex_spark2
+	translucent
+	noshadows
+	sort		10
+	{
+		//blend add
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/autoex_spark2
+		vertexcolor
+	}
+}
+
+textures/particles/autoimpactspark
+{
+	qer_editorimage textures/particles/spark_yellow
+	translucent
+	noshadows
+	sort		10
+	{
+		//blend add
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/spark_yellow
+		vertexcolor
+	}
+}
+
+textures/particles/sparktrail
+{
+	qer_editorimage textures/particles/spark_yellow
+	translucent
+	noshadows
+	sort		10
+	{
+		blend add
+		//blend gl_one, gl_one_minus_src_color
+		map textures/particles/spark_trail
+		vertexcolor
+		rgb .5
+	}
+}
+
+textures/particles/crawler_smoke
+{
+	qer_editorimage textures/particles/puff6
+	translucent
+	noshadows
+	sort		10
+	{
+//		blend	gl_src_alpha, gl_one_minus_src_alpha
+		blend	gl_src_alpha, gl_one
+//		blend gl_one, gl_one_minus_src_color
+		map textures/particles/puff6a
+		vertexcolor
+	}
+}
+textures/particles/crawler_smoke_dark
+{
+	qer_editorimage textures/particles/puff6
+	translucent
+	noshadows
+	sort		10
+	{
+		blend	gl_src_alpha, gl_one_minus_src_alpha
+//		blend	gl_src_alpha, gl_one
+//		blend gl_one, gl_one_minus_src_color
+		map textures/particles/puff6a
+		vertexcolor
+	}
+}
+
+textures/particles/crawler_spooge
+{
+	qer_editorimage textures/particles/crawlerbloodblob_green
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/crawlerbloodblob_green
+		vertexcolor
+	}
+}
+
+textures/particles/crawler_spoogespray
+{
+	qer_editorimage textures/particles/crawler_spoogespray
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/crawler_spoogespray
+		vertexcolor
+	}
+}
+
+textures/particles/crawlerdismemberblood
+{
+	qer_editorimage textures/particles/crawlerbloodblob_green
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/crawlerbloodblob_green
+		vertexcolor
+	}
+}
+
+textures/particles/crawlerdismemberspray
+{
+	qer_editorimage textures/particles/crawler_spoogespray
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/crawler_spoogespray
+		vertexcolor
+	}
+}
+
+textures/particles/chemexplosion
+{
+	qer_editorimage textures/particles/chemex
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/chemex
+		vertexcolor
+	}
+}
+
+textures/particles/chemexplosion2
+{
+	qer_editorimage textures/particles/chemex
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/chemex
+		vertexcolor
+	}
+}
+
+textures/particles/chemexplosion3
+{
+	qer_editorimage textures/particles/chemex2
+	translucent
+	noshadows
+	{
+		blend gl_zero, gl_one_minus_src_color
+		map textures/particles/chemex2
+		vertexcolor
+	}
+}
+
+textures/particles/smokepuff4
+{
+	qer_editorimage textures/particles/smokepuff4
+	translucent
+	noshadows
+	{
+      		blend gl_zero, gl_one_minus_src_color
+		map textures/particles/smokepuff4
+		vertexcolor
+	}
+}
+
+textures/particles/smokepuff9
+{
+	qer_editorimage textures/particles/smokepuff9
+	translucent
+	noshadows
+	sort			close
+	{
+      	//blend gl_src_alpha, gl_one
+      	blend add vertexcolor
+		map textures/particles/smokepuff9
+		//vertexcolor
+	}
+}
+
+textures/particles/smokepuff_orange
+{
+	qer_editorimage textures/particles/smokepuff_orange
+	translucent
+	noshadows
+	sort 		10
+	{
+      		blend add
+		map textures/particles/smokepuff_orange
+		vertexcolor
+	}
+}
+
+
+textures/particles/smokepuff
+{
+	qer_editorimage textures/particles/smokepuff
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_src_alpha, gl_one
+		map textures/particles/smokepuff
+		vertexcolor
+	}
+}
+
+textures/particles/riflespark
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map textures/particles/riflespark
+		vertexcolor
+	}
+}
+
+textures/particles/soulstuff
+{
+	qer_editorimage textures/particles/soulstuff
+//	translucent
+	noshadows
+	noselfshadow
+	{
+//		blend gl_one, gl_one_minus_src_color
+		blend add
+		map textures/particles/soulstuff
+		vertexcolor
+	}
+}
+textures/particles/soulstuff2
+{
+	noshadows
+	noselfshadow
+
+	{
+//		blend gl_one, gl_one_minus_src_color
+		blend add
+		map textures/particles/soulstuff2
+		vertexcolor
+	}
+}
+
+textures/particles/soulstuff3
+{
+	noshadows
+	noselfshadow
+	twosided
+
+	{
+//		blend gl_one, gl_one_minus_src_color
+		blend add
+		map textures/particles/soulstuff3
+		vertexcolor
+	}
+}
+
+textures/particles/spiritHaze
+{
+	translucent
+    {
+    	program         heatHazeWithMaskAndVertex.vfp
+    	vertexParm      0   0                           // texture scrolling
+    	vertexParm      1   15                          // magnitude of the distortion
+    	fragmentMap		0   _currentRender
+    	fragmentMap		1   textures/sfx/vpring2			// the normal map for distortion
+    	fragmentMap     2	textures/sfx/vpring1_alpha   	// the distortion blend map
+    }
+}
+
+textures/particles/bloodbash
+{
+	noshadows
+	noselfshadow
+	{
+		blend blend
+		map textures/decals/bloodbash
+		vertexcolor
+	}
+}
+
+textures/particles/bloodcloud1
+{
+	noshadows
+	noselfshadow
+	{
+		blend blend
+		map textures/particles/bloodcloud1
+		vertexcolor
+	}
+}
+
+
+textures/particles/bloodspray1
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend blend
+		map textures/particles/bloodspray1
+		vertexcolor
+	}
+}
+
+
+textures/particles/bloodspray2
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend blend
+		map textures/particles/bloodspray2
+		vertexcolor
+	}
+}
+
+
+textures/particles/bloodspray3
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend blend
+		map textures/particles/bloodspray3
+		vertexcolor
+	}
+}
+
+textures/particles/bloodspray4
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend blend
+		map textures/particles/bloodspray4
+		vertexcolor
+	}
+}
+
+textures/particles/explosion
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map textures/particles/explosion1
+		vertexcolor
+	}
+
+}
+
+
+textures/particles/explosion_ring
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map textures/particles/explosion_ring
+		vertexcolor
+	}
+}
+
+
+textures/particles/explosion_spark
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map textures/particles/explosion_spark
+		vertexcolor
+	}
+}
+
+
+textures/particles/waterfall
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend blend
+		map textures/particles/waterfall0
+		vertexcolor
+	}
+}
+
+
+textures/particles/waterdrop
+{
+	noshadows
+	noselfshadow
+	translucent
+	{
+		blend add
+		map textures/particles/waterdrop
+		vertexcolor
+	}
+}
+
+textures/particles/waterfall5
+{
+	noshadows
+	noselfshadow
+	translucent
+	{
+		blend diffusemap
+		map textures/particles/waterfall5
+		vertexcolor
+	}
+}
+
+textures/particles/vomit
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend blend
+		map textures/particles/vomit_trail
+		vertexcolor
+	}
+}
+textures/particles/vomit_puff
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend blend
+		map textures/particles/vomit_puff
+		vertexcolor
+	}
+}
+textures/particles/vomit_spray
+{
+	noshadows
+	noselfshadow
+	sort 	10
+
+	{
+		blend blend
+		map textures/particles/vomit_spray
+		vertexcolor
+	}
+}
+
+textures/particles/vomitblood
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend blend
+		map textures/particles/vomitblood
+		vertexcolor
+	}
+}
+
+textures/particles/vomitchunky
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend blend
+		map textures/particles/vomit
+		vertexcolor
+	}
+}
+
+//10-01-02: moved from greg.mtr -- gb
+textures/particles/part1
+{
+	qer_editorimage textures/particles/part1
+	translucent
+	noshadows
+	{
+		blend add
+		map textures/particles/part1
+		vertexcolor
+	}
+}
+
+textures/particles/part2
+{
+	qer_editorimage textures/particles/part2
+	translucent
+	noshadows
+	{
+		blend add
+		map textures/particles/part2
+		vertexcolor
+	}
+}
+
+textures/particles/part3
+{
+	qer_editorimage textures/particles/part3
+	translucent
+	noshadows
+	{
+		blend add
+		map textures/particles/part3
+		vertexcolor
+	}
+}
+
+textures/particles/part4
+{
+	qer_editorimage textures/particles/part4
+	translucent
+	noshadows
+	{
+		blend add
+		map textures/particles/part4
+		vertexcolor
+	}
+}
+
+textures/particles/part5
+{
+	qer_editorimage textures/particles/part45
+	translucent
+	noshadows
+	{
+		blend add
+		map textures/particles/part5
+		vertexcolor
+	}
+}
+
+textures/particles/bubble1
+{
+	qer_editorimage textures/particles/bubble1
+	translucent
+	noshadows
+	{
+		blend add
+		map textures/particles/bubble1
+		vertexcolor
+	}
+}
+
+textures/particles/bubble2
+{
+	qer_editorimage textures/particles/bubble1
+	translucent
+	noshadows
+	{
+		clamp
+		blend add
+		map textures/particles/bubble1
+		centerscale
+			-1.0 + ( 2.0 * ( scale_1jitter[time] )),
+			-1.0 + ( 2.0 * ( scale_1jitter[time+0.5] ))
+		vertexcolor
+	}
+}
+
+textures/particles/puff1
+{
+	qer_editorimage textures/particles/puff1
+	translucent
+	noshadows
+	{
+		blend add
+		map textures/particles/puff1
+		vertexcolor
+	}
+}
+
+textures/particles/puff2
+{
+	qer_editorimage textures/particles/puff2
+	translucent
+	noshadows
+	{
+		blend add
+		map textures/particles/puff2
+		vertexcolor
+	}
+}
+
+textures/particles/puff5
+{
+	qer_editorimage textures/particles/puff5
+	translucent
+	noshadows
+	{
+		blend add
+		map textures/particles/puff5
+		vertexcolor
+	}
+}
+textures/particles/puff3
+{
+	qer_editorimage textures/particles/puff3
+	translucent
+	noshadows
+	{
+		blend add
+		map textures/particles/puff3
+		vertexcolor
+	}
+}
+
+textures/particles/puff7_minus_dst
+{
+	qer_editorimage textures/particles/puff7
+	translucent
+	noshadows
+	sort 	5
+	{
+      	blend filter
+		map textures/particles/puff7
+		vertexcolor
+	}
+}
+
+
+
+textures/particles/expandinggas
+{
+	qer_editorimage textures/particles/smokepuff2
+	translucent
+	noshadows
+	{
+		blend blend
+		map textures/particles/smokepuff2
+		vertexcolor
+	}
+}
+
+textures/particles/flamejet
+{
+	qer_editorimage textures/particles/spark_orange
+	translucent
+	noshadows
+	{
+		blend add
+		map textures/particles/spark_orange
+		vertexcolor
+	}
+}
+
+/*
+gl_dst_alpha
+gl_dst_color
+gl_one
+gl_one_minus_dst_alpha
+gl_one_minus_dst_color
+gl_one_minus_src_alpha
+gl_one_minus_src_color
+gl_src_alpha
+gl_src_color
+gl_zero
+*/
+
+textures/particles/soul
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map textures/particles/soul
+		vertexcolor
+	}
+
+}
+
+textures/particles/crawlerblood
+{
+	qer_editorimage textures/particles/crawlerbloodblob
+//	translucent
+	noshadows
+	{
+		blend add
+//		blend gl_one, gl_one_minus_src_color
+//		blend gl_zero, gl_one_minus_src_color
+		map textures/particles/crawlerbloodblob
+		vertexcolor
+	}
+}
+
+textures/particles/crawlersplat
+{
+	qer_editorimage textures/particles/crawlerblood
+	decal_macro
+	{
+		blend gl_one, gl_one_minus_src_color
+//		blend gl_zero, gl_one_minus_src_color
+		map textures/particles/crawlerblood
+		vertexcolor
+	}
+}
+
+textures/particles/flare
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/flare
+		vertexcolor
+	}
+
+}
+
+textures/particles/flare2
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map textures/sfx/flare8
+		vertexcolor
+	}
+
+}
+
+textures/particles/flare3
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+//		map textures/particles/flare
+		map textures/particles/muzzle_flash
+		vertexcolor
+	}
+
+}
+
+textures/particles/generic_spark1
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map textures/particles/generic_spark1
+		vertexcolor
+		glowStage
+	}
+
+}
+
+textures/particles/generic_spark2
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map textures/particles/generic_spark2
+		vertexcolor
+	}
+
+}
+
+textures/particles/generic_spark3
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend gl_src_alpha, gl_one
+//		blend add
+		map textures/particles/generic_spark3
+		vertexcolor
+	}
+
+}
+
+
+textures/particles/flamethrower_smoke
+{
+	qer_editorimage textures/particles/smokepuff2
+	translucent
+	noshadows
+	{
+//		blend blend
+//		blend	gl_dst_color, gl_one_minus_src_alpha		//darkening blend (black smoke)
+		blend gl_one_minus_src_alpha, gl_one_minus_src_color //graying blend (white smoke)
+		map textures/particles/smokepuff2
+		vertexcolor
+	}
+}
+
+
+textures/particles/whitesmoke
+{
+	qer_editorimage textures/particles/smokepuff2
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_src_alpha, gl_one
+		map textures/particles/smokepuff2
+		vertexcolor
+	}
+}
+
+textures/particles/whitesmoke_blend
+{
+	qer_editorimage textures/particles/smokepuff2
+	translucent
+	noshadows
+	sort		10
+	{
+		blend blend
+		map textures/particles/smokepuff2
+		vertexcolor
+	}
+}
+
+textures/particles/rolling_smoke
+{
+	qer_editorimage textures/particles/smokepuff2
+	translucent
+	noshadows
+
+	{
+		blend blend
+
+		map textures/particles/smokepuff2
+		vertexcolor
+	}
+}
+
+textures/particles/rolling_smoke_nearsort
+{
+	qer_editorimage textures/particles/smokepuff2
+	translucent
+	noshadows
+	sort		10
+
+	{
+		blend blend
+
+		map textures/particles/smokepuff2
+		vertexcolor
+	}
+}
+textures/particles/rolling_smoke_farsort
+{
+	qer_editorimage textures/particles/smokepuff2
+	translucent
+	noshadows
+	sort		far
+
+	{
+		blend blend
+
+		map textures/particles/smokepuff2
+		vertexcolor
+	}
+}
+
+textures/particles/rolling_smoke2
+{
+	qer_editorimage textures/particles/rolling_smoke2
+	translucent
+	noshadows
+	{
+		blend blend
+//		blend gl_src_alpha, gl_one
+		map textures/particles/rolling_smoke2
+		vertexcolor
+	}
+}
+
+textures/particles/smokepuff3
+{
+	qer_editorimage textures/particles/smokepuff3
+	translucent
+	noshadows
+
+	{
+		blend blend
+
+		map textures/particles/smokepuff3
+		vertexcolor
+	}
+}
+
+textures/particles/smokepuff3_colored
+{
+	qer_editorimage textures/particles/smokepuff3
+	translucent
+	noshadows
+	{
+		blend blend
+
+		map textures/particles/smokepuff3
+		colored
+		vertexcolor
+	}
+}
+
+
+
+textures/particles/rifle_smoke
+{
+	qer_editorimage textures/particles/smokepuff2
+	translucent
+	noshadows
+	sort 10
+	{
+		blend gl_src_alpha, gl_one
+//		blend gl_zero, gl_one_minus_src_color
+		map textures/particles/smokepuff2
+		vertexcolor
+	}
+}
+
+
+//
+//
+// looping explosion (doesn't loop yet)
+//
+//
+
+textures/particles/flamethrower_loop
+{
+	qer_editorimage textures/particles/anim/exp_loop01
+	noshadows
+	sort 	10
+//	vertexcolor
+	{
+		map textures/particles/anim/exp_loop01
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+/*	{
+		if(flamesteploop[(time) + 0 / 21] == 1)
+		map textures/particles/anim/exp_loop01
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 1 / 21] == 1)
+		map textures/particles/anim/exp_loop02
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 2 / 21] == 1)
+		map textures/particles/anim/exp_loop03
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 3 / 21] == 1)
+		map textures/particles/anim/exp_loop04
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 4 / 21] == 1)
+		map textures/particles/anim/exp_loop05
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 5 / 21] == 1)
+		map textures/particles/anim/exp_loop06
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 6 / 21] == 1)
+		map textures/particles/anim/exp_loop07
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 7 / 21] == 1)
+		map textures/particles/anim/exp_loop08
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 8 / 21] == 1)
+		map textures/particles/anim/exp_loop09
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 9 / 21] == 1)
+		map textures/particles/anim/exp_loop10
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 10 / 21] == 1)
+		map textures/particles/anim/exp_loop11
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 11 / 21] == 1)
+		map textures/particles/anim/exp_loop12
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 12 / 21] == 1)
+		map textures/particles/anim/exp_loop13
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 13 / 21] == 1)
+		map textures/particles/anim/exp_loop14
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 14 / 21] == 1)
+		map textures/particles/anim/exp_loop15
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 15 / 21] == 1)
+		map textures/particles/anim/exp_loop16
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 16 / 21] == 1)
+		map textures/particles/anim/exp_loop17
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 17 / 21] == 1)
+		map textures/particles/anim/exp_loop18
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 18 / 21] == 1)
+		map textures/particles/anim/exp_loop19
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 19 / 21] == 1)
+		map textures/particles/anim/exp_loop20
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+		glowStage
+	}
+	{
+		if(flamesteploop[(time) + 20 / 21] == 1)
+		map textures/particles/anim/exp_loop21
+		blend gl_one, gl_one_minus_src_color
+		vertexcolor
+	}*/
+}
+
+textures/particles/flameglow
+{
+	deform corona 1
+	{
+		blend add
+		map textures/particles/flameglow
+		rgb 0.2
+//		vertexcolor
+	}
+}
+
+//////////////////
+// a brighter version of the texture
+/////////////////
+textures/particles/flameglow2
+{
+	deform corona 1
+	{
+		blend add
+		map textures/particles/flameglow2
+		rgb 0.2
+//		vertexcolor
+	}
+}
+
+textures/particles/crawler_loop
+{
+	qer_editorimage textures/particles/anim/green/grn_exp_loop01
+	noshadows
+	sort 	10
+	{
+		map textures/particles/anim/green/grn_exp_loop01
+		blend add
+		vertexcolor
+	}
+}
+
+textures/particles/greenglow
+{
+	deform corona 1
+	{
+		blend add
+		map textures/particles/greenglow
+		rgb 0.5
+//		vertexcolor
+	}
+}
+
+textures/particles/explosion_loop
+{
+	qer_editorimage textures/particles/anim/exp_loop01
+	noshadows
+	sort	10
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/anim/exp_loop
+		vertexcolor
+		scale 1 / 8 , 1
+		scroll stripanim8[( time + parm4 ) * 1.20 ], 0
+		rgb 1
+		glowStage
+	}
+
+/*	{
+		if(flamesteploop[(time) + 0 / 5] == 1)
+		map textures/particles/anim/exp_loop01
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 1 / 5] == 1)
+		map textures/particles/anim/exp_loop05
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 2 / 5] == 1)
+		map textures/particles/anim/exp_loop09
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 3 / 5] == 1)
+		map textures/particles/anim/exp_loop13
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 4 / 5] == 1)
+		map textures/particles/anim/exp_loop17
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 5 / 5] == 1)
+		map textures/particles/anim/exp_loop21
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 6 / 21] == 1)
+		map textures/particles/anim/exp_loop07
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 7 / 21] == 1)
+		map textures/particles/anim/exp_loop08
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 8 / 21] == 1)
+		map textures/particles/anim/exp_loop09
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 9 / 21] == 1)
+		map textures/particles/anim/exp_loop10
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 10 / 21] == 1)
+		map textures/particles/anim/exp_loop11
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 11 / 21] == 1)
+		map textures/particles/anim/exp_loop12
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 12 / 21] == 1)
+		map textures/particles/anim/exp_loop13
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 13 / 21] == 1)
+		map textures/particles/anim/exp_loop14
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 14 / 21] == 1)
+		map textures/particles/anim/exp_loop15
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 15 / 21] == 1)
+		map textures/particles/anim/exp_loop16
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 16 / 21] == 1)
+		map textures/particles/anim/exp_loop17
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 17 / 21] == 1)
+		map textures/particles/anim/exp_loop18
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 18 / 21] == 1)
+		map textures/particles/anim/exp_loop19
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 19 / 21] == 1)
+		map textures/particles/anim/exp_loop20
+		blend add vertexcolor
+	}
+	{
+		if(flamesteploop[(time) + 20 / 21] == 1)
+		map textures/particles/anim/exp_loop21
+		blend add vertexcolor
+	}*/
+}
+
+textures/particles/spacemine_explosion_loop
+{
+	qer_editorimage textures/particles/anim/exp_loop01
+	noshadows
+	sort	10
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/anim/exp_loop
+		vertexcolor
+		glowStage
+	}
+}
+
+textures/particles/glass8
+{
+	qer_editorimage textures/particles/glass8
+	glass_macro
+	{
+		blend	gl_src_alpha, gl_one			// bright, like additive translucency
+//		blend gl_one, gl_one_minus_src_color
+		map textures/particles/glass8
+		vertexcolor
+	}
+}
+textures/particles/glass16
+{
+	qer_editorimage textures/particles/glass16
+	glass_macro
+	{
+//		blend	gl_dst_color, gl_one_minus_src_alpha	// bright, with alpha
+		blend	gl_src_alpha, gl_one			// bright, like additive translucency
+//		blend gl_one, gl_one_minus_src_color
+		map textures/particles/glass16
+		vertexcolor
+	}
+}
+
+textures/particles/glass16shard
+{
+	qer_editorimage textures/particles/glass16
+	glass_macro
+	{
+//		blend	gl_src_alpha, gl_one
+		blend blend
+		map textures/particles/glass16
+		vertexcolor
+	}
+}
+
+textures/particles/glass32
+{
+	qer_editorimage textures/particles/glass32
+	glass_macro
+	{
+		blend	gl_src_alpha, gl_one			// bright, like additive translucency
+//		blend gl_one, gl_one_minus_src_color
+		map textures/particles/glass32
+		vertexcolor
+	}
+}
+textures/particles/glass32_2
+{
+	qer_editorimage textures/particles/glass32_2
+	glass_macro
+	{
+		blend	gl_src_alpha, gl_one			// bright, like additive translucency
+//		blend gl_one, gl_one_minus_src_color
+		map textures/particles/glass32_2
+		vertexcolor
+	}
+}
+textures/particles/organic_spurt
+{
+	qer_editorimage textures/particles/organic_spurt
+//	translucent
+	noshadows
+	{
+		blend blend
+		map textures/particles/organic_spurt
+		vertexcolor
+	}
+}
+textures/particles/organic_spurt2
+{
+	qer_editorimage textures/particles/organic_spurt2
+//	translucent
+	noshadows
+	{
+		blend blend
+		map textures/particles/organic_spurt2
+		vertexcolor
+	}
+}
+textures/particles/organic_spurt_small
+{
+	qer_editorimage textures/particles/organic_spurt_small
+//	translucent
+	noshadows
+	{
+		blend blend
+		map textures/particles/organic_spurt_small
+		vertexcolor
+	}
+}
+
+textures/particles/gasrelease {
+	qer_editorimage textures/particles/circlealpha
+//	translucent
+	noshadows
+	{
+		blend blend
+		map textures/particles/circlealpha
+		//vertexcolor
+
+		alpha	parm3
+	}
+}
+
+textures/particles/autocannon_flamejet {
+	qer_editorimage textures/particles/chemex2
+	translucent
+	noshadows
+	{
+		blend add
+		map textures/particles/chemex2
+		//vertexcolor
+
+		//alpha	parm3
+	}
+}
+
+textures/particles/bloodwound {
+	translucent
+	{
+		blend blend
+		map textures/particles/smokepuff2
+		alpha 0.45
+		red 1.0
+		green 0.3
+		blue 0.1
+	}
+}
+
+
+textures/particles/smokepuff4a
+{
+	qer_editorimage textures/particles/smokepuff4
+	translucent
+	noshadows
+	sort		10
+	{
+		blend add
+		map textures/particles/smokepuff4
+		vertexcolor
+	}
+}
+
+textures/particles/soul_smoke
+{
+	translucent
+	noshadows
+	twosided
+	sort		10
+	{
+		blend add
+		map textures/particles/soul_smoke
+		vertexcolor
+	}
+}
+
+textures/particles/soul_projectile
+{
+	noselfshadow
+	noshadows
+	translucent
+	twosided
+//	deform sprite
+	sort		10
+	{
+		blend add
+		map textures/sfx/soulstrip
+		scale 1 / 16, 1
+		scroll stripanim16[ time*2.2 ], 0		// 2.2 used since it fades out over 400ms (1 sec table / 400ms = 2.2)
+		vertexcolor
+	}
+}
+
+textures/particles/soulstripper_suckflash
+{
+	qer_editorimage textures/particles/soulstripper_suckflash
+	translucent
+	noshadows
+	sort		10		// sort very late, so no translucent objects in the world draws over it
+	{
+		blend add
+		map textures/particles/soulstripper_suckflash
+		vertexcolor
+	}
+}
+
+textures/particles/gibtentacleblob1
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend blend
+		map 	textures/particles/gibtentacleblob1
+		vertexcolor
+	}
+}
+
+textures/particles/gibtentacleblob2
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend blend
+		map 	textures/particles/gibtentacleblob2
+		vertexcolor
+	}
+}
+textures/particles/blooddrop
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend blend
+		map textures/particles/blooddrop
+		vertexcolor
+	}
+}
+
+textures/particles/shuttle_projectile
+{
+	qer_editorimage textures/particles/shuttle_projectile
+	translucent
+	noshadows
+//	sort		10		// sort very late, so no translucent objects in the world draws over it
+	{
+//		blend add
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/shuttle_projectile
+		vertexcolor
+		glowstage
+	}
+}
+
+textures/particles/shuttle_projectile2
+{
+	qer_editorimage textures/particles/shuttle_projectile2
+	translucent
+	noshadows
+//	sort		10		// sort very late, so no translucent objects in the world draws over it
+	{
+//		blend add
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/shuttle_projectile2
+		vertexcolor
+		glowstage
+	}
+}
+
+textures/particles/shuttle_muzzleflash
+{
+	qer_editorimage textures/particles/shuttle_muzzleflash
+	translucent
+	noshadows
+	sort		10		// sort very late, so no translucent objects in the world draws over it
+	{
+		blend add
+		map textures/particles/shuttle_muzzleflash
+		vertexcolor
+		glowstage
+	}
+}
+
+textures/particles/dryice_smoke
+{
+	qer_editorimage textures/particles/smokepuff11
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_one_minus_src_alpha, gl_one_minus_src_color //graying blend (white smoke)
+		map textures/particles/smokepuff11
+		vertexcolor
+	}
+}
+
+textures/particles/dryice_smoke_floor
+{
+	qer_editorimage textures/particles/smokepuff11
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_one_minus_src_alpha, gl_one_minus_src_color //graying blend (white smoke)
+		map textures/particles/dry_ice
+		vertexcolor
+	}
+}
+
+textures/particles/bright_spark
+{
+	qer_editorimage textures/particles/spark_bright
+	translucent
+	noshadows
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/spark_bright
+		vertexcolor
+		glowstage
+	}
+}
+
+textures/particles/plane_smoke
+{
+	qer_editorimage textures/particles/smokepuff2
+	translucent
+	noshadows
+	sort 1
+
+	{
+		blend blend
+		//blend add
+		map textures/particles/smokepuff2
+		vertexcolor
+	}
+}
+
+textures/particles/smokepuff12
+{
+	qer_editorimage textures/particles/smokepuff12
+	translucent
+	noshadows
+	{
+      		blend gl_zero, gl_one_minus_src_color
+		map textures/particles/smokepuff12
+		vertexcolor
+	}
+}
+
+textures/particles/fire
+{
+	qer_editorimage textures/particles/fire
+	translucent
+	noshadows
+	sort 	10
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/fire
+		vertexcolor
+		glowStage
+	}
+}
+
+textures/particles/fire_white
+{
+	qer_editorimage textures/particles/fire_white
+	translucent
+	noshadows
+	sort 	10
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/fire_white
+		vertexcolor
+		glowStage
+	}
+}
+
+textures/particles/fire_hotspot
+{
+	qer_editorimage textures/particles/fire_hotspot
+	translucent
+	noshadows
+	sort 	10
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/fire_hotspot
+		vertexcolor
+		glowStage
+	}
+}
+
+textures/particles/fire4
+{
+	qer_editorimage textures/particles/fire4
+	translucent
+	noshadows
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/fire4
+		vertexcolor
+		glowStage
+	}
+}
+
+textures/particles/fire4_add
+{
+	qer_editorimage textures/particles/fire4
+	translucent
+	noshadows
+	{
+      	blend add
+		map textures/particles/fire4
+		vertexcolor
+	}
+}
+
+textures/particles/fire5
+{
+	qer_editorimage textures/particles/fire5
+	translucent
+	noshadows
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/fire5
+		vertexcolor
+	}
+}
+
+textures/particles/thick_smoke
+{
+	qer_editorimage textures/particles/smokepuff
+	translucent
+	noshadows
+
+	{
+		blend blend
+
+		map textures/particles/smokepuff
+		vertexcolor
+	}
+}
+
+textures/particles/thick_smoke_sort1
+{
+	qer_editorimage textures/particles/smokepuff
+	translucent
+	noshadows
+	sort 1
+	{
+		blend blend
+
+		map textures/particles/smokepuff
+		vertexcolor
+	}
+}
+
+textures/particles/smokepuff13
+{
+	translucent
+	noshadows
+	sort		10
+	{
+		blend add
+		map textures/particles/smokepuff13
+		vertexcolor
+	}
+}
+
+textures/particles/smokepuff14
+{
+	qer_editorimage textures/particles/smokepuff14
+	translucent
+	noshadows
+//	sort nearest
+
+	{
+		blend gl_zero, gl_one_minus_src_color
+
+		map textures/particles/smokepuff14
+		vertexcolor
+	}
+}
+
+textures/particles/explosionstrip
+{
+	qer_editorimage textures/particles/explosionstrip
+	translucent
+	noshadows
+	sort 10
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/explosionstrip
+		vertexcolor
+		scale 1 / 32 , 1
+		scroll stripanim32[( time + parm4 ) * 1.20 ], 0
+		rgb 0.5
+		glowStage
+	}
+}
+
+
+/*textures/particles/explosion_depthtest
+{
+	{
+		if fragmentprograms == 1
+	      	blend gl_one, gl_one_minus_src_color
+	      	vertexprogram	depthsprite.vfp
+		fragmentprogram	depthsprite.vfp
+		fragmentmap		0 	textures/particles/smokepuff10
+		fragmentmap		1	textures/particles/smokepuff10
+//		fragmentmap		0 	textures/particles/rolling_smoke2
+//		fragmentmap		1	textures/particles/rolling_smoke2
+		vertexcolor
+	}
+}*/
+
+
+
+textures/particles/explosionstrip_noanim
+{
+	qer_editorimage textures/particles/explosionstrip
+	translucent
+	noshadows
+	sort 10
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/explosionstrip
+		vertexcolor
+		rgb 0.5
+		glowStage
+	}
+}
+
+textures/particles/explosionstrip_green
+{
+	qer_editorimage textures/particles/explosionstrip_green
+	translucent
+	noshadows
+	sort 10
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/explosionstrip_green
+		vertexcolor
+		scale 1 / 32 , 1
+		scroll stripanim32[ time * 1.4 ] , 0
+	}
+}
+
+textures/particles/explosion_fire
+{
+	qer_editorimage textures/particles/explosion2
+	translucent
+	noshadows
+//	sort far
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/explosion2
+		vertexcolor
+	}
+}
+
+textures/particles/steam_test
+{
+	qer_editorimage textures/particles/smokepuff10
+	translucent
+	noshadows
+	sort		10
+	{
+		blend diffusemap
+		map textures/particles/smokepuff10
+//		vertexcolor
+//		alphatest 0.5
+	}
+}
+
+textures/particles/chaff
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map textures/particles/chaff
+		color		2 * ( parm0 * (random [ time * 1.25 ])),
+					2 * ( parm1 * (random [ time * 1.25 ])),
+					2 * ( parm2 * (random [ time * 1.25 ])),
+					1.0
+		vertexcolor
+	}
+}
+
+textures/particles/chaff2
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map textures/particles/chaff
+		color		2 * ( parm0 * (flashdecay[ time * 2.5 ])),
+					2 * ( parm1 * (flashdecay [ time * 2.5 ])),
+					2 * ( parm2 * (flashdecay [ time * 2.5 ])),
+					1.0
+		vertexcolor
+	}
+}
+
+textures/particles/chaff3
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map textures/particles/chaff
+		color		2 * ( parm0 * (bowvision [ time * 1.5 ])),
+					2 * ( parm1 * (bowvision [ time * 1.5 ])),
+					2 * ( parm2 * (bowvision [ time * 1.5 ])),
+					1.0
+		vertexcolor
+	}
+}
+
+textures/particles/chaff4
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map textures/particles/chaff
+		color		2 * ( parm0 * (tim2 [ time * 1.5 ])),
+					2 * ( parm1 * (tim2 [ time * 1.5 ])),
+					2 * ( parm2 * (tim2 [ time * 1.5 ])),
+					1.0
+		vertexcolor
+	}
+}
+
+textures/particles/chaff5
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map textures/particles/chaff
+		color		2 * ( parm0 * (tim1 [ time * .75 ])),
+					2 * ( parm1 * (tim1 [ time * .75 ])),
+					2 * ( parm2 * (tim1 [ time * .75 ])),
+					1.0
+		vertexcolor
+	}
+}
+
+textures/particles/chaff6
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map textures/particles/chaff
+		color		2 * ( parm0 * (flashdecay [ time * .85 ])),
+					2 * ( parm1 * (flashdecay [ time * .85 ])),
+					2 * ( parm2 * (flashdecay [ time * .85 ])),
+					1.0
+		vertexcolor
+	}
+}
+
+textures/particles/energyfield
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map textures/particles/rifle_flash2
+		rgb (.1 * sintable [.15 + time * .3 ]) + .7
+		vertexcolor
+	}
+}
+
+textures/particles/forcefield_collide
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/collision
+		vertexcolor
+	}
+}
+
+textures/particles/gravity_flare
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+//		blend gl_one, gl_one_minus_src_color
+		map textures/particles/gravity_flare
+		vertexcolor
+	}
+}
+
+textures/particles/podwall1
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend blend
+		map textures/particles/podwall1
+		vertexcolor
+	}
+}
+
+textures/particles/podwall2
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend blend
+		map textures/particles/podwall2
+		vertexcolor
+	}
+}
+
+textures/particles/podwall3
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend blend
+		map textures/particles/podwall3
+		vertexcolor
+	}
+}
+
+textures/particles/podwall4
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map textures/particles/podwall4
+		vertexcolor
+	}
+}
+
+textures/particles/hider_trail
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/hider_trail
+		vertexcolor
+	}
+}
+
+textures/particles/hider_spray
+{
+	noshadows
+	noselfshadow
+	sort 	10
+
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/hider_spray
+		vertexcolor
+	}
+}
+
+textures/particles/hiderchunky
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/hiderchunky
+		vertexcolor
+	}
+}
+
+textures/particles/hider_puff
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/hider_puff
+		vertexcolor
+	}
+}
+
+textures/particles/hider_muzzleflash
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/hider_muzzleflash
+		vertexcolor
+	}
+}
+
+textures/particles/firespots
+{
+	noshadows
+	noselfshadow
+	sort 30
+
+	{
+		blend gl_zero, gl_one_minus_src_color
+		map textures/particles/firespots
+		vertexcolor
+	}
+}
+
+textures/particles/spirit_strip
+{
+	noshadows
+	noselfshadow
+	sort 50
+
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/spirit_strip
+		vertexcolor
+	}
+}
+
+textures/particles/grenadecloud1
+{
+	noshadows
+	noselfshadow
+	{
+		blend blend
+		map textures/particles/grenadecloud1
+		vertexcolor
+	}
+}
+
+textures/particles/grenadespray2
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend blend
+		map textures/particles/grenadespray2
+		vertexcolor
+	}
+}
+
+textures/particles/smokepuff8
+{
+	qer_editorimage textures/particles/smokepuff8
+	translucent
+	noshadows
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/smokepuff8
+		vertexcolor
+	}
+}
+
+textures/particles/spark_white
+{
+	qer_editorimage textures/particles/spark_white
+	translucent
+	noshadows
+	sort		10
+	{
+		blend add
+		//blend gl_one, gl_one_minus_src_color
+		map textures/particles/spark_white
+		vertexcolor
+	}
+}
+
+textures/particles/raindrop_wave
+{
+	noshadows
+	noselfshadow
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/raindropwave
+		color parm0 * 0.25,
+			  parm1 * 0.25,
+			  parm2 * 0.25,
+			  1.0
+	}
+}
+
+textures/particles/goo_wave
+{
+	noshadows
+	noselfshadow
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/raindropwave
+		vertexcolor
+	}
+}
+
+textures/particles/heat1
+{
+	noshadows
+	translucent
+	forceoverlays
+
+	{
+		program			heathaze.vfp
+
+		vertexparm		0       0.0 , 0.0	// texture scrolling
+		vertexparm		1       0.4			// magnitude of the distortion
+		fragmentprogram		heathaze.vfp
+		fragmentmap		0       _currentrender
+		fragmentmap		1       textures/particles/heat1	// the normal map for distortion
+	}
+}
+
+textures/particles/heat2
+{
+	noshadows
+	translucent
+	forceoverlays
+
+	{
+		program			heathaze.vfp
+
+		vertexparm		0       0.0 , 0.0	// texture scrolling
+		vertexparm		1       2			// magnitude of the distortion - More than heat1
+		fragmentprogram		heathaze.vfp
+		fragmentmap		0       _currentrender
+		fragmentmap		1       textures/particles/heat1	// the normal map for distortion
+	}
+}
+
+textures/particles/ftcvistaheat
+{
+	noshadows
+	translucent
+	forceoverlays
+
+	{
+		program			heathaze.vfp
+
+		vertexparm		0       0.0 , 0.0	// texture scrolling
+		vertexparm		1       40			// magnitude of the distortion
+		fragmentprogram		heathaze.vfp
+		fragmentmap		0       _currentrender
+		fragmentmap		1       textures/particles/heat1	// the normal map for distortion
+	}
+}
+
+textures/particles/pipesteam
+{
+	qer_editorimage textures/particles/smokepuff10
+	translucent
+	noshadows
+	{
+		blend gl_src_alpha, gl_one
+		map textures/particles/smokepuff10
+		vertexcolor
+	}
+}
+
+
+textures/particles/gib_core1
+{
+	qer_editorimage textures/decals/gib_splat1
+	noshadows
+	{
+//		blend blend
+//		blend gl_src_alpha, gl_one_minus_src_color
+		blend 	gl_zero,gl_one_minus_src_color
+		map textures/particles/wound_splat1
+		vertexcolor
+	}
+}
+
+textures/particles/gib_core2
+{
+	qer_editorimage textures/decals/gib_splat2
+	noshadows
+	{
+//		blend blend
+		blend 	gl_zero,gl_one_minus_src_color
+		map textures/decals/gib_splat_i2
+		vertexcolor
+	}
+}
+
+textures/particles/gib_chunk1
+{
+	qer_editorimage textures/particles/gib_chunk1
+	noshadows
+	{
+		blend	gl_zero, gl_one_minus_src_color
+		rgb 2.0
+		map textures/particles/gib_trail2
+		vertexcolor
+	}
+}
+
+textures/particles/gib_chunk2
+{
+	qer_editorimage textures/particles/gib_chunk1
+	noshadows
+	{
+		blend	gl_one, gl_one_minus_src_color
+		map textures/particles/gib_chunk1
+		vertexcolor
+	}
+}
+
+textures/particles/gib_trail
+{
+	qer_editorimage textures/particles/gib_trail1
+	noshadows
+	{
+		blend	gl_zero, gl_one_minus_src_color
+		rgb 2.0
+		map textures/particles/gib_trail1
+		vertexcolor
+	}
+}
+
+textures/particles/bloodspray5
+{
+	qer_editorimage textures/particles/bloodspray5
+	noshadows
+	{
+		blend	gl_zero, gl_one_minus_src_color
+		rgb 2.0
+		map textures/particles/bloodspray5
+		vertexcolor
+	}
+}
+
+textures/particles/woodsplinter1
+{
+	qer_editorimage textures/particles/woodsplinter1
+	glass_macro
+	{
+		blend	gl_src_alpha, gl_one
+		map textures/particles/woodsplinter1
+		vertexcolor
+	}
+}
+
+textures/particles/bug
+{
+	noSelfShadow
+	noshadows
+	nonsolid
+	noimpact
+
+	qer_editorimage		textures/particles/bug
+
+	{
+	    blend  blend
+	    map    textures/particles/bug
+//		alphaTest 0.5
+		clamp
+         vertexcolor
+	}
+
+}
+
+textures/particles/goocloud
+{
+	noshadows
+	noselfshadow
+	{
+		blend blend
+		map textures/particles/goocloud
+		vertexcolor
+	}
+}
+
+textures/particles/goospray
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend blend
+		map textures/particles/goospray
+		vertexcolor
+	}
+}
+
+textures/particles/spiritfire
+{
+	qer_editorimage textures/particles/fire3
+	translucent
+	noshadows
+	sort 	10
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/fire3
+		vertexcolor
+	}
+}
+
+textures/particles/spiritfire2
+{
+	qer_editorimage textures/particles/fire3
+	translucent
+	noshadows
+	sort 	10
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/fire3
+		vertexcolor
+		notspiritwalk
+	}
+}
+
+textures/particles/lightbeam1
+{
+	qer_editorimage textures/particles/lightbeam1
+	noshadows
+	noselfshadow
+	{
+		blend add
+		map textures/particles/lightbeam1
+		vertexcolor
+		rgb 0.05
+		clamp
+	}
+}
+
+textures/particles/lightbeam1_sound
+{
+	qer_editorimage textures/particles/lightbeam1
+	noshadows
+	noselfshadow
+	{
+		blend add
+		map textures/particles/lightbeam1
+		vertexcolor
+		rgb 0.05 * ( 1 + ( sound * 0.5 ) ) * parm6
+		clamp
+	}
+}
+
+textures/particles/lightbeam1_bright
+{
+	qer_editorimage textures/particles/lightbeam1
+	noshadows
+	noselfshadow
+	{
+		blend add
+		map textures/particles/lightbeam1
+		vertexcolor
+		clamp
+	}
+}
+
+textures/particles/lightbeam1_sort
+{
+	qer_editorimage textures/particles/lightbeam1
+	noshadows
+	noselfshadow
+	sort		10
+	{
+		blend add
+		map textures/particles/lightbeam1
+		vertexcolor
+		clamp
+	}
+}
+
+textures/particles/square
+{
+	qer_editorimage textures/particles/square
+	translucent
+	noshadows
+	sort 	5
+	{
+		blend add
+		map textures/particles/square
+		vertexcolor
+	}
+}
+
+textures/particles/ripinspace
+{
+	qer_editorimage textures/particles/ripinspace
+	translucent
+	twosided
+	noshadows
+	sort 10
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/ripinspace
+		vertexcolor
+		rgb 1
+		glowStage
+	}
+}
+
+textures/particles/bright_spark_blue
+{
+	qer_editorimage textures/particles/spark_bright_blue
+	translucent
+	noshadows
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/spark_bright_blue
+		vertexcolor
+		glowstage
+	}
+}
+
+textures/particles/portal_mist
+{
+	qer_editorimage textures/particles/portal_mist
+	translucent
+	noshadows
+	sort 10
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/portal_mist
+		vertexcolor
+		rgb 1
+		glowStage
+	}
+}
+
+textures/particles/superportal_mist
+{
+	qer_editorimage models/mapobjects/superportal/superportal_mist
+	translucent
+	noshadows
+	sort 10
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map models/mapobjects/superportal/superportal_mist
+		vertexcolor
+		rgb 1
+		glowStage
+	}
+}
+
+textures/particles/sb_lightning
+{
+	qer_editorimage textures/particles/portal_lightning2
+	translucent
+	noshadows
+	sort 10
+	{
+      	blend add
+		map textures/particles/portal_lightning2
+		vertexcolor
+		rgb	(flicker1 [time])
+		rotate time * -4.005
+		glowStage
+		clamp
+	}
+	{
+      	blend add
+		map textures/particles/portal_lightning2
+		vertexcolor
+		rgb	(flicker1 [time])
+		rotate time * -4.005
+		glowStage
+		clamp
+	}
+}
+
+textures/particles/portal_lightning1
+{
+	qer_editorimage textures/particles/portal_lightning1
+	translucent
+	noshadows
+	sort 10
+	{
+      	blend add
+		map textures/particles/portal_lightning1
+		vertexcolor
+		rgb		1
+		rotate time * 6.005
+		glowStage
+		clamp
+	}
+}
+
+textures/particles/portal_lightning2
+{
+	qer_editorimage textures/particles/portal_lightning2
+	translucent
+	noshadows
+	sort 10
+	{
+      	blend add
+		map textures/particles/portal_lightning2
+		vertexcolor
+		rgb		1
+		rotate time * -4.005
+		glowStage
+		clamp
+	}
+}
+
+textures/particles/portal_lightning3
+{
+	qer_editorimage textures/particles/portal_lightning3
+	translucent
+	noshadows
+	sort 10
+	{
+      	blend add
+		map textures/particles/portal_lightning3
+		vertexcolor
+		rgb		1
+		rotate time * 2.005
+		glowStage
+		clamp
+	}
+}
+
+textures/particles/portal_lightning4
+{
+	qer_editorimage textures/particles/portal_lightning4
+	translucent
+	noshadows
+	sort 10
+	{
+      	blend add
+		map textures/particles/portal_lightning4
+		vertexcolor
+		rgb		1
+		rotate time * 3.00
+		glowStage
+		clamp
+	}
+}
+
+textures/particles/ss_lockon
+{
+	qer_editorimage textures/particles/ss_lockon
+	translucent
+	noshadows
+	sort 15
+	{
+      	blend add
+		map textures/particles/ss_lockon
+		vertexcolor
+		glowStage
+	}
+}
+
+textures/particles/soul_hunter1
+{
+	qer_editorimage textures/particles/soul_hunter1
+	translucent
+	noshadows
+	sort 15
+	{
+      	blend add
+		map textures/particles/soul_hunter1
+		rgb 1 * heartbeat3 [time * 0.85]
+		centerscale 1 * guieye [time * 0.85], 1
+		vertexcolor
+		glowStage
+		clamp
+	}
+}
+
+textures/particles/soul_hunter2
+{
+	qer_editorimage textures/particles/soul_hunter2
+	translucent
+	noshadows
+	sort 15
+	{
+      	blend add
+		map textures/particles/soul_hunter2
+		vertexcolor
+		glowStage
+	}
+}
+textures/particles/soul_hunter3
+{
+	qer_editorimage textures/particles/soul_hunter3
+	translucent
+	noshadows
+	sort 15
+	{
+      	blend add
+		map textures/particles/soul_hunter3
+		vertexcolor
+		glowStage
+	}
+}
+textures/particles/soul_hunter4
+{
+	qer_editorimage textures/particles/soul_hunter4
+	translucent
+	noshadows
+	sort 15
+	{
+      	blend add
+		map textures/particles/soul_hunter4
+		vertexcolor
+		glowStage
+	}
+}
+textures/particles/soul_hunter5
+{
+	qer_editorimage textures/particles/soul_hunter5
+	translucent
+	noshadows
+	sort 15
+	{
+      	blend add
+		map textures/particles/soul_hunter5
+		vertexcolor
+		glowStage
+	}
+}
+textures/particles/soul_hunter6
+{
+	qer_editorimage textures/particles/soul_hunter6
+	translucent
+	noshadows
+	sort 15
+	{
+      	blend add
+		map textures/particles/soul_hunter6
+		vertexcolor
+		glowStage
+	}
+}
+
+textures/particles/hunter_muzzleflash
+{
+	qer_editorimage textures/particles/hunter_muzzleflash
+	translucent
+	noshadows
+	sort		10		// sort very late, so no translucent objects in the world draws over it
+	{
+		blend add
+		map textures/particles/hunter_muzzleflash
+		vertexcolor
+	}
+}
+
+textures/particles/chaff_pool
+{
+	noshadows
+	noselfshadow
+	translucent
+	sort 10
+
+    {
+    	program         heatHazeWithMaskAndVertex.vfp
+    	vertexParm      0   0                           // texture scrolling
+    	vertexParm      1   2.5                       // magnitude of the distortion
+    	fragmentMap	0   _currentRender
+    	fragmentMap	1   	textures/particles/blob_local	// the normal map for distortion
+    	fragmentMap     2	textures/particles/blob_alpha   	// the distortion blend map
+    }
+}
+
+textures/particles/chaff_pool_splat
+{
+	noshadows
+	noselfshadow
+	translucent
+	sort 10
+
+    {
+    	program         heatHazeWithMaskAndVertex.vfp
+    	vertexParm      0   0                           // texture scrolling
+    	vertexParm      1   1.5                          // magnitude of the distortion
+    	fragmentMap	0   _currentRender
+    	fragmentMap	1   	textures/particles/blob2_local	// the normal map for distortion
+    	fragmentMap     2	textures/particles/blob2_alpha   	// the distortion blend map
+    }
+}
+textures/particles/chaff_pool_color
+{
+	noshadows
+	noselfshadow
+	sort 10
+
+	/*{
+		blend gl_src_alpha, gl_one
+		map textures/particles/blob
+		vertexcolor
+	}*/
+
+	{
+		blend gl_src_alpha, gl_one
+		map textures/particles/blob
+		clamp
+		vertexcolor
+	}
+}
+textures/particles/chaff_pool_splat_color
+{
+	noshadows
+	noselfshadow
+	sort 10
+
+	{
+		blend gl_src_alpha, gl_one
+		map textures/particles/blob2
+		vertexcolor
+	}
+}
+textures/particles/chaff_bubble
+{
+	qer_editorimage textures/particles/bubble1
+	noshadows
+	{
+		blend add
+		map textures/particles/bubble1
+		vertexcolor
+	}
+}
+
+textures/particles/asteroid_hold
+{
+	noshadows
+	noselfshadow
+	twosided
+
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/asteroid_hold
+		vertexcolor
+		glowstage
+	}
+}
+
+textures/particles/asteroid_glow
+{
+	qer_editorimage textures/particles/spark_orange
+	translucent
+	noshadows
+	twosided
+	{
+		blend add
+		map textures/particles/spark_orange
+		vertexcolor
+	}
+}
+
+
+
+textures/particles/skybox_clouds
+{
+	qer_editorimage textures/particles/rolling_smoke2
+	translucent
+	noshadows
+	sort		10
+	{
+
+
+		blend gl_src_alpha, gl_one
+		map textures/particles/puff6
+		vertexcolor
+	}
+}
+textures/particles/skybox_clouds2
+{
+	qer_editorimage textures/particles/rolling_smoke2
+	translucent
+	noshadows
+	sort		10
+	{
+
+
+		blend gl_src_alpha, gl_one
+		map textures/particles/wisps
+		vertexcolor
+	}
+}
+textures/particles/egg_burst
+{
+	qer_editorimage	textures/decals/gib_splat1
+	sort 10
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map 	textures/decals/egg_splat3
+		vertexcolor
+	}
+}
+
+textures/particles/heathaze
+{
+	noshadows
+	noselfshadow
+	translucent
+	qer_editorimage 		textures/editor/haze
+
+        {
+                vertexProgram           heatHazeWithMask.vfp
+                vertexParm              0       0, time * .15		// texture scrolling
+                vertexParm              1       2.5				// magnitude of the distortion
+                fragmentProgram			heatHazeWithMask.vfp
+                fragmentMap             0       _currentRender
+                fragmentMap             1       textures/particles/heathaze
+                fragmentMap             2       textures/sfx/vp1_alpha
+        }
+}
+
+textures/particles/asteroid_debris1
+{
+	noshadows
+//	noselfshadow
+//	twosided
+	sort 10
+
+	{
+		blend diffusemap
+		map textures/particles/asteroid1
+		alphaTest 0.5
+		vertexcolor
+	}
+	{
+//		privatepolygonoffset 10
+		blend add
+		map textures/particles/asteroid1
+		rgb .2
+	}
+}
+
+textures/particles/asteroid_debris2
+{
+	noshadows
+//	noselfshadow
+//	twosided
+	sort 10
+	{
+		blend diffusemap
+		map textures/particles/asteroid2
+		alphaTest 0.5
+		vertexcolor
+	}
+	{
+//		privatepolygonoffset 10
+		blend add
+		map textures/particles/asteroid2
+		rgb .2
+	}
+}
+
+textures/particles/asteroid_debris3
+{
+	noshadows
+	noselfshadow
+	translucent
+//	twosided
+	sort 10
+	{
+		blend diffusemap
+		map textures/particles/asteroid3
+		alphaTest 0.5
+		vertexcolor
+	}
+	{
+//		privatepolygonoffset 10
+		blend add
+		map textures/particles/asteroid3
+		rgb .2
+	}
+}
+
+textures/particles/explosion3
+{
+	qer_editorimage textures/particles/explosion3
+	translucent
+	noshadows
+	sort		10
+	{
+
+
+		blend gl_src_alpha, gl_one
+		map textures/particles/explosion3
+		vertexcolor
+		//glowstage
+	}
+}
+
+textures/particles/auto_explosion_smoke
+{
+	qer_editorimage textures/particles/autoex2
+	translucent
+	noshadows
+	sort		10
+	{
+
+
+		blend add
+		map textures/particles/autoex2
+		vertexcolor
+		glowstage
+	}
+}
+
+textures/particles/flare4
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map textures/sfx/flare1
+		vertexcolor
+	}
+
+}
+
+textures/particles/keeperfx1
+{
+	qer_editorimage textures/particles/shockwave
+	translucent
+	noshadows
+	sort 15
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/shockwave
+		rgb parm7
+		vertexcolor
+		glowstage
+	}
+}
+
+textures/particles/keeper_telepathic
+{
+	qer_editorimage textures/particles/keeper_telepathic
+	translucent
+	noshadows
+	{
+      	blend add
+		map textures/particles/keeper_telepathic
+		vertexcolor
+		glowstage
+	}
+}
+
+textures/particles/rifle_glow
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/scorches/scorchmarkinverse
+		vertexcolor
+
+	}
+
+}
+
+textures/particles/sun1
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map models/mapobjects/skybox/sun1
+		vertexcolor
+
+	}
+
+}textures/particles/sun2
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map models/mapobjects/skybox/sun2
+		vertexcolor
+
+	}
+
+}
+
+textures/particles/droid_blast2
+{
+	noshadows
+	noselfshadow
+	sort 10
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/droid_blast2
+		vertexcolor
+		glowstage
+	}
+}
+
+textures/particles/droid_blast3
+{
+	noshadows
+	noselfshadow
+	sort 10
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/droid_blast3
+		vertexcolor
+		glowstage
+	}
+}
+
+textures/particles/droid_blast1
+{
+	noshadows
+	noselfshadow
+	{
+		blend gl_zero, gl_one_minus_src_color
+		map textures/particles/droid_blast1
+	}
+}
+
+textures/particles/droid_blast_explosion
+{
+	qer_editorimage textures/particles/explosion3
+	translucent
+	noshadows
+	sort		10
+	{
+
+
+		blend gl_src_alpha, gl_one
+		map textures/particles/explosion3
+		vertexcolor
+		glowstage
+	}
+}
+
+textures/particles/dryice_fade_opt {
+	qer_editorimage textures/particles/smokepuff11
+	translucent
+	noshadows
+	twosided
+	sort		10
+
+	{if ( distance < ( 400 + parm5 ) )
+		blend gl_one_minus_src_alpha, gl_one_minus_src_color //graying blend (white smoke)
+		map textures/particles/dry_ice
+		vertexcolor
+		rgb 0
+//		glowStage
+	}
+	{if ( distance <= ( 800 + parm6 ) && distance >= ( 400 + parm5 ) )
+		blend gl_one_minus_src_alpha, gl_one_minus_src_color //graying blend (white smoke)
+		map textures/particles/dry_ice
+		vertexcolor
+		rgb 0 + ( ( distance - (400 + parm5) ) / ( (800 + parm6) - (400 + parm5) ) )//dynamic interaction explanation[ (current distance - base) / (max distance - base) = a number between 0 'close' and 1 'far'. 1 - this number = rgb
+//		glowStage
+	}
+	{if ( distance > 800 + parm6 )
+		blend gl_one_minus_src_alpha, gl_one_minus_src_color //graying blend (white smoke)
+		map textures/particles/dry_ice
+		vertexcolor
+		rgb 1
+//		glowStage
+	}
+}
+
+textures/particles/dryice_fade {
+	qer_editorimage textures/particles/smokepuff11
+	translucent
+	noshadows
+	twosided
+	sort		10
+
+	{if ( distance < ( 400 + parm5 ) )
+		blend gl_one_minus_src_alpha, gl_one_minus_src_color //graying blend (white smoke)
+		map textures/particles/smokepuff11
+		vertexcolor
+		rgb 0
+//		glowStage
+	}
+	{if ( distance <= ( 800 + parm6 ) && distance >= ( 400 + parm5 ) )
+		blend gl_one_minus_src_alpha, gl_one_minus_src_color //graying blend (white smoke)
+		map textures/particles/smokepuff11
+		vertexcolor
+		rgb 0 + ( ( distance - (400 + parm5) ) / ( (800 + parm6) - (400 + parm5) ) )//dynamic interaction explanation[ (current distance - base) / (max distance - base) = a number between 0 'close' and 1 'far'. 1 - this number = rgb
+//		glowStage
+	}
+	{if ( distance > 800 + parm6 )
+		blend gl_one_minus_src_alpha, gl_one_minus_src_color //graying blend (white smoke)
+		map textures/particles/smokepuff11
+		vertexcolor
+		rgb 1
+//		glowStage
+	}
+}
+
+//fadeable version for keeper's shield
+textures/particles/keeperhaze
+{
+	translucent
+    {
+    	program         heatHazeWithMaskAndVertex.vfp
+    	vertexParm      0   0                           // texture scrolling
+		vertexParm      1   parm7 * 7                      // magnitude of the distortion
+    	fragmentMap		0   _currentRender
+    	fragmentMap		1   textures/sfx/vpring2			// the normal map for distortion
+    	fragmentMap     2	textures/sfx/vpring1_alpha   	// the distortion blend map
+    }
+}
+
+textures/particles/droid_arc
+{
+	translucent
+	noshadows
+	twosided
+	qer_editorimage textures/particles/lightning4
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/lightning4
+		vertexcolor
+		colored
+		glowstage
+	}
+}
+
+textures/particles/grandfather_shield
+{
+	translucent
+	noshadows
+	twosided
+	qer_editorimage textures/particles/lightning4
+	{
+		blend add
+		map textures/particles/lightning4
+		vertexcolor
+		red 	0.25 + 0.55 * growout[ (time - parm4) * 2 ]
+		green 	0.35 + 0.55 * growout[ (time - parm4) * 2 ]
+		blue 	0.55 + 0.55 * growout[ (time - parm4) * 2 ]
+		glowstage
+	}
+}
+
+textures/particles/grandfather_shield2
+{
+	translucent
+	noshadows
+	twosided
+	qer_editorimage textures/particles/lightning4
+	{
+		blend add
+		map textures/particles/vortex5
+		vertexcolor
+		red 	0.00 + 0.55 * growout[ (time - parm4) * 2 ]
+		green 	0.00 + 0.55 * growout[ (time - parm4) * 2 ]
+		blue 	0.00 + 0.55 * growout[ (time - parm4) * 2 ]
+		glowstage
+	}
+}
+
+textures/particles/dryice_smoke_sound
+{
+	qer_editorimage textures/particles/smokepuff11
+	translucent
+	noshadows
+	sort		10
+	{
+		blend gl_one_minus_src_alpha, gl_one_minus_src_color //graying blend (white smoke)
+		map textures/particles/smokepuff11
+		color parm0 * sound,
+			  parm1 * sound,
+			  parm2 * sound,
+			  1.0
+	}
+}
+
+textures/particles/ice_cloud_depth
+{
+	qer_editorimage textures/particles/ice_cloud
+	noshadows
+	sort		1
+	translucent
+	{
+		if fragmentprograms == 0
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/ice_cloud
+		vertexcolor
+		colored
+	}
+	{
+		if fragmentprograms == 1
+		maskDepth
+		blend gl_one_minus_dst_color, gl_one
+		program	depthsprite.vfp
+
+		fragmentmap		0		textures/particles/ice_cloud
+		fragmentmap		2		textures/particles/ice_cloud
+	}
+}
+
+textures/particles/dirt_cloud_depth
+{
+	qer_editorimage textures/particles/dirt_cloud
+	translucent
+	noshadows
+	twosided
+	{
+		if fragmentprograms == 0
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/dirt_cloud
+		vertexcolor
+		colored
+	}
+	{
+		if fragmentprograms == 1
+		maskDepth
+		blend gl_one,gl_one_minus_src_color
+		program	depthsprite.vfp
+
+		fragmentmap		0		textures/particles/dirt_cloud
+		fragmentmap		2		textures/particles/dirt_cloud
+	}
+}
+
+textures/particles/ice_crystals_depth
+{
+	qer_editorimage textures/particles/ice_crystals
+	noshadows
+	sort		1
+	translucent
+	{
+		if fragmentprograms == 0
+		blend gl_one_minus_dst_color, gl_one
+		map textures/particles/ice_crystals
+		vertexcolor
+		colored
+	}
+	{
+		if fragmentprograms == 1
+		maskDepth
+		blend gl_one_minus_dst_color, gl_one
+		program	depthsprite.vfp
+
+		fragmentmap		0		textures/particles/ice_crystals
+		fragmentmap		2		textures/particles/ice_crystals
+	}
+}
+
+textures/particles/bloodwound2
+{
+	noSelfShadow
+	noshadows
+	nonsolid
+	noimpact
+
+	qer_editorimage		textures/particles/bloodwound2
+
+	{
+	    blend  diffusemap
+	    map    textures/particles/bloodwound2
+		alphaTest 0.5
+		clamp
+	}
+	bumpmap	textures/particles/bloodwound2_local
+	specularmap textures/particles/bloodwound2_s
+}
+
+textures/particles/bloodwound3
+{
+	noSelfShadow
+	noshadows
+	nonsolid
+	noimpact
+
+	qer_editorimage		textures/particles/bloodwound
+
+	{
+	    blend  diffusemap
+	    map    textures/particles/bloodwound
+		alphaTest 0.5
+		clamp
+	}
+	bumpmap	textures/particles/bloodwound_local
+	specularmap textures/particles/bloodwound_s
+}
+
+textures/particles/explosion_ring_lotaa
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend add
+		map textures/particles/explosion_ring
+		vertexcolor
+		notSpiritWalk
+	}
+	{
+		blend add
+		map textures/particles/explosion_ring
+		vertexcolor
+		rgb .1
+		SpiritWalk
+	}
+}
+
+textures/particles/fire_lotaa
+{
+	qer_editorimage textures/particles/fire
+	translucent
+	noshadows
+	sort 	10
+	{
+      	blend gl_one, gl_one_minus_src_color
+		map textures/particles/fire
+		vertexcolor
+		notSpiritWalk
+		glowStage
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/fire
+		vertexcolor
+		rgb .1
+		SpiritWalk
+	}
+}
+
+textures/particles/spark_white_lotaa
+{
+	qer_editorimage textures/particles/spark_white
+	translucent
+	noshadows
+	sort		10
+	{
+		blend add
+		//blend gl_one, gl_one_minus_src_color
+		map textures/particles/spark_white
+		vertexcolor
+		notSpiritWalk
+	}
+	{
+		blend add
+		//blend gl_one, gl_one_minus_src_color
+		map textures/particles/spark_white
+		vertexcolor
+		rgb .2
+		SpiritWalk
+	}
+}
+
+textures/particles/woodchunk1
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend blend
+		map textures/particles/woodchunk1
+		vertexcolor
+	}
+}
+
+textures/particles/woodsplinter2
+{
+	qer_editorimage textures/particles/woodsplinter1
+	noshadows
+	noselfshadow
+	{
+		blend blend
+		map textures/particles/woodsplinter2
+		vertexcolor
+	}
+}
+
+textures/particles/bloodsplat1
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map	textures/decals/bloodsplat1
+		vertexcolor
+	}
+}
+
+textures/particles/bloodsplat2
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map	textures/decals/bloodsplat2
+		vertexcolor
+	}
+}
+
+textures/particles/bloodsplat4
+{
+	noshadows
+	noselfshadow
+
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map	textures/decals/bloodsplat4
+		vertexcolor
+	}
+}
+
+textures/particles/spirit_smoke
+{
+	qer_editorimage textures/particles/smokepuff6
+	translucent
+	noshadows
+	sort		10
+	{
+		blend add
+		map textures/particles/smokepuff6
+		vertexcolor
+		spiritwalk
+	}
+}
+
+
+// These for spiritproxy return, they blend out when close to them --------------------
+textures/particles/whitesmoke_noclose
+{
+	qer_editorimage textures/particles/smokepuff2
+	translucent
+	noshadows
+	sort		10
+	{	if (distance > 64)
+		blend gl_src_alpha, gl_one
+		map textures/particles/smokepuff2
+		vertexcolor
+		alpha (distance-64) / 128
+	}
+}
+textures/particles/shockwave_noclose
+{
+	qer_editorimage textures/particles/shockwave
+	twosided
+	translucent
+	noshadows
+	{	if (distance > 64)
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/shockwave
+		vertexcolor
+		colored
+		glowstage
+//		rgb 0.6
+		rgb 0.6 * (distance-64) / 128
+	}
+}
+textures/particles/spark_white_noclose
+{
+	qer_editorimage textures/particles/spark_white
+	translucent
+	noshadows
+	sort		10
+	{	if (distance > 64)
+		blend add
+		//blend gl_one, gl_one_minus_src_color
+		map textures/particles/spark_white
+		vertexcolor
+		rgb (distance-64) / 128
+	}
+}
+textures/sfx/flashcorona_noclose
+{
+	translucent
+	twosided
+	noshadows
+	{
+		blend add
+		map textures/sfx/flare0
+		rgb burnout[ 2 * (time + parm4 ) ]
+		centerscale burnout3[ (time + parm4 ) ], burnout3[ (time + parm4 ) ]
+		zeroclamp
+	}
+}
+textures/particles/vortex3_noclose
+{
+	qer_editorimage textures/particles/shockwave
+	twosided
+	translucent
+	noshadows
+	{	if (distance > 64)
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/vortex3
+		vertexcolor
+		colored
+		glowstage
+//		rgb 0.6
+		rgb 0.6 * (distance-64) / 128
+	}
+}
+// These for spiritproxy return, they blend out when close to them --------------------
+
+textures/particles/ship
+{
+	noshadows
+	{
+		blend diffusemap
+		map textures/particles/ship
+		alphaTest 0.5
+	}
+	{
+		blend add
+		map textures/particles/ship_add
+		rgb 1
+		glowstage
+	}
+}
+
+textures/particles/ship2
+{
+	noshadows
+	{
+		blend diffusemap
+		map textures/particles/ship
+		centerscale -1 , 1
+		alphaTest 0.5
+	}
+	{
+		blend add
+		map textures/particles/ship_add
+		rgb 1
+		centerscale -1 , 1
+		glowstage
+	}
+}
+
+textures/particles/droid
+{
+	noshadows
+	{
+		blend diffusemap
+		map textures/particles/droid
+		alphaTest 0.5
+	}
+	{
+		blend add
+		map textures/particles/droid_add
+		rgb 1
+		glowstage
+	}
+}
+
+textures/particles/droid2
+{
+	noshadows
+	{
+		blend diffusemap
+		map textures/particles/droid
+		centerscale -1 , 1
+		alphaTest 0.5
+	}
+	{
+		blend add
+		map textures/particles/droid_add
+		rgb 1
+		centerscale -1 , 1
+		glowstage
+	}
+}
+
+
+textures/particles/energy_sparks_spindlea_entrance
+{
+	qer_editorimage textures/particles/energy_sparks
+	twosided
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy_sparks
+		colored
+		vertexcolor
+		glowstage
+		rgb 0.3
+		notspiritwalk
+	}
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy_sparks
+		colored
+		vertexcolor
+		glowstage
+		rgb 0.1
+	}
+}
+
+textures/particles/energy_ripple3_spindlea_entrance
+{
+	qer_editorimage textures/particles/energy_ripple3
+	translucent
+	noshadows
+	twosided
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy_ripple3
+		vertexcolor
+		colored
+		glowstage
+		rgb 0.3
+		notspiritwalk
+	}
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy_ripple3
+		vertexcolor
+		colored
+		glowstage
+		rgb 0.1
+	}
+}
+
+textures/particles/energy_ripple_spindlea_entrance
+{
+	qer_editorimage textures/particles/energy_ripple
+	translucent
+	twosided
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy_ripple
+		colored
+		vertexcolor
+		glowstage
+		rgb .6
+		notspiritwalk
+	}
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/energy_ripple
+		colored
+		vertexcolor
+		glowstage
+		rgb .2
+	}
+}
+
+textures/particles/cloud_blast_spindlea_entrance
+{
+	qer_editorimage textures/particles/cloud_blast
+	translucent
+	noshadows
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/cloud_blast
+		vertexcolor
+		colored
+		rgb 0.7
+		notSpiritWalk
+	}
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/cloud_blast
+		vertexcolor
+		colored
+		rgb 0.3
+	}
+}
+
+textures/particles/vortex4_spindlea_entrance
+{
+	qer_editorimage textures/particles/vortex4
+	translucent
+	noshadows
+	twosided
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/vortex4
+		vertexcolor
+		colored
+		glowstage
+		rgb 0.7
+		notspiritwalk
+	}
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/vortex4
+		vertexcolor
+		colored
+		glowstage
+		rgb 0.3
+	}
+}
+
+textures/particles/vortex3_spindlea_entrance
+{
+	qer_editorimage textures/particles/vortex3
+	translucent
+	noshadows
+	twosided
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/vortex3
+		vertexcolor
+		colored
+		glowstage
+		rgb 0.25
+		notspiritwalk
+	}
+	{
+		blend gl_one,gl_one_minus_src_color
+		map textures/particles/vortex3
+		vertexcolor
+		colored
+		glowstage
+		rgb 0.15
+	}
+}
+
+textures/particles/dirt_chunk_alpha
+{
+	qer_editorimage textures/particles/dirt_chunk_alpha
+	noshadows
+	{
+		blend diffusemap
+		map textures/particles/dirt_chunk_alpha
+		alphaTest 0.5
+		vertexcolor
+	}
+	{
+		blend add
+		map textures/particles/dirt_chunk_alpha
+		vertexcolor
+		glowstage
+	}
+}
+
+textures/particles/gfx_recharger_spark
+{
+	qer_editorimage textures/particles/spark_white
+	translucent
+	noshadows
+	sort		10
+	{
+		blend add
+		map textures/particles/spark_white
+		red		1.0
+		green	0.4
+		blue	1.0
+	}
+	{
+		if parm6 == 1
+		blend add
+		map textures/particles/spark_white
+		red		1.0
+		green	0.6
+		blue	0.2
+	}
+}

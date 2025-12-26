@@ -32,29 +32,24 @@ If you have questions concerning this license or the applicable additional terms
 #include "GEModifierGroup.h"
 
 rvGEModifierGroup::rvGEModifierGroup( ) :
-	rvGEModifier( "Group", NULL )
-{
+	rvGEModifier( "Group", NULL ) {
 }
 
-rvGEModifierGroup::~rvGEModifierGroup( )
-{
+rvGEModifierGroup::~rvGEModifierGroup( ) {
 	int i;
 
-	for( i = 0; i < mModifiers.Num(); i ++ )
-	{
+	for ( i = 0; i < mModifiers.Num(); i ++ ) {
 		delete mModifiers[i];
 	}
 
 	mModifiers.Clear( );
 }
 
-bool rvGEModifierGroup::Append( rvGEModifier* mod )
-{
+bool rvGEModifierGroup::Append( rvGEModifier* mod ) {
 	// All modifiers must be the same type
 	assert( !mModifiers.Num() || !idStr::Icmp( mod->GetName( ), mModifiers[0]->GetName( ) ) );
 
-	if( !mModifiers.Num( ) )
-	{
+	if ( !mModifiers.Num( ) ) {
 		mName = mod->GetName( );
 	}
 
@@ -62,14 +57,11 @@ bool rvGEModifierGroup::Append( rvGEModifier* mod )
 	return true;
 }
 
-bool rvGEModifierGroup::IsValid()
-{
+bool rvGEModifierGroup::IsValid() {
 	int i;
 
-	for( i = 0; i < mModifiers.Num(); i ++ )
-	{
-		if( !mModifiers[i]->IsValid( ) )
-		{
+	for ( i = 0; i < mModifiers.Num(); i ++ ) {
+		if ( !mModifiers[i]->IsValid( ) ) {
 			return false;
 		}
 	}
@@ -77,55 +69,45 @@ bool rvGEModifierGroup::IsValid()
 	return true;
 }
 
-bool rvGEModifierGroup::Apply()
-{
+bool rvGEModifierGroup::Apply() {
 	int i;
 
-	for( i = 0; i < mModifiers.Num(); i ++ )
-	{
+	for ( i = 0; i < mModifiers.Num(); i ++ ) {
 		mModifiers[i]->Apply( );
 	}
 
 	return true;
 }
 
-bool rvGEModifierGroup::Undo()
-{
+bool rvGEModifierGroup::Undo() {
 	int i;
 
-	for( i = 0; i < mModifiers.Num(); i ++ )
-	{
+	for ( i = 0; i < mModifiers.Num(); i ++ ) {
 		mModifiers[i]->Undo( );
 	}
 
 	return true;
 }
 
-bool rvGEModifierGroup::CanMerge( rvGEModifier* mergebase )
-{
-	rvGEModifierGroup*	merge = ( rvGEModifierGroup* ) mergebase;
+bool rvGEModifierGroup::CanMerge( rvGEModifier* mergebase ) {
+	rvGEModifierGroup*	merge = ( rvGEModifierGroup * ) mergebase;
 	int					i;
 
-	if( mModifiers.Num() != merge->mModifiers.Num( ) )
-	{
+	if ( mModifiers.Num() != merge->mModifiers.Num( ) ) {
 		return false;
 	}
 
 	// Double check the merge is possible
-	for( i = 0; i < mModifiers.Num(); i ++ )
-	{
-		if( mModifiers[i]->GetWindow() != merge->mModifiers[i]->GetWindow() )
-		{
+	for ( i = 0; i < mModifiers.Num(); i ++ ) {
+		if ( mModifiers[i]->GetWindow() != merge->mModifiers[i]->GetWindow() ) {
 			return false;
 		}
 
-		if( idStr::Icmp( mModifiers[i]->GetName( ), merge->mModifiers[i]->GetName( ) ) )
-		{
+		if ( idStr::Icmp( mModifiers[i]->GetName( ), merge->mModifiers[i]->GetName( ) ) ) {
 			return false;
 		}
 
-		if( !mModifiers[i]->CanMerge( merge->mModifiers[i] ) )
-		{
+		if ( !mModifiers[i]->CanMerge( merge->mModifiers[i] ) ) {
 			return false;
 		}
 	}
@@ -133,14 +115,12 @@ bool rvGEModifierGroup::CanMerge( rvGEModifier* mergebase )
 	return true;
 }
 
-bool rvGEModifierGroup::Merge( rvGEModifier* mergebase )
-{
-	rvGEModifierGroup*	merge = ( rvGEModifierGroup* ) mergebase;
+bool rvGEModifierGroup::Merge( rvGEModifier* mergebase ) {
+	rvGEModifierGroup*	merge = ( rvGEModifierGroup * ) mergebase;
 	int					i;
 
 	// Double check the merge is possible
-	for( i = 0; i < mModifiers.Num(); i ++ )
-	{
+	for ( i = 0; i < mModifiers.Num(); i ++ ) {
 		mModifiers[i]->Merge( merge->mModifiers[i] );
 	}
 

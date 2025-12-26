@@ -164,7 +164,7 @@ void idVertexCache::Init() {
 	} else {
 		virtualMemory = true;
 		r_useIndexBuffers.SetBool( false );
-		common->Printf( "WARNING: vertex array range in virtual memory (SLOW)\n" );
+		common->Warning( "vertex array range in virtual memory (SLOW)\n" );
 	}
 
 	// initialize the cache memory blocks

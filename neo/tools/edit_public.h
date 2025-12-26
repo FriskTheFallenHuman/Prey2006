@@ -46,7 +46,7 @@ class	idInterpreter;
 void	RadiantInit();
 void	RadiantShutdown();
 void	RadiantRun();
-void	RadiantPrint( const char* text );
+void	RadiantPrint( const char * text );
 
 
 // in-game Light Editor
@@ -89,21 +89,21 @@ void	DeclBrowserReloadDeclarations();
 void	GUIEditorInit();
 void	GUIEditorShutdown();
 void	GUIEditorRun();
-bool	GUIEditorHandleMessage( void* msg );
+bool	GUIEditorHandleMessage( void * msg );
 
 
 // Script Debugger
 void	DebuggerClientLaunch();
-void	DebuggerClientInit( const char* cmdline );
+void	DebuggerClientInit( const char * cmdline );
 bool	DebuggerServerInit();
 void	DebuggerServerShutdown();
-void	DebuggerServerPrint( const char* text );
+void	DebuggerServerPrint( const char * text );
 void	DebuggerServerCheckBreakpoint( idInterpreter* interpreter, idProgram* program, int instructionPointer );
 
 //Material Editor
 void	MaterialEditorInit();
 void	MaterialEditorRun();
 void	MaterialEditorShutdown();
-void	MaterialEditorPrintConsole( const char* msg );
+void	MaterialEditorPrintConsole( const char * msg );
 
 #endif /* !__EDIT_PUBLIC_H__ */

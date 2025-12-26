@@ -32,8 +32,7 @@ extern void showCameraInspector();
 
 // CDlgCamera dialog
 
-class CDlgCamera : public CDialogEx
-{
+class CDlgCamera : public CDialogEx {
 public:
 	CDlgCamera( CWnd* pParent = NULL );   // standard constructor
 	void setupFromCamera();

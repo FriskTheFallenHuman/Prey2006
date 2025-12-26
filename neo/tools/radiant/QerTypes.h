@@ -28,46 +28,35 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef _QERTYPE_H
 #define _QERTYPE_H
 
-class texdef_t
-{
+class texdef_t {
 public:
-	texdef_t()
-	{
+	texdef_t() {
 		name = "";
 		shift[0] = shift[1] = 0.0;
 		rotate = 0;
 		scale[0] = scale[1] = 0;
 		value = 0;
 	}
-	~texdef_t()
-	{
-		if( name && name[0] )
-		{
+	~texdef_t() {
+		if ( name && name[0] ) {
 			delete []name;
 		}
 		name = NULL;
 	}
 
-	void SetName( const char* p )
-	{
-		if( name && name[0] )
-		{
+	void SetName( const char * p ) {
+		if ( name && name[0] ) {
 			delete []name;
 		}
-		if( p && p[0] )
-		{
+		if ( p && p[0] ) {
 			name = strcpy( new char[strlen( p ) + 1], p );
-		}
-		else
-		{
+		} else {
 			name = "";
 		}
 	}
 
-	texdef_t& operator =( const texdef_t& rhs )
-	{
-		if( &rhs != this )
-		{
+	texdef_t & operator =( const texdef_t & rhs ) {
+		if ( &rhs != this ) {
 			SetName( rhs.name );
 			shift[0] = rhs.shift[0];
 			shift[1] = rhs.shift[1];
@@ -79,7 +68,7 @@ public:
 		return *this;
 	}
 	//char	name[128];
-	char* 	name;
+	char *	name;
 	float	shift[2];
 	float	rotate;
 	float	scale[2];
@@ -93,30 +82,25 @@ public:
 //	float	coords[2][3];
 //} brushprimit_texdef_t;
 
-class brushprimit_texdef_t
-{
+class brushprimit_texdef_t {
 public:
 	float	coords[2][3];
-	brushprimit_texdef_t()
-	{
+	brushprimit_texdef_t() {
 		memset( &coords, 0, sizeof( coords ) );
 		coords[0][0] = 1.0;
 		coords[1][1] = 1.0;
 	}
 };
 
-class texturewin_t
-{
+class texturewin_t {
 public:
-	texturewin_t()
-	{
+	texturewin_t() {
 		memset( &brushprimit_texdef.coords, 0, sizeof( brushprimit_texdef.coords ) );
 		brushprimit_texdef.coords[0][0] = 1.0;
 		brushprimit_texdef.coords[1][1] = 1.0;
 	}
 
-	~texturewin_t()
-	{
+	~texturewin_t() {
 	}
 	int			width, height;
 	int			originy;
@@ -124,16 +108,15 @@ public:
 	brushprimit_texdef_t	brushprimit_texdef;
 	int m_nTotalHeight;
 	// surface plugin, must be casted to a IPluginTexdef*
-	void* pTexdef;
+	void * pTexdef;
 	texdef_t	texdef;
 };
 
 //++timo texdef and brushprimit_texdef are static
 // TODO : do dynamic ?
-struct face_t
-{
-	face_t*					next;
-	face_t*					original;		//used for vertex movement
+struct face_t {
+	face_t			*		next;
+	face_t			*		original;		//used for vertex movement
 	idVec3					planepts[3];
 	idVec3					orgplanepts[3];	// used for arbitrary rotation
 	texdef_t				texdef;
@@ -142,64 +125,56 @@ struct face_t
 	idPlane					originalPlane;
 	bool					dirty;
 
-	idWinding*				face_winding;
+	idWinding		*		face_winding;
 
 	idVec3					d_color;
-	const idMaterial*		d_texture;
+	const idMaterial	*	d_texture;
 
 	// Timo new brush primit texdef
 	brushprimit_texdef_t	brushprimit_texdef;
 };
 
-struct curveVertex_t
-{
+struct curveVertex_t {
 	idVec3	xyz;
 	float	sideST[2];
 	float	capST[2];
 };
 
-struct sideVertex_t
-{
+struct sideVertex_t {
 	curveVertex_t	v[2];
 };
 
 struct idEditorBrush;
 
-struct patchMesh_t
-{
+struct patchMesh_t {
 	int			width, height;		// in control points, not patches
 	int			horzSubdivisions;
 	int			vertSubdivisions;
 	bool		explicitSubdivisions;
 	int			contents, flags, value, type;
-	const idMaterial* d_texture;
-	idDrawVert* verts;
+	const idMaterial * d_texture;
+	idDrawVert * verts;
 	//idDrawVert *ctrl;
-	idEditorBrush* 	pSymbiot;
+	idEditorBrush *	pSymbiot;
 	bool		bSelected;
 	bool		bOverlay;
 	int			nListID;
 	int			nListIDCam;
 	int			nListSelected;
 
-	idDict* 	epairs;
+	idDict *	epairs;
 
-	ID_INLINE idDrawVert& ctrl( int col, int row )
-	{
-		if( col < 0 || col >= width || row < 0 || row >= height )
-		{
+	ID_INLINE idDrawVert & ctrl( int col, int row ) {
+		if ( col < 0 || col >= width || row < 0 || row >= height ) {
 			common->Warning( "patchMesh_t::ctrl: control point out of range" );
 			return verts[0];
-		}
-		else
-		{
+		} else {
 			return verts[row * width + col];
 		}
 	}
 };
 
-enum
-{
+enum {
 	LIGHT_TARGET,
 	LIGHT_RIGHT,
 	LIGHT_UP,
@@ -214,8 +189,7 @@ enum
 
 #define	MAX_FLAGS	8
 
-typedef struct trimodel_t
-{
+typedef struct trimodel_t {
 	idVec3 v[3];
 	float  st[3][2];
 } trimodel;
@@ -236,11 +210,9 @@ typedef struct trimodel_t
 #define		ECLASS_CAMERAVIEW		0x00000400
 #define		ECLASS_MOVER			0x00000800
 #define		ECLASS_ENV				0x00001000
-#define		ECLASS_COMBATNODE		0x00002000
-#define		ECLASS_LIQUID			0x00004000
+#define		ECLASS_LIQUID			0x00002000
 
-enum EVAR_TYPES
-{
+enum EVAR_TYPES {
 	EVAR_STRING,
 	EVAR_INT,
 	EVAR_FLOAT,
@@ -252,16 +224,14 @@ enum EVAR_TYPES
 	EVAR_SOUND
 };
 
-struct evar_t
-{
+struct evar_t {
 	int	type;
 	idStr name;
 	idStr desc;
 };
 
-struct eclass_t
-{
-	eclass_t* next;
+struct eclass_t {
+	eclass_t * next;
 	idStr	name;
 	bool	fixedsize;
 	idVec3	mins, maxs;
@@ -270,17 +240,17 @@ struct eclass_t
 	idStr	comments;
 	idStr	desc;
 
-	idRenderModel* modelHandle;
-	idRenderModel* entityModel;
+	idRenderModel * modelHandle;
+	idRenderModel * entityModel;
 
 	unsigned int nShowFlags;
 	idStr	defMaterial;
 	idDict	args;
 	idDict	defArgs;
-	idList<evar_t> vars;
+	idList < evar_t > vars;
 };
 
-extern	eclass_t*	eclass;
+extern	eclass_t	* eclass;
 
 /*
 ** window bits

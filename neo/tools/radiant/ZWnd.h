@@ -32,8 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // CZWnd window
 
-class CZWnd : public CDialogEx
-{
+class CZWnd : public CDialogEx {
 	DECLARE_DYNCREATE( CZWnd );
 
 public:
@@ -45,7 +44,7 @@ protected:
 public:
 	virtual ~CZWnd();
 
-	CZClip* m_pZClip;
+	CZClip * m_pZClip;
 
 protected:
 	HDC m_dcZ;

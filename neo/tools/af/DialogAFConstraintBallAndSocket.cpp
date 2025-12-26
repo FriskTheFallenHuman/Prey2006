@@ -39,8 +39,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFConstraintBallAndSocket dialog
 
-toolTip_t DialogAFConstraintBallAndSocket::toolTips[] =
-{
+toolTip_t DialogAFConstraintBallAndSocket::toolTips[] = {
 	{ IDC_RADIO_ANCHOR_JOINT, "use the position of a joint for the anchor" },
 	{ IDC_COMBO_ANCHOR_JOINT, "anchor joint name" },
 	{ IDC_RADIO_ANCHOR_COORDINATES, "use absolute coordinates for the anchor" },
@@ -90,8 +89,7 @@ DialogAFConstraintBallAndSocket::DialogAFConstraintBallAndSocket( CWnd* pParent 
 	, m_limitAxisPitch( 0 )
 	, m_limitAxisYaw( 0 )
 	, constraint( NULL )
-	, file( NULL )
-{
+	, file( NULL ) {
 	Create( IDD_DIALOG_AF_CONSTRAINT_BALLANDSOCKET, pParent );
 	EnableToolTips( TRUE );
 }
@@ -101,8 +99,7 @@ DialogAFConstraintBallAndSocket::DialogAFConstraintBallAndSocket( CWnd* pParent 
 DialogAFConstraintBallAndSocket::~DialogAFConstraintBallAndSocket
 ================
 */
-DialogAFConstraintBallAndSocket::~DialogAFConstraintBallAndSocket()
-{
+DialogAFConstraintBallAndSocket::~DialogAFConstraintBallAndSocket() {
 }
 
 /*
@@ -110,8 +107,7 @@ DialogAFConstraintBallAndSocket::~DialogAFConstraintBallAndSocket()
 DialogAFConstraintBallAndSocket::DoDataExchange
 ================
 */
-void DialogAFConstraintBallAndSocket::DoDataExchange( CDataExchange* pDX )
-{
+void DialogAFConstraintBallAndSocket::DoDataExchange( CDataExchange* pDX ) {
 	CDialog::DoDataExchange( pDX );
 	//{{AFX_DATA_MAP(DialogAFConstraintBallAndSocket)
 	DDX_Control( pDX, IDC_COMBO_ANCHOR_JOINT, m_comboAnchorJoint );
@@ -138,29 +134,25 @@ void DialogAFConstraintBallAndSocket::DoDataExchange( CDataExchange* pDX )
 DialogAFConstraintBallAndSocket::InitJointLists
 ================
 */
-void DialogAFConstraintBallAndSocket::InitJointLists()
-{
+void DialogAFConstraintBallAndSocket::InitJointLists() {
 	m_comboAnchorJoint.ResetContent();
 	m_comboLimitJoint1.ResetContent();
 	m_comboLimitJoint2.ResetContent();
 	m_comboLimitAxisJoint1.ResetContent();
 	m_comboLimitAxisJoint2.ResetContent();
 
-	if( !file )
-	{
+	if ( !file ) {
 		return;
 	}
 
 	const idRenderModel* model = gameEdit->ANIM_GetModelFromName( file->model );
-	if( !model )
-	{
+	if ( !model ) {
 		return;
 	}
 
 	int numJoints = model->NumJoints();
-	for( int i = 0; i < numJoints; i++ )
-	{
-		const char* jointName = model->GetJointName( ( jointHandle_t ) i );
+	for ( int i = 0; i < numJoints; i++ ) {
+		const char * jointName = model->GetJointName( ( jointHandle_t ) i );
 		m_comboAnchorJoint.AddString( jointName );
 		m_comboLimitJoint1.AddString( jointName );
 		m_comboLimitJoint2.AddString( jointName );
@@ -174,8 +166,7 @@ void DialogAFConstraintBallAndSocket::InitJointLists()
 DialogAFConstraintBallAndSocket::LoadFile
 ================
 */
-void DialogAFConstraintBallAndSocket::LoadFile( idDeclAF* af )
-{
+void DialogAFConstraintBallAndSocket::LoadFile( idDeclAF* af ) {
 	file = af;
 	constraint = NULL;
 	InitJointLists();
@@ -186,8 +177,7 @@ void DialogAFConstraintBallAndSocket::LoadFile( idDeclAF* af )
 DialogAFConstraintBallAndSocket::SaveFile
 ================
 */
-void DialogAFConstraintBallAndSocket::SaveFile()
-{
+void DialogAFConstraintBallAndSocket::SaveFile() {
 	SaveConstraint();
 }
 
@@ -196,8 +186,7 @@ void DialogAFConstraintBallAndSocket::SaveFile()
 DialogAFConstraintBallAndSocket::LoadConstraint
 ================
 */
-void DialogAFConstraintBallAndSocket::LoadConstraint( idDeclAF_Constraint* c )
-{
+void DialogAFConstraintBallAndSocket::LoadConstraint( idDeclAF_Constraint* c ) {
 	int i, s1, s2;
 	idAngles angles;
 
@@ -208,27 +197,19 @@ void DialogAFConstraintBallAndSocket::LoadConstraint( idDeclAF_Constraint* c )
 	m_anchor_x = constraint->anchor.ToVec3().x;
 	m_anchor_y = constraint->anchor.ToVec3().y;
 	m_anchor_z = constraint->anchor.ToVec3().z;
-	if( constraint->anchor.type == idAFVector::VEC_JOINT )
-	{
+	if ( constraint->anchor.type == idAFVector::VEC_JOINT ) {
 		i = IDC_RADIO_ANCHOR_JOINT;
-	}
-	else
-	{
+	} else {
 		i = IDC_RADIO_ANCHOR_COORDINATES;
 	}
 	CheckRadioButton( IDC_RADIO_ANCHOR_JOINT, IDC_RADIO_ANCHOR_COORDINATES, i );
 
 	// limit
-	if( constraint->limit == idDeclAF_Constraint::LIMIT_CONE )
-	{
+	if ( constraint->limit == idDeclAF_Constraint::LIMIT_CONE ) {
 		i = IDC_RADIO_BAS_LIMIT_CONE;
-	}
-	else if( constraint->limit == idDeclAF_Constraint::LIMIT_PYRAMID )
-	{
+	} else if ( constraint->limit == idDeclAF_Constraint::LIMIT_PYRAMID ) {
 		i = IDC_RADIO_BAS_LIMIT_PYRAMID;
-	}
-	else
-	{
+	} else {
 		i = IDC_RADIO_BAS_LIMIT_NONE;
 	}
 	CheckRadioButton( IDC_RADIO_BAS_LIMIT_NONE, IDC_RADIO_BAS_LIMIT_PYRAMID, i );
@@ -241,12 +222,9 @@ void DialogAFConstraintBallAndSocket::LoadConstraint( idDeclAF_Constraint* c )
 	m_limitPitch = angles.pitch;
 	m_limitYaw = angles.yaw;
 
-	if( constraint->limitAxis.type == idAFVector::VEC_BONEDIR )
-	{
+	if ( constraint->limitAxis.type == idAFVector::VEC_BONEDIR ) {
 		i = IDC_RADIO_BAS_LIMIT_BONE;
-	}
-	else
-	{
+	} else {
 		i = IDC_RADIO_BAS_LIMIT_ANGLES;
 	}
 	CheckRadioButton( IDC_RADIO_BAS_LIMIT_BONE, IDC_RADIO_BAS_LIMIT_ANGLES, i );
@@ -259,12 +237,9 @@ void DialogAFConstraintBallAndSocket::LoadConstraint( idDeclAF_Constraint* c )
 	angles = constraint->shaft[0].ToVec3().ToAngles();
 	m_limitAxisPitch = angles.pitch;
 	m_limitAxisYaw = angles.yaw;
-	if( constraint->shaft[0].type == idAFVector::VEC_BONEDIR )
-	{
+	if ( constraint->shaft[0].type == idAFVector::VEC_BONEDIR ) {
 		i = IDC_RADIO_BAS_LIMIT_AXIS_BONE;
-	}
-	else
-	{
+	} else {
 		i = IDC_RADIO_BAS_LIMIT_AXIS_ANGLES;
 		constraint->shaft[0].type = idAFVector::VEC_COORDS;
 	}
@@ -279,14 +254,12 @@ void DialogAFConstraintBallAndSocket::LoadConstraint( idDeclAF_Constraint* c )
 DialogAFConstraintBallAndSocket::SaveConstraint
 ================
 */
-void DialogAFConstraintBallAndSocket::SaveConstraint()
-{
+void DialogAFConstraintBallAndSocket::SaveConstraint() {
 	int s1, s2;
 	CString str;
 	idAngles angles;
 
-	if( !file || !constraint )
-	{
+	if ( !file || !constraint ) {
 		return;
 	}
 	UpdateData( TRUE );
@@ -299,12 +272,9 @@ void DialogAFConstraintBallAndSocket::SaveConstraint()
 	constraint->anchor.ToVec3().z = m_anchor_z;
 
 	// limit
-	if( constraint->limit == idDeclAF_Constraint::LIMIT_CONE )
-	{
+	if ( constraint->limit == idDeclAF_Constraint::LIMIT_CONE ) {
 		constraint->limitAngles[0] = m_coneAngle;
-	}
-	else
-	{
+	} else {
 		constraint->limitAngles[0] = m_pyramidAngle1;
 	}
 	constraint->limitAngles[1] = m_pyramidAngle2;
@@ -319,15 +289,12 @@ void DialogAFConstraintBallAndSocket::SaveConstraint()
 	constraint->limitAxis.joint2 = str;
 
 	// limit axis
-	if( constraint->shaft[0].type == idAFVector::VEC_BONEDIR )
-	{
+	if ( constraint->shaft[0].type == idAFVector::VEC_BONEDIR ) {
 		s1 = GetSafeComboBoxSelection( &m_comboLimitAxisJoint1, str, -1 );
 		constraint->shaft[0].joint1 = str;
 		s2 = GetSafeComboBoxSelection( &m_comboLimitAxisJoint2, str, s1 );
 		constraint->shaft[0].joint2 = str;
-	}
-	else
-	{
+	} else {
 		constraint->shaft[0].ToVec3() = idAngles( m_limitAxisPitch, m_limitAxisYaw, 0.0f ).ToForward();
 	}
 
@@ -339,11 +306,9 @@ void DialogAFConstraintBallAndSocket::SaveConstraint()
 DialogAFConstraintBallAndSocket::UpdateFile
 ================
 */
-void DialogAFConstraintBallAndSocket::UpdateFile()
-{
+void DialogAFConstraintBallAndSocket::UpdateFile() {
 	SaveConstraint();
-	if( file )
-	{
+	if ( file ) {
 		gameEdit->AF_UpdateEntities( file->GetName() );
 	}
 }
@@ -353,8 +318,7 @@ void DialogAFConstraintBallAndSocket::UpdateFile()
 DialogAFConstraintBallAndSocket::OnToolHitTest
 ================
 */
-INT_PTR DialogAFConstraintBallAndSocket::OnToolHitTest( CPoint point, TOOLINFO* pTI ) const
-{
+INT_PTR DialogAFConstraintBallAndSocket::OnToolHitTest( CPoint point, TOOLINFO* pTI ) const {
 	CDialog::OnToolHitTest( point, pTI );
 	return DefaultOnToolHitTest( toolTips, this, point, pTI );
 }
@@ -404,85 +368,61 @@ END_MESSAGE_MAP()
 
 // DialogAFConstraintBallAndSocket message handlers
 
-BOOL DialogAFConstraintBallAndSocket::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult )
-{
+BOOL DialogAFConstraintBallAndSocket::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult ) {
 	return DefaultOnToolTipNotify( toolTips, id, pNMHDR, pResult );
 }
 
-void DialogAFConstraintBallAndSocket::OnBnClickedRadioAnchorJoint()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_ANCHOR_JOINT ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintBallAndSocket::OnBnClickedRadioAnchorJoint() {
+	if ( IsDlgButtonChecked( IDC_RADIO_ANCHOR_JOINT ) ) {
+		if ( constraint ) {
 			constraint->anchor.type = idAFVector::VEC_JOINT;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnBnClickedRadioAnchorCoordinates()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_ANCHOR_COORDINATES ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintBallAndSocket::OnBnClickedRadioAnchorCoordinates() {
+	if ( IsDlgButtonChecked( IDC_RADIO_ANCHOR_COORDINATES ) ) {
+		if ( constraint ) {
 			constraint->anchor.type = idAFVector::VEC_COORDS;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnCbnSelchangeComboAnchorJoint()
-{
+void DialogAFConstraintBallAndSocket::OnCbnSelchangeComboAnchorJoint() {
 	UpdateFile();
 }
 
-void DialogAFConstraintBallAndSocket::OnEnChangeEditAnchorX()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_ANCHOR_X ) ) )
-	{
+void DialogAFConstraintBallAndSocket::OnEnChangeEditAnchorX() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_ANCHOR_X ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_anchor_x = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_ANCHOR_X ) );
+	} else {
+		m_anchor_x = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_ANCHOR_X ) );
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnEnChangeEditAnchorY()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_ANCHOR_Y ) ) )
-	{
+void DialogAFConstraintBallAndSocket::OnEnChangeEditAnchorY() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_ANCHOR_Y ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_anchor_y = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_ANCHOR_Y ) );
+	} else {
+		m_anchor_y = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_ANCHOR_Y ) );
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnEnChangeEditAnchorZ()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_ANCHOR_Z ) ) )
-	{
+void DialogAFConstraintBallAndSocket::OnEnChangeEditAnchorZ() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_ANCHOR_Z ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_anchor_z = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_ANCHOR_Z ) );
+	} else {
+		m_anchor_z = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_ANCHOR_Z ) );
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnDeltaposSpinAnchorX( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintBallAndSocket::OnDeltaposSpinAnchorX( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_anchor_x += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_anchor_x -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -490,15 +430,11 @@ void DialogAFConstraintBallAndSocket::OnDeltaposSpinAnchorX( NMHDR* pNMHDR, LRES
 	*pResult = 0;
 }
 
-void DialogAFConstraintBallAndSocket::OnDeltaposSpinAnchorY( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintBallAndSocket::OnDeltaposSpinAnchorY( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_anchor_y += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_anchor_y -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -506,15 +442,11 @@ void DialogAFConstraintBallAndSocket::OnDeltaposSpinAnchorY( NMHDR* pNMHDR, LRES
 	*pResult = 0;
 }
 
-void DialogAFConstraintBallAndSocket::OnDeltaposSpinAnchorZ( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintBallAndSocket::OnDeltaposSpinAnchorZ( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_anchor_z += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_anchor_z -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -522,63 +454,46 @@ void DialogAFConstraintBallAndSocket::OnDeltaposSpinAnchorZ( NMHDR* pNMHDR, LRES
 	*pResult = 0;
 }
 
-void DialogAFConstraintBallAndSocket::OnBnClickedRadioBasLimitNone()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_BAS_LIMIT_NONE ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintBallAndSocket::OnBnClickedRadioBasLimitNone() {
+	if ( IsDlgButtonChecked( IDC_RADIO_BAS_LIMIT_NONE ) ) {
+		if ( constraint ) {
 			constraint->limit = idDeclAF_Constraint::LIMIT_NONE;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnBnClickedRadioBasLimitCone()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_BAS_LIMIT_CONE ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintBallAndSocket::OnBnClickedRadioBasLimitCone() {
+	if ( IsDlgButtonChecked( IDC_RADIO_BAS_LIMIT_CONE ) ) {
+		if ( constraint ) {
 			constraint->limit = idDeclAF_Constraint::LIMIT_CONE;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnBnClickedRadioBasLimitPyramid()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_BAS_LIMIT_PYRAMID ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintBallAndSocket::OnBnClickedRadioBasLimitPyramid() {
+	if ( IsDlgButtonChecked( IDC_RADIO_BAS_LIMIT_PYRAMID ) ) {
+		if ( constraint ) {
 			constraint->limit = idDeclAF_Constraint::LIMIT_PYRAMID;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnEnChangeEditBasLimitConeAngle()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_BAS_LIMIT_CONE_ANGLE ) ) )
-	{
+void DialogAFConstraintBallAndSocket::OnEnChangeEditBasLimitConeAngle() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_BAS_LIMIT_CONE_ANGLE ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_coneAngle = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_BAS_LIMIT_CONE_ANGLE ), false );
+	} else {
+		m_coneAngle = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_BAS_LIMIT_CONE_ANGLE ), false );
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitConeAngle( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitConeAngle( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_coneAngle += 1.0f;
-	}
-	else if( m_coneAngle > 0.0f )
-	{
+	} else if ( m_coneAngle > 0.0f ) {
 		m_coneAngle -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -586,27 +501,19 @@ void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitConeAngle( NMHDR* pN
 	*pResult = 0;
 }
 
-void DialogAFConstraintBallAndSocket::OnEnChangeEditBasLimitPyramidAngle1()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_BAS_LIMIT_PYRAMID_ANGLE1 ) ) )
-	{
+void DialogAFConstraintBallAndSocket::OnEnChangeEditBasLimitPyramidAngle1() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_BAS_LIMIT_PYRAMID_ANGLE1 ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_pyramidAngle1 = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_BAS_LIMIT_PYRAMID_ANGLE1 ), false );
+	} else {
+		m_pyramidAngle1 = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_BAS_LIMIT_PYRAMID_ANGLE1 ), false );
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitPyramidAngle1( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitPyramidAngle1( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_pyramidAngle1 += 1.0f;
-	}
-	else if( m_pyramidAngle1 > 0.0f )
-	{
+	} else if ( m_pyramidAngle1 > 0.0f ) {
 		m_pyramidAngle1 -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -614,27 +521,19 @@ void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitPyramidAngle1( NMHDR
 	*pResult = 0;
 }
 
-void DialogAFConstraintBallAndSocket::OnEnChangeEditBasLimitPyramidAngle2()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_BAS_LIMIT_PYRAMID_ANGLE2 ) ) )
-	{
+void DialogAFConstraintBallAndSocket::OnEnChangeEditBasLimitPyramidAngle2() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_BAS_LIMIT_PYRAMID_ANGLE2 ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_pyramidAngle2 = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_BAS_LIMIT_PYRAMID_ANGLE2 ), false );
+	} else {
+		m_pyramidAngle2 = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_BAS_LIMIT_PYRAMID_ANGLE2 ), false );
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitPyramidAngle2( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitPyramidAngle2( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_pyramidAngle2 += 1.0f;
-	}
-	else if( m_pyramidAngle2 > 0.0f )
-	{
+	} else if ( m_pyramidAngle2 > 0.0f ) {
 		m_pyramidAngle2 -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -642,27 +541,19 @@ void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitPyramidAngle2( NMHDR
 	*pResult = 0;
 }
 
-void DialogAFConstraintBallAndSocket::OnEnChangeEditBasLimitRoll()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_BAS_LIMIT_ROLL ) ) )
-	{
+void DialogAFConstraintBallAndSocket::OnEnChangeEditBasLimitRoll() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_BAS_LIMIT_ROLL ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_limitRoll = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_BAS_LIMIT_ROLL ) );
+	} else {
+		m_limitRoll = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_BAS_LIMIT_ROLL ) );
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitRoll( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitRoll( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_limitRoll += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_limitRoll -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -670,67 +561,51 @@ void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitRoll( NMHDR* pNMHDR,
 	*pResult = 0;
 }
 
-void DialogAFConstraintBallAndSocket::OnBnClickedRadioBasLimitBone()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_BAS_LIMIT_BONE ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintBallAndSocket::OnBnClickedRadioBasLimitBone() {
+	if ( IsDlgButtonChecked( IDC_RADIO_BAS_LIMIT_BONE ) ) {
+		if ( constraint ) {
 			constraint->limitAxis.type = idAFVector::VEC_BONEDIR;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnBnClickedRadioBasLimitAngles()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_BAS_LIMIT_ANGLES ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintBallAndSocket::OnBnClickedRadioBasLimitAngles() {
+	if ( IsDlgButtonChecked( IDC_RADIO_BAS_LIMIT_ANGLES ) ) {
+		if ( constraint ) {
 			constraint->limitAxis.type = idAFVector::VEC_COORDS;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnCbnSelchangeComboBasLimitJoint1()
-{
+void DialogAFConstraintBallAndSocket::OnCbnSelchangeComboBasLimitJoint1() {
 	CString str;
 	GetSafeComboBoxSelection( &m_comboLimitJoint1, str, -1 );
 	UnsetSafeComboBoxSelection( &m_comboLimitJoint2, str );
 	UpdateFile();
 }
 
-void DialogAFConstraintBallAndSocket::OnCbnSelchangeComboBasLimitJoint2()
-{
+void DialogAFConstraintBallAndSocket::OnCbnSelchangeComboBasLimitJoint2() {
 	CString str;
 	GetSafeComboBoxSelection( &m_comboLimitJoint2, str, -1 );
 	UnsetSafeComboBoxSelection( &m_comboLimitJoint1, str );
 	UpdateFile();
 }
 
-void DialogAFConstraintBallAndSocket::OnEnChangeEditBasLimitPitch()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_BAS_LIMIT_PITCH ) ) )
-	{
+void DialogAFConstraintBallAndSocket::OnEnChangeEditBasLimitPitch() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_BAS_LIMIT_PITCH ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_limitPitch = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_BAS_LIMIT_PITCH ) );
+	} else {
+		m_limitPitch = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_BAS_LIMIT_PITCH ) );
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitPitch( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitPitch( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_limitPitch += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_limitPitch -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -738,27 +613,19 @@ void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitPitch( NMHDR* pNMHDR
 	*pResult = 0;
 }
 
-void DialogAFConstraintBallAndSocket::OnEnChangeEditBasLimitYaw()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_BAS_LIMIT_YAW ) ) )
-	{
+void DialogAFConstraintBallAndSocket::OnEnChangeEditBasLimitYaw() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_BAS_LIMIT_YAW ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_limitYaw = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_BAS_LIMIT_YAW ) );
+	} else {
+		m_limitYaw = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_BAS_LIMIT_YAW ) );
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitYaw( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitYaw( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_limitYaw += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_limitYaw -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -766,67 +633,51 @@ void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitYaw( NMHDR* pNMHDR, 
 	*pResult = 0;
 }
 
-void DialogAFConstraintBallAndSocket::OnBnClickedRadioBasLimitAxisBone()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_BAS_LIMIT_AXIS_BONE ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintBallAndSocket::OnBnClickedRadioBasLimitAxisBone() {
+	if ( IsDlgButtonChecked( IDC_RADIO_BAS_LIMIT_AXIS_BONE ) ) {
+		if ( constraint ) {
 			constraint->shaft[0].type = idAFVector::VEC_BONEDIR;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnBnClickedRadioBasLimitAxisAngles()
-{
-	if( IsDlgButtonChecked( IDC_RADIO_BAS_LIMIT_AXIS_ANGLES ) )
-	{
-		if( constraint )
-		{
+void DialogAFConstraintBallAndSocket::OnBnClickedRadioBasLimitAxisAngles() {
+	if ( IsDlgButtonChecked( IDC_RADIO_BAS_LIMIT_AXIS_ANGLES ) ) {
+		if ( constraint ) {
 			constraint->shaft[0].type = idAFVector::VEC_COORDS;
 			UpdateFile();
 		}
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnCbnSelchangeComboBasLimitAxisJoint1()
-{
+void DialogAFConstraintBallAndSocket::OnCbnSelchangeComboBasLimitAxisJoint1() {
 	CString str;
 	GetSafeComboBoxSelection( &m_comboLimitAxisJoint1, str, -1 );
 	UnsetSafeComboBoxSelection( &m_comboLimitAxisJoint2, str );
 	UpdateFile();
 }
 
-void DialogAFConstraintBallAndSocket::OnCbnSelchangeComboBasLimitAxisJoint2()
-{
+void DialogAFConstraintBallAndSocket::OnCbnSelchangeComboBasLimitAxisJoint2() {
 	CString str;
 	GetSafeComboBoxSelection( &m_comboLimitAxisJoint2, str, -1 );
 	UnsetSafeComboBoxSelection( &m_comboLimitAxisJoint1, str );
 	UpdateFile();
 }
 
-void DialogAFConstraintBallAndSocket::OnEnChangeEditBasLimitAxisPitch()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_BAS_LIMIT_AXIS_PITCH ) ) )
-	{
+void DialogAFConstraintBallAndSocket::OnEnChangeEditBasLimitAxisPitch() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_BAS_LIMIT_AXIS_PITCH ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_limitAxisPitch = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_BAS_LIMIT_AXIS_PITCH ) );
+	} else {
+		m_limitAxisPitch = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_BAS_LIMIT_AXIS_PITCH ) );
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitAxisPitch( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitAxisPitch( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_limitAxisPitch += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_limitAxisPitch -= 1.0f;
 	}
 	UpdateData( FALSE );
@@ -834,27 +685,19 @@ void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitAxisPitch( NMHDR* pN
 	*pResult = 0;
 }
 
-void DialogAFConstraintBallAndSocket::OnEnChangeEditBasLimitAxisYaw()
-{
-	if( EditControlEnterHit( ( CEdit* ) GetDlgItem( IDC_EDIT_BAS_LIMIT_AXIS_YAW ) ) )
-	{
+void DialogAFConstraintBallAndSocket::OnEnChangeEditBasLimitAxisYaw() {
+	if ( EditControlEnterHit( ( CEdit * ) GetDlgItem( IDC_EDIT_BAS_LIMIT_AXIS_YAW ) ) ) {
 		UpdateFile();
-	}
-	else
-	{
-		m_limitAxisYaw = EditVerifyFloat( ( CEdit* ) GetDlgItem( IDC_EDIT_BAS_LIMIT_AXIS_YAW ) );
+	} else {
+		m_limitAxisYaw = EditVerifyFloat( ( CEdit * ) GetDlgItem( IDC_EDIT_BAS_LIMIT_AXIS_YAW ) );
 	}
 }
 
-void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitAxisYaw( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void DialogAFConstraintBallAndSocket::OnDeltaposSpinBasLimitAxisYaw( NMHDR* pNMHDR, LRESULT* pResult ) {
 	LPNMUPDOWN pNMUpDown = reinterpret_cast<LPNMUPDOWN>( pNMHDR );
-	if( pNMUpDown->iDelta < 0 )
-	{
+	if ( pNMUpDown->iDelta < 0 ) {
 		m_limitAxisYaw += 1.0f;
-	}
-	else
-	{
+	} else {
 		m_limitAxisYaw -= 1.0f;
 	}
 	UpdateData( FALSE );

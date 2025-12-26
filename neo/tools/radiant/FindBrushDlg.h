@@ -28,8 +28,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #pragma once
 
-class CFindBrushDlg : public CDialogEx
-{
+class CFindBrushDlg : public CDialogEx {
 	DECLARE_DYNAMIC( CFindBrushDlg )
 
 public:

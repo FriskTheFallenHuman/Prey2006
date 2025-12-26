@@ -29,11 +29,10 @@ If you have questions concerning this license or the applicable additional terms
 #define GEMODIFIERSTACK_H_
 
 #ifndef GEMODIFIER_H_
-	#include "GEModifier.h"
+#include "GEModifier.h"
 #endif
 
-class rvGEModifierStack
-{
+class rvGEModifierStack {
 public:
 
 	rvGEModifierStack( );
@@ -50,39 +49,34 @@ public:
 	bool			CanUndo();
 	bool			CanRedo();
 
-	rvGEModifier*	GetUndoModifier();
-	rvGEModifier*	GetRedoModifier();
+	rvGEModifier	* GetUndoModifier();
+	rvGEModifier	* GetRedoModifier();
 
 protected:
 
-	idList<rvGEModifier*>	mModifiers;
+	idList<rvGEModifier *>	mModifiers;
 	int						mCurrentModifier;
 	bool					mMergeBlock;
 };
 
-ID_INLINE bool rvGEModifierStack::CanRedo()
-{
+ID_INLINE bool rvGEModifierStack::CanRedo() {
 	return mCurrentModifier < mModifiers.Num() - 1;
 }
 
-ID_INLINE bool rvGEModifierStack::CanUndo()
-{
+ID_INLINE bool rvGEModifierStack::CanUndo() {
 	return mCurrentModifier >= 0;
 }
 
-ID_INLINE void rvGEModifierStack::BlockNextMerge()
-{
+ID_INLINE void rvGEModifierStack::BlockNextMerge() {
 	mMergeBlock = true;
 }
 
-ID_INLINE rvGEModifier* rvGEModifierStack::GetUndoModifier()
-{
+ID_INLINE rvGEModifier * rvGEModifierStack::GetUndoModifier() {
 	assert( CanUndo( ) );
 	return mModifiers[mCurrentModifier];
 }
 
-ID_INLINE rvGEModifier* rvGEModifierStack::GetRedoModifier()
-{
+ID_INLINE rvGEModifier * rvGEModifierStack::GetRedoModifier() {
 	assert( CanRedo( ) );
 	return mModifiers[mCurrentModifier + 1];
 }

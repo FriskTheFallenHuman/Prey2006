@@ -37,14 +37,12 @@ If you have questions concerning this license or the applicable additional terms
 // MaterialPreviewView
 IMPLEMENT_DYNCREATE( MaterialPreviewView, CView )
 
-MaterialPreviewView::MaterialPreviewView()
-{
+MaterialPreviewView::MaterialPreviewView() {
 	// Initialize the rendered material
 	renderedView.setMedia( "_default" );
 }
 
-MaterialPreviewView::~MaterialPreviewView()
-{
+MaterialPreviewView::~MaterialPreviewView() {
 }
 
 BEGIN_MESSAGE_MAP( MaterialPreviewView, CView )
@@ -55,30 +53,25 @@ END_MESSAGE_MAP()
 
 // MaterialPreviewView drawing
 
-void MaterialPreviewView::OnDraw( CDC* pDC )
-{
+void MaterialPreviewView::OnDraw( CDC* pDC ) {
 }
 
 // MaterialPreviewView diagnostics
 
 #ifdef _DEBUG
-void MaterialPreviewView::AssertValid() const
-{
+void MaterialPreviewView::AssertValid() const {
 	CView::AssertValid();
 }
 
-void MaterialPreviewView::Dump( CDumpContext& dc ) const
-{
+void MaterialPreviewView::Dump( CDumpContext& dc ) const {
 	CView::Dump( dc );
 }
 #endif //_DEBUG
 
 // MaterialPreviewView message handlers
 
-int MaterialPreviewView::OnCreate( LPCREATESTRUCT lpCreateStruct )
-{
-	if( CView::OnCreate( lpCreateStruct ) == -1 )
-	{
+int MaterialPreviewView::OnCreate( LPCREATESTRUCT lpCreateStruct ) {
+	if ( CView::OnCreate( lpCreateStruct ) == -1 ) {
 		return -1;
 	}
 
@@ -99,8 +92,7 @@ int MaterialPreviewView::OnCreate( LPCREATESTRUCT lpCreateStruct )
 	return 0;
 }
 
-void MaterialPreviewView::OnSize( UINT nType, int cx, int cy )
-{
+void MaterialPreviewView::OnSize( UINT nType, int cx, int cy ) {
 	CRect rc;
 
 	CView::OnSize( nType, cx, cy );
@@ -112,10 +104,8 @@ void MaterialPreviewView::OnSize( UINT nType, int cx, int cy )
 	renderWindow.RedrawWindow();
 }
 
-void MaterialPreviewView::MV_OnMaterialSelectionChange( MaterialDoc* pMaterial )
-{
-	if( pMaterial && pMaterial->renderMaterial )
-	{
+void MaterialPreviewView::MV_OnMaterialSelectionChange( MaterialDoc* pMaterial ) {
+	if ( pMaterial && pMaterial->renderMaterial ) {
 
 		currentMaterial = pMaterial->renderMaterial->GetName();
 		renderedView.setMedia( currentMaterial );
@@ -125,68 +115,57 @@ void MaterialPreviewView::MV_OnMaterialSelectionChange( MaterialDoc* pMaterial )
 	}
 }
 
-void MaterialPreviewView::OnLocalParmChange( int parmNum, float value )
-{
+void MaterialPreviewView::OnLocalParmChange( int parmNum, float value ) {
 
 	renderedView.setLocalParm( parmNum, value );
 }
 
-void MaterialPreviewView::OnGlobalParmChange( int parmNum, float value )
-{
+void MaterialPreviewView::OnGlobalParmChange( int parmNum, float value ) {
 
 	renderedView.setGlobalParm( parmNum, value );
 }
 
-void MaterialPreviewView::OnLightShaderChange( int lightId, idStr shaderName )
-{
+void MaterialPreviewView::OnLightShaderChange( int lightId, idStr shaderName ) {
 
 	renderedView.setLightShader( lightId, shaderName );
 }
 
-void MaterialPreviewView::OnLightColorChange( int lightId, idVec3& color )
-{
+void MaterialPreviewView::OnLightColorChange( int lightId, idVec3& color ) {
 
 	renderedView.setLightColor( lightId, color );
 }
 
-void MaterialPreviewView::OnLightRadiusChange( int lightId, float radius )
-{
+void MaterialPreviewView::OnLightRadiusChange( int lightId, float radius ) {
 
 	renderedView.setLightRadius( lightId, radius );
 }
 
-void MaterialPreviewView::OnLightAllowMoveChange( int lightId, bool move )
-{
+void MaterialPreviewView::OnLightAllowMoveChange( int lightId, bool move ) {
 
 	renderedView.setLightAllowMove( lightId, move );
 }
 
-void MaterialPreviewView::OnAddLight()
-{
+void MaterialPreviewView::OnAddLight() {
 
 	renderedView.addLight();
 }
 
-void MaterialPreviewView::OnDeleteLight( int lightId )
-{
+void MaterialPreviewView::OnDeleteLight( int lightId ) {
 
 	renderedView.deleteLight( lightId );
 }
 
-void MaterialPreviewView::OnModelChange( int modelId )
-{
+void MaterialPreviewView::OnModelChange( int modelId ) {
 
 	renderedView.setObject( modelId );
 }
 
-void MaterialPreviewView::OnCustomModelChange( idStr modelName )
-{
+void MaterialPreviewView::OnCustomModelChange( idStr modelName ) {
 
 	renderedView.setCustomModel( modelName );
 }
 
-void MaterialPreviewView::OnShowLightsChange( bool showLights )
-{
+void MaterialPreviewView::OnShowLightsChange( bool showLights ) {
 
 	renderedView.setShowLights( showLights );
 }
@@ -199,8 +178,7 @@ void MaterialPreviewView::OnShowLightsChange( bool showLights )
 
 extern bool		Sys_KeyDown( int key );
 
-idGLDrawableView::idGLDrawableView()
-{
+idGLDrawableView::idGLDrawableView() {
 	material = NULL;
 	modelDefHandle = -1;
 
@@ -218,14 +196,12 @@ idGLDrawableView::idGLDrawableView()
 	ResetView();
 }
 
-idGLDrawableView::~idGLDrawableView()
-{
+idGLDrawableView::~idGLDrawableView() {
 	delete world;
 	delete worldModel;
 }
 
-void idGLDrawableView::ResetView()
-{
+void idGLDrawableView::ResetView() {
 	idDict			spawnArgs;
 
 	InitWorld();
@@ -259,15 +235,12 @@ void idGLDrawableView::ResetView()
 	modelDefHandle = world->AddEntityDef( &worldEntity );
 }
 
-void idGLDrawableView::InitWorld()
-{
+void idGLDrawableView::InitWorld() {
 
-	if( world == NULL )
-	{
+	if ( world == NULL ) {
 		world = renderSystem->AllocRenderWorld();
 	}
-	if( worldModel == NULL )
-	{
+	if ( worldModel == NULL ) {
 		worldModel = renderModelManager->AllocModel();
 	}
 
@@ -277,49 +250,38 @@ void idGLDrawableView::InitWorld()
 	viewLights.Clear();
 }
 
-void idGLDrawableView::buttonDown( int _button, float x, float y )
-{
+void idGLDrawableView::buttonDown( int _button, float x, float y ) {
 	pressX = x;
 	pressY = y;
 	button = _button;
-	if( button == MK_RBUTTON || button == MK_LBUTTON || button == MK_MBUTTON )
-	{
+	if ( button == MK_RBUTTON || button == MK_LBUTTON || button == MK_MBUTTON ) {
 		handleMove = true;
 	}
 }
 
-void idGLDrawableView::mouseMove( float x, float y )
-{
+void idGLDrawableView::mouseMove( float x, float y ) {
 	bool doZoom;
 	float sensitivity = 0.5f;
 
-	if( handleMove )
-	{
+	if ( handleMove ) {
 
 		// Left mouse button rotates and zooms the view
-		if( button == MK_LBUTTON )
-		{
+		if ( button == MK_LBUTTON ) {
 			doZoom = Sys_KeyDown( VK_MENU );
-			if( doZoom )
-			{
-				if( y != pressY )
-				{
+			if ( doZoom ) {
+				if ( y != pressY ) {
 					viewDistance -= ( y - pressY );
 					pressY = y;
 				}
-			}
-			else
-			{
+			} else {
 				float xo = 0.f;
 				float yo = 0.f;
 
-				if( x != pressX )
-				{
+				if ( x != pressX ) {
 					xo = ( x - pressX );
 					pressX = x;
 				}
-				if( y != pressY )
-				{
+				if ( y != pressY ) {
 					yo = ( y - pressY );
 					pressY = y;
 				}
@@ -331,9 +293,7 @@ void idGLDrawableView::mouseMove( float x, float y )
 			}
 
 			// Right mouse button moves lights in the view plane
-		}
-		else if( button == MK_RBUTTON )
-		{
+		} else if ( button == MK_RBUTTON ) {
 			int		i;
 			float	lightMovement = 0;
 			idVec3	lightForward, lightRight, lightUp;
@@ -343,29 +303,23 @@ void idGLDrawableView::mouseMove( float x, float y )
 			viewRotation.ToVectors( &lightForward, &lightRight, &lightUp );
 
 			doZoom = Sys_KeyDown( VK_MENU );
-			if( doZoom )
-			{
-				if( y != pressY )
-				{
+			if ( doZoom ) {
+				if ( y != pressY ) {
 					lightMovement = -( y - pressY ) * sensitivity;
 					pressY = y;
 
 					lightMovement = idMath::ClampFloat( -32.f, 32.f, lightMovement );
 					lightMove = lightForward * lightMovement;
 				}
-			}
-			else
-			{
-				if( x != pressX )
-				{
+			} else {
+				if ( x != pressX ) {
 					lightMovement = ( x - pressX ) * sensitivity;
 					pressX = x;
 
 					lightMovement = idMath::ClampFloat( -32.f, 32.f, lightMovement );
 					lightMove = lightRight * lightMovement;
 				}
-				if( y != pressY )
-				{
+				if ( y != pressY ) {
 					lightMovement = -( y - pressY ) * sensitivity;
 					pressY = y;
 
@@ -375,24 +329,19 @@ void idGLDrawableView::mouseMove( float x, float y )
 			}
 
 			// Go through the lights and move the ones that are set to allow movement
-			for( i = 0; i < viewLights.Num(); i++ )
-			{
-				lightInfo_t*	vLight = &viewLights[i];
+			for ( i = 0; i < viewLights.Num(); i++ ) {
+				lightInfo_t	* vLight = &viewLights[i];
 
-				if( vLight->allowMove )
-				{
+				if ( vLight->allowMove ) {
 					vLight->origin += lightMove;
 				}
 			}
 
 			// Middle mouse button moves object up and down
-		}
-		else if( button == MK_MBUTTON )
-		{
+		} else if ( button == MK_MBUTTON ) {
 			float yo = 0.f;
 
-			if( y != pressY )
-			{
+			if ( y != pressY ) {
 				yo = ( y - pressY );
 				pressY = y;
 			}
@@ -404,8 +353,7 @@ void idGLDrawableView::mouseMove( float x, float y )
 	}
 }
 
-void idGLDrawableView::addLight()
-{
+void idGLDrawableView::addLight() {
 	int				lightId;
 	idStr			str;
 	lightInfo_t		viewLight;
@@ -435,18 +383,15 @@ void idGLDrawableView::addLight()
 	viewLights.Append( viewLight );
 }
 
-void idGLDrawableView::deleteLight( const int lightId )
-{
-	if( lightId < viewLights.Num() )
-	{
+void idGLDrawableView::deleteLight( const int lightId ) {
+	if ( lightId < viewLights.Num() ) {
 		world->FreeLightDef( viewLights[lightId].lightDefHandle );
 
 		viewLights.RemoveIndex( lightId );
 	}
 }
 
-void idGLDrawableView::UpdateCamera( renderView_t* refdef )
-{
+void idGLDrawableView::UpdateCamera( renderView_t * refdef ) {
 	idVec3		pos, dir;
 	idAngles	angs;
 
@@ -462,11 +407,9 @@ void idGLDrawableView::UpdateCamera( renderView_t* refdef )
 }
 
 
-void idGLDrawableView::UpdateModel()
-{
+void idGLDrawableView::UpdateModel() {
 
-	switch( objectId )
-	{
+	switch ( objectId ) {
 		case 0:
 			worldModel = renderModelManager->FindModel( "models/materialeditor/cube128.ase" );
 			break;
@@ -511,13 +454,11 @@ void idGLDrawableView::UpdateModel()
 	world->UpdateEntityDef( modelDefHandle, &worldEntity );
 }
 
-void idGLDrawableView::UpdateLights()
-{
+void idGLDrawableView::UpdateLights() {
 	int i;
 
-	for( i = 0; i < viewLights.Num(); i++ )
-	{
-		lightInfo_t*	vLight = &viewLights[i];
+	for ( i = 0; i < viewLights.Num(); i++ ) {
+		lightInfo_t	* vLight = &viewLights[i];
 
 		vLight->renderLight.shader = vLight->shader;
 
@@ -534,13 +475,11 @@ void idGLDrawableView::UpdateLights()
 	}
 }
 
-void idGLDrawableView::drawLights( renderView_t* refdef )
-{
+void idGLDrawableView::drawLights( renderView_t * refdef ) {
 	int i;
 
-	for( i = 0; i < viewLights.Num(); i++ )
-	{
-		lightInfo_t*	vLight = &viewLights[i];
+	for ( i = 0; i < viewLights.Num(); i++ ) {
+		lightInfo_t	* vLight = &viewLights[i];
 
 		idVec4 lColor;
 		lColor.x = vLight->color.x;
@@ -555,14 +494,12 @@ void idGLDrawableView::drawLights( renderView_t* refdef )
 }
 
 
-void idGLDrawableView::draw( int x, int y, int w, int h )
-{
+void idGLDrawableView::draw( int x, int y, int w, int h ) {
 	int i;
 	renderView_t	refdef;
 	const idMaterial*		mat = material;
 
-	if( mat )
-	{
+	if ( mat ) {
 		qglViewport( x, y, w, h );
 		qglScissor( x, y, w, h );
 		qglMatrixMode( GL_PROJECTION );
@@ -579,8 +516,7 @@ void idGLDrawableView::draw( int x, int y, int w, int h )
 		UpdateCamera( &refdef );
 
 		// Copy global shaderparms to view
-		for( i = 0; i < MAX_GLOBAL_SHADER_PARMS; i++ )
-		{
+		for ( i = 0; i < MAX_GLOBAL_SHADER_PARMS; i++ ) {
 			refdef.shaderParms[ i ] = globalParms[ i ];
 		}
 
@@ -593,8 +529,7 @@ void idGLDrawableView::draw( int x, int y, int w, int h )
 
 		world->RenderScene( &refdef );
 
-		if( showLights )
-		{
+		if ( showLights ) {
 			drawLights( &refdef );
 		}
 
@@ -611,61 +546,42 @@ void idGLDrawableView::draw( int x, int y, int w, int h )
 // Interface to PropTree Window
 // ============================
 
-void idGLDrawableView::setMedia( const char* name )
-{
+void idGLDrawableView::setMedia( const char * name ) {
 	float	ratio = 1;
 
-	if( name && *name )
-	{
+	if ( name && *name ) {
 		material = declManager->FindMaterial( name );
-	}
-	else
-	{
+	} else {
 		material = NULL;
 	}
 
-	if( material->GetNumStages() == 0 )
-	{
+	if ( material->GetNumStages() == 0 ) {
 		material = declManager->FindMaterial( "_default" );
 	}
 
-	if( material->GetStage( 0 )->texture.image )
-	{
+	if ( material->GetStage( 0 )->texture.image ) {
 		ratio = ( float )( ( float )material->GetImageWidth() / ( float )material->GetImageHeight() );
 	}
 
-	if( objectId == -1 )
-	{
+	if ( objectId == -1 ) {
 		// Don't change a custom model
-	}
-	else if( ratio == 1 )
-	{
+	} else if ( ratio == 1 ) {
 		objectId = 0;
-	}
-	else if( ratio == 2 )
-	{
+	} else if ( ratio == 2 ) {
 		objectId = 1;
-	}
-	else if( ratio == 4 )
-	{
+	} else if ( ratio == 4 ) {
 		objectId = 2;
-	}
-	else if( ratio == 0.5 )
-	{
+	} else if ( ratio == 0.5 ) {
 		objectId = 3;
-	}
-	else if( ratio == 0.25 )
-	{
+	} else if ( ratio == 0.25 ) {
 		objectId = 4;
 	}
 
 	UpdateModel();
 }
 
-void idGLDrawableView::setLocalParm( int parmNum, float value )
-{
-	if( parmNum < 0 || parmNum >= MAX_ENTITY_SHADER_PARMS )
-	{
+void idGLDrawableView::setLocalParm( int parmNum, float value ) {
+	if ( parmNum < 0 || parmNum >= MAX_ENTITY_SHADER_PARMS ) {
 		return;
 	}
 
@@ -674,69 +590,54 @@ void idGLDrawableView::setLocalParm( int parmNum, float value )
 	UpdateModel();
 }
 
-void idGLDrawableView::setGlobalParm( int parmNum, float value )
-{
-	if( parmNum < 0 || parmNum >= MAX_GLOBAL_SHADER_PARMS )
-	{
+void idGLDrawableView::setGlobalParm( int parmNum, float value ) {
+	if ( parmNum < 0 || parmNum >= MAX_GLOBAL_SHADER_PARMS ) {
 		return;
 	}
 
 	globalParms[ parmNum ] = value;
 }
 
-void idGLDrawableView::setLightShader( const int lightId, const idStr shaderName )
-{
+void idGLDrawableView::setLightShader( const int lightId, const idStr shaderName ) {
 
-	if( lightId < viewLights.Num() )
-	{
+	if ( lightId < viewLights.Num() ) {
 		viewLights[ lightId ].shader = declManager->FindMaterial( shaderName, false );
 	}
 }
 
-void idGLDrawableView::setLightColor( const int lightId, const idVec3& value )
-{
+void idGLDrawableView::setLightColor( const int lightId, const idVec3& value ) {
 
-	if( lightId < viewLights.Num() )
-	{
+	if ( lightId < viewLights.Num() ) {
 		// Update this lights color
 		viewLights[ lightId ].color = value;
 	}
 }
 
-void idGLDrawableView::setLightRadius( const int lightId, const float radius )
-{
+void idGLDrawableView::setLightRadius( const int lightId, const float radius ) {
 
-	if( lightId < viewLights.Num() )
-	{
+	if ( lightId < viewLights.Num() ) {
 		viewLights[ lightId ].radius = radius;
 	}
 }
 
-void idGLDrawableView::setLightAllowMove( const int lightId, const bool move )
-{
+void idGLDrawableView::setLightAllowMove( const int lightId, const bool move ) {
 
-	if( lightId < viewLights.Num() )
-	{
+	if ( lightId < viewLights.Num() ) {
 		viewLights[ lightId ].allowMove = move;
 	}
 }
 
-void idGLDrawableView::setObject( int Id )
-{
+void idGLDrawableView::setObject( int Id ) {
 	objectId = Id;
 
 	UpdateModel();
 }
 
-void idGLDrawableView::setCustomModel( const idStr modelName )
-{
+void idGLDrawableView::setCustomModel( const idStr modelName ) {
 
-	if( modelName.Length() )
-	{
+	if ( modelName.Length() ) {
 		objectId = -1;
-	}
-	else
-	{
+	} else {
 		objectId = 0;
 	}
 
@@ -745,7 +646,6 @@ void idGLDrawableView::setCustomModel( const idStr modelName )
 	UpdateModel();
 }
 
-void idGLDrawableView::setShowLights( bool _showLights )
-{
+void idGLDrawableView::setShowLights( bool _showLights ) {
 	showLights = _showLights;
 }

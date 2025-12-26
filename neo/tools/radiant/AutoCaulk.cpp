@@ -55,8 +55,7 @@ If you have questions concerning this license or the applicable additional terms
 ClearBounds
 ================
 */
-static void ClearBounds( idVec3& mins, idVec3& maxs )
-{
+static void ClearBounds( idVec3& mins, idVec3& maxs ) {
 	mins[0] = mins[1] = mins[2] = 99999;
 	maxs[0] = maxs[1] = maxs[2] = -99999;
 }
@@ -66,16 +65,12 @@ static void ClearBounds( idVec3& mins, idVec3& maxs )
 AddPointToBounds
 ================
 */
-static void AddPointToBounds( const idVec3& v, idVec3& mins, idVec3& maxs )
-{
-	for( int i = 0 ; i < 3 ; i++ )
-	{
-		if( v[i] < mins[i] )
-		{
+static void AddPointToBounds( const idVec3& v, idVec3& mins, idVec3& maxs ) {
+	for ( int i = 0 ; i < 3 ; i++ ) {
+		if ( v[i] < mins[i] ) {
 			mins[i] = v[i];
 		}
-		if( v[i] > maxs[i] )
-		{
+		if ( v[i] > maxs[i] ) {
 			maxs[i] = v[i];
 		}
 	}
@@ -86,19 +81,16 @@ static void AddPointToBounds( const idVec3& v, idVec3& mins, idVec3& maxs )
 FloorBounds
 ================
 */
-static void FloorBounds( idVec3& mins, idVec3& maxs )
-{
-	for( int i = 0 ; i < 3 ; i++ )
-	{
+static void FloorBounds( idVec3& mins, idVec3& maxs ) {
+	for ( int i = 0 ; i < 3 ; i++ ) {
 		mins[i] = floor( mins[i] + 0.5 );
 		maxs[i] = floor( maxs[i] + 0.5 );
 	}
 }
 
-struct PairBrushFace_t
-{
-	face_t*		pFace;
-	idEditorBrush*	pBrush;
+struct PairBrushFace_t {
+	face_t	*	pFace;
+	idEditorBrush	* pBrush;
 };
 
 /*
@@ -106,61 +98,50 @@ struct PairBrushFace_t
 Select_AutoCaulk
 ================
 */
-void Select_AutoCaulk()
-{
+void Select_AutoCaulk() {
 	common->Printf( "Caulking...\n" );
 
 	idList < PairBrushFace_t > FacesToCaulk;
 
 	int iSystemBrushesSkipped = 0;
-	face_t* pSelectedFace;
+	face_t * pSelectedFace;
 
 	idEditorBrush* next;
-	for( idEditorBrush* pSelectedBrush = selected_brushes.next ; pSelectedBrush != &selected_brushes ; pSelectedBrush = next )
-	{
+	for ( idEditorBrush * pSelectedBrush = selected_brushes.next ; pSelectedBrush != &selected_brushes ; pSelectedBrush = next ) {
 		next = pSelectedBrush->next;
 
-		if( pSelectedBrush->owner->eclass->fixedsize )
-		{
+		if ( pSelectedBrush->owner->eclass->fixedsize ) {
 			continue;    // apparently this means it's a model, so skip it...
 		}
 
 		// new check, we can't caulk a brush that has any "system/" faces...
 		//
 		bool bSystemFacePresent = false;
-		for( pSelectedFace = pSelectedBrush->brush_faces; pSelectedFace; pSelectedFace = pSelectedFace->next )
-		{
-			if( !strnicmp( pSelectedFace->d_texture->GetName(), "system/", 7 ) )
-			{
+		for ( pSelectedFace = pSelectedBrush->brush_faces; pSelectedFace; pSelectedFace = pSelectedFace->next ) {
+			if ( !strnicmp( pSelectedFace->d_texture->GetName(), "system/", 7 ) ) {
 				bSystemFacePresent = true;
 				break;
 			}
 		}
-		if( bSystemFacePresent )
-		{
+		if ( bSystemFacePresent ) {
 			iSystemBrushesSkipped++;
 			continue;	// verboten to caulk this.
 		}
 
-		for( int iBrushListToScan = 0; iBrushListToScan < 2; iBrushListToScan++ )
-		{
+		for ( int iBrushListToScan = 0; iBrushListToScan < 2; iBrushListToScan++ ) {
 			idEditorBrush*	snext;
-			for( idEditorBrush* pScannedBrush = ( iBrushListToScan ? active_brushes.next : selected_brushes.next ); pScannedBrush != ( iBrushListToScan ? &active_brushes : &selected_brushes ) ; pScannedBrush = snext )
-			{
+			for ( idEditorBrush * pScannedBrush = ( iBrushListToScan ? active_brushes.next : selected_brushes.next ); pScannedBrush != ( iBrushListToScan ? &active_brushes : &selected_brushes ) ; pScannedBrush = snext ) {
 				snext = pScannedBrush->next;
 
-				if( pScannedBrush == pSelectedBrush )
-				{
+				if ( pScannedBrush == pSelectedBrush ) {
 					continue;
 				}
 
-				if( pScannedBrush->owner->eclass->fixedsize || pScannedBrush->pPatch || pScannedBrush->hiddenBrush )
-				{
+				if ( pScannedBrush->owner->eclass->fixedsize || pScannedBrush->pPatch || pScannedBrush->hiddenBrush ) {
 					continue;
 				}
 
-				if( FilterBrush( pScannedBrush ) )
-				{
+				if ( FilterBrush( pScannedBrush ) ) {
 					continue;
 				}
 
@@ -173,54 +154,45 @@ void Select_AutoCaulk()
 				// basic-reject first to see if brushes can even possibly touch (coplanar counts as touching)
 				//
 				int i;
-				for( i = 0 ; i < 3 ; i++ )
-				{
-					if( pSelectedBrush->mins[i] > pScannedBrush->maxs[i] ||
-							pSelectedBrush->maxs[i] < pScannedBrush->mins[i] )
-					{
+				for ( i = 0 ; i < 3 ; i++ ) {
+					if ( pSelectedBrush->mins[i] > pScannedBrush->maxs[i] ||
+							pSelectedBrush->maxs[i] < pScannedBrush->mins[i] ) {
 						break;
 					}
 				}
-				if( i != 3 )
-				{
+				if ( i != 3 ) {
 					continue;    // can't be touching
 				}
 
 				// ok, now for the clever stuff, we need to detect only those faces that are both coplanar and smaller
 				//	or equal to the face they're coplanar with...
 				//
-				for( pSelectedFace = pSelectedBrush->brush_faces; pSelectedFace; pSelectedFace = pSelectedFace->next )
-				{
+				for ( pSelectedFace = pSelectedBrush->brush_faces; pSelectedFace; pSelectedFace = pSelectedFace->next ) {
 					idWinding* pSelectedWinding = pSelectedFace->face_winding;
 
-					if( !pSelectedWinding )
-					{
+					if ( !pSelectedWinding ) {
 						continue;    // freed face, probably won't happen here, but who knows with this program?
 					}
 
 					//				SquaredFace_t SelectedSquaredFace;
 					//				WindingToSquaredFace( &SelectedSquaredFace, pSelectedWinding);
 
-					for( face_t* pScannedFace = pScannedBrush->brush_faces; pScannedFace; pScannedFace = pScannedFace->next )
-					{
+					for ( face_t * pScannedFace = pScannedBrush->brush_faces; pScannedFace; pScannedFace = pScannedFace->next ) {
 						// don't even try caulking against a system face, because these are often transparent and will leave holes
 						//
-						if( !strnicmp( pScannedFace->d_texture->GetName(), "system/", 7 ) )
-						{
+						if ( !strnicmp( pScannedFace->d_texture->GetName(), "system/", 7 ) ) {
 							continue;
 						}
 
 						// and don't try caulking against something inherently transparent...
 						//
-						if( pScannedFace->d_texture->TestMaterialFlag( QER_TRANS ) )
-						{
+						if ( pScannedFace->d_texture->TestMaterialFlag( QER_TRANS ) ) {
 							continue;
 						}
 
 						idWinding* pScannedWinding = pScannedFace->face_winding;
 
-						if( !pScannedWinding )
-						{
+						if ( !pScannedWinding ) {
 							continue;    // freed face, probably won't happen here, but who knows with this program?
 						}
 
@@ -242,15 +214,13 @@ void Select_AutoCaulk()
 							v3Zero.Zero();	//static idVec3 v3Zero={0,0,0};
 
 							VectorAdd( pSelectedFace->plane.Normal(), pScannedFace->plane.Normal(), v3ZeroTest );
-							if( v3ZeroTest == v3Zero )
-							{
+							if ( v3ZeroTest == v3Zero ) {
 								// planes are facing each other...
 								//
 								// coplanar? (this is some maths of Gil's, which I don't even pretend to understand)
 								//
 								float fTotalDist = 0;
-								for( int _i = 0; _i < 3; _i++ )
-								{
+								for ( int _i = 0; _i < 3; _i++ ) {
 									fTotalDist += fabs(	DotProduct( pSelectedFace->plane.Normal(), ( *pSelectedWinding )[0] )
 														-
 														DotProduct( pSelectedFace->plane.Normal(), ( *pScannedWinding )[i] )
@@ -258,8 +228,7 @@ void Select_AutoCaulk()
 								}
 								//OutputDebugString(va("Dist = %g\n",fTotalDist));
 
-								if( fTotalDist > 0.01 )
-								{
+								if ( fTotalDist > 0.01 ) {
 									continue;
 								}
 
@@ -271,8 +240,7 @@ void Select_AutoCaulk()
 								idVec3 v3ScannedBoundsMins, v3ScannedBoundsMaxs;
 								ClearBounds( v3ScannedBoundsMins, v3ScannedBoundsMaxs );
 								int iPoint;
-								for( iPoint = 0; iPoint < pScannedWinding->GetNumPoints(); iPoint++ )
-								{
+								for ( iPoint = 0; iPoint < pScannedWinding->GetNumPoints(); iPoint++ ) {
 									AddPointToBounds( ( *pScannedWinding )[iPoint].ToVec3(), v3ScannedBoundsMins, v3ScannedBoundsMaxs );
 								}
 								// floor 'em... (or .001 differences mess things up...
@@ -283,26 +251,22 @@ void Select_AutoCaulk()
 								// now check points from selected face...
 								//
 								bool bWithin = true;
-								for( iPoint = 0; iPoint < pSelectedWinding->GetNumPoints(); iPoint++ )
-								{
-									for( int iXYZ = 0; iXYZ < 3; iXYZ++ )
-									{
+								for ( iPoint = 0; iPoint < pSelectedWinding->GetNumPoints(); iPoint++ ) {
+									for ( int iXYZ = 0; iXYZ < 3; iXYZ++ ) {
 										float f = floor( ( *pSelectedWinding )[iPoint][iXYZ] + 0.5 );
-										if( !
+										if ( !
 												(
 													f >= v3ScannedBoundsMins[iXYZ]
 													&&
 													f <= v3ScannedBoundsMaxs[iXYZ]
 												)
-										  )
-										{
+										   ) {
 											bWithin = false;
 										}
 									}
 								}
 
-								if( bWithin )
-								{
+								if ( bWithin ) {
 									PairBrushFace_t PairBrushFace;
 									PairBrushFace.pFace = pSelectedFace;
 									PairBrushFace.pBrush = pSelectedBrush;
@@ -320,13 +284,11 @@ void Select_AutoCaulk()
 	// apply caulk...
 	//
 	int iFacesCaulked = 0;
-	if( FacesToCaulk.Num() )
-	{
-		const char* psCaulkName = "textures/common/caulk";
+	if ( FacesToCaulk.Num() ) {
+		const char * psCaulkName = "textures/common/caulk";
 		const idMaterial* pCaulk = Texture_ForName( psCaulkName );
 
-		if( pCaulk )
-		{
+		if ( pCaulk ) {
 			//
 			// and call some other junk that Radiant wants so so we can use it later...
 			//
@@ -341,10 +303,9 @@ void Select_AutoCaulk()
 
 			//Texture_SetTexture (&tex);
 
-			for( int iListEntry = 0; iListEntry < FacesToCaulk.Num(); iListEntry++ )
-			{
-				PairBrushFace_t& PairBrushFace = FacesToCaulk[iListEntry];
-				face_t* pFace = PairBrushFace.pFace;
+			for ( int iListEntry = 0; iListEntry < FacesToCaulk.Num(); iListEntry++ ) {
+				PairBrushFace_t & PairBrushFace = FacesToCaulk[iListEntry];
+				face_t * pFace = PairBrushFace.pFace;
 				idEditorBrush* pBrush = PairBrushFace.pBrush;
 
 				pFace->d_texture = pCaulk;
@@ -355,17 +316,14 @@ void Select_AutoCaulk()
 
 				iFacesCaulked++;
 			}
-		}
-		else
-		{
+		} else {
 			common->Printf( " Unable to locate caulk texture at: \"%s\"!\n", psCaulkName );
 		}
 	}
 
 	common->Printf( "( %d faces caulked )\n", iFacesCaulked );
 
-	if( iSystemBrushesSkipped )
-	{
+	if ( iSystemBrushesSkipped ) {
 		common->Printf( "( %d system-faced brushes skipped )\n", iSystemBrushesSkipped );
 	}
 

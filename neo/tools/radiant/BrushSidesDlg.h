@@ -28,8 +28,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #pragma once
 
-class CBrushSidesDlg : public CDialogEx
-{
+class CBrushSidesDlg : public CDialogEx {
 	DECLARE_DYNAMIC( CBrushSidesDlg )
 
 public:

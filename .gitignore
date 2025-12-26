@@ -14,5 +14,4 @@
 /.vs*
 
 /neo/CMakeSettings.json
-
-/output
+output

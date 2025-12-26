@@ -243,20 +243,20 @@ int NET_IPSocket( const char *net_interface, int port, netadr_t *bound_to ) {
 	if( ( newsocket = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP ) ) == INVALID_SOCKET ) {
 		err = WSAGetLastError();
 		if( err != WSAEAFNOSUPPORT ) {
-			common->Printf( "WARNING: UDP_OpenSocket: socket: %s\n", NET_ErrorString() );
+			common->Warning( "UDP_OpenSocket: socket: %s\n", NET_ErrorString() );
 		}
 		return 0;
 	}
 
 	// make it non-blocking
 	if( ioctlsocket( newsocket, FIONBIO, &_true ) == SOCKET_ERROR ) {
-		common->Printf( "WARNING: UDP_OpenSocket: ioctl FIONBIO: %s\n", NET_ErrorString() );
+		common->Warning( "UDP_OpenSocket: ioctl FIONBIO: %s\n", NET_ErrorString() );
 		return 0;
 	}
 
 	// make it broadcast capable
 	if( setsockopt( newsocket, SOL_SOCKET, SO_BROADCAST, (char *)&i, sizeof(i) ) == SOCKET_ERROR ) {
-		common->Printf( "WARNING: UDP_OpenSocket: setsockopt SO_BROADCAST: %s\n", NET_ErrorString() );
+		common->Warning( "UDP_OpenSocket: setsockopt SO_BROADCAST: %s\n", NET_ErrorString() );
 		return 0;
 	}
 
@@ -277,7 +277,7 @@ int NET_IPSocket( const char *net_interface, int port, netadr_t *bound_to ) {
 	address.sin_family = AF_INET;
 
 	if( bind( newsocket, (const struct sockaddr *)&address, sizeof(address) ) == SOCKET_ERROR ) {
-		common->Printf( "WARNING: UDP_OpenSocket: bind: %s\n", NET_ErrorString() );
+		common->Warning( "UDP_OpenSocket: bind: %s\n", NET_ErrorString() );
 		closesocket( newsocket );
 		return 0;
 	}
@@ -423,7 +423,7 @@ void Sys_InitNetworking( void ) {
 
 	r = WSAStartup( MAKEWORD( 1, 1 ), &winsockdata );
 	if( r ) {
-		common->Printf( "WARNING: Winsock initialization failed, returned %d\n", r );
+		common->Warning( "Winsock initialization failed, returned %d\n", r );
 		return;
 	}
 

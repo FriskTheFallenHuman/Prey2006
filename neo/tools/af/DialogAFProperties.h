@@ -29,8 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogAFProperties dialog
 
-class DialogAFProperties : public CDialog
-{
+class DialogAFProperties : public CDialog {
 
 	DECLARE_DYNAMIC( DialogAFProperties )
 
@@ -40,8 +39,8 @@ public:
 	void				LoadFile( idDeclAF* af );
 	void				SaveFile();
 
-	DialogAFBody* 		bodyDlg;
-	DialogAFConstraint* constraintDlg;
+	DialogAFBody 	*	bodyDlg;
+	DialogAFConstraint * constraintDlg;
 
 	enum				{ IDD = IDD_DIALOG_AF_PROPERTIES };
 
@@ -79,7 +78,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	idDeclAF* 			file;
+	idDeclAF 	*		file;
 
 	//{{AFX_DATA(DialogAFProperties)
 	CEdit				m_editModel;

@@ -33,55 +33,45 @@ If you have questions concerning this license or the applicable additional terms
 #include "GEApp.h"
 #include "GEModifierStack.h"
 
-rvGEModifierStack::rvGEModifierStack( )
-{
+rvGEModifierStack::rvGEModifierStack( ) {
 	mCurrentModifier = -1;
 }
 
-rvGEModifierStack::~rvGEModifierStack( )
-{
+rvGEModifierStack::~rvGEModifierStack( ) {
 	Reset( );
 }
 
-void rvGEModifierStack::Reset()
-{
+void rvGEModifierStack::Reset() {
 	int i;
 
-	for( i = 0; i < mModifiers.Num( ); i ++ )
-	{
+	for ( i = 0; i < mModifiers.Num( ); i ++ ) {
 		delete mModifiers[i];
 	}
 
 	mModifiers.Clear( );
 }
 
-bool rvGEModifierStack::Append( rvGEModifier* modifier )
-{
+bool rvGEModifierStack::Append( rvGEModifier* modifier ) {
 	// TODO: Add the modifier and clear all redo modifiers
-	if( !modifier->IsValid( ) )
-	{
+	if ( !modifier->IsValid( ) ) {
 		delete modifier;
 		return false;
 	}
 
-	while( mCurrentModifier < mModifiers.Num( ) - 1 )
-	{
+	while ( mCurrentModifier < mModifiers.Num( ) - 1 ) {
 		delete mModifiers[mModifiers.Num() - 1];
 		mModifiers.RemoveIndex( mModifiers.Num() - 1 );
 	}
 
-	if( !mMergeBlock && mModifiers.Num( ) )
-	{
+	if ( !mMergeBlock && mModifiers.Num( ) ) {
 		rvGEModifier* top = mModifiers[mModifiers.Num() - 1];
 
 		// See if the two modifiers can merge
-		if( top->GetWindow() == modifier->GetWindow() &&
+		if ( top->GetWindow() == modifier->GetWindow() &&
 				!idStr::Icmp( top->GetName( ), modifier->GetName( ) ) &&
-				top->CanMerge( modifier ) )
-		{
+				top->CanMerge( modifier ) ) {
 			// Merge the two modifiers
-			if( top->Merge( modifier ) )
-			{
+			if ( top->Merge( modifier ) ) {
 				top->Apply( );
 
 				gApp.GetProperties().Update( );
@@ -108,10 +98,8 @@ bool rvGEModifierStack::Append( rvGEModifier* modifier )
 	return true;
 }
 
-bool rvGEModifierStack::Undo()
-{
-	if( mCurrentModifier < 0 )
-	{
+bool rvGEModifierStack::Undo() {
+	if ( mCurrentModifier < 0 ) {
 		return false;
 	}
 
@@ -125,10 +113,8 @@ bool rvGEModifierStack::Undo()
 	return true;
 }
 
-bool rvGEModifierStack::Redo()
-{
-	if( mCurrentModifier + 1 < mModifiers.Num( ) )
-	{
+bool rvGEModifierStack::Redo() {
+	if ( mCurrentModifier + 1 < mModifiers.Num( ) ) {
 		mCurrentModifier++;
 		mModifiers[mCurrentModifier]->Apply( );
 	}

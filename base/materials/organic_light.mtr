@@ -1,0 +1,138 @@
+textures/organic_light/biopulse1_add4b
+{
+	qer_editorimage 	textures/organic_light/orglightpatch4b_d
+	matter_metal
+
+	bumpmap 		addnormals (textures/organic_light/orglightpatch4b_local,
+				heightmap (textures/organic_light/orglightpatch4b_h, 6))
+	diffusemap 		textures/organic_light/orglightpatch4b_d
+	specularmap		textures/organic_light/orglightpatch4b_s
+	{
+		blend		add
+		map			textures/organic_light/orglightpatch4b_add
+		color		( parm0 * parm5 ) + (( 1 - parm5 ) * parm0  * ((( biopulse1 [ parm3 + ( time * parm6 ) ] +1) * 0.5 ))),
+				( parm1 * parm5 ) + (( 1 - parm5 ) * parm1  * ((( biopulse1 [ parm3 + ( time * parm6 ) ] +1) * 0.5 ))),
+				( parm2 * parm5 ) + (( 1 - parm5 ) * parm2  * ((( biopulse1 [ parm3 + ( time * parm6 ) ] +1) * 0.5 ))),
+				1.0
+	}
+}
+
+textures/organic_light/biopulse2_add4b
+{
+	qer_editorimage 	textures/organic_light/orglightpatch4b_d
+	matter_metal
+
+	bumpmap 		addnormals (textures/organic_light/orglightpatch4b_local,
+				heightmap (textures/organic_light/orglightpatch4b_h, 6))
+	diffusemap 		textures/organic_light/orglightpatch4b_d
+	specularmap		textures/organic_light/orglightpatch4b_s
+	{
+		blend		add
+		map			textures/organic_light/orglightpatch4b_add
+		color		( parm0 * parm5 ) + (( 1 - parm5 ) * parm0  * ((( biopulse2 [ parm3 + ( time * parm6 ) ] +1) * 0.5 ))),
+				( parm1 * parm5 ) + (( 1 - parm5 ) * parm1  * ((( biopulse2 [ parm3 + ( time * parm6 ) ] +1) * 0.5 ))),
+				( parm2 * parm5 ) + (( 1 - parm5 ) * parm2  * ((( biopulse2 [ parm3 + ( time * parm6 ) ] +1) * 0.5 ))),
+				1.0
+	}
+}
+
+textures/organic_light/biopulse3_add4b
+{
+	qer_editorimage 	textures/organic_light/orglightpatch4b_d
+	matter_metal
+
+	bumpmap 		addnormals (textures/organic_light/orglightpatch4b_local,
+				heightmap (textures/organic_light/orglightpatch4b_h, 6))
+	diffusemap 		textures/organic_light/orglightpatch4b_d
+	specularmap		textures/organic_light/orglightpatch4b_s
+	{
+		blend		add
+		map			textures/organic_light/orglightpatch4b_add
+		color		( parm0 * parm5 ) + (( 1 - parm5 ) * parm0  * ((( biopulse3 [ parm3 + ( time * parm6 ) ] +1) * 0.5 ))),
+				( parm1 * parm5 ) + (( 1 - parm5 ) * parm1  * ((( biopulse3 [ parm3 + ( time * parm6 ) ] +1) * 0.5 ))),
+				( parm2 * parm5 ) + (( 1 - parm5 ) * parm2  * ((( biopulse3 [ parm3 + ( time * parm6 ) ] +1) * 0.5 ))),
+				1.0
+	}
+}
+
+textures/organic_light/orglightpatch4b
+{
+	qer_editorimage 	textures/organic_light/orglightpatch4b_d
+	matter_metal
+
+	bumpmap 		addnormals (textures/organic_light/orglightpatch4b_local,
+				heightmap (textures/organic_light/orglightpatch4b_h, 6))
+	diffusemap 		textures/organic_light/orglightpatch4b_d
+	specularmap		textures/organic_light/orglightpatch4b_s
+}
+
+textures/organic_light/orglightpatch4b_add
+{
+	qer_editorimage 	textures/organic_light/orglightpatch4b_d
+	matter_metal
+
+	bumpmap 		addnormals (textures/organic_light/orglightpatch4b_local,
+				heightmap (textures/organic_light/orglightpatch4b_h, 6))
+	diffusemap 		textures/organic_light/orglightpatch4b_d
+	specularmap		textures/organic_light/orglightpatch4b_s
+	{
+		blend		add
+		map			textures/organic_light/orglightpatch4b_add
+		color		parm0 *(jitter3b [time * 3]),
+					parm1 *( jitter3b [time * 3]),
+					parm2 *( jitter3b [time * 3]),
+					1.0
+	}
+}
+
+textures/organic_light/g_bonewall_018b
+{
+	qer_editorimage 	textures/organic_wall/g_bonewall_018_d
+	matter_metal
+
+	bumpmap 		addnormals (textures/organic_light/g_bonewall_018b_local,
+				heightmap (textures/organic_wall/g_bonewall_018_h, 6))
+	diffusemap 		textures/organic_wall/g_bonewall_018_d
+	specularmap		textures/organic_wall/g_bonewall_018_s
+
+}
+
+textures/organic_light/g_bonewall_018b_add
+{
+	qer_editorimage 	textures/organic_wall/g_bonewall_018_d
+	matter_metal
+
+	bumpmap 		addnormals (textures/organic_light/g_bonewall_018b_local,
+				heightmap (textures/organic_wall/g_bonewall_018_h, 6))
+	diffusemap 		textures/organic_wall/g_bonewall_018_d
+	specularmap		textures/organic_wall/g_bonewall_018_s
+	{
+		blend		add
+		map			textures/organic_light/g_bonewall_018b_add
+		color		parm0 *(jitter3b [time * 3]),
+					parm1 *( jitter3b [time * 3]),
+					parm2 *( jitter3b [time * 3]),
+					1.0
+	}
+}
+
+textures/organic_light/g_bonewall_018b_add2
+{
+	qer_editorimage 	textures/organic_wall/g_bonewall_018_d
+	matter_metal
+
+	bumpmap 		addnormals (textures/organic_light/g_bonewall_018b_local,
+				heightmap (textures/organic_wall/g_bonewall_018_h, 6))
+	diffusemap 		textures/organic_wall/g_bonewall_018_d
+	specularmap		textures/organic_wall/g_bonewall_018_s
+	{
+		blend		add
+		map			textures/organic_light/g_bonewall_018b_add
+		color		( parm0 * parm5 ) + (( 1 - parm5 ) * parm0  * ((( biopulse2 [ parm3 + ( time * parm6 ) ] +1) * 0.5 ))),
+				( parm1 * parm5 ) + (( 1 - parm5 ) * parm1  * ((( biopulse2 [ parm3 + ( time * parm6 ) ] +1) * 0.5 ))),
+				( parm2 * parm5 ) + (( 1 - parm5 ) * parm2  * ((( biopulse2 [ parm3 + ( time * parm6 ) ] +1) * 0.5 ))),
+				1.0
+	}
+}
+
+

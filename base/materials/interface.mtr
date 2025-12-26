@@ -1,0 +1,703 @@
+// interface.mtr
+//
+// interface materials including the hud, inventory icons, crosshairs
+//
+
+
+textures/interface/alpha
+{
+	noshadows
+	{
+		blend add
+		map textures/interface/alpha
+		linear
+	}
+}
+
+textures/interface/directionalDamageLeft
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	{
+		blend blend
+		map textures/interface/dirdamageleft
+		linear
+		colored
+		clamp
+	}
+}
+
+textures/interface/directionalDamageFront
+{
+	translucent
+	nonsolid
+	noimpact
+	noshadows
+	{
+		blend blend
+		map textures/interface/dirdamagefront
+		linear
+		colored
+		clamp
+	}
+}
+
+
+// weapon/ammo icons ------------------------------------------------------------
+
+textures/interface/icons/wrench
+{
+	qer_editorimage		textures/interface/icons/wrench
+	noshadows
+	{
+		blend blend
+		map textures/interface/icons/wrench
+		linear
+		colored
+	}
+}
+
+textures/interface/icons/rifle
+{
+	qer_editorimage		textures/interface/icons/rifle
+	noshadows
+	{
+		blend blend
+		map textures/interface/icons/rifle
+		linear
+		colored
+	}
+}
+
+textures/interface/icons/autocannon
+{
+	qer_editorimage		textures/interface/icons/autocannon
+	noshadows
+	{
+		blend blend
+		map textures/interface/icons/autocannon
+		linear
+		colored
+	}
+}
+
+textures/interface/icons/crawler
+{
+	qer_editorimage		textures/interface/icons/slug
+	noshadows
+	{
+		blend blend
+		map textures/interface/icons/slug
+		linear
+		colored
+	}
+}
+
+textures/interface/icons/rocketlauncher
+{
+	qer_editorimage		textures/interface/icons/rocketlauncher
+	noshadows
+	{
+		blend blend
+		map textures/interface/icons/rocketlauncher
+		linear
+		colored
+	}
+}
+
+textures/interface/icons/acidsprayer
+{
+	qer_editorimage		textures/interface/icons/acidsprayer
+	noshadows
+	{
+		blend blend
+		map textures/interface/icons/acidsprayer
+		linear
+		colored
+	}
+}
+
+textures/interface/icons/soulstripper
+{
+	qer_editorimage		textures/interface/icons/soulstripper
+	noshadows
+	{
+		blend blend
+		map textures/interface/icons/soulstripper
+		linear
+		colored
+	}
+}
+
+textures/interface/icons/bow
+{
+	qer_editorimage		textures/interface/icons/bow
+	noshadows
+	{
+		blend blend
+		map textures/interface/icons/bow
+		linear
+		colored
+	}
+}
+
+
+// item icons ------------------------------------------------------------
+
+textures/interface/icons/item_hunterhand
+{
+	qer_editorimage		textures/interface/icons/item_hunterhand
+	noshadows
+	{
+		blend blend
+		map textures/interface/icons/item_hunterhand
+		linear
+		colored
+	}
+}
+
+textures/interface/icons/item_spiritpower
+{
+	qer_editorimage		textures/interface/icons/item_spiritwalk
+	noshadows
+	{
+		blend blend
+		map textures/interface/icons/item_hawk
+		linear
+		colored
+	}
+}
+
+
+// crosshairs -------------------------------------------------------
+
+textures/interface/crosshairs/crosshair1
+{
+	noshadows
+	nonsolid
+	noimpact
+	nooverlays
+
+	{
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map textures/interface/crosshairs/crosshair1
+		linear
+		alpha 0.35
+	}
+}
+
+textures/interface/crosshairs/crosshair1locked
+{
+	noshadows
+	nonsolid
+	noimpact
+	nooverlays
+
+	{
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map textures/interface/crosshairs/crosshair1locked
+		linear
+		alpha 0.35
+	}
+}
+
+textures/interface/crosshairs/crosshair2
+{
+	noshadows
+	nonsolid
+	noimpact
+	nooverlays
+
+	{
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map textures/interface/crosshairs/crosshair2
+		linear
+		alpha 0.35
+	}
+}
+
+textures/interface/crosshairs/crosshair2locked
+{
+	noshadows
+	nonsolid
+	noimpact
+	nooverlays
+
+	{
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map textures/interface/crosshairs/crosshair2locked
+		linear
+		alpha 0.35
+	}
+}
+
+textures/interface/crosshairs/crosshair3
+{
+	noshadows
+	nonsolid
+	noimpact
+	nooverlays
+
+	{
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map textures/interface/crosshairs/crosshair3
+		linear
+		alpha 0.35
+	}
+}
+
+textures/interface/crosshairs/crosshair3locked
+{
+	noshadows
+	nonsolid
+	noimpact
+	nooverlays
+
+	{
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map textures/interface/crosshairs/crosshair3locked
+		linear
+		alpha 0.35
+	}
+}
+textures/interface/crosshairs/crosshair4
+{
+	noshadows
+	nonsolid
+	noimpact
+	nooverlays
+
+	{
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map textures/interface/crosshairs/crosshair4
+		linear
+		alpha 0.35
+	}
+}
+textures/interface/crosshairs/crosshair4locked
+{
+	noshadows
+	nonsolid
+	noimpact
+	nooverlays
+
+	{
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map textures/interface/crosshairs/crosshair4_locked
+		linear
+		alpha 0.35
+	}
+}
+textures/interface/crosshairs/crosshair5
+{
+	noshadows
+	nonsolid
+	noimpact
+	nooverlays
+
+	{
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map textures/interface/crosshairs/crosshair5
+		linear
+		alpha 0.35
+	}
+}
+textures/interface/crosshairs/crosshair5locked
+{
+	noshadows
+	nonsolid
+	noimpact
+	nooverlays
+
+	{
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map textures/interface/crosshairs/crosshair5_locked
+		linear
+		alpha 0.35
+	}
+}
+textures/interface/crosshairs/crosshair6
+{
+	noshadows
+	nonsolid
+	noimpact
+	nooverlays
+
+	{
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map textures/interface/crosshairs/crosshair6
+		linear
+		alpha 0.35
+	}
+}
+textures/interface/crosshairs/crosshair6locked
+{
+	noshadows
+	nonsolid
+	noimpact
+	nooverlays
+
+	{
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map textures/interface/crosshairs/crosshair6_locked
+		linear
+		alpha 0.35
+	}
+}
+textures/interface/crosshairs/crosshair7
+{
+	noshadows
+	nonsolid
+	noimpact
+	nooverlays
+
+	{
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map textures/interface/crosshairs/crosshair7
+		linear
+		alpha 0.35
+	}
+}
+textures/interface/crosshairs/crosshair7locked
+{
+	noshadows
+	nonsolid
+	noimpact
+	nooverlays
+
+	{
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map textures/interface/crosshairs/crosshair7_locked
+		linear
+		alpha 0.35
+	}
+}
+textures/interface/crosshairs/crosshair8
+{
+	noshadows
+	nonsolid
+	noimpact
+	nooverlays
+
+	{
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map textures/interface/crosshairs/crosshair8
+		linear
+		alpha 0.35
+	}
+}
+textures/interface/crosshairs/crosshair8locked
+{
+	noshadows
+	nonsolid
+	noimpact
+	nooverlays
+
+	{
+		blend gl_one_minus_dst_color, gl_one_minus_src_alpha
+		map textures/interface/crosshairs/crosshair8_locked
+		linear
+		alpha 0.35
+	}
+}
+
+textures/interface/tips/key {
+	noshadows
+	sort gui
+	{
+		blend blend
+		map textures/interface/tips/key
+		linear
+		colored
+	}
+}
+
+textures/interface/tips/keywide {
+	noshadows
+	sort gui
+	{
+		blend blend
+		map textures/interface/tips/keywide
+		linear
+		colored
+	}
+}
+
+textures/interface/tips/mouse1 {
+	noshadows
+	sort gui
+	{
+		blend blend
+		map textures/interface/tips/mouse1
+		linear
+		colored
+	}
+}
+
+textures/interface/tips/mouse2 {
+	noshadows
+	sort gui
+	{
+		blend blend
+		map textures/interface/tips/mouse2
+		linear
+		colored
+	}
+}
+
+textures/interface/tips/mouse3 {
+	noshadows
+	sort gui
+	{
+		blend blend
+		map textures/interface/tips/mouse3
+		linear
+		colored
+	}
+}
+
+textures/interface/tips/mouseup {
+	noshadows
+	sort gui
+	{
+		blend blend
+		map textures/interface/tips/mouseup
+		linear
+		colored
+	}
+}
+
+textures/interface/tips/mousedn {
+	noshadows
+	sort gui
+	{
+		blend blend
+		map textures/interface/tips/mousedn
+		linear
+		colored
+	}
+}
+
+textures/interface/tips/mousemove {
+	noshadows
+	sort gui
+	{
+		blend blend
+		map textures/interface/tips/mousemove
+		linear
+		colored
+	}
+}
+
+textures/interface/tips/uparrow {
+	noshadows
+	sort gui
+	{
+		blend blend
+		map textures/interface/tips/key
+		linear
+		colored
+	}
+	{
+		blend blend
+		map guis/assets/help/keyboard/uparrow
+		colored
+		clamp
+		centerscale 3, 3
+		translate -0.25, 0.15
+		shear -0.1, 0
+		linear
+	}
+}
+textures/interface/tips/downarrow {
+	noshadows
+	sort gui
+	{
+		blend blend
+		map textures/interface/tips/key
+		linear
+		colored
+	}
+	{
+		blend blend
+		map guis/assets/help/keyboard/downarrow
+		colored
+		clamp
+		centerscale 3, 3
+		translate -0.25, 0.15
+		shear -0.1, 0
+		linear
+	}
+}
+textures/interface/tips/leftarrow {
+	noshadows
+	sort gui
+	{
+		blend blend
+		map textures/interface/tips/key
+		linear
+		colored
+	}
+	{
+		blend blend
+		map guis/assets/help/keyboard/leftarrow
+		colored
+		clamp
+		centerscale 4, 2
+		translate -0.25, 0.15
+		shear -0.1, 0
+		linear
+	}
+}
+textures/interface/tips/rightarrow {
+	noshadows
+	sort gui
+	{
+		blend blend
+		map textures/interface/tips/key
+		linear
+		colored
+	}
+	{
+		blend blend
+		map guis/assets/help/keyboard/rightarrow
+		colored
+		clamp
+		centerscale 4, 2
+		translate -0.25, 0.15
+		shear -0.1, 0
+		linear
+	}
+}
+
+textures/interface/tips/enter {
+	noshadows
+	sort gui
+	{
+		blend blend
+		map textures/interface/tips/keywide
+		linear
+		colored
+	}
+	{
+		blend blend
+		map guis/assets/help/keyboard/enter
+		colored
+		clamp
+		translate 0, 0.4
+		centerscale 3, 3
+		shear -0.1, 0
+		linear
+	}
+}
+
+textures/interface/tips/backspace {
+	noshadows
+	sort gui
+	{
+		blend blend
+		map textures/interface/tips/keywide
+		linear
+		colored
+	}
+	{
+		blend blend
+		map guis/assets/help/keyboard/backspace
+		colored
+		clamp
+		translate 0.6, 0.3
+		centerscale 4, 2
+		shear -0.1, 0
+		linear
+	}
+}
+
+textures/interface/tips/tab {
+	noshadows
+	sort gui
+	{
+		blend blend
+		map textures/interface/tips/keywide
+		linear
+		colored
+	}
+	{
+		blend blend
+		map guis/assets/help/keyboard/tab
+		colored
+		clamp
+		centerscale 3, 3
+		translate 0.15, 0.15
+		shear -0.1, 0
+		linear
+	}
+}
+
+textures/interface/tips/shift {
+	noshadows
+	sort gui
+	{
+		blend blend
+		map textures/interface/tips/keywide
+		linear
+		colored
+	}
+	{
+		blend blend
+		map guis/assets/help/keyboard/shift
+		colored
+		clamp
+		translate 0.8, 0.5
+		centerscale 4, 4
+		shear -0.1, 0
+		linear
+	}
+}
+
+textures/interface/tips/menu {
+	noshadows
+	sort gui
+	{
+		blend blend
+		map textures/interface/tips/key
+		linear
+		colored
+	}
+	{
+		blend blend
+		map guis/assets/help/keyboard/menu
+		colored
+		clamp
+		centerscale 4, 3
+		translate -0.26, 0.15
+		shear -0.1, 0
+		linear
+	}
+}
+
+textures/interface/tips/maxhealth {
+	noshadows
+	sort gui
+	{
+		blend blend
+		map textures/interface/tips/maxhealth
+		linear
+		colored
+	}
+}
+
+textures/interface/tips/spirit {
+	noshadows
+	sort gui
+	{
+		blend blend
+		map textures/interface/tips/spirit
+		linear
+		colored
+		translate -0.5, 0
+		scale 2, 1
+		clamp
+	}
+}

@@ -47,8 +47,7 @@ END_MESSAGE_MAP()
 /**
 * Protected constructor used by dynamic creation.
 */
-ToggleListView::ToggleListView()
-{
+ToggleListView::ToggleListView() {
 	onIcon = NULL;
 	offIcon = NULL;
 	disabledIcon = NULL;
@@ -57,8 +56,7 @@ ToggleListView::ToggleListView()
 /**
 * Destructor.
 */
-ToggleListView::~ToggleListView()
-{
+ToggleListView::~ToggleListView() {
 }
 
 
@@ -72,32 +70,22 @@ ToggleListView::~ToggleListView()
 * @param on The icon to draw when the state is TOGGLE_STATE_ON.
 * @param off The icon to draw when the state is TOGGLE_STATE_OFF.
 */
-void ToggleListView::SetToggleIcons( LPCSTR disabled, LPCSTR on, LPCSTR off )
-{
-	if( on )
-	{
+void ToggleListView::SetToggleIcons( LPCSTR disabled, LPCSTR on, LPCSTR off ) {
+	if ( on ) {
 		onIcon = ( HICON )LoadImage( AfxGetInstanceHandle(), on, IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR | LR_LOADMAP3DCOLORS );
-	}
-	else
-	{
+	} else {
 		onIcon = NULL;
 	}
 
-	if( off )
-	{
+	if ( off ) {
 		offIcon = ( HICON )LoadImage( AfxGetInstanceHandle(), off, IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR | LR_LOADMAP3DCOLORS );
-	}
-	else
-	{
+	} else {
 		offIcon = NULL;
 	}
 
-	if( disabled )
-	{
+	if ( disabled ) {
 		disabledIcon = ( HICON )LoadImage( AfxGetInstanceHandle(), disabled, IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR | LR_LOADMAP3DCOLORS );
-	}
-	else
-	{
+	} else {
 		disabledIcon = NULL;
 	}
 }
@@ -109,16 +97,14 @@ void ToggleListView::SetToggleIcons( LPCSTR disabled, LPCSTR on, LPCSTR off )
 * @param notify Determines if the notification method OnStateChanged should
 * be called. OnStateChanged will also not be called if the state has not changed.
 */
-void ToggleListView::SetToggleState( int index, int toggleState, bool notify )
-{
+void ToggleListView::SetToggleState( int index, int toggleState, bool notify ) {
 	CListCtrl& list = GetListCtrl();
 	assert( index >= 0 && index < list.GetItemCount() );
 
 	int oldState = GetToggleState( index );
 	list.SetItemData( index, toggleState );
 
-	if( notify && oldState != toggleState )
-	{
+	if ( notify && oldState != toggleState ) {
 		OnStateChanged( index, toggleState );
 	}
 }
@@ -127,8 +113,7 @@ void ToggleListView::SetToggleState( int index, int toggleState, bool notify )
 * Gets the state of an item in the list
 * @param index Index of the item of which to retreive the state.
 */
-int ToggleListView::GetToggleState( int index )
-{
+int ToggleListView::GetToggleState( int index ) {
 	CListCtrl& list = GetListCtrl();
 	assert( index >= 0 && index < list.GetItemCount() );
 
@@ -139,10 +124,8 @@ int ToggleListView::GetToggleState( int index )
 /**
 * Called as the window is being created and initializes icons and window styles
 */
-int ToggleListView::OnCreate( LPCREATESTRUCT lpCreateStruct )
-{
-	if( CListView::OnCreate( lpCreateStruct ) == -1 )
-	{
+int ToggleListView::OnCreate( LPCREATESTRUCT lpCreateStruct ) {
+	if ( CListView::OnCreate( lpCreateStruct ) == -1 ) {
 		return -1;
 	}
 
@@ -168,8 +151,7 @@ int ToggleListView::OnCreate( LPCREATESTRUCT lpCreateStruct )
 /**
 * Called when the window is being resized.
 */
-void ToggleListView::OnSize( UINT nType, int cx, int cy )
-{
+void ToggleListView::OnSize( UINT nType, int cx, int cy ) {
 	CListView::OnSize( nType, cx, cy );
 
 	CListCtrl& list = GetListCtrl();
@@ -179,8 +161,7 @@ void ToggleListView::OnSize( UINT nType, int cx, int cy )
 /**
 * Returns the size of each item in the toggle list.
 */
-void ToggleListView::MeasureItem( LPMEASUREITEMSTRUCT lpMeasureItemStruct )
-{
+void ToggleListView::MeasureItem( LPMEASUREITEMSTRUCT lpMeasureItemStruct ) {
 	float scaling_factor = Win_GetWindowScalingFactor( GetSafeHwnd() );
 	lpMeasureItemStruct->itemHeight = TOGGLELIST_ITEMHEIGHT * scaling_factor;
 }
@@ -188,8 +169,7 @@ void ToggleListView::MeasureItem( LPMEASUREITEMSTRUCT lpMeasureItemStruct )
 /**
 * Toggles the state of an item when the user clicks in the window.
 */
-void ToggleListView::OnNMClick( NMHDR* pNMHDR, LRESULT* pResult )
-{
+void ToggleListView::OnNMClick( NMHDR* pNMHDR, LRESULT* pResult ) {
 	CListCtrl& list = GetListCtrl();
 
 	DWORD dwpos = GetMessagePos();
@@ -201,23 +181,17 @@ void ToggleListView::OnNMClick( NMHDR* pNMHDR, LRESULT* pResult )
 	::MapWindowPoints( HWND_DESKTOP, pNMHDR->hwndFrom, &info.pt, 1 );
 
 	int index = list.HitTest( &info );
-	if( index != -1 )
-	{
+	if ( index != -1 ) {
 		int toggleState = GetToggleState( index );
-		if( toggleState != TOGGLE_STATE_DISABLED )
-		{
+		if ( toggleState != TOGGLE_STATE_DISABLED ) {
 
 			RECT	rItem;
 			list.GetItemRect( index, &rItem, LVIR_BOUNDS );
 
-			if( info.pt.x < TOGGLELIST_ITEMHEIGHT )
-			{
-				if( toggleState == TOGGLE_STATE_ON )
-				{
+			if ( info.pt.x < TOGGLELIST_ITEMHEIGHT ) {
+				if ( toggleState == TOGGLE_STATE_ON ) {
 					SetToggleState( index, TOGGLE_STATE_OFF, true );
-				}
-				else
-				{
+				} else {
 					SetToggleState( index, TOGGLE_STATE_ON, true );
 				}
 			}
@@ -229,8 +203,7 @@ void ToggleListView::OnNMClick( NMHDR* pNMHDR, LRESULT* pResult )
 /**
 * Sets some window styles before the window is created.
 */
-BOOL ToggleListView::PreCreateWindow( CREATESTRUCT& cs )
-{
+BOOL ToggleListView::PreCreateWindow( CREATESTRUCT& cs ) {
 	//Set the required style for the toggle view
 	cs.style &= ~LVS_TYPEMASK;
 	cs.style |= LVS_REPORT | LVS_OWNERDRAWFIXED | LVS_NOCOLUMNHEADER | LVS_SHOWSELALWAYS;
@@ -241,8 +214,7 @@ BOOL ToggleListView::PreCreateWindow( CREATESTRUCT& cs )
 /**
 * Responsible for drawing each list item.
 */
-void ToggleListView::DrawItem( LPDRAWITEMSTRUCT lpDrawItemStruct )
-{
+void ToggleListView::DrawItem( LPDRAWITEMSTRUCT lpDrawItemStruct ) {
 
 	CListCtrl& ListCtrl = GetListCtrl();
 	int nItem = lpDrawItemStruct->itemID;
@@ -276,23 +248,19 @@ void ToggleListView::DrawItem( LPDRAWITEMSTRUCT lpDrawItemStruct )
 	InflateRect( &rDraw, -3, -3 );
 	Draw3dRect( lpDrawItemStruct->hDC, &rDraw, GetSysColorBrush( COLOR_3DSHADOW ), GetSysColorBrush( COLOR_3DHILIGHT ) );
 
-	switch( GetToggleState( lvi.iItem ) )
-	{
+	switch ( GetToggleState( lvi.iItem ) ) {
 		case TOGGLE_STATE_DISABLED:
-			if( disabledIcon )
-			{
+			if ( disabledIcon ) {
 				DrawIconEx( lpDrawItemStruct->hDC, rDraw.left, rDraw.top, disabledIcon, 16, 16, 0, NULL, DI_NORMAL );
 			}
 			break;
 		case TOGGLE_STATE_ON:
-			if( onIcon )
-			{
+			if ( onIcon ) {
 				DrawIconEx( lpDrawItemStruct->hDC, rDraw.left, rDraw.top, onIcon, 16, 16, 0, NULL, DI_NORMAL );
 			}
 			break;
 		case TOGGLE_STATE_OFF:
-			if( offIcon )
-			{
+			if ( offIcon ) {
 				DrawIconEx( lpDrawItemStruct->hDC, rDraw.left, rDraw.top, offIcon, 16, 16, 0, NULL, DI_NORMAL );
 			}
 			break;
@@ -302,12 +270,9 @@ void ToggleListView::DrawItem( LPDRAWITEMSTRUCT lpDrawItemStruct )
 	rDraw.left += TOGGLELIST_ITEMHEIGHT;
 	rDraw.left += 1;
 
-	if( lpDrawItemStruct->itemState & ODS_SELECTED )
-	{
+	if ( lpDrawItemStruct->itemState & ODS_SELECTED ) {
 		FillRect( lpDrawItemStruct->hDC, &rDraw, GetSysColorBrush( COLOR_HIGHLIGHT ) );
-	}
-	else
-	{
+	} else {
 		FillRect( lpDrawItemStruct->hDC, &rDraw, GetSysColorBrush( COLOR_WINDOW ) );
 	}
 
@@ -323,8 +288,7 @@ void ToggleListView::DrawItem( LPDRAWITEMSTRUCT lpDrawItemStruct )
 /**
 * Draws a 3d rectangle using the given brushes this code was taken from the gui editor
 */
-void ToggleListView::Draw3dRect( HDC hDC, RECT* rect, HBRUSH topLeft, HBRUSH bottomRight )
-{
+void ToggleListView::Draw3dRect( HDC hDC, RECT* rect, HBRUSH topLeft, HBRUSH bottomRight ) {
 	RECT rOut;
 
 	SetRect( &rOut, rect->left, rect->top, rect->right - 1, rect->top + 1 );

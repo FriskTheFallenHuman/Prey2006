@@ -36,8 +36,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DialogScriptEditor dialog
 
-class DialogScriptEditor : public CDialog
-{
+class DialogScriptEditor : public CDialog {
 
 	DECLARE_DYNAMIC( DialogScriptEditor )
 
@@ -45,7 +44,7 @@ public:
 	DialogScriptEditor( CWnd* pParent = NULL );   // standard constructor
 	virtual				~DialogScriptEditor();
 
-	void				OpenFile( const char* fileName );
+	void				OpenFile( const char * fileName );
 
 	//{{AFX_VIRTUAL(DialogScriptEditor)
 	virtual BOOL		OnInitDialog();
@@ -88,7 +87,7 @@ private:
 
 	HACCEL				m_hAccel;
 	CRect				initialRect;
-	CFindReplaceDialog* findDlg;
+	CFindReplaceDialog * findDlg;
 	CString				findStr;
 	CString				replaceStr;
 	bool				matchCase;

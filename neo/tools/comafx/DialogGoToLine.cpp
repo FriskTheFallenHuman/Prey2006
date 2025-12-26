@@ -35,9 +35,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "DialogGoToLine.h"
 
 #ifdef ID_DEBUG_MEMORY
-	#undef new
-	#undef DEBUG_NEW
-	#define DEBUG_NEW new
+#undef new
+#undef DEBUG_NEW
+#define DEBUG_NEW new
 #endif
 
 
@@ -52,8 +52,7 @@ DialogGoToLine::DialogGoToLine( CWnd* pParent /*=NULL*/ )
 	: CDialog( DialogGoToLine::IDD, pParent )
 	, firstLine( 0 )
 	, lastLine( 0 )
-	, line( 0 )
-{
+	, line( 0 ) {
 }
 
 /*
@@ -61,8 +60,7 @@ DialogGoToLine::DialogGoToLine( CWnd* pParent /*=NULL*/ )
 DialogGoToLine::~DialogGoToLine
 ================
 */
-DialogGoToLine::~DialogGoToLine()
-{
+DialogGoToLine::~DialogGoToLine() {
 }
 
 /*
@@ -70,8 +68,7 @@ DialogGoToLine::~DialogGoToLine()
 DialogGoToLine::DoDataExchange
 ================
 */
-void DialogGoToLine::DoDataExchange( CDataExchange* pDX )
-{
+void DialogGoToLine::DoDataExchange( CDataExchange* pDX ) {
 	CDialog::DoDataExchange( pDX );
 	//{{AFX_DATA_MAP(DialogGoToLine)
 	DDX_Control( pDX, IDC_GOTOLINE_EDIT, numberEdit );
@@ -83,8 +80,7 @@ void DialogGoToLine::DoDataExchange( CDataExchange* pDX )
 DialogGoToLine::SetRange
 ================
 */
-void DialogGoToLine::SetRange( int firstLine, int lastLine )
-{
+void DialogGoToLine::SetRange( int firstLine, int lastLine ) {
 	this->firstLine = firstLine;
 	this->lastLine = lastLine;
 }
@@ -94,8 +90,7 @@ void DialogGoToLine::SetRange( int firstLine, int lastLine )
 DialogGoToLine::GetLine
 ================
 */
-int DialogGoToLine::GetLine() const
-{
+int DialogGoToLine::GetLine() const {
 	return line;
 }
 
@@ -104,8 +99,7 @@ int DialogGoToLine::GetLine() const
 DialogGoToLine::OnInitDialog
 ================
 */
-BOOL DialogGoToLine::OnInitDialog()
-{
+BOOL DialogGoToLine::OnInitDialog() {
 
 	CDialog::OnInitDialog();
 
@@ -132,8 +126,7 @@ END_MESSAGE_MAP()
 DialogGoToLine::OnBnClickedOk
 ================
 */
-void DialogGoToLine::OnBnClickedOk()
-{
+void DialogGoToLine::OnBnClickedOk() {
 	CString text;
 	numberEdit.GetWindowText( text );
 	line = idMath::ClampInt( firstLine, lastLine, atoi( text ) );

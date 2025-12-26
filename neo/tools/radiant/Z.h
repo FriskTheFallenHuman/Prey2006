@@ -28,8 +28,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // window system independent camera view code
 
-typedef struct
-{
+typedef struct {
 	int		width, height;
 
 	idVec3	origin;			// at center of window

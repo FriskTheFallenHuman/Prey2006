@@ -1,0 +1,2886 @@
+textures/dreamworld/la_darkrock
+{
+	qer_editorimage		textures/dreamworld/la_darkrock_d
+	matter_stone
+	bumpmap			textures/dreamworld/la_darkrock_local
+	diffusemap		textures/dreamworld/la_darkrock_d
+	specularmap		textures/dreamworld/la_darkrock_s
+}
+
+textures/dreamworld/la_darkrockc
+{
+	qer_editorimage		textures/dreamworld/la_darkrock_d
+	matter_stone
+	bumpmap			textures/dreamworld/la_darkrock_local
+	diffusemap		textures/dreamworld/la_darkrock_d
+	specularmap		textures/dreamworld/la_darkrock_s
+	{
+		maskcolor
+		map		makealpha( textures/dreamworld/la_darkrock_cm )
+		scroll	time * 0.02, time * 0.03
+		rotate	time * 0.003
+	}
+	{
+		maskalpha
+		map textures/dreamworld/la_darkrock_c
+		blend	gl_dst_alpha, gl_one
+		colored
+	}
+}
+textures/dreamworld/la_darkrock_dis
+{
+	qer_editorimage		textures/dreamworld/la_darkrock_d
+	matter_stone
+	bumpmap			textures/dreamworld/la_darkrock_local
+	diffusemap		textures/dreamworld/la_darkrock_d
+	specularmap		textures/dreamworld/la_darkrock_s
+	{
+		if ( parm5 == 0 )
+		blend none
+		map textures/sfx/genericdissolve
+		alphaTest 0
+	}
+	{
+		if ( parm5 > 0 )
+		blend none
+		map textures/sfx/genericdissolve
+		alphaTest ( time + parm4 ) * 0.5
+	}
+	{
+		if ( parm5 > 0 )
+		privatepolygonoffset	-1
+		blend add
+		map textures/sfx/genericdissolve
+		alphaTest ( time + parm4 ) * 0.5 - 0.2
+		//rgb 2
+		red 0.68
+		green 0.81
+		blue 1.0
+		glowStage
+	}
+}
+textures/dreamworld/la_darkrock_light
+{
+	qer_editorimage		textures/dreamworld/la_darkrock_d_light
+	matter_stone
+	bumpmap			textures/dreamworld/la_wallT_local
+	diffusemap		textures/dreamworld/la_darkrock_d_light
+	specularmap		textures/dreamworld/la_wallT_s
+
+	{
+		map textures/dreamworld/la_darkrock_d_light
+		maskColor
+	}
+	{
+		blend		gl_dst_alpha , gl_one
+		map	textures/dreamworld/la_darkrock_d_light_add
+		translate	 time * -0.032 , time * 0.012
+	}
+}
+textures/dreamworld/la_darkrock_light_blend
+{
+		qer_editorimage		textures/dreamworld/la_darkrock_d_light
+	matter_stone
+	bumpmap			textures/dreamworld/la_wallT_local2
+	diffusemap		textures/dreamworld/la_darkrock_d_light
+	specularmap		textures/dreamworld/la_wallT_s2
+
+	{
+		map textures/dreamworld/la_darkrock_d_light
+		scale .55,.55
+		maskColor
+		glowStage
+
+
+	}
+	{
+		blend  		gl_dst_alpha , gl_one
+		map	textures/dreamworld/la_darkrock_d_light_add2
+		translate	 time * -0.032 , time * 0.012
+		scale .2,.2
+		glowStage
+		rgb .9
+
+	}
+
+}
+textures/dreamworld/la_darkrock_light_blend2
+{
+	qer_editorimage		textures/dreamworld/lotawall6_d
+	matter_stone
+
+	{
+		blend	bumpmap
+		map	textures/dreamworld/lotawall6_local
+		scale	5,5
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/ceiling_d
+		scale	5,5
+
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/ceiling_s
+		scale	5,5
+
+	}
+
+/*
+	{
+		map textures/dreamworld/la_darkrock_d_light
+		maskColor
+	}
+	{
+		blend		gl_dst_alpha , gl_one
+		map	textures/dreamworld/la_darkrock_d_light_add
+		translate	 time * -0.032 , time * 0.012
+	}
+*/
+
+
+}
+textures/dreamworld/la_darkrock_glow
+{
+	qer_editorimage		textures/dreamworld/la_darkrock_glow_d
+	matter_stone
+
+
+// White verts
+	{
+		blend	bumpmap
+		map textures/dreamworld/la_darkrock_local
+	}
+	{
+		blend diffusemap
+		vertexcolor
+		map		textures/dreamworld/la_darkrock_glow_d
+	}
+	{
+		blend specularmap
+		vertexcolor
+		map		textures/dreamworld/la_darkrock_s
+	}
+	//add
+	{
+
+		blend gl_one_minus_dst_color, gl_one
+		//blend gl_src_alpha, gl_one
+
+		map textures/dreamworld/la_darkrock_glow_add
+		glowStage
+
+
+		vertexcolor
+
+
+
+	}
+
+// Black verts
+	{
+		blend	bumpmap
+		map textures/dreamworld/la_darkrock_local
+	}
+	{
+		blend diffusemap
+		inversevertexcolor
+		map		textures/dreamworld/la_darkrock_d
+	}
+	{
+		blend specularmap
+		inversevertexcolor
+		map		textures/dreamworld/la_darkrock_s
+	}
+}
+textures/dreamworld/la_darkrock_glow_disolve
+{
+	qer_editorimage		textures/dreamworld/la_darkrock_glow_d
+	matter_stone
+
+
+// White verts
+	{
+		blend	bumpmap
+		map textures/dreamworld/la_darkrock_local
+	}
+	{
+		blend diffusemap
+		vertexcolor
+		map		textures/dreamworld/la_darkrock_glow_d
+	}
+	{
+		blend specularmap
+		vertexcolor
+		map		textures/dreamworld/la_darkrock_s
+	}
+	//add
+	{
+
+		blend gl_one_minus_dst_color, gl_one
+		//blend gl_src_alpha, gl_one
+
+		map textures/dreamworld/la_darkrock_glow_add2
+		glowStage
+
+
+		vertexcolor
+
+
+
+	}
+
+// Black verts
+	{
+		blend	bumpmap
+		map textures/dreamworld/la_darkrock_local
+	}
+	{
+		blend diffusemap
+		inversevertexcolor
+		map		textures/dreamworld/la_darkrock_d
+	}
+	{
+		blend specularmap
+		inversevertexcolor
+		map		textures/dreamworld/la_darkrock_s
+	}
+
+// Burn in/out
+	{
+		if parm7
+		blend gl_zero, gl_one
+		map textures/sfx/genericdissolve
+		alphaTest 0.05 + 0.35 * (time - parm4)
+		centerscale 0.5, 0.5
+	}
+	{
+		if parm7
+		privatePolygonOffset -1
+        blend add
+		map textures/sfx/genericdissolve
+		alphaTest 0.35 * (time - parm4)
+		centerscale 0.5, 0.5
+		glowStage
+	}
+	{
+		if parm7
+		privatePolygonOffset -1.3
+		blend add
+		map _white
+		alphaTest 0
+		glowStage
+	}
+}
+textures/dreamworld/la_darkrock_blasted
+{
+
+
+	qer_editorimage textures/dreamworld/la_darkrock_d_light
+	matter_stone
+
+
+		// White verts
+	{
+		blend	bumpmap
+		map textures/dreamworld/la_darkrock_local
+	}
+	{
+		blend diffusemap
+		vertexcolor
+		map		textures/dreamworld/la_darkrock_d
+	}
+	{
+		blend specularmap
+		vertexcolor
+		map		textures/dreamworld/la_darkrock_s
+	}
+
+	// black verts
+
+//add
+	{
+
+		blend gl_one_minus_dst_color, gl_one
+		//blend gl_src_alpha, gl_one
+
+		map textures/dreamworld/blasted_glow
+		glowStage
+
+
+		inversevertexcolor
+		scroll time / 1000, time / 1000
+		rotate time / 400
+
+
+	}
+
+
+//add
+	{
+
+		blend gl_one_minus_dst_color, gl_one
+		//blend gl_src_alpha, gl_one
+
+		map textures/dreamworld/blasted_glow
+		glowStage
+		//rgb alpha[(time * 0.25) + .5] // cjr
+
+		inversevertexcolor
+		rotate time / -700
+		scroll time / 1000, time / 1000
+
+
+	}
+
+
+}
+textures/dreamworld/la_darkrock_glow_blasted
+{
+
+
+	qer_editorimage textures/dreamworld/la_darkrock_d_light
+	matter_stone
+
+
+// White verts
+	{
+		blend	bumpmap
+		map textures/dreamworld/la_darkrock_local
+	}
+	{
+		blend diffusemap
+		vertexcolor
+		map		textures/dreamworld/la_darkrock_glow_d
+	}
+	{
+		blend specularmap
+		vertexcolor
+		map		textures/dreamworld/la_darkrock_s
+	}
+	//add
+	{
+
+		blend gl_one_minus_dst_color, gl_one
+		//blend gl_src_alpha, gl_one
+
+		map textures/dreamworld/la_darkrock_glow_add
+		glowStage
+
+
+		vertexcolor
+
+
+
+	}
+
+	// black verts
+
+//add
+	{
+
+		blend gl_one_minus_dst_color, gl_one
+		//blend gl_src_alpha, gl_one
+
+		map textures/dreamworld/blasted_glow
+		glowStage
+
+
+		inversevertexcolor
+		scroll time / 1000, time / 1000
+		rotate time / 400
+
+
+	}
+
+
+//add
+	{
+
+		blend gl_one_minus_dst_color, gl_one
+		//blend gl_src_alpha, gl_one
+
+		map textures/dreamworld/blasted_glow
+		glowStage
+		//rgb alpha[(time * 0.25) + .5] // cjr
+
+		inversevertexcolor
+		rotate time / -700
+		scroll time / 1000, time / 1000
+
+
+	}
+
+
+}
+textures/dreamworld/la_darkrock_glow_blasted_disolve
+{
+
+
+	qer_editorimage textures/dreamworld/la_darkrock_d_light
+	matter_stone
+
+
+// White verts
+	{
+		blend	bumpmap
+		map textures/dreamworld/la_darkrock_local
+	}
+	{
+		blend diffusemap
+		vertexcolor
+		map		textures/dreamworld/la_darkrock_glow_d
+	}
+	{
+		blend specularmap
+		vertexcolor
+		map		textures/dreamworld/la_darkrock_s
+	}
+	//add
+	{
+
+		blend gl_one_minus_dst_color, gl_one
+		//blend gl_src_alpha, gl_one
+
+		map textures/dreamworld/la_darkrock_glow_add2
+		glowStage
+
+
+		vertexcolor
+
+
+
+	}
+
+	// black verts
+
+//add
+	{
+
+		blend gl_one_minus_dst_color, gl_one
+		//blend gl_src_alpha, gl_one
+
+		map textures/dreamworld/blasted_glow2
+		glowStage
+
+
+		inversevertexcolor
+		scroll time / 1000, time / 1000
+		rotate time / 400
+
+
+	}
+
+
+//add
+	{
+
+		blend gl_one_minus_dst_color, gl_one
+		//blend gl_src_alpha, gl_one
+
+		map textures/dreamworld/blasted_glow2
+		glowStage
+		//rgb alpha[(time * 0.25) + .5] // cjr
+
+		inversevertexcolor
+		rotate time / -700
+		scroll time / 1000, time / 1000
+
+
+	}
+
+// Burn in/out
+	{
+		if parm7
+		blend gl_zero, gl_one
+		map textures/sfx/genericdissolve
+		alphaTest 0.05 + 0.35 * (time - parm4)
+		centerscale 0.5, 0.5
+	}
+	{
+		if parm7
+		privatePolygonOffset -1
+        blend add
+		map textures/sfx/genericdissolve
+		alphaTest 0.35 * (time - parm4)
+		centerscale 0.5, 0.5
+		glowStage
+	}
+	{
+		if parm7
+		privatePolygonOffset -1.3
+		blend add
+		map _white
+		alphaTest 0
+		glowStage
+	}
+}
+textures/dreamworld/vortex
+{
+	qer_editorimage textures/dreamworld/vortex
+	translucent
+	noshadows
+	nonsolid
+	twoSided
+	{
+		blend	gl_one_minus_dst_color, gl_one
+		map	textures/dreamworld/vortex
+		rotate	time * parm4
+		colored
+		clamp
+		highres
+	}
+}
+textures/dreamworld/cloudstrip
+{
+	qer_editorimage textures/dreamworld/cloudstrip
+	translucent
+	noshadows
+	nonsolid
+	{
+		blend	gl_one_minus_dst_color, gl_one
+		map	textures/dreamworld/cloudstrip
+		scroll	time * parm4, 0
+		colored
+	}
+}
+textures/dreamworld/la_rock_wallM
+{
+	qer_editorimage	textures/dreamworld/la_rock_d
+	matter_stone
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_rock_local
+		scale	0.5,0.5
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_rock_d
+		scale	0.5,0.5
+		vertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_rock_s
+		scale	0.5,0.5
+		vertexcolor
+	}
+	{
+		blend	bumpmap
+		map	addnormals( textures/dreamworld/la_wallM_local,
+			heightmap (textures/dreamworld/la_wallM_h, 6 ) )
+		scale	0.5 - parm4, 0.5 - parm4
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallT_d
+		scale	0.5 - parm4, 0.5 - parm4
+		inversevertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallT_s
+		scale	0.5 - parm4, 0.5 - parm4
+		inversevertexcolor
+	}
+}
+
+
+
+textures/dreamworld/la_stonewall
+{
+	qer_editorimage		textures/dreamworld/la_stonewall
+	matter_stone
+	bumpmap			textures/dreamworld/la_stonewall_local
+	diffusemap		textures/dreamworld/la_stonewall
+	specularmap		textures/dreamworld/la_stonewall_s
+}
+textures/dreamworld/la_sand
+{
+	qer_editorimage 	textures/dreamworld/la_sand_d
+	matter_stone
+	bumpmap 		textures/dreamworld/la_sand_local
+	diffusemap	 	textures/dreamworld/la_sand_d
+	specularmap		textures/dreamworld/la_sand_s
+}
+textures/dreamworld/la_sand_dec
+{
+	qer_editorimage 	textures/dreamworld/la_dec_prox
+	matter_stone
+	bumpmap 		textures/dreamworld/la_sand_local
+	specularmap		textures/dreamworld/la_sand_s
+	{
+		blend diffusemap
+		map	textures/dreamworld/la_sand_dec_d
+		alphatest	0.5
+	}
+}
+textures/dreamworld/la_sand_dec_small
+{
+	qer_editorimage 	textures/dreamworld/la_dec_prox
+	matter_stone
+	bumpmap 		textures/dreamworld/la_sand_small_local
+	specularmap		textures/dreamworld/la_sand_small_s
+	{
+		blend diffusemap
+		map	textures/dreamworld/la_sand_dec_small_d
+		alphatest	0.5
+	}
+}
+textures/dreamworld/la_rock
+{
+	qer_editorimage 	textures/dreamworld/la_rock_d
+	matter_stone
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_rock_local
+		scale	0.5,0.5
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_rock_d
+		scale	0.5,0.5
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_rock_s
+		scale	0.5,0.5
+	}
+}
+textures/dreamworld/la_rock_dec
+{
+	qer_editorimage 	textures/dreamworld/la_dec_prox
+	matter_stone
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_rock_local
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_rock_dec_d
+		alphatest	0.5
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_rock_s
+	}
+}
+textures/dreamworld/la_rock_dec_small
+{
+	qer_editorimage 	textures/dreamworld/la_dec_prox
+	matter_stone
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_rock_dec_small_local
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_rock_dec_small_d
+		alphatest	0.5
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_rock_dec_small_s
+	}
+}
+
+textures/dreamworld/la_rock_dec_grey
+{
+	qer_editorimage 	textures/dreamworld/la_dec_prox
+	matter_stone
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_rock_local
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_rock_dec_grey_d
+		alphatest	.5
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_rock_s
+	}
+}
+
+textures/dreamworld/la_wallB
+{
+	qer_editorimage 	textures/dreamworld/la_wallb_d
+	matter_stone
+	bumpmap 		textures/dreamworld/la_wallb_local
+	diffusemap	 	textures/dreamworld/la_wallb_d
+	specularmap		textures/dreamworld/la_wallb_s
+}
+
+textures/dreamworld/la_wallM
+{
+	qer_editorimage	textures/dreamworld/la_wallM_d
+	matter_stone
+	{
+		blend	bumpmap
+		map	addnormals( textures/dreamworld/la_wallM_local,
+			heightmap (textures/dreamworld/la_wallM_h, 6 ) )
+		scale	0.5 - parm4, 0.5 - parm4
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallT_d
+		scale	0.5 - parm4, 0.5 - parm4
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallT_s
+		scale	0.5 - parm4, 0.5 - parm4
+	}
+}
+
+textures/dreamworld/la_wallT
+{
+	qer_editorimage	textures/dreamworld/la_wallT_d
+	matter_stone
+	{
+		blend	bumpmap
+		map	addnormals( textures/dreamworld/la_wallT_local,
+			heightmap (textures/dreamworld/la_wallT_h, 6 ) )
+		scale	0.5 - parm4, 0.5 - parm4
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallT_d
+		scale	0.5 - parm4, 0.5 - parm4
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallT_s
+		scale	0.5 - parm4, 0.5 - parm4
+	}
+}
+
+textures/dreamworld/la_wallT_noshad
+{
+	noselfshadow
+	noshadows
+	qer_editorimage	textures/dreamworld/la_wallT_d
+	matter_stone
+	{
+		blend	bumpmap
+		map	addnormals( textures/dreamworld/la_wallT_local,
+			heightmap (textures/dreamworld/la_wallT_h, 6 ) )
+		scale	0.5 - parm4, 0.5 - parm4
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallT_d
+		scale	0.5 - parm4, 0.5 - parm4
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallT_s
+		scale	0.5 - parm4, 0.5 - parm4
+	}
+}
+
+textures/dreamworld/la_invasion1
+{
+	qer_editorimage	textures/dreamworld/la_wallT_inv_d
+	matter_stone
+	{
+		blend	bumpmap
+		map	addnormals( textures/dreamworld/la_wallT_inv_local,
+			heightmap (textures/dreamworld/la_wallT_inv_h, 6 ) )
+		scale	0.5,0.5
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallT_inv_d
+		scale 	0.5,0.5
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallT_inv_s
+		scale 	0.5,0.5
+	}
+}
+textures/dreamworld/la_invasion2
+{
+	qer_editorimage	textures/dreamworld/la_wallT_inv2_d
+	matter_stone
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_wallT_local
+		scale	0.5,0.5
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallT_inv2_d
+		scale 0.5,0.5
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallT_inv2_s
+		scale 	0.5,0.5
+	}
+}
+textures/dreamworld/la_invasion_wallT
+{
+	qer_editorimage	textures/dreamworld/la_inv_wallT_d
+	matter_stone
+
+	{
+		blend	bumpmap
+		map	addnormals( textures/dreamworld/la_wallT_local,
+			heightmap (textures/dreamworld/la_wallT_h, 6 ) )
+		scale	0.5,0.5
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallT_d
+		vertexcolor
+		scale	0.5,0.5
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallT_s
+		vertexcolor
+		scale	0.5,0.5
+	}
+	{
+		blend	bumpmap
+		map	addnormals( textures/dreamworld/la_wallT_inv_local,
+			heightmap (textures/dreamworld/la_wallT_inv_h, 6 ) )
+			scale	0.5,0.5
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallT_inv_d
+		inversevertexcolor
+		scale	0.5,0.5
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallT_inv_s
+		inversevertexcolor
+		scale	0.5,0.5
+	}
+}
+textures/dreamworld/la_invasion_inv2
+{
+	qer_editorimage	textures/dreamworld/la_inv_inv2_d
+	matter_stone
+
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_wallT_local
+		scale	0.5,0.5
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallT_inv2_d
+		vertexcolor
+		scale	0.5,0.5
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallT_inv2_s
+		vertexcolor
+		scale	0.5,0.5
+	}
+	{
+		blend	bumpmap
+		map	addnormals( textures/dreamworld/la_wallT_inv_local,
+			heightmap (textures/dreamworld/la_wallT_inv_h, 6 ) )
+			scale	0.5,0.5
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallT_inv_d
+		inversevertexcolor
+		scale	0.5,0.5
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallT_inv_s
+		inversevertexcolor
+		scale	0.5,0.5
+	}
+}
+textures/dreamworld/la_floor
+{
+	qer_editorimage 	textures/dreamworld/la_floor_d
+	matter_stone
+	//bumpmap addnormals (textures/dreamworld/la_floor_local, heightmap (textures/dreamworld/la_floor_h, 4))
+	//diffusemap	 	textures/dreamworld/la_floor_d
+	//specularmap		textures/dreamworld/la_floor_s
+	{
+		shaderFallback2
+		blend diffusemap
+		map textures/dreamworld/la_floor_d
+	}
+	{
+		shaderFallback2
+		blend bumpmap
+		map addnormals (textures/dreamworld/la_floor_local, heightmap (textures/dreamworld/la_floor_h, 4))
+	}
+	{
+		shaderFallback2
+		blend specularmap
+		map textures/dreamworld/la_floor_s
+	}
+	{
+		shaderLevel2
+		blend shader
+		program parallax.vfp
+
+		fragmentmap		1		addnormals (textures/dreamworld/la_floor_local, heightmap (textures/dreamworld/la_floor_h, 4))
+		fragmentmap		4		textures/dreamworld/la_floor_d
+		fragmentmap		5		textures/dreamworld/la_floor_s
+		fragmentmap		7		textures/dreamworld/la_floor_p
+
+		fragmentparm	0		.02, -.01
+	}
+}
+textures/dreamworld/la_darkfloor
+{
+	qer_editorimage 	textures/dreamworld/la_darkfloor_d
+	matter_stone
+	{
+		shaderFallback2
+		blend diffusemap
+		map textures/dreamworld/la_darkfloor_d
+	}
+	{
+		shaderFallback2
+		blend bumpmap
+		map textures/dreamworld/la_darkfloor_local
+	}
+	{
+		shaderFallback2
+		blend specularmap
+		map textures/dreamworld/la_darkfloor_s
+	}
+	{
+		shaderLevel2
+		blend shader
+		program parallax.vfp
+
+		fragmentmap		1		textures/dreamworld/la_darkfloor_local
+		fragmentmap		4		textures/dreamworld/la_darkfloor_d
+		fragmentmap		5		textures/dreamworld/la_darkfloor_s
+		fragmentmap		7		textures/dreamworld/la_darkfloor_p
+
+		fragmentparm	0		.02, -.01
+	}
+}
+textures/dreamworld/la_darkfloor_dis
+{
+	qer_editorimage 	textures/dreamworld/la_darkfloor_d
+	matter_stone
+	{
+		shaderFallback2
+		blend diffusemap
+		map textures/dreamworld/la_darkfloor_d
+	}
+	{
+		shaderFallback2
+		blend bumpmap
+		map textures/dreamworld/la_darkfloor_local
+	}
+	{
+		shaderFallback2
+		blend specularmap
+		map textures/dreamworld/la_darkfloor_s
+	}
+	{
+		shaderLevel2
+		blend shader
+		program parallax.vfp
+
+		fragmentmap		1		textures/dreamworld/la_darkfloor_local
+		fragmentmap		4		textures/dreamworld/la_darkfloor_d
+		fragmentmap		5		textures/dreamworld/la_darkfloor_s
+		fragmentmap		7		textures/dreamworld/la_darkfloor_p
+
+		fragmentparm	0		.02, -.01
+	}
+
+	{
+		if ( parm5 == 0 )
+		blend none
+		map textures/sfx/genericdissolve
+		alphaTest 0
+	}
+	{
+		if ( parm5 > 0 )
+		blend none
+		map textures/sfx/genericdissolve
+		alphaTest ( time + parm4 ) * 0.5
+	}
+	{
+		if ( parm5 > 0 )
+		privatepolygonoffset	-1
+		blend add
+		map textures/sfx/genericdissolve
+		alphaTest ( time + parm4 ) * 0.5 - 0.2
+		//rgb 2
+		red 0.68
+		green 0.81
+		blue 1.0
+		glowStage
+	}
+}
+textures/dreamworld/la_intwall_1
+{
+	qer_editorimage 	textures/dreamworld/la_intwall_1_d
+	matter_stone
+	bumpmap addnormals (textures/dreamworld/la_intwall_1_local, heightmap (textures/dreamworld/la_intwall_1_h, 4))
+	diffusemap	 	textures/dreamworld/la_intwall_1_d
+	specularmap		textures/dreamworld/la_intwall_1_s
+}
+
+textures/dreamworld/la_intwall_2
+{
+	qer_editorimage 	textures/dreamworld/la_intwall_2_d
+	matter_stone
+	{
+		shaderLevel2
+
+		blend shader
+		vertexprogram	vertexscale.vp
+		fragmentprogram parallax.vfp
+
+		vertexparm		0		1 + parm5, 1 + parm5, 0,0
+
+		fragmentmap		1		addnormals (textures/dreamworld/la_intwall_2_local,
+			heightmap (textures/dreamworld/la_intwall_2_h, 4))
+		fragmentmap		4		textures/dreamworld/la_intwall_2_d
+		fragmentmap		5		textures/dreamworld/la_intwall_2_s
+		fragmentmap		7		textures/dreamworld/la_intwall_2_p2
+
+		fragmentparm	0		.05, -.025
+	}
+	{
+		shaderFallback2
+		blend	bumpmap
+		map	addnormals (textures/dreamworld/la_intwall_2_local,
+			heightmap (textures/dreamworld/la_intwall_2_h, 4))
+		scale	1 + parm5, 1 + parm5
+	}
+	{
+		shaderFallback2
+		blend	diffusemap
+		map	textures/dreamworld/la_intwall_2_d
+		scale	1 + parm5, 1 + parm5	}
+	{
+		shaderFallback2
+		blend	specularmap
+		map	textures/dreamworld/la_intwall_2_s
+		scale	1 + parm5, 1 + parm5
+	}
+}
+textures/dreamworld/la_intwall_3
+{
+	qer_editorimage 	textures/dreamworld/la_intwall_3_d
+	matter_stone
+	bumpmap 		textures/dreamworld/la_intwall_3_local
+	diffusemap	 	textures/dreamworld/la_intwall_3_d
+	specularmap		textures/dreamworld/la_intwall_3_s
+}
+textures/dreamworld/la_intwall_4
+{
+	qer_editorimage 	textures/dreamworld/la_intwall_4_d
+	matter_stone
+	bumpmap 		textures/dreamworld/la_intwall_4_local
+	diffusemap	 	textures/dreamworld/la_intwall_4_d
+	specularmap		textures/dreamworld/la_intwall_4_s
+}
+textures/dreamworld/la_intwall_5
+{
+	qer_editorimage 	textures/dreamworld/la_intwall_5_d
+	matter_stone
+	bumpmap 		textures/dreamworld/la_intwall_5_local
+	diffusemap	 	textures/dreamworld/la_intwall_5_d
+	specularmap		textures/dreamworld/la_intwall_5_s
+}
+textures/dreamworld/la_inttrim_1
+{
+	qer_editorimage 	textures/dreamworld/la_inttrim_1_d
+	matter_stone
+
+	diffusemap 	textures/dreamworld/la_inttrim_1_d
+ 	specularmap textures/dreamworld/la_inttrim_1_s
+	bumpmap	addnormals (textures/dreamworld/la_inttrim_1_local, heightmap (textures/dreamworld/la_inttrim_1_h, 5))
+}
+textures/dreamworld/la_inttrim_2
+{
+	qer_editorimage 	textures/dreamworld/la_inttrim_2_d
+	matter_stone
+
+	diffusemap 	textures/dreamworld/la_inttrim_2_d
+ 	specularmap textures/dreamworld/la_inttrim_1_s
+	bumpmap	addnormals (textures/dreamworld/la_inttrim_2_local, heightmap (textures/dreamworld/la_inttrim_2_h, 5))
+}
+textures/dreamworld/la_inttrim_3
+{
+	qer_editorimage 	textures/dreamworld/la_inttrim_3_d
+	matter_stone
+
+	diffusemap 	textures/dreamworld/la_inttrim_3_d
+ 	specularmap textures/dreamworld/la_inttrim_3_s
+	bumpmap		textures/dreamworld/la_inttrim_3_local
+}
+textures/dreamworld/la_sand_rock
+{
+	qer_editorimage	textures/dreamworld/la_sand_d
+	matter_stone
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_sand_local
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_sand_d
+		vertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_sand_s
+		vertexcolor
+	}
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_rock_local
+		scale	0.5,0.5
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_rock_d
+		scale	0.5,0.5
+		inversevertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_rock_s
+		scale	0.5,0.5
+		inversevertexcolor
+	}
+}
+textures/dreamworld/la_wallB_rock
+{
+	qer_editorimage	textures/dreamworld/la_stonewall_d
+	matter_stone
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_stonewall_local
+		scale	2, 2
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_stonewall_d
+		scale	2, 2
+		vertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_stonewall_s
+		scale	2, 2
+		vertexcolor
+	}
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_rock_local
+		scale	.5, .5
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_rock_d
+		scale	.5, .5
+		inversevertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_rock_s
+		scale	.5, .5
+		inversevertexcolor
+	}
+}
+
+textures/dreamworld/la_wallB_sand
+{
+	qer_editorimage	textures/dreamworld/la_stonewall_d
+	matter_stone
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_stonewall_local
+		scale	0.5 + parm4, 0.5 + parm4
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_stonewall_d
+		scale	0.5 + parm4, 0.5 + parm4
+		vertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_stonewall_s
+		scale	0.5 + parm4, 0.5 + parm4
+		vertexcolor
+	}
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_sand_local
+		scale	0.5 + parm4, 0.5 + parm4
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_sand_d
+		scale	0.5 + parm4, 0.5 + parm4
+		inversevertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_sand_s
+		scale	0.5 + parm4, 0.5 + parm4
+		inversevertexcolor
+	}
+}
+
+textures/dreamworld/la_wallB_wallT
+{
+	qer_editorimage	textures/dreamworld/la_wallb_d
+	matter_stone
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_wallb_local
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallb_d
+		vertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallb_s
+		vertexcolor
+	}
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_wallT_local
+		scale	0.5 - parm4, 0.5 - parm4
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallT_d
+		scale	0.5 - parm4, 0.5 - parm4
+		inversevertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallT_s
+		scale	0.5 - parm4, 0.5 - parm4
+		inversevertexcolor
+	}
+}
+
+textures/dreamworld/la_wallT_rock
+{
+	qer_editorimage	textures/dreamworld/la_rock_d
+	matter_stone
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_rock_local
+		scale	0.5,0.5
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_rock_d
+		scale	0.5,0.5
+		vertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_rock_s
+		scale	0.5,0.5
+		vertexcolor
+	}
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_wallT_local
+		scale	0.5 - parm4, 0.5 - parm4
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallT_d
+		scale	0.5 - parm4, 0.5 - parm4
+		inversevertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallT_s
+		scale	0.5 - parm4, 0.5 - parm4
+		inversevertexcolor
+	}
+}
+textures/dreamworld/la_wallB_rock2
+{
+	qer_editorimage	textures/dreamworld/la_rock_d
+	matter_stone
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_wallb_local
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallb_d
+		vertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallb_s
+		vertexcolor
+	}
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_rock_local
+		scale	0.5,0.5
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_rock_d
+		scale	0.5,0.5
+		inversevertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_rock_s
+		scale	0.5,0.5
+		inversevertexcolor
+	}
+}
+
+textures/dreamworld/la_wallB_wallM
+{
+	qer_editorimage	textures/dreamworld/la_wallb_d
+	matter_stone
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_wallb_local
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallb_d
+		vertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallb_s
+		vertexcolor
+	}
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_wallM_local
+		scale	0.5 - parm4, 0.5 - parm4
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallT_d
+		scale 	0.5 - parm4, 0.5 - parm4
+		inversevertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallT_s
+		scale	0.5 - parm4, 0.5 - parm4
+		inversevertexcolor
+	}
+}
+
+textures/dreamworld/la_wallT_wallM
+{
+	qer_editorimage	textures/dreamworld/la_rock_d
+	matter_stone
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_wallT_local
+		scale	0.5 - parm4, 0.5 - parm4
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallT_d
+		scale	0.5 - parm4, 0.5 - parm4
+		vertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallT_s
+		scale	0.5 - parm4, 0.5 - parm4
+		vertexcolor
+	}
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_wallM_local
+		scale	0.5 - parm4, 0.5 - parm4
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallT_d
+		scale	0.5 - parm4, 0.5 - parm4
+		inversevertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallT_s
+		scale	0.5 - parm4, 0.5 - parm4
+		inversevertexcolor
+	}
+}
+
+textures/dreamworld/la_wallT_wallM_b
+{
+	qer_editorimage	textures/dreamworld/la_rock_d
+	matter_stone
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_wallT_local
+		scale	0.5 - parm4, 0.5 - parm4
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallT_d
+		scale	0.5 - parm4, 0.5 - parm4
+		vertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallT_s
+		scale	0.5 - parm4, 0.5 - parm4
+		vertexcolor
+	}
+	{
+		blend	bumpmap
+		map	textures/dreamworld/la_wallM_local
+		scale	0.5 - parm4, 0.5 - parm4
+	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/la_wallT_d
+		scale	0.5 - parm4, 0.5 - parm4
+		inversevertexcolor
+	}
+	{
+		blend	specularmap
+		map	textures/dreamworld/la_wallT_s
+		scale	0.5 - parm4, 0.5 - parm4
+		inversevertexcolor
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//--------------------------------------------------------------------------------
+textures/dreamworld/nBrick
+{
+	qer_editorimage textures/dreamworld/brickwall_08_color
+	matter_stone
+
+	{
+		blend diffusemap
+		map textures/dreamworld/brickwall_08_d
+		rgb 0.50
+	}
+
+	{
+		blend specularmap
+		map textures/dreamworld/brickwall_08_s
+		rgb 0.4
+	}
+	bumpmap
+	addnormals	(textures/dreamworld/brickwall_08_local,
+	heightmap	(textures/dreamworld/brickwall_08_h, 1.5))
+}
+
+
+textures/dreamworld/sandstone
+{
+	qer_editorimage textures/dreamworld/sandstone
+	matter_stone
+
+	diffusemap textures/dreamworld/sandstone_d
+ 	specularmap textures/dreamworld/sandstone_s
+ 	bumpmap addnormals (textures/dreamworld/sandstone_local, heightmap (textures/dreamworld/sandstone_h, 5))
+}
+
+
+textures/dreamworld/dirt
+{
+	qer_editorimage textures/dreamworld/dirt
+	matter_stone
+
+	diffusemap textures/dreamworld/dirt
+ 	specularmap textures/dreamworld/dirt_s
+ 	bumpmap addnormals (textures/dreamworld/dirt_local, heightmap (textures/dreamworld/dirt_h, 5))
+}
+
+textures/dreamworld/water
+{
+	qer_editorimage textures/dreamworld/water_d
+
+	diffusemap textures/dreamworld/water_d
+ 	specularmap textures/dreamworld/water_s
+ 	bumpmap heightmap (textures/dreamworld/water_h, 4)
+}
+
+textures/dreamworld/water_trans
+{
+	qer_editorimage textures/dreamworld/water_d
+
+	{
+		blend blend
+		map textures/dreamworld/water_trans
+	}
+// 	specularmap textures/dreamworld/water_s
+}
+
+textures/dreamworld/mockstars
+{
+	qer_editorimage textures/dreamworld/mockstars
+
+	diffuseMap textures/dreamworld/mockstars
+	specularmap textures/dreamworld/mockstars
+ 	bumpmap heightmap (textures/dreamworld/mockstars, 1)
+	{
+		blend add
+		map textures/dreamworld/mockstars
+	}
+}
+
+textures/dreamworld/rocks1
+{
+	qer_editorimage		textures/dreamworld/rocks1_d
+	matter_stone
+
+ 	bumpmap			addnormals (textures/dreamworld/rocks1_local, heightmap (textures/dreamworld/rocks1_h, 5))
+	diffusemap		textures/dreamworld/rocks1_d
+ 	specularmap		textures/dreamworld/rocks1_s
+
+}
+textures/dreamworld/rock2
+{
+	qer_editorimage 	textures/dreamworld/rock2_proxy
+	matter_stone
+
+	bumpmap 		addnormals (textures/dreamworld/rock2_local, heightmap (textures/dreamworld/rock2_h, 30))
+	diffusemap	 	textures/dreamworld/rock2_d
+	specularmap		textures/dreamworld/rock2_s
+}
+
+textures/dreamworld/rocks1tech
+{
+	qer_editorimage		textures/dreamworld/rocks1tech_d
+	matter_stone
+
+ 	bumpmap			addnormals (textures/dreamworld/rocks1tech_local, heightmap (textures/dreamworld/rocks1tech_h, 6))
+	diffusemap		textures/dreamworld/rocks1tech_d
+ 	specularmap		textures/dreamworld/rocks1tech_s
+
+}
+
+textures/dreamworld/rocks1tech_add
+{
+	translucent
+	noshadows
+	qer_editorimage 	textures/dreamworld/rocks1tech_add
+	matter_stone
+	{
+		blend add
+		map		textures/dreamworld/rocks1tech_add
+		colored
+	}
+}
+
+textures/dreamworld/LOTAcircuit1
+{
+
+	qer_editorimage 	textures/dreamworld/lotacircuit1_h
+
+	bumpmap 		heightmap (textures/dreamworld/lotacircuit1_h, 6)
+	specularmap		textures/dreamworld/lotacircuit1_d
+	{
+
+		blend diffusemap
+		map	textures/dreamworld/lotacircuit1_d
+		alphatest	parm5
+	}
+
+}
+
+textures/dreamworld/LOTAcircuit1B
+{
+
+	qer_editorimage 	textures/dreamworld/lotacircuit1_h
+
+	bumpmap 		heightmap (textures/dreamworld/lotacircuit1_h, 6)
+	specularmap		textures/dreamworld/lotacircuit1_d
+	{
+
+		blend diffusemap
+		map	textures/dreamworld/lotacircuit1_d2
+		alphatest	parm5
+	}
+
+}
+
+textures/dreamworld/pebble1
+{
+	qer_editorimage		textures/dreamworld/pebble1_d
+	matter_stone
+
+// 	bumpmap			addnormals (textures/dreamworld/pebble1_local,
+//				heightmap (textures/dreamworld/pebble1_h, 5))
+ 	bumpmap			textures/dreamworld/pebble1_local
+	diffusemap		textures/dreamworld/pebble1_d
+ 	specularmap		textures/dreamworld/pebble1_s
+
+}
+
+textures/dreamworld/lotawall1
+{
+	qer_editorimage		textures/dreamworld/lotawall1_d
+	matter_stone
+
+ 	bumpmap			textures/dreamworld/lotawall1_local
+	diffusemap		textures/dreamworld/lotawall1_d
+ 	specularmap		textures/dreamworld/lotawall1_s
+
+}
+
+textures/dreamworld/lotawall1_bad
+{
+	qer_editorimage		textures/dreamworld/lotawall1_bad_d
+	matter_stone
+
+ 	bumpmap			addnormals (textures/dreamworld/lotawall1_bad_local,
+				heightmap (textures/dreamworld/lotawall1_bad_h, 5))
+	diffusemap		textures/dreamworld/lotawall1_bad_d
+ 	specularmap		textures/dreamworld/lotawall1_bad_s
+
+}
+
+
+
+textures/dreamworld/lotawall1B
+{
+	qer_editorimage		textures/dreamworld/lotawall1b_d
+	matter_stone
+
+ 	bumpmap			textures/dreamworld/lotawall1b_local
+	diffusemap		textures/dreamworld/lotawall1b_d
+ 	specularmap		textures/dreamworld/lotawall1b_s
+
+}
+
+textures/dreamworld/lotawall2
+{
+	qer_editorimage		textures/dreamworld/lotawall2_d
+	matter_stone
+
+// 	bumpmap			addnormals (textures/dreamworld/lotawall2_local,
+//				heightmap (textures/dreamworld/lotawall2_h, 5))
+ 	bumpmap			textures/dreamworld/lotawall2_local
+	diffusemap		textures/dreamworld/lotawall2_d
+ 	specularmap		textures/dreamworld/lotawall2_s
+
+}
+
+textures/dreamworld/lotawall2_bad
+{
+	qer_editorimage		textures/dreamworld/lotawall2_bad_d
+	matter_stone
+
+ 	bumpmap			textures/dreamworld/lotawall2_bad_local
+	diffusemap		textures/dreamworld/lotawall2_bad_d
+ 	specularmap		textures/dreamworld/lotawall2_bad_s
+
+}
+
+textures/dreamworld/lotawall3
+{
+	qer_editorimage		textures/dreamworld/lotawall3_d
+	matter_stone
+
+// 	bumpmap			addnormals (textures/dreamworld/lotawall3_local,
+//				heightmap (textures/dreamworld/lotawall3_h, 5))
+ 	bumpmap			textures/dreamworld/lotawall3_local
+	diffusemap		textures/dreamworld/lotawall3_d
+ 	specularmap		textures/dreamworld/lotawall3_s
+
+}
+
+textures/dreamworld/lotawall3_bad
+{
+	qer_editorimage		textures/dreamworld/lotawall3_bad_d
+	matter_stone
+
+// 	bumpmap			addnormals (textures/dreamworld/lotawall3_bad_local,
+//				heightmap (textures/dreamworld/lotawall3_bad_h, 5))
+ 	bumpmap			textures/dreamworld/lotawall3_bad_local
+	diffusemap		textures/dreamworld/lotawall3_bad_d
+ 	specularmap		textures/dreamworld/lotawall3_bad_s
+
+}
+
+textures/dreamworld/lotawall3B
+{
+	qer_editorimage		textures/dreamworld/lotawall3b_d
+	matter_stone
+
+// 	bumpmap			addnormals (textures/dreamworld/lotawall3b_local,
+//				heightmap (textures/dreamworld/lotawall3b_h, 5))
+ 	bumpmap			textures/dreamworld/lotawall3b_local
+	diffusemap		textures/dreamworld/lotawall3b_d
+ 	specularmap		textures/dreamworld/lotawall3b_s
+
+}
+
+textures/dreamworld/lotawall3B_bad
+{
+	qer_editorimage		textures/dreamworld/lotawall3b_bad_d
+	matter_stone
+
+// 	bumpmap			addnormals (textures/dreamworld/lotawall3b_local,
+//				heightmap (textures/dreamworld/lotawall3b_bad_h, 5))
+ 	bumpmap			textures/dreamworld/lotawall3b_bad_local
+	diffusemap		textures/dreamworld/lotawall3b_bad_d
+ 	specularmap		textures/dreamworld/lotawall3b_bad_s
+
+}
+
+textures/dreamworld/lotawall4
+{
+	qer_editorimage		textures/dreamworld/lotawall4_d
+	matter_stone
+
+	{
+		blend bumpmap
+		map 				textures/dreamworld/lotawall4_local
+		centerscale 2,2
+	}
+	{
+		blend diffusemap
+		map 				textures/dreamworld/lotawall4_d
+		centerscale 2,2
+	}
+	{
+		blend specularmap
+		map 				textures/dreamworld/lotawall4_s
+		centerscale 2,2
+	}
+}
+
+textures/dreamworld/lotawall4_bad
+{
+	qer_editorimage		textures/dreamworld/lotawall4_bad_d
+	matter_stone
+
+	{
+		blend bumpmap
+		map 				textures/dreamworld/lotawall4_bad_local
+		centerscale 2,2
+	}
+	{
+		blend diffusemap
+		map 				textures/dreamworld/lotawall4_bad_d
+		centerscale 2,2
+	}
+	{
+		blend specularmap
+		map 				textures/dreamworld/lotawall4_bad_s
+		centerscale 2,2
+	}
+}
+
+textures/dreamworld/lotawall5
+{
+	qer_editorimage		textures/dreamworld/lotawall5_d
+	matter_stone
+
+ 	bumpmap			addnormals (textures/dreamworld/lotawall5_local,
+				heightmap (textures/dreamworld/lotawall5_h, 5))
+// 	bumpmap			textures/dreamworld/lotawall5_local
+	diffusemap		textures/dreamworld/lotawall5_d
+ 	specularmap		textures/dreamworld/lotawall5_s
+
+}
+
+textures/dreamworld/lotawall5_bad
+{
+	qer_editorimage		textures/dreamworld/lotawall5_bad_d
+	matter_stone
+
+ 	bumpmap			addnormals (textures/dreamworld/lotawall5_local,
+				heightmap (textures/dreamworld/lotawall5_bad_h, 5))
+	diffusemap		textures/dreamworld/lotawall5_bad_d
+ 	specularmap		textures/dreamworld/lotawall5_bad_s
+
+}
+
+textures/dreamworld/lotawall6
+{
+	qer_editorimage		textures/dreamworld/lotawall6_d
+	matter_stone
+
+// 	bumpmap			addnormals (textures/dreamworld/lotawall6_local,
+//				heightmap (textures/dreamworld/lotawall6_h, 5))
+ 	bumpmap			textures/dreamworld/lotawall6_local
+	diffusemap		textures/dreamworld/lotawall6_d
+ 	specularmap		textures/dreamworld/lotawall6_s
+
+}
+
+textures/dreamworld/lotawall6_bad
+{
+	qer_editorimage		textures/dreamworld/lotawall6_bad_d
+	matter_stone
+
+ 	bumpmap			textures/dreamworld/lotawall6_bad_local
+	diffusemap		textures/dreamworld/lotawall6_bad_d
+ 	specularmap		textures/dreamworld/lotawall6_bad_s
+
+}
+
+
+textures/dreamworld/lotawall6B
+{
+	qer_editorimage		textures/dreamworld/lotawall6b_d
+	matter_stone
+
+// 	bumpmap			addnormals (textures/dreamworld/lotawall6_local,
+//		heightmap (textures/dreamworld/lotawall6_h, 5))
+ 	bumpmap			textures/dreamworld/lotawall6_local
+	diffusemap		textures/dreamworld/lotawall6b_d
+ 	specularmap		textures/dreamworld/lotawall6_s
+
+}
+
+textures/dreamworld/lotawall6B_bad
+{
+	qer_editorimage		textures/dreamworld/lotawall6b_bad_d
+	matter_stone
+
+ 	bumpmap			textures/dreamworld/lotawall6_bad_local
+	diffusemap		textures/dreamworld/lotawall6b_bad_d
+ 	specularmap		textures/dreamworld/lotawall6_bad_s
+
+}
+
+textures/dreamworld/lotawall7
+{
+	qer_editorimage		textures/dreamworld/lotawall7_d
+	matter_stone
+
+ 	bumpmap			textures/dreamworld/lotawall7_local
+	diffusemap		textures/dreamworld/lotawall7_d
+ 	specularmap		textures/dreamworld/lotawall7_s
+
+}
+
+textures/dreamworld/lotawall7_bad
+{
+	qer_editorimage		textures/dreamworld/lotawall7_bad_d
+	matter_stone
+
+ 	bumpmap			textures/dreamworld/lotawall7_bad_local
+	diffusemap		textures/dreamworld/lotawall7_bad_d
+ 	specularmap		textures/dreamworld/lotawall7_bad_s
+
+}
+
+textures/dreamworld/lotawall8
+{
+	qer_editorimage		textures/dreamworld/lotawall8_d
+	matter_stone
+
+ 	bumpmap			textures/dreamworld/lotawall8_local
+	diffusemap		textures/dreamworld/lotawall8_d
+ 	specularmap		textures/dreamworld/lotawall8_s
+
+}
+
+textures/dreamworld/lotawall8_bad
+{
+	qer_editorimage		textures/dreamworld/lotawall8_bad_d
+	matter_stone
+
+ 	bumpmap			textures/dreamworld/lotawall8_bad_local
+	diffusemap		textures/dreamworld/lotawall8_bad_d
+ 	specularmap		textures/dreamworld/lotawall8_bad_s
+
+}
+
+textures/dreamworld/lotawall9
+{
+	qer_editorimage		textures/dreamworld/lotawall9_d
+	matter_stone
+
+ 	bumpmap			textures/dreamworld/lotawall9_local
+	diffusemap		textures/dreamworld/lotawall9_d
+ 	specularmap		textures/dreamworld/lotawall9_s
+
+}
+
+
+textures/dreamworld/lotatrim1
+{
+	qer_editorimage		textures/dreamworld/lotatrim1_d
+	matter_stone
+
+ 	bumpmap			addnormals (textures/dreamworld/lotatrim1_local,
+				heightmap (textures/dreamworld/lotatrim1_h, 3))
+
+	diffusemap		textures/dreamworld/lotatrim1_d
+ 	specularmap		textures/dreamworld/lotatrim1_s
+
+}
+
+textures/dreamworld/grass1
+{
+	qer_editorimage		textures/dreamworld/grass1_d
+
+// 	bumpmap			addnormals (textures/dreamworld/grass1_local,
+//				heightmap (textures/dreamworld/grass1_h, 5))
+ 	bumpmap			textures/dreamworld/grass1_local
+	diffusemap		textures/dreamworld/grass1_d
+ 	specularmap		textures/dreamworld/grass1_s
+
+}
+
+textures/dreamworld/craters_001
+{
+	qer_editorimage		textures/dreamworld/craters_001_d
+	matter_stone
+
+ 	{
+ 		blend	bumpmap
+ 		map	addnormals( textures/dreamworld/craters_001_local, heightmap( textures/dreamworld/craters_001_h, 8.0))
+ 		highres
+ 	}
+	{
+		blend	diffusemap
+		map	textures/dreamworld/craters_001_d
+		highres
+	}
+ 	{
+ 		blend	specularmap
+ 		map	textures/dreamworld/craters_001_s
+ 		highres
+ 	}
+
+}
+
+textures/dreamworld/dirt1
+{
+	qer_editorimage		textures/dreamworld/dirt1_d
+	matter_stone
+
+	{
+		blend bumpmap
+		map 				textures/dreamworld/dirt1_local
+		centerscale 2,2
+	}
+	{
+		blend diffusemap
+		map 				textures/dreamworld/dirt1_d
+		centerscale 2,2
+	}
+	{
+		blend specularmap
+		map 				textures/dreamworld/dirt1_s
+		centerscale 2,2
+	}
+}
+
+textures/dreamworld/cavepaint1
+{
+	qer_editorimage textures/dreamworld/cavepaint1
+	DECAL_MACRO
+	{
+		blend diffusemap
+		blend filter
+		map textures/dreamworld/cavepaint1
+		colored
+	}
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/dreamworld/cavepaint1_add
+		glowstage
+		rgb jitter1[time* 5] * 0.29
+		spiritWalk
+	}
+}
+
+textures/dreamworld/cavepaint2
+{
+	qer_editorimage textures/dreamworld/cavepaint2
+	DECAL_MACRO
+	{
+		blend diffusemap
+		blend filter
+		map textures/dreamworld/cavepaint2
+		colored
+	}
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/dreamworld/cavepaint2_add
+		glowstage
+		rgb jitter1[time* 5] * 0.29
+		spiritWalk
+	}
+}
+
+textures/dreamworld/cavepaint3
+{
+	qer_editorimage textures/dreamworld/cavepaint3
+	DECAL_MACRO
+	{
+		blend diffusemap
+		blend filter
+		map textures/dreamworld/cavepaint3
+		colored
+	}
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/dreamworld/cavepaint3_add
+		glowstage
+		rgb jitter1[time* 5] * 0.29
+		spiritWalk
+	}
+}
+
+textures/dreamworld/cavepaint3B
+{
+	qer_editorimage textures/dreamworld/cavepaint3b
+//	DECAL_MACRO
+
+	bumpmap		textures/dreamworld/cavepaint3b_local
+	specularmap	textures/dreamworld/cavepaint3b_s
+
+	{
+		blend diffusemap
+		map textures/dreamworld/cavepaint3b
+		alphatest 0.5
+	}
+
+}
+
+
+textures/dreamworld/cavepaint4
+{
+	qer_editorimage textures/dreamworld/cavepaint4
+	DECAL_MACRO
+	{
+		blend diffusemap
+		blend filter
+		map textures/dreamworld/cavepaint4
+		colored
+	}
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/dreamworld/cavepaint4_add
+		glowstage
+		rgb jitter1[time* 5] * 0.29
+		spiritWalk
+	}
+}
+
+textures/dreamworld/cavepaint5
+{
+	qer_editorimage textures/dreamworld/cavepaint5
+	DECAL_MACRO
+	{
+		blend diffusemap
+		blend filter
+		map textures/dreamworld/cavepaint5
+		colored
+	}
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/dreamworld/cavepaint5_add
+		glowstage
+		rgb jitter1[time* 5] * 0.29
+		spiritWalk
+	}
+}
+
+textures/dreamworld/cavepaint6
+{
+	qer_editorimage textures/dreamworld/cavepaint6
+	DECAL_MACRO
+	{
+		blend diffusemap
+		blend filter
+		map textures/dreamworld/cavepaint6
+		colored
+	}
+	{
+		blend gl_one_minus_dst_color, gl_one
+		map textures/dreamworld/cavepaint6_add
+		glowstage
+		rgb jitter1[time* 5] * 0.29
+		spiritWalk
+	}
+}
+
+textures/dreamworld/deerskin1
+{
+	twoSided
+	noShadows
+
+	qer_editorimage 	textures/dreamworld/deerskin1_d
+
+ 	bumpmap			addnormals (textures/dreamworld/deerskin1_local,
+				heightmap (textures/dreamworld/deerskin1_h, 6))
+	specularmap		textures/dreamworld/deerskin1_s
+	{
+
+		blend diffusemap
+		map	textures/dreamworld/deerskin1_d
+		alphatest	0.5
+	}
+
+}
+
+textures/dreamworld/deerskin2
+{
+	twoSided
+	noShadows
+
+	qer_editorimage 	textures/dreamworld/deerskin2_d
+
+ 	bumpmap			addnormals (textures/dreamworld/deerskin2_local,
+				heightmap (textures/dreamworld/deerskin2_h, 6))
+	specularmap		textures/dreamworld/deerskin2_s
+	{
+
+		blend diffusemap
+		map	textures/dreamworld/deerskin2_d
+		alphatest	0.5
+	}
+
+}
+
+//------------------------------------------
+//LOTA SKY SHADERS
+//------------------------------------------
+
+textures/dreamworld/horizon_1
+{
+	qer_editorimage textures/dreamworld/horizon_1
+	noshadows
+{
+
+	blend gl_one, gl_zero
+	uncompressed
+	map	textures/dreamworld/horizon_1
+}
+}
+
+
+
+
+textures/dreamworld/horizon_2
+{
+	qer_editorimage textures/dreamworld/horizon_2
+{
+	blend gl_one, gl_zero
+	uncompressed
+	map	textures/dreamworld/horizon_2
+}
+}
+
+
+
+
+textures/dreamworld/daylight1
+{
+	qer_editorimage textures/dreamworld/daylight2
+	noshadows
+	{
+		blend gl_one, gl_zero
+		uncompressed
+		map	textures/dreamworld/daylight2
+	}
+}
+textures/dreamworld/dw_sky
+{
+	qer_editorimage textures/dreamworld/dw_sky
+	noshadows
+	noimpact
+	{
+		blend gl_one, gl_zero
+		uncompressed
+		map	textures/dreamworld/dw_sky
+	}
+}
+textures/dreamworld/dw_skyb
+{
+	qer_editorimage textures/dreamworld/dw_skyb
+	noshadows
+	noimpact
+	{
+		blend gl_one, gl_zero
+		uncompressed
+		map	textures/dreamworld/dw_skyb
+	}
+}
+
+
+textures/dreamworld/sunset1
+{
+	qer_editorimage textures/dreamworld/sunset1
+	noshadows
+{
+	blend gl_one, gl_zero
+	uncompressed
+	map	textures/dreamworld/sunset1
+}
+}
+
+textures/dreamworld/stormsky1
+{
+	qer_editorimage textures/dreamworld/stormsky1
+	noshadows
+	{
+		blend gl_one, gl_zero
+		//uncompressed
+		map	textures/dreamworld/stormsky1
+	}
+
+	{
+		blend add
+		map _white
+		rgb growout[ (time - parm4) * 2 ]
+	}
+}
+
+textures/dreamworld/stormsky2
+{
+	translucent
+
+	qer_editorimage textures/dreamworld/stormsky2
+	noshadows
+	{
+//		blend gl_dst_color, gl_src_color
+//		blend gl_one, gl_src_alpha
+//		blend gl_dst_color, gl_src_alpha
+		blend filter
+		//uncompressed
+		map	textures/dreamworld/stormsky2
+		scroll time * 0.043, 0
+		scale 6, 6
+		rgb 1.0
+//		alpha 1.1
+	}
+}
+
+textures/dreamworld/stormsky3
+{
+	translucent
+
+	qer_editorimage textures/dreamworld/stormsky3
+	noshadows
+	{
+//		blend blend
+//		blend gl_dst_color, gl_src_color
+		blend gl_one, gl_src_alpha
+//		blend gl_dst_color, gl_src_alpha
+//		blend gl_one_minus_src_alpha, gl_src_alpha
+		//uncompressed
+		map	textures/dreamworld/stormsky3
+		scroll time * 0.02, time * 0.002
+		scale 7, 7
+		rgb 0.3
+		//rgb 0.2 + alpha[time] * 0.4
+	}
+}
+
+textures/dreamworld/lotaasky1
+{
+	qer_editorimage textures/dreamworld/lotaasky1
+	noshadows
+	{
+		blend gl_one, gl_zero
+		map	textures/dreamworld/lotaasky1_glow
+		uncompressed
+		glowstage
+	}
+}
+
+textures/dreamworld/lotaasky2
+{
+	translucent
+
+	qer_editorimage textures/dreamworld/lotaasky2
+	noshadows
+	{
+		blend blend
+		map	textures/dreamworld/lotaasky2
+		scroll time * 0.0053, 0
+		scale 6, 5
+
+		rgb .5
+		alpha 0.9
+	}
+}
+
+textures/dreamworld/lotaasky3
+{
+	translucent
+
+	qer_editorimage textures/dreamworld/lotaasky3
+	noshadows
+	{
+		blend blend
+
+		map	textures/dreamworld/lotaasky3
+		scroll time * 0.0048, time * 0.002
+		scale 8, 7
+		rgb .5
+		alpha .8
+	}
+}
+
+textures/dreamworld/lotasunset1
+{
+	qer_editorimage textures/dreamworld/lotasunset1
+	noshadows
+	{	if parm5 == 0
+		blend	gl_one, gl_zero
+		map		textures/dreamworld/lotasunset1
+		rgb		0.2
+		glowstage
+	}
+	{	if parm5 == 1
+		blend	gl_one, gl_zero
+		map		textures/dreamworld/lotasunset1
+		rgb		0.2 - ( ( growIn [ ( time - parm4 ) * parm6 ] ) * 0.2 )
+		glowstage
+	}
+}
+
+textures/dreamworld/lotasunset2
+{
+	translucent
+
+	qer_editorimage textures/dreamworld/lotaasky2
+	noshadows
+	{
+
+		blend gl_src_alpha, gl_one_minus_src_alpha
+		map	textures/dreamworld/lotaasky2
+		scroll time * 0.0043, 0
+		scale 6, 5
+		color .75, 0.4, 0.4, 0.7
+	}
+}
+
+textures/dreamworld/lotasunset3
+{
+	translucent
+
+	qer_editorimage textures/dreamworld/lotaasky3
+	noshadows
+	{
+
+		blend gl_src_alpha, gl_one_minus_src_alpha
+
+		map	textures/dreamworld/lotaasky3
+		scroll time * 0.0038, time * 0.002
+		scale 8, 7
+		color 0.6, 0.3 , 0.4, 0.8
+	}
+}
+
+textures/dreamworld/moonlight1
+{
+	qer_editorimage textures/dreamworld/moonlight1
+	noshadows
+{
+	blend gl_one, gl_zero
+	uncompressed
+	map	textures/dreamworld/moonlight1
+}
+}
+
+
+
+textures/dreamworld/unnatural1
+{
+	qer_editorimage textures/dreamworld/unnatural1
+	noshadows
+{
+	blend gl_one, gl_zero
+	uncompressed
+	map	textures/dreamworld/unnatural1
+}
+}
+
+
+
+textures/dreamworld/sandstone_brick
+{
+	qer_editorimage 	textures/dreamworld/sandstone_brick
+	matter_stone
+
+	bumpmap 		addnormals ( textures/dreamworld/sandstone_brick_local, heightmap (textures/dreamworld/sandstone_brick_h, 6))
+	diffusemap	 	textures/dreamworld/sandstone_brick
+	specularmap		textures/dreamworld/sandstone_brick_s
+
+}
+
+textures/dreamworld/bark
+{
+	qer_editorimage textures/dreamworld/bark
+	matter_wood
+
+	bumpmap		addnormals ( textures/dreamworld/bark_local.tga, heightmap ( textures/dreamworld/bark_h.tga, 4 ))
+	diffusemap	textures/dreamworld/bark
+	specularmap	textures/dreamworld/bark_s
+
+}
+
+
+
+textures/dreamworld/leaves
+{
+	qer_editorimage 	textures/dreamworld/leaves
+	bumpmap 		addnormals ( textures/dreamworld/leaves_local, heightmap (textures/dreamworld/leaves_h, 6))
+{
+	blend				diffusemap
+	map			 	textures/dreamworld/leaves
+	alphatest		.5
+	zeroclamp
+}
+	specularmap		textures/dreamworld/leaves_s
+}
+
+
+textures/dreamworld/rock1
+{
+	qer_editorimage textures/dreamworld/rock1
+	matter_stone
+
+	diffusemap	textures/dreamworld/rock1
+	specularmap	textures/dreamworld/rock1_s
+   bumpmap		addnormals( textures/dreamworld/rock1_local, heightmap(textures/dreamworld/rock1_h, 6 ) )
+}
+
+//---------------------------------------------
+//  VBLEND TEXTURES
+//---------------------------------------------
+
+
+textures/dreamworld/vblend_wall6b_wall4
+{
+	qer_editorimage		textures/dreamworld/vblend_wall6b_wall4
+	matter_stone
+//	noselfshadow
+
+	// White verts
+	{
+		blend		bumpmap
+		map		textures/dreamworld/lotawall6_local
+	}
+	{
+		blend		diffusemap
+		map		textures/dreamworld/lotawall6b_d
+		vertexcolor
+	}
+	{
+		blend		specularmap
+		map		textures/dreamworld/lotawall6_s
+		vertexcolor
+	}
+
+
+	// black verts
+	{
+		scale 2,2
+		blend		bumpmap
+		map textures/dreamworld/lotawall4_local
+	}
+	{
+		scale 2,2
+		blend		diffusemap
+		map		textures/dreamworld/lotawall4_d
+		inverseVertexColor
+	}
+	{
+		scale 2,2
+		blend		specularmap
+		map		textures/dreamworld/lotawall4_s
+		inverseVertexColor
+	}
+}
+
+
+
+textures/dreamworld/vblend_dirt1_wall1_bad
+{
+	qer_editorimage		textures/dreamworld/vblend_dirt1_wall1_bad
+	matter_stone
+//	noselfshadow
+
+	// White verts
+	{
+		scale 2,2
+		blend		bumpmap
+		map		textures/dreamworld/dirt1_local
+	}
+	{
+		scale 2,2
+		blend		diffusemap
+		map		textures/dreamworld/dirt1_d
+		vertexcolor
+	}
+	{
+		scale 2,2
+		blend		specularmap
+		map		textures/dreamworld/dirt1_s
+		vertexcolor
+	}
+
+
+	// black verts
+	{
+//		scale 2,2
+		blend		bumpmap
+		map textures/dreamworld/lotawall1_bad_local
+	}
+	{
+//		scale 2,2
+		blend		diffusemap
+		map		textures/dreamworld/lotawall1_bad_d
+		inverseVertexColor
+	}
+	{
+//		scale 2,2
+		blend		specularmap
+		map		textures/dreamworld/lotawall1_bad_s
+		inverseVertexColor
+	}
+}
+
+
+
+textures/dreamworld/vblend_wall6b_wall7
+{
+	qer_editorimage		textures/dreamworld/vblend_wall6b_wall7
+	matter_stone
+//	noselfshadow
+
+	// White verts
+	{
+		blend		bumpmap
+		map		textures/dreamworld/lotawall6_local
+	}
+	{
+		blend		diffusemap
+		map		textures/dreamworld/lotawall6b_d
+		vertexcolor
+	}
+	{
+		blend		specularmap
+		map		textures/dreamworld/lotawall6_s
+		vertexcolor
+	}
+
+
+	// black verts
+	{
+		scale 2,2
+		blend		bumpmap
+		map textures/dreamworld/lotawall7_local
+	}
+	{
+		scale 2,2
+		blend		diffusemap
+		map		textures/dreamworld/lotawall7_d
+		inverseVertexColor
+	}
+	{
+		scale 2,2
+		blend		specularmap
+		map		textures/dreamworld/lotawall7_s
+		inverseVertexColor
+	}
+}
+
+
+textures/dreamworld/vblend_wall1b_wall4
+{
+	qer_editorimage		textures/dreamworld/vblend_wall1b_wall4
+	matter_stone
+//	noselfshadow
+
+	// White verts
+	{
+		blend		bumpmap
+		map		textures/dreamworld/lotawall1b_local
+	}
+	{
+		blend		diffusemap
+		map		textures/dreamworld/lotawall1b_d
+		vertexcolor
+	}
+	{
+		blend		specularmap
+		map		textures/dreamworld/lotawall1b_s
+		vertexcolor
+	}
+
+
+	// black verts
+	{
+		scale 2,2
+		blend		bumpmap
+		map textures/dreamworld/lotawall4_local
+	}
+	{
+		scale 2,2
+		blend		diffusemap
+		map		textures/dreamworld/lotawall4_d
+		inverseVertexColor
+	}
+	{
+		scale 2,2
+		blend		specularmap
+		map		textures/dreamworld/lotawall4_s
+		inverseVertexColor
+	}
+}
+
+
+textures/dreamworld/vblend_wall3_wall1b
+{
+	qer_editorimage		textures/dreamworld/vblend_wall3_wall1b
+	matter_stone
+//	noselfshadow
+
+	// White verts
+	{
+		scale 2,2
+		blend		bumpmap
+		map textures/dreamworld/lotawall3_local
+	}
+	{
+		scale 2,2
+		blend		diffusemap
+		map		textures/dreamworld/lotawall3_d
+		inverseVertexColor
+	}
+	{
+		scale 2,2
+		blend		specularmap
+		map		textures/dreamworld/lotawall3_s
+		vertexcolor
+	}
+
+
+	// black verts
+	{
+		blend		bumpmap
+		map		textures/dreamworld/lotawall1b_local
+	}
+	{
+		blend		diffusemap
+		map		textures/dreamworld/lotawall1b_d
+		vertexcolor
+	}
+	{
+		blend		specularmap
+		map		textures/dreamworld/lotawall1b_s
+		inverseVertexColor
+	}
+}
+//---------------------------------------------------------------
+//	FAUNA
+
+//---------------------------------------------------------------
+
+textures/dreamworld/grass
+{
+
+	noShadows
+	twosided
+	qer_editorimage 	textures/dreamworld/grass_local
+
+
+	{
+		blend bumpmap
+		map 	addnormals (textures/dreamworld/grass_local, heightmap (textures/dreamworld/grass_h, 6))
+
+	}
+	{
+		blend diffusemap
+		map	textures/dreamworld/grass_d
+		alphatest 0.3
+	}
+//	{
+//		blend specularmap
+//		map	textures/dreamworld/grass_s
+//	}
+
+}
+
+textures/dreamworld/groundLeaves
+{
+
+	noShadows
+	twosided
+	qer_editorimage 	textures/dreamworld/groundLeaves_local
+
+
+	{
+		blend bumpmap
+		map 	addnormals (textures/dreamworld/groundLeaves_local, heightmap (textures/dreamworld/groundLeaves_h, 6))
+
+	}
+	{
+		blend diffusemap
+		map	textures/dreamworld/groundLeaves_d
+		alphatest 0.3
+	}
+//	{
+//		blend specularmap
+//		map	textures/dreamworld/groundLeaves_s
+//	}
+
+}
+
+
+
+textures/dreamworld/lichen
+{
+
+	noShadows
+	twosided
+	qer_editorimage 	textures/dreamworld/lichen_local
+
+
+	{
+		blend bumpmap
+		map 	addnormals (textures/dreamworld/lichen_local, heightmap (textures/dreamworld/lichen_h, 6))
+
+	}
+	{
+		blend diffusemap
+		map	textures/dreamworld/lichen_d
+		alphatest 0.3
+	}
+//	{
+//		blend specularmap
+//		map	textures/dreamworld/lichen_s
+//	}
+
+}
+
+
+//-----------------------------------------------------------------------
+
+
+
+textures/dreamworld/sandstone_flat
+{
+	qer_editorimage textures/dreamworld/sandstone_flat
+	matter_stone
+
+	diffusemap	textures/dreamworld/sandstone_flat
+//	specularmap	textures/dreamworld/sandstone_flat_s
+   bumpmap		addnormals( textures/dreamworld/sandstone_flat_local, heightmap(textures/dreamworld/sandstone_flat_h, 3 ) )
+}
+
+//-------------------------------------------------------------------------
+//Deathwalk
+//-------------------------------------------------------------------------
+
+textures/dreamworld/lotawall1_deathwalk
+{
+	qer_editorimage		textures/dreamworld/lotawall1_deathwalk_d
+	matter_stone
+
+ 	bumpmap			addnormals (textures/dreamworld/lotawall1_bad_local,
+				heightmap (textures/dreamworld/lotawall1_bad_h, 5))
+	diffusemap		textures/dreamworld/lotawall1_deathwalk_d
+ 	specularmap		textures/dreamworld/lotawall1_bad_s
+
+}
+
+textures/dreamworld/lotatrim1_deathwalk
+{
+	qer_editorimage		textures/dreamworld/lotatrim1_deathwalk_d
+	matter_stone
+
+ 	bumpmap			addnormals (textures/dreamworld/lotatrim1_local,
+				heightmap (textures/dreamworld/lotatrim1_h, 3))
+
+	diffusemap		textures/dreamworld/lotatrim1_deathwalk_d
+ 	specularmap		textures/dreamworld/lotatrim1_s
+
+}
+
+
+textures/dreamworld/lotawall8_deathwalk
+{
+	qer_editorimage		textures/dreamworld/lotawall8_deathwalk_d
+	matter_stone
+
+ 	bumpmap			textures/dreamworld/lotawall8_bad_local
+	diffusemap		textures/dreamworld/lotawall8_deathwalk_d
+ 	specularmap		textures/dreamworld/lotawall8_bad_s
+
+}
+
+textures/dreamworld/rocks
+{
+	qer_editorimage 	textures/dreamworld/la_wallM_d
+	matter_stone
+	bumpmap 		textures/dreamworld/la_wallM_local
+	diffusemap	 	textures/dreamworld/la_wallM_d
+//	specularmap		textures/dreamworld/la_wallM_s
+}
+
+textures/dreamworld/fadetoblack
+{
+	qer_editorimage 	_black
+	noshadows
+	nonsolid
+
+	{	if parm5 == 1
+	 	blend	blend
+		map		_black
+		alpha	growIn [ ( time - parm4 ) * parm6 ]
+	}
+	{	if parm5 == 2
+	 	blend	blend
+		map		_black
+		alpha	growOut [ ( time - parm4 ) * parm6 ]
+	}
+}

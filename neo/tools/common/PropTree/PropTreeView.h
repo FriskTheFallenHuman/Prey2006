@@ -5,8 +5,7 @@
 
 #define IDC_PROPERTYTREE			100
 
-class CPropTreeView : public CFormView
-{
+class CPropTreeView : public CFormView {
 	DECLARE_DYNCREATE( CPropTreeView )
 
 protected:
@@ -24,8 +23,7 @@ public:
 	virtual void Dump( CDumpContext& dc ) const;
 #endif
 
-	CPropTree&	GetPropertyTreeCtrl()
-	{
+	CPropTree	& GetPropertyTreeCtrl() {
 		return m_Tree;
 	};
 

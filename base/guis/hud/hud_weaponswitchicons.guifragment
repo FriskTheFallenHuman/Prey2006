@@ -1,0 +1,335 @@
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Display weapon switch icons
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#define DIM				0.75
+#define EMPTY_RED		0.7
+
+	// Sent when weapon switches
+	onNamedEvent weaponChange {
+		resetTime "WeaponSwitchBar" "0";
+	}
+
+	windowDef WeaponSwitchBar {
+		anchor		ANCHOR_TOP_CENTER
+		rect		75, 5, 490, 60
+		notime		1
+		visible		0
+		float		fadealpha 1
+
+		onTime 0 {
+			transition "fadealpha" "1" "1" "0" ;
+			set "fadealpha" "1";
+			set "visible" "1";
+		}
+		onTime 2000 {
+			transition "fadealpha" "1" "0" "1000" ;
+		}
+		onTime 3000 {
+			set "visible" "0";
+		}
+
+		windowDef WeaponSlot1 {
+			rect		0, 0, 70, 60
+
+			windowDef WeaponGraphicBG {
+				rect		0, 0, 70, 60
+				background	"guis/assets/hud/sw_weapon_bg_leftcorner"
+				matcolor	1, 1, 1, "WeaponSwitchBar::fadealpha"
+				shear		0, -0.22
+			}
+			windowDef WeaponGraphic1 {
+				rect		11, 10, 50, 28
+				matcolor	DIM, DIM, DIM, "WeaponSwitchBar::fadealpha"
+				background	"textures/interface/icons/wrench"
+				visible		("gui::weapon1_held" && "gui::idealweapon" != 1)
+			}
+			windowDef SelectedWeaponGraphic1 {
+				rect		6, 8, 60, 35
+				matcolor	1, 1, 1, "WeaponSwitchBar::fadealpha"
+				background	"textures/interface/icons/wrench"
+				visible		("gui::weapon1_held" && "gui::idealweapon" == 1)
+			}
+			windowDef WeaponAmmo1 {
+				rect		5, 46, 60*"gui::weapon1_ammo", 2
+				backcolor	0.55, 0.63, 0.9, "WeaponSwitchBar::fadealpha"
+			}
+			windowDef WeaponAltAmmo1 {
+				rect		5, 50, 60*"gui::weapon1_altammo", 2
+				backcolor	0.35, 0.42, 1, 0.8*"WeaponSwitchBar::fadealpha"
+			}
+		}
+
+		windowDef WeaponSlot2 {
+			rect		70, 0, 70, 60
+			
+			windowDef WeaponBG2 {
+				rect		0, 0, 70, 60
+				matcolor	1, 1, 1, "WeaponSwitchBar::fadealpha"
+				shear		0, -0.22
+				background	"guis/assets/hud/sw_weapon_bg"
+			}
+			windowDef WeaponGraphic2 {
+				rect		10, 10, 50, 28
+				matcolor	DIM, DIM-"gui::weapon2_ammoempty"*EMPTY_RED, DIM-"gui::weapon2_ammoempty"*EMPTY_RED, "WeaponSwitchBar::fadealpha"
+				background	"textures/interface/icons/rifle"
+				visible		("gui::weapon2_held" && "gui::idealweapon" != 2)
+			}
+			windowDef SelectedWeaponGraphic2 {
+				rect		5, 8, 60, 35
+				matcolor	1, 1-"gui::weapon2_ammoempty"*EMPTY_RED, 1-"gui::weapon2_ammoempty"*EMPTY_RED, "WeaponSwitchBar::fadealpha"
+				background	"textures/interface/icons/rifle"
+				visible		("gui::weapon2_held" && "gui::idealweapon" == 2)
+			}
+			windowDef WeaponAmmo2 {
+				rect		2, 46, 58*"gui::weapon2_ammo", 2
+				backcolor	0.55, 0.63, 0.9, "WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon2_ammolow" == 0)
+			}
+			windowDef WeaponAltAmmo2 {
+				rect		1, 50, 58*"gui::weapon2_altammo", 2
+				backcolor	0.35, 0.42, 1, 0.8*"WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon2_altammolow" == 0)
+			}
+			windowDef LowWeaponAmmo2 {
+				rect		2, 46, 58*"gui::weapon2_ammo", 2
+				backcolor	0.45, 0.1, 0.1, "WeaponSwitchBar::fadealpha"
+				visible		"gui::weapon2_ammolow"
+			}
+			windowDef LowWeaponAltAmmo2 {
+				rect		1, 50, 58*"gui::weapon2_altammo", 2
+				backcolor	0.45, 0.1, 0.1, "WeaponSwitchBar::fadealpha"
+				visible		"gui::weapon2_altammolow"
+			}
+		}
+
+		windowDef WeaponSlot3 {
+			rect		140, 0, 70, 60
+			
+			windowDef WeaponBG2 {
+				rect		0, 0, 70, 60
+				matcolor	1, 1, 1, "WeaponSwitchBar::fadealpha"
+				shear		0, -0.22
+				background	"guis/assets/hud/sw_weapon_bg"
+			}
+			windowDef WeaponGraphic3 {
+				rect		10, 10, 50, 28
+				background	"textures/interface/icons/sw_crawler"
+				matcolor	DIM, DIM-"gui::weapon3_ammoempty"*EMPTY_RED, DIM-"gui::weapon3_ammoempty"*EMPTY_RED, "WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon3_held" && "gui::idealweapon" != 3)
+				shear		0, 0.05
+			}
+			windowDef SelectedWeaponGraphic3 {
+				rect		5, 8, 60, 35
+				matcolor	1, 1-"gui::weapon3_ammoempty"*EMPTY_RED, 1-"gui::weapon3_ammoempty"*EMPTY_RED, "WeaponSwitchBar::fadealpha"
+				background	"textures/interface/icons/sw_crawler"
+				visible		("gui::weapon3_held" && "gui::idealweapon" == 3)
+				shear		0, 0.05
+			}
+			windowDef WeaponAmmo3 {
+				rect		2, 46, 58*"gui::weapon3_ammo", 2
+				backcolor	0.55, 0.63, 0.9, "WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon3_ammolow" == 0)
+			}
+			windowDef WeaponAltAmmo3 {
+				rect		1, 50, 58*"gui::weapon3_altammo", 2
+				backcolor	0.35, 0.42, 1, 0.8*"WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon3_altammolow" == 0)
+			}
+			windowDef LowWeaponAmmo3 {
+				rect		2, 46, 58*"gui::weapon3_ammo", 2
+				backcolor	0.45, 0.1, 0.1, "WeaponSwitchBar::fadealpha"
+				visible		"gui::weapon3_ammolow"
+			}
+			windowDef LowWeaponAltAmmo3 {
+				rect		1, 50, 58*"gui::weapon3_altammo", 2
+				backcolor	0.45, 0.1, 0.1, "WeaponSwitchBar::fadealpha"
+				visible		"gui::weapon3_altammolow"
+			}
+		}
+
+		windowDef WeaponSlot4 {
+			rect		210, 0, 70, 60
+
+			windowDef WeaponBG4 {
+				rect		0, 0, 70, 60
+				matcolor	1, 1, 1, "WeaponSwitchBar::fadealpha"
+				shear		0, -0.22
+				background	"guis/assets/hud/sw_weapon_bg"
+			}
+			windowDef WeaponGraphic4 {
+				rect		10, 10, 50, 28
+				matcolor	DIM, DIM-"gui::weapon4_ammoempty"*EMPTY_RED, DIM-"gui::weapon4_ammoempty"*EMPTY_RED, "WeaponSwitchBar::fadealpha"
+				background	"textures/interface/icons/soulstripper"
+				visible		("gui::weapon4_held" && "gui::idealweapon" != 4)
+				shear		0, 0.05
+			}
+			windowDef SelectedWeaponGraphic4 {
+				rect		6.5, 8, 60, 35
+				matcolor	1, 1-"gui::weapon4_ammoempty"*EMPTY_RED, 1-"gui::weapon4_ammoempty"*EMPTY_RED, "WeaponSwitchBar::fadealpha"
+				background	"textures/interface/icons/soulstripper"
+				visible		("gui::weapon4_held" && "gui::idealweapon" == 4)
+				shear		0, 0.05
+			}
+			windowDef WeaponAmmo4 {
+				rect		2, 46, 58*"gui::weapon4_ammo", 2
+				backcolor	0.55, 0.63, 0.9, "WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon4_ammolow" == 0)
+			}
+			windowDef WeaponAltAmmo4 {
+				rect		1, 50, 58*"gui::weapon4_altammo", 2
+				backcolor	0.35, 0.42, 1, 0.8*"WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon4_altammolow" == 0)
+			}
+			windowDef LowWeaponAmmo4 {
+				rect		2, 46, 58*"gui::weapon4_ammo", 2
+				backcolor	0.45, 0.1, 0.1, "WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon4_ammolow")
+			}
+			windowDef LowWeaponAltAmmo4 {
+				rect		1, 50, 58*"gui::weapon4_altammo", 2
+				backcolor	0.45, 0.1, 0.1, "WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon4_altammolow")
+			}
+		}
+
+		windowDef WeaponSlot5 {
+			rect		280, 0, 70, 60
+
+			windowDef WeaponBG5 {
+				rect		0, 0, 70, 60
+				matcolor	1, 1, 1, "WeaponSwitchBar::fadealpha"
+				shear		0, -0.22
+				background	"guis/assets/hud/sw_weapon_bg"
+			}
+			windowDef WeaponGraphic5 {
+				rect		11, 11, 50, 28
+				matcolor	DIM, DIM-"gui::weapon5_ammoempty"*EMPTY_RED, DIM-"gui::weapon5_ammoempty"*EMPTY_RED, "WeaponSwitchBar::fadealpha"
+				background	"textures/interface/icons/autocannon"
+				visible		("gui::weapon5_held" && "gui::idealweapon" != 5)
+				shear		0, 0.05
+			}
+			windowDef SelectedWeaponGraphic5 {
+				rect		5, 8, 60, 35
+				matcolor	1, 1-"gui::weapon5_ammoempty"*EMPTY_RED, 1-"gui::weapon5_ammoempty"*EMPTY_RED, "WeaponSwitchBar::fadealpha"
+				background	"textures/interface/icons/autocannon"
+				visible		("gui::weapon5_held" && "gui::idealweapon" == 5)
+				shear		0, 0.05
+			}
+			windowDef WeaponAmmo5 {
+				rect		2, 46, 58*"gui::weapon5_ammo", 2
+				backcolor	0.55, 0.63, 0.9, "WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon5_ammolow" == 0)
+			}
+			windowDef WeaponAltAmmo5 {
+				rect		1, 50, 58*"gui::weapon5_altammo", 2
+				backcolor	0.35, 0.42, 1, 0.8*"WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon5_altammolow" == 0)
+			}
+			windowDef LowWeaponAmmo5 {
+				rect		2, 46, 58*"gui::weapon5_ammo", 2
+				backcolor	0.45, 0.1, 0.1, "WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon5_ammolow")
+			}
+			windowDef LowWeaponAltAmmo5 {
+				rect		1, 50, 58*"gui::weapon5_altammo", 2
+				backcolor	0.45, 0.1, 0.1, "WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon5_altammolow")
+			}
+		}
+
+		windowDef WeaponSlot6 {
+			rect		350, 0, 70, 60
+			matcolor	1, 1, 1, "WeaponSwitchBar::fadealpha"
+			shear		0, -0.22
+			background	"guis/assets/hud/sw_weapon_bg"
+
+			windowDef WeaponGraphic6 {
+				rect		11, 10, 50, 28
+				matcolor	DIM, DIM-"gui::weapon6_ammoempty"*EMPTY_RED, DIM-"gui::weapon6_ammoempty"*EMPTY_RED, "WeaponSwitchBar::fadealpha"
+				background	"textures/interface/icons/acidsprayer"
+				visible		("gui::weapon6_held" && "gui::idealweapon" != 6)
+				shear		0, 0.05
+			}
+			windowDef SelectedWeaponGraphic6 {
+				rect		6, 8, 60, 35
+				matcolor	1, 1-"gui::weapon6_ammoempty"*EMPTY_RED, 1-"gui::weapon6_ammoempty"*EMPTY_RED, "WeaponSwitchBar::fadealpha"
+				background	"textures/interface/icons/acidsprayer"
+				visible		("gui::weapon6_held" && "gui::idealweapon" == 6)
+				shear		0, 0.05
+			}
+			windowDef WeaponAmmo6 {
+				rect		6, 46, 58*"gui::weapon6_ammo", 2
+				backcolor	0.55, 0.63, 0.9, "WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon6_ammolow" == 0)
+			}
+			windowDef WeaponAltAmmo6 {
+				rect		6, 50, 58*"gui::weapon6_altammo", 2
+				backcolor	0.35, 0.42, 1, 0.8*"WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon6_altammolow" == 0)
+			}
+			windowDef LowWeaponAmmo6 {
+				rect		6, 46, 58*"gui::weapon6_ammo", 2
+				backcolor	0.45, 0.1, 0.1, "WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon6_ammolow")
+			}
+			windowDef LowWeaponAltAmmo6 {
+				rect		6, 50, 58*"gui::weapon6_altammo", 2
+				backcolor	0.45, 0.1, 0.1, "WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon6_altammolow")
+			}
+		}
+
+		windowDef WeaponSlot7 {
+			rect		420, 0, 70, 60
+
+			windowDef WeaponBG7 {
+				rect		0, 0, 70, 60
+				matcolor	1, 1, 1, "WeaponSwitchBar::fadealpha"
+				shear		0, -0.22
+				background	"guis/assets/hud/sw_weapon_bg_corner"
+			}
+			windowDef WeaponGraphic7 {
+				rect		11 , 10, 50, 28
+				matcolor	DIM, DIM-"gui::weapon7_ammoempty"*EMPTY_RED, DIM-"gui::weapon7_ammoempty"*EMPTY_RED, "WeaponSwitchBar::fadealpha"
+				background	"textures/interface/icons/rocketlauncher"
+				visible		("gui::weapon7_held" && "gui::idealweapon" != 7)
+				shear		0, 0.05
+			}
+			windowDef SelectedWeaponGraphic7 {
+				rect		6, 8, 60, 35
+				matcolor	1, 1-"gui::weapon7_ammoempty"*EMPTY_RED, 1-"gui::weapon7_ammoempty"*EMPTY_RED, "WeaponSwitchBar::fadealpha"
+				background	"textures/interface/icons/rocketlauncher"
+				visible		("gui::weapon7_held" && "gui::idealweapon" == 7)
+				shear		0, 0.05
+			}
+			windowDef WeaponAmmo7 {
+				rect		2, 47, 58*"gui::weapon7_ammo", 2
+				backcolor	0.55, 0.63, 0.9, "WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon7_ammolow" == 0)
+			}
+			windowDef WeaponAltAmmo7 {
+				rect		1, 51, 58*"gui::weapon7_altammo", 2
+				backcolor	0.35, 0.42, 1, 0.8*"WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon7_altammolow" == 0)
+			}
+			windowDef LowWeaponAmmo7 {
+				rect		2, 48, 58*"gui::weapon7_ammo", 2
+				backcolor	0.45, 0.1, 0.1, "WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon7_ammolow")
+			}
+			windowDef LowWeaponAltAmmo7 {
+				rect		1, 51, 58*"gui::weapon7_altammo", 2
+				backcolor	0.45, 0.1, 0.1, "WeaponSwitchBar::fadealpha"
+				visible		("gui::weapon7_altammolow")
+			}
+		}
+		
+		windowDef WeaponSelectionOverlay {
+			rect		("gui::idealweapon" - 1) * 70, 0, 70, 60
+			matcolor	1, 1, 1, "WeaponSwitchBar::fadealpha"
+			background	"guis/assets/hud/sw_weapon_selector"
+			visible		("gui::idealweapon" >= 0)
+			shear		0, -0.22
+		}
+	}

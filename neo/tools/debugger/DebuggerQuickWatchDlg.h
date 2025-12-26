@@ -30,22 +30,21 @@ If you have questions concerning this license or the applicable additional terms
 
 class rvDebuggerWindow;
 
-class rvDebuggerQuickWatchDlg
-{
+class rvDebuggerQuickWatchDlg {
 public:
 
 	rvDebuggerQuickWatchDlg( );
 
-	bool	DoModal( rvDebuggerWindow* window, int callstackDepth, const char* variable = NULL );
+	bool	DoModal( rvDebuggerWindow* window, int callstackDepth, const char * variable = NULL );
 
 protected:
 
 	HWND				mWnd;
 	int					mCallstackDepth;
 	idStr				mVariable;
-	rvDebuggerWindow*	mDebuggerWindow;
+	rvDebuggerWindow	* mDebuggerWindow;
 
-	void				SetVariable( const char* varname, bool force = false );
+	void				SetVariable( const char * varname, bool force = false );
 
 private:
 

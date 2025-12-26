@@ -1,7 +1,7 @@
 #ifndef __PREY_LOCAL_H
 #define __PREY_LOCAL_H
 
-#include "../Game/game_local.h"
+#include "../game/Game_local.h"
 #include "prey_game.h"
 #include "sys_preycmds.h"
 

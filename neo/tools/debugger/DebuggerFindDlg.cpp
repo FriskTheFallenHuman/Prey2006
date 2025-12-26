@@ -41,8 +41,7 @@ char rvDebuggerFindDlg::mFindText[ 256 ];
 rvDebuggerFindDlg::rvDebuggerFindDlg
 ================
 */
-rvDebuggerFindDlg::rvDebuggerFindDlg()
-{
+rvDebuggerFindDlg::rvDebuggerFindDlg() {
 }
 
 /*
@@ -52,10 +51,8 @@ rvDebuggerFindDlg::DoModal
 Launch the dialog
 ================
 */
-bool rvDebuggerFindDlg::DoModal( rvDebuggerWindow* parent )
-{
-	if( DialogBoxParam( parent->GetInstance(), MAKEINTRESOURCE( IDD_DBG_FIND ), parent->GetWindow(), DlgProc, ( LPARAM )this ) )
-	{
+bool rvDebuggerFindDlg::DoModal( rvDebuggerWindow* parent ) {
+	if ( DialogBoxParam( parent->GetInstance(), MAKEINTRESOURCE( IDD_DBG_FIND ), parent->GetWindow(), DlgProc, ( LPARAM )this ) ) {
 		return true;
 	}
 
@@ -69,18 +66,16 @@ rvrvDebuggerFindDlg::DlgProc
 Dialog Procedure for the find dialog
 ================
 */
-INT_PTR CALLBACK rvDebuggerFindDlg::DlgProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam )
-{
-	rvDebuggerFindDlg* dlg = ( rvDebuggerFindDlg* ) GetWindowLongPtr( wnd, GWLP_USERDATA );
+INT_PTR CALLBACK rvDebuggerFindDlg::DlgProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam ) {
+	rvDebuggerFindDlg* dlg = ( rvDebuggerFindDlg * ) GetWindowLongPtr( wnd, GWLP_USERDATA );
 
-	switch( msg )
-	{
+	switch ( msg ) {
 		case WM_CLOSE:
 			EndDialog( wnd, 0 );
 			break;
 
 		case WM_INITDIALOG:
-			dlg = ( rvDebuggerFindDlg* ) lparam;
+			dlg = ( rvDebuggerFindDlg * ) lparam;
 
 			SetWindowLongPtr( wnd, GWLP_USERDATA, ( LONG_PTR ) dlg );
 			dlg->mWnd = wnd;
@@ -88,10 +83,8 @@ INT_PTR CALLBACK rvDebuggerFindDlg::DlgProc( HWND wnd, UINT msg, WPARAM wparam, 
 			return TRUE;
 
 		case WM_COMMAND:
-			switch( LOWORD( wparam ) )
-			{
-				case IDOK:
-				{
+			switch ( LOWORD( wparam ) ) {
+				case IDOK: {
 					GetWindowText( GetDlgItem( wnd, IDC_DBG_FIND ), dlg->mFindText, sizeof( dlg->mFindText ) - 1 );
 					EndDialog( wnd, 1 );
 					break;

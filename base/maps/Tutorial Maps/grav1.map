@@ -1,0 +1,234 @@
+Version 2
+// entity 0
+{
+"classname" "worldspawn"
+// primitive 0
+{
+ brushDef3
+ {
+  ( 0 0 -1 -0 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0 0 1 -384 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0 -1 -0 192 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 1 0 0 -768 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0 1 0 -200 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -1 0 0 448 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+ }
+}
+// primitive 1
+{
+ brushDef3
+ {
+  ( 0 0 -1 -0 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( -0 0 1 -384 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( -0 -1 -0 192 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( -0 1 0 -200 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( -1 0 0 64 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( 1 0 0 -448 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+ }
+}
+// primitive 2
+{
+ brushDef3
+ {
+  ( -0 -0 -1 384 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 0 -0 1 -392 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 0 -1 0 -255.9999694824 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 1 0 -0 -767.9998779297 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 0 1 0 -191.9999694824 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -1 0 0 448 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+ }
+}
+// primitive 3
+{
+ brushDef3
+ {
+  ( -0 -0 -1 384 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( 0 -0 1 -392 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( 0 -1 0 -255.9999694824 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( 0 1 0 -191.9999694824 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( -1 0 0 64 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( 1 0 0 -448 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+ }
+}
+// primitive 4
+{
+ brushDef3
+ {
+  ( 0 0 -1 -8 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0 0 1 -0 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0 -0.9999999404 -0 -255.9999847412 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 0.9999999404 0 0 -767.9999389648 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0 0.9999999404 0 -191.9999847412 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -1 0 0 448 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+ }
+}
+// primitive 5
+{
+ brushDef3
+ {
+  ( 0 0 -1 -8 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( -0 0 1 -0 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( -0 -0.9999999404 -0 -255.9999847412 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( -0 0.9999999404 0 -191.9999847412 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( -1 0 0 64 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( 1 0 0 -448 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+ }
+}
+// primitive 6
+{
+ brushDef3
+ {
+  ( -0 -0 -1 0 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 0 -0 1 -384 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 0 -1 0 -264 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 1 0 -0 -768 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 0 1 0 256 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -1 0 0 448 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+ }
+}
+// primitive 7
+{
+ brushDef3
+ {
+  ( -0 -0 -1 0 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( 0 -0 1 -384 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( 0 -1 0 -264 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( 0 1 0 256 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( -1 0 0 64 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( 1 0 0 -448 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+ }
+}
+// primitive 8
+{
+ brushDef3
+ {
+  ( 0 0 -1 -0 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0 0 1 -384 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0 -1 -0 192 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0 1 0 -200 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -1 0 0 -256 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 1 0 0 -64 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+ }
+}
+// primitive 9
+{
+ brushDef3
+ {
+  ( -0 -0 -1 384 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 0 -0 1 -392 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 0 -1 0 -255.9999694824 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 0 1 0 -191.9999694824 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -1 0 0 -255.9999694824 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 1 0 0 -64 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+ }
+}
+// primitive 10
+{
+ brushDef3
+ {
+  ( 0 0 -1 -8 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0 0 1 -0 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0 -0.9999999404 -0 -255.9999847412 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0 0.9999999404 0 -191.9999847412 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0.9999999404 0 0 -255.9999847412 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 1 0 0 -64 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+ }
+}
+// primitive 11
+{
+ brushDef3
+ {
+  ( -0 -0 -1 0 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 0 -0 1 -384 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 0 -1 0 -264 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 0 1 0 256 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -1 0 0 -256 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 1 0 0 -64 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+ }
+}
+// primitive 12
+{
+ brushDef3
+ {
+  ( -0.0000000867 0 -1 192.0000610352 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( 0 0.7071066499 0.7071069479 -158.3919525146 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( 0.0000000766 -0.7071070075 0.7071066499 -203.6467895508 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( -1 -0 0 752 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( 1 -0 0 -768 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+ }
+}
+// primitive 13
+{
+ brushDef3
+ {
+  ( -0.0000000433 0 -1 128.0000457764 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( 0.0000000433 -1 0 -48.0000267029 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( 0.0000000867 0 1 -192.0000610352 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( -0.000000065 1 0 16.0000534058 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( -1 -0 0 752 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+  ( 1 -0 0 -768 ) ( ( 0.015625 0 0 ) ( 0 0.015625 0 ) ) "textures/tech_wall/metalplain2" 0 0 0
+ }
+}
+// primitive 14
+{
+ brushDef3
+ {
+  ( 0 0 -0.9999999404 -0 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0 0 0.9999999404 -383.9999694824 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0 -1 -0 -256 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 0.9999999404 0 0 255.9999847412 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0 1 0 -192 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0.9999999404 0 0 -263.9999694824 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+ }
+}
+// primitive 15
+{
+ brushDef3
+ {
+  ( 0 0 -1 -0 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0 0 1 -384 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0 -1 -0 -256 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( 1 0 0 -776 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -0 1 0 -192 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+  ( -1 0 0 768 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/common/aproto_wall" 0 0 0
+ }
+}
+}
+// entity 1
+{
+"classname" "light"
+"name" "light_5"
+"origin" "256 -32 192"
+"noshadows" "1"
+"nospecular" "0"
+"nodiffuse" "0"
+"falloff" "0"
+"_color" "1 1 1"
+"light_radius" "720 352 352"
+}
+// entity 2
+{
+"classname" "volume_gravity"
+"name" "volume_gravity_1"
+"model" "volume_gravity_1"
+"origin" "256 -32 192"
+"gravity" "0 0 1066"
+// primitive 0
+{
+ brushDef3
+ {
+  ( -0 -0 -1 -192 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/editor/volumegravity" 0 0 0
+  ( 0 -0 1 -192 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/editor/volumegravity" 0 0 0
+  ( 0 -1 0 -224 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/editor/volumegravity" 0 0 0
+  ( 1 0 -0 -160 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/editor/volumegravity" 0 0 0
+  ( 0 1 0 -224 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/editor/volumegravity" 0 0 0
+  ( -1 0 0 -160 ) ( ( 0.0078125 0 0 ) ( 0 0.0078125 0 ) ) "textures/editor/volumegravity" 0 0 0
+ }
+}
+}
+// entity 3
+{
+"classname" "info_player_start"
+"name" "info_player_start_1"
+"origin" "-192 -32 0"
+}

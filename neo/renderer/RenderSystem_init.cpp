@@ -36,27 +36,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "../sys/win32/win_local.h"
 #endif
 
-#include "../framework/miniz/miniz.h"
-
-static unsigned char* compress_for_stbiw(unsigned char* data, int data_len, int* out_len, int quality)
-{
-	uLongf bufSize = compressBound(data_len);
-	// note that buf will be free'd by stb_image_write.h
-	// with STBIW_FREE() (plain free() by default)
-	unsigned char* buf = (unsigned char*)malloc(bufSize);
-	if (buf == NULL)  return NULL;
-	if (compress2(buf, &bufSize, data, data_len, quality) != Z_OK)
-	{
-		free(buf);
-		return NULL;
-	}
-	*out_len = bufSize;
-
-	return buf;
-}
-
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#define STBIW_ZLIB_COMPRESS compress_for_stbiw
 #include "stb_image_write.h"
 
 // functions that are not called every frame
@@ -66,7 +45,7 @@ glconfig_t	glConfig;
 idCVar r_inhibitFragmentProgram( "r_inhibitFragmentProgram", "0", CVAR_RENDERER | CVAR_BOOL, "ignore the fragment program extension" );
 idCVar r_useLightPortalFlow( "r_useLightPortalFlow", "1", CVAR_RENDERER | CVAR_BOOL, "use a more precise area reference determination" );
 idCVar r_multiSamples( "r_multiSamples", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "number of antialiasing samples" );
-idCVar r_mode( "r_mode", "5", CVAR_ARCHIVE | CVAR_RENDERER | CVAR_INTEGER, "video mode number" );
+idCVar r_mode( "r_mode", "-1", CVAR_ARCHIVE | CVAR_RENDERER | CVAR_INTEGER, "video mode number" );
 idCVar r_displayRefresh( "r_displayRefresh", "0", CVAR_RENDERER | CVAR_INTEGER | CVAR_NOCHEAT, "optional display refresh rate option for vid mode", 0.0f, 200.0f );
 idCVar r_fullscreen( "r_fullscreen", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "0 = windowed, 1 = full screen" );
 idCVar r_fullscreenDesktop( "r_fullscreenDesktop", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "0: 'real' fullscreen mode 1: keep resolution 'desktop' fullscreen mode" );
@@ -233,7 +212,7 @@ idCVar r_materialOverride( "r_materialOverride", "", CVAR_RENDERER, "overrides a
 idCVar r_debugRenderToTexture( "r_debugRenderToTexture", "0", CVAR_RENDERER | CVAR_INTEGER, "" );
 
 // DG: let users disable the "scale menus to 4:3" hack
-idCVar r_scaleMenusTo43( "r_scaleMenusTo43", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "Scale menus, fullscreen videos and PDA to 4:3 aspect ratio" );
+idCVar r_scaleMenusTo43( "r_scaleMenusTo43", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "Scale menus, fullscreen videos and PDA to 4:3 aspect ratio" );
 // DG: the fscking patent has finally expired
 idCVar r_useCarmacksReverse( "r_useCarmacksReverse", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "Use Z-Fail (Carmack's Reverse) when rendering shadows" );
 idCVar r_useStencilOpSeparate( "r_useStencilOpSeparate", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "Use glStencilOpSeparate() (if available) when rendering shadows" );

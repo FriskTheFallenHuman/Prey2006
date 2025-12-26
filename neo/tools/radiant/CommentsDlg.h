@@ -30,8 +30,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // CCommentsDlg dialog
 
-class CCommentsDlg : public CDialogEx
-{
+class CCommentsDlg : public CDialogEx {
 	DECLARE_DYNAMIC( CCommentsDlg )
 
 public:

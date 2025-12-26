@@ -32,14 +32,13 @@ If you have questions concerning this license or the applicable additional terms
 void InitAfx();
 
 // tool tips
-typedef struct toolTip_s
-{
+typedef struct toolTip_s {
 	int id;
-	char* tip;
+	char * tip;
 } toolTip_t;
 
-INT_PTR DefaultOnToolHitTest( const toolTip_t* toolTips, const CDialog* dialog, CPoint point, TOOLINFO* pTI );
-BOOL DefaultOnToolTipNotify( const toolTip_t* toolTips, UINT id, NMHDR* pNMHDR, LRESULT* pResult );
+INT_PTR DefaultOnToolHitTest( const toolTip_t * toolTips, const CDialog* dialog, CPoint point, TOOLINFO* pTI );
+BOOL DefaultOnToolTipNotify( const toolTip_t * toolTips, UINT id, NMHDR* pNMHDR, LRESULT* pResult );
 
 // edit control
 bool EditControlEnterHit( CEdit* edit );
@@ -47,7 +46,7 @@ float EditVerifyFloat( CEdit* edit, bool allowNegative = true );
 float EditSpinFloat( CEdit* edit, bool up );
 
 // combo box
-int SetSafeComboBoxSelection( CComboBox* combo, const char* string, int skip );
+int SetSafeComboBoxSelection( CComboBox* combo, const char * string, int skip );
 int GetSafeComboBoxSelection( CComboBox* combo, CString& string, int skip );
 int UnsetSafeComboBoxSelection( CComboBox* combo, CString& string );
 

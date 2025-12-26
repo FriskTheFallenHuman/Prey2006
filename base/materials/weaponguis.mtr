@@ -1,0 +1,182 @@
+// these are refered to by the weapon guis
+
+// background of rifle ammo gui
+models/weapons/rifle/rifle_gui
+{
+	noshadows
+//	privatepolygonoffset 1
+//	sort		10
+	{
+		blend add
+//		blend gl_dst_color, gl_src_color
+		map models/weapons/rifle/rifle_gui
+		centerscale  guieye [time * .2], 1
+		clamp
+		alphaTest 0.5
+	}
+	{
+		blend add
+//		blend gl_dst_color, gl_src_color
+		map models/weapons/rifle/rifle_gui
+		centerscale .86 * ( guieye [time * .2] ), .96
+		clamp
+		glowstage
+	}
+
+}
+
+// moving bar of rifle ammo gui
+models/weapons/rifle/segment1
+{
+	noshadows
+//	privatepolygonoffset 1
+//	sort		10
+	{
+		blend add
+//		blend gl_dst_color, gl_src_color
+		map models/weapons/rifle/segment1
+		centerscale guieye [time * .2], 1
+		clamp
+		alphaTest 0.5
+	}
+
+
+}
+
+models/weapons/rifle/segment2
+{
+	noshadows
+//	privatepolygonoffset 1
+	{
+		blend add
+//		blend gl_dst_color, gl_src_color
+		map models/weapons/rifle/segment2
+		centerscale guieye [time * .2], 1
+		clamp
+		alphaTest 0.5
+	}
+
+
+}
+
+models/weapons/rifle/segment3
+{
+	noshadows
+//	privatepolygonoffset 1
+	{
+		blend add
+//		blend gl_dst_color, gl_src_color
+		map models/weapons/rifle/segment3
+		centerscale guieye [time * .2], 1
+		clamp
+		alphaTest 0.5
+	}
+
+
+}
+
+models/weapons/rifle/segment4
+{
+	noshadows
+//	privatepolygonoffset 1
+	{
+		blend add
+//		blend gl_dst_color, gl_src_color
+		map models/weapons/rifle/segment4
+		centerscale guieye [time * .2], 1
+		clamp
+		alphaTest 0.5
+	}
+
+
+}
+
+models/weapons/rifle/segment5
+{
+	noshadows
+//	privatepolygonoffset 1
+	{
+		blend add
+//		blend gl_dst_color, gl_src_color
+		map models/weapons/rifle/segment5
+		centerscale guieye [time * .2], 1
+		clamp
+		alphaTest 0.5
+	}
+
+
+}
+
+test/rifleguimask
+{
+	noshadows
+	twosided
+	{
+		blend blend
+		map textures/interface/guimask_cells
+/*		red		0.93 * ((random [ time * .01 ]) + .5)
+		green	0.29 * ((random [ time * .01 ]) + .5)
+		blue	0.00 * ((random [ time * .01 ]) + .5)*/
+		centerscale guieye [time * .2], 1
+	}
+}
+
+test/rifleguimaskoverlay
+{
+	noshadows
+	twosided
+//	privatepolygonoffset 1
+	{
+		blend blend
+//		blend gl_dst_color, gl_src_color
+		map textures/interface/guimask
+		rgb 0
+		centerscale guieye [time * .2], 1
+		alphaTest 0.5
+	}
+}
+
+models/weapons/rifle/rifle_letters1
+{
+	noshadows
+//	twosided
+	{
+		blend add
+//		blend gl_dst_color, gl_src_color
+		map textures/interface/crosshairs/rifle_letters
+		rotate keepereye [time * .2]
+		centerscale 1.25, 1.25
+		clamp
+//		alphaTest 0.5
+	}
+}
+
+models/weapons/rifle/rifle_letters2
+{
+	noshadows
+//	twosided
+	{
+		blend add
+//		blend gl_dst_color, gl_src_color
+		map textures/interface/crosshairs/rifle_letters
+		rotate keepereye [time * -.1]
+		centerscale 1.05, 1.05
+		clamp
+//		alphaTest 0.5
+	}
+}
+
+
+//////////////////////////
+//soulstripper
+//////////////////////////
+
+models/weapons/soulstripper/soulstripper_gui
+{
+	noselfshadow
+	translucent
+
+	qer_editorimage models/weapons/soulstripper/soulstripper
+//    diffusemap	models/weapons/soulstripper/soulstripper_gui
+//   specularmap	models/weapons/soulstripper/soulstripper_gui
+}

@@ -34,21 +34,19 @@ If you have questions concerning this license or the applicable additional terms
 #include "MapInfo.h"
 
 #ifdef _DEBUG
-	#define new DEBUG_NEW
+#define new DEBUG_NEW
 #endif
 
 // CMapInfo dialog
 
 CMapInfo::CMapInfo( CWnd* pParent )
-	: CDialogEx( CMapInfo::IDD, pParent )
-{
+	: CDialogEx( CMapInfo::IDD, pParent ) {
 	m_nNet = 0;
 	m_nTotalBrushes = 0;
 	m_nTotalEntities = 0;
 }
 
-void CMapInfo::DoDataExchange( CDataExchange* pDX )
-{
+void CMapInfo::DoDataExchange( CDataExchange* pDX ) {
 	CDialogEx::DoDataExchange( pDX );
 	DDX_Control( pDX, IDC_LIST_ENTITIES, m_lstEntity );
 	DDX_Text( pDX, IDC_EDIT_NET, m_nNet );
@@ -61,18 +59,15 @@ END_MESSAGE_MAP()
 
 // CMapInfo message handlers
 
-BOOL CMapInfo::OnInitDialog()
-{
+BOOL CMapInfo::OnInitDialog() {
 	CDialogEx::OnInitDialog();
 
 	m_nTotalBrushes = 0;
 	m_nTotalEntities = 0;
 	m_nNet = 0;
-	for( idEditorBrush* pBrush = active_brushes.next ; pBrush != &active_brushes ; pBrush = pBrush->next )
-	{
+	for ( idEditorBrush * pBrush = active_brushes.next ; pBrush != &active_brushes ; pBrush = pBrush->next ) {
 		m_nTotalBrushes++;
-		if( pBrush->owner == world_entity )
-		{
+		if ( pBrush->owner == world_entity ) {
 			m_nNet++;
 		}
 	}
@@ -80,22 +75,20 @@ BOOL CMapInfo::OnInitDialog()
 	CMapStringToPtr mapEntity;
 
 	intptr_t nValue = 0;
-	for( idEditorEntity* pEntity = entities.next ; pEntity != &entities ; pEntity = pEntity->next )
-	{
+	for ( idEditorEntity * pEntity = entities.next ; pEntity != &entities ; pEntity = pEntity->next ) {
 		m_nTotalEntities++;
 		nValue = 0;
-		mapEntity.Lookup( pEntity->eclass->name, reinterpret_cast<void*&>( nValue ) );
+		mapEntity.Lookup( pEntity->eclass->name, reinterpret_cast<void *& >( nValue ) );
 		nValue++ ;
-		mapEntity.SetAt( pEntity->eclass->name, reinterpret_cast<void*>( nValue ) );
+		mapEntity.SetAt( pEntity->eclass->name, reinterpret_cast<void *>( nValue ) );
 	}
 
 	m_lstEntity.ResetContent();
 	m_lstEntity.SetTabStops( 96 );
 	CString strKey;
 	POSITION pos = mapEntity.GetStartPosition();
-	while( pos )
-	{
-		mapEntity.GetNextAssoc( pos, strKey, reinterpret_cast<void*&>( nValue ) );
+	while ( pos ) {
+		mapEntity.GetNextAssoc( pos, strKey, reinterpret_cast<void *& >( nValue ) );
 		CString strList;
 		strList.Format( "%s\t%i", strKey.GetString(), nValue );
 		m_lstEntity.AddString( strList );

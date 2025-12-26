@@ -210,8 +210,9 @@ public:
 								// Prints WARNING %s message and adds the warning message to a queue for printing later on.
 	virtual void				Warning( const char *fmt, ... ) id_attribute((format(printf,2,3))) = 0;
 
-								// Same as Printf but tool specific to discard most of dmap's and runaas's output
+								// Same as Printf/Warning but tool specific to discard most of dmap's and runaas's output
 	virtual void				VerbosePrintf( const char *fmt, ... ) id_attribute((format(printf,2,3))) = 0;
+	virtual void				VerboseWarning( const char *fmt, ... ) id_attribute((format(printf,2,3))) = 0;
 
 								// Prints WARNING %s message in yellow that only shows up if the "developer" cvar is set.
 	virtual void				DWarning( const char *fmt, ...) id_attribute((format(printf,2,3))) = 0;

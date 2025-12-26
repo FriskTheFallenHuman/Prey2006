@@ -32,8 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // MaterialPreviewPropView view
 
-class MaterialPreviewPropView : public CPropTreeView
-{
+class MaterialPreviewPropView : public CPropTreeView {
 	DECLARE_DYNCREATE( MaterialPreviewPropView )
 
 protected:
@@ -60,7 +59,7 @@ protected:
 
 	int		numLights;
 
-	MaterialPreviewView*	materialPreview;
+	MaterialPreviewView	* materialPreview;
 
 	DECLARE_MESSAGE_MAP()
 };

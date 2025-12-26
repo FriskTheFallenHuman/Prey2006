@@ -27,7 +27,7 @@ If you have questions concerning this license or the applicable additional terms
 */
 
 //start operation
-void Undo_Start( char* operation );
+void Undo_Start( char * operation );
 //end operation
 void Undo_End();
 //add brush to the undo

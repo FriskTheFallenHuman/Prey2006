@@ -33,9 +33,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "shlobj.h"
 
 #ifdef _DEBUG
-	#define new DEBUG_NEW
-	#undef THIS_FILE
-	static char THIS_FILE[] = __FILE__;
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 
 #define MOUSE_KEY				"radiant_MouseButtons"
@@ -103,8 +103,7 @@ If you have questions concerning this license or the applicable additional terms
 
 
 CPrefsDlg::CPrefsDlg( CWnd* pParent /*=NULL*/ )
-	: CDialogEx( CPrefsDlg::IDD, pParent )
-{
+	: CDialogEx( CPrefsDlg::IDD, pParent ) {
 	//{{AFX_DATA_INIT(CPrefsDlg)
 	m_bVertex = FALSE;
 	m_bAutoSave = TRUE;
@@ -142,8 +141,7 @@ CPrefsDlg::CPrefsDlg( CWnd* pParent /*=NULL*/ )
 	m_nUndoLevels = 63;
 }
 
-void CPrefsDlg::DoDataExchange( CDataExchange* pDX )
-{
+void CPrefsDlg::DoDataExchange( CDataExchange* pDX ) {
 	CDialogEx::DoDataExchange( pDX );
 	//{{AFX_DATA_MAP(CPrefsDlg)
 	DDX_Control( pDX, IDC_SPIN_UNDO, m_wndUndoSpin );
@@ -181,8 +179,7 @@ END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CPrefsDlg message handlers
 
-BOOL CPrefsDlg::OnInitDialog()
-{
+BOOL CPrefsDlg::OnInitDialog() {
 	CDialogEx::OnInitDialog();
 	m_wndSpin.SetRange( 1, 60 );
 	m_wndCamSpeed.SetRange( 10, 5000 );
@@ -199,16 +196,14 @@ BOOL CPrefsDlg::OnInitDialog()
 	return TRUE;	// return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
-void CPrefsDlg::OnOK()
-{
+void CPrefsDlg::OnOK() {
 
 	m_nMoveSpeed = m_wndCamSpeed.GetPos();
 	m_nAngleSpeed = ( float )m_nMoveSpeed * 0.50;
 
 	SavePrefs();
 
-	if( g_pParentWnd )
-	{
+	if ( g_pParentWnd ) {
 		g_pParentWnd->SetGridStatus();
 	}
 	Sys_UpdateWindows( W_ALL );
@@ -216,52 +211,40 @@ void CPrefsDlg::OnOK()
 	CDialogEx::OnOK();
 }
 
-int GetCvarInt( const char* name, const int def )
-{
+int GetCvarInt( const char * name, const int def ) {
 	idCVar* cvar = cvarSystem->Find( name );
-	if( cvar )
-	{
+	if ( cvar ) {
 		return cvar->GetInteger();
-	}
-	else
-	{
+	} else {
 		return def;
 	}
 }
 
-const char* GetCvarString( const char* name, const char* def )
-{
+const char * GetCvarString( const char * name, const char * def ) {
 	idCVar* cvar = cvarSystem->Find( name );
-	if( cvar )
-	{
+	if ( cvar ) {
 		return cvar->GetString();
-	}
-	else
-	{
+	} else {
 		return def;
 	}
 }
 
 static const char hexDigits[] = "0123456789ABCDEF";
 
-void SetCvarInt( const char* name, const int value )
-{
+void SetCvarInt( const char * name, const int value ) {
 	cvarSystem->SetCVarInteger( name, value, CVAR_TOOL );
 }
 
-void SetCvarString( const char* name, const char* value )
-{
+void SetCvarString( const char * name, const char * value ) {
 	cvarSystem->SetCVarString( name, value, CVAR_TOOL );
 }
 
-void SetCvarBinary( const char* name, void* pv, int size )
-{
-	unsigned char* in = new unsigned char[size];
+void SetCvarBinary( const char * name, void * pv, int size ) {
+	unsigned char * in = new unsigned char[size];
 	idStr s;
 	memset( in, 0, size );
 	memcpy( in, pv, size );
-	for( int i = 0; i < size; i++ )
-	{
+	for ( int i = 0; i < size; i++ ) {
 		s += hexDigits[in[i] >> 4];
 		s += hexDigits[in[i] & 0x0f];
 	}
@@ -269,32 +252,23 @@ void SetCvarBinary( const char* name, void* pv, int size )
 	SetCvarString( name, s );
 }
 
-bool GetCvarBinary( const char* name, void* pv, int size )
-{
+bool GetCvarBinary( const char * name, void * pv, int size ) {
 	bool ret = false;
-	unsigned char* out = new unsigned char[size];
+	unsigned char * out = new unsigned char[size];
 	idStr s = GetCvarString( name, "" );
-	if( s.Length() / 2 == size )
-	{
+	if ( s.Length() / 2 == size ) {
 		int j = 0;
-		for( int i = 0; i < s.Length(); i += 2 )
-		{
+		for ( int i = 0; i < s.Length(); i += 2 ) {
 			char c;
-			if( s[i] > '9' )
-			{
+			if ( s[i] > '9' ) {
 				c = s[i] - 'A' + 0x0a;
-			}
-			else
-			{
+			} else {
 				c = s[i] - 0x30;
 			}
 			c <<= 4;
-			if( s[i + 1] > '9' )
-			{
+			if ( s[i + 1] > '9' ) {
 				c |= s[i + 1] - 'A' + 0x0a;
-			}
-			else
-			{
+			} else {
 				c |= s[i + 1] - 0x30;
 			}
 			out[j++] = c;
@@ -306,8 +280,7 @@ bool GetCvarBinary( const char* name, void* pv, int size )
 	return ret;
 }
 
-void CPrefsDlg::LoadPrefs()
-{
+void CPrefsDlg::LoadPrefs() {
 	CString strBuff;
 	m_nMouseButtons = 3;
 
@@ -324,8 +297,7 @@ void CPrefsDlg::LoadPrefs()
 	strBuff = GetCvarString( TINYSIZE_KEY, "0.5" );
 	m_fTinySize = atof( strBuff );
 	m_nAutoSave = GetCvarInt( AUTOSAVETIME_KEY, 5 );
-	if( m_nAutoSave <= 0 )
-	{
+	if ( m_nAutoSave <= 0 ) {
 		m_nAutoSave = 1;
 	}
 	m_strAutoSave.Format( "%i", m_nAutoSave );
@@ -356,16 +328,13 @@ void CPrefsDlg::LoadPrefs()
 	m_strModels = GetCvarString( MODELS_KEY, "" );
 	m_bNewMapFormat = GetCvarInt( NEWMAPFORMAT_KEY, 1 );
 
-	if( m_bRunBefore == FALSE )
-	{
+	if ( m_bRunBefore == FALSE ) {
 		SetGamePrefs();
 	}
 }
 
-void CPrefsDlg::SavePrefs()
-{
-	if( GetSafeHwnd() )
-	{
+void CPrefsDlg::SavePrefs() {
+	if ( GetSafeHwnd() ) {
 		UpdateData( TRUE );
 	}
 
@@ -409,8 +378,7 @@ void CPrefsDlg::SavePrefs()
 	common->WriteFlaggedCVarsToFile( "editor.cfg", CVAR_TOOL, "sett" );
 }
 
-void CPrefsDlg::SetGamePrefs()
-{
+void CPrefsDlg::SetGamePrefs() {
 	m_bHiColorTextures = TRUE;
 	SavePrefs();
 }

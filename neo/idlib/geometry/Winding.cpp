@@ -1481,7 +1481,7 @@ bool idFixedWinding::ReAllocate( int n, bool keep ) {
 	assert( n <= MAX_POINTS_ON_WINDING );
 
 	if ( n > MAX_POINTS_ON_WINDING ) {
-		idLib::common->Printf("WARNING: idFixedWinding -> MAX_POINTS_ON_WINDING overflowed\n");
+		idLib::common->Warning("idFixedWinding -> MAX_POINTS_ON_WINDING overflowed\n");
 		return false;
 	}
 	return true;

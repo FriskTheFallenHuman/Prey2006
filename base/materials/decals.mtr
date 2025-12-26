@@ -1,0 +1,3243 @@
+//----------------------------------------------------------------
+// decals:  these are decorations applied to the levels over the top of other geometry,
+//	so they are non-solid
+//
+// they should use modulation (blend gl_dst_color, gl_src_color) so they aren't fullbright
+// id sometimes uses  (blend gl_dst_color, gl_zero) for these
+//----------------------------------------------------------------
+
+textures/decals/cracks
+{
+	qer_editorimage	textures/decals/cracks
+	decal_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+
+	decalinfo 1 2 (0.6 0.6 0.6 0.6) (0 0 0 0)
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map 	textures/decals/cracks
+		vertexcolor
+	}
+}
+
+textures/decals/hider_melt
+{
+	qer_editorimage	textures/decals/hider_melt
+	decal_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+
+	decalinfo 8 4 (0.4 0.4 0.4 0.4) (0 0 0 0)
+	{
+		blend 	add
+		map 	textures/decals/hider_melt
+		centerscale (pulsebeat [time / 80]),(pulsebeat [time / 80])
+		rotate (time / 300)
+		glowstage
+		vertexcolor
+		clamp
+	}
+}
+
+textures/decals/hider_melt2
+{
+	qer_editorimage	textures/decals/hider_melt
+	decal_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+
+	decalinfo 8 4 (0.2 0.2 0.2 0.2) (0 0 0 0)
+	{
+		blend 	add
+		map 	textures/decals/hider_melt
+		centerscale (pulsebeat [time / 100]),(pulsebeat [time / 200])
+		glowstage
+		vertexcolor
+		clamp
+	}
+}
+
+textures/decals/hider_melt_splat
+{
+	qer_editorimage	textures/decals/hider_melt_splat
+	decal_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+
+	decalinfo 7 5 (0.5 0.5 0.5 0.5) (0 0 0 0)
+	{
+		blend 	add
+		map 	textures/decals/hider_melt_splat
+		//centerscale (pulsebeat [time / 200]),(pulsebeat [time / 200])
+		glowstage
+		vertexcolor
+		//clamp
+	}
+}
+
+textures/decals/body_disolve
+{
+	qer_editorimage	textures/decals/body_disolve
+	decal_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+
+	decalinfo 16 6 (0.8 0.8 0.8 0.8) (0 0 0 0)
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map 	textures/decals/body_disolve
+		vertexcolor
+	}
+}
+
+textures/decals/explosion
+{
+	qer_editorimage	textures/decals/explosion
+	decal_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+
+	decalinfo 15 10 (1 1 1 1) (0 0 0 0)
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map 	textures/decals/explosion
+		vertexcolor
+	}
+}
+
+textures/decals/bloodsmear
+{
+	decal_macro
+
+	decalinfo 2 8 (3 3 3 1) (0 0 0 0)
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map	textures/decals/bloodsmear
+		vertexcolor
+	}
+}
+
+textures/decals/fta_masher
+{
+	qer_editorimage 	textures/decals/fta_masher_d
+	matter_flesh
+	{
+		blend bumpmap
+		map textures/decals/fta_masher_local
+	}
+	{
+		blend specularmap
+		map textures/decals/fta_masher_s
+		specularexp 400, 10.2
+	}
+	{
+		blend	diffusemap
+		map  textures/decals/fta_masher_d
+		alphatest 0.5
+	}
+}
+
+textures/decals/blood6
+{
+	decal_macro
+
+	{
+			blend 	gl_dst_color, gl_src_color
+			 map	textures/decals/blood6
+
+	}
+}
+
+textures/decals/bug
+{
+	qer_editorimage 	textures/decals/bug_d
+ 	noshadows
+	matter_flesh
+	bumpmap 	addnormals (textures/decals/bug_local,
+				heightmap (textures/decals/bug_h, 6))
+	diffusemap		textures/decals/bug_d
+	specularmap		textures/decals/bug_s
+		{
+		blend	diffusemap
+		map  textures/decals/bug_d
+		alphatest 0.5
+		}
+		{
+		blend gl_one,gl_one_minus_src_color
+		map textures/decals/bug_glow
+		glowstage
+	}
+}
+
+textures/decals/guts1
+{
+	qer_editorimage 	textures/decals/guts1_d
+	matter_flesh
+	bumpmap 	addnormals (textures/decals/guts1_local,
+				heightmap (textures/decals/guts1_h, 6))
+	diffusemap		textures/decals/guts1_d
+	specularmap		textures/decals/guts1_s
+		{
+		blend	diffusemap
+		map  textures/decals/guts1_d
+		alphatest 0.5
+	}
+}
+
+textures/decals/guts2
+{
+	qer_editorimage 	textures/decals/guts2_d
+	matter_flesh
+	bumpmap 	addnormals (textures/decals/guts2_local,
+				heightmap (textures/decals/guts2_h, 6))
+	diffusemap		textures/decals/guts2_d
+	specularmap		textures/decals/guts2_s
+		{
+		blend	diffusemap
+		map  textures/decals/guts2_d
+		alphatest 0.5
+	}
+}
+
+textures/decals/warningsign
+{
+	qer_editorimage 	textures/decals/warningsign_d
+	matter_metal
+	bumpmap 	addnormals (textures/decals/warningsign_local,
+				heightmap (textures/decals/bl_techwallpipeflange02_h, 6))
+	diffusemap		textures/decals/warningsign_d
+	specularmap		textures/decals/warningsign_s
+		{
+		blend	diffusemap
+		map  textures/decals/warningsign_d
+		alphatest 0.5
+	}
+}
+
+textures/decals/energy_burn
+{
+	qer_editorimage textures/decals/energy_burn
+	{
+
+		blend	add
+		map	textures/decals/energy_burn
+		rgb	.3
+		glowstage
+//		}
+//		{
+//		blend add
+//		map textures/decals/energy_burn_glow
+//		glowstage
+//		rgb .2
+	}
+}
+
+textures/decals/footprint01r
+{
+	decal_macro
+	twosided
+	qer_editorimage	textures/decals/footprint01r_d
+	{
+		blend gl_dst_color,gl_zero
+		map textures/decals/footprint01r_d
+	}
+}
+
+textures/decals/footprint01
+{
+	decal_macro
+	twosided
+	qer_editorimage	textures/decals/footprint01_d
+	{
+		blend gl_dst_color,gl_zero
+		map textures/decals/footprint01_d
+	}
+}
+
+textures/decals/bloodspot
+{
+	decal_macro
+	qer_editorimage	textures/decals/bloodspot
+
+	{
+		blend gl_dst_color, gl_src_color
+		map textures/decals/bloodspot
+		clamp
+		linear
+	}
+}
+
+textures/decals/glassimpact
+{
+	qer_editorimage	textures/scorches/glassimpact
+	decal_macro
+	twosided
+
+	{
+		blend add
+		map textures/scorches/glassimpact
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		//vertexcolor	// oblique projections will be slightly faded down.  this no longer works on world geometry.
+	}
+}
+
+textures/decals/glassimpact2
+{
+	qer_editorimage	textures/scorches/glassimpact2
+	decal_macro
+	twosided
+
+	{
+		blend add
+		map textures/scorches/glassimpact2
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		//vertexcolor	// oblique projections will be slightly faded down.  this no longer works on world geometry.
+	}
+}
+
+textures/decals/rust1
+{
+	qer_editorimage textures/decals/rust1_d
+	decal_alphatest_macro
+	bumpmap		textures/decals/rust1_local
+	{
+		blend	diffusemap
+	 	map		textures/decals/rust1_d
+	 	alphatest 0.5
+	 	clamp
+	}
+	specularmap	textures/decals/rust1_s
+}
+
+textures/decals/rustdrips1
+{
+ 	noshadows
+	nonsolid
+	noimpact
+	nooverlays
+	//polygonoffset
+	qer_editorimage textures/decals/rustdrips1_d
+
+	{
+		blend	diffusemap
+		map	textures/decals/rustdrips1_d
+		alphatest 0.5
+		clamp
+	}
+	specularmap	textures/decals/rustdrips1_s
+
+}
+
+textures/decals/rustdrips2
+{
+ 	noshadows
+	nonsolid
+	noimpact
+	nooverlays
+	//polygonoffset
+	qer_editorimage textures/decals/rustdrips2_d
+
+	{
+		blend	diffusemap
+		map	textures/decals/rustdrips2_d
+		alphatest 0.5
+		clamp
+	}
+	specularmap	textures/decals/rustdrips2_s
+
+}
+textures/decals/rustdrips3
+{
+	qer_editorimage textures/decals/rustdrips3_d
+	decal_alphatest_macro
+	bumpmap		textures/decals/rustdrips3_local
+	{
+		blend	diffusemap
+	 	map		textures/decals/rustdrips3_d
+	 	alphatest 0.5
+	 	clamp
+	}
+	specularmap	textures/decals/rustdrips_s
+}
+
+// spirit view ----------------------------------------------------------------
+// move this to sfx?
+textures/decals/spiritview
+{
+	translucent
+	// NON-FRAGMENT PROGRAM VERSION
+	{
+		if fragmentPrograms == 0
+
+		blend gl_zero, gl_src_color
+		map			_white
+		color	.8, .8, 1, .15
+	}
+	{
+		if fragmentPrograms == 0
+
+		blend add
+		map			_white
+		color	.2, .2, .2, .25
+		//alpha 0.15
+	}
+
+	// FRAGMENT PROGRAM VERSION
+	{
+		if fragmentPrograms == 1
+
+		program			screeneffect.vfp
+
+		fragmentmap		0       _currentrender
+		fragmentmap		2		_white	//mask
+
+		fragmentparm	0		.005, .09, .65	//blur size, blur strength, blur lerp
+		fragmentparm	1		1.5, 0			//pre scale, pre bias
+		fragmentparm	2		.25				//desateration
+		fragmentparm	3		1.9, .2			//contrast, contrast center
+		fragmentparm	4		.5, .8, 1.3, .6	//tint color
+		fragmentparm	5		.15, .15, .17	//post additive color
+	}
+	{
+		blend add
+		map		textures/sfx/spiritview_fx
+		rotate		time * 0.035
+		centerscale	1.6 * zerotoonesnap[ time * -0.4 ],1.2 * zerotoonesnap[ 0.00 + time * -0.4 ]
+		rgb		0.40 * zerotoonesnap[ time * 0.4 ]
+		clamp
+	}
+	{
+		blend add
+		map		textures/sfx/spiritview_fx
+		rotate		time * 0.025
+		centerscale	1.6 * zerotoonesnap[ -0.25 + time * -0.4 ],1.2 * zerotoonesnap[ -0.25 + time * -0.4 ]
+		rgb		0.40 * zerotoonesnap[ 0.25 + time * 0.4 ]
+		clamp
+	}
+	{
+		blend add
+		map		textures/sfx/spiritview_fx
+		rotate		time * -0.03
+		centerscale	1.6 * zerotoonesnap[ -0.50 + time * -0.4 ],1.2 * zerotoonesnap[ -0.50 + time * -0.4 ]
+		rgb		0.40 * zerotoonesnap[ 0.50 + time * 0.4 ]
+		clamp
+	}
+	{
+		blend add
+		map		textures/sfx/spiritview_fx
+		rotate		time * -0.02
+		centerscale	1.6 * zerotoonesnap[ -0.75 + time * -0.4 ],1.2 * zerotoonesnap[ -0.75 + time * -0.4 ]
+		rgb		0.40 * zerotoonesnap[ 0.75 + time * 0.4 ]
+		clamp
+	}
+}
+
+// deathwalk view ----------------------------------------------------------------
+textures/decals/deathview
+{
+	noselfshadow
+	noshadows
+	translucent
+
+	// FRAGMENT PROGRAM VERSION
+	{
+		if fragmentPrograms == 1
+
+		program			radialblur.vfp
+
+		fragmentmap		0       _currentrender
+
+		fragmentparm	0		0.015, .125, .5	//blur size, blur strength, blur lerp
+		fragmentparm	1		1.0, 0					//pre scale, pre bias
+		fragmentparm	2		1						//desaturation
+		fragmentparm	3		1.0, 0.5						//contrast, contrast center
+		fragmentparm	4		1, 1, 1, .6					//tint color
+		fragmentparm	5		0.0, 0.0, 0.0		//post additive color
+	}
+	{
+		blend gl_zero, gl_one_minus_src_color
+		map		textures/sfx/deathview_mask
+		centerscale 1.02 * flicker5light[time * .25], 1.02 * flicker5light[time * .25]
+		rgb		0.95 + (( sinTable[ time * 0.25 ] ) * 0.05 )
+	}
+	{
+		if ( parm3 > 0 )
+		blend add
+		map textures/sfx/flare10
+		centerscale -0.2, -0.2
+		rgb parm3
+	}
+}
+
+
+// possessed view ----------------------------------------------------------------
+
+table twentyonestage { { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } }
+
+textures/decals/possessedview
+{
+	noselfshadow
+	noshadows
+	translucent
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe00
+		rgb	twentyonestage [ (parm3 + 0 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe01
+		rgb	twentyonestage [ (parm3 + 1 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe02
+		rgb	twentyonestage [ (parm3 + 2 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe03
+		rgb	twentyonestage [ (parm3 + 3 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe04
+		rgb	twentyonestage [ (parm3 + 4 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe05
+		rgb	twentyonestage [ (parm3 + 5 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe06
+		rgb	twentyonestage [ (parm3 + 6 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe07
+		rgb	twentyonestage [ (parm3 + 7 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe08
+		rgb	twentyonestage [ (parm3 + 8 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe09
+		rgb	twentyonestage [ (parm3 + 9 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe10
+		rgb	twentyonestage [ (parm3 + 10 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe11
+		rgb	twentyonestage [ (parm3 + 11 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe12
+		rgb	twentyonestage [ (parm3 + 12 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe13
+		rgb	twentyonestage [ (parm3 + 13 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe14
+		rgb	twentyonestage [ (parm3 + 14 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe15
+		rgb	twentyonestage [ (parm3 + 15 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe16
+		rgb	twentyonestage [ (parm3 + 16 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe17
+		rgb	twentyonestage [ (parm3 + 17 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe18
+		rgb	twentyonestage [ (parm3 + 18 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe19
+		rgb	twentyonestage [ (parm3 + 19 / 21)  ]
+	}
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/possessed_wipe20
+		rgb	twentyonestage [ (parm3 + 20 / 21)  ]
+	}
+	{
+		if( parm3 < 0.07 && parm3 > 0.03 )
+		clamp
+		blend gl_one, gl_one_minus_src_color
+		map textures/sfx/flare10
+		centerscale -0.75, -0.75
+		centerscale (parm3 - 0.03) * -30, (parm3 - 0.03) * -30
+		rotate parm3 * 15
+	}
+	{
+		if( parm3 <= 0.03 )
+		clamp
+		blend gl_one, gl_one_minus_src_color
+		map textures/sfx/flare10
+		centerscale -0.1, -0.1
+	}
+	{
+		blend add
+		map textures/decals/possess11
+		rgb	twelvestage [time + 11 / 12]
+	}
+	{
+		blend add
+		map textures/decals/possess10
+		rgb	twelvestage [time + 10 / 12]
+	}
+	{
+		blend add
+		map textures/decals/possess09
+		rgb	twelvestage [time + 9 / 12]
+	}
+	{
+		blend add
+		map textures/decals/possess08
+		rgb	twelvestage [time + 8 / 12]
+	}
+	{
+		blend add
+		map textures/decals/possess07
+		rgb	twelvestage [time + 7 / 12]
+	}
+	{
+		blend add
+		map textures/decals/possess06
+		rgb	twelvestage [ time + 6 / 12]
+	}
+	{
+		blend add
+		map textures/decals/possess05
+		rgb	twelvestage [ time + 5 / 12]
+	}
+	{
+		blend add
+		map textures/decals/possess04
+		rgb	twelvestage [ time + 4 / 12]
+	}
+	{
+		blend add
+		map textures/decals/possess03
+		rgb	twelvestage [ time + 3 / 12]
+	}
+	{
+		blend add
+		map textures/decals/possess02
+		rgb	twelvestage [ time + 2 / 12]
+	}
+	{
+		blend add
+		map textures/decals/possess01
+		rgb	twelvestage [ time + 1 / 12]
+	}
+	{
+		blend add
+		map textures/decals/possess00
+		rgb	twelvestage [ time + 0 / 12]
+	}
+}
+
+textures/decals/painview
+{
+	translucent
+	// FRAGMENT PROGRAM VERSION
+	/*{
+		if fragmentPrograms == 1
+		blend blend
+		alpha .0
+
+		program			screeneffect.vfp
+
+		fragmentmap		0       _currentrender
+		fragmentmap		2		_white	//mask
+
+		fragmentparm	0		.01*parm0, .09, 1-.45*parm0	//blur size, blur strength, blur lerp
+		fragmentparm	1		1.2*parm0+(1-parm0), 0			//pre scale, pre bias
+		fragmentparm	2		1-.75*parm0		//.65				//desateration
+		fragmentparm	3		1+1.8*parm0, .15			//contrast, contrast center
+		fragmentparm	4		.6, .1, .1, .5*parm0		//tint color
+		fragmentparm	5		0.0, .0, .0	//post additive color
+	}*/
+	{
+		blend blend
+
+		program			screenprocess.vfp
+
+		fragmentparm	0	1		// saturation
+		fragmentparm	1	1, .5	// contrast, scale point
+		fragmentparm	2	1	// multiply
+		fragmentparm	3	0	// add/brightness
+
+		fragmentmap		0       _currentrender
+	}
+}
+
+textures/decals/hurtview
+{
+	translucent
+	{
+		blend blend
+		map		textures/sfx/hurtview
+		clamp
+		centerscale 1.0-.2*parm0, 1.0-.2*parm0
+		alpha 0.8*(1.0-parm0*parm0)*(.25*sin010[1.5*time]+.95)
+	}
+}
+
+//gb 10-14-02
+textures/decals/grime1
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime1
+	}
+}
+
+textures/decals/grime1a
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime1a
+	}
+}
+
+
+textures/decals/grime2
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime2
+	}
+}
+
+textures/decals/grime3
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime3
+	}
+}
+
+textures/decals/grime4
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime4
+	}
+}
+
+textures/decals/grime4outer
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime4outer
+	}
+}
+
+textures/decals/grime4_light
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime4_light
+	}
+}
+
+textures/decals/grime4b
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime4b
+	}
+}
+
+textures/decals/grime4c
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime4c
+	}
+}
+
+textures/decals/grime5
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime5
+	}
+}
+
+textures/decals/grime5b
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime5b
+	}
+}
+
+textures/decals/grime5c
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime5c
+	}
+}
+
+textures/decals/grime6
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime6
+	}
+}
+
+textures/decals/grime7
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime7
+	}
+}
+
+textures/decals/grime7a
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime7a
+	}
+}
+
+textures/decals/grime7b
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime7b
+	}
+}
+
+textures/decals/grime7c
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime7c
+	}
+}
+
+textures/decals/grime7_scrolling
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime7_scrolling
+		scroll 	(time * parm4),(time * parm5)
+
+	}
+}
+
+textures/decals/grime8
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime8
+	}
+}
+
+textures/decals/grime9
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime9
+		rgb 2.0
+	}
+}
+
+textures/decals/grime14
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime14
+	}
+}
+
+textures/decals/portalgrime
+{
+	qer_editorimage textures/decals/portalgrime_proxy
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/portalgrime
+	}
+}
+
+textures/decals/portalgrimesolid
+{
+	qer_editorimage textures/decals/portalgrime_proxy
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/portalgrimesolid
+	}
+}
+
+textures/decals/maintenance
+{
+	qer_editorimage textures/decals/maintenance
+	decal_macro
+	{
+		blend diffusemap
+		map textures/decals/maintenance
+	}
+}
+
+textures/decals/warning
+{
+	qer_editorimage textures/decals/warning
+	decal_macro
+	{
+		blend diffusemap
+		map textures/decals/warning
+	}
+}
+
+textures/decals/warning1
+{
+	qer_editorimage textures/decals/warning1
+	decal_macro
+	{
+		blend diffusemap
+		map textures/decals/warning1
+	}
+}
+
+textures/decals/warning1_colored
+{
+	qer_editorimage textures/decals/warning1
+	decal_macro
+	{
+		blend add
+		map textures/decals/warning1
+		colored
+	}
+}
+
+textures/decals/warning1b
+{
+	qer_editorimage textures/decals/warning1b
+	decal_macro
+	{
+		blend diffusemap
+		map textures/decals/warning1b
+	}
+}
+
+textures/decals/warning2
+{
+	qer_editorimage textures/decals/warning2
+	decal_macro
+	{
+		blend diffusemap
+		map textures/decals/warning2
+	}
+}
+
+textures/decals/warning3
+{
+	qer_editorimage textures/decals/warning3
+	decal_macro
+	{
+		blend diffusemap
+		map textures/decals/warning3
+	}
+}
+
+textures/decals/warning4
+{
+	qer_editorimage textures/decals/warning4
+	decal_macro
+	{
+		blend diffusemap
+		map textures/decals/warning4
+	}
+}
+
+textures/decals/warning5
+{
+	qer_editorimage textures/decals/warning5
+	decal_macro
+	{
+		blend diffusemap
+		map textures/decals/warning5
+	}
+}
+
+textures/decals/warning6
+{
+	qer_editorimage textures/decals/warning6
+	decal_macro
+	{
+		blend diffusemap
+		map textures/decals/warning6
+	}
+}
+
+textures/decals/warning7
+{
+	qer_editorimage textures/decals/warning7
+	decal_macro
+	{
+		blend diffusemap
+		map textures/decals/warning7
+	}
+}
+
+textures/decals/sign
+{
+	qer_editorimage textures/decals/sign
+	decal_alphatest_macro
+	{
+		blend diffusemap
+		map textures/decals/sign
+		alphatest 0.5
+	}
+	specularmap textures/decals/sign_spec
+}
+
+textures/feedingtower/ftower_decal_grime1
+{
+	qer_editorimage textures/feedingtower/ftdecalgrime1
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/feedingtower/ftdecalgrime1
+	}
+}
+
+textures/feedingtower/ftower_decal_grime2
+{
+	qer_editorimage textures/feedingtower/ftdecalgrime2
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/feedingtower/ftdecalgrime2
+	}
+}
+
+textures/feedingtower/ftower_decal_grime3
+{
+	qer_editorimage textures/feedingtower/ftdecalgrime3
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/feedingtower/ftdecalgrime3
+	}
+}
+
+textures/feedingtower/ftower_decal_grime4
+{
+	qer_editorimage textures/feedingtower/ftdecalgrime4
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/feedingtower/ftdecalgrime4
+	}
+}
+
+textures/feedingtower/ftower_decal_grime5
+{
+	qer_editorimage textures/feedingtower/ftdecalgrime5
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/feedingtower/ftdecalgrime5
+	}
+}
+
+textures/feedingtower/ftower_decal_grime6
+{
+	qer_editorimage textures/feedingtower/ftdecalgrime6
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/feedingtower/ftdecalgrime6
+	}
+}
+
+textures/feedingtower/ftower_decal_grime7
+{
+	qer_editorimage textures/feedingtower/ftdecalgrime7
+	decal_macro
+	{
+		blend add
+		colored
+		map textures/feedingtower/ftdecalgrime7
+	}
+}
+
+textures/feedingtower/ftower_decal_grime8
+{
+	qer_editorimage textures/feedingtower/ftdecalgrime8
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/feedingtower/ftdecalgrime8
+	}
+}
+textures/decals/blood1
+{
+	decal_macro
+
+	{
+			blend 	gl_dst_color, gl_src_color
+			 map	textures/decals/blood1
+
+	}
+}
+textures/decals/blood2
+{
+	decal_macro
+
+	{
+			blend 	gl_dst_color, gl_src_color
+			 map	textures/decals/blood2
+
+	}
+}
+textures/decals/blood3
+{
+	decal_macro
+
+	{
+			blend 	gl_dst_color, gl_src_color
+			 map	textures/decals/blood3
+
+	}
+}
+textures/decals/blood4
+{
+	decal_macro
+
+	{
+			blend 	gl_dst_color, gl_src_color
+			 map	textures/decals/blood4
+
+	}
+}
+textures/decals/blood5
+{
+	decal_macro
+
+	{
+			blend 	gl_dst_color, gl_src_color
+			 map	textures/decals/blood5
+
+	}
+}
+textures/decals/alienblood1
+{
+	decal_macro
+
+	{
+			blend 	gl_dst_color, gl_src_color
+			 map	textures/decals/alienblood1
+
+	}
+}
+textures/decals/alienblood2
+{
+	decal_macro
+	{
+		blend 	gl_dst_color, gl_src_color
+		map	textures/decals/alienblood2
+	}
+}
+textures/decals/alienblood3
+{
+	decal_macro
+	{
+		blend 	gl_dst_color, gl_src_color
+		map	textures/decals/alienblood3
+	}
+}
+textures/decals/alienblood4
+{
+	decal_macro
+	{
+		blend 	gl_dst_color, gl_src_color
+		map	textures/decals/alienblood4
+	}
+}
+textures/decals/alienblood5
+{
+	decal_macro
+	{
+		blend 	gl_dst_color, gl_src_color
+		map	textures/decals/alienblood5
+	}
+}
+
+textures/decals/bloodsplat1
+{
+	decal_macro
+
+	decalinfo 20 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		//map	textures/decals/gib_splat_i2
+		map	textures/decals/bloodsplat1
+		vertexcolor
+	}
+	{	// Scope view texture
+      	blend		add
+		map	textures/decals/bloodsplatscope
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		red 0.45
+		green 0.2
+		blue 0
+		glowstage
+		scopeView
+	}
+}
+
+textures/decals/bloodsplat2
+{
+	decal_macro
+
+	decalinfo 20 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map	textures/decals/bloodsplat2
+		vertexcolor
+		notScopeView // do not show this stage in scope view
+	}
+
+	{	// Scope view texture
+      	blend		add
+		map	textures/decals/bloodsplatscope
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		red 0.45
+		green 0.2
+		blue 0
+		glowstage
+		scopeView
+	}
+
+}
+
+textures/decals/bloodsplat3
+{
+	decal_macro
+
+	decalinfo 20 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map	textures/decals/bloodsplat3
+		vertexcolor
+	}
+}
+
+textures/decals/bloodsplat4
+{
+	decal_macro
+
+	decalinfo 20 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map	textures/decals/bloodsplat4
+		vertexcolor
+	}
+}
+
+textures/decals/bloodsplat5
+{
+	decal_macro
+
+	decalinfo 20 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map	textures/decals/bloodsplat5
+		vertexcolor
+	}
+}
+
+textures/decals/bloodsplat6
+{
+	decal_macro
+
+	decalinfo 20 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map	textures/decals/bloodsplat6
+		vertexcolor
+	}
+}
+
+textures/decals/bloodsplat7
+{
+	decal_macro
+
+	decalinfo 20 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map	textures/decals/bloodsplat7
+		vertexcolor
+	}
+}
+
+textures/decals/waterpuddle1
+{
+	decal_macro
+	qer_editorimage textures/decals/waterpuddle1_d
+	bumpmap		textures/decals/waterpuddle1_local
+   	diffusemap	textures/decals/waterpuddle1_d
+	specularmap	textures/decals/waterpuddle1_s
+}
+
+textures/decals/waterpuddle2
+{
+	decal_macro
+	qer_editorimage textures/decals/waterpuddle2_d
+	bumpmap		textures/decals/waterpuddle2_local
+   	diffusemap	textures/decals/waterpuddle2_d
+	specularmap	textures/decals/waterpuddle2_s
+}
+
+textures/decals/waterpuddle2b
+{
+	nonsolid
+	twosided
+
+	qer_editorimage textures/decals/waterpuddle2_d
+	bumpmap		textures/decals/waterpuddle2_local
+	specularmap	textures/decals/waterpuddle2_s
+	{
+		blend diffusemap
+		map	textures/decals/waterpuddle2_d
+		alphatest 0.5
+	}
+}
+
+textures/decals/waterpuddle2hive
+{
+	decal_macro
+	qer_editorimage textures/decals/waterpuddle2_d
+	bumpmap		textures/decals/waterpuddle2_local
+   	diffusemap	textures/decals/waterpuddle2hive_d
+	specularmap	textures/decals/waterpuddle2hive_s
+}
+
+textures/decals/waterpuddle3
+{
+	decal_macro
+	qer_editorimage textures/decals/waterpuddle3_d
+	bumpmap		textures/decals/waterpuddle3_local
+   	diffusemap	textures/decals/waterpuddle3_d
+	specularmap	textures/decals/waterpuddle3_s
+}
+
+textures/decals/waterpuddle3b
+{
+	nonsolid
+	twosided
+
+	qer_editorimage textures/decals/waterpuddle3_d
+	bumpmap		textures/decals/waterpuddle3_local
+	specularmap	textures/decals/waterpuddle3_s
+	{
+		blend diffusemap
+		map	textures/decals/waterpuddle3_d
+		alphatest 0.5
+	}
+}
+
+// gb 10-18-02
+textures/decals/pipecap1
+{
+	qer_editorimage textures/decals/pipecap1
+	decal_alphatest_macro
+	bumpmap		textures/decals/pipecap1_local
+	{
+		blend	diffusemap
+	 	map		textures/decals/pipecap1
+	 	alphatest 0.5
+	 	clamp
+	}
+	specularmap	textures/decals/pipecap1_spec
+}
+
+textures/decals/pipecap2
+{
+	qer_editorimage textures/decals/pipecap2
+	decal_alphatest_macro
+	bumpmap		textures/decals/pipecap2_local
+	{
+		blend	diffusemap
+	 	map		textures/decals/pipecap2
+	 	alphatest 0.5
+	 	clamp
+	}
+	specularmap	textures/decals/pipecap2_spec
+}
+
+textures/decals/pipecap3
+{
+	qer_editorimage textures/decals/pipecap3_d
+	decal_alphatest_macro
+	bumpmap		textures/decals/pipecap3_local
+	{
+		blend	diffusemap
+	 	map		textures/decals/pipecap3_d
+	 	alphatest 0.5
+	 	clamp
+	}
+	specularmap	textures/decals/pipecap3_s
+}
+
+textures/decals/pipecap3_dissolve
+{
+	qer_editorimage textures/organic_wall/bio_organic_sw2_proxy
+	matter_metal
+	noshadows
+
+	bumpmap			textures/decals/pipecap3_local
+	diffusemap		textures/decals/pipecap3_d_dissolve
+	specularmap		textures/decals/pipecap3_s
+
+	//global alphatest stages
+	{
+		if ( parm5 == 0 )
+		blend none
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest 1 - ( time + parm4 ) * 0.5
+	}
+	{
+		if ( parm5 > 0 ) //fade out
+		blend none
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest ( time + parm4 ) * 0.5
+	}
+
+	//additive fx stage
+	{
+		if ( parm5 == 0 ) //fade out
+		privatepolygonoffset	-0.5
+		blend add
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest 1 - ( time + parm4 ) * 0.5 + 0.1
+		rgb 2
+		glowStage
+	}
+	{
+		if ( parm5 > 0 ) //fade out
+		privatepolygonoffset	-0.5
+		blend add
+		map textures/sfx/keeperfortress_ramp_fx_256
+		alphaTest ( time + parm4 ) * 0.5 - 0.1
+		rgb 2
+		glowStage
+	}
+}
+
+textures/decals/pipe_asteroid_end
+{
+	qer_editorimage 	textures/decals/pipe_asteroid_end
+	matter_metal
+	bumpmap 		addnormals (textures/decals/pipe_asteroid_end_local,
+				heightmap (textures/decals/pipe_asteroid_end_h, 6))
+	diffusemap	 	textures/decals/pipe_asteroid_end
+	specularmap		textures/decals/pipe_asteroid_end_s
+		{
+		blend diffusemap
+		map  textures/decals/pipe_asteroid_end
+		alphatest 0.5
+	}
+
+}
+
+textures/decals/shoottex
+{
+	qer_editorimage textures/decals/shoottex
+	decal_alphatest_macro
+	bumpmap		textures/decals/shoottex_local
+	{
+		blend	diffusemap
+	 	map		textures/decals/shoottex
+	 	alphatest 0.5
+	 	clamp
+	}
+	specularmap	textures/decals/shoottex_spec
+}
+
+
+//fixme: move these to decals proper
+textures/feedingtower/ftower_decal_tech1
+{
+	qer_editorimage textures/feedingtower/ftdecaltch1_proxy
+	decal_alphatest_macro
+	bumpmap		textures/feedingtower/ftdecaltch1_local
+	{
+		blend diffusemap
+		map	textures/feedingtower/ftdecaltch1
+		alphatest 0.5
+		clamp
+	}
+	specularmap	textures/feedingtower/ftdecaltch1_spec
+}
+
+textures/feedingtower/ftower_decal_tech2
+{
+	qer_editorimage textures/feedingtower/ftdecaltch2_proxy
+	decal_alphatest_macro
+	bumpmap		textures/feedingtower/ftdecaltch2_local
+	{
+		blend diffusemap
+		map	textures/feedingtower/ftdecaltch2
+		alphatest 0.5
+		clamp
+	}
+	specularmap	textures/feedingtower/ftdecaltch2_spec
+}
+
+textures/decals/fleshhole1
+{
+	qer_editorimage textures/decals/fleshhole1
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/fleshhole1
+	}
+}
+
+textures/decals/crawlersplat1
+{
+	qer_editorimage textures/decals/crawlersplat1
+	decal_macro
+
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/crawlersplat1
+
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+textures/decals/crawlersplat2
+{
+	qer_editorimage textures/decals/crawlersplat1
+	decal_macro
+
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/crawlersplat1
+
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+textures/decals/crawlersplat3
+{
+	qer_editorimage textures/decals/crawlersplat1
+	decal_macro
+
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/crawlersplat1
+
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+}
+
+textures/decals/glass_decal
+{
+	qer_editorimage textures/decals/glass_decal
+	decal_macro
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/decals/glass_decal
+	}
+}
+textures/decals/glass_decal_small
+{
+	qer_editorimage textures/particles/glass8
+	decal_macro
+	{
+		blend gl_one, gl_one_minus_src_color
+		map textures/particles/glass8
+	}
+}
+
+//textures/decals/hh_print
+
+textures/decals/grime10
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime10
+	}
+}
+textures/decals/grime11
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime11
+	}
+}
+textures/decals/grime12
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime12
+	}
+}
+textures/decals/grime13
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/grime13
+	}
+}
+
+
+
+
+//-----------------------
+// door mat
+//-----------------------
+
+textures/decals/doormat
+{
+	qer_editorimage textures/decals/doormat_d
+	decal_alphatest_macro
+	forceoverlays
+	bumpmap		textures/decals/doormat_local
+	{
+		blend diffusemap
+		map	textures/decals/doormat_d
+		alphatest 0.5
+	}
+	specularmap	textures/decals/doormat_s
+}
+
+//-----------------------
+// door mat 2
+//-----------------------
+
+textures/decals/doormat2
+{
+	qer_editorimage textures/decals/doormat2_d
+	decal_alphatest_macro
+	bumpmap		textures/decals/doormat2_local
+	{
+		blend diffusemap
+		map	textures/decals/doormat2_d
+		alphatest 0.5
+	}
+	specularmap	textures/decals/doormat2_s
+}
+//-----------------------
+//  arrow decal
+//-----------------------
+
+textures/decals/arrow
+{
+	qer_editorimage textures/decals/arrow
+	decal_macro
+	{
+		blend diffusemap
+		map textures/decals/arrow
+	}
+}
+
+textures/decals/arrow_add
+{
+	qer_editorimage textures/decals/arrow
+	decal_macro
+	{
+		blend add
+		map textures/decals/arrow
+	}
+}
+
+textures/decals/arrow_col
+{
+	qer_editorimage textures/decals/arrow
+	decal_macro
+	{
+		blend add
+		map textures/decals/arrow
+		colored
+	}
+}
+
+textures/decals/shuttledockdecal_001
+{
+	qer_editorimage textures/decals/shuttledockdecal_001_add
+	decal_alphatest_macro
+
+	bumpmap		textures/decals/shuttledockdecal_001_local
+	{
+		blend diffusemap
+		map	textures/decals/shuttledockdecal_001_d
+		alphatest 0.5
+	}
+	specularmap	textures/decals/shuttledockdecal_001_s
+	{
+		ignorealphatest
+		blend add
+		map textures/decals/shuttledockdecal_001_add
+		color		parm0 * ( 0.75 + ( 0.25 * sintable [ time * 0.5 ] )),
+				parm1 * ( 0.75 + ( 0.25 * sintable [ time * 0.5 ] )),
+				parm2 * ( 0.75 + ( 0.25 * sintable [ time * 0.5 ] )),
+				1.0
+	}
+}
+
+
+textures/decals/goredecal_001
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/goredecal_001
+	{
+//		blend 	gl_zero,gl_one_minus_src_color
+		blend   filter
+		map 	textures/decals/goredecal_001
+	}
+}
+
+textures/decals/goredecal_001b
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/goredecal_001b
+	{
+		blend   filter
+		map 	textures/decals/goredecal_001b
+	}
+}
+
+textures/decals/goredecal_002
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/goredecal_002
+	{
+		blend   filter
+		map 	textures/decals/goredecal_002
+	}
+}
+
+textures/decals/goredecal_002b
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/goredecal_002b
+	{
+		blend   filter
+		map 	textures/decals/goredecal_002b
+	}
+}
+textures/decals/goredecal_002b01
+{
+	decal_macro
+	qer_editorimage	textures/decals/goredecal_002b01
+	{
+		blend   filter
+		map 	textures/decals/goredecal_002b01
+		highres
+	}
+}
+
+textures/decals/goredecal_003
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/goredecal_003
+	{
+		blend   filter
+		map 	textures/decals/goredecal_003
+	}
+}
+
+textures/decals/goredecal_003b
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/goredecal_003b
+	{
+		blend   filter
+		map 	textures/decals/goredecal_003b
+	}
+}
+
+textures/decals/goredecal_004
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/goredecal_004
+	{
+		blend   filter
+		map 	textures/decals/goredecal_004
+	}
+}
+
+textures/decals/goredecal_004b
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/goredecal_004b
+	{
+		blend   filter
+		map 	textures/decals/goredecal_004b
+	}
+}
+
+textures/decals/goredecal_004c
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/goredecal_004c
+	{
+		blend   filter
+		map 	textures/decals/goredecal_004c
+	}
+}
+
+textures/decals/goredecal_005
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/goredecal_005
+	{
+		blend   filter
+		map 	textures/decals/goredecal_005
+	}
+}
+
+textures/decals/goredecal_005b
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/goredecal_005b
+	{
+		blend   filter
+		map 	textures/decals/goredecal_005b
+	}
+}
+
+textures/decals/goredecal_005c
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/goredecal_005c
+	{
+		blend   filter
+		map 	textures/decals/goredecal_005c
+	}
+}
+
+textures/decals/goredecal_006
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/goredecal_006
+	{
+		blend   filter
+		map 	textures/decals/goredecal_006
+	}
+}
+
+textures/decals/goredecal_006b
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/goredecal_006b
+	{
+		blend   filter
+		map 	textures/decals/goredecal_006b
+	}
+}
+
+textures/decals/goredecal_007
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/goredecal_007
+	{
+		blend   filter
+		map 	textures/decals/goredecal_007
+	}
+}
+
+textures/decals/goredecal_008
+{
+
+	nonsolid
+//	twosided
+	qer_editorimage 	textures/decals/goredecal_008_d
+	decal_alphatest_macro
+
+	bumpmap 		heightmap (textures/decals/goredecal_008_h, 2)
+//	diffusemap		textures/decals/goredecal_008_d
+	specularmap 	textures/decals/goredecal_008_s
+
+	{
+		blend diffusemap
+		map	textures/decals/goredecal_008_d
+		alphatest 0.5
+	}
+}
+
+
+//-----------------------
+// eyeconsole floormat
+//-----------------------
+
+textures/decals/eyefloormat
+{
+	qer_editorimage textures/decals/eyefloormat_d
+	decal_alphatest_macro
+	bumpmap		textures/decals/eyefloormat_local
+	{
+		blend diffusemap
+		map	textures/decals/eyefloormat_d
+		alphatest 0.5
+	}
+	{
+		blend add
+		map textures/decals/eyefloormat_add
+	}
+	specularmap	textures/decals/eyefloormat_s
+
+}
+textures/decals/energy_circ_alp
+{
+	decal_alphatest_macro
+	qer_editorimage 	textures/sfx/energyflatcir
+	matter_metal
+	{
+		blend diffusemap
+		map	 	textures/sfx/energyflatciralp
+		alphatest 0.5
+	}
+	bumpmap 		textures/sfx/energyflatciralp_local
+	specularmap		textures/sfx/energyflatcir_s
+	{
+		blend add
+		map 		textures/sfx/energyflatcir_a
+		colored
+	}
+}
+
+textures/decals/energy_circ3_alp
+{
+	decal_alphatest_macro
+	qer_editorimage 	textures/sfx/energyflatcir
+	matter_metal
+	{
+		blend diffusemap
+		map	 	textures/sfx/energyflatciralp
+		alphatest 0.5
+	}
+	bumpmap 		textures/sfx/energyflatciralp_local
+	specularmap		textures/sfx/energyflatcir_s
+	{
+		blend add
+		map 		textures/sfx/energyflatcir_a3
+		colored
+	}
+}
+
+textures/decals/energy_circ2_alp
+{
+	decal_alphatest_macro
+	forceoverlays
+
+	qer_editorimage 	textures/sfx/energyflatcir
+	matter_metal
+	{
+		blend diffusemap
+		map	 	textures/sfx/energyflatciralp
+		alphatest 0.5
+	}
+	bumpmap 		textures/sfx/energyflatciralp_local
+	specularmap		textures/sfx/energyflatcir_s
+}
+
+textures/decals/energy_circ2_alp_shuttle
+{
+	decal_alphatest_macro
+	qer_editorimage 	textures/sfx/energyflatcir
+	matter_metal
+
+	bumpmap 		textures/sfx/energyflatciralp_local
+	specularmap		textures/sfx/energyflatcir_s
+	{
+		blend diffusemap
+		map	 	textures/sfx/energyflatciralp
+		alphatest 0.5
+	}
+ {	// Shuttle view stage
+                 blend add
+		map textures/decals/shuttle_flicker_02_blue
+                texgen screen
+		 rgb (fade_pulse [time * .4] * 0.4)
+
+                 scroll time * 10, time * 10.1 * ( parm7 + 10 )
+                shuttleView
+		glowstage
+	}
+
+                {	// Shuttle view stage
+
+		maskalpha
+		blend	gl_dst_alpha, gl_one
+		map textures/decals/shuttle_flicker
+		texgen screen
+                 rgb (fade_pulse [time * .4] * 0.2)
+                scale ( forcefieldflicker[ time * 1.0 ] * .01 ) , 0.5
+		scroll time * 10, time * 10.1 * ( parm7 + 10 )
+		shuttleView
+		glowstage
+	}
+}
+textures/decals/glyphdecal
+{
+	decal_macro
+	qer_editorimage 	textures/evilglyphrow_decal_s
+	{
+		blend	diffusemap
+		map	textures/decals/evilglyphrow_decal
+		scroll	time*parm4,0
+	}
+	{
+		blend	specularmap
+		map	textures/decals/evilglyphrow_decal_s
+		scroll	time*parm4,0
+		colored
+	}
+}
+
+textures/decals/glyphdecal2
+{
+	decal_macro
+	qer_editorimage 	textures/decals/evilglyphs2
+	{
+		blend	diffusemap
+		map	textures/decals/evilglyphs2
+		rgb 0.15
+	}
+	{
+		blend	specularmap
+		map	textures/decals/evilglyphs2
+		colored
+	}
+}
+
+textures/decals/glyphdecal3
+{
+	decal_macro
+	qer_editorimage 	textures/decals/keeperglyph_decal_s
+	{
+		blend	diffusemap
+		map	textures/decals/keeperglyph_decal
+		rgb 0.15
+	}
+	{
+		blend	specularmap
+		map	textures/decals/keeperglyph_decal_s
+		colored
+	}
+}
+
+textures/decals/glyphdecal4
+{
+	decal_macro
+	qer_editorimage 	textures/decals/evilsarcomenglyph_decal_s
+	{
+		blend	diffusemap
+		map	textures/decals/evilsarcomenglyph_decal
+		rgb 0.15
+	}
+	{
+		blend	specularmap
+		map	textures/decals/evilsarcomenglyph_decal_s
+		colored
+	}
+}
+
+textures/decals/glyphdecal5
+{
+	decal_macro
+	qer_editorimage 	textures/decals/evilglyph2_decal_s
+	{
+		blend	diffusemap
+		map	textures/decals/evilglyph2_decal
+		rgb 0.15
+	}
+	{
+		blend	specularmap
+		map	textures/decals/evilglyph2_decal_s
+		colored
+	}
+}
+
+textures/decals/glyphdecal6
+{
+	decal_macro
+	qer_editorimage 	textures/decals/evilglyph3_decal_s
+	{
+		blend	diffusemap
+		map	textures/decals/evilglyph3_decal
+		rgb 0.15
+	}
+	{
+		blend	specularmap
+		map	textures/decals/evilglyph3_decal_s
+		colored
+	}
+}
+
+textures/decals/glyphdecal7
+{
+	decal_macro
+	qer_editorimage 	textures/decals/evilglyph4_decal_s
+	{
+		blend	diffusemap
+		map	textures/decals/evilglyph4_decal
+		rgb 0.15
+	}
+	{
+		blend	specularmap
+		map	textures/decals/evilglyph4_decal_s
+		colored
+	}
+}
+
+textures/decals/glyphdecal8
+{
+	decal_macro
+	qer_editorimage 	textures/decals/theglyph_decal_s
+	{
+		blend	specularmap
+		map	textures/decals/theglyph_decal
+		clamp
+		rotate	time / 80
+		colored
+	}
+	{
+		blend	add
+		map	textures/decals/theglyph_decal_s
+		clamp
+		rotate	time / 80
+		rgb 	(flicker_elec2 [time / 2])
+	}
+}
+
+textures/decals/glyphdecal8b
+{
+	decal_macro
+	qer_editorimage 	textures/decals/theglyph2_decal_s
+	{
+		blend	specularmap
+		map	textures/decals/theglyph2_decal
+		clamp
+		rotate	time / -150
+		colored
+	}
+	{
+		blend	add
+		map	textures/decals/theglyph2_decal_s
+		clamp
+		rotate	time / -150
+		rgb 	(flicker_elec2 [time / 5])
+	}
+}
+textures/decals/jeffdevil
+{
+	decal_macro
+	qer_editorimage 	textures/decals/jeff_devill_s
+	{
+		blend	diffusemap
+		map	textures/decals/jeff_devill
+		rgb 0.15
+	}
+	{
+		blend	specularmap
+		map	textures/decals/jeff_devill_s
+		colored
+	}
+}
+
+textures/decals/glass_stain_01
+{
+	decal_macro
+	qer_editorimage 	textures/decals/glass_stain_01
+	{
+		blend	filter
+		map	textures/decals/glass_stain_01
+	}
+}
+
+textures/decals/graffitidecal_01
+{
+	decal_macro
+	qer_editorimage 	textures/decals/graffitidecal_01
+	{
+		blend   filter
+		map	textures/decals/graffitidecal_01
+	}
+}
+
+textures/decals/graffitidecal_02
+{
+	decal_macro
+	qer_editorimage 	textures/decals/graffitidecal_02
+	{
+		blend   filter
+		map	textures/decals/graffitidecal_02
+	}
+}
+
+textures/decals/graffitidecal_03
+{
+	decal_macro
+	qer_editorimage 	textures/decals/graffitidecal_03
+	{
+		blend   filter
+		map	textures/decals/graffitidecal_03
+	}
+}
+
+textures/decals/graffitidecal_04
+{
+	decal_macro
+	qer_editorimage 	textures/decals/graffitidecal_04
+	{
+		blend   filter
+		map	textures/decals/graffitidecal_04
+	}
+}
+
+textures/decals/graffitidecal_05
+{
+	decal_macro
+	qer_editorimage 	textures/decals/graffitidecal_05
+	{
+		blend   filter
+		map	textures/decals/graffitidecal_05
+	}
+}
+textures/decals/graffitidecal_06
+{
+	decal_macro
+	qer_editorimage 	textures/decals/graffitidecal_06
+	{
+		blend   filter
+		map	textures/decals/graffitidecal_06
+	}
+}
+
+textures/decals/graffitidecal_07
+{
+	decal_macro
+	qer_editorimage 	textures/decals/graffitidecal_07
+	{
+		blend   filter
+		map	textures/decals/graffitidecal_07
+	}
+}
+textures/decals/graffitidecal_08
+{
+	decal_macro
+	qer_editorimage 	textures/decals/graffitidecal_08
+	{
+		blend   filter
+		map	textures/decals/graffitidecal_08
+	}
+}
+textures/decals/graffitidecal_09
+{
+	decal_macro
+	qer_editorimage 	textures/decals/graffitidecal_09
+	{
+		blend   filter
+		map	textures/decals/graffitidecal_09
+	}
+}
+textures/decals/posskidsdecal_01
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/posskidsdecal_01
+	{
+		blend   filter
+		map 	textures/decals/posskidsdecal_01
+	}
+}
+
+textures/decals/posskidsdecal_02
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/posskidsdecal_02
+	{
+		blend   filter
+		map 	textures/decals/posskidsdecal_02
+	}
+}
+
+textures/decals/posskidsdecal_03
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/posskidsdecal_03
+	{
+		blend   filter
+		map 	textures/decals/posskidsdecal_03
+	}
+}
+
+textures/decals/posskidsdecal_04
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/posskidsdecal_04
+	{
+		blend   filter
+		map 	textures/decals/posskidsdecal_04
+	}
+}
+
+textures/decals/posskidsdecal_05
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/posskidsdecal_05
+	{
+		blend   filter
+		map 	textures/decals/posskidsdecal_05
+	}
+}
+
+textures/decals/posskidsdecal_06
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/posskidsdecal_06
+	{
+		blend   filter
+		map 	textures/decals/posskidsdecal_06
+	}
+}
+
+textures/decals/posskidsdecal_07
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/posskidsdecal_07
+	{
+		blend   filter
+		map 	textures/decals/posskidsdecal_07
+	}
+}
+
+textures/decals/posskidsdecal_08
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/posskidsdecal_08
+	{
+		blend   filter
+		map 	textures/decals/posskidsdecal_08
+	}
+}
+
+textures/decals/posskidsdecal_09
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/posskidsdecal_09
+	{
+		blend   filter
+		map 	textures/decals/posskidsdecal_09
+	}
+}
+
+textures/decals/posskidsdecal_10
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/posskidsdecal_10
+	{
+		blend   filter
+		map 	textures/decals/posskidsdecal_10
+	}
+}
+
+textures/decals/posskidsdecal_11
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/posskidsdecal_11
+	{
+		blend   filter
+		map 	textures/decals/posskidsdecal_11
+	}
+}
+textures/decals/pedxing_01
+{
+	qer_editorimage textures/decals/pedxing_01_d
+//	decal_macro
+	matter_altmetal
+
+	bumpmap		textures/decals/pedxing_01_local
+
+	diffusemap	textures/decals/pedxing_01_d
+	specularmap	textures/decals/pedxing_01_s
+
+}
+
+textures/decals/pedxing_01_alpha
+{
+	qer_editorimage textures/decals/pedxing_01_d
+	decal_alphatest_macro
+//	bumpmap		addnormals (textures/decals/pedxing_01_local,
+//			    heightmap  (textures/decals/pedxing_01_h, 2))
+	bumpmap		textures/decals/pedxing_01_local
+
+	{
+		blend diffusemap
+		map	textures/decals/pedxing_01_d
+		alphatest 0.5
+	}
+	specularmap	textures/decals/pedxing_01_s
+
+}
+textures/decals/pedxing_02
+{
+	qer_editorimage textures/decals/pedxing_02_d
+//	decal_macro
+	matter_altmetal
+
+	bumpmap		textures/decals/pedxing_02_local
+	diffusemap	textures/decals/pedxing_02_d
+	specularmap	textures/decals/pedxing_02_s
+
+}
+
+textures/decals/pedxing_02_alpha
+{
+	qer_editorimage textures/decals/pedxing_02_d
+	decal_alphatest_macro
+//	bumpmap		addnormals (textures/decals/pedxing_02_local,
+//			    heightmap  (textures/decals/pedxing_02_h, 2))
+	bumpmap		textures/decals/pedxing_02_local
+
+	{
+		blend diffusemap
+		map	textures/decals/pedxing_02_d
+		alphatest 0.5
+	}
+	specularmap	textures/decals/pedxing_02_s
+
+}
+textures/decals/schoolsign
+{
+	qer_editorimage textures/decals/schoolsign_d
+//	decal_alphatest_macro
+	matter_wood
+
+	bumpmap		heightmap  (textures/decals/schoolsign_h, 7)
+//	bumpmap		textures/decals/schoolsign_local
+	diffusemap	textures/decals/schoolsign_d
+	specularmap	textures/decals/schoolsign_s
+
+}
+
+textures/decals/shoeprints_01
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/shoeprints_01
+	{
+		blend   filter
+		map 	textures/decals/shoeprints_01
+	}
+}
+
+textures/decals/handsmears_01
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/handsmears_01
+	{
+		blend   filter
+		map 	textures/decals/handsmears_01
+	}
+}
+
+textures/decals/handsmears_02
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/handsmears_02
+	{
+		blend   filter
+		map 	textures/decals/handsmears_02
+	}
+}
+
+textures/decals/gross_01
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/gross_01
+	{
+		blend   filter
+		map 	textures/decals/gross_01
+	}
+}
+
+textures/decals/gross_01b
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/gross_01b
+	{
+		blend   filter
+		map 	textures/decals/gross_01b
+	}
+}
+
+textures/decals/mirrorgrime_01
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/mirrorgrime_01
+	{
+		blend diffusemap
+		map 	textures/decals/mirrorgrime_01
+	}
+}
+textures/decals/alien_tag
+{
+	decal_macro
+
+	qer_editorimage	textures/decals/alien_tag
+	{
+		blend   filter
+		map 	textures/decals/alien_tag
+	}
+//	specularmap	textures/decals/alien_tag_spec2
+
+}
+
+textures/decals/alien_tag2
+{
+	decal_macro
+	qer_editorimage 	textures/decals/alien_tag2
+	{
+		blend	diffusemap
+		map	textures/decals/alien_tag2
+		rgb 0.15
+
+		blend	specularmap
+		map	textures/decals/alien_tag2
+		colored
+	}
+}
+
+textures/decals/alien_trim
+{
+	decal_macro
+	qer_editorimage	textures/decals/alien_trim
+	{
+		blend gl_dst_color, gl_zero
+		map 	textures/decals/alien_trim
+	}
+}
+
+textures/decals/alien_tag3
+{
+	decal_macro
+	qer_editorimage	textures/decals/alien_tag3
+	{
+		blend gl_dst_color, gl_zero
+		map 	textures/decals/alien_tag3
+	}
+}
+
+
+textures/decals/gib_splat1
+{
+	qer_editorimage	textures/decals/gib_splat1
+	decal_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map 	textures/decals/gib_splat_i1
+		vertexcolor
+	}
+
+/* CJR TEST - using a gib splat blend mode similar to Doom3's above
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend blend
+		map			textures/decals/gib_splat1
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+*/
+}
+
+textures/decals/gib_splat2
+{
+	qer_editorimage	textures/decals/gib_splat2
+	decal_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map 	textures/decals/gib_splat_i2
+		vertexcolor
+	}
+
+/* CJR TEST - using a gib splat blend mode similar to Doom3's above
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend	gl_dst_color, gl_one_minus_src_alpha		// dark, with alpha
+//		blend blend
+		map			textures/decals/gib_splat2
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+	}
+*/
+}
+
+textures/decals/gib_splat3
+{
+	qer_editorimage	textures/decals/goredecal_004B
+	decal_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map 	invertcolor(textures/decals/goredecal_004B)
+		vertexcolor
+	}
+}
+
+textures/decals/egg_splat1
+{
+	qer_editorimage	textures/decals/gib_splat1
+	decal_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map 	textures/decals/egg_splat1
+		vertexcolor
+	}
+}
+
+textures/decals/egg_splat2
+{
+	qer_editorimage	textures/decals/gib_splat1
+	decal_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend 	gl_zero,gl_one_minus_src_color
+		map 	textures/decals/egg_splat2
+		vertexcolor
+	}
+}
+
+textures/decals/neon_sign
+{
+	qer_editorimage textures/decals/neon_sign
+	{
+
+		blend	add
+		map	textures/decals/neon_sign
+		rgb	.4
+		glowstage
+	}
+}
+
+textures/decals/goo_splat
+{
+	qer_editorimage	textures/decals/goo_splat
+	decal_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend 	add
+		map 	textures/decals/goo_splat
+		vertexcolor
+	}
+}
+
+textures/decals/goo_splat2
+{
+	qer_editorimage	textures/decals/goo_splat2
+	decal_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend 	add
+		map 	textures/decals/goo_splat2
+		vertexcolor
+	}
+}
+
+textures/decals/centurion_footprint
+{
+	qer_editorimage	textures/decals/centurion_footprint
+	decal_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+
+	decalinfo 10 5 (1 1 1 1) (0 0 0 0)
+	{
+		blend 	gl_zero, gl_one_minus_src_color
+		map 	textures/decals/centurion_footprint
+		vertexcolor
+	}
+}
+textures/decals/hider_marker01
+{
+	qer_editorimage textures/decals/hider_marker01
+	decal_macro
+{
+
+		blend	add
+		map	textures/decals/hider_marker01
+	   	colored
+		glowstage
+
+}
+}
+textures/decals/windows_scale01
+{
+	qer_editorimage textures/decals/windows_scale01
+	{
+
+		blend	add
+		map	textures/decals/windows_scale01
+	   	rgb	.8
+		glowstage
+
+	}
+}
+textures/decals/outside_scale01
+{
+	qer_editorimage textures/decals/outside_scale01
+	decal_macro
+	bumpmap		textures/decals/outside_scale01_local
+    specularmap	textures/decals/outside_scale01_s
+{
+		blend diffusemap
+		map textures/decals/outside_scale01
+	}
+}
+textures/decals/hider_marker02
+{
+	qer_editorimage textures/decals/hider_marker02
+	decal_macro
+{
+
+		blend	add
+		map	textures/decals/hider_marker02
+	   	colored
+		glowstage
+
+}
+}
+textures/decals/hiderburn02
+{
+	decal_alphatest_macro
+	qer_editorimage 	textures/decals/hiderburn02_local
+	matter_metal
+	{
+		blend diffusemap
+		map	 	textures/decals/hiderburn02
+		alphatest 0.5
+	}
+	bumpmap 		addnormals (textures/decals/hiderburn02_local, heightmap (textures/decals/hiderburn02_h, 6))
+	specularmap		textures/decals/hiderburn02_s
+	{
+		blend add
+		map 		textures/decals/hiderburn02_add
+		glowstage
+		spiritWalk
+	}
+}
+ textures/decals/hiderburn02_critical
+{
+	decal_alphatest_macro
+	qer_editorimage 	textures/decals/hiderburn02_local
+	matter_metal
+	{
+		blend diffusemap
+		map	 	textures/decals/hiderburn02
+		alphatest 0.5
+	}
+	bumpmap 		addnormals (textures/decals/hiderburn02_local, heightmap (textures/decals/hiderburn02_h, 6))
+	specularmap		textures/decals/hiderburn02_s
+	{
+		blend add
+		map 		textures/decals/hiderburn02_critical_add_b
+		rgb 0.5
+                glowstage
+
+	}
+      	{
+		blend add
+		map 		textures/decals/hiderburn02_critical_add_b
+                glowstage
+                spiritWalk
+	}
+}
+textures/decals/windows_scale02
+{
+	decal_alphatest_macro
+	qer_editorimage 	textures/decals/windows_scale02_local
+	matter_metal
+	{
+		blend diffusemap
+		map	 	textures/decals/windows_scale02
+		alphatest 0.5
+	}
+	bumpmap 		addnormals (textures/decals/windows_scale02_local, heightmap (textures/decals/windows_scale02_h, 6))
+	specularmap		textures/decals/windows_scale02_s
+	{
+		blend add
+		map 		textures/decals/windows_scale02_add
+		colored
+        glowstage
+	}
+}
+textures/decals/door_scale01
+{
+	decal_alphatest_macro
+	qer_editorimage 	textures/decals/door_scale01_local
+	matter_metal
+	{
+		blend diffusemap
+		map	 	textures/decals/door_scale01
+		alphatest 0.5
+	}
+	bumpmap 		addnormals (textures/decals/door_scale01_local, heightmap (textures/decals/door_scale01_h, 6))
+	specularmap		textures/decals/door_scale01_s
+	{
+		blend add
+		map 		textures/decals/door_scale01_add
+		colored
+        glowstage
+	}
+}
+textures/decals/bl_techwallpipeflange
+{
+	qer_editorimage 	textures/decals/bl_techwallpipeflange_d
+	matter_metal
+	forceoverlays
+
+
+	bumpmap 		addnormals (textures/decals/bl_techwallpipeflange_local,
+				heightmap (textures/decals/bl_techwallpipeflange_h, 6))
+	diffusemap	 	textures/decals/bl_techwallpipeflange_d
+	specularmap		textures/decals/bl_techwallpipeflange_s
+		{
+		blend diffusemap
+		map  textures/decals/bl_techwallpipeflange_d
+		alphatest 0.5
+	}
+
+}
+textures/decals/bl_techwallpipeflange_keeper
+{
+	qer_editorimage 	textures/decals/bl_techwallpipeflange_local
+	matter_metal
+	bumpmap 		addnormals (textures/decals/bl_techwallpipeflange_local,
+				heightmap (textures/decals/bl_techwallpipeflange_keeper_h, 1))
+	diffusemap	 	textures/decals/bl_techwallpipeflange_keeper_d
+	specularmap		textures/decals/bl_techwallpipeflange_keeper_s
+
+
+}
+textures/decals/bl_techwallpipeflange02
+{
+	qer_editorimage 	textures/decals/bl_techwallpipeflange02_d
+	matter_metal
+	forceoverlays
+
+
+	bumpmap 		addnormals (textures/decals/bl_techwallpipeflange02_local,
+				heightmap (textures/decals/bl_techwallpipeflange02_h, 6))
+	diffusemap	 	textures/decals/bl_techwallpipeflange02_d
+	specularmap		textures/decals/bl_techwallpipeflange02_s
+		{
+		blend diffusemap
+		map  textures/decals/bl_techwallpipeflange02_d
+		alphatest 0.5
+	}
+
+}
+textures/decals/bl_techwallpipeflange02_add
+{
+	qer_editorimage 	textures/decals/bl_techwallpipeflange02_d
+	matter_metal
+	forceoverlays
+
+	bumpmap 		addnormals (textures/decals/bl_techwallpipeflange02_local,
+				heightmap (textures/decals/bl_techwallpipeflange02_h, 6))
+	diffusemap	 	textures/decals/bl_techwallpipeflange02_d
+	specularmap		textures/decals/bl_techwallpipeflange02_s
+		{
+		blend diffusemap
+		map  textures/decals/bl_techwallpipeflange02_d
+		alphatest 0.5
+	}
+{
+		blend add
+		map textures/decals/bl_techwallpipeflange02_add
+		rgb (jitter1 [time * 10]) - 0.1
+	}
+}
+
+textures/decals/wall_grime_1
+{
+	decal_macro
+	{
+		blend gl_dst_color, gl_zero
+		map textures/decals/wall_grime_1
+	}
+}
+
+textures/decals/wraithspooge
+{
+	qer_editorimage	textures/scorches/wraithsplat
+	decal_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+	decalinfo 1 0.5 (1 1 1 1) (0 0 0 0) // Acid decals fade fast
+	{
+		blend		gl_one_minus_dst_color, gl_one
+		map			textures/scorches/wraithsplat
+		clamp		// we don't want it to tile if the projection extends past the bounds
+		vertexcolor	// oblique projections will be slightly faded down
+		red		0.3
+		green	0.3
+		blue	0.5
+		//glowStage
+//		spiritWalk
+	}
+}
+
+//textures/decals/wraithspooge
+//{
+//	qer_editorimage	textures/scorches/hider_burn
+//	decal_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+//	decalinfo 3 2 (1 1 1 1) (0 0 0 0) // Acid decals fade fast
+//	{
+//		blend		gl_one, gl_one_minus_src_alpha
+//		map			textures/scorches/wraithspooge
+//		clamp		// we don't want it to tile if the projection extends past the bounds
+//		vertexcolor	// oblique projections will be slightly faded down
+//		red		0.3
+//		green	0.3
+//		blue	0.5
+//		glowStage
+//		spiritWalk
+//	}
+//}
+
+textures/decals/frost
+{
+	qer_editorimage textures/decals/frost
+	decal_alphatest_macro
+	 {
+                vertexProgram           heatHaze.vfp
+                vertexParm              0       0, 0		// texture scrolling
+                vertexParm              1       0.8				// magnitude of the distortion
+                fragmentProgram			heatHaze.vfp
+                fragmentMap             0       _currentRender
+                fragmentMap             1       textures/decals/frost_local
+     }
+     {
+		blend	add
+	 	map		textures/decals/frost
+	 	clamp
+	}
+}
+
+textures/decals/frost2
+{
+	qer_editorimage textures/decals/frost
+	decal_alphatest_macro
+	 {
+                vertexProgram           heatHaze.vfp
+                vertexParm              0       0, 0		// texture scrolling
+                vertexParm              1       0.25				// magnitude of the distortion
+                fragmentProgram			heatHaze.vfp
+                fragmentMap             0       _currentRender
+                fragmentMap             1       textures/decals/frost_local
+     }
+     {
+		blend	gl_one_minus_src_alpha, gl_one_minus_src_color
+	 	map		textures/decals/frost2
+	 	clamp
+	}
+
+}
+
+/*
+textures/decals/frost3
+{
+	qer_editorimage textures/decals/frost
+	decal_alphatest_macro
+
+	 {
+                vertexProgram           heatHaze.vfp
+                vertexParm              0       0, 0		// texture scrolling
+                vertexParm              1       0.25				// magnitude of the distortion
+                fragmentProgram			heatHaze.vfp
+                fragmentMap             0       _currentRender
+                fragmentMap             1       textures/decals/frost3_local
+     }
+
+
+
+	bumpmap		textures/decals/frost3_local
+   	diffusemap	textures/decals/frost3_d
+	specularmap	textures/decals/frost3_s
+
+
+}
+
+textures/decals/icicles
+{
+	qer_editorimage textures/decals/icicles_d
+	decal_alphatest_macro
+
+	 {
+                vertexProgram           heatHaze.vfp
+                vertexParm              0       0, 0		// texture scrolling
+                vertexParm              1       0.25				// magnitude of the distortion
+                fragmentProgram			heatHaze.vfp
+                fragmentMap             0       _currentRender
+                fragmentMap             1       textures/glass/vp1
+     }
+
+
+
+	bumpmap		textures/decals/icicles_local
+   	diffusemap	textures/decals/icicles_d
+	specularmap	textures/decals/icicles_s
+
+
+}
+*/
+
+textures/decals/frost_glass
+{
+	qer_editorimage textures/decals/frost_glass
+	decal_alphatest_macro
+	 {
+                vertexProgram           heatHaze.vfp
+                vertexParm              0       0, 0		// texture scrolling
+                vertexParm              1       0.5				// magnitude of the distortion
+                fragmentProgram			heatHaze.vfp
+                fragmentMap             0       _currentRender
+                fragmentMap             1       textures/decals/frost_glass_local
+     }
+     {
+		blend	add
+	 	map		textures/decals/frost_glass
+	 	clamp
+	}
+}
+
+textures/decals/metal_glow
+{
+	decal_macro
+	{
+		blend add
+		map textures/decals/metal_glow
+		red 	(flicker5 [time * 1]) * parm0
+		green 	(flicker5 [time * 1]) * parm1
+		blue 	(flicker5 [time * 1]) * parm2
+		glowstage
+	}
+}
+
+textures/decals/metal_glow_ends
+{
+	decal_macro
+	{
+		blend add
+		map textures/decals/metal_glow_ends
+		red 	(flicker5 [time * 1]) * parm0
+		green 	(flicker5 [time * 1]) * parm1
+		blue 	(flicker5 [time * 1]) * parm2
+		glowstage
+	}
+}
+
+textures/decals/metal_glow_sides
+{
+	decal_macro
+	{
+		blend add
+		map textures/decals/metal_glow_sides
+		red 	(flicker5 [time * 1]) * parm0
+		green 	(flicker5 [time * 1]) * parm1
+		blue 	(flicker5 [time * 1]) * parm2
+		glowstage
+	}
+}
+
+textures/decals/metal_glow_spot
+{
+	decal_macro
+	{
+		blend add
+		map textures/decals/metal_glow_spot
+		red 	(flicker5 [time * 1]) * parm0
+		green 	(flicker5 [time * 1]) * parm1
+		blue 	(flicker5 [time * 1]) * parm2
+		glowstage
+	}
+}
+
+textures/decals/sphere_flame_column
+{
+	decal_macro
+	{
+		blend add
+		map textures/particles/explosion3
+		rgb 	(flicker5 [time * 1])*0.5
+	}
+}
+
+textures/decals/monster_ooze
+{
+	decal_macro
+
+	{
+			blend 	gl_dst_color, gl_src_color
+			map	textures/decals/monster_ooze
+	}
+
+}
+
+textures/decals/soul_splat
+{
+	qer_editorimage	textures/decals/soul_splat
+	decal_macro
+
+	// decalinfo <stayseconds> <fadeseconds> ( <start rgb> ) ( <end rgb> )
+
+	decalinfo 10 5 (0.5 0.5 0.5 0.5) (0 0 0 0)
+	{
+		blend 	add
+		map 	textures/decals/soul_splat
+		vertexcolor
+		glowstage
+	}
+}
+
+textures/decals/superportal_wallburnout
+{
+	decal_macro
+	qer_editorimage 	textures/decals/superwall_burn
+
+	{ if ( parm4 == 0 )
+		blend	add
+		map		textures/decals/superwall_burn
+		red		0
+		green	0
+		blue	0
+	}
+
+	{ if ( parm4 != 0 )
+		blend	add
+		map		textures/decals/superwall_burn
+		red		parm0 * fade_on1 [ ( time + parm4 ) * 0.25 ]
+		green	parm1 * fade_on1 [ ( time + parm4 ) * 0.25 ]
+		blue	parm2 * fade_on1 [ ( time + parm4 ) * 0.25 ]
+		glowstage
+	}
+}

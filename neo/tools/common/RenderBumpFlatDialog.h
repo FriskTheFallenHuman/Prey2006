@@ -29,6 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __RENDERBUMPFLATDIALOG_H
 #define __RENDERBUMPFLATDIALOG_H
 
-void DoRBFDialog( const char* FileName );
+void DoRBFDialog( const char * FileName );
 
 #endif // __RENDERBUMPFLATDIALOG_H

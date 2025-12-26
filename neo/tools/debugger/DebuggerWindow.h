@@ -29,11 +29,10 @@ If you have questions concerning this license or the applicable additional terms
 #define DEBUGGERWINDOW_H_
 
 #ifndef DEBUGGERSCRIPT_H_
-	#include "DebuggerScript.h"
+#include "DebuggerScript.h"
 #endif
 
-class rvDebuggerWatch
-{
+class rvDebuggerWatch {
 public:
 
 	idStr	mVariable;
@@ -41,12 +40,11 @@ public:
 	bool	mModified;
 };
 
-typedef idList<rvDebuggerWatch*>		rvDebuggerWatchList;
+typedef idList<rvDebuggerWatch *>		rvDebuggerWatchList;
 
 class rvDebuggerClient;
 
-class rvDebuggerWindow
-{
+class rvDebuggerWindow {
 public:
 
 	rvDebuggerWindow( );
@@ -58,11 +56,11 @@ public:
 
 	void							ProcessNetMessage( idBitMsg* msg );
 
-	void							Printf( const char* format, ... );
+	void							Printf( const char * format, ... );
 
 	HWND							GetWindow();
 
-	void							AddWatch( const char* name, bool update = true );
+	void							AddWatch( const char * name, bool update = true );
 
 	HINSTANCE						GetInstance();
 
@@ -78,15 +76,15 @@ private:
 	int								HandleDrawItem( WPARAM wparam, LPARAM lparam );
 	void							HandleTooltipGetDispInfo( WPARAM wparam, LPARAM lparam );
 
-	void							ResizeImageList( int& widthOut, int& heightOut );
+	void							ResizeImageList( int & widthOut, int & heightOut );
 	static LRESULT					CALLBACK WndProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam );
 	static LRESULT					CALLBACK MarginWndProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam );
 	static LRESULT					CALLBACK ScriptWndProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam );
 	static INT_PTR					CALLBACK AboutDlgProc( HWND wnd, UINT msg, WPARAM wparam, LPARAM lparam );
 	static int						CALLBACK ScriptWordBreakProc( LPTSTR text, int current, int max, int action );
 
-	bool							FindPrev( const char* text = NULL );
-	bool							FindNext( const char* text = NULL );
+	bool							FindPrev( const char * text = NULL );
+	bool							FindNext( const char * text = NULL );
 
 	void							UpdateBreakpointList();
 	void							UpdateScriptList();
@@ -97,7 +95,7 @@ private:
 	void							UpdateTitle();
 	void							UpdateCallstack();
 	void							UpdateRecentFiles();
-	bool							OpenScript( const char* filename, int lineNumber = -1, idProgram* program = NULL );
+	bool							OpenScript( const char * filename, int lineNumber = -1, idProgram* program = NULL );
 	void							EnableWindows( bool state );
 
 	int								GetSelectedText( idStr& text );
@@ -135,7 +133,7 @@ private:
 	RECT							mSplitterRect;
 	bool							mSplitterDrag;
 
-	idList<rvDebuggerScript*>		mScripts;
+	idList<rvDebuggerScript *>		mScripts;
 	int								mActiveScript;
 	int								mLastActiveScript;
 	int								mCurrentStackDepth;
@@ -149,7 +147,7 @@ private:
 
 	idStr							mFind;
 
-	rvDebuggerClient*				mClient;
+	rvDebuggerClient		*		mClient;
 
 	rvDebuggerWatchList				mWatches;
 };
@@ -159,8 +157,7 @@ private:
 rvDebuggerWindow::GetWindow
 ================
 */
-ID_INLINE HWND rvDebuggerWindow::GetWindow()
-{
+ID_INLINE HWND rvDebuggerWindow::GetWindow() {
 	return mWnd;
 }
 
@@ -169,8 +166,7 @@ ID_INLINE HWND rvDebuggerWindow::GetWindow()
 rvDebuggerWindow::UpdateToolbar
 ================
 */
-ID_INLINE void rvDebuggerWindow::UpdateToolbar()
-{
+ID_INLINE void rvDebuggerWindow::UpdateToolbar() {
 	HandleInitMenu( ( WPARAM )GetMenu( mWnd ), 0 );
 }
 
@@ -179,8 +175,7 @@ ID_INLINE void rvDebuggerWindow::UpdateToolbar()
 rvDebuggerWindow::GetInstance
 ================
 */
-ID_INLINE HINSTANCE rvDebuggerWindow::GetInstance()
-{
+ID_INLINE HINSTANCE rvDebuggerWindow::GetInstance() {
 	return mInstance;
 }
 

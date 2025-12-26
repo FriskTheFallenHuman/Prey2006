@@ -39,15 +39,13 @@ If you have questions concerning this license or the applicable additional terms
 // CTearoffContainerWindow
 
 IMPLEMENT_DYNAMIC( CTearoffContainerWindow, CWnd )
-CTearoffContainerWindow::CTearoffContainerWindow()
-{
+CTearoffContainerWindow::CTearoffContainerWindow() {
 	m_DragPreviewActive = false;
 	m_ContainedDialog = NULL;
 	m_DockManager = NULL;
 }
 
-CTearoffContainerWindow::~CTearoffContainerWindow()
-{
+CTearoffContainerWindow::~CTearoffContainerWindow() {
 }
 
 
@@ -62,24 +60,21 @@ END_MESSAGE_MAP()
 // CTearoffContainerWindow message handlers
 
 
-void CTearoffContainerWindow::OnNcLButtonDblClk( UINT nHitTest, CPoint point )
-{
-	if( nHitTest == HTCAPTION )
-	{
-		m_DockManager->DockWindow( m_DialogID , true );
+void CTearoffContainerWindow::OnNcLButtonDblClk( UINT nHitTest, CPoint point ) {
+	if ( nHitTest == HTCAPTION ) {
+		m_DockManager->DockWindow( m_DialogID, true );
 	}
 
 	CWnd::OnNcLButtonDblClk( nHitTest, point );
 }
 
 
-void CTearoffContainerWindow::SetDialog( CWnd* dlg , int ID )
-{
+void CTearoffContainerWindow::SetDialog( CWnd* dlg, int ID ) {
 	m_DialogID = ID;
 	m_ContainedDialog = dlg;
 
 	CRect rect;
-	CPoint point( -10 , -10 );
+	CPoint point( -10, -10 );
 	m_ContainedDialog->GetWindowRect( rect );
 
 	rect.OffsetRect( point );	//move the window slightly so you can tell it's been popped up
@@ -91,24 +86,19 @@ void CTearoffContainerWindow::SetDialog( CWnd* dlg , int ID )
 	MoveWindow( rect );
 }
 
-void CTearoffContainerWindow::SetDockManager( CTabsDlg* dlg )
-{
+void CTearoffContainerWindow::SetDockManager( CTabsDlg* dlg ) {
 	m_DockManager = dlg;
 }
-void CTearoffContainerWindow::OnClose()
-{
-	if( m_DockManager )
-	{
+void CTearoffContainerWindow::OnClose() {
+	if ( m_DockManager ) {
 		//send it back to the docking window (for now at least)
-		m_DockManager->DockWindow( m_DialogID , true );
+		m_DockManager->DockWindow( m_DialogID, true );
 	}
 }
 
 
-BOOL CTearoffContainerWindow:: PreTranslateMessage( MSG* pMsg )
-{
-	if( pMsg->message == WM_NCLBUTTONUP )
-	{
+BOOL CTearoffContainerWindow:: PreTranslateMessage( MSG* pMsg ) {
+	if ( pMsg->message == WM_NCLBUTTONUP ) {
 		/*		CRect rect;
 				GetWindowRect ( rect );
 
@@ -122,28 +112,23 @@ BOOL CTearoffContainerWindow:: PreTranslateMessage( MSG* pMsg )
 
 	return CWnd::PreTranslateMessage( pMsg );
 }
-void CTearoffContainerWindow::OnSize( UINT nType, int cx, int cy )
-{
-	if( m_ContainedDialog )
-	{
+void CTearoffContainerWindow::OnSize( UINT nType, int cx, int cy ) {
+	if ( m_ContainedDialog ) {
 		m_ContainedDialog->MoveWindow( 0, 0, cx, cy );
 	}
 
 	CWnd::OnSize( nType, cx, cy );
 }
 
-void CTearoffContainerWindow::OnDestroy()
-{
+void CTearoffContainerWindow::OnDestroy() {
 	CWnd::OnDestroy();
 
 	// TODO: Add your message handler code here
 }
 
-void CTearoffContainerWindow::OnSetFocus( CWnd* pOldWnd )
-{
+void CTearoffContainerWindow::OnSetFocus( CWnd* pOldWnd ) {
 	CWnd::OnSetFocus( pOldWnd );
-	if( m_ContainedDialog )
-	{
+	if ( m_ContainedDialog ) {
 		m_ContainedDialog->SetFocus();
 	}
 	// TODO: Add your message handler code here

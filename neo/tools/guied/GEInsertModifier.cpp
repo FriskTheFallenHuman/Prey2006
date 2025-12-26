@@ -32,9 +32,8 @@ If you have questions concerning this license or the applicable additional terms
 #include "GEApp.h"
 #include "GEInsertModifier.h"
 
-rvGEInsertModifier::rvGEInsertModifier( const char* name, idWindow* window, idWindow* parent, idWindow* before ) :
-	rvGEModifier( name, window )
-{
+rvGEInsertModifier::rvGEInsertModifier( const char * name, idWindow* window, idWindow* parent, idWindow* before ) :
+	rvGEModifier( name, window ) {
 	mParent  = parent;
 	mBefore  = before;
 
@@ -46,8 +45,7 @@ rvGEInsertModifier::rvGEInsertModifier( const char* name, idWindow* window, idWi
 	mRect		= mWrapper->GetClientRect( );
 
 	// Find the child window the window being inserted is before
-	if( mUndoParent )
-	{
+	if ( mUndoParent ) {
 		int				   index;
 		rvGEWindowWrapper* pwrapper;
 
@@ -55,8 +53,7 @@ rvGEInsertModifier::rvGEInsertModifier( const char* name, idWindow* window, idWi
 
 		index = mUndoParent->GetChildIndex( mWindow );
 
-		if( index + 1 < pwrapper->GetChildCount( ) )
-		{
+		if ( index + 1 < pwrapper->GetChildCount( ) ) {
 			mUndoBefore = pwrapper->GetChild( index + 1 );
 		}
 	}
@@ -77,10 +74,8 @@ Apply the insert modifier by removing the child from its original parent and
 inserting it as a child of the new parent
 ================
 */
-bool rvGEInsertModifier::Apply()
-{
-	if( mUndoParent )
-	{
+bool rvGEInsertModifier::Apply() {
+	if ( mUndoParent ) {
 		mUndoParent->RemoveChild( mWindow );
 	}
 
@@ -98,12 +93,10 @@ Undo the insert modifier by removing the window from the parent it was
 added to and re-inserting it back into its original parent
 ================
 */
-bool rvGEInsertModifier::Undo()
-{
+bool rvGEInsertModifier::Undo() {
 	mParent->RemoveChild( mWindow );
 
-	if( mUndoParent )
-	{
+	if ( mUndoParent ) {
 		mUndoParent->InsertChild( mWindow, mUndoBefore );
 		mWrapper->SetRect( mUndoRect );
 	}

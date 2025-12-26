@@ -39,10 +39,17 @@ idVec4 idDeviceContext::colorBlack;
 idVec4 idDeviceContext::colorWhite;
 idVec4 idDeviceContext::colorNone;
 
+// This makes the alien fonts gets translated to human fonts
+const char *gui_translateAlienFontArgs[] = {
+	"fonts",
+	"fonts/menu",
+	NULL
+};
 
 idCVar gui_smallFontLimit( "gui_smallFontLimit", "0.30", CVAR_GUI | CVAR_ARCHIVE, "" );
 idCVar gui_mediumFontLimit( "gui_mediumFontLimit", "0.60", CVAR_GUI | CVAR_ARCHIVE, "" );
-
+idCVar gui_translateAlienFont( "gui_translateAlienFont", gui_translateAlienFontArgs[0], CVAR_GUI | CVAR_ARCHIVE, "Setup font name for automitic translate `alien` font text of GUI(empty to disable).", idCmdSystem::ArgCompletion_String<gui_translateAlienFontArgs> );
+idCVar gui_translateAlienFontDistance( "gui_translateAlienFontDistance", "200", CVAR_GUI | CVAR_FLOAT | CVAR_ARCHIVE, "Setup max distance of GUI to view origin for enable translate `alien` font text(0 = disable; -1 = always; positive: distance value)." );
 
 idList<fontInfoEx_t> idDeviceContext::fonts;
 
@@ -112,23 +119,15 @@ void idDeviceContext::Init() {
 	cursorImages[CURSOR_ARROW] = declManager->FindMaterial("guis/assets/guicursor_arrow.tga");
 	cursorImages[CURSOR_HAND] = declManager->FindMaterial("guis/assets/guicursor_hand.tga");
 	cursorImages[CURSOR_MENU] = declManager->FindMaterial("guis/assets/guicursor_menu.tga");
-	scrollBarImages[SCROLLBAR_HBACK] = declManager->FindMaterial("ui/assets/scrollbarh.tga");
+	scrollBarImages[SCROLLBAR_HBACK] = declManager->FindMaterial("guis/assets/scrollbarv_cap.tga");
 	scrollBarImages[SCROLLBAR_VBACK] = declManager->FindMaterial("guis/assets/scrollbarv.tga");
 	scrollBarImages[SCROLLBAR_THUMB] = declManager->FindMaterial("guis/assets/scrollbar_thumb.tga");
-	scrollBarImages[SCROLLBAR_RIGHT] = declManager->FindMaterial("ui/assets/scrollbar_right.tga");
-	scrollBarImages[SCROLLBAR_LEFT] = declManager->FindMaterial("ui/assets/scrollbar_left.tga");
-	scrollBarImages[SCROLLBAR_UP] = declManager->FindMaterial("ui/assets/scrollbar_up.tga");
-	scrollBarImages[SCROLLBAR_DOWN] = declManager->FindMaterial("ui/assets/scrollbar_down.tga");
 	cursorImages[CURSOR_ARROW]->SetSort( SS_GUI );
 	cursorImages[CURSOR_HAND]->SetSort( SS_GUI );
 	cursorImages[CURSOR_MENU]->SetSort( SS_GUI );
 	scrollBarImages[SCROLLBAR_HBACK]->SetSort( SS_GUI );
 	scrollBarImages[SCROLLBAR_VBACK]->SetSort( SS_GUI );
 	scrollBarImages[SCROLLBAR_THUMB]->SetSort( SS_GUI );
-	scrollBarImages[SCROLLBAR_RIGHT]->SetSort( SS_GUI );
-	scrollBarImages[SCROLLBAR_LEFT]->SetSort( SS_GUI );
-	scrollBarImages[SCROLLBAR_UP]->SetSort( SS_GUI );
-	scrollBarImages[SCROLLBAR_DOWN]->SetSort( SS_GUI );
 	cursor = CURSOR_ARROW;
 	enableClipping = true;
 	overStrikeMode = true;
@@ -291,16 +290,20 @@ void idDeviceContext::SetMenuScaleFix(bool enable) {
 	}
 }
 
+// DG: Note: not sure if AdjustCoords() works entirely as it should, but it seems
+//     good enough for the idRenderWindow with the mars globe in the main menu
 void idDeviceContext::AdjustCoords(float *x, float *y, float *w, float *h) {
-
+	// TODO: not sure about cst_*Offset
 	if (x) {
 		*x *= xScale;
+		*x += xOffset; // DG: for CstDoom3 anchored windows
 
 		*x *= fixScaleForMenu.x; // DG: for "render menus as 4:3" hack
 		*x += fixOffsetForMenu.x;
 	}
 	if (y) {
 		*y *= yScale;
+		*y += yOffset; // DG: for CstDoom3 anchored windows
 
 		*y *= fixScaleForMenu.y; // DG: for "render menus as 4:3" hack
 		*y += fixOffsetForMenu.y;
@@ -317,23 +320,10 @@ void idDeviceContext::AdjustCoords(float *x, float *y, float *w, float *h) {
 	}
 }
 
-// DG: same as AdjustCoords, but ignore fixupMenus because for the cursor that must be handled seperately
-void idDeviceContext::AdjustCursorCoords(float *x, float *y, float *w, float *h) {
-	if (x) {
-		*x *= xScale;
-	}
-	if (y) {
-		*y *= yScale;
-	}
-	if (w) {
-		*w *= xScale;
-	}
-	if (h) {
-		*h *= yScale;
-	}
-}
-
-void idDeviceContext::DrawStretchPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2, const idMaterial *shader) {
+// fva/DG: added adjustCoords argument for CstDoom3 anchored GUIs and our old
+//         scale-menus-to-4:3-fix, it basically replaces calling AdjustCoords(&x, &y, &w, &h)
+//         before calling this
+void idDeviceContext::DrawStretchPic(float x, float y, float w, float h, float s1, float t1, float s2, float t2, const idMaterial *shader, bool adjustCoords) {
 	idDrawVert verts[4];
 	glIndex_t indexes[6];
 	indexes[0] = 3;
@@ -415,6 +405,16 @@ void idDeviceContext::DrawStretchPic(float x, float y, float w, float h, float s
 		verts[3].xyz += origin;
 	}
 
+	if ( adjustCoords ) {
+		for( int i=0; i<4; ++i) {
+			// Note: if adjustCoords == false; *Offset is 0, so that doesn't require special handling
+			float x = verts[i].xyz[0] * xScale + xOffset;
+			float y = verts[i].xyz[1] * yScale + yOffset;
+			verts[i].xyz[0] = x * fixScaleForMenu.x + fixOffsetForMenu.x;
+			verts[i].xyz[1] = y * fixScaleForMenu.y + fixOffsetForMenu.y;
+		}
+	}
+
 	renderSystem->DrawStretchPic( &verts[0], &indexes[0], 4, 6, shader, ident );
 
 }
@@ -462,9 +462,7 @@ void idDeviceContext::DrawMaterial(float x, float y, float w, float h, const idM
 		return;
 	}
 
-	AdjustCoords(&x, &y, &w, &h);
-
-	DrawStretchPic( x, y, w, h, s0, t0, s1, t1, mat);
+	DrawStretchPic(x, y, w, h, s0, t0, s1, t1, mat, true);
 }
 
 void idDeviceContext::DrawMaterialRotated(float x, float y, float w, float h, const idMaterial *mat, const idVec4 &color, float scalex, float scaley, float angle) {
@@ -509,12 +507,13 @@ void idDeviceContext::DrawMaterialRotated(float x, float y, float w, float h, co
 		return;
 	}
 
-	AdjustCoords(&x, &y, &w, &h);
-
-	DrawStretchPicRotated( x, y, w, h, s0, t0, s1, t1, mat, angle);
+	DrawStretchPicRotated(x, y, w, h, s0, t0, s1, t1, mat, angle, true);
 }
 
-void idDeviceContext::DrawStretchPicRotated(float x, float y, float w, float h, float s1, float t1, float s2, float t2, const idMaterial *shader, float angle) {
+// fva/DG: added adjustCoords argument for CstDoom3 anchored GUIs and our old
+//         scale-menus-to-4:3-fix, it basically replaces calling AdjustCoords(&x, &y, &w, &h)
+//         before calling this
+void idDeviceContext::DrawStretchPicRotated(float x, float y, float w, float h, float s1, float t1, float s2, float t2, const idMaterial *shader, float angle, bool adjustCoords) {
 
 	idDrawVert verts[4];
 	glIndex_t indexes[6];
@@ -624,6 +623,15 @@ void idDeviceContext::DrawStretchPicRotated(float x, float y, float w, float h, 
 		verts[i].xyz += origTrans;
 	}
 
+	if ( adjustCoords ) {
+		for( int i = 0; i < 4; ++i ) {
+			// Note: if adjustCoords == false; *Offset is 0, so that doesn't require special handling
+			float x = verts[i].xyz[0] * xScale + xOffset;
+			float y = verts[i].xyz[1] * yScale + yOffset;
+			verts[i].xyz[0] = x * fixScaleForMenu.x + fixOffsetForMenu.x;
+			verts[i].xyz[1] = y * fixScaleForMenu.y + fixOffsetForMenu.y;
+		}
+	}
 
 	renderSystem->DrawStretchPic( &verts[0], &indexes[0], 4, 6, shader, (angle == 0.0) ? false : true );
 }
@@ -640,8 +648,7 @@ void idDeviceContext::DrawFilledRect( float x, float y, float w, float h, const 
 		return;
 	}
 
-	AdjustCoords(&x, &y, &w, &h);
-	DrawStretchPic( x, y, w, h, 0, 0, 0, 0, whiteImage);
+	DrawStretchPic(x, y, w, h, 0, 0, 0, 0, whiteImage, true);
 }
 
 
@@ -657,11 +664,10 @@ void idDeviceContext::DrawRect( float x, float y, float w, float h, float size, 
 		return;
 	}
 
-	AdjustCoords(&x, &y, &w, &h);
-	DrawStretchPic( x, y, size, h, 0, 0, 0, 0, whiteImage );
-	DrawStretchPic( x + w - size, y, size, h, 0, 0, 0, 0, whiteImage );
-	DrawStretchPic( x, y, w, size, 0, 0, 0, 0, whiteImage );
-	DrawStretchPic( x, y + h - size, w, size, 0, 0, 0, 0, whiteImage );
+	DrawStretchPic( x, y + size, size, h - 2.0f * size, 0, 0, 0, 0, whiteImage, true );
+	DrawStretchPic( x + w - size, y + size, size, h - 2.0f * size, 0, 0, 0, 0, whiteImage, true );
+	DrawStretchPic( x, y, w, size, 0, 0, 0, 0, whiteImage, true );
+	DrawStretchPic( x, y + h - size, w, size, 0, 0, 0, 0, whiteImage, true );
 }
 
 void idDeviceContext::DrawMaterialRect( float x, float y, float w, float h, float size, const idMaterial *mat, const idVec4 &color) {
@@ -701,11 +707,22 @@ void idDeviceContext::DrawCursor(float *x, float *y, float size) {
 
 	renderSystem->SetColor(colorWhite);
 
-	// DG: I use this instead of plain AdjustCursorCoords and the following lines
-	//     to scale menus and other fullscreen GUIs to 4:3 aspect ratio
-	AdjustCursorCoords(x, y, &size, &size);
-	float sizeW = size * fixScaleForMenu.x;
-	float sizeH = size * fixScaleForMenu.y;
+	// DG: originally, this just called AdjustCoords() and then DrawStretchPic().
+	//     It had to be adjusted to scale menus and other fullscreen GUIs to 4:3 aspect ratio
+	//     and for the CstDoom3 anchored GUIs, so all that is now done here
+
+	// the following block used to be Adjust(Cursor)Coords()
+	// (no point in keeping that function when it's only used here)
+
+	// if adjustCoords is used, x and y shouldn't be scaled, otherwise the cursor moves to a window border
+	if ( !adjustCoords ) {
+		*x *= xScale;
+		*y *= yScale;
+	}
+
+	// the *actual* sizes and position used (but not set to *x and *y) need to apply the menu fixes
+	float sizeW = size * fixScaleForMenu.x * xScale;
+	float sizeH = size * fixScaleForMenu.y * yScale;
 	float fixedX = *x * fixScaleForMenu.x + fixOffsetForMenu.x;
 	float fixedY = *y * fixScaleForMenu.y + fixOffsetForMenu.y;
 
@@ -714,7 +731,7 @@ void idDeviceContext::DrawCursor(float *x, float *y, float size) {
 /*
  =======================================================================================================================
  =======================================================================================================================
- */
+*/
 
 void idDeviceContext::PaintChar(float x,float y,float width,float height,float scale,float	s,float	t,float	s2,float t2,const idMaterial *hShader) {
 	float	w, h;
@@ -725,8 +742,7 @@ void idDeviceContext::PaintChar(float x,float y,float width,float height,float s
 		return;
 	}
 
-	AdjustCoords(&x, &y, &w, &h);
-	DrawStretchPic(x, y, w, h, s, t, s2, t2, hShader);
+	DrawStretchPic( x, y, w, h, s, t, s2, t2, hShader, true );
 }
 
 
@@ -818,11 +834,190 @@ int idDeviceContext::DrawText(float x, float y, float scale, idVec4 color, const
 void idDeviceContext::SetSize(float width, float height) {
 	vidWidth = VIRTUAL_WIDTH;
 	vidHeight = VIRTUAL_HEIGHT;
-	xScale = yScale = 0.0f;
-	if ( width != 0.0f && height != 0.0f ) {
+	xScale = yScale = 1.0f; // DG: I think this was also changed by fva
+	xOffset = yOffset = 0.0f;
+	adjustCoords = false;
+
+	if ( ( width != vidWidth || height != vidHeight ) && width > 0.0f && height > 0.0f ) {
+		adjustCoords = true;
+
 		xScale = vidWidth * ( 1.0f / width );
 		yScale = vidHeight * ( 1.0f / height );
 	}
+}
+
+static bool GuiGetVidScale( float &_xScale, float &_yScale ) {
+	int glWidth, glHeight;
+
+	renderSystem->GetGLSettings( glWidth, glHeight );
+	if ( glWidth <= 0 || glHeight <= 0 ) {
+		return false;
+	}
+
+	float glAspectRatio = (float)glWidth / (float)glHeight;
+
+	const float vidWidth = VIRTUAL_WIDTH;
+	const float vidHeight = VIRTUAL_HEIGHT;
+	const float vidAspectRatio = (float)VIRTUAL_WIDTH / (float)VIRTUAL_HEIGHT;
+
+	float modWidth = vidWidth;
+	float modHeight = vidHeight;
+	if ( glAspectRatio >= vidAspectRatio ) {
+		modWidth = modHeight * glAspectRatio;
+	} else {
+		modHeight = modWidth / glAspectRatio;
+	}
+
+	_xScale = vidWidth / modWidth;
+	_yScale = vidHeight / modHeight;
+	return true;
+}
+
+static void AdjustParmsForAnchor( int anchor, float &_xScale, float &_yScale, float &_xOffset, float &_yOffset ) {
+	const float vidWidth = VIRTUAL_WIDTH;
+	const float vidHeight = VIRTUAL_HEIGHT;
+
+	switch ( anchor ) {
+		case idDeviceContext::ANCHOR_TOP_LEFT: {
+			_xOffset = 0.0f;
+			_yOffset = 0.0f;
+			break;
+		}
+		case idDeviceContext::ANCHOR_TOP_CENTER: {
+			_xOffset = ( vidWidth * 0.5f ) * ( 1.0f - _xScale );
+			_yOffset = 0.0f;
+			break;
+		}
+		case idDeviceContext::ANCHOR_TOP_RIGHT: {
+			_xOffset = vidWidth * ( 1.0f - _xScale );
+			_yOffset = 0.0f;
+			break;
+		}
+		case idDeviceContext::ANCHOR_CENTER_LEFT: {
+			_xOffset = 0.0f;
+			_yOffset = ( vidHeight * 0.5f ) * ( 1.0f - _yScale );
+			break;
+		}
+		case idDeviceContext::ANCHOR_CENTER_CENTER: {
+			_xOffset = ( vidWidth * 0.5f ) * ( 1.0f - _xScale );
+			_yOffset = ( vidHeight * 0.5f ) * ( 1.0f - _yScale );
+			break;
+		}
+		case idDeviceContext::ANCHOR_CENTER_RIGHT: {
+			_xOffset = vidWidth * ( 1.0f - _xScale );
+			_yOffset = ( vidHeight * 0.5f ) * ( 1.0f - _yScale );
+			break;
+		}
+		case idDeviceContext::ANCHOR_BOTTOM_LEFT: {
+			_xOffset = 0.0f;
+			_yOffset = vidHeight * ( 1.0f - _yScale );
+			break;
+		}
+		case idDeviceContext::ANCHOR_BOTTOM_CENTER: {
+			_xOffset = ( vidWidth * 0.5f ) * ( 1.0f - _xScale );
+			_yOffset = vidHeight * ( 1.0f - _yScale );
+			break;
+		}
+		case idDeviceContext::ANCHOR_BOTTOM_RIGHT: {
+			_xOffset = vidWidth * ( 1.0f - _xScale );
+			_yOffset = vidHeight * ( 1.0f - _yScale );
+			break;
+		}
+		case idDeviceContext::ANCHOR_TOP: {
+			_xScale = 1.0f; // no horizontal scaling
+			_xOffset = 0.0f;
+			_yOffset = 0.0f;
+			break;
+		}
+		case idDeviceContext::ANCHOR_VCENTER: {
+			_xScale = 1.0f; // no horizontal scaling
+			_xOffset = 0.0f;
+			_yOffset = ( vidHeight * 0.5f ) * ( 1.0f - _yScale );
+			break;
+		}
+		case idDeviceContext::ANCHOR_BOTTOM: {
+			_xScale = 1.0f; // no horizontal scaling
+			_xOffset = 0.0f;
+			_yOffset = vidHeight * ( 1.0f - _yScale );
+			break;
+		}
+		case idDeviceContext::ANCHOR_LEFT: {
+			_yScale = 1.0f; // no vertical scaling
+			_xOffset = 0.0f;
+			_yOffset = 0.0f;
+			break;
+		}
+		case idDeviceContext::ANCHOR_HCENTER: {
+			_yScale = 1.0f; // no vertical scaling
+			_xOffset = ( vidWidth * 0.5f ) * ( 1.0f - _xScale );
+			_yOffset = 0.0f;
+			break;
+		}
+		case idDeviceContext::ANCHOR_RIGHT: {
+			_yScale = 1.0f; // no vertical scaling
+			_xOffset = vidWidth * ( 1.0f - _xScale );
+			_yOffset = 0.0f;
+			break;
+		}
+		default: {
+			_xOffset = 0.0f;
+			_yOffset = 0.0f;
+			break;
+		}
+	}
+}
+
+// static
+bool idDeviceContext::GetScreenParams( int anchor, int anchorTo, float factor, idVec2& out_Scale, idVec2& out_Offset ) {
+	float xScale = 1.0f;
+	float yScale = 1.0f;
+	out_Offset.Set( 0, 0 );
+
+	if ( !GuiGetVidScale( xScale, yScale ) ) {
+		out_Scale.Set( 1, 1 );
+		return false;
+	}
+
+	if ( anchorTo == idDeviceContext::ANCHOR_NONE ) {
+		AdjustParmsForAnchor( anchor, xScale, yScale, out_Offset.x, out_Offset.y );
+	} else {
+		float from_xScale = xScale;
+		float from_yScale = yScale;
+		float from_xOffset = 0.0f;
+		float from_yOffset = 0.0f;
+		AdjustParmsForAnchor( anchor, from_xScale, from_yScale, from_xOffset, from_yOffset );
+
+		float to_xScale = xScale;
+		float to_yScale = yScale;
+		float to_xOffset = 0.0f;
+		float to_yOffset = 0.0f;
+		AdjustParmsForAnchor( anchorTo, to_xScale, to_yScale, to_xOffset, to_yOffset );
+
+		factor = idMath::ClampFloat( 0.0f, 1.0f, factor );
+
+		xScale = from_xScale * ( 1.0f - factor ) + to_xScale * factor;
+		yScale = from_yScale * ( 1.0f - factor ) + to_yScale * factor;
+
+		out_Offset.x = from_xOffset * ( 1.0f - factor ) + to_xOffset * factor;
+		out_Offset.y = from_yOffset * ( 1.0f - factor ) + to_yOffset * factor;
+	}
+
+	out_Scale.Set( xScale, yScale );
+
+	return true;
+}
+
+void idDeviceContext::SetAnchorSize( int anchor, int anchorTo, float factor ) {
+	vidWidth = VIRTUAL_WIDTH;
+	vidHeight = VIRTUAL_HEIGHT;
+
+	idVec2 scale;
+	idVec2 offset;
+	adjustCoords = GetScreenParams( anchor, anchorTo, factor, scale, offset );
+	xScale = scale.x;
+	yScale = scale.y;
+	xOffset = offset.x;
+	yOffset = offset.y;
 }
 
 int idDeviceContext::CharWidth( const char c, float scale ) {

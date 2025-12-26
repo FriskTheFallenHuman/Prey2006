@@ -244,6 +244,9 @@ idUserInterfaceLocal::idUserInterfaceLocal() {
 	//so the reg eval in gui parsing doesn't get bogus values
 	time = 0;
 	refs = 1;
+	timeStamp = 0;
+	lastGlWidth = lastGlHeight = 0;
+	translateFont = -1;
 }
 
 idUserInterfaceLocal::~idUserInterfaceLocal() {
@@ -327,9 +330,35 @@ bool idUserInterfaceLocal::InitFromFile( const char *qpath, bool rebuild, bool c
 		uiManagerLocal.guis.Append( this );
 	}
 
+	translateFont = -1;
 	loading = false;
 
 	return true;
+}
+
+// static
+bool idUserInterface::IsUserInterfaceScaledTo43( const idUserInterface *ui_ )
+{
+	const idUserInterfaceLocal *ui = (const idUserInterfaceLocal *)ui_;
+	if ( ui == NULL ) {
+		assert( 0 && "why do you call this without a ui?!" );
+		return false;
+	}
+	idWindow *win = ui->GetDesktop();
+	if ( win == NULL ) {
+		return false;
+	}
+	int winFlags = win->GetFlags();
+	if ( ( winFlags & WIN_MENUGUI ) == 0 || !r_scaleMenusTo43.GetBool() ) {
+		// if the window is no fullscreen menu (but an ingame menu or noninteractive like the HUD)
+		// or scaling menus to 4:3 by default (r_scaleMenusTo43) is disabled,
+		// they only get scaled if they explicitly requested it with "scaleto43 1"
+		return ( winFlags & WIN_SCALETO43 ) != 0;
+	} else {
+		// if it's a fullscreen menu and r_scaleMenusTo43 is enabled,
+		// they get scaled to 4:3 unless they explicitly disable it with "scaleto43 0"
+		return ( winFlags & WIN_NO_SCALETO43 ) == 0;
+	}
 }
 
 const char *idUserInterfaceLocal::HandleEvent( const sysEvent_t *event, int _time, bool *updateVisuals ) {
@@ -356,7 +385,7 @@ const char *idUserInterfaceLocal::HandleEvent( const sysEvent_t *event, int _tim
 			const float realW = w;
 			const float realH = h;
 
-			if(r_scaleMenusTo43.GetBool()) {
+			if ( IsUserInterfaceScaledTo43(this) ) {
 				// in case we're scaling menus to 4:3, we need to take that into account
 				// when scaling the mouse events.
 				// no, we can't just call uiManagerLocal.dc.GetFixScaleForMenu() or sth like that,
@@ -418,10 +447,32 @@ void idUserInterfaceLocal::Redraw( int _time ) {
 		return;
 	}
 	if ( !loading && desktop ) {
+		if ( desktop->GetFlags() & WIN_MENUGUI ) {
+			// if the (SDL) window size has changed, calculate and set the
+			// "gui::cst*" window register variables accordingly
+			if ( MaybeSetAnchorWinRegs() ) {
+				// tell the GUI script about it in case it wants to handle the size change in
+				// some way (though usually it's enough to use sth like
+				// `rect 0, 200, "gui::horPad", 100"` and `anchor  ANCHOR_LEFT`
+				// for a windowDef that should fill part of the left side)
+				HandleNamedEvent( "ScreenSizeChange" );
+			}
+		}
+
 		time = _time;
+
+		if ( translateFont >= 0 ) {
+			desktop->Translate( translateFont );
+		}
+
 		uiManagerLocal.dc.PushClipRect( uiManagerLocal.screenRect );
 		desktop->Redraw( 0, 0 );
 		uiManagerLocal.dc.PopClipRect();
+
+		if ( translateFont >= 0 ) {
+			translateFont = -1;
+			desktop->Translate();
+		}
 	}
 }
 
@@ -477,15 +528,21 @@ void idUserInterfaceLocal::StateChanged( int _time, bool redraw ) {
 	time = _time;
 	if (desktop) {
 		// DG: little hack: allow game DLLs to do
-		//     ui->SetStateBool("scaleto43", true);
-		//     ui->StateChanged(gameLocal.time);
-		//     so we can force cursors.gui (crosshair) to be scaled, for example
-		bool scaleTo43 = false;
-		if(state.GetBool("scaleto43", "0", scaleTo43)) {
-			if(scaleTo43)
-				desktop->SetFlag(WIN_SCALETO43);
-			else
-				desktop->ClearFlag(WIN_SCALETO43);
+		//     ui->SetStateBool( "scaleto43", true );
+		//     ui->StateChanged( gameLocal.time );
+		//     so we can force cursors.gui (crosshair) to be scaled, for example.
+		//     Not sure if/where that's needed, but ui->SetStateBool("scaleto43", false);
+		//     is now also supported to explicitly disable scaling from the code
+		int scaleTo43 = 0;
+		if ( state.GetInt( "scaleto43", "-1", scaleTo43 ) ) {
+			if ( scaleTo43 > 0 ) {
+				desktop->SetFlag( WIN_SCALETO43 );
+				desktop->ClearFlag( WIN_NO_SCALETO43 );
+				// TODO
+			} else if( scaleTo43 == 0 ) {
+				desktop->ClearFlag( WIN_SCALETO43 );
+				desktop->SetFlag( WIN_NO_SCALETO43 );
+			} // do nothing for -1, it means that it wasn't set at all
 		}
 		// DG end
 
@@ -508,6 +565,12 @@ const char *idUserInterfaceLocal::Activate(bool activate, int _time) {
 	active = activate;
 	if ( desktop ) {
 		activateStr = "";
+
+		if ( desktop->GetFlags() & WIN_MENUGUI ) {
+			// DG: calculate and set the "gui::anchor*" window register variables
+			//     so the GUI can use them
+			MaybeSetAnchorWinRegs( true );
+		}
 		desktop->Activate( activate, activateStr );
 		return activateStr;
 	}
@@ -701,6 +764,51 @@ void idUserInterfaceLocal::SetCursor( float x, float y ) {
 
 /*
 ==============
+idUserInterfaceLocal::MaybeSetAnchorWinRegs
+==============
+*/
+bool idUserInterfaceLocal::MaybeSetAnchorWinRegs( bool force ) {
+	if ( desktop == NULL ) {
+		return false;
+	}
+	int glWidth, glHeight;
+	renderSystem->GetGLSettings( glWidth, glHeight );
+	if ( glWidth <= 0 || glHeight <= 0 || ( !force && glWidth == lastGlWidth && glHeight == lastGlHeight ) ) {
+		return false;
+	}
+	lastGlWidth = glWidth;
+	lastGlHeight = glHeight;
+
+	float glAspectRatio = (float)glWidth / (float)glHeight;
+	const float vidAspectRatio = (float)VIRTUAL_WIDTH / (float)VIRTUAL_HEIGHT;
+
+	const float desktopWidth  = desktop->forceAspectWidth;
+	const float desktopHeight = desktop->forceAspectHeight;
+
+	float horizPadding = 0;
+	float vertPadding = 0;
+	float modWidth = desktopWidth;
+	float modHeight = desktopHeight;
+
+	if ( glAspectRatio >= vidAspectRatio ) {
+		modWidth = desktopHeight * glAspectRatio;
+		horizPadding = 0.5f * ( modWidth - desktopWidth );
+	} else {
+		modHeight = desktopWidth / glAspectRatio;
+		vertPadding = 0.5f * ( modHeight - desktopHeight );
+	}
+
+	SetStateFloat( "aspectRatio", glAspectRatio );
+	SetStateFloat( "width", modWidth );
+	SetStateFloat( "height", modHeight );
+	SetStateFloat( "horPad", horizPadding );
+	SetStateFloat( "vertPad", vertPadding );
+
+	return true;
+}
+
+/*
+==============
 idUserInterfaceLocal::CallStartup
 ==============
 */
@@ -708,4 +816,23 @@ void idUserInterfaceLocal::CallStartup( void ) {
 	if ( desktop ) {
 		desktop->RunScript( idWindow::ON_STARTUP );
 	}
+}
+
+/*
+==============
+idUserInterfaceLocal::Translate
+==============
+*/
+void idUserInterfaceLocal::Translate( const char *fontname ) {
+	if ( !desktop ) {
+		return;
+	}
+
+	translateFont = -1;
+	
+	if ( !fontname || !fontname[0] ) {
+		return;
+	}
+
+	translateFont = uiManagerLocal.dc.FindFont( fontname );
 }

@@ -33,44 +33,35 @@ If you have questions concerning this license or the applicable additional terms
 #include "GEZOrderModifier.h"
 
 
-rvGEZOrderModifier::rvGEZOrderModifier( const char* name, idWindow* window, EZOrderChange change ) :
-	rvGEModifier( name, window )
-{
+rvGEZOrderModifier::rvGEZOrderModifier( const char * name, idWindow* window, EZOrderChange change ) :
+	rvGEModifier( name, window ) {
 	int			count;
 	int			index;
 	idWindow*	parent;
 
 	parent = window->GetParent( );
-	if( !parent )
-	{
+	if ( !parent ) {
 		return;
 	}
 
 	count = parent->GetChildCount( );
 	index = parent->GetChildIndex( mWindow );
 
-	if( index + 1 >= count )
-	{
+	if ( index + 1 >= count ) {
 		mUndoBefore = NULL;
-	}
-	else
-	{
+	} else {
 		mUndoBefore = parent->GetChild( index + 1 );
 	}
 
-	switch( change )
-	{
+	switch ( change ) {
 		case ZO_FORWARD:
 			index += 2;
 			break;
 
 		case ZO_BACKWARD:
-			if( index == 0 )
-			{
+			if ( index == 0 ) {
 				index = 1;
-			}
-			else
-			{
+			} else {
 				index -= 1;
 			}
 			break;
@@ -84,18 +75,14 @@ rvGEZOrderModifier::rvGEZOrderModifier( const char* name, idWindow* window, EZOr
 			break;
 	}
 
-	if( index >= count )
-	{
+	if ( index >= count ) {
 		mBefore = NULL;
-	}
-	else
-	{
+	} else {
 		mBefore = parent->GetChild( index );
 	}
 }
 
-bool rvGEZOrderModifier::Apply()
-{
+bool rvGEZOrderModifier::Apply() {
 	idWindow* parent;
 
 	parent = mWindow->GetParent( );
@@ -106,8 +93,7 @@ bool rvGEZOrderModifier::Apply()
 	return true;
 }
 
-bool rvGEZOrderModifier::Undo()
-{
+bool rvGEZOrderModifier::Undo() {
 	idWindow* parent;
 
 	parent = mWindow->GetParent( );
@@ -118,10 +104,8 @@ bool rvGEZOrderModifier::Undo()
 	return true;
 }
 
-bool rvGEZOrderModifier::IsValid()
-{
-	if( !mWindow->GetParent( ) )
-	{
+bool rvGEZOrderModifier::IsValid() {
+	if ( !mWindow->GetParent( ) ) {
 		return false;
 	}
 

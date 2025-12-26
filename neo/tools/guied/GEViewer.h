@@ -29,15 +29,14 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef GEVIEWER_H_
 #define GEVIEWER_H_
 
-class rvGEViewer
-{
+class rvGEViewer {
 public:
 
 	rvGEViewer( );
 
 	bool				Create( HWND parent );
 	bool				Destroy();
-	bool				OpenFile( const char* filename );
+	bool				OpenFile( const char * filename );
 
 	void				RunFrame();
 
@@ -53,7 +52,7 @@ protected:
 	int						mWindowWidth;
 	int						mWindowHeight;
 	int						mToolbarHeight;
-	idUserInterfaceLocal*	mInterface;
+	idUserInterfaceLocal	* mInterface;
 	bool					mPaused;
 	HWND					mToolbar;
 	int						mLastTime;
@@ -68,8 +67,7 @@ private:
 	static LRESULT CALLBACK WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
 };
 
-ID_INLINE HWND rvGEViewer::GetWindow()
-{
+ID_INLINE HWND rvGEViewer::GetWindow() {
 	return mWnd;
 }
 

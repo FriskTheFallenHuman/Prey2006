@@ -1,0 +1,1031 @@
+//organic trim
+
+//textures/organic_trim/hopipe1
+//{
+//	qer_editorimage	textures/organic_trim/hopipe1
+//	bumpmap			textures/organic_trim/hopipe1_local
+//	diffusemap		textures/organic_trim/hopipe1
+//	specularmap		textures/organic_trim/hopipe1_spec
+//}
+
+textures/organic_trim/spherebot
+{
+	qer_editorimage	textures/organic_trim/spherebot_proxy
+	bumpmap			textures/organic_trim/spherebot_local
+	diffusemap		textures/organic_trim/spherebot_d
+	specularmap		textures/organic_trim/spherebot_s
+}
+
+textures/organic_trim/spherebot_masked
+{
+	qer_editorimage		textures/organic_trim/spherebot_proxy
+
+	bumpmap			textures/organic_trim/spherebot_local
+	specularmap		textures/organic_trim/spherebot_s
+	{
+		blend diffusemap
+		map	textures/organic_trim/spherebot_d
+		alphatest 0.5
+		clamp
+	}
+}
+
+textures/organic_trim/circwall1_trima
+{
+	qer_editorimage		textures/organic_trim/circwall1_trima_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trima_local,
+			heightmap (textures/organic_trim/circwall1_trima_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trima_d
+	specularmap		textures/organic_trim/circwall1_trima_s
+}
+
+textures/organic_trim/circwall1_trima_add
+{
+	qer_editorimage		textures/organic_trim/circwall1_trima_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trima_local,
+			heightmap (textures/organic_trim/circwall1_trima_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trima_d
+	specularmap		textures/organic_trim/circwall1_trima_s
+	{
+		blend add
+		map textures/organic_trim/circwall1_trima_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+}
+
+textures/organic_trim/circwall1_trima_2
+{
+	qer_editorimage		textures/organic_trim/circwall1_trima_2_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trima_2_local,
+			heightmap (textures/organic_trim/circwall1_trima_2_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trima_2_d
+	specularmap		textures/organic_trim/circwall1_trima_2_s
+}
+
+textures/organic_trim/circwall1_trima_2_add
+{
+	qer_editorimage		textures/organic_trim/circwall1_trima_2_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trima_2_local,
+			heightmap (textures/organic_trim/circwall1_trima_2_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trima_2_d
+	specularmap		textures/organic_trim/circwall1_trima_2_s
+	{
+		blend add
+		map textures/organic_trim/circwall1_trima_2_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+}
+
+textures/organic_trim/circwall1_trimb
+{
+	qer_editorimage		textures/organic_trim/circwall1_trimb_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trimb_local,
+			heightmap (textures/organic_trim/circwall1_trimb_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trimb_d
+	specularmap		textures/organic_trim/circwall1_trimb_s
+}
+
+textures/organic_trim/circwall1_trimb_add
+{
+	qer_editorimage		textures/organic_trim/circwall1_trimb_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trimb_local,
+			heightmap (textures/organic_trim/circwall1_trimb_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trimb_d
+	specularmap		textures/organic_trim/circwall1_trimb_s
+	{
+		blend add
+		map textures/organic_trim/circwall1_trimb_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+}
+
+textures/organic_trim/circwall1_trimc
+{
+	qer_editorimage		textures/organic_trim/circwall1_trimc_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trimc_local,
+			heightmap (textures/organic_trim/circwall1_trimc_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trimc_d
+	specularmap		textures/organic_trim/circwall1_trimc_s
+}
+
+textures/organic_trim/circwall1_trimc_add
+{
+	qer_editorimage		textures/organic_trim/circwall1_trimc_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trimc_local,
+			heightmap (textures/organic_trim/circwall1_trimc_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trimc_d
+	specularmap		textures/organic_trim/circwall1_trimc_s
+	{
+		blend add
+		map textures/organic_trim/circwall1_trimc_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+}
+
+textures/organic_trim/circwall1_trimd
+{
+	qer_editorimage		textures/organic_trim/circwall1_trimd_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trimd_local,
+			heightmap (textures/organic_trim/circwall1_trimd_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trimd_d
+	specularmap		textures/organic_trim/circwall1_trimd_s
+}
+
+textures/organic_trim/circwall1_trimd_add
+{
+	qer_editorimage		textures/organic_trim/circwall1_trimd_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trimd_local,
+			heightmap (textures/organic_trim/circwall1_trimd_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trimd_d
+	specularmap		textures/organic_trim/circwall1_trimd_s
+	{
+		blend add
+		map textures/organic_trim/circwall1_trimd_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+}
+
+textures/organic_trim/circwall1_trime
+{
+	qer_editorimage		textures/organic_trim/circwall1_trime_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trime_local,
+			heightmap (textures/organic_trim/circwall1_trime_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trime_d
+	specularmap		textures/organic_trim/circwall1_trime_s
+}
+
+textures/organic_trim/circwall1_trime_add
+{
+	qer_editorimage		textures/organic_trim/circwall1_trime_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trime_local,
+			heightmap (textures/organic_trim/circwall1_trime_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trime_d
+	specularmap		textures/organic_trim/circwall1_trime_s
+	{
+		blend add
+		map textures/organic_trim/circwall1_trime_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+}
+
+textures/organic_trim/circwall1_trimf
+{
+	qer_editorimage		textures/organic_trim/circwall1_trimf_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trimf_local,
+			heightmap (textures/organic_trim/circwall1_trimf_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trimf_d
+	specularmap		textures/organic_trim/circwall1_trimf_s
+}
+
+textures/organic_trim/circwall1_trimf_add
+{
+	qer_editorimage		textures/organic_trim/circwall1_trimf_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trimf_local,
+			heightmap (textures/organic_trim/circwall1_trimf_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trimf_d
+	specularmap		textures/organic_trim/circwall1_trimf_s
+	{
+		blend add
+		map textures/organic_trim/circwall1_trimf_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+}
+
+textures/organic_trim/circwall1_trimg
+{
+	qer_editorimage		textures/organic_trim/circwall1_trimg_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trimg_local,
+			heightmap (textures/organic_trim/circwall1_trimg_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trimg_d
+	specularmap		textures/organic_trim/circwall1_trimg_s
+}
+
+textures/organic_trim/circwall1_trimg_add
+{
+	qer_editorimage		textures/organic_trim/circwall1_trimg_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trimg_local,
+			heightmap (textures/organic_trim/circwall1_trimg_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trimg_d
+	specularmap		textures/organic_trim/circwall1_trimg_s
+	{
+		blend add
+		map textures/organic_trim/circwall1_trimg_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+}
+
+textures/organic_trim/circwall1_trimh
+{
+	qer_editorimage		textures/organic_trim/circwall1_trimh_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trimh_local,
+			heightmap (textures/organic_trim/circwall1_trimh_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trimh_d
+	specularmap		textures/organic_trim/circwall1_trimh_s
+}
+
+textures/organic_trim/circwall1_trimh_add
+{
+	qer_editorimage		textures/organic_trim/circwall1_trimh_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trimh_local,
+			heightmap (textures/organic_trim/circwall1_trimh_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trimh_d
+	specularmap		textures/organic_trim/circwall1_trimh_s
+	{
+		blend add
+		map textures/organic_trim/circwall1_trimh_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+}
+
+textures/organic_trim/circwall1_trimi
+{
+	qer_editorimage		textures/organic_trim/circwall1_trimi_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trimi_local,
+			heightmap (textures/organic_trim/circwall1_trimi_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trimi_d
+	specularmap		textures/organic_trim/circwall1_trimi_s
+}
+
+textures/organic_trim/circwall1_trimi_add
+{
+	qer_editorimage		textures/organic_trim/circwall1_trimi_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trimi_local,
+			heightmap (textures/organic_trim/circwall1_trimi_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trimi_d
+	specularmap		textures/organic_trim/circwall1_trimi_s
+	{
+		blend add
+		map textures/organic_trim/circwall1_trimi_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+}
+
+textures/organic_trim/circwall1_trimj
+{
+	qer_editorimage		textures/organic_trim/circwall1_trimj_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trimj_local,
+			heightmap (textures/organic_trim/circwall1_trimj_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trimj_d
+	specularmap		textures/organic_trim/circwall1_trimj_s
+}
+
+textures/organic_trim/circwall1_trimj_add
+{
+	qer_editorimage		textures/organic_trim/circwall1_trimj_d
+	matter_metal
+
+	bumpmap 	addnormals (textures/organic_trim/circwall1_trimj_local,
+			heightmap (textures/organic_trim/circwall1_trimj_h, 4))
+	diffusemap		textures/organic_trim/circwall1_trimj_d
+	specularmap		textures/organic_trim/circwall1_trimj_s
+	{
+		blend add
+		map textures/organic_trim/circwall1_trimj_add
+		rgb (jitter1 [time * 2]) - 0.1
+	}
+}
+
+textures/organic_trim/chitintrim_050
+{
+	qer_editorimage 	textures/organic_trim/chitintrim_050_d
+	matter_metal
+
+	diffusemap		textures/organic_trim/chitintrim_050_d
+	bumpmap 		addnormals (textures/organic_trim/chitintrim_050_local,
+				heightmap (textures/organic_trim/chitintrim_050_h, 6))
+	specularmap		textures/organic_trim/chitintrim_050_s
+
+
+}
+
+textures/organic_trim/chitintrim_051
+{
+	qer_editorimage 	textures/organic_trim/chitintrim_051_d
+	matter_metal
+
+	diffusemap		textures/organic_trim/chitintrim_051_d
+	bumpmap 		addnormals (textures/organic_trim/chitintrim_051_local,
+				heightmap (textures/organic_trim/chitintrim_051_h, 6))
+	specularmap		textures/organic_trim/chitintrim_051_s
+
+
+}
+
+textures/organic_trim/chitintrim_051_add
+{
+	qer_editorimage 	textures/organic_trim/chitintrim_051_d
+	matter_metal
+
+	diffusemap		textures/organic_trim/chitintrim_051_d
+	bumpmap 		addnormals (textures/organic_trim/chitintrim_051_local,
+				heightmap (textures/organic_trim/chitintrim_051_h, 6))
+	specularmap		textures/organic_trim/chitintrim_051_s
+	{
+		blend add
+		map textures/organic_trim/chitintrim_051_add
+		rgb (.2 * sintable [.15 + time * .5 ]) + .7
+	}
+
+}
+
+
+textures/organic_trim/chitintrim_052
+{
+	qer_editorimage 	textures/organic_trim/chitintrim_052_d
+	matter_metal
+
+	diffusemap		textures/organic_trim/chitintrim_052_d
+	bumpmap 		addnormals (textures/organic_trim/chitintrim_052_local,
+				heightmap (textures/organic_trim/chitintrim_052_h, 6))
+	specularmap		textures/organic_trim/chitintrim_052_s
+
+
+}
+
+textures/organic_trim/chitintrim_053
+{
+	qer_editorimage 	textures/organic_trim/chitintrim_053_d
+	matter_metal
+
+	diffusemap		textures/organic_trim/chitintrim_053_d
+	bumpmap 		addnormals (textures/organic_trim/chitintrim_053_local,
+				heightmap (textures/organic_trim/chitintrim_053_h, 6))
+	specularmap		textures/organic_trim/chitintrim_053_s
+
+
+}
+
+textures/organic_trim/chitintrim_054
+{
+	qer_editorimage 	textures/organic_trim/chitintrim_054_d
+	matter_metal
+
+	diffusemap		textures/organic_trim/chitintrim_054_d
+	bumpmap 		addnormals (textures/organic_trim/chitintrim_054_local,
+				heightmap (textures/organic_trim/chitintrim_054_h, 6))
+	specularmap		textures/organic_trim/chitintrim_054_s
+
+
+}
+
+
+
+//------------------------------------------------------------
+//  bio organics
+//------------------------------------------------------------
+textures/organic_trim/bio_organictrim_001
+{
+	qer_editorimage textures/organic_trim/bio_organictrim_001_proxy
+	matter_metal
+
+	bumpmap 		textures/organic_trim/bio_organictrim_001_local
+	diffusemap		textures/organic_trim/bio_organictrim_001_d
+	specularmap		textures/organic_trim/bio_organictrim_001_s
+}
+textures/organic_trim/bio_organictrim_002
+{
+	qer_editorimage textures/organic_trim/bio_organictrim_002_proxy
+	matter_metal
+
+	bumpmap 		addnormals (textures/organic_trim/bio_organictrim_002_local,
+				heightmap (textures/organic_trim/bio_organictrim_002_h, 1))
+	diffusemap		textures/organic_trim/bio_organictrim_002_d
+	specularmap		textures/organic_trim/bio_organictrim_002_s
+}
+textures/organic_trim/bio_organictrim_003
+{
+	qer_editorimage textures/organic_trim/bio_organictrim_003_proxy
+	matter_metal
+
+	bumpmap 		textures/organic_trim/bio_organictrim_003_local
+	diffusemap		textures/organic_trim/bio_organictrim_003_d
+	specularmap		textures/organic_trim/bio_organictrim_003_s
+}
+textures/organic_trim/bio_organictrim_004
+{
+	qer_editorimage textures/organic_trim/bio_organictrim_004_proxy
+	matter_metal
+
+	bumpmap 		textures/organic_trim/bio_organictrim_004_local
+	diffusemap		textures/organic_trim/bio_organictrim_004_d
+	specularmap		textures/organic_trim/bio_organictrim_004_s
+}
+textures/organic_trim/bio_organictrim_005
+{
+	qer_editorimage textures/organic_trim/bio_organictrim_005_proxy
+	matter_metal
+
+	bumpmap 		textures/organic_trim/bio_organictrim_005_local
+	{
+		blend	diffusemap
+		map		textures/organic_trim/bio_organictrim_005_d
+		alphatest	0.5
+	}
+	specularmap		textures/organic_trim/bio_organictrim_005_s
+}
+// like, do me... easy!!!!!!
+textures/organic_trim/bio_organictrim_006
+{
+	qer_editorimage textures/organic_trim/bio_organictrim_006_proxy
+	matter_metal
+
+	bumpmap 		textures/organic_trim/bio_organictrim_006_local
+	{
+		blend	diffusemap
+		map		textures/organic_trim/bio_organictrim_006_d
+		alphatest	0.5
+	}
+	specularmap		textures/organic_trim/bio_organictrim_006_s
+}
+
+textures/organic_trim/bio_organictrim_006_nc
+{
+	twosided
+	qer_editorimage textures/organic_trim/bio_organictrim_006_proxy
+	matter_metal
+
+	bumpmap 		textures/organic_trim/bio_organictrim_006_local
+	{
+		blend	diffusemap
+		map		textures/organic_trim/bio_organictrim_006_d
+		alphatest	0.5
+	}
+	specularmap		textures/organic_trim/bio_organictrim_006_s
+}
+
+
+//sleaze stuff, back off d00d
+
+textures/organic_trim/bio_organictrim_140
+
+{
+	qer_editorimage 	textures/organic_trim/bio_organictrim_140_d
+	matter_metal
+
+	bumpmap 		textures/organic_trim/bio_organictrim_140_local
+	diffusemap		textures/organic_trim/bio_organictrim_140_d
+	specularmap		textures/organic_trim/bio_organictrim_140_s
+}
+
+textures/organic_trim/bio_organictrim_141
+
+{
+	qer_editorimage 	textures/organic_trim/bio_organictrim_141_d
+	matter_metal
+
+	bumpmap 		textures/organic_trim/bio_organictrim_141_local
+	diffusemap		textures/organic_trim/bio_organictrim_141_d
+	specularmap		textures/organic_trim/bio_organictrim_141_s
+}
+
+textures/organic_trim/bio_organictrim_142
+
+{
+	qer_editorimage 	textures/organic_trim/bio_organictrim_142_d
+	matter_metal
+
+	bumpmap 		textures/organic_trim/bio_organictrim_142_local
+	diffusemap		textures/organic_trim/bio_organictrim_142_d
+	specularmap		textures/organic_trim/bio_organictrim_142_s
+}
+
+textures/organic_trim/bio_organictrim_143
+
+{
+	qer_editorimage 	textures/organic_trim/bio_organictrim_143_d
+	matter_metal
+
+	bumpmap 		textures/organic_trim/bio_organictrim_143_local
+	diffusemap		textures/organic_trim/bio_organictrim_143_d
+	specularmap		textures/organic_trim/bio_organictrim_143_s
+}
+
+//---------------------------------------------
+// grave bone trim
+//---------------------------------------------
+
+
+textures/organic_trim/g_bonetrim_001
+{
+	qer_editorimage 	textures/organic_trim/g_bonetrim_001_d
+	matter_metal
+
+	bumpmap			addnormals (textures/organic_trim/g_bonetrim_001_local,
+				heightmap  (textures/organic_trim/g_bonetrim_001_h, 6))
+	diffusemap		textures/organic_trim/g_bonetrim_001_d
+	specularmap		textures/organic_trim/g_bonetrim_001_s
+}
+
+textures/organic_trim/g_bonetrim_002
+{
+	qer_editorimage 	textures/organic_trim/g_bonetrim_002_d
+	matter_metal
+
+	bumpmap			addnormals (textures/organic_trim/g_bonetrim_002_local,
+				heightmap  (textures/organic_trim/g_bonetrim_002_h, 6))
+	diffusemap		textures/organic_trim/g_bonetrim_002_d
+	specularmap		textures/organic_trim/g_bonetrim_002_s
+}
+
+textures/organic_trim/g_bonetrim_003
+{
+	qer_editorimage 	textures/organic_trim/g_bonetrim_003_d
+	matter_metal
+
+	bumpmap			addnormals (textures/organic_trim/g_bonetrim_003_local,
+				heightmap  (textures/organic_trim/g_bonetrim_003_h, 6))
+	diffusemap		textures/organic_trim/g_bonetrim_003_d
+	specularmap		textures/organic_trim/g_bonetrim_003_s
+}
+
+textures/organic_trim/g_bonetrim_004
+{
+	qer_editorimage 	textures/organic_trim/g_bonetrim_004_d
+	matter_metal
+
+	bumpmap			addnormals (textures/organic_trim/g_bonetrim_004_local,
+				heightmap  (textures/organic_trim/g_bonetrim_004_h, 6))
+	diffusemap		textures/organic_trim/g_bonetrim_004_d
+	specularmap		textures/organic_trim/g_bonetrim_004_s
+}
+
+textures/organic_trim/g_bonetrim_005
+{
+	qer_editorimage 	textures/organic_trim/g_bonetrim_005_d
+	matter_metal
+
+	bumpmap			addnormals (textures/organic_trim/g_bonetrim_005_local,
+				heightmap  (textures/organic_trim/g_bonetrim_005_h, 6))
+	diffusemap		textures/organic_trim/g_bonetrim_005_d
+	specularmap		textures/organic_trim/g_bonetrim_005_s
+}
+
+textures/organic_trim/g_bonetrim_005b
+{
+	qer_editorimage 	textures/organic_trim/g_bonetrim_005b_d
+	matter_metal
+
+	bumpmap			addnormals (textures/organic_trim/g_bonetrim_005b_local,
+				heightmap  (textures/organic_trim/g_bonetrim_005b_h, 6))
+	diffusemap		textures/organic_trim/g_bonetrim_005b_d
+	specularmap		textures/organic_trim/g_bonetrim_005b_s
+}
+
+textures/organic_trim/g_bonetrim_005c
+{
+	qer_editorimage 	textures/organic_trim/g_bonetrim_005b_d
+	matter_metal
+
+	bumpmap			addnormals (textures/organic_trim/g_bonetrim_005c_local,
+				heightmap  (textures/organic_trim/g_bonetrim_005b_h, 6))
+	diffusemap		textures/organic_trim/g_bonetrim_005b_d
+	specularmap		textures/organic_trim/g_bonetrim_005b_s
+}
+
+textures/organic_trim/g_bonetrim_005d
+{
+	qer_editorimage 	textures/organic_trim/g_bonetrim_005d_d
+	matter_metal
+
+	bumpmap			addnormals (textures/organic_trim/g_bonetrim_005d_local,
+				heightmap  (textures/organic_trim/g_bonetrim_005d_h, 6))
+	diffusemap		textures/organic_trim/g_bonetrim_005d_d
+	specularmap		textures/organic_trim/g_bonetrim_005d_s
+}
+
+textures/organic_trim/g_bonetrim_005e
+{
+	qer_editorimage 	textures/organic_trim/g_bonetrim_005d_d
+	matter_metal
+
+	bumpmap			addnormals (textures/organic_trim/g_bonetrim_005e_local,
+				heightmap  (textures/organic_trim/g_bonetrim_005d_h, 6))
+	diffusemap		textures/organic_trim/g_bonetrim_005d_d
+	specularmap		textures/organic_trim/g_bonetrim_005d_s
+}
+
+textures/organic_trim/g_bonetrim_006
+{
+	qer_editorimage 	textures/organic_trim/g_bonetrim_006_d
+	matter_metal
+
+	bumpmap			addnormals (textures/organic_trim/g_bonetrim_006_local,
+				heightmap  (textures/organic_trim/g_bonetrim_006_h, 6))
+	diffusemap		textures/organic_trim/g_bonetrim_006_d
+	specularmap		textures/organic_trim/g_bonetrim_006_s
+}
+
+textures/organic_trim/g_bonetrim_007
+{
+	qer_editorimage 	textures/organic_trim/g_bonetrim_007_d
+	matter_metal
+
+	bumpmap			addnormals (textures/organic_trim/g_bonetrim_007_local,
+				heightmap  (textures/organic_trim/g_bonetrim_007_h, 6))
+	diffusemap		textures/organic_trim/g_bonetrim_007_d
+	specularmap		textures/organic_trim/g_bonetrim_007_s
+}
+
+textures/organic_trim/g_bonetrim_007_add
+{
+	qer_editorimage 	textures/organic_trim/g_bonetrim_007b_d
+	matter_metal
+
+	bumpmap			addnormals (textures/organic_trim/g_bonetrim_007b_local,
+				heightmap  (textures/organic_trim/g_bonetrim_007_h, 6))
+	diffusemap		textures/organic_trim/g_bonetrim_007b_d
+	specularmap		textures/organic_trim/g_bonetrim_007b_s
+	{
+		blend		add
+		map		textures/organic_trim/g_bonetrim_007_add
+		color		parm0 *(jitter3b [time * 3]),
+					parm1 *( jitter3b [time * 3]),
+					parm2 *( jitter3b [time * 3]),
+					1.0
+	}
+}
+
+textures/organic_trim/g_bonetrim_007_add2
+{
+	qer_editorimage 	textures/organic_trim/g_bonetrim_007b_d
+	matter_metal
+
+	bumpmap			addnormals (textures/organic_trim/g_bonetrim_007b_local,
+				heightmap  (textures/organic_trim/g_bonetrim_007_h, 6))
+	diffusemap		textures/organic_trim/g_bonetrim_007b_d
+	specularmap		textures/organic_trim/g_bonetrim_007b_s
+	{
+		blend		add
+		map		textures/organic_trim/g_bonetrim_007_add
+		color		( parm0 * parm5 ) + (( 1 - parm5 ) * parm0  * ((( biopulse2 [ parm3 + ( time * parm6 ) ] +1) * 0.5 ))),
+				( parm1 * parm5 ) + (( 1 - parm5 ) * parm1  * ((( biopulse2 [ parm3 + ( time * parm6 ) ] +1) * 0.5 ))),
+				( parm2 * parm5 ) + (( 1 - parm5 ) * parm2  * ((( biopulse2 [ parm3 + ( time * parm6 ) ] +1) * 0.5 ))),
+				1.0
+	}
+}
+
+textures/organic_trim/g_bonetrim_008
+{
+	qer_editorimage 	textures/organic_trim/g_bonetrim_008_d
+	matter_metal
+
+	bumpmap			addnormals (textures/organic_trim/g_bonetrim_008_local,
+				heightmap  (textures/organic_trim/g_bonetrim_008_h, 6))
+	diffusemap		textures/organic_trim/g_bonetrim_008_d
+	specularmap		textures/organic_trim/g_bonetrim_008_s
+}
+
+textures/organic_trim/g_bonetrim_009
+{
+	qer_editorimage 	textures/organic_trim/g_bonetrim_009_d
+	matter_metal
+
+	bumpmap			addnormals (textures/organic_trim/g_bonetrim_009_local,
+				heightmap  (textures/organic_trim/g_bonetrim_009_h, 6))
+	diffusemap		textures/organic_trim/g_bonetrim_009_d
+	specularmap		textures/organic_trim/g_bonetrim_009_s
+}
+
+textures/organic_trim/g_bonetrim_009_add
+{
+	qer_editorimage 	textures/organic_trim/g_bonetrim_009b_d
+	matter_metal
+
+	bumpmap			addnormals (textures/organic_trim/g_bonetrim_009b_local,
+				heightmap  (textures/organic_trim/g_bonetrim_009_h, 6))
+	diffusemap		textures/organic_trim/g_bonetrim_009b_d
+	specularmap		textures/organic_trim/g_bonetrim_009b_s
+	{
+		blend		add
+		map		textures/organic_trim/g_bonetrim_009_add
+		color		parm0 *(jitter3b [time * 3]),
+					parm1 *( jitter3b [time * 3]),
+					parm2 *( jitter3b [time * 3]),
+					1.0
+	}
+}
+
+textures/organic_trim/g_bonetrim_009_add2
+{
+	qer_editorimage 	textures/organic_trim/g_bonetrim_009b_d
+	matter_metal
+
+	bumpmap			addnormals (textures/organic_trim/g_bonetrim_009b_local,
+				heightmap  (textures/organic_trim/g_bonetrim_009_h, 6))
+	diffusemap		textures/organic_trim/g_bonetrim_009b_d
+	specularmap		textures/organic_trim/g_bonetrim_009b_s
+	{
+		blend		add
+		map		textures/organic_trim/g_bonetrim_009_add
+		color		( parm0 * parm5 ) + (( 1 - parm5 ) * parm0  * ((( biopulse2 [ parm3 + ( time * parm6 ) ] +1) * 0.5 ))),
+				( parm1 * parm5 ) + (( 1 - parm5 ) * parm1  * ((( biopulse2 [ parm3 + ( time * parm6 ) ] +1) * 0.5 ))),
+				( parm2 * parm5 ) + (( 1 - parm5 ) * parm2  * ((( biopulse2 [ parm3 + ( time * parm6 ) ] +1) * 0.5 ))),
+				1.0
+	}
+}
+
+textures/organic_trim/g_bonetrim_010
+{
+	qer_editorimage 	textures/organic_trim/g_bonetrim_010_d
+	matter_metal
+
+	bumpmap			addnormals (textures/organic_trim/g_bonetrim_010_local,
+				heightmap  (textures/organic_trim/g_bonetrim_010_h, 6))
+	diffusemap		textures/organic_trim/g_bonetrim_010_d
+	specularmap		textures/organic_trim/g_bonetrim_010_s
+}
+
+textures/organic_trim/g_bonetrim_011
+{
+	qer_editorimage 	textures/organic_trim/g_bonetrim_011_local
+	matter_metal
+
+	bumpmap			addnormals (textures/organic_trim/g_bonetrim_011_local,
+				heightmap  (textures/organic_trim/g_bonetrim_011_h, 6))
+	diffusemap		textures/organic_trim/g_bonetrim_011_d
+	specularmap		textures/organic_trim/g_bonetrim_011_s
+}
+
+
+//---------------------------------------------
+// grave chitin trim
+//---------------------------------------------
+
+
+
+textures/organic_trim/g_chitintrim_001
+
+{
+	qer_editorimage 	textures/organic_trim/g_chitintrim_001_proxy
+	matter_metal
+
+	bumpmap 		textures/organic_trim/g_chitintrim_001_local
+	diffusemap		textures/organic_trim/g_chitintrim_001_d
+	specularmap		textures/organic_trim/g_chitintrim_001_s
+}
+
+
+
+
+
+
+
+//-------------------------------------------------
+// feedy
+//-------------------------------------------------
+
+textures/organic_trim/bio_organictrim_060
+{
+	qer_editorimage 	textures/organic_trim/bio_organictrim_060_d
+	matter_metal
+	bumpmap			addnormals (textures/organic_trim/bio_organictrim_060_local,
+				heightmap  (textures/organic_trim/bio_organictrim_060_h, 6))
+	diffusemap		textures/organic_trim/bio_organictrim_060_d
+	specularmap		textures/organic_trim/bio_organictrim_060_s
+}
+
+textures/organic_trim/bio_organictrim_061
+{
+	qer_editorimage 	textures/organic_trim/bio_organictrim_061_d
+	matter_metal
+	bumpmap			addnormals (textures/organic_trim/bio_organictrim_061_local,
+				heightmap  (textures/organic_trim/bio_organictrim_061_h, 6))
+	diffusemap		textures/organic_trim/bio_organictrim_061_d
+	specularmap		textures/organic_trim/bio_organictrim_061_s
+}
+
+textures/organic_trim/bio_organictrim_061b
+{
+	qer_editorimage 	textures/organic_trim/bio_organictrim_061b_d
+	matter_metal
+	bumpmap			addnormals (textures/organic_trim/bio_organictrim_061_local,
+				heightmap  (textures/organic_trim/bio_organictrim_061b_h, 6))
+	diffusemap		textures/organic_trim/bio_organictrim_061b_d
+	specularmap		textures/organic_trim/bio_organictrim_061b_s
+}
+
+textures/organic_trim/bio_organictrim_062
+{
+	qer_editorimage 	textures/organic_trim/bio_organictrim_062_d
+	matter_metal
+	bumpmap			addnormals (textures/organic_trim/bio_organictrim_062_local,
+				heightmap  (textures/organic_trim/bio_organictrim_062_h, 6))
+	diffusemap		textures/organic_trim/bio_organictrim_062_d
+	specularmap		textures/organic_trim/bio_organictrim_062_s
+}
+
+textures/organic_trim/bio_organictrim_062_add
+{
+	qer_editorimage 	textures/organic_trim/bio_organictrim_062_d
+	matter_metal
+	bumpmap			addnormals (textures/organic_trim/bio_organictrim_062_local,
+				heightmap  (textures/organic_trim/bio_organictrim_062_h, 6))
+	diffusemap		textures/organic_trim/bio_organictrim_062_d
+	specularmap		textures/organic_trim/bio_organictrim_062_s
+	{
+		blend add
+		map textures/organic_trim/bio_organictrim_062_a
+		rgb (.2 * sintable [.15 + time * .5 ]) + .7
+	}
+}
+
+textures/organic_trim/bio_organictrim_062b
+{
+	qer_editorimage 	textures/organic_trim/bio_organictrim_062b_d
+	matter_metal
+	bumpmap			addnormals (textures/organic_trim/bio_organictrim_062b_local,
+				heightmap  (textures/organic_trim/bio_organictrim_062b_h, 6))
+	diffusemap		textures/organic_trim/bio_organictrim_062b_d
+	specularmap		textures/organic_trim/bio_organictrim_062b_s
+}
+
+textures/organic_trim/bio_organictrim_062b_add
+{
+	qer_editorimage 	textures/organic_trim/bio_organictrim_062b_d
+	matter_metal
+	bumpmap			addnormals (textures/organic_trim/bio_organictrim_062b_local,
+				heightmap  (textures/organic_trim/bio_organictrim_062b_h, 6))
+	diffusemap		textures/organic_trim/bio_organictrim_062b_d
+	specularmap		textures/organic_trim/bio_organictrim_062b_s
+	{
+		blend add
+		map textures/organic_trim/bio_organictrim_062_a
+		rgb (.2 * sintable [.15 + time * .5 ]) + .7
+	}
+}
+
+textures/organic_trim/bio_organictrim_063_mask
+{
+	qer_editorimage 	textures/organic_trim/bio_organictrim_063_proxy
+	matter_metal
+
+	{
+		blend bumpmap
+		map 	addnormals (textures/organic_trim/bio_organictrim_063_local, heightmap (textures/organic_trim/bio_organictrim_063_h, 6))
+
+	}
+	{
+		blend diffusemap
+		map	textures/organic_trim/bio_organictrim_063_d
+		alphatest 0.5
+	}
+	{
+		blend specularmap
+		map	textures/organic_trim/bio_organictrim_063_s
+	}
+
+}
+textures/organic_trim/bio_organictrim_063_mask_twosided
+{
+	qer_editorimage 	textures/organic_trim/bio_organictrim_063_proxy
+	matter_metal
+	twosided
+
+	{
+		blend bumpmap
+		map 	addnormals (textures/organic_trim/bio_organictrim_063_local, heightmap (textures/organic_trim/bio_organictrim_063_h, 6))
+
+	}
+	{
+		blend diffusemap
+		map	textures/organic_trim/bio_organictrim_063_d
+		alphatest 0.5
+	}
+	{
+		blend specularmap
+		map	textures/organic_trim/bio_organictrim_063_s
+	}
+
+}
+
+
+textures/organic_trim/bio_organictrim_350
+{
+	qer_editorimage 	textures/organic_trim/bio_organictrim_350_d
+	matter_metal
+	bumpmap			addnormals (textures/organic_trim/bio_organictrim_350_local,
+					heightmap  (textures/organic_trim/bio_organictrim_350_h, 2))
+	diffusemap		textures/organic_trim/bio_organictrim_350_d
+	specularmap		textures/organic_trim/bio_organictrim_350_s
+}
+
+textures/organic_trim/bio_organictrim_351
+{
+	qer_editorimage 	textures/organic_trim/bio_organictrim_351_d
+	matter_metal
+	bumpmap			textures/organic_trim/bio_organictrim_351_local
+	diffusemap		textures/organic_trim/bio_organictrim_351_d
+	specularmap		textures/organic_trim/bio_organictrim_351_s
+}
+textures/organic_trim/bio_organictrim_352
+{
+	qer_editorimage 	textures/organic_trim/bio_organictrim_352_d
+	matter_metal
+	bumpmap			textures/organic_trim/bio_organictrim_352_local
+	diffusemap		textures/organic_trim/bio_organictrim_352_d
+	specularmap		textures/organic_trim/bio_organictrim_352_s
+}
+
+/////// shane giger look ///////
+
+
+textures/organic_trim/bio_organic_trim_376a
+{
+	qer_editorimage 	textures/organic_trim/bio_organic_trim_376a_proxy
+	matter_metal
+	bumpmap			addnormals (textures/organic_trim/bio_organic_trim_376a_local,
+					heightmap  (textures/organic_trim/bio_organic_trim_376a_h, 4))
+	diffusemap		textures/organic_trim/bio_organic_trim_376a_d
+	specularmap		textures/organic_trim/bio_organic_trim_376a_s
+}
+
+textures/organic_trim/bio_organic_trim_376b
+{
+	qer_editorimage 	textures/organic_trim/bio_organic_trim_376b_proxy
+	matter_metal
+	bumpmap			addnormals (textures/organic_trim/bio_organic_trim_376b_local,
+					heightmap  (textures/organic_trim/bio_organic_trim_376b_h, 4))
+	diffusemap		textures/organic_trim/bio_organic_trim_376b_d
+	specularmap		textures/organic_trim/bio_organic_trim_376b_s
+}
+
+textures/organic_trim/bio_organic_trim_376c
+{
+	qer_editorimage 	textures/organic_trim/bio_organic_trim_376c_proxy
+	matter_metal
+	bumpmap			addnormals (textures/organic_trim/bio_organic_trim_376c_local,
+					heightmap  (textures/organic_trim/bio_organic_trim_376c_h, 4))
+	diffusemap		textures/organic_trim/bio_organic_trim_376c_d
+	specularmap		textures/organic_trim/bio_organic_trim_376c_s
+}
+
+textures/organic_trim/bio_organic_trim_376d
+{
+	qer_editorimage 	textures/organic_trim/bio_organic_trim_376d_proxy
+	matter_metal
+	bumpmap			addnormals (textures/organic_trim/bio_organic_trim_376d_local,
+					heightmap  (textures/organic_trim/bio_organic_trim_376d_h, 4))
+	diffusemap		textures/organic_trim/bio_organic_trim_376d_d
+	specularmap		textures/organic_trim/bio_organic_trim_376d_s
+}
+
+textures/organic_trim/bio_organic_trim_376e
+{
+	qer_editorimage 	textures/organic_trim/bio_organic_trim_376e_proxy
+	matter_metal
+	bumpmap			addnormals (textures/organic_trim/bio_organic_trim_376e_local,
+					heightmap  (textures/organic_trim/bio_organic_trim_376e_h, 4))
+	diffusemap		textures/organic_trim/bio_organic_trim_376e_d
+	specularmap		textures/organic_trim/bio_organic_trim_376e_s
+}
+
+textures/organic_trim/kf_trimtex1
+{
+	qer_editorimage textures/organic_trim/kf_trimtex1
+	matter_metal
+	bumpmap		textures/organic_trim/kf_trimtex1_local
+	diffusemap	textures/organic_trim/kf_trimtex1
+	specularmap	textures/organic_trim/kf_trimtex1_s
+}

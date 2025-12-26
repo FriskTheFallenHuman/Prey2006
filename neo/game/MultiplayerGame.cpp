@@ -32,7 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "Game_local.h"
 
 #if INGAME_DEBUGGER_ENABLED //HUMANHEAD rww - make debugger work in mp too
-	#include "../prey/sys_debugger.h"
+	#include "../Prey/sys_debugger.h"
 #endif
 
 // could be a problem if players manage to go down sudden deaths till this .. oh well

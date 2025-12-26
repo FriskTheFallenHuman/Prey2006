@@ -35,14 +35,12 @@ If you have questions concerning this license or the applicable additional terms
 * must register themself with the MaterialDocManager class with the
 * RegisterView method.
 */
-class MaterialView
-{
+class MaterialView {
 public:
 	/**
 	* Constructor.
 	*/
-	MaterialView()
-	{
+	MaterialView() {
 		materialDocManager = NULL;
 	};
 	/**
@@ -58,8 +56,7 @@ public:
 	* Sets the material document manager for this view instance.
 	* @param docManager The material document manager for this view instance.
 	*/
-	virtual void	SetMaterialDocManager( MaterialDocManager* docManager )
-	{
+	virtual void	SetMaterialDocManager( MaterialDocManager* docManager ) {
 		materialDocManager = docManager;
 	};
 
@@ -91,7 +88,7 @@ public:
 	* Called when a material file has been saved
 	* @param filename path of the file that was saved.
 	*/
-	virtual void	MV_OnMaterialSaveFile( const char* filename ) {};
+	virtual void	MV_OnMaterialSaveFile( const char * filename ) {};
 
 	/**
 	* Called when a material is added
@@ -133,7 +130,7 @@ public:
 	* @param stage The stage that contains the change.
 	* @param attribName The attribute that has changed.
 	*/
-	virtual void	MV_OnMaterialAttributeChanged( MaterialDoc* pMaterial, int stage, const char* attribName ) {};
+	virtual void	MV_OnMaterialAttributeChanged( MaterialDoc* pMaterial, int stage, const char * attribName ) {};
 
 
 	/**
@@ -141,15 +138,15 @@ public:
 	* @param pMaterial The material that was deleted.
 	* @param oldName The old name of the material.
 	*/
-	virtual void	MV_OnMaterialNameChanged( MaterialDoc* pMaterial, const char* oldName ) {};
+	virtual void	MV_OnMaterialNameChanged( MaterialDoc* pMaterial, const char * oldName ) {};
 
 	/**
 	* Called when a file has been reloaded
 	* @param filename The file that was reloaded.
 	*/
-	virtual void	MV_OnFileReload( const char* filename ) {};
+	virtual void	MV_OnFileReload( const char * filename ) {};
 
 
 protected:
-	MaterialDocManager* materialDocManager;
+	MaterialDocManager * materialDocManager;
 };

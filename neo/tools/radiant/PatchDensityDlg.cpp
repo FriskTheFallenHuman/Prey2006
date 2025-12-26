@@ -34,19 +34,17 @@ If you have questions concerning this license or the applicable additional terms
 #include "PatchDensityDlg.h"
 
 #ifdef _DEBUG
-	#define new DEBUG_NEW
+#define new DEBUG_NEW
 #endif
 
 // CPatchDensityDlg dialog
 
 CPatchDensityDlg::CPatchDensityDlg( CWnd* pParent )
-	: CDialogEx( CPatchDensityDlg::IDD, pParent )
-{
+	: CDialogEx( CPatchDensityDlg::IDD, pParent ) {
 }
 
 
-void CPatchDensityDlg::DoDataExchange( CDataExchange* pDX )
-{
+void CPatchDensityDlg::DoDataExchange( CDataExchange* pDX ) {
 	CDialogEx::DoDataExchange( pDX );
 	DDX_Control( pDX, IDC_COMBO_WIDTH, m_wndWidth );
 	DDX_Control( pDX, IDC_COMBO_HEIGHT, m_wndHeight );
@@ -60,13 +58,11 @@ END_MESSAGE_MAP()
 
 int g_nXLat[] = {3, 5, 7, 9, 11, 13, 15};
 
-void CPatchDensityDlg::OnOK()
-{
+void CPatchDensityDlg::OnOK() {
 	int nWidth = m_wndWidth.GetCurSel();
 	int nHeight = m_wndHeight.GetCurSel();
 
-	if( nWidth >= 0 && nWidth <= 6 && nHeight >= 0 && nHeight <= 6 )
-	{
+	if ( nWidth >= 0 && nWidth <= 6 && nHeight >= 0 && nHeight <= 6 ) {
 		Patch_GenericMesh( g_nXLat[nWidth], g_nXLat[nHeight], ( int )g_pParentWnd->ActiveXY()->GetViewType() );
 		Sys_UpdateWindows( W_ALL );
 	}
@@ -74,8 +70,7 @@ void CPatchDensityDlg::OnOK()
 	CDialogEx::OnOK();
 }
 
-BOOL CPatchDensityDlg::OnInitDialog()
-{
+BOOL CPatchDensityDlg::OnInitDialog() {
 	CDialogEx::OnInitDialog();
 
 	m_wndWidth.SetCurSel( 0 );

@@ -34,23 +34,20 @@ If you have questions concerning this license or the applicable additional terms
 #include "EditViewDlg.h"
 
 #ifdef _DEBUG
-	#define new DEBUG_NEW
+#define new DEBUG_NEW
 #endif
 
 IMPLEMENT_DYNAMIC( CEditViewDlg, CDialogEx )
 
 CEditViewDlg::CEditViewDlg( CWnd* pParent )
 	: CDialogEx( CEditViewDlg::IDD, pParent ),
-	  findDlg( nullptr )
-{
+	  findDlg( nullptr ) {
 }
 
-CEditViewDlg::~CEditViewDlg()
-{
+CEditViewDlg::~CEditViewDlg() {
 }
 
-void CEditViewDlg::DoDataExchange( CDataExchange* pDX )
-{
+void CEditViewDlg::DoDataExchange( CDataExchange* pDX ) {
 	CDialog::DoDataExchange( pDX );
 	DDX_Control( pDX, IDC_EDIT_INFO, editInfo );
 }
@@ -70,12 +67,10 @@ END_MESSAGE_MAP()
 
 // CEditViewDlg message handlers
 
-void CEditViewDlg::OnSize( UINT nType, int cx, int cy )
-{
+void CEditViewDlg::OnSize( UINT nType, int cx, int cy ) {
 	CDialogEx::OnSize( nType, cx, cy );
 
-	if( GetSafeHwnd() == NULL )
-	{
+	if ( GetSafeHwnd() == NULL ) {
 		return;
 	}
 
@@ -90,8 +85,7 @@ void CEditViewDlg::OnSize( UINT nType, int cx, int cy )
 	CRect rect, crect;
 	GetClientRect( rect );
 	CWnd* wnd = GetDlgItem( IDC_BUTTON_OPEN );
-	if( wnd == NULL || ( wnd && wnd->GetSafeHwnd() == NULL ) )
-	{
+	if ( wnd == NULL || ( wnd && wnd->GetSafeHwnd() == NULL ) ) {
 		return;
 	}
 	wnd->GetWindowRect( crect );
@@ -112,56 +106,42 @@ void CEditViewDlg::OnSize( UINT nType, int cx, int cy )
 	wnd->SetWindowPos( NULL, 40 + crect.Width() * 3, rect.Height() - crect.Height(), crect.Width() + 8, crect.Height(), SWP_SHOWWINDOW );
 }
 
-void CEditViewDlg::ShowFindDlg()
-{
-	if( findDlg )
-	{
+void CEditViewDlg::ShowFindDlg() {
+	if ( findDlg ) {
 		return;
 	}
 	findDlg = new CFindReplaceDialog();
 	findDlg->Create( TRUE, findStr, NULL, FR_DOWN, this );
 }
 
-void CEditViewDlg::OnBnClickedButtonOpen()
-{
+void CEditViewDlg::OnBnClickedButtonOpen() {
 	CPreviewDlg* dlg = NULL;
 	dlg = ( ( mode == MATERIALS ) ? CEntityDlg::ShowMaterialChooser() : CEntityDlg::ShowGuiChooser() );
-	if( dlg )
-	{
-		if( mode == MATERIALS )
-		{
+	if ( dlg ) {
+		if ( mode == MATERIALS ) {
 			const idMaterial* mat = declManager->FindMaterial( dlg->mediaName );
 			SetMaterialInfo( mat->GetName(), mat->GetFileName(), mat->GetLineNum() );
-		}
-		else
-		{
+		} else {
 			SetGuiInfo( dlg->mediaName );
 		}
 	}
 }
 
-void CEditViewDlg::OnBnClickedButtonSave()
-{
-	if( fileName.Length() )
-	{
+void CEditViewDlg::OnBnClickedButtonSave() {
+	if ( fileName.Length() ) {
 		CString text;
 		editInfo.GetWindowText( text );
 		fileSystem->WriteFile( fileName, text.GetBuffer( 0 ), text.GetLength(), "fs_devpath" );
-		if( mode == MATERIALS )
-		{
+		if ( mode == MATERIALS ) {
 			declManager->Reload( false );
-		}
-		else
-		{
+		} else {
 			uiManager->Reload( false );
 		}
 	}
 }
 
-void CEditViewDlg::UpdateEditPreview()
-{
-	if( GetSafeHwnd() && editInfo.GetSafeHwnd() )
-	{
+void CEditViewDlg::UpdateEditPreview() {
+	if ( GetSafeHwnd() && editInfo.GetSafeHwnd() ) {
 		editInfo.SetWindowText( editText );
 		editInfo.LineScroll( line );
 		int cindex = editInfo.LineIndex( line );
@@ -174,8 +154,7 @@ void CEditViewDlg::UpdateEditPreview()
 	}
 }
 
-BOOL CEditViewDlg::OnInitDialog()
-{
+BOOL CEditViewDlg::OnInitDialog() {
 	CDialogEx::OnInitDialog();
 
 	mediaPreview.Create( IDD_DIALOG_EDITPREVIEW, this );
@@ -183,8 +162,7 @@ BOOL CEditViewDlg::OnInitDialog()
 
 	CRect rct;
 	LONG lSize = sizeof( rct );
-	if( LoadRegistryInfo( "radiant_editviewwindow", &rct, &lSize ) )
-	{
+	if ( LoadRegistryInfo( "radiant_editviewwindow", &rct, &lSize ) ) {
 		SetWindowPos( NULL, rct.left, rct.top, rct.Width(), rct.Height(), SWP_SHOWWINDOW );
 	}
 
@@ -199,10 +177,8 @@ BOOL CEditViewDlg::OnInitDialog()
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void CEditViewDlg::OnDestroy()
-{
-	if( GetSafeHwnd() )
-	{
+void CEditViewDlg::OnDestroy() {
+	if ( GetSafeHwnd() ) {
 		CRect rct;
 		GetWindowRect( rct );
 		SaveRegistryInfo( "radiant_editviewwindow", &rct, sizeof( rct ) );
@@ -211,67 +187,57 @@ void CEditViewDlg::OnDestroy()
 	CDialogEx::OnDestroy();
 }
 
-void CEditViewDlg::SetMaterialInfo( const char* name, const char* file, int _line )
-{
+void CEditViewDlg::SetMaterialInfo( const char * name, const char * file, int _line ) {
 	idStr str;
-	void* buf;
+	void * buf;
 	fileName = "";
 	matName = "";
 	line = 0;
 	str = fileSystem->OSPathToRelativePath( file );
 	int size = fileSystem->ReadFile( str, &buf );
-	if( size > 0 )
-	{
+	if ( size > 0 ) {
 		fileName = str;
 		matName = name;
 		line = _line - 1;
-		if( line < 0 )
-		{
+		if ( line < 0 ) {
 			line = 0;
 		}
-		editText = static_cast<char*>( buf );
+		editText = static_cast<char *>( buf );
 		fileSystem->FreeFile( buf );
 	}
 	UpdateEditPreview();
 }
 
-void CEditViewDlg::SetGuiInfo( const char* name )
-{
+void CEditViewDlg::SetGuiInfo( const char * name ) {
 
 	fileName = "";
 	line = 0;
-	void* buf;
+	void * buf;
 	int size = fileSystem->ReadFile( name, &buf, NULL );
-	if( size > 0 )
-	{
+	if ( size > 0 ) {
 		fileName = name;
-		editText = static_cast<char*>( buf );
+		editText = static_cast<char *>( buf );
 		fileSystem->FreeFile( buf );
 	}
 	UpdateEditPreview();
 }
 
-void CEditViewDlg::OnTimer( UINT_PTR nIDEvent )
-{
+void CEditViewDlg::OnTimer( UINT_PTR nIDEvent ) {
 	CDialogEx::OnTimer( nIDEvent );
 	CWnd* wnd = GetDlgItem( IDC_EDIT_LINE );
-	if( wnd )
-	{
+	if ( wnd ) {
 		int start, end;
 		editInfo.GetSel( start, end );
 		wnd->SetWindowText( va( "%i", editInfo.LineFromChar( start ) ) );
 	}
 }
 
-void CEditViewDlg::OnBnClickedButtonGoto()
-{
+void CEditViewDlg::OnBnClickedButtonGoto() {
 	CWnd* wnd = GetDlgItem( IDC_EDIT_GOTO );
-	if( wnd )
-	{
+	if ( wnd ) {
 		CString str;
 		wnd->GetWindowText( str );
-		if( str.GetLength() )
-		{
+		if ( str.GetLength() ) {
 			int l = atoi( str );
 			editInfo.SetSel( 0, 0 );
 			editInfo.LineScroll( l );
@@ -284,28 +250,23 @@ void CEditViewDlg::OnBnClickedButtonGoto()
 	}
 }
 
-BOOL CEditViewDlg::PreTranslateMessage( MSG* pMsg )
-{
-	if( pMsg->message == WM_KEYDOWN && ( pMsg->wParam == 's' || pMsg->wParam == 'S' ) && GetAsyncKeyState( VK_CONTROL ) & 0x8000 )
-	{
+BOOL CEditViewDlg::PreTranslateMessage( MSG* pMsg ) {
+	if ( pMsg->message == WM_KEYDOWN && ( pMsg->wParam == 's' || pMsg->wParam == 'S' ) && GetAsyncKeyState( VK_CONTROL ) & 0x8000 ) {
 		OnBnClickedButtonSave();
 		return TRUE;
 	}
 
-	if( pMsg->message == WM_KEYDOWN && ( pMsg->wParam == 'o' || pMsg->wParam == 'O' ) && GetAsyncKeyState( VK_CONTROL ) & 0x8000 )
-	{
+	if ( pMsg->message == WM_KEYDOWN && ( pMsg->wParam == 'o' || pMsg->wParam == 'O' ) && GetAsyncKeyState( VK_CONTROL ) & 0x8000 ) {
 		OnBnClickedButtonOpen();
 		return TRUE;
 	}
 
-	if( pMsg->message == WM_KEYDOWN && ( pMsg->wParam == 'f' || pMsg->wParam == 'F' ) && GetAsyncKeyState( VK_CONTROL ) & 0x8000 )
-	{
+	if ( pMsg->message == WM_KEYDOWN && ( pMsg->wParam == 'f' || pMsg->wParam == 'F' ) && GetAsyncKeyState( VK_CONTROL ) & 0x8000 ) {
 		ShowFindDlg();
 		return TRUE;
 	}
 
-	if( pMsg->hwnd == editInfo.GetSafeHwnd() && ( pMsg->message == WM_KEYDOWN ) && ( pMsg->wParam == VK_TAB ) )
-	{
+	if ( pMsg->hwnd == editInfo.GetSafeHwnd() && ( pMsg->message == WM_KEYDOWN ) && ( pMsg->wParam == VK_TAB ) ) {
 		// get the char index of the caret position
 		int nPos = LOWORD( editInfo.CharFromPos( editInfo.GetCaretPos() ) );
 		// select zero chars
@@ -318,15 +279,12 @@ BOOL CEditViewDlg::PreTranslateMessage( MSG* pMsg )
 	return CDialogEx::PreTranslateMessage( pMsg );
 }
 
-LRESULT CEditViewDlg::OnFindDialogMessage( WPARAM wParam, LPARAM lParam )
-{
-	if( findDlg == NULL )
-	{
+LRESULT CEditViewDlg::OnFindDialogMessage( WPARAM wParam, LPARAM lParam ) {
+	if ( findDlg == NULL ) {
 		return 0;
 	}
 
-	if( findDlg->IsTerminating() )
-	{
+	if ( findDlg->IsTerminating() ) {
 		findDlg = NULL;
 		return 0;
 	}
@@ -334,8 +292,7 @@ LRESULT CEditViewDlg::OnFindDialogMessage( WPARAM wParam, LPARAM lParam )
 	// If the FR_FINDNEXT flag is set,
 	// call the application-defined search routine
 	// to search for the requested string.
-	if( findDlg->FindNext() )
-	{
+	if ( findDlg->FindNext() ) {
 		// read data from dialog
 		findStr = findDlg->GetFindString().GetBuffer( 0 );
 		CString str;
@@ -344,8 +301,7 @@ LRESULT CEditViewDlg::OnFindDialogMessage( WPARAM wParam, LPARAM lParam )
 		int start, end;
 		editInfo.GetSel( start, end );
 		start = editText.Find( findStr, false, end );
-		if( start >= 0 )
-		{
+		if ( start >= 0 ) {
 			editInfo.SetSel( start, start + findStr.Length() );
 			editInfo.Invalidate();
 			editInfo.RedrawWindow();

@@ -32,13 +32,12 @@ If you have questions concerning this license or the applicable additional terms
 
 // CTexWnd window
 
-class CNewTexWnd : public CWnd
-{
+class CNewTexWnd : public CWnd {
 	DECLARE_DYNCREATE( CNewTexWnd );
 
 public:
 	CNewTexWnd();
-	void UpdateFilter( const char* pFilter );
+	void UpdateFilter( const char * pFilter );
 	void UpdatePrefs();
 	void FocusEdit();
 
@@ -49,7 +48,7 @@ protected:
 	virtual BOOL PreCreateWindow( CREATESTRUCT& cs );
 
 public:
-	void EnsureTextureIsVisible( const char* name );
+	void EnsureTextureIsVisible( const char * name );
 	virtual ~CNewTexWnd();
 	BOOL OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult );
 	INT_PTR CNewTexWnd::OnToolHitTest( CPoint point, TOOLINFO* pTI );
@@ -60,7 +59,7 @@ protected:
 	//CButton  m_wndShaders;
 	bool m_bNeedRange;
 	HGLRC hglrcTexture;
-	CDC* 	hdcTexture;
+	CDC *	hdcTexture;
 	CPoint cursor;
 	CPoint origin;
 	CPoint draw;
@@ -69,12 +68,12 @@ protected:
 	CRect rectClient;
 	int currentRow;
 	int currentIndex;
-	idList<const idMaterial*> materialList;
+	idList<const idMaterial *> materialList;
 
 	// Generated message map functions
 protected:
-	const idMaterial* NextPos();
-	const idMaterial* getMaterialAtPoint( CPoint point );
+	const idMaterial * NextPos();
+	const idMaterial * getMaterialAtPoint( CPoint point );
 	void InitPos();
 
 	afx_msg int OnCreate( LPCREATESTRUCT lpCreateStruct );

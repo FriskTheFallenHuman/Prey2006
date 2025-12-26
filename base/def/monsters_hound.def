@@ -1,0 +1,470 @@
+export all {
+	options		-scale 1.0 -prefix HoundRef__ -keep Root B1 H1 B2 H2 B3 T1 R_Hip L_Hip N1 R_Shldr L_Shldr T2 R_Thigh L_Thigh N2 R_Arm L_Arm T3 R_Knee1 L_Knee1 N3 R_forArm L_forArm T4 R_Knee2 L_Knee2 Head R_Wrst L_Wrst R_Ankle L_Ankle Jaw R_Mouth F_Mouth L_Mouth HigherTeeth R_Thmb1 R_For1 R_Mddl1 R_Pnky1 L_Thmb1 L_For1 L_Mddl1 L_Pnky1 R_Foot L_Foot lowerTeeth Tongue1 R_Thmb2 R_For2 R_Mddl2 R_Pnky2 L_Thmb2 L_For2 L_Mddl2 L_Pnky2 Drool1 Tongue2 R_For3 R_Mddl3 R_Pnky3 L_For3 L_Mddl3 L_Pnky3 Drool2 Tongue3 Drool3 Tongue4 RF_upvector RB_upvector LF_upvector LB_upvector //
+
+	mesh		models/monsters/hound/hound.ma -destdir models/monsters/hound
+
+	addoptions	-destdir models/monsters/hound/anim
+	anim		models/monsters/hound/anim/idle.ma
+	anim		models/monsters/hound/anim/run.ma
+	anim		models/monsters/hound/anim/run2.ma
+	anim		models/monsters/hound/anim/runtwoupright.ma
+	anim		models/monsters/hound/anim/death.ma
+	anim		models/monsters/hound/anim/walk.ma
+	anim		models/monsters/hound/anim/walk2.ma
+	anim		models/monsters/hound/anim/melee_attack.ma
+	anim		models/monsters/hound/anim/howl.ma
+	anim		models/monsters/hound/anim/pain1.ma
+	anim		models/monsters/hound/anim/pain2.ma
+	anim		models/monsters/hound/anim/pain3.ma
+	anim		models/monsters/hound/anim/evade_left.ma
+	anim		models/monsters/hound/anim/evade_right.ma
+	anim		models/monsters/hound/anim/dodge_left.ma
+	anim		models/monsters/hound/anim/dodge_right.ma
+	anim		models/monsters/hound/anim/turnleft.ma
+	anim		models/monsters/hound/anim/turnright.ma
+	anim		models/monsters/hound/anim/floorvent.ma
+	anim		models/monsters/hound/anim/floorventidle.ma
+	anim		models/monsters/hound/anim/wallvent.ma
+	anim		models/monsters/hound/anim/wallventidle.ma
+	anim		models/monsters/hound/anim/glasswall.ma
+	anim		models/monsters/hound/anim/eatingcorpsloop.ma
+	anim		models/monsters/hound/anim/eatingcorpslookup.ma
+	anim		models/monsters/hound/anim/initial.ma
+	anim		models/monsters/hound/anim/upright_idle.ma
+	anim		models/monsters/hound/anim/upright_walk.ma
+	anim		models/monsters/hound/anim/uprighttworun.ma
+	anim		models/monsters/hound/anim/upright_right_attack1.ma
+	anim		models/monsters/hound/anim/upright_right_attack2.ma
+	anim		models/monsters/hound/anim/upright_right_fastattack1.ma
+	anim		models/monsters/hound/anim/upright_leap.ma
+	anim		models/monsters/hound/anim/cinematic_piperun.ma
+	anim		models/monsters/hound/anim/turnme.ma
+	anim		models/monsters/hound/anim/cine_ftb_attack.ma
+	anim		models/monsters/hound/anim/lying_down.ma
+	anim		models/monsters/hound/anim/lying_down_to_idle.ma
+	anim		models/monsters/hound/anim/idle_look_up.ma
+	anim		models/monsters/hound/anim/jump_attack.ma
+	anim		models/monsters/hound/anim/leashed_hound.ma
+	anim		models/monsters/hound/anim/portal_jump.ma
+	anim		models/monsters/hound/anim/tbeam.ma
+}
+monster_hound {
+	"inherit"				"monster_simple_default"	
+	"editor_color"			"1 .5 0"
+	"editor_mins"			"-24 -24 0"
+	"editor_maxs"			"24 24 90"
+
+	"model"					"model_monster_hound"
+	"spawnclass"			"hhMonsterAI"
+	"scriptobject"			"monster_hound"
+	"ragdoll"				"monster_hound"
+	"health"				"120"
+	"gibhealth"				"-150"
+	"team"					"7"
+	"rank"					"0"
+	"size"					"45 45 88"
+	"use_aas"				"aas48"
+	"turn_rate"				"360"
+	"fov"					"90"
+	"melee_range"			"60"
+	"def_gibDebrisSpawner"			"debrisSpawner_hound"
+	"def_dropSoul"					"ammo_lifeforce_small"
+	"produces_splats"				"1"
+	"dda_attack_min"		"1"		//time between attacks
+	"dda_attack_max"		"2"
+	"dda_knockback_min"		"0"		//chance to knockback
+	"dda_knockback_max"		"0.6"
+	"bTalonAttack"			"1" // Talon can attack this creature
+	"ddaIndex"				"2"
+	"growl_time"			"1.4"
+
+	//look
+	"head_look"						"1"
+	"look_joint N1"					"0.5 0.5 0"
+	"look_joint N2"					"0.5 0.5 0"
+	"look_min"						"-250 -250 0"
+	"look_max"						"250 250 0"
+	"head_focus_rate"				"0.1"
+
+	"jawbone_jaw"					"Jaw"
+	"jawflapR_Jaw"					"20 0 0"
+	
+	"skin"							"skins/monsters/hound.skin"
+	"skin_freeze"					"skins/monsters/hound_frozen.skin"
+	"skin_acidburn"					"skins/monsters/hound_acid"
+	"skin_burn"						"skins/monsters/hound_burned.skin"
+	"skin_melee_hit"				"skins/monsters/hound_bloody.skin"
+	"acidburn"						"1"
+	"can_freeze"					"1"
+	"pain_delay"					"0"
+
+	"snd_sight"						"monster_hound_sight"
+	"snd_chatter"					"monster_hound_chatter_ambient"
+	"snd_chatter_combat"			""
+	"sound_joint"					"Root"
+	//"snd_pain"					"monster_hound_pain"
+	//"snd_pain_small"				"monster_hound_pain"
+	//"snd_pain_medium"				"monster_hound_pain"
+	//"snd_pain_large"				"monster_hound_pain"
+	//"snd_pain_huge"					"monster_hound_pain"
+	"snd_anim_payne"				"monster_hound_pain"
+	"snd_leapattack"				"monster_hound_leapattack"
+	"snd_meleeattack"				"monster_hound_meleeattack"
+	"snd_death"						"monster_hound_die"
+	"snd_dead_body_hit"				"monster_hound_dead_body_hit"
+	"snd_howl"						"monster_hound_howl"
+	"snd_footstep"					"monster_hound_back_foot"
+	"snd_growl"						"monster_hound_growl"
+	"snd_breath"					"monster_hound_breath"
+	"snd_feedinga_step"				"feedinga_hound_footstep"
+
+	// IK Stuff
+/*	"ik_numLegs"						"4"
+	"ik_tiltWaist"						"1" // HUMANHEAD mdl:  This flag isn't used by Doom3 and doesn't appear to be used by the code either.
+	"ik_usePivot"						"0" // HUMANHEAD mdl:  This flag isn't used by Doom3 and the associated code appears to be broken.  Leave it disabled.
+	"ik_footSize"						"4"
+	"ik_minWaistAnkleDist"				"12"
+	"ik_footUpTrace"					"12"
+	"ik_footDownTrace"					"12" 
+	"ik_dir_rotation1"					"25 90 0" 
+	"ik_dir_rotation2"					"25 -90 0" 	
+	"ik_waist"							"Root"
+	"ik_hip1"							"L_Thigh"
+	"ik_hip2"							"R_Thigh"
+	"ik_knee1"							"L_Knee1"
+	"ik_knee2"							"R_Knee1"
+	"ik_ankle1"							"L_Knee2"
+	"ik_ankle2"							"R_Knee2"
+	"ik_dir1"							"LB_upvector"		// IK direction is defined as the vector from ik_dir to ik_knee
+	"ik_dir2"							"RB_upvector"		// IK direction is used to tell which way to bend (should be straight out in front of knee)
+	"ik_foot1"							"L_Ankle"
+	"ik_foot2"							"R_Ankle"
+	"ik_hip3"							"L_Arm"
+	"ik_hip4"							"R_Arm"
+	"ik_knee3"							"L_forArm"
+	"ik_knee4"							"R_forArm"
+	"ik_ankle3"							"L_Wrst"
+	"ik_ankle4"							"R_Wrst"
+	"ik_dir3"							"LF_upvector"		// IK direction is defined as the vector from ik_dir to ik_knee
+	"ik_dir4"							"RF_upvector"		// IK direction is used to tell which way to bend (should be straight out in front of knee)
+	"ik_foot3"							"L_Mddl2"
+	"ik_foot4"							"R_Mddl2"*/
+}
+
+entityDef melee_hound_left {
+	"inherit"			"melee_generic"
+	"mtr_blob"			"textures/damage/scratch_left"
+	"damage"			"4"
+	"mb_time"			"450"
+	"mb_amplitude"		"1.0"
+	"snd_hit"			"monster_hound_melee_hit"
+	"snd_miss"			"monster_hound_melee_miss"
+}
+
+entityDef melee_hound_right {
+	"inherit"			"melee_generic"
+	"mtr_blob"			"textures/damage/scratch_right"
+	"damage"			"4"
+	"mb_time"			"450"
+	"mb_amplitude"		"1.0"
+	"snd_hit"			"monster_hound_melee_hit"
+	"snd_miss"			"monster_hound_melee_miss"
+}
+
+entityDef melee_hound_hardright {
+	"inherit"			"melee_hound_right"		
+	"knockback"			"100"
+}
+
+entityDef melee_hound_hardleft {
+	"inherit"			"melee_hound_left"		
+	"knockback"			"0"	
+}
+
+entityDef melee_hound_uppercut {
+	"inherit"			"melee_generic"
+	"mtr_blob"			"textures/damage/bloodslash"
+	"damage"			"6"
+	"knockback"			"100"
+	"mb_time"			"450"
+	"mb_amplitude"		"1.0"
+	"snd_hit"			"monster_hound_melee_hit"
+	"snd_miss"			"monster_hound_melee_miss"
+}
+
+entityDef melee_houndleap {
+	"inherit"			"melee_generic"
+	"damage"			"8"
+	"mb_time"			"550"
+	"mb_amplitude"		"1.0"
+	"snd_hit"			"monster_hound_leap_melee_hit"
+	"snd_miss"			"monster_hound_leap_melee_miss"
+}
+
+model model_monster_hound {
+	
+	mesh						models/monsters/hound/hound.md5mesh	
+	channel torso				(*N1)
+	channel legs				(*origin -*N1)
+
+	anim af_pose				models/monsters/hound/anim/initial.md5anim
+	anim ik_pose				models/monsters/hound/anim/initial.md5anim
+	anim initial				models/monsters/hound/anim/initial.md5anim
+	anim shuttle_bound			models/monsters/hound/anim/tbeam.md5anim {
+		frame 1					disableWalkIK
+	}
+	anim pain					models/monsters/hound/anim/pain1.md5anim {
+		ai_no_turn
+		frame 1					sound_voice snd_anim_payne
+	}
+	anim pain2					models/monsters/hound/anim/pain2.md5anim {
+		ai_no_turn
+		frame 1					sound_voice snd_anim_payne
+	}
+	anim pain3					models/monsters/hound/anim/pain3.md5anim {
+		ai_no_turn
+		frame 1					sound_voice snd_anim_payne
+	}
+	anim death					models/monsters/hound/anim/death.md5anim {
+		frame 1						sound_voice snd_death
+		frame 1						disableWalkIK
+	}
+	anim howl					models/monsters/hound/anim/howl.md5anim {
+		frame 1						sound_voice snd_howl
+	}
+	anim turnMe					models/monsters/hound/anim/turnme.md5anim
+	anim turnLeft				models/monsters/hound/anim/turnleft.md5anim
+	anim turnRight				models/monsters/hound/anim/turnright.md5anim
+	anim idle_turn_left			models/monsters/hound/anim/turnleft.md5anim
+	anim idle_turn_right		models/monsters/hound/anim/turnright.md5anim
+	anim portalattack			models/monsters/hound/anim/runtwoupright.md5anim {
+		frame 1						disableWalkIK
+		frame 1						sound_voice snd_sight
+		frame 17					enableWalkIK
+	}
+	anim portal					models/monsters/hound/anim/portal_jump.md5anim {
+		frame 1						disableWalkIK
+		frame 1						sound_voice snd_sight
+		frame 13					enableWalkIK
+	}
+	anim idle					models/monsters/hound/anim/idle.md5anim	
+	anim walk					models/monsters/hound/anim/walk.md5anim {
+		frame 1						disableWalkIK
+		frame 5						leftfoot
+		frame 12					leftfoot
+		frame 17					rightfoot	
+		frame 20					enableWalkIK
+    }
+	anim run					models/monsters/hound/anim/run.md5anim {
+		frame 1						disableWalkIK
+		frame 1						rightfoot
+		frame 10					rightfoot
+		frame 11					leftfoot
+		frame 12					leftfoot
+		frame 13					rightfoot
+		frame 22					rightfoot
+		frame 23					leftfoot
+		frame 25					enableWalkIK
+    }        
+	anim strafe_left			models/monsters/hound/anim/evade_left.md5anim	{
+		
+		frame 3						rightfoot
+		frame 4						leftfoot
+		frame 13					rightfoot
+		frame 14					leftfoot
+	
+	}
+	anim strafe_right			models/monsters/hound/anim/evade_right.md5anim {
+		frame 1						disableWalkIK
+		frame 3						rightfoot
+		frame 4						leftfoot
+		frame 13					rightfoot
+		frame 14					leftfoot
+		frame 14					enableWalkIK
+	} 
+	anim run_strafe_left    	models/monsters/hound/anim/dodge_left.md5anim {
+		frame 1						disableWalkIK
+		frame 3						rightfoot
+		frame 4						leftfoot
+		frame 11						leftfoot
+		frame 12					rightfoot
+		frame 12					enableWalkIK
+	}
+	anim run_strafe_right		models/monsters/hound/anim/dodge_right.md5anim {
+		frame 1						disableWalkIK
+				frame 3						rightfoot
+				frame 4						leftfoot
+				frame 11						leftfoot
+		frame 12					rightfoot
+		frame 12					enableWalkIK
+	}
+	// Cinematics
+	anim floorVent				models/monsters/hound/anim/floorvent.md5anim {
+		frame 1						disableWalkIK
+		frame 12					enableWalkIK
+		frame 14					sound snd_sight		
+	} 
+	anim floorVentIdle 			models/monsters/hound/anim/floorventidle.md5anim
+	anim wallVent				models/monsters/hound/anim/wallvent.md5anim {
+		ai_no_turn
+		
+		frame 1					event disableClip
+		frame 12				event enableClip
+		frame 16					sound_voice snd_anim_payne
+	}
+	anim GlassWall				models/monsters/hound/anim/glasswall.md5anim {
+		frame 1						disableWalkIK
+		frame 11					sound_voice monster_hound_pain
+		frame 90					enableWalkIK
+		frame 92					sound_voice monster_hound_sight
+	}
+	anim EatingCLp				models/monsters/hound/anim/eatingcorpsloop.md5anim
+	anim StopEating    			models/monsters/hound/anim/eatingcorpslookup.md5anim {
+		frame 133				sound_voice snd_sight
+	}
+	anim pipeRun         		models/monsters/hound/anim/cinematic_piperun.md5anim {
+		frame 1						disableWalkIK
+		frame 37					enableWalkIK
+	}
+
+	anim upright_idle			models/monsters/hound/anim/upright_idle.md5anim {
+		frame 1						disableWalkIK
+		frame 71						enableWalkIK
+	}
+	anim upright_walk			models/monsters/hound/anim/upright_walk.md5anim {
+		frame 1						disableWalkIK
+ 		frame 10					leftfoot
+        	frame 19					rightfoot
+		frame 20						enableWalkIK
+    }
+	anim upright_run        	models/monsters/hound/anim/upright_walk.md5anim {
+		frame 1						disableWalkIK
+		frame 10					leftfoot
+        frame 19					rightfoot
+		frame 20						enableWalkIK
+    }  
+	anim upright_melee_attack1	models/monsters/hound/anim/upright_right_attack1.md5anim {
+		frame 1						disableWalkIK
+		frame 10					melee melee_hound_hardright
+		frame 10					sound_voice snd_sight
+		frame 10					leftfoot
+        frame 19					rightfoot
+		frame 20					enableWalkIK
+    }
+	anim upright_melee_attack2	models/monsters/hound/anim/upright_right_attack2.md5anim {
+		frame 1						disableWalkIK
+		frame 15	    			melee melee_hound_uppercut
+		frame 15					sound_voice snd_sight
+		frame 10					leftfoot
+       	 	frame 19					rightfoot	
+        	frame 28					leftfoot
+        	frame 37					rightfoot
+		frame 20						enableWalkIK
+    }
+	anim upright_melee_attack3	models/monsters/hound/anim/upright_right_fastattack1.md5anim {
+		frame 1						disableWalkIK
+		frame 4						melee melee_hound_left
+		frame 4						sound_voice snd_sight
+		frame 11					melee melee_hound_right
+		frame 11					sound_voice snd_sight
+		frame 10					leftfoot
+        frame 19					rightfoot
+		frame 21						enableWalkIK
+    }
+	anim upright_leap			models/monsters/hound/anim/upright_leap.md5anim {
+		frame 1						disableWalkIK
+		frame 23					enableWalkIK
+	}
+
+	anim leashed_walk			models/monsters/hound/anim/leashed_hound.md5anim {
+		frame 1             		event soundOnModel
+		
+		frame 1						sound snd_feedinga_step
+		frame 4						sound snd_feedinga_step
+		frame 9						sound snd_feedinga_step
+		frame 13					sound snd_feedinga_step
+		frame 19					sound snd_feedinga_step
+		frame 23					sound snd_feedinga_step
+		frame 28					sound snd_feedinga_step
+		frame 32					sound snd_feedinga_step
+		frame 38					sound snd_feedinga_step
+		frame 42					sound snd_feedinga_step
+		frame 47					sound snd_feedinga_step
+		frame 51					sound snd_feedinga_step
+		frame 57					sound snd_feedinga_step
+		frame 61					sound snd_feedinga_step
+		frame 66					sound snd_feedinga_step
+		frame 70					sound snd_feedinga_step
+		frame 76					sound snd_feedinga_step
+		frame 81					sound snd_feedinga_step
+		frame 85					sound snd_feedinga_step
+		frame 90					sound snd_feedinga_step
+		frame 95					sound snd_feedinga_step
+		frame 99					sound snd_feedinga_step
+		frame 105					sound snd_feedinga_step
+		frame 109					sound snd_feedinga_step
+		frame 115					sound snd_feedinga_step
+		frame 119					sound snd_feedinga_step
+		frame 124					sound snd_feedinga_step
+		frame 128					sound snd_feedinga_step
+		frame 133					sound snd_feedinga_step
+		frame 138					sound snd_feedinga_step
+		
+		frame 140					event soundOnModel
+	}
+	anim leashed_run			models/monsters/hound/anim/walk.md5anim
+	anim leashed_leap_attack	models/monsters/hound/anim/upright_right_attack2.md5anim {
+		frame 1						disableWalkIK
+		frame 39					enableWalkIK
+	}
+
+	anim melee_attack			models/monsters/hound/anim/runtwoupright.md5anim {
+		frame 1						sound snd_leapattack
+		frame 1						disableWalkIK
+		frame 10.7					leftfoot        
+		frame 11					melee melee_houndLeap
+		frame 11					sound_voice snd_sight
+		frame 13.2					rightfoot
+		frame 17					enableWalkIK
+	}		
+	anim upright2run				models/monsters/hound/anim/uprighttworun.md5anim {
+		frame 1						disableWalkIK
+		frame 10					rightfoot
+        frame 11					leftfoot
+        frame 11					rightfoot
+        frame 12					leftfoot
+		frame 13					enableWalkIK
+    }
+	anim lying_down				models/monsters/hound/anim/lying_down.md5anim {
+		frame 1						disableWalkIK
+		frame 116					enableWalkIK
+	} 
+	anim lying_down_to_idle		models/monsters/hound/anim/lying_down_to_idle.md5anim {
+		frame 1						disableWalkIK
+		frame 30					enableWalkIK
+	} 
+	anim idle_look_up			models/monsters/hound/anim/idle_look_up.md5anim	
+	anim jump_attack			models/monsters/hound/anim/jump_attack.md5anim	{
+		frame 1					sound_voice snd_sight
+		frame 4						disableWalkIK		
+		frame 36					enableWalkIK
+	}
+}
+
+entityDef monster_hound_feedingb {
+	"inherit"	"monster_hound"
+	"model"		"model_monster_hound_feedingb"
+}
+
+model model_monster_hound_feedingb {
+	"inherit"	"model_monster_hound"
+	
+	anim cine_ftb_attack		models/monsters/hound/anim/cine_ftb_attack.md5anim {
+		frame 1						disableWalkIK
+		frame 1						disableClip
+		frame 1						sound_voice snd_sight
+		//temporary fix for framecommand issue
+		frame 30					enableWalkIK
+		frame 30					enableClip
+	}
+}

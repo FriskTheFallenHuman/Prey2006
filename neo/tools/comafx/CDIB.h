@@ -32,11 +32,9 @@ If you have questions concerning this license or the applicable additional terms
 // Original ColorPicker/DIB source by Rajiv Ramachandran <rrajivram@hotmail.com>
 // included with permission from the author
 
-class CDIB
-{
+class CDIB {
 public:
-	enum BitmapType
-	{
+	enum BitmapType {
 		BMP,
 		GIF,
 		TIFF
@@ -44,9 +42,8 @@ public:
 	CDIB( HANDLE hDib = NULL, int nBits = 8 );
 	virtual			~CDIB();
 
-	CDIB& 			operator=( CDIB& dib );
-	BOOL			IsValid()
-	{
+	CDIB 	&		operator=( CDIB& dib );
+	BOOL			IsValid() {
 		return ( m_pVoid && Width() && Height() );
 	}
 	void			UseGamma( float fg, BOOL bUse = TRUE );
@@ -58,8 +55,8 @@ public:
 	BOOL			SaveDIB( CString& fileName, BitmapType type );
 	void			ReplaceColor( unsigned char oldColor, unsigned char newColor );
 	HANDLE			GetDIBits( int nStartX = -1, int nStartY = -1, int nCx = -1, int nCy = -1 );
-	CBitmap* 		GetBitmap( CDC& dc );
-	CBitmap* 		GetTempBitmap( CDC& dc );
+	CBitmap 	*	GetBitmap( CDC& dc );
+	CBitmap 	*	GetTempBitmap( CDC& dc );
 	DWORD			GetDIBSize();
 	int				GetPaletteSize( BITMAPINFOHEADER& bmInfo );
 	int				GetPaletteSize();
@@ -68,33 +65,29 @@ public:
 	void			InitDIB( COLORREF color );
 	void			CopyLine( int source, int dest );
 	void			DestroyDIB();
-	void			SetPalette( unsigned char* palette );
+	void			SetPalette( unsigned char * palette );
 	void			SetPalette( RGBQUAD* pRGB );
 	COLORREF		PaletteColor( int index );
 	void			SetPixel( int x, int y, COLORREF color );
 	void			SetPixel8( int x, int y, unsigned char color );
 	COLORREF		GetPixel( int x, int y );
-	void			GetPixel( UINT x, UINT y, int& pixel );
+	void			GetPixel( UINT x, UINT y, int & pixel );
 	void			BitBlt( HDC hDest, int nXDest, int nYDest, int nWidth, int nHeight, int xSrc, int ySrc );
 	void			BitBlt( int nXDest, int nYDest, int nWidth, int nHeight, CDIB& dibSrc, int nSrcX, int nSrcY, BYTE* colors = NULL );
 	void			StretchBlt( HDC hDest, int nXDest, int nYDest, int nDWidth, int nDHeight, int xSrc, int ySrc, int  nSWidth, int nSHeight );
 	void			StretchBlt( int nXDest, int nYDest, int nDWidth, int nDHeight, CDIB& dibSrc, int xSrc, int ySrc, int  nSWidth, int nSHeight );
 	void			ExpandBlt( int nXDest, int nYDest, int xRatio, int yRatio, CDIB& dibSrc, int xSrc, int ySrc, int  nSWidth, int nSHeight );
-	void			SetFlags( int flag )
-	{
+	void			SetFlags( int flag ) {
 		m_nFlags = flag;
 	}
-	int				Height()
-	{
+	int				Height() {
 		return height ;
 	}
-	int				Width()
-	{
+	int				Width() {
 		return width ;
 	}
-	unsigned char* GetLinePtr( int line );
-	inline int		GetBitCount()
-	{
+	unsigned char * GetLinePtr( int line );
+	inline int		GetBitCount() {
 		return m_pInfo->bmiHeader.biBitCount;
 	}
 	BOOL			Make8Bit( CDIB& dib );
@@ -103,8 +96,7 @@ public:
 	BOOL			SwitchFrom24( CDIB& dib );
 	BOOL			SwitchPalette( CDIB& dib );
 	int				ClosestColor( RGBQUAD* pRgb );
-	LPBITMAPINFO	GetBitmapInfo()
-	{
+	LPBITMAPINFO	GetBitmapInfo() {
 		return m_pInfo;
 	}
 	static unsigned int Distance( RGBQUAD& rgb1, RGBQUAD& rgb2 );
@@ -120,11 +112,11 @@ protected:
 	void			CreateGammaCurve();
 	void			Expand( int nXDest, int nYDest, int xRatio, int yRatio, CDIB& dibSrc, int xSrc, int ySrc, int nSWidth, int nSHeight );
 
-	unsigned char* 	m_pBits;
+	unsigned char *	m_pBits;
 	PBITMAPINFO		m_pInfo;
-	RGBQUAD* 		m_pRGB;
-	void* 			m_pVoid;
-	BYTE** 			m_pLinePtr;
+	RGBQUAD 	*	m_pRGB;
+	void 	*		m_pVoid;
+	BYTE 	**		m_pLinePtr;
 	int				height;
 	int				bytes;
 	int				width;

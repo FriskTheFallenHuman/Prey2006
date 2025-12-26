@@ -1,0 +1,35 @@
+
+//////////////////////////////////////////
+//IDENTIFY PLAYERS
+//////////////////////////////////////////
+
+	windowDef PlayerName {
+		rect		0, 462, 90, 15
+		text		"gui::playername"
+		forecolor	"gui::team_R", "gui::team_G", "gui::team_B", 1
+		textscale	0.25
+		textalign	1
+		textaligny	-3
+		visible		"gui::ismultiplayer"
+	}
+
+	windowDef AimingIndicatorTeammate {
+		rect		200, 210, 240, 20
+		forecolor	"gui::aim_R", "gui::aim_G", "gui::aim_B", 1
+		text		"gui::aim_text"
+		textscale	0.25
+		textalign	1
+		shadow		1
+		visible		"gui::ismultiplayer"
+	}
+	
+	//rww - show health of target (for weapon damage testing purposes)
+	windowDef AimingTargetHealth {
+		text		"gui::aim_health"
+		rect		0, 240, 640, 80
+		shadow		1
+		textalign	1
+		forecolor	1.0, 1.0, 1.0, 1.0
+		textscale	0.8
+		visible		("gui::aim_health" != 0)
+	}
