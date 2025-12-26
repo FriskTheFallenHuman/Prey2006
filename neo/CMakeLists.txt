@@ -558,6 +558,7 @@ set(src_ui
 	ui/TabWindow.cpp
     ui/BackgroundImage.cpp
     ui/ButtonWindow.cpp
+	ui/SuperWindow.cpp
 	ui/UserInterface.cpp
 	ui/Window.cpp
 	ui/Winvar.cpp

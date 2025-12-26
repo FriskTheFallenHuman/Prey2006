@@ -418,16 +418,10 @@ protected:
 	idWinFloat	rotate;
 	idWinStr	text;
 	idWinBackground	backGroundName;			//
-	idWinVec4 margins;
-	idWinVec2 cornerSize;
-	idWinVec2 edgeSize;
-	idWinVec4 hoverMatColor;
-	idWinVec4 focusColor;
-	idWinVec4 seperatorLines;
-	idWinInt seperatorMargin;
-	idWinVec4 hoverBorderColor;
-	idWinFloat trailOffset;
-	idWinInt splineIn;
+    idWinVec4    hoverMatColor; // RW; non-ref; script;
+    idWinVec4    focusColor;
+    idWinFloat   trailOffset;
+    idWinInt     splineIn;
 
 	virtual void SetVisible( bool visible );
 
