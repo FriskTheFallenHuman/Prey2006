@@ -26,6 +26,7 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
+// for gui left-middle-right background widget
 #ifndef __BACKGROUNDIMAGE_H__
 #define __BACKGROUNDIMAGE_H__
 
@@ -39,12 +40,13 @@ If you have questions concerning this license or the applicable additional terms
 class hhBackground {
 public:
 	void Reset( void );
-	void Draw( idDeviceContext *dc, const idRectangle &drawRect, float matScalex, float matScaley, unsigned int flags );
+    void Draw(idDeviceContext *dc, const idRectangle &drawRect, float matScalex, float matScaley, unsigned int flags, const idVec4 &color = idVec4(1.0f, 1.0f, 1.0f, 1.0f));
 	void Setup( void );
 
 	idWinBackground           name;
 	const idMaterial          *material;
 };
+
 
 
 /*
@@ -57,7 +59,7 @@ public:
 class hhBackgroundGroup {
 public:
 	void Reset( void );
-	void Draw( idDeviceContext *dc, const idRectangle &total, bool vertical, float matScalex, float matScaley, unsigned int flags );
+    void Draw(idDeviceContext *dc, const idRectangle &total, bool vertical, float matScalex, float matScaley, unsigned int flags, const idVec4 &color = idVec4(1.0f, 1.0f, 1.0f, 1.0f));
 	void Setup( float edge = -1.0f );
 
 	static int CalcRects(const idRectangle &total, hhBackground *bgs[3], idRectangle rects[3], bool vertical, float edgeWidth = -1.0f);
