@@ -22,8 +22,9 @@ private:
     virtual bool		ParseInternalVar(const char *name, idParser *src);
 	void				CommonInit();
 
-    hhBackgroundGroup   buttonMat;
-    float               edgeWidth;
+    hhBackgroundGroup   buttonMat; // leftMat middleMat rightMat // RO; non-ref; non-script;
+    float               edgeWidth; // RO; non-ref; non-script;
+    idVec4              hoverBorderColor; // RO; non-ref; non-script;
 };
 
 #endif // _KARIN_BUTTONWINDOW_H

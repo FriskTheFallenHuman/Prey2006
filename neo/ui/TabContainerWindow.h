@@ -32,14 +32,14 @@ class hhTabContainerWindow : public idWindow
         float				GetTabWidth();
         bool 				ButtonContains(const hhTabWindow *tab);
 
-        idWinInt            activeTab;
-        idWinVec2           tabMargins;
-        idWinVec4           sepColor;
+        idWinInt            activeTab; // RW; non-ref; script;
+        idVec2              tabMargins; // RO; non-ref; non-script;
+        idVec4              sepColor; // RO; non-ref; non-script;
+	    // bool				horizontal;
+        bool    			vertical; // RO; non-ref; non-script; can't auto parsing
+        float			    tabHeight; // RO; non-ref; non-script;
 
 		idList<hhTabWindow *> tabs;
-	    // bool				horizontal;
-		bool				vertical;
-        float 				tabHeight;
         int 				currentTab;
         idVec2 				offsets;
 };

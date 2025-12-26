@@ -38,9 +38,13 @@ private:
 	void				CommonInit();
 
 
-    idWinVec4           activeColor;
-    hhBackgroundGroup   buttonMat;
-    hhBackgroundGroup   buttonActiveMat;
+    hhBackgroundGroup   buttonMat; // buttonLeftMat buttonMiddleMat buttonRightMat // RO; non-ref; non-script;
+    hhBackgroundGroup   buttonActiveMat; // buttonActiveLeftMat buttonActiveMiddleMat buttonActiveRightMat // RO; non-ref; non-script;
+    idVec4	            activeColor; // RO; non-ref; non-script;
+    float			    buttonEdgeWidth; // RO; non-ref; non-script;
+    idVec4              seperatorLines; // RO; non-ref; non-script;
+    float               seperatorMargin; // RO; non-ref; non-script;
+
 	bool                active;
     idRectangle         buttonRect;
 
