@@ -42,6 +42,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "TabWindow.h"
 #include "TabContainerWindow.h"
 #include "ButtonWindow.h"
+#include "SuperWindow.h"
 
 #ifdef ID_ALLOW_TOOLS
 //
@@ -97,20 +98,15 @@ const idRegEntry idWindow::RegisterVars[] = {
 	{ "lightColor", idRegister::VEC4 },
 	{ "viewOffset", idRegister::VEC4 },
 	{ "hideCursor", idRegister::BOOL},
-	{ "margins", idRegister::VEC4 },
-	{ "cornerSize", idRegister::VEC2 },
-	{ "edgeSize", idRegister::VEC2 },
-	{ "hoverMatColor", idRegister::VEC4 },
+
+    { "hoverMatColor", idRegister::VEC4 },
+    // listDef
 	{ "focusColor", idRegister::VEC4 },
-	{ "seperatorLines", idRegister::VEC4 },
-	{ "activeColor", idRegister::VEC4 },
-	{ "seperatorMargin", idRegister::INT },
-	{ "activeTab", idRegister::INT },
-	{ "sepColor", idRegister::VEC4 },
-	{ "hoverBorderColor", idRegister::VEC4 },
-	{ "tabMargins", idRegister::VEC2 },
+    // creditDef
 	{ "trailOffset", idRegister::FLOAT },
-	{ "splineIn", idRegister::INT }
+	{ "splineIn", idRegister::INT },
+    // tabContainerDef
+    { "activeTab", idRegister::INT },
 };
 
 const int idWindow::NumRegisterVars = sizeof(RegisterVars) / sizeof(idRegEntry);
@@ -1957,29 +1953,11 @@ idWinVar *idWindow::GetWinVarByName(const char *_name, bool fixup, drawWin_t** o
 	if (idStr::Icmp(_name, "hidecursor") == 0) {
 		retVar = &hideCursor;
 	}
-	if (idStr::Icmp(_name, "margins") == 0) {
-		retVar = &margins;
-	}
-	if (idStr::Icmp(_name, "cornerSize") == 0) {
-		retVar = &cornerSize;
-	}
-	if (idStr::Icmp(_name, "edgeSize") == 0) {
-		retVar = &edgeSize;
-	}
 	if (idStr::Icmp(_name, "hoverMatColor") == 0) {
 		retVar = &hoverMatColor;
 	}
 	if (idStr::Icmp(_name, "focusColor") == 0) {
 		retVar = &focusColor;
-	}
-	if (idStr::Icmp(_name, "seperatorLines") == 0) {
-		retVar = &seperatorLines;
-	}
-	if (idStr::Icmp(_name, "seperatorMargin") == 0) {
-		retVar = &seperatorMargin;
-	}
-	if (idStr::Icmp(_name, "hoverBorderColor") == 0) {
-		retVar = &hoverBorderColor;
 	}
 	if (idStr::Icmp(_name, "trailOffset") == 0) {
 		retVar = &trailOffset;
@@ -2369,7 +2347,6 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 
 
 		if ( token == "windowDef" || token == "animationDef" ||
-			 token == "superWindowDef" ||
 			 token == "creditDef" || token == "splineDef" )  {
 			if (token == "animationDef") {
 				visible = false;
@@ -2516,6 +2493,17 @@ bool idWindow::Parse( idParser *src, bool rebuild) {
 		}
         else if (token == "buttonDef") {
             hhButtonWindow *win = new hhButtonWindow(dc, gui);
+            SaveExpressionParseState();
+            win->Parse(src, rebuild);
+            RestoreExpressionParseState();
+            AddChild(win);
+            win->SetParent(this);
+            dwt.simp = NULL;
+            dwt.win = win;
+            drawWindows.Append(dwt);
+        }
+        else if (token == "superWindowDef") {
+            hhSuperWindow *win = new hhSuperWindow(dc, gui);
             SaveExpressionParseState();
             win->Parse(src, rebuild);
             RestoreExpressionParseState();
