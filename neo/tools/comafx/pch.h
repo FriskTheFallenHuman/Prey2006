@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -29,25 +30,26 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __PCH_H__
 #define __PCH_H__
 
-void InitAfx();
+void InitAfx( void );
 
 // tool tips
-typedef struct toolTip_s {
-	int id;
-	char * tip;
+typedef struct toolTip_s
+{
+	int	  id;
+	char* tip;
 } toolTip_t;
 
-INT_PTR DefaultOnToolHitTest( const toolTip_t * toolTips, const CDialog* dialog, CPoint point, TOOLINFO* pTI );
-BOOL DefaultOnToolTipNotify( const toolTip_t * toolTips, UINT id, NMHDR* pNMHDR, LRESULT* pResult );
+INT_PTR DefaultOnToolHitTest( const toolTip_t* toolTips, const CDialog* dialog, CPoint point, TOOLINFO* pTI );
+BOOL	DefaultOnToolTipNotify( const toolTip_t* toolTips, UINT id, NMHDR* pNMHDR, LRESULT* pResult );
 
 // edit control
-bool EditControlEnterHit( CEdit* edit );
-float EditVerifyFloat( CEdit* edit, bool allowNegative = true );
-float EditSpinFloat( CEdit* edit, bool up );
+bool	EditControlEnterHit( CEdit* edit );
+float	EditVerifyFloat( CEdit* edit, bool allowNegative = true );
+float	EditSpinFloat( CEdit* edit, bool up );
 
 // combo box
-int SetSafeComboBoxSelection( CComboBox* combo, const char * string, int skip );
-int GetSafeComboBoxSelection( CComboBox* combo, CString& string, int skip );
-int UnsetSafeComboBoxSelection( CComboBox* combo, CString& string );
+int		SetSafeComboBoxSelection( CComboBox* combo, const char* string, int skip );
+int		GetSafeComboBoxSelection( CComboBox* combo, CString& string, int skip );
+int		UnsetSafeComboBoxSelection( CComboBox* combo, CString& string );
 
 #endif /* !__PCH_H__ */

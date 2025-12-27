@@ -5002,7 +5002,7 @@ void hhPlayer::Think( void ) {
 		headRenderEnt = NULL;
 	}
 
-	if ( gameLocal.isMultiplayer || g_showPlayerShadow.GetBool() ) {
+	if ( cvarSystem->GetCVarInteger( "r_shadows" ) == 2 ) {
 		renderEntity.suppressShadowInViewID	= 0;
 		if ( headRenderEnt ) {
 			headRenderEnt->suppressShadowInViewID = 0;
@@ -7024,12 +7024,12 @@ void hhPlayer::Save( idSaveGame *savefile ) const {
 	savefile->WriteBool( IsLighterOn() );
 
 	//karin: should save player location before deathwalk and resurrect: Saving game If player in deathwalk state, player resurrection is working after load the save file; But player resurrection's position is missing when load the save file on application restart.
-    savefile->WriteVec3( deathwalkLastOrigin );
-    savefile->WriteMat3( deathwalkLastBBoxAxis );
-    savefile->WriteMat3( deathwalkLastViewAxis );
-    savefile->WriteAngles( deathwalkLastViewAngles );
-    savefile->WriteMat3( deathwalkLastEyeAxis );
-    savefile->WriteBool( deathwalkLastCrouching );
+	savefile->WriteVec3( deathwalkLastOrigin );
+	savefile->WriteMat3( deathwalkLastBBoxAxis );
+	savefile->WriteMat3( deathwalkLastViewAxis );
+	savefile->WriteAngles( deathwalkLastViewAngles );
+	savefile->WriteMat3( deathwalkLastEyeAxis );
+	savefile->WriteBool( deathwalkLastCrouching );
 }
 
 //================
@@ -7192,12 +7192,12 @@ void hhPlayer::Restore( idRestoreGame *savefile ) {
 	}
 
 	//karin: should load player location before deathwalk and resurrect: Saving game If player in deathwalk state, player resurrection is working after load the save file; But player resurrection's position is missing when load the save file on application restart.
-    savefile->ReadVec3( deathwalkLastOrigin );
-    savefile->ReadMat3( deathwalkLastBBoxAxis );
-    savefile->ReadMat3( deathwalkLastViewAxis );
-    savefile->ReadAngles( deathwalkLastViewAngles );
-    savefile->ReadMat3( deathwalkLastEyeAxis );
-    savefile->ReadBool( deathwalkLastCrouching );
+	savefile->ReadVec3( deathwalkLastOrigin );
+	savefile->ReadMat3( deathwalkLastBBoxAxis );
+	savefile->ReadMat3( deathwalkLastViewAxis );
+	savefile->ReadAngles( deathwalkLastViewAngles );
+	savefile->ReadMat3( deathwalkLastEyeAxis );
+	savefile->ReadBool( deathwalkLastCrouching );
 }
 
 int hhPlayer::GetSpiritPower() {

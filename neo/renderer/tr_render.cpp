@@ -31,11 +31,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "tr_local.h"
 
-// 1.0 for standard, unlimited for floats
-// determines how much overbrighting needs
-// to be done post-process
-static const float backEndRendererMaxLight = 999;
-
 /*
 
   back end scene + lights rendering functions
@@ -539,12 +534,12 @@ void RB_DetermineLightScale( void ) {
 	}
 
 	backEnd.pc.maxLightValue = max;
-	if ( max <= backEndRendererMaxLight ) {
+	if ( max <= tr.backEndRendererMaxLight ) {
 		backEnd.lightScale = r_lightScale.GetFloat();
 		backEnd.overBright = 1.0;
 	} else {
-		backEnd.lightScale = r_lightScale.GetFloat() * backEndRendererMaxLight / max;
-		backEnd.overBright = max / backEndRendererMaxLight;
+		backEnd.lightScale = r_lightScale.GetFloat() * tr.backEndRendererMaxLight / max;
+		backEnd.overBright = max / tr.backEndRendererMaxLight;
 	}
 }
 
@@ -833,12 +828,12 @@ void RB_CreateSingleDrawInteractions( const drawSurf_t *surf, void (*DrawInterac
 						R_SetDrawInteraction( surfaceStage, surfaceRegs, &inter.specularImage,
 											inter.specularMatrix, inter.specularColor.ToFloatPtr() );
 
-						inter.specularColor[0] *= lightColor[0];
-						inter.specularColor[1] *= lightColor[1];
-						inter.specularColor[2] *= lightColor[2];
-						inter.specularColor[3] *= lightColor[3];
-						inter.vertexColor = surfaceStage->vertexColor;
-					}
+                        inter.specularColor[0] *= lightColor[0];
+                        inter.specularColor[1] *= lightColor[1];
+                        inter.specularColor[2] *= lightColor[2];
+                        inter.specularColor[3] *= lightColor[3];
+                        inter.vertexColor = surfaceStage->vertexColor;
+                    }
 					break;
 				}
 			}

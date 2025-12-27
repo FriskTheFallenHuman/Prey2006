@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -30,31 +31,35 @@ If you have questions concerning this license or the applicable additional terms
 
 // CConsoleDlg dialog
 
-class CConsoleDlg : public CDialogEx {
+class CConsoleDlg : public CDialogEx
+{
 	DECLARE_DYNCREATE( CConsoleDlg )
 
 public:
-	CConsoleDlg( CWnd* pParent = NULL );   // standard constructor
+	CConsoleDlg( CWnd* pParent = NULL ); // standard constructor
 	virtual ~CConsoleDlg();
 
-	enum { IDD = IDD_DIALOG_CONSOLE };
+	enum
+	{
+		IDD = IDD_DIALOG_CONSOLE
+	};
 
 protected:
-	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX ); // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 public:
-	CEdit editConsole;
-	CEdit editInput;
-	void AddText( const char * msg );
-	void SetConsoleText( const idStr& text );
-	void ExecuteCommand( const idStr& cmd = "" );
+	CEdit		 editConsole;
+	CEdit		 editInput;
+	void		 AddText( const char* msg );
+	void		 SetConsoleText( const idStr& text );
+	void		 ExecuteCommand( const idStr& cmd = "" );
 
-	idStr consoleStr;
-	idStrList consoleHistory;
-	idStr currentCommand;
-	int currentHistoryPosition;
-	bool saveCurrentCommand;
+	idStr		 consoleStr;
+	idStrList	 consoleHistory;
+	idStr		 currentCommand;
+	int			 currentHistoryPosition;
+	bool		 saveCurrentCommand;
 
 	afx_msg void OnSize( UINT nType, int cx, int cy );
 	virtual BOOL PreTranslateMessage( MSG* pMsg );

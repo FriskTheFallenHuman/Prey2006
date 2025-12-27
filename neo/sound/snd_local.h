@@ -34,17 +34,14 @@ If you have questions concerning this license or the applicable additional terms
 // because the implemenations are in openal_stub.cpp
 // this is ensured by defining AL_LIBTYPE_STATIC before including the AL headers
 #define AL_LIBTYPE_STATIC
+// newer versions of openal-soft set the noexcept attribute to functions, older ones didn't
+// just disable that so the stub functions continue to match the prototypes in the header
+#define AL_DISABLE_NOEXCEPT
 #endif
 
-#ifdef _WIN32
-#include <al.h>
-#include <alc.h>
-#include <alext.h>
-#else
 #include <AL/al.h>
 #include <AL/alc.h>
 #include <AL/alext.h>
-#endif
 
 // DG: make this code build with older OpenAL headers that don't know about ALC_SOFT_HRTF
 //     which provides LPALCRESETDEVICESOFT for idSoundSystemLocal::alcResetDeviceSOFT()
@@ -85,6 +82,7 @@ If you have questions concerning this license or the applicable additional terms
 #endif
 
 #include "sound/efxlib.h"
+#include "sound/snd_reverb.h"
 
 // demo sound commands
 typedef enum {
@@ -114,7 +112,6 @@ class idSoundCache;
 class idSoundSample;
 class idSampleDecoder;
 class idSoundWorldLocal;
-
 
 /*
 ===================================================================================
@@ -342,6 +339,12 @@ class SoundFX_LowpassFast : public SoundFX {
 public:
 	virtual void		ProcessSample( float* in, float* out );
 	void				SetParms( float p1 = 0, float p2 = 0, float p3 = 0 );
+
+	void				Clear() {
+		freq = res = 0.0f;
+		a1 = a2 = a3 = 0.0f;
+		b1 = b2 = 0.0f;
+	}
 };
 
 class SoundFX_Comb : public SoundFX {
@@ -743,6 +746,12 @@ public:
 	virtual void			PrintMemInfo( MemInfo_t *mi );
 
 	virtual int				IsEFXAvailable( void );
+
+	virtual	const char		*GetReverbName( int reverb );
+	virtual	int				GetNumAreas( void );
+	virtual	int				GetReverb( int area );
+	virtual	bool			SetReverb( int area, const char *reverbName, const char *fileName );
+
 	virtual const char *	GetDeviceName( int index ) { return NULL; }		// CREATIVE
 	virtual const char *	GetDefaultDeviceName( void ) { return NULL; }	// CREATIVE
 
@@ -757,6 +766,8 @@ public:
 
 	//karin: simple show/hide subtitles: FrontEnd: handle GUI in main thread; BackEnd: update sound in async thread(If com_asyncSound != 0)
 private:
+	idMapReverb reverb;
+
 	typedef struct sb_soundSubtitle_s {
 		int subIndex; // subtitle sound index in idList<soundSubtitleList_s>
 		int subNum; // subtitle text index - 1 in soundSubtitleList_s::subList

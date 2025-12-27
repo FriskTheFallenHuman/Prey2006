@@ -2566,11 +2566,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Combine",                     ID_SELECTION_COMBINE
         MENUITEM SEPARATOR
-        POPUP "Export"
-        BEGIN
-            MENUITEM "To OBJ",                      ID_SELECTION_EXPORT_TOOBJ
-            MENUITEM "To CM",                       ID_SELECTION_EXPORT_TOCM
-        END
+        MENUITEM "Export Selection To CM"       ID_SELECTION_EXPORT_TOCM
     END
     POPUP "&Grid"
     BEGIN

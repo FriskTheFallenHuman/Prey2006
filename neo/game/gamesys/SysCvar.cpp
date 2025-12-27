@@ -126,7 +126,7 @@ const char *si_spectateArgs[]		= { "Play", "Spectate", NULL };
 const char *ui_teamArgs[]			= { "Red", "Blue", NULL };
 
 struct gameVersion_s {
-	gameVersion_s( void ) { sprintf( string, "%s.%d%s %s-%s %s %s", ENGINE_VERSION, BUILD_NUMBER, BUILD_DEBUG, BUILD_OS, BUILD_CPU, ID__DATE__, ID__TIME__ ); }
+	gameVersion_s( void ) { sprintf( string, "%s.%d%s %s-%s %s %s", ENGINE_VERSION, BUILD_NUMBER, BUILD_DEBUG, BUILD_OS, D3_ARCH, ID__DATE__, ID__TIME__ ); }
 	char	string[256];
 } gameVersion;
 
@@ -180,7 +180,7 @@ idCVar g_muzzleFlash(				"g_muzzleFlash",			"1",			CVAR_GAME | CVAR_ARCHIVE | CV
 idCVar g_projectileLights(			"g_projectileLights",		"1",			CVAR_GAME | CVAR_ARCHIVE | CVAR_BOOL, "show dynamic lights on projectiles" );
 idCVar g_bloodEffects(				"g_bloodEffects",			"1",			CVAR_GAME | CVAR_ARCHIVE | CVAR_BOOL, "show blood splats, sprays and gibs" );
 idCVar g_doubleVision(				"g_doubleVision",			"1",			CVAR_GAME | CVAR_ARCHIVE | CVAR_BOOL, "show double vision when taking damage" );
-idCVar g_hitEffect(					"g_hitEffect",				"1",			CVAR_GAME | CVAR_ARCHIVE | CVAR_BOOL, "mess up player camera when taking damage" );
+idCVar g_hitEffect(					"g_hitEffect",				"1",			CVAR_GAME | CVAR_ARCHIVE | CVAR_BOOL | CVAR_NEW, "mess up player camera when taking damage" );
 idCVar g_monsters(					"g_monsters",				"1",			CVAR_GAME | CVAR_BOOL, "" );
 idCVar g_decals(					"g_decals",					"1",			CVAR_GAME | CVAR_ARCHIVE | CVAR_BOOL, "show decals such as bullet holes" );
 idCVar g_knockback(					"g_knockback",				"1000",			CVAR_GAME | CVAR_INTEGER, "" );
@@ -214,8 +214,8 @@ idCVar g_healthTakeLimit(			"g_healthTakeLimit",		"25",			CVAR_GAME | CVAR_INTEG
 
 
 idCVar g_showPVS(					"g_showPVS",				"0",			CVAR_GAME | CVAR_INTEGER, "", 0, 2 );
-idCVar g_showTargets(				"g_showTargets",			"0",			CVAR_GAME | CVAR_BOOL, "draws entities and thier targets.  hidden entities are drawn grey." );
-idCVar g_showTriggers(				"g_showTriggers",			"0",			CVAR_GAME | CVAR_BOOL, "draws trigger entities (orange) and thier targets (green).  disabled triggers are drawn grey." );
+idCVar g_showTargets(				"g_showTargets",			"0",			CVAR_GAME | CVAR_BOOL, "draws entities and their targets.  hidden entities are drawn grey." );
+idCVar g_showTriggers(				"g_showTriggers",			"0",			CVAR_GAME | CVAR_BOOL, "draws trigger entities (orange) and their targets (green).  disabled triggers are drawn grey." );
 idCVar g_showCollisionWorld(		"g_showCollisionWorld",		"0",			CVAR_GAME | CVAR_BOOL, "" );
 idCVar g_showCollisionModels(		"g_showCollisionModels",	"0",			CVAR_GAME | CVAR_BOOL, "" );
 idCVar g_showCollisionTraces(		"g_showCollisionTraces",	"0",			CVAR_GAME | CVAR_BOOL, "" );
@@ -259,6 +259,8 @@ idCVar g_editEntityMode(			"g_editEntityMode",			"0",			CVAR_GAME | CVAR_INTEGER
 																											"5 = monsters\n"
 																											"6 = entity names\n"
 																											"7 = entity models", 0, 7, idCmdSystem::ArgCompletion_Integer<0,7> );
+idCVar g_editEntityDistance(		"g_editEntityDistance",		"512",			CVAR_GAME | CVAR_ARCHIVE,	"range to display entities to edit" );
+idCVar g_editEntityTextDistance(	"g_editEntityTextDistance",	"256",			CVAR_GAME | CVAR_ARCHIVE,	"range to display entities to edit text information");
 idCVar g_dragEntity(				"g_dragEntity",				"0",			CVAR_GAME | CVAR_BOOL, "allows dragging physics objects around by placing the crosshair over them and holding the fire button" );
 idCVar g_dragDamping(				"g_dragDamping",			"0.5",			CVAR_GAME | CVAR_FLOAT, "" );
 idCVar g_dragShowSelection(			"g_dragShowSelection",		"0",			CVAR_GAME | CVAR_BOOL, "" );
@@ -359,7 +361,6 @@ idCVar pm_thirdPersonDeathMP(		"pm_thirdPersonDeathMP",	"1",			CVAR_GAME | CVAR_
 //HUMANHEAD rww
 idCVar g_showAimHealth(				"g_showAimHealth",			"0",			CVAR_GAME | CVAR_BOOL, "health display of target (gameplay testing)" );
 //HUMANHEAD END
-idCVar g_showPlayerShadow(			"g_showPlayerShadow",		"0",			CVAR_GAME | CVAR_ARCHIVE | CVAR_BOOL, "enables shadow of player model" );
 idCVar g_showHud(					"g_showHud",				"1",			CVAR_GAME | CVAR_ARCHIVE | CVAR_BOOL, "" );
 idCVar g_showProjectilePct(			"g_showProjectilePct",		"0",			CVAR_GAME | CVAR_ARCHIVE | CVAR_BOOL, "enables display of player hit percentage" );
 idCVar g_showBrass(					"g_showBrass",				"1",			CVAR_GAME | CVAR_ARCHIVE | CVAR_BOOL, "enables ejected shells from weapon" );

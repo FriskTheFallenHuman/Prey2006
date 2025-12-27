@@ -23,37 +23,37 @@
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeItemButton window
 
-class PROPTREE_API CPropTreeItemButton : public CPropTreeItem {
-// Construction
+class PROPTREE_API CPropTreeItemButton : public CPropTreeItem
+{
+	// Construction
 public:
 	CPropTreeItemButton();
 	virtual ~CPropTreeItemButton();
 
-// Attributes
+	// Attributes
 public:
 	// The non-attribute area needs drawing
-	virtual LONG DrawItem( CDC* pDC, const RECT& rc, LONG x, LONG y );
+	virtual LONG   DrawItem( CDC* pDC, const RECT& rc, LONG x, LONG y );
 
 	// The attribute area needs drawing
-	virtual void DrawAttribute( CDC* pDC, const RECT& rc );
+	virtual void   DrawAttribute( CDC* pDC, const RECT& rc );
 
 	// Retrieve the item's attribute value
 	virtual LPARAM GetItemValue();
 
 	// Set the item's attribute value
-	virtual void SetItemValue( LPARAM lParam );
+	virtual void   SetItemValue( LPARAM lParam );
 
 	// Overrideable - Returns TRUE if the point is on the button
-	virtual BOOL HitButton( const POINT& pt );
+	virtual BOOL   HitButton( const POINT& pt );
 
-	void SetButtonText( LPCSTR text );
+	void		   SetButtonText( LPCSTR text );
 
 protected:
-	CString				buttonText;
-	CRect				buttonRect;
-	CRect				hitTestRect;
-	bool				mouseDown;
-
+	CString buttonText;
+	CRect	buttonRect;
+	CRect	hitTestRect;
+	bool	mouseDown;
 };
 
 /////////////////////////////////////////////////////////////////////////////

@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -30,19 +31,23 @@ If you have questions concerning this license or the applicable additional terms
 
 // CWaitDlg dialog
 
-class CWaitDlg : public CDialogEx {
+class CWaitDlg : public CDialogEx
+{
 public:
-	CWaitDlg( CWnd* pParent = NULL, const char * msg = "Wait..." );  // standard constructor
+	CWaitDlg( CWnd* pParent = NULL, const char* msg = "Wait..." ); // standard constructor
 	~CWaitDlg();
-	void SetText( const char * msg, float percent = 0.0f, bool append = false );
+	void SetText( const char* msg, float percent = 0.0f, bool append = false );
 	void AllowCancel( bool enable );
-	bool CancelPressed();
+	bool CancelPressed( void );
 
-	enum { IDD = IDD_DLG_WAIT };
-	CString	waitStr;
+	enum
+	{
+		IDD = IDD_DLG_WAIT
+	};
+	CString waitStr;
 
 protected:
-	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX ); // DDX/DDV support
 
 protected:
 	virtual BOOL OnInitDialog();
@@ -51,7 +56,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:
-	idStr	text;
-	bool	cancelPressed;
+	idStr		  text;
+	bool		  cancelPressed;
 	CProgressCtrl m_progress;
 };

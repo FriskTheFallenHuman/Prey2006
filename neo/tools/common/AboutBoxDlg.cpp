@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -31,30 +32,36 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "AboutBoxDlg.h"
 
-CAboutDlg::CAboutDlg( UINT nIDTemplate, CWnd* pParent /*=nullptr*/ )
-	: CDialog( nIDTemplate, pParent ) {
+CAboutDlg::CAboutDlg( UINT nIDTemplate, CWnd* pParent /*=nullptr*/ ) :
+	CDialog( nIDTemplate, pParent )
+{
 }
 
-void CAboutDlg::DoDataExchange( CDataExchange* pDX ) {
+void CAboutDlg::DoDataExchange( CDataExchange* pDX )
+{
 	CDialog::DoDataExchange( pDX );
 }
 
 BEGIN_MESSAGE_MAP( CAboutDlg, CDialog )
-	ON_COMMAND( IDOK, &CAboutDlg::OnOK )
+ON_COMMAND( IDOK, &CAboutDlg::OnOK )
 END_MESSAGE_MAP()
 
-void CAboutDlg::OnOK() {
+void CAboutDlg::OnOK( void )
+{
 	EndDialog( IDOK );
 }
 
-void CAboutDlg::SetDialogTitle( const CString& title ) {
+void CAboutDlg::SetDialogTitle( const CString& title )
+{
 	m_strTitle = title;
 }
 
-BOOL CAboutDlg::OnInitDialog() {
+BOOL CAboutDlg::OnInitDialog()
+{
 	CDialog::OnInitDialog();
 
-	if ( !m_strTitle.IsEmpty() ) {
+	if( !m_strTitle.IsEmpty() )
+	{
 		SetWindowText( m_strTitle );
 	}
 
@@ -69,18 +76,22 @@ BOOL CAboutDlg::OnInitDialog() {
 	SetDlgItemText( IDC_ABOUT_GLVENDOR, buffer );
 
 	const GLubyte* extensions = qglGetString( GL_EXTENSIONS );
-	if ( extensions ) {
-		CString extStr = ( char * )extensions;
-		CListBox* pListBox = ( CListBox * )GetDlgItem( IDC_ABOUT_GLEXTENSIONS );
+	if( extensions )
+	{
+		CString	  extStr   = ( char* )extensions;
+		CListBox* pListBox = ( CListBox* )GetDlgItem( IDC_ABOUT_GLEXTENSIONS );
 
-		int start = 0;
-		int end;
-		while ( ( end = extStr.Find( ' ', start ) ) != -1 ) {
+		int		  start = 0;
+		int		  end;
+		while( ( end = extStr.Find( ' ', start ) ) != -1 )
+		{
 			pListBox->AddString( extStr.Mid( start, end - start ) );
 			start = end + 1;
 		}
 		pListBox->AddString( extStr.Mid( start ) );
-	} else {
+	}
+	else
+	{
 		SetDlgItemText( IDC_ABOUT_GLEXTENSIONS, "No extensions found." );
 	}
 

@@ -202,6 +202,11 @@ public:
 
 	template<typename T>
 	static T                    Diff( T a, T b );
+
+ // jscott: for sound system
+	static float                dBToScale( float db );
+	static float				ScaleToDb( float scale );
+
 	static const float			PI;							// pi
 	static const float			TWO_PI;						// pi * 2
 	static const float			HALF_PI;					// pi / 2

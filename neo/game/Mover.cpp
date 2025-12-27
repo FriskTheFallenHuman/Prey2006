@@ -1322,7 +1322,6 @@ idMover::Event_RotateTo
 */
 void idMover::Event_RotateTo( idAngles &angles ) {
 	dest_angles = angles;
-
 	BeginRotation( idThread::CurrentThread(), true );
 }
 
@@ -1949,7 +1948,6 @@ void idElevator::Event_TeamBlocked( idEntity *blockedEntity, idEntity *blockingE
 		}
 	}
 }
-
 
 /*
 ===============

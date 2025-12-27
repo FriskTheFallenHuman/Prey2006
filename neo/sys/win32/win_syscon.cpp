@@ -36,6 +36,10 @@ If you have questions concerning this license or the applicable additional terms
 #include <direct.h>
 #include <io.h>
 #include <conio.h>
+#include <uxtheme.h>
+
+#pragma comment(lib, "uxtheme.lib")
+
 #include "win_local.h"
 #ifdef ID_ALLOW_TOOLS
 #include "rc/resource.h"
@@ -100,6 +104,9 @@ static WinConData s_wcd;
 static LRESULT CALLBACK ConWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	static bool s_timePolarity;
 
+	COLORREF bkColor = RGB( 22, 22, 22 );
+	COLORREF textColor = RGB( 241, 245, 249 );
+
 	switch (uMsg) {
 		case WM_ACTIVATE:
 			if ( LOWORD( wParam ) != WA_INACTIVE ) {
@@ -122,8 +129,8 @@ static LRESULT CALLBACK ConWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
 			return 0;
 		case WM_CTLCOLORSTATIC:
 			if ( ( HWND ) lParam == s_wcd.hwndBuffer ) {
-				SetBkColor( ( HDC ) wParam, RGB( 0x00, 0x00, 0x80 ) );
-				SetTextColor( ( HDC ) wParam, RGB( 0xff, 0xff, 0x00 ) );
+				SetBkColor( ( HDC ) wParam, bkColor );
+				SetTextColor( ( HDC ) wParam, textColor );
 				return ( LRESULT ) s_wcd.hbrEditBackground;
 			} else if ( ( HWND ) lParam == s_wcd.hwndErrorBox ) {
 				if ( s_timePolarity & 1 ) {
@@ -162,7 +169,7 @@ static LRESULT CALLBACK ConWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
 			}
 			break;
 		case WM_CREATE:
-			s_wcd.hbrEditBackground = CreateSolidBrush( RGB( 0x00, 0x00, 0x80 ) );
+			s_wcd.hbrEditBackground = CreateSolidBrush( bkColor );
 			s_wcd.hbrErrorBackground = CreateSolidBrush( RGB( 0x80, 0x80, 0x80 ) );
 			SetTimer( hWnd, 1, 1000, NULL );
 			break;
@@ -267,7 +274,7 @@ LONG WINAPI InputLineWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 			s_wcd.consoleField.AutoComplete();
 
 			SetWindowText( s_wcd.hwndInputLine, s_wcd.consoleField.GetBuffer() );
-			//s_wcd.consoleField.SetWidthInChars( strlen( s_wcd.consoleField.GetBuffer() ) );
+			s_wcd.consoleField.SetWidthInChars( strlen( s_wcd.consoleField.GetBuffer() ) );
 			SendMessage( s_wcd.hwndInputLine, EM_SETSEL, s_wcd.consoleField.GetCursor(), s_wcd.consoleField.GetCursor() );
 
 			return 0;
@@ -334,7 +341,7 @@ void Sys_CreateConsole( void ) {
 							   DEDCLASS,
 							   GAME_NAME,
 							   DEDSTYLE,
-							   ( swidth - 600 ) / 2, ( sheight - 450 ) / 2 , rect.right - rect.left + 1, rect.bottom - rect.top + 1,
+							   ( swidth - 850 ) / 2, ( sheight - 550 ) / 2 , rect.right - rect.left + 310, rect.bottom - rect.top + 111,
 							   NULL,
 							   NULL,
 							   win32.hInstance,
@@ -344,13 +351,16 @@ void Sys_CreateConsole( void ) {
 		return;
 	}
 
+	SetWindowTheme( s_wcd.hWnd, L"Explorer", NULL );
+
 	//
 	// create fonts
 	//
 	hDC = GetDC( s_wcd.hWnd );
 	nHeight = -MulDiv( 8, GetDeviceCaps( hDC, LOGPIXELSY ), 72 );
 
-	s_wcd.hfBufferFont = CreateFont( nHeight, 0, 0, 0, FW_LIGHT, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, FF_MODERN | FIXED_PITCH, "Courier New" );
+	s_wcd.hfButtonFont = CreateFont( nHeight, 0, 0, 0, FW_NORMAL, 0, 0, 0, DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, "Segoe UI" );
+	s_wcd.hfBufferFont = CreateFont( nHeight, 0, 0, 0, FW_NORMAL, 0, 0, 0, DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, "Cascadia Mono" );
 
 	ReleaseDC( s_wcd.hWnd, hDC );
 
@@ -359,7 +369,7 @@ void Sys_CreateConsole( void ) {
 	//
 	s_wcd.hwndInputLine = CreateWindow( "edit", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER |
 												ES_LEFT | ES_AUTOHSCROLL,
-												6, 400, 528, 20,
+												6, 510, 836, 20,
 												s_wcd.hWnd,
 												( HMENU ) INPUT_ID,	// child window ID
 												win32.hInstance, NULL );
@@ -368,24 +378,27 @@ void Sys_CreateConsole( void ) {
 	// create the buttons
 	//
 	s_wcd.hwndButtonCopy = CreateWindow( "button", NULL, BS_PUSHBUTTON | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-												5, 425, 72, 24,
+												5, 533, 72, 24,
 												s_wcd.hWnd,
 												( HMENU ) COPY_ID,	// child window ID
 												win32.hInstance, NULL );
+	SendMessage( s_wcd.hwndButtonCopy, WM_SETFONT, (WPARAM)s_wcd.hfButtonFont, TRUE );
 	SendMessage( s_wcd.hwndButtonCopy, WM_SETTEXT, 0, ( LPARAM ) "copy" );
 
 	s_wcd.hwndButtonClear = CreateWindow( "button", NULL, BS_PUSHBUTTON | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-												82, 425, 72, 24,
+												82, 533, 72, 24,
 												s_wcd.hWnd,
 												( HMENU ) CLEAR_ID,	// child window ID
 												win32.hInstance, NULL );
+	SendMessage( s_wcd.hwndButtonClear, WM_SETFONT, (WPARAM)s_wcd.hfButtonFont, TRUE );
 	SendMessage( s_wcd.hwndButtonClear, WM_SETTEXT, 0, ( LPARAM ) "clear" );
 
 	s_wcd.hwndButtonQuit = CreateWindow( "button", NULL, BS_PUSHBUTTON | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-												462, 425, 72, 24,
+												772, 533, 72, 24,
 												s_wcd.hWnd,
 												( HMENU ) QUIT_ID,	// child window ID
 												win32.hInstance, NULL );
+	SendMessage( s_wcd.hwndButtonQuit, WM_SETFONT, (WPARAM)s_wcd.hfButtonFont, TRUE );
 	SendMessage( s_wcd.hwndButtonQuit, WM_SETTEXT, 0, ( LPARAM ) "quit" );
 
 
@@ -394,7 +407,7 @@ void Sys_CreateConsole( void ) {
 	//
 	s_wcd.hwndBuffer = CreateWindow( "edit", NULL, WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_BORDER |
 												ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
-												6, 40, 526, 354,
+												6, 6, 836, 494,
 												s_wcd.hWnd,
 												( HMENU ) EDIT_ID,	// child window ID
 												win32.hInstance, NULL );
@@ -551,7 +564,7 @@ void Win_SetErrorText( const char *buf ) {
 	idStr::Copynz( s_wcd.errorString, buf, sizeof( s_wcd.errorString ) );
 	if ( !s_wcd.hwndErrorBox ) {
 		s_wcd.hwndErrorBox = CreateWindow( "static", NULL, WS_CHILD | WS_VISIBLE | SS_SUNKEN,
-													6, 5, 526, 30,
+													6, 502, 837, 30,
 													s_wcd.hWnd,
 													( HMENU ) ERRORBOX_ID,	// child window ID
 													win32.hInstance, NULL );

@@ -9,7 +9,7 @@ if(WIN32)
 	else()
 		message(FATAL_ERROR "Vcpkg wasn't not found, aborting, make sure to git clone this with all submodules!")
 	endif()
-endif() # WIN32
+endif()
 
 # Enable folder groups
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER  "")
@@ -29,19 +29,24 @@ set(DEDICATED_BINARY "prey06ded")
 
 include(CheckCXXCompilerFlag)
 include(GNUInstallDirs OPTIONAL RESULT_VARIABLE GNUINSTALLDIRS)
+include(TestBigEndian)
+include(GitBranch)
 include(GlobbedHeaders)
 
 option(ENGINE						"Build the main executable." ON)
 option(DEDICATED					"Build the dedicated server executable." ON)
-if(WIN32)
-	option(TOOLS						"Build the include tools into the main executable." ON)
+if(MSVC)
+	option(TOOLS					"Build the tools game code (Visual Studio+SDL2/SDL3 only)" ON)
+	option(MAYA_IMPORT				"Build the include maya import tool (Requires MayaSDK)." OFF)
 endif()
 option(BASE						"Build the base game code" ON)
 option(ONATIVE						"Optimize for the host CPU" OFF)
+option(SDL3							"Use SDL3 instead of SDL2" OFF)
+option(IMGUI						"Build with Dear ImGui integration - requires SDL2/SDL3 and C++11" ON)
 option(REPRODUCIBLE_BUILD			"Replace __DATE__ and __TIME__ by hardcoded values for reproducible builds." OFF)
 option(LINUX_RELEASE_BINS			"Set RPATH to \$ORIGIN/libs/ for Linux binary releases" OFF)
 option(HARDLINK_GAME				"Compile gamecode into executable (no game DLLs)" OFF)
-
+option(FREETYPE					"Enable Freetype support." ON)
 if(NOT MSVC) # GCC/clang or compatible, hopefully
 	option(FORCE_COLORED_OUTPUT	"Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
 	option(ASAN					"Enable GCC/Clang Adress Sanitizer (ASan)" OFF) # TODO: MSVC might also support this, somehow?
@@ -87,17 +92,44 @@ find_package(OpenAL REQUIRED)
 include_directories(${OPENAL_INCLUDE_DIR})
 list(APPEND sys_thirdparty_libs ${OPENAL_LIBRARY})
 
-if(UNIX)
-	pkg_check_modules(SDL2 REQUIRED sdl2)
-	include_directories(${SDL2_INCLUDE_DIRS})
-	link_directories(${SDL2_LIBRARY_DIRS})
-	set(SDL2_LIBRARY ${SDL2_LIBRARIES})
+if (SDL3)
+	# 1. Look for a SDL3 package,
+	# 2. look for the SDL3-shared component, and
+	# 3. fail if the shared component cannot be found.
+	find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3-shared)
+	# TODO: include dirs?
+	set(SDLX_LIBRARY SDL3::SDL3)
+	add_definitions(-DD3_SDL3=1)
 else()
-	find_package(SDL2 REQUIRED)
-	include_directories(${SDL2_INCLUDE_DIR})
-	set(SDL2_LIBRARY SDL2::SDL2)
+	if(UNIX)
+		pkg_check_modules(SDL2 REQUIRED sdl2)
+		include_directories(${SDL2_INCLUDE_DIRS})
+		link_directories(${SDL2_LIBRARY_DIRS})
+		set(SDLX_LIBRARY ${SDL2_LIBRARIES})
+	else()
+		find_package(SDL2 REQUIRED)
+		include_directories(${SDL2_INCLUDE_DIR})
+		set(SDLX_LIBRARY SDL2::SDL2)
+	endif()
 endif()
-list(APPEND sys_thirdparty_libs ${SDL2_LIBRARY})
+list(APPEND sys_thirdparty_libs ${SDLX_LIBRARY})
+
+if (FREETYPE)
+	find_package(Freetype REQUIRED)
+	find_path(FREETYPE_INCLUDE_DIR "fttypes.h" PATH_SUFFIXES "freetype")
+	include_directories(${FREETYPE_INCLUDE_DIR})
+	add_definitions(-DID_BUILD_FREETYPE)
+	list(APPEND sys_thirdparty_libs Freetype::Freetype)
+endif()
+
+if(IMGUI)
+	# we need C++11 for ImGui
+	set (CMAKE_CXX_STANDARD 11)
+	message(STATUS "Dear ImGui integration enabled")
+else()
+	message(STATUS "Dear ImGui integration disabled")
+	add_definitions(-DIMGUI_DISABLE)
+endif()
 
 # Curl
 find_package(CURL QUIET)
@@ -115,7 +147,43 @@ else()
 	set(CURL_LIBRARY "")
 endif()
 
+# MayaImport currently doesn't work in Linux/Mac
+if (NOT WIN32 OR NOT TOOLS)
+	set(MAYA_IMPORT OFF)
+endif()
+
 if(TOOLS)
+	if (MAYA_IMPORT)
+		include(ExternalProject)
+
+		# Locate and download MayaSDK, change MAYASDK_URL to one of the urls listed here: https://aps.autodesk.com/developer/overview/maya
+		# (Rigth click in anyone > Copy Url)
+		set(MAYASDK_URL "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2019/Autodesk_Maya_2019_3_Update_DEVKIT_Windows.zip" CACHE STRING "")
+	
+		# The downloaded Hash & MD5 of the MAYASDK_URL download
+		# These ones are from 2019 make sure to generate one for newer releases!
+		set(MAYASDK_HASH "2332C6C79B8C7974A5645523E395962BBB19901289AAAEE129D3BF2B630829C7" CACHE STRING "")
+		set(MAYASDK_MD5 "6BC28A0047709DEECC3DBB0D4A0B4D14" CACHE STRING "")
+
+		# Set the maya version (mainly for the project creation + reference)
+		set(MAYA_VERSION 2019)
+	
+		ExternalProject_Add(MayaDevKit
+			URL ${MAYASDK_URL}
+			URL_HASH SHA256=${MAYASDK_HASH}
+			URL_MD5 ${MAYASDK_MD5}
+			DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/downloads
+			SOURCE_DIR ${CMAKE_SOURCE_DIR}/libs/MayaSDKDevKit
+			CONFIGURE_COMMAND ""
+			BUILD_COMMAND ""
+			INSTALL_COMMAND ""
+		)
+
+		add_definitions(-DID_MAYA_IMPORT_TOOL)
+
+		set_target_properties(MayaDevKit PROPERTIES FOLDER "libs")
+	endif()
+
 	if(MSVC)
 		# This is required for tools on windows.
 		find_package(MFC)
@@ -149,7 +217,7 @@ if(NOT MSVC)
 		endif()
 	endif() # NOT WIN32
 
-	# check if our SDL2 supports X11 in SDL_syswm so we can use it for DPI scaling
+	# check if our SDL2 supports X11 in SDL_syswm so we can use it for DPI scaling ImGui
 	set(CMAKE_REQUIRED_LIBRARIES SDL2)
 	check_c_source_compiles("#include <SDL_syswm.h>
 		int main() { SDL_SysWMinfo wmInfo = {}; wmInfo.info.x11.display = NULL; return 0; }" HAVE_SDL_X11)
@@ -173,12 +241,19 @@ if(NOT MSVC)
 	unset(compiler_id_lower)
 endif() # not MSVC
 
+TEST_BIG_ENDIAN(is_big_endian)
+if(is_big_endian)
+	message(STATUS "Detected Big Endian architecture, setting -DD3_IS_BIG_ENDIAN=1")
+	add_definitions(-DD3_IS_BIG_ENDIAN=1)
+else()
+	message(STATUS "Detected Little Endian architecture, setting -DD3_IS_BIG_ENDIAN=0")
+	add_definitions(-DD3_IS_BIG_ENDIAN=0)
+endif()
+
 # compiler specific flags
 if(D3_COMPILER_IS_GCC_OR_CLANG)
 	add_compile_options(-pipe)
 	add_compile_options(-Wall)
-	add_compile_options(-Wno-unknown-pragmas)
-	add_compile_options(-Wno-narrowing)
 
 	if(NOT CMAKE_CROSSCOMPILING AND ONATIVE)
 		add_compile_options(-march=native)
@@ -205,6 +280,8 @@ if(D3_COMPILER_IS_GCC_OR_CLANG)
 	set(CMAKE_CXX_FLAGS_PROFILE ${CMAKE_C_FLAGS_PROFILE})
 
 	add_compile_options(-fno-strict-aliasing)
+	add_compile_options(-Wno-unknown-pragmas)
+	add_compile_options(-Wno-narrowing)
 
 	# dear idiot compilers, don't fuck up math code with useless FMA "optimizations"
 	# (https://gcc.gnu.org/bugzilla/show_bug.cgi?id=100839)
@@ -253,19 +330,13 @@ if(D3_COMPILER_IS_GCC_OR_CLANG)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-c++20-compat")
 	endif()
 
-	#if (NOT MSVC)
-	#	find_package(OpenSSL REQUIRED)
-	#endif()
-
 	if(WIN32)
 		# use 8MB stack instead of 1MB, so big models don't overflow it with _alloca()
 		set(ldflags "${ldflags} -static-libgcc -static-libstdc++ -Wl, --large-address-aware --stack,8388608")
 	elseif(os STREQUAL "linux")
-		#set(sys_libs ${sys_libs} dl OpenSSL::SSL OpenSSL::Crypto rt)
 		set(sys_libs ${sys_libs} dl rt)
 	elseif(os STREQUAL "freebsd")
 		find_library(EXECINFO_LIBRARIES execinfo /usr/lib /usr/local/lib)
-		#set(sys_libs ${sys_libs} OpenSSL::SSL OpenSSL::Crypto rt ${EXECINFO_LIBRARIES})
 		set(sys_libs ${sys_libs} rt ${EXECINFO_LIBRARIES})
 	endif()
 elseif(MSVC)
@@ -337,8 +408,12 @@ if(WIN32)
 		iphlpapi
 		wsock32
 		ole32
-	)
+)
 endif()
+
+# Inform us of the current branch we're on.
+get_git_branch(branch)
+message(STATUS "Setting project on git branch: ${branch}")
 
 # optimize this source file even in debug builds, to make speed (esp. loading times) more bearable
 # used for libs integrated here like stb_* and miniz(ip)
@@ -362,7 +437,7 @@ endif()
 
 set(bindir		"${CMAKE_INSTALL_FULL_BINDIR}")
 set(libdir		"${CMAKE_INSTALL_FULL_LIBDIR}")
-if (UNIX AND NOT APPLE)
+if (UNIX)
 	set(datadir	"${CMAKE_INSTALL_FULL_DATADIR}/games/prey06")
 else()
 	set(datadir	"${CMAKE_INSTALL_FULL_DATADIR}")
@@ -383,6 +458,15 @@ if(NOT WIN32)
 	message(STATUS "  Library directory: ${libdir}")
 	message(STATUS "  Data directory:    ${datadir}")
 endif()
+
+set(src_aas_file
+	aas/AASFile.cpp
+	aas/AASFile_optimize.cpp
+	aas/AASFile_sample.cpp
+	aas/AASFileManager.cpp
+)
+
+add_globbed_headers(src_aas_file "aas")
 
 set(src_renderer
 	renderer/Cinematic.cpp
@@ -405,6 +489,7 @@ set(src_renderer
 	renderer/Model_ase.cpp
 	renderer/Model_liquid.cpp
 	renderer/Model_lwo.cpp
+	renderer/Model_ma.cpp
 	renderer/Model_md3.cpp
 	renderer/Model_md5.cpp
 	renderer/Model_prt.cpp
@@ -416,10 +501,10 @@ set(src_renderer
 	renderer/RenderWorld_demo.cpp
 	renderer/RenderWorld_load.cpp
 	renderer/RenderWorld_portals.cpp
+	renderer/stblib_impls.c
 	renderer/VertexCache.cpp
 	renderer/draw_arb2.cpp
 	renderer/draw_common.cpp
-	renderer/stblib_impls.c
 	renderer/tr_backend.cpp
 	renderer/tr_deform.cpp
 	renderer/tr_font.cpp
@@ -436,6 +521,7 @@ set(src_renderer
 	renderer/tr_subview.cpp
 	renderer/tr_trace.cpp
 	renderer/tr_trisurf.cpp
+	renderer/tr_mikktspace.cpp
 	renderer/tr_turboshadow.cpp
 )
 
@@ -451,12 +537,20 @@ always_optimize_sourcefile(renderer/stblib_impls.c)
 
 add_globbed_headers(src_renderer "renderer")
 
+if (NOT MAYA_IMPORT)
+	list(REMOVE_ITEM src_renderer
+		renderer/Model_ma.cpp
+		renderer/Model_ma.h
+	)
+endif()
+
 set(src_framework
 	framework/CVarSystem.cpp
 	framework/CmdSystem.cpp
 	framework/Common.cpp
 	framework/Compressor.cpp
 	framework/Console.cpp
+	framework/ConsoleHistory.cpp
 	framework/DemoFile.cpp
 	framework/DeclAF.cpp
 	framework/DeclEntityDef.cpp
@@ -466,6 +560,7 @@ set(src_framework
 	framework/DeclPreyBeam.cpp
 	framework/DeclSkin.cpp
 	framework/DeclTable.cpp
+	framework/Dhewm3SettingsMenu.cpp
 	framework/EditField.cpp
 	framework/EventLoop.cpp
 	framework/File.cpp
@@ -537,11 +632,7 @@ set(src_aas
 	tools/compilers/aas/AASBuild_ledge.cpp
 	tools/compilers/aas/AASBuild_merge.cpp
 	tools/compilers/aas/AASCluster.cpp
-	tools/compilers/aas/AASFile.cpp
-	tools/compilers/aas/AASFile_optimize.cpp
-	tools/compilers/aas/AASFile_sample.cpp
 	tools/compilers/aas/AASReach.cpp
-	tools/compilers/aas/AASFileManager.cpp
 	tools/compilers/aas/Brush.cpp
 	tools/compilers/aas/BrushBSP.cpp
 )
@@ -563,11 +654,18 @@ set(src_renderbump
 
 add_globbed_headers(src_renderbump "tools/compilers/renderbump")
 
+set(src_matbuild
+	tools/compilers/matbuild/matbuild.cpp
+)
+
+add_globbed_headers(src_matbuild "tools/compilers/matbuild")
+
 set(src_snd
 	sound/snd_cache.cpp
 	sound/snd_decoder.cpp
 	sound/snd_efxfile.cpp
 	sound/snd_emitter.cpp
+	sound/snd_reverb.cpp
 	sound/snd_shader.cpp
 	sound/snd_system.cpp
 	sound/snd_wavefile.cpp
@@ -602,8 +700,8 @@ set(src_ui
 	ui/SliderWindow.cpp
 	ui/TabContainerWindow.cpp
 	ui/TabWindow.cpp
-    ui/BackgroundImage.cpp
-    ui/ButtonWindow.cpp
+	ui/BackgroundImage.cpp
+	ui/ButtonWindow.cpp
 	ui/SuperWindow.cpp
 	ui/UserInterface.cpp
 	ui/Window.cpp
@@ -668,6 +766,143 @@ set(src_idlib
 
 add_globbed_headers(src_idlib "idlib")
 
+
+set(src_mikktspace
+	libs/mikktspace/mikktspace.c
+)
+
+# Don't use precompiled headers for mikktspace sources.
+set_source_files_properties(
+	libs/mikktspace/mikktspace.c
+	PROPERTIES
+	SKIP_PRECOMPILE_HEADERS ON
+	LANGUAGE C
+)
+
+add_globbed_headers(src_mikktspace "mikktspace")
+
+if(IMGUI)
+	if(SDL3)
+		set(src_imgui
+			libs/imgui/backends/imgui_impl_sdl3.cpp
+		)
+	else()
+		set(src_imgui
+			libs/imgui/backends/imgui_impl_sdl2.cpp
+		)
+	endif()
+
+	set(src_imgui ${src_imgui}
+		libs/imgui/backends/imgui_impl_opengl2.cpp
+	
+		libs/imgui/imgui.h
+		libs/imgui/imgui.cpp
+		libs/imgui/imgui_draw.cpp
+		libs/imgui/imgui_tables.cpp
+		libs/imgui/imgui_widgets.cpp
+	
+		libs/imgui/imgui_demo.cpp
+
+		libs/ImGuiColorTextEdit/TextEditor.h
+		libs/ImGuiColorTextEdit/TextEditor.cpp
+
+		sys/sys_imgui.h
+		sys/sys_imgui.cpp
+		sys/imgui_savestyle.cpp
+	
+		tools/imgui/ImGuiTools.cpp
+		tools/imgui/util/ImGui_IdWidgets.h
+		tools/imgui/util/ImGui_IdWidgets.cpp
+		tools/imgui/util/SyntaxRichEditCtrl.h
+		tools/imgui/util/SyntaxRichEditCtrl.cpp
+		tools/imgui/util/TreeCtrl.h
+		tools/imgui/util/TreeCtrl.cpp
+		tools/imgui/util/PathTreeCtrl.h
+		tools/imgui/util/PathTreeCtrl.cpp
+		tools/imgui/util/RegistryOptions.h
+		tools/imgui/util/RegistryOptions.cpp
+
+		tools/imgui/afeditor/AfEditor.h
+		tools/imgui/afeditor/AfEditor.cpp
+		tools/imgui/afeditor/AfBodyEditor.h
+		tools/imgui/afeditor/AfBodyEditor.cpp
+		tools/imgui/afeditor/AfConstraintEditor.h
+		tools/imgui/afeditor/AfConstraintEditor.cpp
+		tools/imgui/afeditor/AfPropertyEditor.h
+		tools/imgui/afeditor/AfPropertyEditor.cpp
+
+		tools/imgui/lighteditor/LightEditor.h
+		tools/imgui/lighteditor/LightEditor.cpp
+		tools/imgui/soundeditor/SoundEditor.h
+		tools/imgui/soundeditor/SoundEditor.cpp
+		#tools/imgui/pdaeditor/PDAEditor.h
+		#tools/imgui/pdaeditor/PDAEditor.cpp
+		tools/imgui/particleeditor/ParticleEditor.h
+		tools/imgui/particleeditor/ParticleEditor.cpp
+		tools/imgui/scripteditor/ScriptEditor.h
+		tools/imgui/scripteditor/ScriptEditor.cpp
+
+		tools/imgui/decleditor/DeclBrowser.h
+		tools/imgui/decleditor/DeclBrowser.cpp
+		tools/imgui/decleditor/DeclEditor.h
+		tools/imgui/decleditor/DeclEditor.cpp
+		tools/imgui/decleditor/DeclNew.h
+		tools/imgui/decleditor/DeclNew.cpp
+
+		tools/imgui/materialeditor/MaterialEditor.h
+		tools/imgui/materialeditor/MaterialEditor.cpp
+		tools/imgui/materialeditor/MaterialDef.h
+		tools/imgui/materialeditor/MaterialDef.cpp
+		tools/imgui/materialeditor/ConsoleView.h
+		tools/imgui/materialeditor/ConsoleView.cpp
+		tools/imgui/materialeditor/MaterialModifier.h
+		tools/imgui/materialeditor/MaterialModifier.cpp
+		tools/imgui/materialeditor/MaterialDoc.h
+		tools/imgui/materialeditor/MaterialDoc.cpp
+		tools/imgui/materialeditor/MaterialDocManager.h
+		tools/imgui/materialeditor/MaterialDocManager.cpp
+		tools/imgui/materialeditor/MaterialView.h
+		tools/imgui/materialeditor/MaterialView.cpp
+		tools/imgui/materialeditor/MaterialEditView.h
+		tools/imgui/materialeditor/MaterialEditView.cpp
+		tools/imgui/materialeditor/MaterialTreeView.h
+		tools/imgui/materialeditor/MaterialTreeView.cpp
+		tools/imgui/materialeditor/MaterialPropTreeView.h
+		tools/imgui/materialeditor/MaterialPropTreeView.cpp
+		tools/imgui/materialeditor/MaterialPreviewPropView.h
+		tools/imgui/materialeditor/MaterialPreviewPropView.cpp
+		tools/imgui/materialeditor/MaterialPreviewView.h
+		tools/imgui/materialeditor/MaterialPreviewView.cpp
+		tools/imgui/materialeditor/StageView.h
+		tools/imgui/materialeditor/StageView.cpp
+		tools/imgui/materialeditor/MEOptions.h
+		tools/imgui/materialeditor/MEOptions.cpp
+		tools/imgui/materialeditor/MEMainFrame.h
+		tools/imgui/materialeditor/MEMainFrame.cpp
+		tools/imgui/materialeditor/FindDialog.h
+		tools/imgui/materialeditor/FindDialog.cpp
+	)
+
+	# Don't use precompiled headers for imgui sources.
+	set_source_files_properties(
+		libs/imgui/backends/imgui_impl_sdl2.cpp
+		libs/imgui/backends/imgui_impl_sdl3.cpp
+		libs/imgui/backends/imgui_impl_opengl2.cpp
+		libs/imgui/imgui.cpp
+		libs/imgui/imgui_draw.cpp
+		libs/imgui/imgui_tables.cpp
+		libs/imgui/imgui_widgets.cpp
+		libs/imgui/imgui_demo.cpp
+		libs/ImGuiColorTextEdit/TextEditor.cpp
+		PROPERTIES
+		SKIP_PRECOMPILE_HEADERS ON
+	)
+else()
+	set(src_imgui
+		sys/sys_imgui.h
+	)
+endif()
+
 set(src_game
 	game/Actor.cpp
 	game/AF.cpp
@@ -699,16 +934,17 @@ set(src_game
 	game/Trigger.cpp
 	game/Weapon.cpp
 	game/WorldSpawn.cpp
-	game/ai/AAS.cpp
-	game/ai/AAS_debug.cpp
-	game/ai/AAS_pathing.cpp
-	game/ai/AAS_routing.cpp
+	game/aas/AAS.cpp
+	game/aas/AAS_debug.cpp
+	game/aas/AAS_pathing.cpp
+	game/aas/AAS_routing.cpp
 	game/ai/AI.cpp
 	game/ai/AI_events.cpp
 	game/ai/AI_pathing.cpp
 	game/anim/Anim.cpp
 	game/anim/Anim_Blend.cpp
 	game/anim/Anim_Testmodel.cpp
+	game/decls/DeclModelDef.cpp
 	game/gamesys/Class.cpp
 	game/gamesys/DebugGraph.cpp
 	game/gamesys/Event.cpp
@@ -740,6 +976,13 @@ set(src_game
 )
 
 add_globbed_headers(src_game "game")
+
+if (NOT MAYA_IMPORT)
+	list(REMOVE_ITEM src_game
+		game/anim/Anim_Import.cpp
+		game/anim/Anim_Import.h
+	)
+endif()
 
 set(src_prey
 	Prey/ai_centurion.cpp
@@ -924,12 +1167,14 @@ set(src_debuggerServer
 set(src_core
 	${src_aas_file}
 	${src_renderer}
+	${src_mikktspace}
 	${src_framework}
 	${src_cm}
 	${src_dmap}
 	${src_aas}
 	${src_roq}
 	${src_renderbump}
+	${src_matbuild}
 	${src_snd}
 	${src_ui}
 	${src_tools}
@@ -959,27 +1204,15 @@ if (TOOLS AND MFC_TOOLS AND MSVC)
 	file(GLOB src_compiler_roqvq	  "tools/compilers/roqvq/*.cpp") # FIXME: some of those were added before
 	add_globbed_headers(src_compiler_roqvq "tools/compilers/roqvq")
 	#tools
-	# Articulated Frame editor.
-	file(GLOB src_afeditor "tools/af/*.cpp")
-	add_globbed_headers(src_afeditor "tools/af")
-	# Declaration editor
-	file(GLOB src_decleditor "tools/decl/*.cpp")
-	add_globbed_headers(src_decleditor "tools/decl")
 	# GUI Editor.
 	file(GLOB src_gui_editor "tools/guied/*.cpp")
 	add_globbed_headers(src_gui_editor "tools/guied")
 	# Material editor
 	file(GLOB src_materialeditor "tools/materialeditor/*.cpp")
 	add_globbed_headers(src_materialeditor "tools/materialeditor")
-	# Particle Editor
-	file(GLOB src_particleeditor "tools/particle/*.cpp")
-	add_globbed_headers(src_particleeditor "tools/particle")
 	# Radiant (Map editor)
 	file(GLOB src_map_editor "tools/radiant/*.cpp")
 	add_globbed_headers(src_map_editor "tools/radiant")
-	# Script editor
-	file(GLOB src_script_editor "tools/script/*.cpp")
-	add_globbed_headers(src_script_editor "tools/script")
 	# Script Debugger
 	set(src_debuggerClient
 		tools/debugger/DebuggerClient.h
@@ -997,9 +1230,6 @@ if (TOOLS AND MFC_TOOLS AND MSVC)
 		${src_debuggerServer}
 		${src_debuggerClient}
 	)
-	# sound editor?
-	file(GLOB src_sound_editor "tools/sound/*.cpp")
-	add_globbed_headers(src_sound_editor "tools/sound")
 
 
 	# The numerous tools in a nice list.
@@ -1007,14 +1237,9 @@ if (TOOLS AND MFC_TOOLS AND MSVC)
 		${src_comafx}
 		${src_tools_common}
 		${src_compiler_renderbump}
-		${src_afeditor}
-		${src_decleditor}
 		${src_gui_editor}
 		${src_materialeditor}
-		${src_particleeditor}
 		${src_map_editor}
-		${src_script_editor}
-		${src_sound_editor}
 		${src_script_debugger}
 		"tools/edit_public.h"
 		)
@@ -1039,15 +1264,6 @@ if(WIN32)
 		sys/win32/win_net.cpp
 		sys/win32/win_shared.cpp
 		sys/win32/win_syscon.cpp
-		sys/win32/SDL_win32_main.c
-	)
-
-	# Don't use precompiled headers for our SDL Win32 c sources.
-	set_source_files_properties(
-		sys/win32/SDL_win32_main.c
-		PROPERTIES
-		SKIP_PRECOMPILE_HEADERS ON
-		LANGUAGE C
 	)
 
 	# adding the few relevant headers in sys/ manually..
@@ -1104,11 +1320,15 @@ include_directories(${CMAKE_SOURCE_DIR})
 # ================================= Idlib ======================================
 
 add_library(idlib STATIC ${src_idlib})
+if(SDL3)
+	target_link_libraries(idlib SDL3::Headers) # so it can use SDL_Endian.h
+endif()
 if(D3_COMPILER_IS_GCC_OR_CLANG AND NOT MINGW)
 	set_target_properties(idlib PROPERTIES COMPILE_FLAGS "-fPIC")
 endif()
 
 if (MSVC)
+	target_sources(idlib INTERFACE "sys/win32/natvis/idlib.natvis")
 	source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_idlib})
 endif()
 
@@ -1131,6 +1351,7 @@ if(ENGINE)
 		${src_core}
 		${src_sys_base}
 		${src_sys_core}
+		${src_imgui}
 		${src_editor_tools}
 	)
 
@@ -1141,18 +1362,27 @@ if(ENGINE)
 		set_target_properties(${ENGINE_BINARY} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${OUTPUT_FOLDER}")
 		set_target_properties(${ENGINE_BINARY} PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "+set developer 1")
 
-		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_core} ${src_sys_base} ${src_sys_core} ${src_editor_tools})
+		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_core} ${src_sys_base} ${src_sys_core} ${src_imgui} ${src_editor_tools})
 	endif()
 
 	target_precompile_headers(${ENGINE_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
 
-	target_include_directories(${ENGINE_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
+	target_include_directories(${ENGINE_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib" "${CMAKE_SOURCE_DIR}/libs/imgui")
 
 	if(HARDLINK_GAME)
 		set_target_properties(${ENGINE_BINARY} PROPERTIES COMPILE_DEFINITIONS "HUMANHEAD;${TOOLS_DEFINES}")
 		target_include_directories(${ENGINE_BINARY} PRIVATE ${game_includes})
+
+		# Hack to get .natvis added
+		if (MSVC)
+			target_sources(${DHEWM3BINARY} PRIVATE "sys/win32/natvis/game.natvis")
+		endif()
 	else()
 		set_target_properties(${ENGINE_BINARY} PROPERTIES COMPILE_DEFINITIONS "HUMANHEAD;__DOOM_DLL__;${TOOLS_DEFINES}")
+	endif()
+
+	if (MSVC)
+		target_sources(${ENGINE_BINARY} PRIVATE "sys/win32/natvis/engine.natvis")
 	endif()
 
 	set_target_properties(${ENGINE_BINARY} PROPERTIES LINK_FLAGS "${ldflags}")
@@ -1194,10 +1424,19 @@ if(DEDICATED)
 	target_include_directories(${DEDICATED_BINARY} PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
 
 	if(HARDLINK_GAME)
-		set_target_properties(${DEDICATED_BINARY} PROPERTIES COMPILE_DEFINITIONS "HUMANHEAD;ID_DEDICATED")
+		set_target_properties(${DEDICATED_BINARY} PROPERTIES COMPILE_DEFINITIONS "HUMANHEAD;IMGUI_DISABLE;ID_DEDICATED")
 		target_include_directories(${DEDICATED_BINARY} PRIVATE ${game_includes})
+
+		# Hack to get .natvis added
+		if (MSVC)
+			target_sources(${DEDICATED_BINARY} PRIVATE "sys/win32/natvis/game.natvis")
+		endif()
 	else()
-		set_target_properties(${DEDICATED_BINARY} PROPERTIES COMPILE_DEFINITIONS "HUMANHEAD;ID_DEDICATED;__DOOM_DLL__")
+		set_target_properties(${DEDICATED_BINARY} PROPERTIES COMPILE_DEFINITIONS "HUMANHEAD;IMGUI_DISABLE;ID_DEDICATED;__DOOM_DLL__")
+	endif()
+
+	if (MSVC)
+		target_sources(${DEDICATED_BINARY} PRIVATE "sys/win32/natvis/engine.natvis")
 	endif()
 
 	set_target_properties(${DEDICATED_BINARY} PROPERTIES LINK_FLAGS "${ldflags}")
@@ -1221,30 +1460,103 @@ if(DEDICATED)
 	endif()
 endif()
 
+# ============================== Maya Import ================================
+
+if(TOOLS AND MAYA_IMPORT)
+	set(src_mayaimport 
+		MayaImport/exporter.h
+		MayaImport/maya_main.cpp
+		MayaImport/maya_main.h
+	)
+
+	set (src_toolsupportsrc 
+		framework/CmdSystem.cpp
+		framework/CVarSystem.cpp
+		framework/File.cpp
+		framework/FileSystem.cpp
+		framework/miniz/miniz.c
+		framework/minizip/ioapi.c
+		framework/minizip/ioapi.h
+		framework/minizip/MiniZip64_info.txt
+		framework/minizip/unzip.cpp
+		framework/minizip/unzip.h
+	)
+
+	set (src_enginestub 
+		tools/tool_idcommon_stub.cpp
+	)
+
+	add_library(MayaImport${MAYA_VERSION} SHARED
+		${src_mayaimport}
+		${src_toolsupportsrc}
+		${src_enginestub}
+	)
+
+	add_dependencies(MayaImport${MAYA_VERSION}${cpu} MayaDevKit)
+	
+	if(MSVC)
+		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_mayaimport} ${src_toolsupportsrc} ${src_enginestub})
+	endif()
+	
+	target_precompile_headers(MayaImport${MAYA_VERSION}${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
+	
+	target_include_directories(MayaImport${MAYA_VERSION}${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
+
+	if(HARDLINK_GAME)
+		if (MSVC)
+			set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;ID_MAYA_IMPORT_API=__declspec(dllexport)")
+		else()
+			set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;ID_MAYA_IMPORT_API=__attribute__ ((visibility (\"default\")))")
+		endif()
+		target_include_directories(MayaImport${MAYA_VERSION}${cpu} PRIVATE ${game_includes})
+	else()
+		if (MSVC)
+			set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;__DOOM_DLL__;ID_MAYA_IMPORT_API=__declspec(dllexport)")
+		else()
+			set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;__DOOM_DLL__;ID_MAYA_IMPORT_API=__attribute__ ((visibility (\"default\")))")
+		endif()
+	endif()
+	set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES LINK_FLAGS "${ldflags}")
+	target_include_directories(MayaImport${MAYA_VERSION}${cpu} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/libs/MayaSDKDevKit/include")
+	target_link_directories(MayaImport${MAYA_VERSION}${cpu} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/libs/MayaSDKDevKit/lib")
+	target_link_libraries(MayaImport${MAYA_VERSION}${cpu} idlib Foundation OpenMaya OpenMayaAnim)
+	set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES FOLDER "dlls")
+	set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER} LIBRARY_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
+
+	if(NOT APPLE AND NOT WIN32)
+		install(TARGETS MayaImport${MAYA_VERSION}${cpu}
+				RUNTIME DESTINATION "${bindir}"
+				LIBRARY DESTINATION "${libdir}"
+				ARCHIVE DESTINATION "${libdir}"
+		)
+	endif()
+endif()
+
 # ============================== Prey ================================
 
 if(BASE AND NOT HARDLINK_GAME)
-	add_library(base SHARED ${src_game} ${src_prey})
+	add_library(Game${cpu} SHARED ${src_game} ${src_prey})
 
 	if (MSVC)
+		target_sources(Game${cpu} PRIVATE "sys/win32/natvis/game.natvis")
 		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_game} ${src_prey})
 	endif()
 
-	target_precompile_headers(base PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
+	target_precompile_headers(Game${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
 
-	target_include_directories(base PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
+	target_include_directories(Game${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
 
-	set_target_properties(base PROPERTIES PREFIX "")
-	set_target_properties(base PROPERTIES COMPILE_DEFINITIONS "GAME_DLL;HUMANHEAD")
-	target_include_directories(base PRIVATE "${CMAKE_SOURCE_DIR}/game" "${CMAKE_SOURCE_DIR}/Prey")
-	set_target_properties(base PROPERTIES LINK_FLAGS "${ldflags}")
-	set_target_properties(base PROPERTIES INSTALL_NAME_DIR "@executable_path")
-	target_link_libraries(base idlib)
-	set_target_properties(base PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER} LIBRARY_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
-	set_target_properties(base PROPERTIES FOLDER "dlls")
+	set_target_properties(Game${cpu} PROPERTIES PREFIX "")
+	set_target_properties(Game${cpu} PROPERTIES COMPILE_DEFINITIONS "GAME_DLL;HUMANHEAD")
+	target_include_directories(Game${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/game" "${CMAKE_SOURCE_DIR}/Prey")
+	set_target_properties(Game${cpu} PROPERTIES LINK_FLAGS "${ldflags}")
+	set_target_properties(Game${cpu} PROPERTIES INSTALL_NAME_DIR "@executable_path")
+	target_link_libraries(Game${cpu} idlib)
+	set_target_properties(Game${cpu} PROPERTIES OUTPUT_NAME "game${cpu}" RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER}/base LIBRARY_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER}/base)
+	set_target_properties(Game${cpu} PROPERTIES FOLDER "dlls")
 
 	if(NOT WIN32)
-		install(TARGETS base
+		install(TARGETS Game${cpu}
 				RUNTIME DESTINATION "${bindir}"
 				LIBRARY DESTINATION "${datadir}/base"
 				ARCHIVE DESTINATION "${libdir}"

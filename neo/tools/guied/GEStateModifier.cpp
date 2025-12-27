@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -32,12 +33,13 @@ If you have questions concerning this license or the applicable additional terms
 #include "GEApp.h"
 #include "GEStateModifier.h"
 
-rvGEStateModifier::rvGEStateModifier( const char * name, idWindow* window, idDict& dict ) :
+rvGEStateModifier::rvGEStateModifier( const char* name, idWindow* window, idDict& dict ) :
 	rvGEModifier( name, window ),
-	mDict( dict ) {
-	//Ross T 1/6/2015 - commented out this mDict copy because it seems completely
-	//redundant (copy constructor happens two lines above) and was causing a bug with adding keys
-	//mDict.Copy ( dict );
+	mDict( dict )
+{
+	// Ross T 1/6/2015 - commented out this mDict copy because it seems completely
+	// redundant (copy constructor happens two lines above) and was causing a bug with adding keys
+	// mDict.Copy ( dict );
 
 	// Make a copy of the current dictionary
 	mUndoDict.Copy( mWrapper->GetStateDict() );
@@ -50,7 +52,8 @@ rvGEStateModifier::Apply
 Applys the new state dictionary to the window
 ================
 */
-bool rvGEStateModifier::Apply() {
+bool rvGEStateModifier::Apply( void )
+{
 	return SetState( mDict );
 }
 
@@ -61,7 +64,8 @@ rvGEStateModifier::Undo
 Applies the undo dictionary to the window
 ================
 */
-bool rvGEStateModifier::Undo() {
+bool rvGEStateModifier::Undo( void )
+{
 	return SetState( mUndoDict );
 }
 
@@ -72,14 +76,17 @@ rvGEStateModifier::Apply
 Applys the given dictionary to the window
 ================
 */
-bool rvGEStateModifier::SetState( idDict& dict ) {
-	const idKeyValue*	key;
-	int					i;
+bool rvGEStateModifier::SetState( idDict& dict )
+{
+	const idKeyValue* key;
+	int				  i;
 
 	// Delete any key thats gone in the new dict
-	for ( i = 0; i < mWrapper->GetStateDict().GetNumKeyVals(); i ++ ) {
+	for( i = 0; i < mWrapper->GetStateDict().GetNumKeyVals(); i++ )
+	{
 		key = mWrapper->GetStateDict().GetKeyVal( i );
-		if ( !key ) {
+		if( !key )
+		{
 			continue;
 		}
 	}

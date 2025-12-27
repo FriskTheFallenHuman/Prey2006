@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -31,36 +32,39 @@ If you have questions concerning this license or the applicable additional terms
 // CFindTextureDlg dialog
 
 void HideInfoDialog();
-void ShowInfoDialog( const char * pText );
+void ShowInfoDialog( const char* pText );
 
-class CFindTextureDlg : public CDialogEx {
-
+class CFindTextureDlg : public CDialogEx
+{
 public:
-	CFindTextureDlg( CWnd* pParent = nullptr );   // standard constructor
+	CFindTextureDlg( CWnd* pParent = nullptr ); // standard constructor
 
-	enum { IDD = IDD_DIALOG_FINDREPLACE };
+	enum
+	{
+		IDD = IDD_DIALOG_FINDREPLACE
+	};
 
-	static  void updateTextures( const char * p );
+	static void updateTextures( const char* p );
 	static void show();
 	static bool isOpen();
-	static void setFindStr( const char * p );
-	static void setReplaceStr( const char * p );
+	static void setFindStr( const char* p );
+	static void setReplaceStr( const char* p );
 
 protected:
-	virtual void DoDataExchange( CDataExchange* pDX ) override;    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX ) override; // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
 
 private:
-	BOOL m_bSelectedOnly;
-	CString m_strFind;
-	CString m_strReplace;
-	BOOL m_bForce;
-	BOOL m_bLive;
+	BOOL		 m_bSelectedOnly;
+	CString		 m_strFind;
+	CString		 m_strReplace;
+	BOOL		 m_bForce;
+	BOOL		 m_bLive;
 
 	afx_msg void OnBtnApply();
 	afx_msg void OnOK();
-	afx_msg  void OnCancel();
+	afx_msg void OnCancel();
 	afx_msg void OnSetfocusEditFind();
 	afx_msg void OnSetfocusEditReplace();
 };

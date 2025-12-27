@@ -92,12 +92,10 @@ extern int			com_frameTime;			// time for the current frame in milliseconds
 extern volatile int	com_ticNumber;			// 60 hz tics, incremented by async function
 extern int			com_editors;			// current active editor(s)
 extern bool			com_editorActive;		// true if an editor has focus
-
-extern bool			com_debuggerSupported;	// only set to true when the updateDebugger function is set. see GetAdditionalFunction()
+extern bool			com_editorCMDActive;	// same as com_editors but for cmd tools
 
 #ifdef _WIN32
 const char			DMAP_MSGID[] = "DMAPOutput";
-const char			DMAP_DONE[] = "DMAPDone";
 extern HWND			com_hwndMsg;
 extern bool			com_outputMsg;
 #endif
@@ -121,6 +119,9 @@ struct MemInfo_t {
 	int				soundAssetsTotal;
 	int				animAssetsTotal;	// HUMANHEAD pdm
 };
+
+class idInterpreter;
+class idProgram;
 
 class idCommon {
 public:
@@ -168,6 +169,9 @@ public:
 								// Writes cvars with the given flags to a file.
 	virtual void				WriteFlaggedCVarsToFile( const char *filename, int flags, const char *setCmd ) = 0;
 
+								// Debbugger hook to check if a breakpoint has been hit
+	virtual void				DebuggerCheckBreakpoint( idInterpreter *interpreter, idProgram *program, int instructionPointer ) = 0;
+
 								// Begins redirection of console output to the given buffer.
 	virtual void				BeginRedirect( char *buffer, int buffersize, void (*flush)( const char * ) ) = 0;
 
@@ -198,24 +202,26 @@ public:
 #endif // VENOM END
 
 								// Prints message to the console, which may cause a screen update if com_refreshOnPrint is set.
-	virtual void				Printf( const char *fmt, ... )id_attribute((format(printf,2,3))) = 0;
+	virtual void				Printf( VERIFY_FORMAT_STRING const char *fmt, ... ) = 0;
 
 								// Same as Printf, with a more usable API - Printf pipes to this.
 	virtual void				VPrintf( const char *fmt, va_list arg ) = 0;
 
 								// Prints message that only shows up if the "developer" cvar is set,
 								// and NEVER forces a screen update, which could cause reentrancy problems.
-	virtual void				DPrintf( const char *fmt, ... ) id_attribute((format(printf,2,3))) = 0;
+	virtual void				DPrintf( VERIFY_FORMAT_STRING const char *fmt, ... ) = 0;
+
+								// Same as Printf but tool specific to discard most of dmap's and runaas's output
+	virtual void				VerbosePrintf( VERIFY_FORMAT_STRING const char *fmt, ... ) = 0;
+
+								// Same as Warning but tool specific to discard most of dmap's and runaas's output
+	virtual void				VerboseWarning( VERIFY_FORMAT_STRING const char *fmt, ... ) = 0;
 
 								// Prints WARNING %s message and adds the warning message to a queue for printing later on.
-	virtual void				Warning( const char *fmt, ... ) id_attribute((format(printf,2,3))) = 0;
-
-								// Same as Printf/Warning but tool specific to discard most of dmap's and runaas's output
-	virtual void				VerbosePrintf( const char *fmt, ... ) id_attribute((format(printf,2,3))) = 0;
-	virtual void				VerboseWarning( const char *fmt, ... ) id_attribute((format(printf,2,3))) = 0;
+	virtual void				Warning( VERIFY_FORMAT_STRING const char *fmt, ... ) = 0;
 
 								// Prints WARNING %s message in yellow that only shows up if the "developer" cvar is set.
-	virtual void				DWarning( const char *fmt, ...) id_attribute((format(printf,2,3))) = 0;
+	virtual void				DWarning( VERIFY_FORMAT_STRING const char *fmt, ... ) = 0;
 
 								// Prints all queued warnings.
 	virtual void				PrintWarnings( void ) = 0;
@@ -225,11 +231,11 @@ public:
 
 								// Issues a C++ throw. Normal errors just abort to the game loop,
 								// which is appropriate for media or dynamic logic errors.
-	virtual void				Error( const char *fmt, ... ) id_attribute((format(printf,2,3))) = 0;
+	virtual void				Error( VERIFY_FORMAT_STRING const char *fmt, ... ) ID_INSTANCE_ATTRIBUTE_PRINTF( 1, 2 ) = 0;
 
 								// Fatal errors quit all the way to a system dialog box, which is appropriate for
 								// static internal errors or cases where the system may be corrupted.
-	virtual void				FatalError( const char *fmt, ... ) id_attribute((format(printf,2,3))) = 0;
+	virtual void                FatalError( VERIFY_FORMAT_STRING const char *fmt, ... ) ID_INSTANCE_ATTRIBUTE_PRINTF( 1, 2 ) = 0;
 
 								// Returns a pointer to the dictionary with language specific strings.
 	virtual const idLangDict *	GetLanguageDict( void ) = 0;
@@ -245,71 +251,6 @@ public:
 
 								// Directly sample a keystate.
 	virtual int					KeyState( int key ) = 0;
-
-	/* Some Mods (like Ruiner and DarkMod when it still was a mod) used "SourceHook"
-	 * to override Doom3 Methods to call their own code before the original method
-	 * was executed.. this is super ugly and probably not super portable either.
-	 *
-	 * So let's offer something that's slightly less ugly: A function pointer based
-	 * interface to provide similar (but known!) hacks.
-	 * For example, Ruiner used SourceHook to intercept idCmdSystem::BufferCommandText()
-	 * and recreate some cooked rendering data in case reloadImages or vid_restart was executed.
-	 * Now, instead of doing ugly hacks with SourceHook, Ruiner can just call
-	 *   common->SetCallback( idCommon::CB_ReloadImages,
-	 *                        (idCommon::FunctionPointer)functionToCall,
-	 *                        (void*)argForFunctionToCall );
-	 *
-	 * (the Mod needs to check if SetCallback() returned true; if it didn't the used version
-	 *  of dhewm3 doesn't support the given CallBackType and the Mod must either error out
-	 *  or handle the case that the callback doesn't work)
-	 *
-	 * Of course this means that for every new SourceHook hack a Mod (that's ported to dhewm3)
-	 * uses, a corresponding entry must be added to enum CallbackType and it must be handled,
-	 * which implies that the Mod will only properly work with the latest dhewm3 git code
-	 * or the next release..
-	 * I guess most mods don't need this hack though, so I think it's feasible.
-	 *
-	 * Note that this allows adding new types of callbacks without breaking the API and ABI
-	 * between dhewm3 and the Game DLLs; the alternative would be something like
-	 * idCommon::RegisterReloadImagesCallback(), and maybe other similar methods later, which
-	 * would break the ABI and API each time and all Mods would have to be adjusted, even if
-	 * they don't even need that functionality (because they never needed SourceHook or similar).
-	 *
-	 * Similar to SetCallback() I've also added GetAdditionalFunction() to get a function pointer
-	 * from dhewm3 that Mods can call (and that's not exported via the normal interface classes).
-	 * Right now it's only used for a Doom3 Demo specific hack only relevant for base.dll (not for Mods)
-	 */
-
-	typedef void* (*FunctionPointer)(void*); // needs to be cast to/from real type!
-	enum CallbackType {
-		// called on reloadImages and vid_restart commands (before anything "real" happens)
-		// expecting callback to be like void cb(void* userarg, const idCmdArgs& cmdArgs)
-		// where cmdArgs contains the command+arguments that was called
-		CB_ReloadImages = 1,
-	};
-
-	// returns true if setting the callback was successful, else false
-	// When a game DLL is unloaded the callbacks are automatically removed from the Engine
-	// so you usually don't have to worry about that; but you can call this with cb = NULL
-	// and userArg = NULL to remove a callback manually (e.g. if userArg refers to an object you deleted)
-	virtual bool				SetCallback(CallbackType cbt, FunctionPointer cb, void* userArg) = 0;
-
-	enum FunctionType {
-		// the function's signature is bool fn(void) - no arguments.
-		// it returns true if we're currently running the doom3 demo
-		// not relevant for mods, only for game/ aka base.dll/base.so/...
-		FT_IsDemo = 1,
-		// the function's signature is bool fn(idInterpreter,idProgram,int) with arguments:
-		// idInterpreter *interpreter, idProgram *program, int instructionPointer
-		// it returns true if the game debugger is active.
-		// relevant for mods.
-		FT_UpdateDebugger,
-	};
-
-	// returns true if that function is available in this version of dhewm3
-	// *out_fnptr will be the function (you'll have to cast it probably)
-	// *out_userArg will be an argument you have to pass to the function, if appropriate (else NULL)
-	virtual bool				GetAdditionalFunction(FunctionType ft, FunctionPointer* out_fnptr, void** out_userArg) = 0;
 	
 //HUMANHEAD rww - actively check for reads after initial loading sequence
 #if !GOLD

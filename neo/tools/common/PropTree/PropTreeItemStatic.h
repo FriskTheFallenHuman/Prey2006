@@ -21,24 +21,24 @@
 
 #include "PropTreeItem.h"
 
-class PROPTREE_API CPropTreeItemStatic : public CPropTreeItem {
+class PROPTREE_API CPropTreeItemStatic : public CPropTreeItem
+{
 public:
 	CPropTreeItemStatic();
 	virtual ~CPropTreeItemStatic();
 
 public:
 	// The attribute area needs drawing
-	virtual void DrawAttribute( CDC* pDC, const RECT& rc );
+	virtual void   DrawAttribute( CDC* pDC, const RECT& rc );
 
 	// Retrieve the item's attribute value (in this case the CString)
 	virtual LPARAM GetItemValue();
 
 	// Set the item's attribute value
-	virtual void SetItemValue( LPARAM lParam );
+	virtual void   SetItemValue( LPARAM lParam );
 
 protected:
-	CString		m_sAttribute;
+	CString m_sAttribute;
 };
-
 
 #endif // _PROPTREEITEMSTATIC_H

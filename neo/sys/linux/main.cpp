@@ -35,7 +35,7 @@ If you have questions concerning this license or the applicable additional terms
 #include <sys/types.h>
 #include <fcntl.h>
 
-#include <SDL_main.h>
+//#include <SDL_main.h> - not needed, the engine doesn't currently use SDL's SDL_main
 
 #include <locale.h>
 
@@ -77,10 +77,17 @@ const char* Posix_GetSavePath()
 static void SetSavePath()
 {
 	const char* s = getenv("XDG_DATA_HOME");
+#if defined( ID_DEMO_BUILD )
+	if (s)
+		D3_snprintfC99(save_path, sizeof(save_path), "%s/prey06-demo", s);
+	else
+		D3_snprintfC99(save_path, sizeof(save_path), "%s/.local/share/prey06-demo", getenv("HOME"));
+#else
 	if (s)
 		D3_snprintfC99(save_path, sizeof(save_path), "%s/prey06", s);
 	else
 		D3_snprintfC99(save_path, sizeof(save_path), "%s/.local/share/prey06", getenv("HOME"));
+#endif
 }
 
 const char* Posix_GetExePath()
@@ -163,67 +170,66 @@ bool Sys_GetPath(sysPath_t type, idStr &path) {
 	path.Clear();
 
 	switch(type) {
-	case PATH_BASE:
-		if (stat(BUILD_DATADIR, &st) != -1 && S_ISDIR(st.st_mode)) {
-			path = BUILD_DATADIR;
-			return true;
-		}
-
-		common->Warning("base path '" BUILD_DATADIR "' does not exist");
-
-		// try next to the executable..
-		if (Sys_GetPath(PATH_EXE, path)) {
-			path = path.StripFilename();
-			// the path should have a base dir in it, otherwise it probably just contains the executable
-			idStr testPath = path + "/" BASE_GAMEDIR;
-			if (stat(testPath.c_str(), &st) != -1 && S_ISDIR(st.st_mode)) {
-				common->Warning("using path of executable: %s", path.c_str());
+		case PATH_BASE: {
+			if (stat(BUILD_DATADIR, &st) != -1 && S_ISDIR(st.st_mode)) {
+				path = BUILD_DATADIR;
 				return true;
-			} else {
-				idStr testPath = path + "/demo/demo00.pk4";
-				if(stat(testPath.c_str(), &st) != -1 && S_ISREG(st.st_mode)) {
-					common->Warning("using path of executable (seems to contain demo game data): %s", path.c_str());
+			}
+
+			common->Warning("base path '" BUILD_DATADIR "' does not exist");
+
+			// try next to the executable..
+			if (Sys_GetPath(PATH_EXE, path)) {
+				path = path.StripFilename();
+				// the path should have a base dir in it, otherwise it probably just contains the executable
+				idStr testPath = path + "/" BASE_GAMEDIR;
+				if (stat(testPath.c_str(), &st) != -1 && S_ISDIR(st.st_mode)) {
+#ifdef _DEBUG
+					common->Warning("using path of executable: %s", path.c_str());
+#endif // _DEBUG
 					return true;
 				} else {
 					path.Clear();
 				}
 			}
+
+			return false;
 		}
 
-		// fallback to vanilla doom3 install
-		if (stat(LINUX_DEFAULT_PATH, &st) != -1 && S_ISDIR(st.st_mode)) {
-			common->Warning("using hardcoded default base path: " LINUX_DEFAULT_PATH);
+		case PATH_CONFIG: {
+			s = getenv("XDG_CONFIG_HOME");
+#if defined( ID_DEMO_BUILD )
+			if (s)
+				idStr::snPrintf(buf, sizeof(buf), "%s/prey06-demo", s);
+			else
+				idStr::snPrintf(buf, sizeof(buf), "%s/.config/prey06-demo", getenv("HOME"));
+#else
+			if (s)
+				idStr::snPrintf(buf, sizeof(buf), "%s/prey06", s);
+			else
+				idStr::snPrintf(buf, sizeof(buf), "%s/.config/prey06", getenv("HOME"));
+#endif
 
-			path = LINUX_DEFAULT_PATH;
+			path = buf;
 			return true;
 		}
 
-		return false;
-
-	case PATH_CONFIG:
-		s = getenv("XDG_CONFIG_HOME");
-		if (s)
-			idStr::snPrintf(buf, sizeof(buf), "%s/prey06", s);
-		else
-			idStr::snPrintf(buf, sizeof(buf), "%s/.config/prey06", getenv("HOME"));
-
-		path = buf;
-		return true;
-
-	case PATH_SAVE:
-		if(save_path[0] != '\0') {
-			path = save_path;
-			return true;
-		}
-		return false;
-
-	case PATH_EXE:
-		if (path_exe[0] != '\0') {
-			path = path_exe;
-			return true;
+		case PATH_SAVE: {
+			if(save_path[0] != '\0') {
+				path = save_path;
+				return true;
+			}
+			return false;
 		}
 
-		return false;
+		case PATH_EXE: {
+			if (path_exe[0] != '\0') {
+				path = path_exe;
+				return true;
+			}
+
+			return false;
+		}
 	}
 
 	return false;

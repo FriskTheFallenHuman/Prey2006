@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -37,73 +38,90 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 */
 
+class idProgram;
+class idInterpreter;
 
-class	idProgram;
-class	idInterpreter;
+/*
+==========================
+  ImGui-based Tools
+==========================
+*/
 
+namespace ImGuiTools
+{
 
-// Radiant Level Editor
-void	RadiantInit();
-void	RadiantShutdown();
-void	RadiantRun();
-void	RadiantPrint( const char * text );
+// things in impl need to be used in at least one other file, but should generally not be used
+namespace impl
+{
 
+	void SetReleaseToolMouse( bool doRelease );
+
+} // namespace impl
+
+bool ReleaseMouseForTools();
+
+bool AreEditorsActive();
+
+void DrawToolWindows();
 
 // in-game Light Editor
-void	LightEditorInit( const idDict* spawnArgs );
-void	LightEditorShutdown();
-void	LightEditorRun();
-
+void LightEditorInit( const idDict* dict );
 
 // in-game Sound Editor
-void	SoundEditorInit( const idDict* spawnArgs );
-void	SoundEditorShutdown();
-void	SoundEditorRun();
-
+void SoundEditorInit( const idDict* spawnArgs );
 
 // in-game Articulated Figure Editor
-void	AFEditorInit( const idDict* spawnArgs );
-void	AFEditorShutdown();
-void	AFEditorRun();
+void AfEditorInit( void );
 
+// in-game PDA Editor
+// void	PDAEditorInit( const idDict *spawnArgs );
 
 // in-game Particle Editor
-void	ParticleEditorInit( const idDict* spawnArgs );
-void	ParticleEditorShutdown();
-void	ParticleEditorRun();
+void ParticleEditorInit( const idDict* spawnArgs );
 
 // in-game Script Editor
-void	ScriptEditorInit( const idDict* spawnArgs );
-void	ScriptEditorShutdown();
-void	ScriptEditorRun();
-
+void ScriptEditorInit( const idDict* spawnArgs );
 
 // in-game Declaration Browser
-void	DeclBrowserInit( const idDict* spawnArgs );
-void	DeclBrowserShutdown();
-void	DeclBrowserRun();
-void	DeclBrowserReloadDeclarations();
+void DeclBrowserInit( const idDict* spawnArgs );
 
+// Material Editor
+void MaterialEditorInit( void );
+void MaterialEditorDraw( void );
+void MaterialEditorShutdown( void );
+void MaterialEditorPrintConsole( const char* msg );
+}
+
+/*
+==========================
+  Old MFC-based Tools
+==========================
+*/
+
+// Radiant Level Editor
+void RadiantInit( void );
+void RadiantShutdown( void );
+void RadiantRun( void );
+void RadiantPrint( const char* text );
 
 // GUI Editor
-void	GUIEditorInit();
-void	GUIEditorShutdown();
-void	GUIEditorRun();
-bool	GUIEditorHandleMessage( void * msg );
-
+void GUIEditorInit( void );
+void GUIEditorShutdown( void );
+void GUIEditorRun( void );
+bool GUIEditorHandleMessage( void* msg );
 
 // Script Debugger
-void	DebuggerClientLaunch();
-void	DebuggerClientInit( const char * cmdline );
-bool	DebuggerServerInit();
-void	DebuggerServerShutdown();
-void	DebuggerServerPrint( const char * text );
-void	DebuggerServerCheckBreakpoint( idInterpreter* interpreter, idProgram* program, int instructionPointer );
+void DebuggerClientLaunch( void );
+void DebuggerClientInit( const char* cmdline );
+bool DebuggerServerInit( void );
+void DebuggerServerShutdown( void );
+void DebuggerServerPrint( const char* text );
+void DebuggerServerCheckBreakpoint( idInterpreter* interpreter, idProgram* program, int instructionPointer );
 
-//Material Editor
-void	MaterialEditorInit();
-void	MaterialEditorRun();
-void	MaterialEditorShutdown();
-void	MaterialEditorPrintConsole( const char * msg );
+// Material Editor
+void MaterialEditorInit( void );
+void MaterialEditorRun( void );
+void MaterialEditorShutdown( void );
+void MaterialEditorPrintConsole( const char* msg );
 
 #endif /* !__EDIT_PUBLIC_H__ */

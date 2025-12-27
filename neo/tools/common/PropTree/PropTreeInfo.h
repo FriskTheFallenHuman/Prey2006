@@ -1,9 +1,9 @@
-#if !defined(AFX_PROPTREEINFO_H__22BD9C18_A68C_4BB8_B7FC_C4A7DA0E1EBF__INCLUDED_)
-#define AFX_PROPTREEINFO_H__22BD9C18_A68C_4BB8_B7FC_C4A7DA0E1EBF__INCLUDED_
+#if !defined( AFX_PROPTREEINFO_H__22BD9C18_A68C_4BB8_B7FC_C4A7DA0E1EBF__INCLUDED_ )
+	#define AFX_PROPTREEINFO_H__22BD9C18_A68C_4BB8_B7FC_C4A7DA0E1EBF__INCLUDED_
 
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+	#if _MSC_VER > 1000
+		#pragma once
+	#endif // _MSC_VER > 1000
 // PropTreeInfo.h : header file
 //
 //
@@ -28,28 +28,28 @@ class CPropTree;
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeInfo window
 
-class PROPTREE_API CPropTreeInfo : public CStatic {
-// Construction
+class PROPTREE_API CPropTreeInfo : public CStatic
+{
+	// Construction
 public:
 	CPropTreeInfo();
 
-// Attributes
+	// Attributes
 public:
 	// CPropTree class that this class belongs
 	void SetPropOwner( CPropTree* pProp );
 
 protected:
-	CPropTree	*	m_pProp;
+	CPropTree* m_pProp;
 
-// Operations
+	// Operations
 public:
-
-// Overrides
+	// Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CPropTreeInfo)
 	//}}AFX_VIRTUAL
 
-// Implementation
+	// Implementation
 public:
 	virtual ~CPropTreeInfo();
 

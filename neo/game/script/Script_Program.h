@@ -75,7 +75,7 @@ public:
 	int					firstStatement;
 	int					numStatements;
 	int					parmTotal;
-	int					locals;			// total ints of parms + locals
+	int					locals;				// total ints of parms + locals
 	int					filenum;			// source file defined in
 	idList<int>			parmSize;
 };
@@ -548,7 +548,7 @@ public:
 	// save games
 	void										Save( idSaveGame *savefile ) const;
 	bool										Restore( idRestoreGame *savefile );
-	int											CalculateChecksum( void ) const;		// Used to insure program code has not
+	int											CalculateChecksum( bool forOldSavegame ) const;		// Used to insure program code has not
 																						//    changed between savegames
 
 	void										Startup( const char *defaultScript );

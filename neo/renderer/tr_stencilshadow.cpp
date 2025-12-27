@@ -1222,7 +1222,7 @@ srfTriangles_t *R_CreateShadowVolume( const idRenderEntityLocal *ent,
 	srfTriangles_t	*newTri;
 	int		capPlaneBits;
 
-	if ( !r_shadows.GetBool() ) {
+	if ( r_shadows.GetInteger() <= 0 ) {
 		return NULL;
 	}
 

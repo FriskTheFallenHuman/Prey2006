@@ -39,7 +39,7 @@ If you have questions concerning this license or the applicable additional terms
 
 class idSysLocal : public idSys {
 public:
-	virtual void			DebugPrintf( const char *fmt, ... )id_attribute((format(printf,2,3)));
+	virtual void			DebugPrintf( VERIFY_FORMAT_STRING const char* fmt, ... );
 	virtual void			DebugVPrintf( const char *fmt, va_list arg );
 
 	virtual unsigned int	GetMilliseconds( void );

@@ -203,6 +203,8 @@ public:
 	const char *	ParseBracedSectionExact ( idStr &out, int tabs = -1 );
 					// parse the rest of the line
 	const char *	ParseRestOfLine( idStr &out );
+	// pulls the entire line, including the \n at the end
+	const char *	ParseCompleteLine( idStr &out );
 					// retrieves the white space characters before the last read token
 	int				GetLastWhiteSpace( idStr &whiteSpace ) const;
 					// returns start index into text buffer of last white space
@@ -232,9 +234,9 @@ public:
 					// returns the current line number
 	const int		GetLineNum( void );
 					// print an error message
-	void			Error( const char *str, ... ) id_attribute((format(printf,2,3)));
+	void			Error( VERIFY_FORMAT_STRING const char *str, ... );
 					// print a warning message
-	void			Warning( const char *str, ... ) id_attribute((format(printf,2,3)));
+	void			Warning( VERIFY_FORMAT_STRING const char *str, ... );
 					// returns true if Error() was called with LEXFL_NOFATALERRORS or LEXFL_NOERRORS set
 	bool			HadError( void ) const;
 

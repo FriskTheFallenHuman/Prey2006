@@ -16,7 +16,7 @@
 //	If you use this code, drop me an email.  I'd like to know if you find the code
 //	useful.
 
-//#include "pch.h"
+// #include "pch.h"
 #include "precompiled.h"
 #pragma hdrstop
 
@@ -24,17 +24,17 @@
 
 #include "PropTreeItemStatic.h"
 
-
 CPropTreeItemStatic::CPropTreeItemStatic() :
-	m_sAttribute( _T( "" ) ) {
+	m_sAttribute( _T( "" ) )
+{
 }
 
-
-CPropTreeItemStatic::~CPropTreeItemStatic() {
+CPropTreeItemStatic::~CPropTreeItemStatic()
+{
 }
 
-
-void CPropTreeItemStatic::DrawAttribute( CDC* pDC, const RECT& rc ) {
+void CPropTreeItemStatic::DrawAttribute( CDC* pDC, const RECT& rc )
+{
 	ASSERT( m_pProp != NULL );
 
 	pDC->SelectObject( m_pProp->GetNormalFont() );
@@ -45,14 +45,15 @@ void CPropTreeItemStatic::DrawAttribute( CDC* pDC, const RECT& rc ) {
 	pDC->DrawText( m_sAttribute, r, DT_SINGLELINE | DT_VCENTER );
 }
 
-
-LPARAM CPropTreeItemStatic::GetItemValue() {
+LPARAM CPropTreeItemStatic::GetItemValue()
+{
 	return ( LPARAM )( LPCTSTR )m_sAttribute;
 }
 
-
-void CPropTreeItemStatic::SetItemValue( LPARAM lParam ) {
-	if ( lParam == 0L ) {
+void CPropTreeItemStatic::SetItemValue( LPARAM lParam )
+{
+	if( lParam == 0L )
+	{
 		TRACE0( "CPropTreeItemStatic::SetItemValue() - Invalid lParam value\n" );
 		return;
 	}

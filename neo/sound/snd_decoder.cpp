@@ -29,8 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "precompiled.h"
 #pragma hdrstop
 
-#include "SDL_endian.h"
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+#if D3_IS_BIG_ENDIAN
   #define STB_VORBIS_BIG_ENDIAN
 #endif
 #define STB_VORBIS_NO_STDIO

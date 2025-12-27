@@ -1296,7 +1296,7 @@ int JPEGBlit( byte *wStatus, byte *data, int datasize )
 	// I don't think this code is actually used, because
 	// * the jpeg encoder parts in the roq encoder are disabled with #if 0
 	// * ffmpeg doesn't support ROQ_QUAD_JPEG and can decode all doom3 roqs anyway
-	common->Warning("Contrary to Daniel's assumption, JPEGBlit() is actually called! Please report that as a dhewm3 bug!\n");
+	common->Warning("Contrary to Daniel's assumption, JPEGBlit() is actually called! Please report that as a bug!\n");
 
 #else
   /* This struct contains the JPEG decompression parameters and pointers to

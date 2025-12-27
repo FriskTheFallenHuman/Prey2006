@@ -70,8 +70,11 @@ class idProgram;
 class idThread;
 class idEditEntities;
 class idLocationEntity;
+class idGameEditLocal;
 
 //============================================================================
+
+void gameError( const char *fmt, ... );
 
 #include "gamesys/Event.h"
 #include "gamesys/Class.h"
@@ -89,7 +92,7 @@ class idLocationEntity;
 #include "../Prey/prey_animator.h"
 // HUMANHEAD END
 
-#include "ai/AAS.h"
+#include "aas/AAS.h"
 
 #include "physics/Clip.h"
 #include "physics/Push.h"
@@ -104,8 +107,6 @@ class idLocationEntity;
 // HUMANHEAD END
 
 //============================================================================
-
-void gameError( const char *fmt, ... );
 
 const int NUM_RENDER_PORTAL_BITS	= idMath::BitsForInteger( PS_BLOCK_ALL );
 
@@ -364,6 +365,8 @@ public:
 
 	int						timeRandom;				//HUMANHEAD rww - for time seeding
 
+	int						editors;				// Mirrored editors flags from common to determine which editors are running
+
 	// ---------------------- Public idGame Interface -------------------
 
 							idGameLocal();
@@ -378,13 +381,13 @@ public:
 
 	virtual const idDict &	GetPersistentPlayerInfo( int clientNum );
 	virtual void			SetPersistentPlayerInfo( int clientNum, const idDict &playerInfo );
-	virtual void			InitFromNewMap( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, bool isServer, bool isClient, int randSeed );
-	virtual bool			InitFromSaveGame( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, idFile *saveGameFile );
+	virtual void			InitFromNewMap( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, bool isServer, bool isClient, int randSeed, int activeEditors );
+	virtual bool			InitFromSaveGame( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, idFile *saveGameFile, int activeEditors );
 	virtual void			SaveGame( idFile *saveGameFile );
 	virtual void			MapShutdown( void );
 	virtual void			CacheDictionaryMedia( const idDict *dict );
 	virtual void			SpawnPlayer( int clientNum );
-	virtual gameReturn_t	RunFrame( const usercmd_t *clientCmds );
+	virtual gameReturn_t	RunFrame( const usercmd_t *clientCmds, int activeEditors );
 	virtual bool			Draw( int clientNum );
 	virtual escReply_t		HandleESC( idUserInterface **gui );
 	virtual idUserInterface	*StartMenu( void );
@@ -417,11 +420,11 @@ public:
 
 	// ---------------------- Public idGameLocal Interface -------------------
 
-	void					Printf( const char *fmt, ... ) const id_attribute((format(printf,2,3)));
-	void					DPrintf( const char *fmt, ... ) const id_attribute((format(printf,2,3)));
-	void					Warning( const char *fmt, ... ) const id_attribute((format(printf,2,3)));
-	void					DWarning( const char *fmt, ... ) const id_attribute((format(printf,2,3)));
-	void					Error( const char *fmt, ... ) const id_attribute((format(printf,2,3)));
+	void					Printf( VERIFY_FORMAT_STRING const char *fmt, ... ) const;
+	void					DPrintf( VERIFY_FORMAT_STRING const char *fmt, ... ) const;
+	void					Warning( VERIFY_FORMAT_STRING const char *fmt, ... ) const;
+	void					DWarning( VERIFY_FORMAT_STRING const char *fmt, ... ) const;
+	void					Error( VERIFY_FORMAT_STRING const char *fmt, ... ) const;
 
 							// Initializes all map variables common to both save games and spawned games
 	void					LoadMap( const char *mapName, int randseed );
@@ -594,6 +597,8 @@ public:
 
 	bool					NeedRestart();
 
+	const char *			GetMapFileName( void ) { return mapFileName.c_str(); }
+
 // HUMANHEAD
 	void					SetSteamTime( int _time ) { nextSteamTime = _time; };
 	int						GetSteamTime() { return nextSteamTime; };
@@ -630,6 +635,7 @@ public:
 
 protected:	// HUMANHEAD
 	const static int		INITIAL_SPAWN_COUNT = 1;
+	const static int		INTERNAL_SAVEGAME_VERSION = 1; // DG: added this for >= 1304 savegames
 
 	idStr					mapFileName;			// name of the map, empty string if no map loaded
 	idMapFile *				mapFile;				// will be NULL during the game unless in-game editing is used
@@ -733,7 +739,7 @@ protected:	// HUMANHEAD
 	bool					ApplySnapshot( int clientNum, int sequence );
 	void					WriteGameStateToSnapshot( idBitMsgDelta &msg ) const;
 	void					ReadGameStateFromSnapshot( const idBitMsgDelta &msg );
-	void					NetworkEventWarning( const entityNetEvent_t *event, const char *fmt, ... ) id_attribute((format(printf,3,4)));
+	void					NetworkEventWarning( const entityNetEvent_t *event, VERIFY_FORMAT_STRING const char *fmt, ... );
 	void					ServerProcessEntityNetworkEventQueue( void );
 	void					ClientProcessEntityNetworkEventQueue( void );
 	void					ClientShowSnapshot( int clientNum ) const;
@@ -766,7 +772,7 @@ protected:	// HUMANHEAD
 //#else	// HUMANHEAD
 //extern idGameLocal			gameLocal;
 //#endif	// HUMANHEAD
-
+extern idGameEditLocal		gameEditLocal;
 extern idAnimManager		animationLib;
 
 //============================================================================
@@ -821,7 +827,6 @@ typedef enum {
 
 const float DEFAULT_GRAVITY			= 1066.0f;
 const idVec3 DEFAULT_GRAVITY_VEC3( 0, 0, -DEFAULT_GRAVITY );
-
 const int	CINEMATIC_SKIP_DELAY	= SEC2MS( 2.0f );
 
 //============================================================================
@@ -841,6 +846,9 @@ const int	CINEMATIC_SKIP_DELAY	= SEC2MS( 2.0f );
 #include "physics/Physics_Parametric.h"
 #include "physics/Physics_RigidBody.h"
 #include "physics/Physics_AF.h"
+
+//Decls
+#include "decls/DeclModelDef.h"
 
 //HUMANHEAD
 #include "physics/Physics_PreyPlayer.h"			// HUMANHEAD
@@ -866,7 +874,7 @@ const int	CINEMATIC_SKIP_DELAY	= SEC2MS( 2.0f );
 #include "Misc.h"
 
 // HUMANHEAD
-#include "ai/AAS_local.h"						// HUMANHEAD nla
+#include "aas/AAS_local.h"						// HUMANHEAD nla
 // HUMANHEAD END
 
 #include "Actor.h"

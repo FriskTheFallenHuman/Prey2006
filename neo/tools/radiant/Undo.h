@@ -19,46 +19,47 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
 ===========================================================================
 */
 
-//start operation
-void Undo_Start( char * operation );
-//end operation
-void Undo_End();
-//add brush to the undo
+// start operation
+void Undo_Start( char* operation );
+// end operation
+void Undo_End( void );
+// add brush to the undo
 void Undo_AddBrush( idEditorBrush* pBrush );
-//add a list with brushes to the undo
+// add a list with brushes to the undo
 void Undo_AddBrushList( idEditorBrush* brushlist );
-//end a brush after the operation is performed
+// end a brush after the operation is performed
 void Undo_EndBrush( idEditorBrush* pBrush );
-//end a list with brushes after the operation is performed
+// end a list with brushes after the operation is performed
 void Undo_EndBrushList( idEditorBrush* brushlist );
-//add entity to undo
+// add entity to undo
 void Undo_AddEntity( idEditorEntity* entity );
-//end an entity after the operation is performed
+// end an entity after the operation is performed
 void Undo_EndEntity( idEditorEntity* entity );
-//undo last operation
-void Undo_Undo();
-//redo last undone operation
-void Undo_Redo();
-//returns true if there is something to be undone available
-int  Undo_UndoAvailable();
-//returns true if there is something to redo available
-int  Undo_RedoAvailable();
-//clear the undo buffer
-void Undo_Clear();
-//set maximum undo size (default 64)
+// undo last operation
+void Undo_Undo( void );
+// redo last undone operation
+void Undo_Redo( void );
+// returns true if there is something to be undone available
+int	 Undo_UndoAvailable( void );
+// returns true if there is something to redo available
+int	 Undo_RedoAvailable( void );
+// clear the undo buffer
+void Undo_Clear( void );
+// set maximum undo size (default 64)
 void Undo_SetMaxSize( int size );
-//get maximum undo size
-int  Undo_GetMaxSize();
-//set maximum undo memory in bytes (default 2 MB)
+// get maximum undo size
+int	 Undo_GetMaxSize( void );
+// set maximum undo memory in bytes (default 2 MB)
 void Undo_SetMaxMemorySize( int size );
-//get maximum undo memory in bytes
-int  Undo_GetMaxMemorySize();
-//returns the amount of memory used by undo
-int  Undo_MemorySize();
+// get maximum undo memory in bytes
+int	 Undo_GetMaxMemorySize( void );
+// returns the amount of memory used by undo
+int	 Undo_MemorySize( void );

@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -30,30 +31,31 @@ If you have questions concerning this license or the applicable additional terms
 #define _GEWORKSPACE_H_
 
 #ifndef GESELECTIONMGR_H_
-#include "GESelectionMgr.h"
+	#include "GESelectionMgr.h"
 #endif // GESELECTIONMGR_H_
 
 #ifndef GEMODIFIERSTACK_H_
-#include "GEModifierStack.h"
+	#include "GEModifierStack.h"
 #endif // GEMODIFIERSTACK_H_
 
 class rvGEApp;
 class rvGEModifierGroup;
 
-class rvGEClipboardItem {
+class rvGEClipboardItem
+{
 public:
+	idDict					   mStateDict;
+	idDict					   mScriptDict;
+	idDict					   mVarDict;
 
-	idDict	mStateDict;
-	idDict	mScriptDict;
-	idDict	mVarDict;
-
-	idList<rvGEClipboardItem *> mChildren;
+	idList<rvGEClipboardItem*> mChildren;
 };
 
-class rvGEWorkspace {
+class rvGEWorkspace
+{
 public:
-
-	enum EZoomLevel {
+	enum EZoomLevel
+	{
 		ZOOM_MIN,
 		ZOOM_25,
 		ZOOM_33,
@@ -66,7 +68,8 @@ public:
 		ZOOM_MAX
 	};
 
-	enum EItemAlign {
+	enum EItemAlign
+	{
 		ALIGN_LEFTS,
 		ALIGN_CENTERS,
 		ALIGN_RIGHTS,
@@ -76,78 +79,78 @@ public:
 	};
 
 	rvGEWorkspace( rvGEApp* app );
-	~rvGEWorkspace( );
+	~rvGEWorkspace();
 
 	// Attach the workspace to a win32 window
-	bool					Attach( HWND wnd );
+	bool					   Attach( HWND wnd );
 
 	// Detach the workspace from the current win32 window
-	void					Detach();
+	void					   Detach( void );
 
-	bool					NewFile();
-	bool					LoadFile( const char * filename, idStr* error = NULL );
-	bool					SaveFile( const char * filename );
-	const char		*		GetFilename();
+	bool					   NewFile( void );
+	bool					   LoadFile( const char* filename, idStr* error = NULL );
+	bool					   SaveFile( const char* filename );
+	const char*				   GetFilename( void );
 
-	void					Render( HDC hDC );
+	void					   Render( HDC hDC );
 
-	rvGEApp		*		GetApplication();
+	rvGEApp*				   GetApplication( void );
 
-	void					HideSelected();
-	void					UnhideSelected();
-	void					DeleteSelected();
-	bool					EditSelectedProperties();
-	bool					EditSelectedScripts();
-	void					BringSelectedForward();
-	void					BringSelectedToFront();
-	void					SendSelectedBackward();
-	void					SendSelectedToBack();
-	void					AlignSelected( EItemAlign align );
-	void					MakeSelectedSameSize( bool width, bool height );
-	void					MakeSelectedAChild();
+	void					   HideSelected( void );
+	void					   UnhideSelected( void );
+	void					   DeleteSelected( void );
+	bool					   EditSelectedProperties( void );
+	bool					   EditSelectedScripts( void );
+	void					   BringSelectedForward( void );
+	void					   BringSelectedToFront( void );
+	void					   SendSelectedBackward( void );
+	void					   SendSelectedToBack( void );
+	void					   AlignSelected( EItemAlign align );
+	void					   MakeSelectedSameSize( bool width, bool height );
+	void					   MakeSelectedAChild( void );
 
-	bool					CanHide();
-	void					ShowHidden();
-	void					HideWindow( idWindow* window );
-	void					UnhideWindow( idWindow* window );
+	bool					   CanHide( void );
+	void					   ShowHidden( void );
+	void					   HideWindow( idWindow* window );
+	void					   UnhideWindow( idWindow* window );
 
-	EZoomLevel				ZoomIn();
-	EZoomLevel				ZoomOut();
-	EZoomLevel				GetZoom();
-	float					GetZoomScale();
+	EZoomLevel				   ZoomIn( void );
+	EZoomLevel				   ZoomOut( void );
+	EZoomLevel				   GetZoom( void );
+	float					   GetZoomScale( void );
 
-	static rvGEWorkspace	*	GetWorkspace( HWND wnd );
-	rvGEModifierStack		&	GetModifierStack();
-	idUserInterfaceLocal	*	GetInterface();
-	rvGESelectionMgr		&	GetSelectionMgr();
-	idList<rvGEClipboardItem *>	GetClipboard();
-	HWND						GetWindow();
+	static rvGEWorkspace*	   GetWorkspace( HWND wnd );
+	rvGEModifierStack&		   GetModifierStack( void );
+	idUserInterfaceLocal*	   GetInterface( void );
+	rvGESelectionMgr&		   GetSelectionMgr( void );
+	idList<rvGEClipboardItem*> GetClipboard( void );
+	HWND					   GetWindow( void );
 
-	void					HandleMessage( UINT msg, WPARAM wParam, LPARAM lParam );
+	void					   HandleMessage( UINT msg, WPARAM wParam, LPARAM lParam );
 
-	idVec2			&		WindowToWorkspace( idVec2& point );
-	idVec2			&		WorkspaceToWindow( idVec2& point );
-	idRectangle		&	WindowToWorkspace( idRectangle& rect );
-	idRectangle		&	WorkspaceToWindow( idRectangle& rect );
+	idVec2&					   WindowToWorkspace( idVec2& point );
+	idVec2&					   WorkspaceToWindow( idVec2& point );
+	idRectangle&			   WindowToWorkspace( idRectangle& rect );
+	idRectangle&			   WorkspaceToWindow( idRectangle& rect );
 
-	bool					IsModified();
-	bool					IsNew();
+	bool					   IsModified( void );
+	bool					   IsNew( void );
 
-	idWindow		*		AddWindow( rvGEWindowWrapper::EWindowType type );
+	idWindow*				   AddWindow( rvGEWindowWrapper::EWindowType type );
 
-//	void					Cut						();
-	void					Duplicate( void );
-	void					Copy();
-	void					Paste();
+	//	void					Cut						( void );
+	void					   Duplicate( void );
+	void					   Copy( void );
+	void					   Paste( void );
 
-	void					AddModifierMove( const char * modName, float x, float y, bool snap );
-	void					AddModifierSize( const char * modName, float l, float t, float r, float b, bool snap );
+	void					   AddModifierMove( const char* modName, float x, float y, bool snap );
+	void					   AddModifierSize( const char* modName, float l, float t, float r, float b, bool snap );
 
-	void					SetModified( bool mod );
+	void					   SetModified( bool mod );
 
 protected:
-
-	enum EModifierType {
+	enum EModifierType
+	{
 		MOD_UNKNOWN,
 		MOD_DELETE,
 		MOD_HIDE,
@@ -159,149 +162,162 @@ protected:
 		MOD_BRING_FRONT,
 	};
 
-	bool					SetupPixelFormat();
-	void					UpdateSelections();
+	bool							  SetupPixelFormat( void );
+	void							  UpdateSelections( void );
 
 	// Additional rendering routines
-	void					RenderGrid();
+	void							  RenderGrid( void );
 
 	// File related methods
-	void					WriteTabs( idFile* file, int depth );
-	bool					WriteWindow( idFile* file, int depth, idWindow* window );
+	void							  WriteTabs( idFile* file, int depth );
+	bool							  WriteWindow( idFile* file, int depth, idWindow* window );
 
 	// Message handlers
-	int						HandleRButtonDown( WPARAM wParam, LPARAM lParam );
-	int						HandleLButtonDown( WPARAM wParam, LPARAM lParam );
-	int						HandleLButtonUp( WPARAM wParam, LPARAM lParam );
-	int						HandleLButtonDblClk( WPARAM wParam, LPARAM lParam );
-	int						HandleMButtonDown( WPARAM wParam, LPARAM lParam );
-	int						HandleMButtonUp( WPARAM wParam, LPARAM lParam );
-	int						HandleMouseMove( WPARAM wParam, LPARAM lParam );
-	int						HandleKeyDown( WPARAM wParam, LPARAM lParam );
-	int						HandleScroll( int scrollbar, WPARAM wParam, LPARAM lParam );
-	int						HandleCommand( WPARAM wParam, LPARAM lParam );
+	int								  HandleRButtonDown( WPARAM wParam, LPARAM lParam );
+	int								  HandleLButtonDown( WPARAM wParam, LPARAM lParam );
+	int								  HandleLButtonUp( WPARAM wParam, LPARAM lParam );
+	int								  HandleLButtonDblClk( WPARAM wParam, LPARAM lParam );
+	int								  HandleMButtonDown( WPARAM wParam, LPARAM lParam );
+	int								  HandleMButtonUp( WPARAM wParam, LPARAM lParam );
+	int								  HandleMouseMove( WPARAM wParam, LPARAM lParam );
+	int								  HandleKeyDown( WPARAM wParam, LPARAM lParam );
+	int								  HandleScroll( int scrollbar, WPARAM wParam, LPARAM lParam );
+	int								  HandleCommand( WPARAM wParam, LPARAM lParam );
 
 	// General protected functions
-	void					UpdateScrollbars();
-	void					UpdateRectangle( bool useScroll = true );
-	void					UpdateCursor();
-	void					UpdateCursor( float x, float y );
-	void					UpdateCursor( rvGESelectionMgr::EHitTest type );
-	void					UpdateTitle();
-	idWindow		*		NewWindow( idDict* state, rvGEWindowWrapper::EWindowType type );
-	void					Scroll( int scrollbar, int offset );
+	void							  UpdateScrollbars( void );
+	void							  UpdateRectangle( bool useScroll = true );
+	void							  UpdateCursor( void );
+	void							  UpdateCursor( float x, float y );
+	void							  UpdateCursor( rvGESelectionMgr::EHitTest type );
+	void							  UpdateTitle( void );
+	idWindow*						  NewWindow( idDict* state, rvGEWindowWrapper::EWindowType type );
+	void							  Scroll( int scrollbar, int offset );
 
 	// Modifier methods
-	void					AddModifierMoveNudge( float x, float y, bool snap );
-	void					AddModifierSizeNudge( float w, float h, bool snap );
-	void					AddModifierShowAll();
+	void							  AddModifierMoveNudge( float x, float y, bool snap );
+	void							  AddModifierSizeNudge( float w, float h, bool snap );
+	void							  AddModifierShowAll( void );
 
-	void					AddModifiers( EModifierType type, ... );
-	void					AddModifiers( idWindow* window, EModifierType type, ... );
-	rvGEModifier		*	CreateModifier( EModifierType type, idWindow* window, va_list args );
+	void							  AddModifiers( EModifierType type, ... );
+	void							  AddModifiers( idWindow* window, EModifierType type, ... );
+	rvGEModifier*					  CreateModifier( EModifierType type, idWindow* window, va_list args );
 
-	idUserInterfaceLocal	*	mInterface;
-	HWND						mWnd;
+	idUserInterfaceLocal*			  mInterface;
+	HWND							  mWnd;
 
-	int							mZoom;
-	idRectangle					mRect;
+	int								  mZoom;
+	idRectangle						  mRect;
 
-	bool						mScrollHorz;
-	bool						mScrollVert;
+	bool							  mScrollHorz;
+	bool							  mScrollVert;
 
-	int							mWindowWidth;
-	int							mWindowHeight;
+	int								  mWindowWidth;
+	int								  mWindowHeight;
 
-	idStr						mFilename;
+	idStr							  mFilename;
 
-	rvGEModifierStack			mModifiers;
-	rvGESelectionMgr			mSelections;
+	rvGEModifierStack				  mModifiers;
+	rvGESelectionMgr				  mSelections;
 
-	rvGESelectionMgr::EHitTest	mDragType;
-	idVec2						mDragPoint;
-	int							mDragTime;
-	bool						mDragX;
-	bool						mDragY;
-	bool						mDragScroll;
+	rvGESelectionMgr::EHitTest		  mDragType;
+	idVec2							  mDragPoint;
+	int								  mDragTime;
+	bool							  mDragX;
+	bool							  mDragY;
+	bool							  mDragScroll;
 
-	rvGEApp			*		mApplication;
+	rvGEApp*						  mApplication;
 
-	static idList<rvGEClipboardItem *>	mClipboard;
-	idList<idWindow *>					mSelectMenu;
-	idVec2								mSelectMenuPos;
+	static idList<rvGEClipboardItem*> mClipboard;
+	idList<idWindow*>				  mSelectMenu;
+	idVec2							  mSelectMenuPos;
 
 private:
+	void					  PasteClipboardItem( rvGEClipboardItem* item, idWindow* parent, rvGEModifierGroup* group, idWindow* before = NULL );
+	static rvGEClipboardItem* CreateClipboardItem( idWindow* window );
 
-	void						PasteClipboardItem( rvGEClipboardItem* item, idWindow* parent, rvGEModifierGroup* group, idWindow* before = NULL );
-	static rvGEClipboardItem	* CreateClipboardItem( idWindow* window );
-
-	static bool				CleanupEnumProc( rvGEWindowWrapper* wrapper, void * data );
-	static bool				ShowAllEnumProc( rvGEWindowWrapper* wrapper, void * data );
-	static bool				BuildSelectMenuEnumProc( rvGEWindowWrapper* wrapper, void * data );
+	static bool				  CleanupEnumProc( rvGEWindowWrapper* wrapper, void* data );
+	static bool				  ShowAllEnumProc( rvGEWindowWrapper* wrapper, void* data );
+	static bool				  BuildSelectMenuEnumProc( rvGEWindowWrapper* wrapper, void* data );
 
 	// States
-	bool					mModified;
-	bool					mNew;
-	bool					mDontAdd;
-	bool					mWasDuplicate;
+	bool					  mModified;
+	bool					  mNew;
+	bool					  mDontAdd;
+	bool					  mWasDuplicate;
 
 	// Resources
-	HCURSOR					mHandCursor;
+	HCURSOR					  mHandCursor;
 };
 
-ID_INLINE rvGEWorkspace::EZoomLevel rvGEWorkspace::GetZoom() {
+ID_INLINE rvGEWorkspace::EZoomLevel rvGEWorkspace::GetZoom( void )
+{
 	return ( EZoomLevel )mZoom;
 }
 
-ID_INLINE rvGEWorkspace * rvGEWorkspace::GetWorkspace( HWND wnd ) {
-	return ( rvGEWorkspace * ) GetWindowLongPtr( wnd, GWLP_USERDATA );
+ID_INLINE rvGEWorkspace* rvGEWorkspace::GetWorkspace( HWND wnd )
+{
+	return ( rvGEWorkspace* )GetWindowLongPtr( wnd, GWLP_USERDATA );
 }
 
-ID_INLINE const char * rvGEWorkspace::GetFilename() {
+ID_INLINE const char* rvGEWorkspace::GetFilename( void )
+{
 	return mFilename;
 }
 
-ID_INLINE bool rvGEWorkspace::IsModified() {
+ID_INLINE bool rvGEWorkspace::IsModified( void )
+{
 	return mModified;
 }
 
-ID_INLINE bool rvGEWorkspace::IsNew() {
+ID_INLINE bool rvGEWorkspace::IsNew( void )
+{
 	return mNew;
 }
 
-ID_INLINE rvGEModifierStack & rvGEWorkspace::GetModifierStack() {
+ID_INLINE rvGEModifierStack& rvGEWorkspace::GetModifierStack( void )
+{
 	return mModifiers;
 }
 
-ID_INLINE rvGESelectionMgr & rvGEWorkspace::GetSelectionMgr() {
+ID_INLINE rvGESelectionMgr& rvGEWorkspace::GetSelectionMgr( void )
+{
 	return mSelections;
 }
 
-ID_INLINE void rvGEWorkspace::ShowHidden() {
-	AddModifierShowAll( );
+ID_INLINE void rvGEWorkspace::ShowHidden( void )
+{
+	AddModifierShowAll();
 }
 
-ID_INLINE void rvGEWorkspace::AddModifierMoveNudge( float x, float y, bool snap ) {
+ID_INLINE void rvGEWorkspace::AddModifierMoveNudge( float x, float y, bool snap )
+{
 	AddModifierMove( "Nudge Move", x, y, snap );
 }
 
-ID_INLINE void rvGEWorkspace::AddModifierSizeNudge( float w, float h, bool snap ) {
+ID_INLINE void rvGEWorkspace::AddModifierSizeNudge( float w, float h, bool snap )
+{
 	AddModifierSize( "Nudge Size", 0, 0, w, h, snap );
 }
 
-ID_INLINE idUserInterfaceLocal * rvGEWorkspace::GetInterface() {
+ID_INLINE idUserInterfaceLocal* rvGEWorkspace::GetInterface( void )
+{
 	return mInterface;
 }
 
-ID_INLINE rvGEApp * rvGEWorkspace::GetApplication() {
+ID_INLINE rvGEApp* rvGEWorkspace::GetApplication( void )
+{
 	return mApplication;
 }
 
-ID_INLINE HWND rvGEWorkspace::GetWindow() {
+ID_INLINE HWND rvGEWorkspace::GetWindow( void )
+{
 	return mWnd;
 }
 
-ID_INLINE idList<rvGEClipboardItem *> rvGEWorkspace::GetClipboard() {
+ID_INLINE idList<rvGEClipboardItem*> rvGEWorkspace::GetClipboard( void )
+{
 	return mClipboard;
 }
 

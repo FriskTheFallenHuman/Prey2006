@@ -53,6 +53,7 @@ public:
 public:	// common physics interface
 
 	void					SetSelf( idEntity *e );
+	idEntity				*GetSelf() { return self; }
 
 	void					SetClipModel( idClipModel *model, float density, int id = 0, bool freeOld = true );
 	idClipModel *			GetClipModel( int id = 0 ) const;

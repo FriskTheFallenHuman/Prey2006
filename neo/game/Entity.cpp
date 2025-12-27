@@ -260,184 +260,6 @@ void AddRenderGui( const char *name, idUserInterface **gui, const idDict *args )
 	UpdateGuiParms( *gui, args );
 }
 
-/*
-================
-idGameEdit::ParseSpawnArgsToRenderEntity
-
-parse the static model parameters
-this is the canonical renderEntity parm parsing,
-which should be used by dmap and the editor
-================
-*/
-void idGameEdit::ParseSpawnArgsToRenderEntity( const idDict *args, renderEntity_t *renderEntity ) {
-	int			i;
-	const char	*temp;
-	idVec3		color;
-	float		angle;
-	const idDeclModelDef *modelDef;
-
-	memset( renderEntity, 0, sizeof( *renderEntity ) );
-
-	temp = args->GetString( "model" );
-
-	modelDef = NULL;
-	if ( temp[0] != '\0' ) {
-		modelDef = static_cast<const idDeclModelDef *>( declManager->FindType( DECL_MODELDEF, temp, false ) );
-		if ( modelDef ) {
-			renderEntity->hModel = modelDef->ModelHandle();
-		}
-		if ( !renderEntity->hModel ) {
-			renderEntity->hModel = renderModelManager->FindModel( temp );
-		}
-	}
-	if ( renderEntity->hModel ) {
-		renderEntity->bounds = renderEntity->hModel->Bounds( renderEntity );
-	} else {
-		renderEntity->bounds.Zero();
-	}
-
-	temp = args->GetString( "skin" );
-	if ( temp[0] != '\0' ) {
-		renderEntity->customSkin = declManager->FindSkin( temp );
-	} else if ( modelDef ) {
-		renderEntity->customSkin = modelDef->GetDefaultSkin();
-	}
-
-	temp = args->GetString( "shader" );
-	if ( temp[0] != '\0' ) {
-		renderEntity->customShader = declManager->FindMaterial( temp );
-	}
-
-	args->GetVector( "origin", "0 0 0", renderEntity->origin );
-
-	// get the rotation matrix in either full form, or single angle form
-	if ( !args->GetMatrix( "rotation", "1 0 0 0 1 0 0 0 1", renderEntity->axis ) ) {
-		//HUMANHEAD: aob - so editor 'up' and 'down' buttons work on entities
-		idAngles angles( ang_zero );
-		angle = args->GetFloat( "angle" );
-		if( angle == -1 ) {
-			angles[ 0 ] = -90.0f;
-		}
-		else if( angle == -2 ) {
-			angles[ 0 ] = 90.0f;
-		}
-		else {
-			angles[ 0 ] = args->GetFloat( "pitch" );
-			angles[ 1 ] = angle;
-			angles[ 2 ] = args->GetFloat( "roll" );
-		}
-		//HUMANHEAD END
-		renderEntity->axis = angles.ToMat3();
-	}
-
-	renderEntity->referenceSound = NULL;
-
-	// get shader parms
-	args->GetVector( "_color", "1 1 1", color );
-	renderEntity->shaderParms[ SHADERPARM_RED ]		= color[0];
-	renderEntity->shaderParms[ SHADERPARM_GREEN ]	= color[1];
-	renderEntity->shaderParms[ SHADERPARM_BLUE ]	= color[2];
-	renderEntity->shaderParms[ 3 ]					= args->GetFloat( "shaderParm3", "1" );
-	renderEntity->shaderParms[ 4 ]					= args->GetFloat( "shaderParm4", "0" );
-	renderEntity->shaderParms[ 5 ]					= args->GetFloat( "shaderParm5", "0" );
-	renderEntity->shaderParms[ 6 ]					= args->GetFloat( "shaderParm6", "0" );
-	renderEntity->shaderParms[ 7 ]					= args->GetFloat( "shaderParm7", "0" );
-	renderEntity->shaderParms[ 8 ]					= args->GetFloat( "shaderParm8", "0" );
-	renderEntity->shaderParms[ 9 ]					= args->GetFloat( "shaderParm9", "0" );
-	renderEntity->shaderParms[ 10 ]					= args->GetFloat( "shaderParm10", "0" );
-	renderEntity->shaderParms[ 11 ]					= args->GetFloat( "shaderParm11", "0" );
-
-	// HUMANHEAD pdm: added scale available at spawn time (should be visible in editor, but isn't)
-	renderEntity->shaderParms[ 12 ]					= args->GetFloat( "shaderParm12", "0" );
-	renderEntity->onlyVisibleInSpirit				= args->GetBool( "onlyVisibleInSpirit" );
-	renderEntity->onlyInvisibleInSpirit				= args->GetBool( "onlyInvisibleInSpirit" );	// tmj
-	renderEntity->lowSkippable						= args->GetBool( "lowSkippable" );	// bjk
-	if(renderEntity->onlyVisibleInSpirit && renderEntity->onlyInvisibleInSpirit) {
-		gameLocal.Warning( "Entity is both visible and invisible in spiritwalk: %s", args->GetString( "name" ));
-	}
-
-	if (args->FindKey("deformType")) {
-		int deformType = args->GetInt("deformType");
-		float parm1 = args->GetFloat("deformParm1");
-		float parm2 = args->GetFloat("deformParm2");
-		SetDeformationOnRenderEntity(renderEntity, deformType, parm1, parm2);
-	}
-
-	if (args->FindKey("scale")) {
-		renderEntity->shaderParms[SHADERPARM_ANY_DEFORM] = DEFORMTYPE_SCALE;
-		renderEntity->shaderParms[SHADERPARM_ANY_DEFORM_PARM1] = args->GetFloat("scale", "0");
-	}
-	// HUMANHEAD END
-
-	// check noDynamicInteractions flag
-	renderEntity->noDynamicInteractions = args->GetBool( "noDynamicInteractions" );
-
-	// check noshadows flag
-	renderEntity->noShadow = args->GetBool( "noshadows" );
-
-	// check noselfshadows flag
-	renderEntity->noSelfShadow = args->GetBool( "noselfshadows" );
-
-	// init any guis, including entity-specific states
-	for( i = 0; i < MAX_RENDERENTITY_GUI; i++ ) {
-		temp = args->GetString( i == 0 ? "gui" : va( "gui%d", i + 1 ) );
-		if ( temp[ 0 ] != '\0' ) {
-			AddRenderGui( temp, &renderEntity->gui[ i ], args );
-		}
-	}
-}
-
-/*
-================
-idGameEdit::ParseSpawnArgsToRefSound
-
-parse the sound parameters
-this is the canonical refSound parm parsing,
-which should be used by dmap and the editor
-================
-*/
-void idGameEdit::ParseSpawnArgsToRefSound( const idDict *args, refSound_t *refSound ) {
-	const char	*temp;
-
-	memset( refSound, 0, sizeof( *refSound ) );
-
-	refSound->parms.minDistance = args->GetFloat( "s_mindistance" );
-	refSound->parms.maxDistance = args->GetFloat( "s_maxdistance" );
-	refSound->parms.volume = args->GetFloat( "s_volume" );
-	refSound->parms.shakes = args->GetFloat( "s_shakes" );
-
-	args->GetVector( "origin", "0 0 0", refSound->origin );
-
-	refSound->referenceSound  = NULL;
-
-	// if a diversity is not specified, every sound start will make
-	// a random one.  Specifying diversity is usefull to make multiple
-	// lights all share the same buzz sound offset, for instance.
-	refSound->diversity = args->GetFloat( "s_diversity", "-1" );
-	refSound->waitfortrigger = args->GetBool( "s_waitfortrigger" );
-
-	if ( args->GetBool( "s_omni" ) ) {
-		refSound->parms.soundShaderFlags |= SSF_OMNIDIRECTIONAL;
-	}
-	if ( args->GetBool( "s_looping" ) ) {
-		refSound->parms.soundShaderFlags |= SSF_LOOPING;
-	}
-	if ( args->GetBool( "s_occlusion" ) ) {
-		refSound->parms.soundShaderFlags |= SSF_NO_OCCLUSION;
-	}
-	if ( args->GetBool( "s_global" ) ) {
-		refSound->parms.soundShaderFlags |= SSF_GLOBAL;
-	}
-	if ( args->GetBool( "s_unclamped" ) ) {
-		refSound->parms.soundShaderFlags |= SSF_UNCLAMPED;
-	}
-	refSound->parms.soundClass = args->GetInt( "s_soundClass" );
-
-	temp = args->GetString( "s_shader" );
-	if ( temp[0] != '\0' ) {
-		refSound->shader = declManager->FindSound( temp );
-	}
-}
 
 /*
 ===============
@@ -573,7 +395,7 @@ void idEntity::Spawn( void ) {
 	FixupLocalizedStrings();
 
 	// parse static models the same way the editor display does
-	gameEdit->ParseSpawnArgsToRenderEntity( &spawnArgs, &renderEntity );
+	gameEditLocal.ParseSpawnArgsToRenderEntity( &spawnArgs, &renderEntity );
 
 	renderEntity.entityNum = entityNumber;
 
@@ -584,7 +406,7 @@ void idEntity::Spawn( void ) {
 	axis = renderEntity.axis;
 
 	// do the audio parsing the same way dmap and the editor do
-	gameEdit->ParseSpawnArgsToRefSound( &spawnArgs, &refSound );
+	gameEditLocal.ParseSpawnArgsToRefSound( &spawnArgs, &refSound );
 
 	// only play SCHANNEL_PRIVATE when sndworld->PlaceListener() is called with this listenerId
 	// don't spatialize sounds from the same entity
@@ -4403,7 +4225,7 @@ void idEntity::Event_SpawnBind( void ) {
 					//FIXME: need a BindToJoint that accepts a joint position
 					parentAnimator->CreateFrame( gameLocal.time, true );
 					idJointMat *frame = parent->renderEntity.joints;
-					gameEdit->ANIM_CreateAnimFrame( parentAnimator->ModelHandle(), anim->MD5Anim( 0 ), parent->renderEntity.numJoints, frame, 0, parentAnimator->ModelDef()->GetVisualOffset(), parentAnimator->RemoveOrigin() );
+					gameEditLocal.ANIM_CreateAnimFrame( parentAnimator->ModelHandle(), anim->MD5Anim( 0 ), parent->renderEntity.numJoints, frame, 0, parentAnimator->ModelDef()->GetVisualOffset(), parentAnimator->RemoveOrigin() );
 					BindToJoint( parent, joint, bindOrientated );
 					parentAnimator->ForceUpdate();
 				} else {
@@ -5908,7 +5730,7 @@ bool idAnimatedEntity::GetJointTransformForAnim( jointHandle_t jointHandle, int 
 	}
 
 	frame = ( idJointMat * )_alloca16( numJoints * sizeof( idJointMat ) );
-	gameEdit->ANIM_CreateAnimFrame( animator.ModelHandle(), anim->MD5Anim( 0 ), renderEntity.numJoints, frame, frameTime, animator.ModelDef()->GetVisualOffset(), animator.RemoveOrigin() );
+	gameEditLocal.ANIM_CreateAnimFrame( animator.ModelHandle(), anim->MD5Anim( 0 ), renderEntity.numJoints, frame, frameTime, animator.ModelDef()->GetVisualOffset(), animator.RemoveOrigin() );
 
 	offset = frame[ jointHandle ].ToVec3();
 	axis = frame[ jointHandle ].ToMat3();

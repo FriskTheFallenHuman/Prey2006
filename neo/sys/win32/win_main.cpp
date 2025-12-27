@@ -47,7 +47,15 @@ If you have questions concerning this license or the applicable additional terms
 #include "win_local.h"
 #include "../../renderer/tr_local.h"
 
-#include <SDL_main.h>
+#undef strcmp // get rid of "#define strcmp idStr::Cmp", it conflicts with SDL headers
+
+#ifdef D3_SDL3
+  #define SDL_MAIN_HANDLED // the engine implements WinMain() itself
+  #include <SDL3/SDL_main.h>
+#else // SDL2
+  #include <SDL_main.h>
+#endif
+
 
 idCVar Win32Vars_t::win_outputDebugString( "win_outputDebugString", "0", CVAR_SYSTEM | CVAR_BOOL, "" );
 idCVar Win32Vars_t::win_outputEditString( "win_outputEditString", "1", CVAR_SYSTEM | CVAR_BOOL, "" );
@@ -416,7 +424,11 @@ extern "C" { // DG: I need this in SDL_win32_main.c
 		if (len == 0)
 			return 0;
 
+#if defined( ID_DEMO_BUILD )
+		idStr::Append(dst, size, "/My Games/prey06-demo");
+#else
 		idStr::Append(dst, size, "/My Games/prey06");
+#endif
 
 		return len;
 	}
@@ -455,63 +467,41 @@ bool Sys_GetPath(sysPath_t type, idStr &path) {
 	idStr s;
 
 	switch(type) {
-	case PATH_BASE:
-		// try <path to exe>/base first
-		if (Sys_GetPath(PATH_EXE, path)) {
-			path.StripFilename();
+		case PATH_BASE: {
+			// try next to the executable..
+			if (Sys_GetPath(PATH_EXE, path)) {
+				path.StripFilename();
 
-			s = path;
-			s.AppendPath(BASE_GAMEDIR);
-			if (_stat(s.c_str(), &st) != -1 && (st.st_mode & _S_IFDIR)) {
-				common->Warning("using path of executable: %s", path.c_str());
-				return true;
-			} else {
-				s = path + "/demo/demo00.pk4";
-				if (_stat(s.c_str(), &st) != -1 && (st.st_mode & _S_IFREG)) {
-					common->Warning("using path of executable (seems to contain demo game data): %s ", path.c_str());
+				s = path;
+				s.AppendPath(BASE_GAMEDIR);
+				if (_stat(s.c_str(), &st) != -1 && (st.st_mode & _S_IFDIR)) {
+#ifdef _DEBUG
+					common->Warning( "using path of executable: %s", path.c_str() );
+#endif // _DEBUG
 					return true;
+				} else {
+					path.Clear();
 				}
 			}
 
-			common->Warning("base path '%s' does not exist", s.c_str());
+			return false;
 		}
+		case PATH_CONFIG:
+		case PATH_SAVE: {
+			if (Win_GetHomeDir(buf, sizeof(buf)) < 1) {
+				Sys_Error("ERROR: Couldn't get dir to home path");
+				return false;
+			}
 
-		// Note: apparently there is no registry entry for the Doom 3 Demo
-
-		// fallback to vanilla doom3 cd install
-		if (GetRegistryPath(buf, sizeof(buf), L"SOFTWARE\\id\\Doom 3", L"InstallPath") > 0) {
 			path = buf;
 			return true;
 		}
-
-		// fallback to steam doom3 install
-		if (GetRegistryPath(buf, sizeof(buf), L"SOFTWARE\\Valve\\Steam", L"InstallPath") > 0) {
+		case PATH_EXE: {
+			GetModuleFileName(NULL, buf, sizeof(buf) - 1);
 			path = buf;
-			path.AppendPath("steamapps\\common\\doom 3");
-
-			if (_stat(path.c_str(), &st) != -1 && st.st_mode & _S_IFDIR)
-				return true;
+			path.BackSlashesToSlashes();
+			return true;
 		}
-
-		common->Warning("vanilla doom3 path not found either");
-
-		return false;
-
-	case PATH_CONFIG:
-	case PATH_SAVE:
-		if (Win_GetHomeDir(buf, sizeof(buf)) < 1) {
-			Sys_Error("ERROR: Couldn't get dir to home path");
-			return false;
-		}
-
-		path = buf;
-		return true;
-
-	case PATH_EXE:
-		GetModuleFileName(NULL, buf, sizeof(buf) - 1);
-		path = buf;
-		path.BackSlashesToSlashes();
-		return true;
 	}
 
 	return false;
@@ -656,6 +646,24 @@ uintptr_t Sys_DLL_Load( const char *dllName ) {
 		}
 	} else {
 		DWORD e = GetLastError();
+
+		if ( e ==  0x7E ) {
+			// 0x7E is "The specified module could not be found."
+			// don't print a warning for that error, it's expected
+			// when trying different possible paths for a DLL
+			return 0;
+		}
+
+		if ( e == 0xC1) {
+			// "[193 (0xC1)] is not a valid Win32 application"
+			// probably going to be common. Lets try to be less cryptic.
+			common->Warning( "LoadLibrary( \"%s\" ) Failed ! [%i (0x%X)]\tprobably the DLL is of the wrong architecture, "
+							 "like x64 instead of x86 (this build of the engine expects %s)",
+							 dllName, e, e, D3_ARCH );
+			return 0;
+		}
+
+		// for all other errors, print whatever FormatMessage() gives us
 		LPVOID msgBuf = NULL;
 
 		FormatMessage(
@@ -668,17 +676,7 @@ uintptr_t Sys_DLL_Load( const char *dllName ) {
 			(LPTSTR)&msgBuf,
 			0, NULL);
 
-		idStr errorStr = va( "[%i (0x%X)]\t%s", e, e, msgBuf );
-
-		// common, skipped.
-		if ( e == 0x7E ) // [126 (0x7E)] The specified module could not be found.
-			errorStr = "";
-		// probably going to be common. Lets try to be less cryptic.
-		else if ( e == 0xC1 ) // [193 (0xC1)] is not a valid Win32 application.
-			errorStr = va( "[%i (0x%X)]\t%s", e, e, "probably the DLL is of the wrong architecture, like x64 instead of x86" );
-
-		if ( errorStr.Length() )
-			common->Warning( "LoadLibrary(%s) Failed ! %s", dllName, errorStr.c_str() );
+		common->Warning( "LoadLibrary( \"%s\" ) Failed ! [%i (0x%X)]\t%s", dllName, e, e, msgBuf );
 
 		::LocalFree( msgBuf );
 	}
@@ -731,7 +729,7 @@ void Sys_DLL_Unload( uintptr_t dllHandle ) {
 		LPVOID lpMsgBuf;
 		FormatMessage(
 			FORMAT_MESSAGE_ALLOCATE_BUFFER,
-		    NULL,
+			NULL,
 			lastError,
 			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
 			(LPTSTR) &lpMsgBuf,
@@ -948,7 +946,7 @@ static void setHighDPIMode(void)
 	}
 	if (shcoreDLL) {
 		D3_GetDpiForMonitor = (HRESULT (STDAPICALLTYPE *)(HMONITOR, D3_MONITOR_DPI_TYPE, UINT *, UINT *))
-		                          GetProcAddress(shcoreDLL, "GetDpiForMonitor");
+								  GetProcAddress(shcoreDLL, "GetDpiForMonitor");
 	}
 #endif // ID_ALLOW_TOOLS
 }
@@ -1016,14 +1014,178 @@ int Win_ChoosePixelFormat(HDC hdc)
 }
 #endif
 
+// stdout/stderr redirection, originally from SDL_win32_main.c
+
+/* The standard output files */
+#define STDOUT_FILE	TEXT("qconsolelog.txt") /* DG: renamed this */
+#define STDERR_FILE	TEXT("stderr.txt")
+
+/* Set a variable to tell if the stdio redirect has been enabled. */
+static int stdioRedirectEnabled = 0;
+static char stdoutPath[MAX_PATH];
+static char stderrPath[MAX_PATH];
+#define DIR_SEPERATOR TEXT("/")
+
+
+/* Remove the output files if there was no output written */
+static void cleanup_output(void) {
+	FILE *file;
+	int empty;
+
+	/* Flush the output in case anything is queued */
+	fclose(stdout);
+	fclose(stderr);
+
+	/* Without redirection we're done */
+	if (!stdioRedirectEnabled) {
+		return;
+	}
+
+	/* See if the files have any output in them */
+	if ( stdoutPath[0] ) {
+		file = fopen(stdoutPath, TEXT("rb"));
+		if ( file ) {
+			empty = (fgetc(file) == EOF) ? 1 : 0;
+			fclose(file);
+			if ( empty ) {
+				remove(stdoutPath);
+			}
+		}
+	}
+	if ( stderrPath[0] ) {
+		file = fopen(stderrPath, TEXT("rb"));
+		if ( file ) {
+			empty = (fgetc(file) == EOF) ? 1 : 0;
+			fclose(file);
+			if ( empty ) {
+				remove(stderrPath);
+			}
+		}
+	}
+}
+
+/* Redirect the output (stdout and stderr) to a file */
+static void redirect_output(void)
+{
+	char path[MAX_PATH];
+	struct _stat st;
+
+	/* DG: use "My Documents/My Games/prey06" to write stdout.txt and stderr.txt
+	*     instead of the binary, which might not be writable */
+	Win_GetHomeDir(path, sizeof(path));
+
+	if (_stat(path, &st) == -1) {
+		/* oops, "My Documents/My Games/prey06" doesn't exist - does My Games/ at least exist? */
+		char myGamesPath[MAX_PATH];
+		char* lastslash;
+		memcpy(myGamesPath, path, MAX_PATH);
+		lastslash = strrchr(myGamesPath, '/');
+		if (lastslash != NULL) {
+			*lastslash = '\0';
+		}
+		if (_stat(myGamesPath, &st) == -1) {
+			/* if My Documents/My Games/ doesn't exist, create it */
+			if( _mkdir(myGamesPath) != 0 && errno != EEXIST ) {
+				char msg[2048];
+				D3_snprintfC99( msg, sizeof(msg), "Failed to create '%s',\n error number is %d (%s).\nPermission problem?",
+								myGamesPath, errno, strerror(errno) );
+				MessageBoxA( NULL, msg, "Can't create 'My Games' directory!", MB_OK | MB_ICONERROR );
+				exit(1);
+			}
+		}
+		/* create My Documents/My Games/prey06/ */
+		if( _mkdir(path) != 0 && errno != EEXIST ) {
+			char msg[2048];
+			D3_snprintfC99( msg, sizeof(msg), "Failed to create '%s'\n(for savegames, configs and logs),\n error number is %d (%s)\nIs Documents/My Games/ write protected?",
+							path, errno, strerror(errno) );
+			MessageBoxA( NULL, msg, "Can't create 'My Games/prey06' directory!", MB_OK | MB_ICONERROR );
+			exit(1);
+		}
+	}
+
+	FILE *newfp;
+
+#if 0 /* DG: don't do this anymore. */
+	DWORD pathlen;
+	pathlen = GetModuleFileName(NULL, path, SDL_arraysize(path));
+	while ( pathlen > 0 && path[pathlen] != '\\' ) {
+		--pathlen;
+	}
+	path[pathlen] = '\0';
+#endif
+
+	SDL_strlcpy( stdoutPath, path, SDL_arraysize(stdoutPath) );
+	SDL_strlcat( stdoutPath, DIR_SEPERATOR STDOUT_FILE, SDL_arraysize(stdoutPath) );
+
+	{ /* DG: rename old stdout log */
+		char stdoutPathBK[MAX_PATH];
+		SDL_strlcpy( stdoutPathBK, path, SDL_arraysize(stdoutPath) );
+		SDL_strlcat( stdoutPathBK, DIR_SEPERATOR TEXT("qconsolelog-old.txt"), SDL_arraysize(stdoutPath) );
+		rename( stdoutPath, stdoutPathBK );
+	} /* DG end */
+
+	  /* Redirect standard input and standard output */
+	newfp = freopen(stdoutPath, TEXT("w"), stdout);
+
+	if ( newfp == NULL ) {	/* This happens on NT */
+#if !defined(stdout)
+		stdout = fopen(stdoutPath, TEXT("w"));
+#else
+		newfp = fopen(stdoutPath, TEXT("w"));
+		if ( newfp ) {
+			*stdout = *newfp;
+		} else {
+			char msg[2048];
+			D3_snprintfC99( msg, sizeof(msg), "Failed to create '%s',\n error number is %d (%s)\nIs Documents/My Games/prey06/\n or qconsolelog.txt write protected?",
+							stdoutPath, errno, strerror(errno) );
+			MessageBoxA( NULL, msg, "Can't create qconsolelog.txt!", MB_OK | MB_ICONERROR );
+			exit(1);
+		}
+#endif
+	}
+
+	SDL_strlcpy( stderrPath, path, SDL_arraysize(stderrPath) );
+	SDL_strlcat( stderrPath, DIR_SEPERATOR STDERR_FILE, SDL_arraysize(stderrPath) );
+
+	newfp = freopen(stderrPath, TEXT("w"), stderr);
+	if ( newfp == NULL ) {	/* This happens on NT */
+#if !defined(stderr)
+		stderr = fopen(stderrPath, TEXT("w"));
+#else
+		newfp = fopen(stderrPath, TEXT("w"));
+		if ( newfp ) {
+			*stderr = *newfp;
+		} else {
+			char msg[2048];
+			D3_snprintfC99( msg, sizeof(msg), "Failed to create '%s',\n error number is %d (%s)\nIs Documents/My Games/prey06/ write protected?",
+							stderrPath, errno, strerror(errno) );
+			MessageBoxA( NULL, msg, "Can't create stderr.txt!", MB_OK | MB_ICONERROR );
+			exit(1);
+		}
+#endif
+	}
+
+	setvbuf(stdout, NULL, _IOLBF, BUFSIZ);	/* Line buffered */
+	setbuf(stderr, NULL);			/* No buffering */
+	stdioRedirectEnabled = 1;
+}
+
+// end of stdout/stderr redirection code from old SDL
+
 /*
 ==================
-WinMain
+The pseudo-main function called from real main (either in SDL_win32_main.c or WinMain() below)
+NOTE: Currently argv[] are ANSI strings, not UTF-8 strings as usual in SDL2 and SDL3!
 ==================
 */
-int main(int argc, char *argv[]) {
-	// SDL_win32_main.c creates the qconsolelog.txt and redirects stdout into it
-	// so here we can log its (approx.) creation time before anything else is logged:
+int SDL_main(int argc, char *argv[]) {
+	// as the very first thing, redirect stdout to qconsolelog.txt (and stderr to stderr.txt)
+	// so we can log
+	redirect_output();
+	atexit(cleanup_output);
+
+	// now that stdout is redirected to qconsolelog.txt,
+	// log its (approx.) creation time before anything else is logged:
 	{
 		time_t tt = time(NULL);
 		const struct tm* tms = localtime(&tt);
@@ -1031,8 +1193,6 @@ int main(int argc, char *argv[]) {
 		strftime(timeStr, sizeof(timeStr), "%F %H:%M:%S", tms);
 		printf("Opened this log at %s\n", timeStr);
 	}
-
-	const HCURSOR hcurSave = ::SetCursor( LoadCursor( 0, IDC_WAIT ) );
 
 	InitializeCriticalSection( &printfCritSect );
 
@@ -1053,7 +1213,7 @@ int main(int argc, char *argv[]) {
 	// no abort/retry/fail errors
 	SetErrorMode( SEM_FAILCRITICALERRORS );
 
-#ifdef DEBUG
+#ifdef _DEBUG
 	// disable the painfully slow MS heap check every 1024 allocs
 	_CrtSetDbgFlag( 0 );
 #endif
@@ -1079,8 +1239,6 @@ int main(int argc, char *argv[]) {
 	// give the main thread an affinity for the first cpu
 	SetThreadAffinityMask( GetCurrentThread(), 1 );
 #endif
-
-	// ::SetCursor( hcurSave ); // DG: I think SDL handles the cursor fine..
 
 	// Launch the script debugger
 	if ( strstr( GetCommandLine(), "+debugger" ) ) {
@@ -1118,35 +1276,21 @@ int main(int argc, char *argv[]) {
 				// Level Editor
 				RadiantRun();
 			}
-			else if (com_editors & EDITOR_MATERIAL ) {
-				//BSM Nerve: Add support for the material editor
-				MaterialEditorRun();
-			}
 			else {
+#ifdef IMGUI_DISABLE // DG: unless ImGui is disabled, the ImGui-based versions are used instead
+				if ( com_editors & EDITOR_MATERIAL ) {
+					//BSM Nerve: Add support for the material editor
+					MaterialEditorRun();
+				}
 				if ( com_editors & EDITOR_LIGHT ) {
 					// in-game Light Editor
 					LightEditorRun();
-				}
-				if ( com_editors & EDITOR_SOUND ) {
-					// in-game Sound Editor
-					SoundEditorRun();
-				}
-				if ( com_editors & EDITOR_DECL ) {
-					// in-game Declaration Browser
-					DeclBrowserRun();
 				}
 				if ( com_editors & EDITOR_AF ) {
 					// in-game Articulated Figure Editor
 					AFEditorRun();
 				}
-				if ( com_editors & EDITOR_PARTICLE ) {
-					// in-game Particle Editor
-					ParticleEditorRun();
-				}
-				if ( com_editors & EDITOR_SCRIPT ) {
-					// in-game Script Editor
-					ScriptEditorRun();
-				}
+#endif
 			}
 		}
 #endif
@@ -1203,15 +1347,92 @@ void idSysLocal::StartProcess( const char *exePath, bool doexit ) {
 	ZeroMemory( &si, sizeof(si) );
 	si.cb = sizeof(si);
 
-	strncpy( szPathOrig, exePath, _MAX_PATH );
+	idStr::Copynz( szPathOrig, exePath, _MAX_PATH );
 	szPathOrig[_MAX_PATH-1] = 0;
 
 	if( !CreateProcess( NULL, szPathOrig, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi ) ) {
 		common->Error( "Could not start process: '%s' ", szPathOrig );
-	    return;
+		return;
 	}
 
 	if ( doexit ) {
 		cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "quit\n" );
 	}
 }
+
+// the actual WinMain(), based on SDL2_main and SDL3's SDL_main_impl.h + SDL_RunApp()
+// but modified to pass ANSI strings to SDL_main() instead of UTF-8,
+// because the engine doesn't use Unicode internally (except for Dear ImGui,
+// which doesn't use commandline arguments)
+// for SDL1.2, SDL_win32_main.c is still used instead
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+
+/* Pop up an out of memory message, returns to Windows */
+static BOOL OutOfMemory(void)
+{
+	SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Fatal Error", "Out of memory - aborting", NULL);
+	return -1;
+}
+
+int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, LPSTR szCmdLine, int sw)
+{
+	(void)hInst;
+	(void)hPrev;
+	(void)szCmdLine;
+	(void)sw;
+
+	LPWSTR *argvw;
+	char **argv;
+	int i, argc, result;
+
+	argvw = CommandLineToArgvW(GetCommandLineW(), &argc);
+	if (!argvw) {
+		return OutOfMemory();
+	}
+
+	/* Note that we need to be careful about how we allocate/free memory here.
+	* If the application calls SDL_SetMemoryFunctions(), we can't rely on
+	* SDL_free() to use the same allocator after SDL_main() returns.
+	*/
+
+	/* Parse it into argv and argc */
+	argv = (char **)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, (argc + 1) * sizeof(*argv));
+	if (!argv) {
+		return OutOfMemory();
+	}
+	for (i = 0; i < argc; ++i) {
+		// NOTE: SDL2+ uses CP_UTF8 instead of CP_ACP here (and in the other call below)
+		//       but Doom3 needs ANSI strings on Windows (so paths work with the Windows ANSI APIs)
+		const int ansiSize = WideCharToMultiByte(CP_ACP, 0, argvw[i], -1, NULL, 0, NULL, NULL);
+		if (!ansiSize) {  // uhoh?
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Fatal Error", "Error processing command line arguments", NULL);
+			return -1;
+		}
+
+		argv[i] = (char *)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, ansiSize);  // this size includes the null-terminator character.
+		if (!argv[i]) {
+			return OutOfMemory();
+		}
+
+		if (WideCharToMultiByte(CP_ACP, 0, argvw[i], -1, argv[i], ansiSize, NULL, NULL) == 0) {  // failed? uhoh!
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Fatal Error", "Error processing command line arguments", NULL);
+			return -1;
+		}
+	}
+	argv[i] = NULL;
+	LocalFree(argvw);
+
+	SDL_SetMainReady();
+
+	// Run the application main() code
+	result = SDL_main(argc, argv);
+
+	// Free argv, to avoid memory leak
+	for (i = 0; i < argc; ++i) {
+		HeapFree(GetProcessHeap(), 0, argv[i]);
+	}
+	HeapFree(GetProcessHeap(), 0, argv);
+
+	return result;
+}
+#endif

@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -32,25 +33,29 @@ extern void showCameraInspector();
 
 // CDlgCamera dialog
 
-class CDlgCamera : public CDialogEx {
+class CDlgCamera : public CDialogEx
+{
 public:
-	CDlgCamera( CWnd* pParent = NULL );   // standard constructor
+	CDlgCamera( CWnd* pParent = NULL ); // standard constructor
 	void setupFromCamera();
 
-	enum { IDD = IDD_DLG_CAMERA };
-	CScrollBar	m_wndSegments;
-	CListBox	m_wndEvents;
-	CComboBox	m_wndSplines;
-	CString	m_strName;
-	float	m_fSeconds;
-	BOOL	m_trackCamera;
-	int		m_numSegments;
-	int		m_currentSegment;
-	CString	m_strType;
-	int		m_editPoints;
+	enum
+	{
+		IDD = IDD_DLG_CAMERA
+	};
+	CScrollBar m_wndSegments;
+	CListBox   m_wndEvents;
+	CComboBox  m_wndSplines;
+	CString	   m_strName;
+	float	   m_fSeconds;
+	BOOL	   m_trackCamera;
+	int		   m_numSegments;
+	int		   m_currentSegment;
+	CString	   m_strType;
+	int		   m_editPoints;
 
 protected:
-	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX ); // DDX/DDV support
 
 protected:
 	afx_msg void OnBtnAddevent();

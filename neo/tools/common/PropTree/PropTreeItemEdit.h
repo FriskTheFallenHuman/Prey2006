@@ -1,9 +1,9 @@
-#if !defined(AFX_PROPTREEITEMEDIT_H__642536B1_1162_4F99_B09D_9B1BD2CF88B6__INCLUDED_)
-#define AFX_PROPTREEITEMEDIT_H__642536B1_1162_4F99_B09D_9B1BD2CF88B6__INCLUDED_
+#if !defined( AFX_PROPTREEITEMEDIT_H__642536B1_1162_4F99_B09D_9B1BD2CF88B6__INCLUDED_ )
+	#define AFX_PROPTREEITEMEDIT_H__642536B1_1162_4F99_B09D_9B1BD2CF88B6__INCLUDED_
 
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+	#if _MSC_VER > 1000
+		#pragma once
+	#endif // _MSC_VER > 1000
 // PropTreeItemEdit.h : header file
 //
 //  Copyright (C) 1998-2001 Scott Ramsay
@@ -22,42 +22,43 @@
 //	If you use this code, drop me an email.  I'd like to know if you find the code
 //	useful.
 
-#include "PropTreeItem.h"
+	#include "PropTreeItem.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeItemEdit window
 
-class PROPTREE_API CPropTreeItemEdit : public CEdit, public CPropTreeItem {
-// Construction
+class PROPTREE_API CPropTreeItemEdit : public CEdit, public CPropTreeItem
+{
+	// Construction
 public:
 	CPropTreeItemEdit();
 	virtual ~CPropTreeItemEdit();
 
-// Attributes
+	// Attributes
 public:
 	// The attribute area needs drawing
-	virtual void DrawAttribute( CDC* pDC, const RECT& rc );
+	virtual void   DrawAttribute( CDC* pDC, const RECT& rc );
 
 	// Retrieve the item's attribute value
 	virtual LPARAM GetItemValue();
 
 	// Set the item's attribute value
-	virtual void SetItemValue( LPARAM lParam );
+	virtual void   SetItemValue( LPARAM lParam );
 
 	// Called when attribute area has changed size
-	virtual void OnMove();
+	virtual void   OnMove();
 
 	// Called when the item needs to refresh its data
-	virtual void OnRefresh();
+	virtual void   OnRefresh();
 
 	// Called when the item needs to commit its changes
-	virtual void OnCommit();
+	virtual void   OnCommit();
 
 	// Called to activate the item
-	virtual void OnActivate( int activateType, CPoint point );
+	virtual void   OnActivate( int activateType, CPoint point );
 
-
-	enum ValueFormat {
+	enum ValueFormat
+	{
 		ValueFormatText,
 		ValueFormatNumber,
 		ValueFormatFloatPointer
@@ -76,17 +77,15 @@ protected:
 	ValueFormat m_nFormat;
 	BOOL		m_bPassword;
 
-// Operations
+	// Operations
 public:
-
-// Overrides
+	// Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CPropTreeItemEdit)
 	//}}AFX_VIRTUAL
 
-// Implementation
+	// Implementation
 public:
-
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CPropTreeItemEdit)

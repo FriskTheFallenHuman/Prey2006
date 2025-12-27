@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -28,17 +29,18 @@ If you have questions concerning this license or the applicable additional terms
 
 // window system independent camera view code
 
-typedef struct {
-	int		width, height;
+typedef struct
+{
+	int	   width, height;
 
-	idVec3	origin;			// at center of window
-	float	scale;
+	idVec3 origin; // at center of window
+	float  scale;
 } z_t;
 
 extern z_t z;
 
-void Z_Init();
-void Z_MouseDown( int x, int y, int buttons );
-void Z_MouseUp( int x, int y, int buttons );
-void Z_MouseMoved( int x, int y, int buttons );
-void Z_Draw();
+void	   Z_Init( void );
+void	   Z_MouseDown( int x, int y, int buttons );
+void	   Z_MouseUp( int x, int y, int buttons );
+void	   Z_MouseMoved( int x, int y, int buttons );
+void	   Z_Draw( void );

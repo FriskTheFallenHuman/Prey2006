@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -34,19 +35,21 @@ If you have questions concerning this license or the applicable additional terms
 #include "RotateDlg.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
 // CRotateDlg dialog
 
-CRotateDlg::CRotateDlg( CWnd* pParent )
-	: CDialogEx( CRotateDlg::IDD, pParent ) {
+CRotateDlg::CRotateDlg( CWnd* pParent ) :
+	CDialogEx( CRotateDlg::IDD, pParent )
+{
 	m_strX = _T( "" );
 	m_strY = _T( "" );
 	m_strZ = _T( "" );
 }
 
-void CRotateDlg::DoDataExchange( CDataExchange* pDX ) {
+void CRotateDlg::DoDataExchange( CDataExchange* pDX )
+{
 	CDialogEx::DoDataExchange( pDX );
 	DDX_Control( pDX, IDC_SPIN3, m_wndSpin3 );
 	DDX_Control( pDX, IDC_SPIN2, m_wndSpin2 );
@@ -56,38 +59,43 @@ void CRotateDlg::DoDataExchange( CDataExchange* pDX ) {
 	DDX_Text( pDX, IDC_ROTZ, m_strZ );
 }
 
-
 BEGIN_MESSAGE_MAP( CRotateDlg, CDialogEx )
-	ON_BN_CLICKED( IDC_APPLY, OnApply )
-	ON_NOTIFY( UDN_DELTAPOS, IDC_SPIN1, OnDeltaposSpin1 )
-	ON_NOTIFY( UDN_DELTAPOS, IDC_SPIN2, OnDeltaposSpin2 )
-	ON_NOTIFY( UDN_DELTAPOS, IDC_SPIN3, OnDeltaposSpin3 )
+ON_BN_CLICKED( IDC_APPLY, OnApply )
+ON_NOTIFY( UDN_DELTAPOS, IDC_SPIN1, OnDeltaposSpin1 )
+ON_NOTIFY( UDN_DELTAPOS, IDC_SPIN2, OnDeltaposSpin2 )
+ON_NOTIFY( UDN_DELTAPOS, IDC_SPIN3, OnDeltaposSpin3 )
 END_MESSAGE_MAP()
 
 // CRotateDlg message handlers
 
-void CRotateDlg::OnOK() {
+void CRotateDlg::OnOK()
+{
 	OnApply();
 	CDialogEx::OnOK();
 }
 
-void CRotateDlg::OnApply() {
+void CRotateDlg::OnApply()
+{
 	UpdateData( TRUE );
 	float f = atof( m_strX );
-	if ( f != 0.0 ) {
+	if( f != 0.0 )
+	{
 		Select_RotateAxis( 0, f );
 		f = atof( m_strY );
 	}
-	if ( f != 0.0 ) {
+	if( f != 0.0 )
+	{
 		Select_RotateAxis( 1, f );
 		f = atof( m_strZ );
 	}
-	if ( f != 0.0 ) {
+	if( f != 0.0 )
+	{
 		Select_RotateAxis( 2, f );
 	}
 }
 
-BOOL CRotateDlg::OnInitDialog() {
+BOOL CRotateDlg::OnInitDialog()
+{
 	CDialogEx::OnInitDialog();
 
 	m_wndSpin1.SetRange( 0, 359 );
@@ -96,23 +104,27 @@ BOOL CRotateDlg::OnInitDialog() {
 	return TRUE;
 }
 
-void CRotateDlg::OnDeltaposSpin1( NMHDR* pNMHDR, LRESULT* pResult ) {
-	NM_UPDOWN* pNMUpDown = ( NM_UPDOWN * )pNMHDR;
+void CRotateDlg::OnDeltaposSpin1( NMHDR* pNMHDR, LRESULT* pResult )
+{
+	NM_UPDOWN* pNMUpDown = ( NM_UPDOWN* )pNMHDR;
 	Select_RotateAxis( 0, pNMUpDown->iDelta );
 	*pResult = 0;
 }
 
-void CRotateDlg::OnDeltaposSpin2( NMHDR* pNMHDR, LRESULT* pResult ) {
-	NM_UPDOWN* pNMUpDown = ( NM_UPDOWN * )pNMHDR;
+void CRotateDlg::OnDeltaposSpin2( NMHDR* pNMHDR, LRESULT* pResult )
+{
+	NM_UPDOWN* pNMUpDown = ( NM_UPDOWN* )pNMHDR;
 	Select_RotateAxis( 1, pNMUpDown->iDelta );
 	*pResult = 0;
 }
 
-void CRotateDlg::OnDeltaposSpin3( NMHDR* pNMHDR, LRESULT* pResult ) {
-	NM_UPDOWN* pNMUpDown = ( NM_UPDOWN * )pNMHDR;
+void CRotateDlg::OnDeltaposSpin3( NMHDR* pNMHDR, LRESULT* pResult )
+{
+	NM_UPDOWN* pNMUpDown = ( NM_UPDOWN* )pNMHDR;
 	Select_RotateAxis( 2, pNMUpDown->iDelta );
 	*pResult = 0;
 }
 
-void CRotateDlg::ApplyNoPaint() {
+void CRotateDlg::ApplyNoPaint()
+{
 }

@@ -607,7 +607,7 @@ bool idAF::LoadBody( const idDeclAF_Body *fb, const idJointMat *joints ) {
 		if ( jointBody[ jointList[ i ] ] != -1 ) {
 			// HUMANHEAD nla - Added the body that is trying to get the joint
 			gameLocal.Warning( "%s: joint '%s' is already contained by body '%s' but adding to body '%s' instead",
-						name.c_str(), animator->GetJointName( (jointHandle_t)jointList[i] ),
+						name.c_str(), animator->GetJointName( jointList[i] ),
 							physicsObj.GetBody( jointBody[ jointList[ i ] ] )->GetName().c_str(),
 							physicsObj.GetBody( id )->GetName().c_str() );
 			// HUMANHEAD END
@@ -780,9 +780,7 @@ GetJointTransform
 ================
 */
 static bool GetJointTransform( void *model, const idJointMat *frame, const char *jointName, idVec3 &origin, idMat3 &axis ) {
-	jointHandle_t	joint;
-
-	joint = reinterpret_cast<idAnimator *>(model)->GetJointHandle( jointName );
+	jointHandle_t joint = reinterpret_cast<idAnimator *>(model)->GetJointHandle( jointName );
 	if ( ( joint >= 0 ) && ( joint < reinterpret_cast<idAnimator *>(model)->NumJoints() ) ) {
 		origin = frame[ joint ].ToVec3();
 		axis = frame[ joint ].ToMat3();
@@ -855,7 +853,7 @@ bool idAF::Load( idEntity *ent, const char *fileName ) {
 	// create the animation frame used to setup the articulated figure
 	numJoints = animator->NumJoints();
 	joints = ( idJointMat * )_alloca16( numJoints * sizeof( joints[0] ) );
-	gameEdit->ANIM_CreateAnimFrame( model, animator->GetAnim( modifiedAnim )->MD5Anim( 0 ), numJoints, joints, 1, animator->ModelDef()->GetVisualOffset(), animator->RemoveOrigin() );
+	gameEditLocal.ANIM_CreateAnimFrame( model, animator->GetAnim( modifiedAnim )->MD5Anim( 0 ), numJoints, joints, 1, animator->ModelDef()->GetVisualOffset(), animator->RemoveOrigin() );
 
 	// set all vector positions from model joints
 	file->Finish( GetJointTransform, joints, animator );
@@ -928,7 +926,7 @@ bool idAF::Load( idEntity *ent, const char *fileName ) {
 	for( i = 0; i < animator->NumJoints(); i++ ) {
 		if ( jointBody[i] == -1 ) {
 			gameLocal.Warning( "idAF::Load: articulated figure '%s' for entity '%s' at (%s) joint '%s' is not contained by a body",
-				name.c_str(), self->name.c_str(), self->GetPhysics()->GetOrigin().ToString(0), animator->GetJointName( (jointHandle_t)i ) );
+				name.c_str(), self->name.c_str(), self->GetPhysics()->GetOrigin().ToString(0), animator->GetJointName( i ) );
 		}
 	}
 

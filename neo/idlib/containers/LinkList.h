@@ -74,6 +74,18 @@ private:
 	type *				owner;
 };
 
+#ifdef _MSC_VER
+//stgatilov: these types must not be used
+//they are created only for better natvis support of some types
+template<class T> struct __idList_backward_helper : public idLinkList<T> {
+  ID_INLINE int Num() const { return idLinkList<T>::Num(); }
+};
+
+template<class T> struct __idList_forward_helper : public idLinkList<T> {
+  ID_INLINE int Num() const { return idLinkList<T>::Num(); }
+};
+#endif // _MSC_VER
+
 /*
 ================
 idLinkList<type>::idLinkList
@@ -87,6 +99,13 @@ idLinkList<type>::idLinkList() {
 	head	= this;
 	next	= this;
 	prev	= this;
+
+#ifdef _MSC_VER
+	//stgatilov: ensure that all helper templates are instantiated
+	//note: these calls must be easily inlined and eliminated in optimized build
+	((__idList_backward_helper<type>*)this)->Num();
+	((__idList_forward_helper<type>*)this)->Num();
+#endif // _MSC_VER
 }
 
 /*

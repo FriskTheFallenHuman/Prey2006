@@ -1511,6 +1511,39 @@ const char *idLexer::ParseRestOfLine( idStr &out ) {
 	return out.c_str();
 }
 
+
+/*
+========================
+idLexer::ParseCompleteLine
+
+Returns a string up to the \n, but doesn't eat any whitespace at the beginning of the next line.
+========================
+*/
+const char *idLexer::ParseCompleteLine( idStr &out ) {
+	idToken		token;
+	const char *start;
+
+	start = script_p;
+
+	while ( 1 ) {
+		// end of buffer
+		if ( *script_p == 0 ) {
+			break;
+		}
+		if ( *script_p == '\n' ) {
+			line++;
+			script_p++;
+			break;
+		}
+		script_p++;
+	}
+
+	out.Empty();
+	out.Append( start, script_p - start );
+
+	return out.c_str();
+}
+
 /*
 ================
 idLexer::GetLastWhiteSpace

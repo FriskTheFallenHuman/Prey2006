@@ -36,8 +36,9 @@ PROBLEM: compressed textures may break the zero clamp rule!
 */
 
 static bool FormatIsDXT( int internalFormat ) {
-	if ( internalFormat < GL_COMPRESSED_RGB_S3TC_DXT1_EXT
-	|| internalFormat > GL_COMPRESSED_RGBA_S3TC_DXT5_EXT ) {
+	if ( (internalFormat < GL_COMPRESSED_RGB_S3TC_DXT1_EXT
+	       || internalFormat > GL_COMPRESSED_RGBA_S3TC_DXT5_EXT)
+	    && internalFormat != GL_COMPRESSED_RGBA_BPTC_UNORM ) {
 		return false;
 	}
 	return true;
@@ -84,6 +85,8 @@ int idImage::BitsForInternalFormat( int internalFormat ) const {
 	case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
 		return 8;
 	case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
+		return 8;
+	case GL_COMPRESSED_RGBA_BPTC_UNORM:
 		return 8;
 	case GL_RGBA4:
 		return 16;
@@ -211,6 +214,11 @@ GLenum idImage::SelectInternalFormat( const byte **dataPtrs, int numDataPtrs, in
 	int		rgbOr, rgbAnd, aOr, aAnd;
 	int		rgbDiffer, rgbaDiffer;
 
+	// TODO: or always use BC7 if available? do textures take longer to load then?
+	//       would look better at least...
+	const bool useBC7compression = glConfig.bptcTextureCompressionAvailable
+						&& globalImages->image_useCompression.GetInteger() == 2;
+
 	// determine if the rgb channels are all the same
 	// and if either all rgb or all alpha are 255
 	c = width*height;
@@ -258,12 +266,17 @@ GLenum idImage::SelectInternalFormat( const byte **dataPtrs, int numDataPtrs, in
 
 	// catch normal maps first
 	if ( minimumDepth == TD_BUMP ) {
-		if ( globalImages->image_useCompression.GetBool() && globalImages->image_useNormalCompression.GetInteger() == 1 && glConfig.sharedTexturePaletteAvailable ) {
+		// DG: put the glConfig.sharedTexturePaletteAvailable check first because nowadays it's usually false
+		if ( glConfig.sharedTexturePaletteAvailable && globalImages->image_useCompression.GetBool() && globalImages->image_useNormalCompression.GetInteger() == 1 ) {
 			// image_useNormalCompression should only be set to 1 on nv_10 and nv_20 paths
 			return GL_COLOR_INDEX8_EXT;
 		} else if ( globalImages->image_useCompression.GetBool() && globalImages->image_useNormalCompression.GetInteger() && glConfig.textureCompressionAvailable ) {
-			// image_useNormalCompression == 2 uses rxgb format which produces really good quality for medium settings
-			return GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+			if ( useBC7compression ) {
+				return GL_COMPRESSED_RGBA_BPTC_UNORM;
+			} else {
+				// image_useNormalCompression == 2 uses rxgb format which produces really good quality for medium settings
+				return GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+			}
 		} else {
 			// we always need the alpha channel for bump maps for swizzling
 			return GL_RGBA8;
@@ -278,7 +291,7 @@ GLenum idImage::SelectInternalFormat( const byte **dataPtrs, int numDataPtrs, in
 	if ( minimumDepth == TD_SPECULAR ) {
 		// we are assuming that any alpha channel is unintentional
 		if ( glConfig.textureCompressionAvailable ) {
-			return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
+			return useBC7compression ? GL_COMPRESSED_RGBA_BPTC_UNORM : GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
 		} else {
 			return GL_RGB5;
 		}
@@ -286,6 +299,9 @@ GLenum idImage::SelectInternalFormat( const byte **dataPtrs, int numDataPtrs, in
 	if ( minimumDepth == TD_DIFFUSE ) {
 		// we might intentionally have an alpha channel for alpha tested textures
 		if ( glConfig.textureCompressionAvailable ) {
+			if ( useBC7compression ) {
+				return GL_COMPRESSED_RGBA_BPTC_UNORM;
+			}
 			if ( !needAlpha ) {
 				return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
 			} else {
@@ -315,7 +331,8 @@ GLenum idImage::SelectInternalFormat( const byte **dataPtrs, int numDataPtrs, in
 			return GL_RGB8;			// four bytes
 		}
 		if ( glConfig.textureCompressionAvailable ) {
-			return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;	// half byte
+			return useBC7compression ? GL_COMPRESSED_RGBA_BPTC_UNORM    // 1byte/pixel
+			                         : GL_COMPRESSED_RGB_S3TC_DXT1_EXT; // half byte
 		}
 		return GL_RGB5;			// two bytes
 	}
@@ -323,7 +340,7 @@ GLenum idImage::SelectInternalFormat( const byte **dataPtrs, int numDataPtrs, in
 	// cases with alpha
 	if ( !rgbaDiffer ) {
 		if ( minimumDepth != TD_HIGH_QUALITY && glConfig.textureCompressionAvailable ) {
-			return GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;	// one byte
+			return useBC7compression ? GL_COMPRESSED_RGBA_BPTC_UNORM : GL_COMPRESSED_RGBA_S3TC_DXT3_EXT; // one byte
 		}
 		return GL_INTENSITY8;	// single byte for all channels
 	}
@@ -342,7 +359,7 @@ GLenum idImage::SelectInternalFormat( const byte **dataPtrs, int numDataPtrs, in
 		return GL_RGBA8;	// four bytes
 	}
 	if ( glConfig.textureCompressionAvailable ) {
-		return GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;	// one byte
+		return useBC7compression ? GL_COMPRESSED_RGBA_BPTC_UNORM : GL_COMPRESSED_RGBA_S3TC_DXT3_EXT; // one byte
 	}
 	if ( !rgbDiffer ) {
 		return GL_LUMINANCE8_ALPHA8;	// two bytes, max quality
@@ -1162,6 +1179,9 @@ void idImage::WritePrecompressedImage() {
 		case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
 			header.ddspf.dwFourCC = DDS_MAKEFOURCC('D','X','T','5');
 			break;
+		case GL_COMPRESSED_RGBA_BPTC_UNORM:
+			header.ddspf.dwFourCC = DDS_MAKEFOURCC('B','C','7','0');
+			break;
 		}
 	} else {
 		header.ddspf.dwFlags = ( internalFormat == GL_COLOR_INDEX8_EXT ) ? DDSF_RGB | DDSF_ID_INDEXCOLOR : DDSF_RGB;
@@ -1367,7 +1387,7 @@ bool idImage::CheckPrecompressedImage( bool fullLoad ) {
 	}
 
 	int	len = f->Length();
-	if ( len < sizeof( ddsFileHeader_t ) ) {
+	if ( len < sizeof( ddsFileHeader_t ) + 4 ) { // +4 for the magic 'DDS ' fourcc at the beginning
 		fileSystem->CloseFile( f );
 		return false;
 	}
@@ -1391,6 +1411,7 @@ bool idImage::CheckPrecompressedImage( bool fullLoad ) {
 	unsigned int magic = LittleInt( *(unsigned int *)data );
 	ddsFileHeader_t	*_header = (ddsFileHeader_t *)(data + 4);
 	int ddspf_dwFlags = LittleInt( _header->ddspf.dwFlags );
+	unsigned int ddspf_dwFourCC = LittleInt( _header->ddspf.dwFourCC );
 
 	if ( magic != DDS_MAKEFOURCC('D', 'D', 'S', ' ')) {
 		common->Printf( "CheckPrecompressedImage( %s ): magic != 'DDS '\n", imgName.c_str() );
@@ -1400,9 +1421,43 @@ bool idImage::CheckPrecompressedImage( bool fullLoad ) {
 
 	// if we don't support color index textures, we must load the full image
 	// should we just expand the 256 color image to 32 bit for upload?
-	if ( ddspf_dwFlags & DDSF_ID_INDEXCOLOR && !glConfig.sharedTexturePaletteAvailable ) {
+	if ( (ddspf_dwFlags & DDSF_ID_INDEXCOLOR) && !glConfig.sharedTexturePaletteAvailable ) {
 		R_StaticFree( data );
 		return false;
+	}
+
+	// DG: same if this is a BC7 (BPTC) texture but the GPU doesn't support that
+	//     or if it uses the additional DX10 header and is *not* a BC7 texture
+	bool isBC7 = false;
+	if ( ddspf_dwFourCC == DDS_MAKEFOURCC( 'D', 'X', '1', '0' ) ) {
+		ddsDXT10addHeader_t *dx10Header = (ddsDXT10addHeader_t *)( data + 4 + sizeof(ddsFileHeader_t) );
+		unsigned int dxgiFormat = LittleInt( dx10Header->dxgiFormat );
+		if ( dxgiFormat == 98 ) {
+			isBC7 = true;
+		} else {
+			common->Warning( "Image file '%s' has unsupported dxgiFormat %d - the engine only supports DXGI_FORMAT_BC7_UNORM (98)!",
+			                 filename, dxgiFormat);
+			R_StaticFree( data );
+			return false;
+		}
+	} else if ( ddspf_dwFourCC == DDS_MAKEFOURCC( 'B', 'C', '7', '0' )
+	           || ddspf_dwFourCC == DDS_MAKEFOURCC( 'B', 'C', '7', 'L' ) )
+	{
+		isBC7 = true;
+	}
+	if ( isBC7 && !glConfig.bptcTextureCompressionAvailable ) {
+		R_StaticFree( data );
+		return false;
+	}
+	if ( glConfig.bptcTextureCompressionAvailable
+	    && globalImages->image_usePrecompressedTextures.GetInteger() == 2 )
+	{
+		// only high quality compressed textures, i.e. BC7 (BPTC), are welcome
+		// or uncompressed ones (that have no FOURCC flag set)
+		if ( !isBC7 && (ddspf_dwFlags & DDSF_FOURCC) != 0 ) {
+			R_StaticFree( data );
+			return false;
+		}
 	}
 
 	// upload all the levels
@@ -1454,6 +1509,7 @@ void idImage::UploadPrecompressedImage( byte *data, int len ) {
 
 	uploadWidth = header->dwWidth;
 	uploadHeight = header->dwHeight;
+	size_t additionalHeaderOffset = 0; // used if the DDS has a DDS_HEADER_DXT10
 	if ( header->ddspf.dwFlags & DDSF_FOURCC ) {
 		switch ( header->ddspf.dwFourCC ) {
 		case DDS_MAKEFOURCC( 'D', 'X', 'T', '1' ):
@@ -1471,6 +1527,16 @@ void idImage::UploadPrecompressedImage( byte *data, int len ) {
 			break;
 		case DDS_MAKEFOURCC( 'R', 'X', 'G', 'B' ):
 			internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+			break;
+		case DDS_MAKEFOURCC( 'B', 'C', '7', '0' ): // BC7 aka BPTC - inofficial FourCCs
+		case DDS_MAKEFOURCC( 'B', 'C', '7', 'L' ):
+			internalFormat = GL_COMPRESSED_RGBA_BPTC_UNORM;
+			break;
+		case DDS_MAKEFOURCC( 'D', 'X', '1', '0' ): // BC7 aka BPTC - the official dxgi way
+			additionalHeaderOffset = 20;
+			// Note: this is a bit hacky, but in CheckPrecompressedImage() we made sure
+			//       that only BC7 UNORM is accepted if the FourCC is 'DX10'
+			internalFormat = GL_COMPRESSED_RGBA_BPTC_UNORM;
 			break;
 		default:
 			common->Warning( "Invalid compressed internal format\n" );
@@ -1509,12 +1575,13 @@ void idImage::UploadPrecompressedImage( byte *data, int len ) {
 
 	int uw = uploadWidth;
 	int uh = uploadHeight;
+	int lastUW = uw, lastUH = uh;
 
 	// We may skip some mip maps if we are downsizing
 	int skipMip = 0;
 	GetDownsize( uploadWidth, uploadHeight );
 
-	byte *imagedata = data + sizeof(ddsFileHeader_t) + 4;
+	byte *imagedata = data + sizeof(ddsFileHeader_t) + 4 + additionalHeaderOffset;
 
 	for ( int i = 0 ; i < numMipmaps; i++ ) {
 		int size = 0;
@@ -1534,6 +1601,8 @@ void idImage::UploadPrecompressedImage( byte *data, int len ) {
 				qglTexImage2D( GL_TEXTURE_2D, i - skipMip, internalFormat, uw, uh, 0, externalFormat, GL_UNSIGNED_BYTE, imagedata );
 			}
 		}
+		lastUW = uw;
+		lastUH = uh;
 
 		imagedata += size;
 		uw /= 2;
@@ -1543,6 +1612,19 @@ void idImage::UploadPrecompressedImage( byte *data, int len ) {
 		}
 		if (uh < 1) {
 			uh = 1;
+		}
+	}
+	// in case the mipmap chain is incomplete (doesn't go down to 1x1 pixel)
+	// the texture may be shown as black unless GL_TEXTURE_MAX_LEVEL is set accordingly
+	if ( lastUW > 1 || lastUH > 1 ) {
+		numMipmaps -= skipMip;
+		if ( numMipmaps == 1 ) {
+			// if there is only one mipmap, just don't use mipmapping for this texture
+			if ( filter == TF_DEFAULT ) {
+				filter = TF_LINEAR;
+			}
+		} else {
+			qglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, numMipmaps - 1 );
 		}
 	}
 
@@ -2134,6 +2216,9 @@ void idImage::Print() const {
 		break;
 	case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
 		common->Printf( "DXT5  " );
+		break;
+	case GL_COMPRESSED_RGBA_BPTC_UNORM:
+		common->Printf( "BC7  " );
 		break;
 	case GL_RGBA4:
 		common->Printf( "RGBA4 " );

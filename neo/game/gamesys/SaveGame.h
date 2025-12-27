@@ -111,7 +111,7 @@ public:
 	void					RestoreObjects( void );
 	void					DeleteObjects( void );
 
-	void					Error( const char *fmt, ... ) id_attribute((format(printf,2,3)));
+	void					Error( VERIFY_FORMAT_STRING const char *fmt, ... );
 
 	void					Read( void *buffer, int len );
 	void					ReadInt( int &value );
@@ -163,8 +163,23 @@ public:
 	//						Used to retrieve the saved game buildNumber from within class Restore methods
 	int						GetBuildNumber( void );
 
+	// DG: added these methods, internalSavegameVersion makes us independent of the global BUILD_NUMBER
+	void					ReadInternalSavegameVersion( void )
+	{
+		ReadInt( internalSavegameVersion );
+	}
+
+	// if it's 0, this is from a GetBuildNumber() < 1304 savegame
+	// otherwise, compare it to idGameLocal::INTERNAL_SAVEGAME_VERSION
+	int						GetInternalSavegameVersion( void ) const
+	{
+		return internalSavegameVersion;
+	}
+	// DG end
+
 private:
 	int						buildNumber;
+	int						internalSavegameVersion; // DG added this
 
 	idFile *				file;
 

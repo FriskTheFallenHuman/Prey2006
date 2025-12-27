@@ -42,22 +42,22 @@ typedef enum {
 } cpuidSimd_t;
 
 typedef enum {
-	AXIS_SIDE,
-	AXIS_FORWARD,
-	AXIS_UP,
-	AXIS_ROLL,
-	AXIS_YAW,
-	AXIS_PITCH,
+	AXIS_LEFT_X,
+	AXIS_LEFT_Y,
+	AXIS_RIGHT_X,
+	AXIS_RIGHT_Y,
+	AXIS_LEFT_TRIG,
+	AXIS_RIGHT_TRIG,
 	MAX_JOYSTICK_AXIS
 } joystickAxis_t;
 
 typedef enum {
 	SE_NONE,				// evTime is still valid
 	SE_KEY,					// evValue is a key code, evValue2 is the down flag
-	SE_CHAR,				// evValue is an ascii char
+	SE_CHAR,				// evValue is a "High ASCII" (ISO-8859-1) char
 	SE_MOUSE,				// evValue and evValue2 are relative signed x / y moves
 	SE_MOUSE_ABS,			// evValue and evValue2 are absolute x / y coordinates in the window
-	SE_JOYSTICK_AXIS,		// evValue is an axis number and evValue2 is the current state (-127 to 127)
+	SE_JOYSTICK,			// evValue is an axis number and evValue2 is the current state (-127 to 127)
 	SE_CONSOLE				// evPtr is a char*, from typing something at a non-game console
 } sysEventType_t;
 
@@ -75,10 +75,52 @@ typedef enum {
 	M_DELTAZ
 } sys_mEvents;
 
+typedef enum {
+	J_ACTION_FIRST,
+	// these names are similar to the SDL3 SDL_GamepadButton names
+	J_BTN_SOUTH = J_ACTION_FIRST, // bottom face button, like Xbox A
+	J_BTN_EAST,  // right face button, like Xbox B
+	J_BTN_WEST,  // left face button, like Xbox X
+	J_BTN_NORTH, // top face button, like Xbox Y
+	J_BTN_BACK,
+	J_BTN_GUIDE, // Note: this one should probably not be used?
+	J_BTN_START,
+	J_BTN_LSTICK, // press left stick
+	J_BTN_RSTICK, // press right stick
+	J_BTN_LSHOULDER,
+	J_BTN_RSHOULDER,
+
+	J_DPAD_UP,
+	J_DPAD_DOWN,
+	J_DPAD_LEFT,
+	J_DPAD_RIGHT,
+
+	J_BTN_MISC1, // Additional button (e.g. Xbox Series X share button, PS5 microphone button, Nintendo Switch Pro capture button, Amazon Luna microphone button)
+	J_BTN_RPADDLE1, // Upper or primary paddle, under your right hand (e.g. Xbox Elite paddle P1)
+	J_BTN_LPADDLE1, // Upper or primary paddle, under your left hand (e.g. Xbox Elite paddle P3)
+	J_BTN_RPADDLE2, // Lower or secondary paddle, under your right hand (e.g. Xbox Elite paddle P2)
+	J_BTN_LPADDLE2, //  Lower or secondary paddle, under your left hand (e.g. Xbox Elite paddle P4)
+
+	J_ACTION_MAX = J_BTN_LPADDLE2,
+	// leaving some space here for about 12 additional J_ACTIONs, if needed
+
+	J_AXIS_MIN = 32,
+	J_AXIS_LEFT_X = J_AXIS_MIN + AXIS_LEFT_X,
+	J_AXIS_LEFT_Y = J_AXIS_MIN + AXIS_LEFT_Y,
+	J_AXIS_RIGHT_X = J_AXIS_MIN + AXIS_RIGHT_X,
+	J_AXIS_RIGHT_Y = J_AXIS_MIN + AXIS_RIGHT_Y,
+	J_AXIS_LEFT_TRIG = J_AXIS_MIN + AXIS_LEFT_TRIG,
+	J_AXIS_RIGHT_TRIG = J_AXIS_MIN + AXIS_RIGHT_TRIG,
+
+	J_AXIS_MAX = J_AXIS_MIN + MAX_JOYSTICK_AXIS - 1,
+
+	MAX_JOY_EVENT
+} sys_jEvents;
+
 struct sysEvent_t {
 	sysEventType_t	evType;
-	int				evValue;
-	int				evValue2;
+	int				evValue;	// for keys: K_* or ASCII code; for joystick: axis; for mouse: mouseX
+	int				evValue2;	// for keys: 0/1 for up/down; for axis: value; for mouse: mouseY
 	int				evPtrLength;		// bytes of data pointed to by evPtr, for journaling
 	void *			evPtr;				// this must be manually freed if not NULL
 };
@@ -105,10 +147,10 @@ void			Sys_SetClipboardData( const char *string );
 
 // will go to the various text consoles
 // NOT thread safe - never use in the async paths
-void			Sys_Printf( const char *msg, ... )id_attribute((format(printf,1,2)));
+void			Sys_Printf( VERIFY_FORMAT_STRING const char *msg, ... );
 
 // guaranteed to be thread-safe
-void			Sys_DebugPrintf( const char *fmt, ... )id_attribute((format(printf,1,2)));
+void			Sys_DebugPrintf( VERIFY_FORMAT_STRING const char *fmt, ... );
 void			Sys_DebugVPrintf( const char *fmt, va_list arg );
 
 // allow game to yield CPU time
@@ -191,8 +233,16 @@ const char* Sys_GetScancodeName( int key );
 // Otherwise return same name as Sys_GetScancodeName()
 // !! Returned string is only valid until next call to this function !!
 const char* Sys_GetLocalizedScancodeName( int key );
+// the same, but using UTF-8 instead of "High-ASCII"
+const char* Sys_GetLocalizedScancodeNameUTF8( int key );
 // returns keyNum_t (K_SC_* constant) for given scancode name (like "SC_A")
 int Sys_GetKeynumForScancodeName( const char* name );
+
+// returns display name of the key (between K_FIRST_JOY and K_LAST_JOY)
+// With SDL2 it'll return the name in the SDL_GameController standard layout
+// (which is based on XBox/XInput => on Nintendo gamepads, A/B and X/Y will be flipped),
+// with SDL3 it will return the "real" button name
+const char* Sys_GetLocalizedJoyKeyName( int key );
 
 // keyboard input polling
 int				Sys_PollKeyboardInputEvents( void );
@@ -204,18 +254,23 @@ int				Sys_PollMouseInputEvents( void );
 int				Sys_ReturnMouseInputEvent( const int n, int &action, int &value );
 void			Sys_EndMouseInputEvents( void );
 
-#if GAMEPAD_SUPPORT	// VENOM BEGIN
-void	Sys_UpdateJoystick( void );
-int		Sys_PollJockstickEvents( void );
-void	Sys_ReturnJoyStickInputEvent( int iEvent,  int &iKey, int &iState );
-SHORT	Sys_GetJoyStickAxis( int iAxis );
-float	Sys_GetJoyStickModifier( int iAxis );
-#endif // VENOM END
+// joystick input polling
+void			Sys_SetRumble( int device, int low, int hi );
+int				Sys_PollJoystickInputEvents( int deviceNum );
+int				Sys_ReturnJoystickInputEvent( const int n, int &action, int &value );
+void			Sys_EndJoystickInputEvents();
 
 // when the console is down, or the game is about to perform a lengthy
 // operation like map loading, the system can release the mouse cursor
 // when in windowed mode
 void			Sys_GrabMouseCursor( bool grabIt );
+
+// DG: added this for an ungodly hack for gamepad support
+// active = true means "currently a GUI with a cursor is active/focused"
+// active = false means "that GUI is not active anymore"
+// ui == NULL means "clear all currently remembered GUIs"
+class idUserInterface;
+void			Sys_SetInteractiveIngameGuiActive( bool active, idUserInterface* ui );
 
 void			Sys_ShowWindow( bool show );
 bool			Sys_IsWindowVisible( void );
@@ -389,7 +444,7 @@ void				Sys_TriggerEvent( int index = TRIGGER_EVENT_ZERO );
 
 class idSys {
 public:
-	virtual void			DebugPrintf( const char *fmt, ... )id_attribute((format(printf,2,3))) = 0;
+	virtual void			DebugPrintf( VERIFY_FORMAT_STRING const char *fmt, ... ) = 0;
 	virtual void			DebugVPrintf( const char *fmt, va_list arg ) = 0;
 
 	virtual unsigned int	GetMilliseconds( void ) = 0;

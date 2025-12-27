@@ -73,7 +73,7 @@ void Cmd_EntityList(const idStr &match) {
 		size += check->spawnArgs.Allocated();
 	}
 
-	gameLocal.Printf( "...%d entities\n...%d bytes of spawnargs\n", count, size );
+	gameLocal.Printf( "...%d entities\n...%zd bytes of spawnargs\n", count, size );
 }
 //HUMANHEAD END
 
@@ -364,7 +364,7 @@ void Cmd_Give_f( const idCmdArgs &args ) {
 		return;
 	}
 
-	if ( give_all || idStr::Icmp( name, "health" ) == 0 ) {
+	if ( give_all || idStr::Icmp( name, "health" ) == 0 )	{
 		player->health = player->inventory.maxHealth;
 		player->healthPulse = true;	// HUMANHEAD pdm
 		if ( !give_all ) {
@@ -1592,6 +1592,60 @@ static void Cmd_CollisionModelInfo_f( const idCmdArgs &args ) {
 	}
 }
 
+#ifdef ID_MAYA_IMPORT_TOOL
+/*
+==================
+Cmd_ExportModels_f
+==================
+*/
+static void Cmd_ExportModels_f( const idCmdArgs &args ) {
+	idModelExport	exporter;
+	idStr			name;
+
+	// don't allow exporting models when cheats are disabled,
+	// but if we're not in the game, it's ok
+	if ( gameLocal.GetLocalPlayer() && !gameLocal.CheatsOk( false ) ) {
+		return;
+	}
+
+	if ( args.Argc() < 2 ) {
+		exporter.ExportModels( "def", ".def" );
+	} else {
+		name = args.Argv( 1 );
+		name = "def/" + name;
+		name.DefaultFileExtension( ".def" );
+		exporter.ExportDefFile( name );
+	}
+}
+
+/*
+==================
+Cmd_ReexportModels_f
+==================
+*/
+static void Cmd_ReexportModels_f( const idCmdArgs &args ) {
+	idModelExport	exporter;
+	idStr			name;
+
+	// don't allow exporting models when cheats are disabled,
+	// but if we're not in the game, it's ok
+	if ( gameLocal.GetLocalPlayer() && !gameLocal.CheatsOk( false ) ) {
+		return;
+	}
+
+	idAnimManager::forceExport = true;
+	if ( args.Argc() < 2 ) {
+		exporter.ExportModels( "def", ".def" );
+	} else {
+		name = args.Argv( 1 );
+		name = "def/" + name;
+		name.DefaultFileExtension( ".def" );
+		exporter.ExportDefFile( name );
+	}
+	idAnimManager::forceExport = false;
+}
+#endif
+
 /*
 ==================
 Cmd_ReloadAnims_f
@@ -2392,7 +2446,7 @@ void Cmd_NextGUI_f( const idCmdArgs &args ) {
 }
 
 static void ArgCompletion_DefFile( const idCmdArgs &args, void(*callback)( const char *s ) ) {
-	cmdSystem->ArgCompletion_FolderExtension( args, callback, "def/", true, ".def", NULL );
+	cmdSystem->ArgCompletion_FolderExtension( args, callback, true, "def/", ".def", NULL );
 }
 
 /*
@@ -2551,6 +2605,9 @@ void idGameLocal::InitConsoleCommands( void ) {
 	cmdSystem->AddCommand( "script",				Cmd_Script_f,				CMD_FL_GAME|CMD_FL_CHEAT,	"executes a line of script" );
 	cmdSystem->AddCommand( "listCollisionModels",	Cmd_ListCollisionModels_f,	CMD_FL_GAME,				"lists collision models" );
 	cmdSystem->AddCommand( "collisionModelInfo",	Cmd_CollisionModelInfo_f,	CMD_FL_GAME,				"shows collision model info" );
+#ifdef ID_MAYA_IMPORT_TOOL
+	cmdSystem->AddCommand( "reexportmodels",		Cmd_ReexportModels_f,		CMD_FL_GAME|CMD_FL_CHEAT,	"reexports models", ArgCompletion_DefFile );
+#endif
 	cmdSystem->AddCommand( "reloadanims",			Cmd_ReloadAnims_f,			CMD_FL_GAME|CMD_FL_CHEAT,	"reloads animations" );
 	cmdSystem->AddCommand( "listAnims",				Cmd_ListAnims_f,			CMD_FL_GAME,				"lists all animations" );
 	cmdSystem->AddCommand( "aasStats",				Cmd_AASStats_f,				CMD_FL_GAME,				"shows AAS stats" );
@@ -2569,6 +2626,9 @@ void idGameLocal::InitConsoleCommands( void ) {
 
 #ifndef	ID_DEMO_BUILD
 	cmdSystem->AddCommand( "disasmScript",			Cmd_DisasmScript_f,			CMD_FL_GAME|CMD_FL_CHEAT,	"disassembles script" );
+#ifdef ID_MAYA_IMPORT_TOOL
+	cmdSystem->AddCommand( "exportmodels",			Cmd_ExportModels_f,			CMD_FL_GAME|CMD_FL_CHEAT,	"exports models", ArgCompletion_DefFile );
+#endif
 #endif
 
 	//HUMANHEAD jsh PCF 5/1/06 allow multiplayer stuff for demo
@@ -2583,7 +2643,7 @@ void idGameLocal::InitConsoleCommands( void ) {
 
 	// multiplayer server commands
 	cmdSystem->AddCommand( "serverMapRestart",		idGameLocal::MapRestart_f,	CMD_FL_GAME,				"restart the current game" );
-	cmdSystem->AddCommand( "serverForceReady",	idMultiplayerGame::ForceReady_f,CMD_FL_GAME,				"force all players ready" );
+	cmdSystem->AddCommand( "serverForceReady",		idMultiplayerGame::ForceReady_f,CMD_FL_GAME,			"force all players ready" );
 	cmdSystem->AddCommand( "serverNextMap",			idGameLocal::NextMap_f,		CMD_FL_GAME,				"change to the next map" );
 
 	// localization help commands

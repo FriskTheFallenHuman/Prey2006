@@ -10,7 +10,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_NO_HDR
 #define STBI_NO_LINEAR
-#define STBI_ONLY_JPEG // at least for now, only use it for JPEG
 #define STBI_NO_STDIO  // images are passed as buffers
 #include "stb_image.h"
 

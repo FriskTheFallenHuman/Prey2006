@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -29,20 +30,21 @@ If you have questions concerning this license or the applicable additional terms
 #pragma once
 
 #ifndef __AFXWIN_H__
-#error "include 'pch.h' before including this file for PCH"
+	#error "include 'pch.h' before including this file for PCH"
 #endif
 
-class CRadiantApp : public CWinAppEx {
+class CRadiantApp : public CWinAppEx
+{
 public:
 	CRadiantApp() noexcept;
 
-// Overrides
+	// Overrides
 public:
 	virtual BOOL InitInstance();
-	virtual int ExitInstance();
+	virtual int	 ExitInstance();
 
 	virtual BOOL OnIdle( LONG lCount );
-	virtual int Run();
+	virtual int	 Run( void );
 
 	afx_msg void OnAppHelp();
 	afx_msg void OnAppAbout();

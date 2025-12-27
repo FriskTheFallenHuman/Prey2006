@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -30,74 +31,74 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "gdefs.h"
 
-class roqParam {
+class roqParam
+{
 public:
+	const char* RoqFilename( void );
+	const char* RoqTempFilename( void );
+	const char* GetNextImageFilename( void );
+	const char* SoundFilename( void );
+	void		InitFromFile( const char* fileName );
+	void		GetNthInputFileName( idStr& fileName, int n );
+	bool		MoreFrames( void );
+	bool		OutputVectors( void );
+	bool		Timecode( void );
+	bool		DeltaFrames( void );
+	bool		NoAlpha( void );
+	bool		SearchType( void );
+	bool		TwentyFourToThirty( void );
+	bool		HasSound( void );
+	int			NumberOfFrames( void );
+	int			NormalFrameSize( void );
+	int			FirstFrameSize( void );
+	int			JpegQuality( void );
+	bool		IsScaleable( void );
 
-	const char	*	RoqFilename( void );
-	const char	*	RoqTempFilename( void );
-	const char	*	GetNextImageFilename( void );
-	const char	*	SoundFilename( void );
-	void			InitFromFile( const char * fileName );
-	void			GetNthInputFileName( idStr& fileName, int n );
-	bool			MoreFrames( void );
-	bool			OutputVectors( void );
-	bool			Timecode( void );
-	bool			DeltaFrames( void );
-	bool			NoAlpha( void );
-	bool			SearchType( void );
-	bool			TwentyFourToThirty( void );
-	bool			HasSound( void );
-	int				NumberOfFrames( void );
-	int				NormalFrameSize( void );
-	int				FirstFrameSize( void );
-	int				JpegQuality( void );
-	bool			IsScaleable( void );
+	idStr		outputFilename;
+	int			numInputFiles;
 
-	idStr			outputFilename;
-	int				numInputFiles;
 private:
-	int		*		range;
-	bool		*	padding, * padding2;
-	idStrList		file;
-	idStrList		file2;
-	idStr			soundfile;
-	idStr			currentPath;
-	idStr			tempFilename;
-	idStr			startPal;
-	idStr			endPal;
-	idStr			currentFile;
-	int		*		skipnum, * skipnum2;
-	int		*		startnum, * startnum2;
-	int		*		endnum, * endnum2;
-	int		*		numpadding, * numpadding2;
-	int		*		numfiles;
-	byte			keyR, keyG, keyB;
-	int				field;
-	int				realnum;
-	int				onFrame;
-	int				firstframesize;
-	int				normalframesize;
-	int				jpegDefault;
+	int*	  range;
+	bool *	  padding, *padding2;
+	idStrList file;
+	idStrList file2;
+	idStr	  soundfile;
+	idStr	  currentPath;
+	idStr	  tempFilename;
+	idStr	  startPal;
+	idStr	  endPal;
+	idStr	  currentFile;
+	int *	  skipnum, *skipnum2;
+	int *	  startnum, *startnum2;
+	int *	  endnum, *endnum2;
+	int *	  numpadding, *numpadding2;
+	int*	  numfiles;
+	byte	  keyR, keyG, keyB;
+	int		  field;
+	int		  realnum;
+	int		  onFrame;
+	int		  firstframesize;
+	int		  normalframesize;
+	int		  jpegDefault;
 
-	bool			scaleDown;
-	bool			twentyFourToThirty;
-	bool			encodeVideo;
-	bool			useTimecodeForRange;
-	bool			addPath;
-	bool			screenShots;
-	bool			startPalette;
-	bool			endPalette;
-	bool			fixedPalette;
-	bool			keyColor;
-	bool			justDelta;
-	bool			make3DO;
-	bool			makeVectors;
-	bool			justDeltaFlag;
-	bool			noAlphaAtAll;
-	bool			fullSearch;
-	bool			hasSound;
-	bool			isScaleable;
+	bool	  scaleDown;
+	bool	  twentyFourToThirty;
+	bool	  encodeVideo;
+	bool	  useTimecodeForRange;
+	bool	  addPath;
+	bool	  screenShots;
+	bool	  startPalette;
+	bool	  endPalette;
+	bool	  fixedPalette;
+	bool	  keyColor;
+	bool	  justDelta;
+	bool	  make3DO;
+	bool	  makeVectors;
+	bool	  justDeltaFlag;
+	bool	  noAlphaAtAll;
+	bool	  fullSearch;
+	bool	  hasSound;
+	bool	  isScaleable;
 };
-
 
 #endif // roqParam

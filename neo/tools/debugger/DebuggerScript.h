@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -31,46 +32,48 @@ If you have questions concerning this license or the applicable additional terms
 class idProgram;
 class idUserInterfaceLocal;
 
-class rvDebuggerScript {
+class rvDebuggerScript
+{
 public:
+	rvDebuggerScript( void );
+	~rvDebuggerScript( void );
 
-	rvDebuggerScript();
-	~rvDebuggerScript();
+	bool		Load( const char* filename );
+	bool		Reload( void );
 
-	bool	Load( const char * filename );
-	bool	Reload();
-
-	const char	*	GetFilename();
-	const char	*	GetContents();
-	idProgram	*	GetProgram();
-#if 0// Test code
-	idProgram	&	GetProgram();
+	const char* GetFilename( void );
+	const char* GetContents( void );
+	idProgram*	GetProgram( void );
+#if 0 // Test code
+	idProgram&		GetProgram( void );
 #endif
 
-	bool			IsLineCode( int linenumber );
-	bool			IsFileModified( bool updateTime = false );
+	bool IsLineCode( int linenumber );
+	bool IsFileModified( bool updateTime = false );
 
 protected:
-	void			Unload();
+	void				  Unload( void );
 
-	idProgram		*		mProgram;
-	idUserInterfaceLocal	* mInterface;
-	char			*		mContents;
-	idStr					mFilename;
-	ID_TIME_T				mModifiedTime;
+	idProgram*			  mProgram;
+	idUserInterfaceLocal* mInterface;
+	char*				  mContents;
+	idStr				  mFilename;
+	ID_TIME_T			  mModifiedTime;
 };
 
-ID_INLINE const char * rvDebuggerScript::GetFilename() {
+ID_INLINE const char* rvDebuggerScript::GetFilename( void )
+{
 	return mFilename;
 }
 
-ID_INLINE const char * rvDebuggerScript::GetContents() {
+ID_INLINE const char* rvDebuggerScript::GetContents( void )
+{
 	return mContents ? mContents : "";
 }
 
-ID_INLINE idProgram * rvDebuggerScript::GetProgram() {
+ID_INLINE idProgram* rvDebuggerScript::GetProgram( void )
+{
 	return mProgram;
 }
-
 
 #endif // DEBUGGERSCRIPT_H_

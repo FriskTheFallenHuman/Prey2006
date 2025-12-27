@@ -3004,9 +3004,13 @@ void idMultiplayerGame::PlayGlobalSound( int to, snd_evt_t evt, const char *shad
 
 	if ( to == -1 || to == gameLocal.localClientNum ) {
 		if ( shader ) {
-			gameSoundWorld->PlayShaderDirectly( shader );
+			if ( gameSoundWorld ) {
+				gameSoundWorld->PlayShaderDirectly( shader );
+			}
 		} else {
-			gameSoundWorld->PlayShaderDirectly( GlobalSoundStrings[ evt ] );
+			if ( gameSoundWorld ) {
+				gameSoundWorld->PlayShaderDirectly( GlobalSoundStrings[ evt ] );
+			}
 		}
 	}
 
@@ -3136,15 +3140,15 @@ idMultiplayerGame::PrintMessageEvent
 void idMultiplayerGame::PrintMessageEvent( int to, msg_evt_t evt, int parm1, int parm2 ) {
 	switch ( evt ) {
 		case MSG_VOTE:
-			AddChatLine( common->GetLanguageDict()->GetString( "#str_04288" ) );
+			AddChatLine( "%s", common->GetLanguageDict()->GetString( "#str_04288" ) );
 			break;
 #if HUMANHEAD	// HUMANHEAD pdm: Announce individual votes
 		case MSG_PLAYERVOTED:
-			AddChatLine( common->GetLanguageDict()->GetString( "#str_00835" ), gameLocal.userInfo[ parm1 ].GetString( "ui_name" ) );
+			AddChatLine( "%s", common->GetLanguageDict()->GetString( "#str_00835" ), gameLocal.userInfo[ parm1 ].GetString( "ui_name" ) );
 			break;
 #endif
 		case MSG_SUDDENDEATH:
-			AddChatLine( common->GetLanguageDict()->GetString( "#str_04287" ) );
+			AddChatLine( "%s", common->GetLanguageDict()->GetString( "#str_04287" ) );
 			break;
 		case MSG_FORCEREADY:
 			AddChatLine( common->GetLanguageDict()->GetString( "#str_04286" ), gameLocal.userInfo[ parm1 ].GetString( "ui_name" ) );
@@ -3156,7 +3160,7 @@ void idMultiplayerGame::PrintMessageEvent( int to, msg_evt_t evt, int parm1, int
 			AddChatLine( common->GetLanguageDict()->GetString( "#str_04285" ), gameLocal.userInfo[ parm1 ].GetString( "ui_name" ) );
 			break;
 		case MSG_TIMELIMIT:
-			AddChatLine( common->GetLanguageDict()->GetString( "#str_04284" ) );
+			AddChatLine( "%s", common->GetLanguageDict()->GetString( "#str_04284" ) );
 			break;
 		case MSG_FRAGLIMIT:
 //			if ( gameLocal.gameType == GAME_LASTMAN ) {
@@ -3172,7 +3176,7 @@ void idMultiplayerGame::PrintMessageEvent( int to, msg_evt_t evt, int parm1, int
 			AddChatLine( common->GetLanguageDict()->GetString( "#str_04280" ), gameLocal.userInfo[ parm1 ].GetString( "ui_name" ), parm2 ? common->GetLanguageDict()->GetString( "#str_02500" ) : common->GetLanguageDict()->GetString( "#str_02499" ) );
 			break;
 		case MSG_HOLYSHIT:
-			AddChatLine( common->GetLanguageDict()->GetString( "#str_06732" ) );
+			AddChatLine( "%s", common->GetLanguageDict()->GetString( "#str_06732" ) );
 			break;
 		default:
 			gameLocal.DPrintf( "PrintMessageEvent: unknown message type %d\n", evt );
@@ -3560,7 +3564,7 @@ void idMultiplayerGame::ClientStartVote( int clientNum, const char *_voteString 
 	}
 
 	voteString = _voteString;
-	AddChatLine( va( common->GetLanguageDict()->GetString( "#str_04279" ), gameLocal.userInfo[ clientNum ].GetString( "ui_name" ) ) );
+	AddChatLine( common->GetLanguageDict()->GetString( "#str_04279" ), gameLocal.userInfo[ clientNum ].GetString( "ui_name" ) );
 	gameSoundWorld->PlayShaderDirectly( GlobalSoundStrings[ SND_VOTE ] );
 	if ( clientNum == gameLocal.localClientNum ) {
 		voted = true;
@@ -4267,7 +4271,7 @@ void idMultiplayerGame::ToggleSpectate( void ) {
 		if ( gameLocal.serverInfo.GetBool( "si_spectators" ) ) {
 			cvarSystem->SetCVarString( "ui_spectate", "Spectate" );
 		} else {
-			gameLocal.mpGame.AddChatLine( common->GetLanguageDict()->GetString( "#str_06747" ) );
+			gameLocal.mpGame.AddChatLine( "%s", common->GetLanguageDict()->GetString( "#str_06747" ) );
 		}
 	}
 }

@@ -16,7 +16,7 @@
 //	If you use this code, drop me an email.  I'd like to know if you find the code
 //	useful.
 
-//#include "pch.h"
+// #include "pch.h"
 #include "precompiled.h"
 #pragma hdrstop
 
@@ -25,67 +25,67 @@
 #include "PropTreeItemColor.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
-#undef THIS_FILE
+	#define new DEBUG_NEW
+	#undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
 
 extern HINSTANCE ghInst;
 
-typedef struct _ColorTableEntry {
-	COLORREF	color;
-	RECT		rcSpot;
+typedef struct _ColorTableEntry
+{
+	COLORREF color;
+	RECT	 rcSpot;
 } ColorTableEntry;
 
-static ColorTableEntry _crColors[] = {
-	{RGB( 0x00, 0x00, 0x00 )},
-	{RGB( 0xA5, 0x2A, 0x00 )},
-	{RGB( 0x00, 0x40, 0x40 )},
-	{RGB( 0x00, 0x55, 0x00 )},
-	{RGB( 0x00, 0x00, 0x5E )},
-	{RGB( 0x00, 0x00, 0x8B )},
-	{RGB( 0x4B, 0x00, 0x82 )},
-	{RGB( 0x28, 0x28, 0x28 )},
+static ColorTableEntry _crColors[] = { { RGB( 0x00, 0x00, 0x00 ) },
+	{ RGB( 0xA5, 0x2A, 0x00 ) },
+	{ RGB( 0x00, 0x40, 0x40 ) },
+	{ RGB( 0x00, 0x55, 0x00 ) },
+	{ RGB( 0x00, 0x00, 0x5E ) },
+	{ RGB( 0x00, 0x00, 0x8B ) },
+	{ RGB( 0x4B, 0x00, 0x82 ) },
+	{ RGB( 0x28, 0x28, 0x28 ) },
 
-	{RGB( 0x8B, 0x00, 0x00 )},
-	{RGB( 0xFF, 0x68, 0x20 )},
-	{RGB( 0x8B, 0x8B, 0x00 )},
-	{RGB( 0x00, 0x93, 0x00 )},
-	{RGB( 0x38, 0x8E, 0x8E )},
-	{RGB( 0x00, 0x00, 0xFF )},
-	{RGB( 0x7B, 0x7B, 0xC0 )},
-	{RGB( 0x66, 0x66, 0x66 )},
+	{ RGB( 0x8B, 0x00, 0x00 ) },
+	{ RGB( 0xFF, 0x68, 0x20 ) },
+	{ RGB( 0x8B, 0x8B, 0x00 ) },
+	{ RGB( 0x00, 0x93, 0x00 ) },
+	{ RGB( 0x38, 0x8E, 0x8E ) },
+	{ RGB( 0x00, 0x00, 0xFF ) },
+	{ RGB( 0x7B, 0x7B, 0xC0 ) },
+	{ RGB( 0x66, 0x66, 0x66 ) },
 
-	{RGB( 0xFF, 0x00, 0x00 )},
-	{RGB( 0xFF, 0xAD, 0x5B )},
-	{RGB( 0x32, 0xCD, 0x32 )},
-	{RGB( 0x3C, 0xB3, 0x71 )},
-	{RGB( 0x7F, 0xFF, 0xD4 )},
-	{RGB( 0x7D, 0x9E, 0xC0 )},
-	{RGB( 0x80, 0x00, 0x80 )},
-	{RGB( 0x7F, 0x7F, 0x7F )},
+	{ RGB( 0xFF, 0x00, 0x00 ) },
+	{ RGB( 0xFF, 0xAD, 0x5B ) },
+	{ RGB( 0x32, 0xCD, 0x32 ) },
+	{ RGB( 0x3C, 0xB3, 0x71 ) },
+	{ RGB( 0x7F, 0xFF, 0xD4 ) },
+	{ RGB( 0x7D, 0x9E, 0xC0 ) },
+	{ RGB( 0x80, 0x00, 0x80 ) },
+	{ RGB( 0x7F, 0x7F, 0x7F ) },
 
-	{RGB( 0xFF, 0xC0, 0xCB )},
-	{RGB( 0xFF, 0xD7, 0x00 )},
-	{RGB( 0xFF, 0xFF, 0x00 )},
-	{RGB( 0x00, 0xFF, 0x00 )},
-	{RGB( 0x40, 0xE0, 0xD0 )},
-	{RGB( 0xC0, 0xFF, 0xFF )},
-	{RGB( 0x48, 0x00, 0x48 )},
-	{RGB( 0xC0, 0xC0, 0xC0 )},
+	{ RGB( 0xFF, 0xC0, 0xCB ) },
+	{ RGB( 0xFF, 0xD7, 0x00 ) },
+	{ RGB( 0xFF, 0xFF, 0x00 ) },
+	{ RGB( 0x00, 0xFF, 0x00 ) },
+	{ RGB( 0x40, 0xE0, 0xD0 ) },
+	{ RGB( 0xC0, 0xFF, 0xFF ) },
+	{ RGB( 0x48, 0x00, 0x48 ) },
+	{ RGB( 0xC0, 0xC0, 0xC0 ) },
 
-	{RGB( 0xFF, 0xE4, 0xE1 )},
-	{RGB( 0xD2, 0xB4, 0x8C )},
-	{RGB( 0xFF, 0xFF, 0xE0 )},
-	{RGB( 0x98, 0xFB, 0x98 )},
-	{RGB( 0xAF, 0xEE, 0xEE )},
-	{RGB( 0x68, 0x83, 0x8B )},
-	{RGB( 0xE6, 0xE6, 0xFA )},
-	{RGB( 0xFF, 0xFF, 0xFF )}
-};
+	{ RGB( 0xFF, 0xE4, 0xE1 ) },
+	{ RGB( 0xD2, 0xB4, 0x8C ) },
+	{ RGB( 0xFF, 0xFF, 0xE0 ) },
+	{ RGB( 0x98, 0xFB, 0x98 ) },
+	{ RGB( 0xAF, 0xEE, 0xEE ) },
+	{ RGB( 0x68, 0x83, 0x8B ) },
+	{ RGB( 0xE6, 0xE6, 0xFA ) },
+	{ RGB( 0xFF, 0xFF, 0xFF ) } };
 
-static void ColorBox( CDC* pDC, CPoint pt, COLORREF clr, BOOL bHover, float scale ) {
-	CBrush br( clr );
+static void			   ColorBox( CDC* pDC, CPoint pt, COLORREF clr, BOOL bHover, float scale )
+{
+	CBrush	br( clr );
 
 	CBrush* obr = pDC->SelectObject( &br );
 
@@ -98,10 +98,12 @@ static void ColorBox( CDC* pDC, CPoint pt, COLORREF clr, BOOL bHover, float scal
 	pDC->DrawEdge( &rc, ( bHover ) ? BDR_SUNKENOUTER : BDR_RAISEDINNER, BF_RECT );
 }
 
-
-static LONG FindSpot( CPoint point ) {
-	for ( LONG i = 0; i < 40; i++ ) {
-		if ( PtInRect( &_crColors[i].rcSpot, point ) ) {
+static LONG FindSpot( CPoint point )
+{
+	for( LONG i = 0; i < 40; i++ )
+	{
+		if( PtInRect( &_crColors[i].rcSpot, point ) )
+		{
 			return i;
 		}
 	}
@@ -109,61 +111,64 @@ static LONG FindSpot( CPoint point ) {
 	return -1;
 }
 
-
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeItemColor
 
-COLORREF * CPropTreeItemColor::s_pColors = NULL;
+COLORREF* CPropTreeItemColor::s_pColors = NULL;
 
 CPropTreeItemColor::CPropTreeItemColor() :
 	m_cColor( 0 ),
 	m_cPrevColor( 0 ),
 	m_nSpot( -1 ),
 	m_bButton( FALSE ),
-	m_bInDialog( FALSE ) {
+	m_bInDialog( FALSE )
+{
 }
 
-CPropTreeItemColor::~CPropTreeItemColor() {
+CPropTreeItemColor::~CPropTreeItemColor()
+{
 }
-
 
 BEGIN_MESSAGE_MAP( CPropTreeItemColor, CWnd )
-	//{{AFX_MSG_MAP(CPropTreeItemColor)
-	ON_WM_KILLFOCUS()
-	ON_WM_PAINT()
-	ON_WM_CLOSE()
-	ON_WM_MOUSEMOVE()
-	ON_WM_SETCURSOR()
-	ON_WM_LBUTTONDOWN()
-	//}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CPropTreeItemColor)
+ON_WM_KILLFOCUS()
+ON_WM_PAINT()
+ON_WM_CLOSE()
+ON_WM_MOUSEMOVE()
+ON_WM_SETCURSOR()
+ON_WM_LBUTTONDOWN()
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
-
 
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeItemColor message handlers
 
-void CPropTreeItemColor::SetDefaultColorsList( COLORREF* pColors ) {
+void CPropTreeItemColor::SetDefaultColorsList( COLORREF* pColors )
+{
 	s_pColors = pColors;
 }
 
-
-void CPropTreeItemColor::DrawAttribute( CDC* pDC, const RECT& rc ) {
+void CPropTreeItemColor::DrawAttribute( CDC* pDC, const RECT& rc )
+{
 	ASSERT( m_pProp != NULL );
 
 	CRect r( rc );
 
 	pDC->SelectObject( IsReadOnly() ? m_pProp->GetNormalFont() : m_pProp->GetBoldFont() );
 
-	if ( !m_pProp->IsWindowEnabled() ) {
+	if( !m_pProp->IsWindowEnabled() )
+	{
 		pDC->SetTextColor( GetSysColor( COLOR_GRAYTEXT ) );
-	} else {
+	}
+	else
+	{
 		pDC->SetTextColor( RGB( 0, 0, 0 ) );
 	}
 
 	r.top += 1;
 	r.right = r.left + r.Height() - 1;
 
-	CBrush br( m_cColor );
+	CBrush	br( m_cColor );
 	CBrush* pold = pDC->SelectObject( &br );
 	pDC->PatBlt( r.left, r.top, r.Width(), r.Height(), PATCOPY );
 	pDC->SelectObject( pold );
@@ -178,45 +183,46 @@ void CPropTreeItemColor::DrawAttribute( CDC* pDC, const RECT& rc ) {
 	pDC->DrawText( s, r, DT_SINGLELINE | DT_VCENTER );
 }
 
-
-LPARAM CPropTreeItemColor::GetItemValue() {
+LPARAM CPropTreeItemColor::GetItemValue()
+{
 	return m_cColor;
 }
 
-
-void CPropTreeItemColor::SetItemValue( LPARAM lParam ) {
+void CPropTreeItemColor::SetItemValue( LPARAM lParam )
+{
 	m_cColor = lParam;
 }
 
-
-void CPropTreeItemColor::OnMove() {
+void CPropTreeItemColor::OnMove()
+{
 }
 
-
-void CPropTreeItemColor::OnRefresh() {
+void CPropTreeItemColor::OnRefresh()
+{
 }
 
-
-void CPropTreeItemColor::OnCommit() {
+void CPropTreeItemColor::OnCommit()
+{
 	ShowWindow( SW_HIDE );
 }
 
-
-void CPropTreeItemColor::OnActivate( int activateType, CPoint point ) {
+void CPropTreeItemColor::OnActivate( int activateType, CPoint point )
+{
 	CRect r;
 
 	m_cPrevColor = m_cColor;
 
 	float scaling_factor = Win_GetWindowScalingFactor( m_pProp->GetSafeHwnd() );
 
-	r = m_rc;
-	r.right = r.left + 150 * scaling_factor;
+	r		 = m_rc;
+	r.right	 = r.left + 150 * scaling_factor;
 	r.bottom = r.top + 120 * scaling_factor;
 
 	ASSERT( m_pProp != NULL );
 	m_pProp->GetCtrlParent()->ClientToScreen( r );
 
-	if ( !IsWindow( m_hWnd ) ) {
+	if( !IsWindow( m_hWnd ) )
+	{
 		LPCTSTR pszClassName;
 
 		pszClassName = AfxRegisterWndClass( CS_VREDRAW | CS_HREDRAW, LoadCursor( NULL, IDC_ARROW ), ( HBRUSH )( COLOR_BTNFACE + 1 ) );
@@ -231,26 +237,28 @@ void CPropTreeItemColor::OnActivate( int activateType, CPoint point ) {
 	SetFocus();
 }
 
-
-void CPropTreeItemColor::OnKillFocus( CWnd* pNewWnd ) {
+void CPropTreeItemColor::OnKillFocus( CWnd* pNewWnd )
+{
 	CWnd::OnKillFocus( pNewWnd );
 
-	if ( !m_bInDialog ) {
+	if( !m_bInDialog )
+	{
 		CommitChanges();
 	}
 }
 
-
-void CPropTreeItemColor::OnPaint() {
+void CPropTreeItemColor::OnPaint()
+{
 	CPaintDC dc( this );
-	CPoint pt;
-	float scaling_factor = Win_GetWindowScalingFactor( m_pProp->GetSafeHwnd() );
-	int s3 = int( 3 * scaling_factor );
-	int s7 = int( 7 * scaling_factor );
-	int s13 = int( 13 * scaling_factor );
-	int s18 = int( 18 * scaling_factor );
+	CPoint	 pt;
+	float	 scaling_factor = Win_GetWindowScalingFactor( m_pProp->GetSafeHwnd() );
+	int		 s3				= int( 3 * scaling_factor );
+	int		 s7				= int( 7 * scaling_factor );
+	int		 s13			= int( 13 * scaling_factor );
+	int		 s18			= int( 18 * scaling_factor );
 
-	for ( LONG i = 0; i < 40; i++ ) {
+	for( LONG i = 0; i < 40; i++ )
+	{
 		pt.x = ( i & 7 ) * s18 + s3;
 		pt.y = ( i >> 3 ) * s18 + s3;
 		ColorBox( &dc, pt, _crColors[i].color, m_nSpot == i, scaling_factor );
@@ -271,62 +279,68 @@ void CPropTreeItemColor::OnPaint() {
 	dc.DrawEdge( &m_rcButton, m_bButton ? BDR_SUNKENOUTER : BDR_RAISEDINNER, BF_RECT );
 }
 
-
-void CPropTreeItemColor::OnClose() {
+void CPropTreeItemColor::OnClose()
+{
 	CommitChanges();
 }
 
-
-void CPropTreeItemColor::OnMouseMove( UINT, CPoint point ) {
+void CPropTreeItemColor::OnMouseMove( UINT, CPoint point )
+{
 	BOOL bButton;
 	LONG nSpot;
 
 	nSpot = FindSpot( point );
-	if ( nSpot != m_nSpot ) {
+	if( nSpot != m_nSpot )
+	{
 		Invalidate( FALSE );
 		m_nSpot = nSpot;
 	}
 
 	bButton = m_rcButton.PtInRect( point );
 
-	if ( bButton != m_bButton ) {
+	if( bButton != m_bButton )
+	{
 		m_bButton = bButton;
 		Invalidate( FALSE );
 	}
 }
 
-
-BOOL CPropTreeItemColor::OnSetCursor( CWnd* pWnd, UINT nHitTest, UINT message ) {
-	if ( nHitTest == HTCLIENT ) {
+BOOL CPropTreeItemColor::OnSetCursor( CWnd* pWnd, UINT nHitTest, UINT message )
+{
+	if( nHitTest == HTCLIENT )
+	{
 		CPoint point;
 
 		GetCursorPos( &point );
 		ScreenToClient( &point );
 
-		if ( FindSpot( point ) != -1 || m_rcButton.PtInRect( point ) ) {
+		if( FindSpot( point ) != -1 || m_rcButton.PtInRect( point ) )
+		{
 			SetCursor( LoadCursor( ghInst, MAKEINTRESOURCE( IDC_FPOINT ) ) );
 			return TRUE;
 		}
-
 	}
 
 	return CWnd::OnSetCursor( pWnd, nHitTest, message );
 }
 
-
-void CPropTreeItemColor::OnLButtonDown( UINT, CPoint point ) {
-	if ( m_nSpot != -1 ) {
+void CPropTreeItemColor::OnLButtonDown( UINT, CPoint point )
+{
+	if( m_nSpot != -1 )
+	{
 		m_cColor = _crColors[m_nSpot].color;
 		CommitChanges();
-	} else if ( m_rcButton.PtInRect( point ) ) {
+	}
+	else if( m_rcButton.PtInRect( point ) )
+	{
 		CHOOSECOLOR cc;
-		COLORREF clr[16];
+		COLORREF	clr[16];
 
 		ZeroMemory( &cc, sizeof( CHOOSECOLOR ) );
-		cc.Flags = CC_FULLOPEN | CC_ANYCOLOR | CC_RGBINIT;
-		cc.lStructSize = sizeof( CHOOSECOLOR );
-		cc.hwndOwner = m_hWnd;
-		cc.rgbResult = m_cColor;
+		cc.Flags		= CC_FULLOPEN | CC_ANYCOLOR | CC_RGBINIT;
+		cc.lStructSize	= sizeof( CHOOSECOLOR );
+		cc.hwndOwner	= m_hWnd;
+		cc.rgbResult	= m_cColor;
 		cc.lpCustColors = s_pColors ? s_pColors : clr;
 
 		memset( clr, 0xff, sizeof( COLORREF ) * 16 );
@@ -339,7 +353,8 @@ void CPropTreeItemColor::OnLButtonDown( UINT, CPoint point ) {
 
 		ShowWindow( SW_HIDE );
 
-		if ( ChooseColor( &cc ) ) {
+		if( ChooseColor( &cc ) )
+		{
 			m_cColor = cc.rgbResult;
 		}
 

@@ -272,7 +272,7 @@ static void R_CheckCvars( void ) {
 idRenderSystemLocal::idRenderSystemLocal
 =============
 */
-idRenderSystemLocal::idRenderSystemLocal( void ) {
+idRenderSystemLocal::idRenderSystemLocal( void ) : backEndRendererMaxLight(999) {
 	Clear();
 }
 
@@ -403,14 +403,40 @@ to a fixed color.
 Coordinates are at 640 by 480 virtual resolution
 ==================
 */
-void idRenderSystemLocal::DrawSmallStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor, const idMaterial *material ) {
+void idRenderSystemLocal::DrawSmallStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor, bool shadow, int maxChars, const idMaterial *material ) {
 	idVec4		color;
 	const unsigned char	*s;
 	int			xx;
+	int			cnt;
+
+	if ( maxChars <= 0 ) {
+		maxChars = 32767; // do them all!
+	}
+
+	// draw the drop shadow
+	if ( shadow ) {
+		color[0] = color[1] = color[2] = 0;
+		color[3] = setColor[3];
+		SetColor( color );
+		s = (const unsigned char *)string;
+		xx = x;
+		cnt = 0;
+		while ( *s && cnt < maxChars ) {
+			if ( idStr::IsColor( (const char*)s ) ) {
+				s += 2;
+				continue;
+			}
+			DrawSmallChar( xx + 2, y + 2 /*,charWidth, charHeight*/, *s, material );
+			cnt++;
+			xx += SMALLCHAR_WIDTH;
+			s++;
+		}
+	}
 
 	// draw the colored text
 	s = (const unsigned char*)string;
 	xx = x;
+	cnt = 0;
 	SetColor( setColor );
 	while ( *s ) {
 		if ( idStr::IsColor( (const char*)s ) ) {
@@ -476,16 +502,42 @@ to a fixed color.
 Coordinates are at 640 by 480 virtual resolution
 ==================
 */
-void idRenderSystemLocal::DrawBigStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor, const idMaterial *material ) {
+void idRenderSystemLocal::DrawBigStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor, bool shadow, int maxChars, const idMaterial *material ) {
 	idVec4		color;
 	const char	*s;
 	int			xx;
+	int			cnt;
+
+	if ( maxChars <= 0 ) {
+		maxChars = 32767; // do them all!
+	}
+
+	// draw the drop shadow
+	if ( shadow ) {
+		color[0] = color[1] = color[2] = 0;
+		color[3] = setColor[3];
+		SetColor( color );
+		s = string;
+		xx = x;
+		cnt = 0;
+		while ( *s && cnt < maxChars) {
+			if ( idStr::IsColor( s ) ) {
+				s += 2;
+				continue;
+			}
+			DrawBigChar( xx + 2, y + 2 /*,charWidth, charHeight*/, *s, material );
+			cnt++;
+			xx += BIGCHAR_WIDTH;
+			s++;
+		}
+	}
 
 	// draw the colored text
 	s = string;
 	xx = x;
+	cnt = 0;
 	SetColor( setColor );
-	while ( *s ) {
+	while ( *s && cnt < maxChars ) {
 		if ( idStr::IsColor( s ) ) {
 			if ( !forceColor ) {
 				if ( *(s+1) == C_COLOR_DEFAULT ) {

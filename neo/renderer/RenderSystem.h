@@ -60,11 +60,11 @@ typedef struct glconfig_s {
 
 	bool				multitextureAvailable;
 	bool				textureCompressionAvailable;
+	bool				bptcTextureCompressionAvailable; // DG: for GL_ARB_texture_compression_bptc (BC7)
 	bool				anisotropicAvailable;
 	bool				textureLODBiasAvailable;
 	bool				textureEnvAddAvailable;
 	bool				textureEnvCombineAvailable;
-	bool				registerCombinersAvailable;
 	bool				cubeMapAvailable;
 	bool				envDot3Available;
 	bool				texture3DAvailable;
@@ -156,6 +156,14 @@ typedef struct {
 	char				name[64];
 } fontInfoEx_t;
 
+typedef enum {
+	FORMAT_NONE = -1,
+	FORMAT_TGA,
+	FORMAT_BMP,
+	FORMAT_PNG,
+	FORMAT_JPEG,
+} SShotFormat_t;
+
 const int SMALLCHAR_WIDTH		= 8;
 const int SMALLCHAR_HEIGHT		= 16;
 const int BIGCHAR_WIDTH			= 16;
@@ -188,12 +196,22 @@ public:
 	virtual bool			IsOpenGLRunning( void ) const = 0;
 
 	virtual bool			IsFullScreen( void ) const = 0;
+
 	// NOTE: this is the physical width of the GL drawable (framebuffer) in pixels,
 	//      *not* the logical window size (in case of HighDPI that's not the same!)
 	virtual int				GetScreenWidth( void ) const = 0;
+
 	// NOTE: this is the physical height of the GL drawable (framebuffer) in pixels,
 	//      *not* the logical window size (in case of HighDPI that's not the same!)
 	virtual int				GetScreenHeight( void ) const = 0;
+
+	// NOTE: this is the logical windows width in pixels,
+	//      *not* the GL drawable (framebuffer) see GetScreenWidth()
+	virtual int				GetWindowsWidth( void ) const = 0;
+
+	// NOTE: this is the logical windows height in pixels,
+	//      *not* the GL drawable (framebuffer) see GetScreenHeight()
+	virtual int				GetWindowsHeight( void ) const = 0;
 
 	// allocate a renderWorld to be used for drawing
 	virtual idRenderWorld *	AllocRenderWorld( void ) = 0;
@@ -223,9 +241,9 @@ public:
 	virtual void			PrintMemInfo( MemInfo_t *mi ) = 0;
 
 	virtual void			DrawSmallChar( int x, int y, int ch, const idMaterial *material ) = 0;
-	virtual void			DrawSmallStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor, const idMaterial *material ) = 0;
+	virtual void			DrawSmallStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor, bool shadow, int maxChars, const idMaterial *material ) = 0;
 	virtual void			DrawBigChar( int x, int y, int ch, const idMaterial *material ) = 0;
-	virtual void			DrawBigStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor, const idMaterial *material ) = 0;
+	virtual void			DrawBigStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor, bool shadow, int maxChars, const idMaterial *material ) = 0;
 
 	virtual void			SetEntireSceneMaterial( idMaterial *material ) = 0; // HUMANHEAD CJR
 	virtual bool			IsScopeView() = 0;// HUMANHEAD CJR
@@ -258,7 +276,7 @@ public:
 	// This will perform swapbuffers, so it is NOT an approppriate way to
 	// generate image files that happen during gameplay, as for savegame
 	// markers.  Use WriteRender() instead.
-	virtual void			TakeScreenshot( int width, int height, const char *fileName, int samples, struct renderView_s *ref ) = 0;
+	virtual void			TakeScreenshot( int width, int height, const char *fileName, int samples, struct renderView_s *ref, SShotFormat_t overrideFormat = FORMAT_NONE ) = 0;
 
 	// the render output can be cropped down to a subset of the real screen, as
 	// for save-game reviews and split-screen multiplayer.  Users of the renderer

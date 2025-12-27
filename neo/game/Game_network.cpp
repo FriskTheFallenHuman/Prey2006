@@ -1828,7 +1828,7 @@ gameReturn_t idGameLocal::ClientPrediction( int clientNum, const usercmd_t *clie
 	}
 
 	if ( sessionCommand.Length() ) {
-		strncpy( ret.sessionCommand, sessionCommand, sizeof( ret.sessionCommand ) );
+		idStr::Copynz( ret.sessionCommand, sessionCommand, sizeof( ret.sessionCommand ) );
 	}
 
 	//HUMANHEAD rww

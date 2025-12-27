@@ -31,9 +31,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "../Game_local.h"
 
-// HvG: Debugger support
-extern bool updateGameDebugger( idInterpreter *interpreter, idProgram *program, int instructionPointer );
-
 /*
 ================
 idInterpreter::idInterpreter()
@@ -173,7 +170,7 @@ void idInterpreter::Reset( void ) {
 	currentFunction = 0;
 	NextInstruction( 0 );
 
-	threadDying	=	false;
+	threadDying		= false;
 	doneProcessing	= true;
 }
 
@@ -197,11 +194,11 @@ bool idInterpreter::GetRegisterValue( const char *name, idStr &out, int scopeDep
 	const function_t *func;
 
 	out.Empty();
-	
+
 	if ( scopeDepth == -1 ) {
 		scopeDepth = callStackDepth;
-	}	
-	
+	}
+
 	if ( scopeDepth == callStackDepth ) {
 		func = currentFunction;
 	} else {
@@ -216,7 +213,7 @@ bool idInterpreter::GetRegisterValue( const char *name, idStr &out, int scopeDep
 	if ( funcName ) {
 		*funcName = '\0';
 		scopeObj = gameLocal.program.GetDef( NULL, funcObject, &def_namespace );
-		funcName += 2;				
+		funcName += 2;
 		if ( scopeObj )
 		{
 			scope = gameLocal.program.GetDef( NULL, funcName, scopeObj );
@@ -233,7 +230,7 @@ bool idInterpreter::GetRegisterValue( const char *name, idStr &out, int scopeDep
 	}
 
 	d = gameLocal.program.GetDef( NULL, name, scope );
-	
+
 	// Check the objects for it if it wasnt local to the function
 	if ( !d )
 	{
@@ -245,14 +242,14 @@ bool idInterpreter::GetRegisterValue( const char *name, idStr &out, int scopeDep
 				break;
 			}
 		}
-	}	
+	}
 
 	if ( !d )
 	{
 		out = "???";
 		return false;
 	}
-	
+
 	reg = GetVariable( d );
 	switch( d->Type() ) {
 	case ev_float:
@@ -265,7 +262,7 @@ bool idInterpreter::GetRegisterValue( const char *name, idStr &out, int scopeDep
 		break;
 
 	case ev_vector:
-		if ( reg.vectorPtr ) {				
+		if ( reg.vectorPtr ) {
 			out = va( "%g,%g,%g", reg.vectorPtr->x, reg.vectorPtr->y, reg.vectorPtr->z );
 		} else {
 			out = "0,0,0";
@@ -284,9 +281,9 @@ bool idInterpreter::GetRegisterValue( const char *name, idStr &out, int scopeDep
 
 	case ev_field:
 	{
-		idEntity*		entity;			
+		idEntity*		entity;
 		idScriptObject*	obj;
-		
+
 		if ( scope == &def_namespace ) {
 			// should never happen, but handle it safely anyway
 			return false;
@@ -303,7 +300,7 @@ bool idInterpreter::GetRegisterValue( const char *name, idStr &out, int scopeDep
 		if ( !obj ) {
 			return false;
 		}
-		
+
 		switch ( field->Type() ) {
 			case ev_boolean:
 				out = va( "%d", *( reinterpret_cast<int *>( &obj->data[ reg.ptrOffset ] ) ) );
@@ -312,7 +309,7 @@ bool idInterpreter::GetRegisterValue( const char *name, idStr &out, int scopeDep
 			case ev_float:
 				out = va( "%g", *( reinterpret_cast<float *>( &obj->data[ reg.ptrOffset ] ) ) );
 				return true;
-				
+
 			case ev_string:	{
 				const char* str;
 				str = reinterpret_cast<const char*>( &obj->data[ reg.ptrOffset ] );
@@ -320,7 +317,7 @@ bool idInterpreter::GetRegisterValue( const char *name, idStr &out, int scopeDep
 					out = "\"\"";
 				} else {
 					out  = "\"";
-					out += str;			
+					out += str;
 					out += "\"";
 				}
 				return true;
@@ -329,7 +326,7 @@ bool idInterpreter::GetRegisterValue( const char *name, idStr &out, int scopeDep
 			default:
 				return false;
 		}
-		
+
 		break;
 	}
 
@@ -801,11 +798,22 @@ void idInterpreter::CallEvent( const function_t *func, int argsize ) {
 		switch( format[ i ] ) {
 		case D_EVENT_INTEGER :
 			var.intPtr = ( int * )&localstack[ start + pos ];
-			( *( int * )&data[ i ] ) = int( *var.floatPtr );
+			//( *( int * )&data[ i ] ) = int( *var.floatPtr );
+			// DG: for int/intrptr_t arguments, the callbacks from Callbacks.cpp pass
+			//     data[i] directly, not *(int*)&data[i] or some nonsense like that
+			//     so the integer must be assigned to the intptr_t for the value to be
+			//     passed correctly, esp. on 64bit Big Endian machines.
+			data[ i ] = int( *var.floatPtr );
 			break;
 
 		case D_EVENT_FLOAT :
 			var.intPtr = ( int * )&localstack[ start + pos ];
+			// NOTE: floats are the only type not passed as int or pointer in intptr_t,
+			//       but as float-data in the first 4 bytes of data[i].
+			//       So (unlike in the other cases), here this awkward code casting &data[i]
+			//       to another pointer type is actually necessary (same in CallSysEvent()).
+			//       In the other cases one could also use `data[i] = (intptr_t)var.blaPtr;`
+			//       (not doing those changes here now to minimize potential merge conflicts)
 			( *( float * )&data[ i ] ) = *var.floatPtr;
 			break;
 
@@ -948,7 +956,12 @@ void idInterpreter::CallSysEvent( const function_t *func, int argsize ) {
 		switch( format[ i ] ) {
 		case D_EVENT_INTEGER :
 			source.intPtr = ( int * )&localstack[ start + pos ];
-			*( int * )&data[ i ] = int( *source.floatPtr );
+			//*( int * )&data[ i ] = int( *source.floatPtr );
+			// DG: for int/intrptr_t arguments, the callbacks from Callbacks.cpp pass
+			//     data[i] directly, not *(int*)&data[i] or some nonsense like that
+			//     so the integer must be assigned to the intptr_t for the value to be
+			//     passed correctly, esp. on 64bit Big Endian machines.
+			data[ i ] = int( *source.floatPtr );
 			break;
 
 		case D_EVENT_FLOAT :
@@ -1048,9 +1061,9 @@ bool idInterpreter::Execute( void ) {
 		// next statement
 		st = &gameLocal.program.GetStatement( instructionPointer );
 
-		if ( !updateGameDebugger( this, &gameLocal.program, instructionPointer )
-			&& g_debugScript.GetBool( ) ) 
-		{
+		if ( gameLocal.editors & EDITOR_DEBUGGER ) {
+			common->DebuggerCheckBreakpoint ( this, &gameLocal.program, instructionPointer );
+		} else if ( g_debugScript.GetBool ( ) ) {
 			static int lastLineNumber = -1;
 			if ( lastLineNumber != gameLocal.program.GetStatement ( instructionPointer ).linenumber ) {				
 				gameLocal.Printf ( "%s (%d)\n", 
@@ -2085,99 +2098,4 @@ bool idInterpreter::Execute( void ) {
 	}
 
 	return threadDying;
-}
-
-bool idGameEditExt::CheckForBreakPointHit(const idInterpreter* interpreter, const function_t* function1, const function_t* function2, int depth) const
-{
-	return ( ( interpreter->GetCurrentFunction ( ) == function1 ||
-			   interpreter->GetCurrentFunction ( ) == function2)&&
-			 ( interpreter->GetCallstackDepth ( )  <= depth) );
-}
-
-bool idGameEditExt::ReturnedFromFunction(const idProgram* program, const idInterpreter* interpreter, int index) const
-{
-
-	return ( const_cast<idProgram*>(program)->GetStatement(index).op == OP_RETURN && interpreter->GetCallstackDepth ( ) <= 1 );
-}
-
-bool idGameEditExt::GetRegisterValue(const idInterpreter* interpreter, const char* name, idStr& out, int scopeDepth) const
-{
-	return const_cast<idInterpreter*>(interpreter)->GetRegisterValue(name, out, scopeDepth);
-}
-
-const idThread*idGameEditExt::GetThread(const idInterpreter* interpreter) const
-{
-	return interpreter->GetThread();
-}
-
-void idGameEditExt::MSG_WriteCallstackFunc(idBitMsg* msg, const prstack_t* stack, const idProgram * program, int instructionPtr)
-{
-	const statement_t*	st;
-	const function_t*	func;
-
-	func  = stack->f;
-
-	// If the function is unknown then just fill in with default data.
-	if ( !func )
-	{
-		msg->WriteString ( "<UNKNOWN>" );
-		msg->WriteString ( "<UNKNOWN>" );
-		msg->WriteInt ( 0 );
-		return;
-	}
-	else
-	{
-		msg->WriteString ( va("%s(  )", func->Name() ) );
-	}
-
-	if (stack->s == -1) //this is a fake stack created by debugger, use intruction pointer for retrieval.
-		st = &const_cast<idProgram*>( program )->GetStatement( instructionPtr );
-	else // Use the calling statement as the filename and linenumber where the call was made from		
-		st = &const_cast<idProgram*>( program )->GetStatement ( stack->s );
-
-	if ( st )
-	{
-		idStr qpath = const_cast<idProgram*>( program )->GetFilename( st->file );
-		if (idStr::FindChar( qpath, ':' ) != -1)
-			qpath = fileSystem->OSPathToRelativePath( qpath.c_str() );
-		qpath.BackSlashesToSlashes ( );
-		msg->WriteString( qpath );
-		msg->WriteInt( st->linenumber );
-	}
-	else 
-	{
-		msg->WriteString ( "<UNKNOWN>" );
-		msg->WriteInt ( 0 );
-	}
-}
-
-void idGameEditExt::MSG_WriteInterpreterInfo(idBitMsg* msg, const idInterpreter* interpreter, const idProgram* program, int instructionPtr)
-{
-	int			i;
-	prstack_s	temp;
-
-	msg->WriteShort((int)interpreter->GetCallstackDepth( ) );
-
-	// write out the current function
-	temp.f = interpreter->GetCurrentFunction( );
-	temp.s = -1;
-	temp.stackbase = 0;
-	MSG_WriteCallstackFunc( msg, &temp, program, instructionPtr);
-
-	// Run through all of the callstack and write each to the msg
-	for (i = interpreter->GetCallstackDepth() - 1; i > 0; i--)
-	{
-		MSG_WriteCallstackFunc( msg, interpreter->GetCallstack( ) + i, program, instructionPtr);
-	}
-}
-
-
-int idGameEditExt::GetInterpreterCallStackDepth(const idInterpreter* interpreter)
-{
-	return interpreter->GetCallstackDepth();
-}
-
-const function_t*idGameEditExt::GetInterpreterCallStackFunction( const idInterpreter* interpreter, int stackDepth/* = -1*/)
-{
-	return interpreter->GetCallstack( )[ stackDepth > -1 ? stackDepth :interpreter->GetCallstackDepth( ) ].f;
 }

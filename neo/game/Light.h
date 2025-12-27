@@ -88,6 +88,8 @@ public:
 
 	virtual void	ShowEditingDialog( void );
 
+	const renderLight_t& GetRenderLight( void ) const { return renderLight; }
+
 	enum {
 		EVENT_BECOMEBROKEN = idEntity::EVENT_MAXEVENTS,
 		EVENT_MAXEVENTS

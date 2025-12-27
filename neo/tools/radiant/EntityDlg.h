@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -33,27 +34,25 @@ If you have questions concerning this license or the applicable additional terms
 
 // CEntityDlg dialog
 
-class CEntityDlg : public CDialogEx {
+class CEntityDlg : public CDialogEx
+{
 	DECLARE_DYNAMIC( CEntityDlg )
 public:
-	CEntityDlg( CWnd* pParent = NULL );   // standard constructor
+	CEntityDlg( CWnd* pParent = NULL ); // standard constructor
 	virtual ~CEntityDlg();
-	void SetDict( idDict* _dict ) {
-		dict = dict;
-	}
-	void SetEditEntity( idEditorEntity* ent ) {
-		editEntity = ent;
-	}
-	void CreateEntity();
-	void AssignModel();
-	static CPreviewDlg * ShowModelChooser();
-	static CPreviewDlg * ShowGuiChooser();
-	static CPreviewDlg * ShowSoundChooser();
-	static CPreviewDlg * ShowMaterialChooser();
-	static CPreviewDlg * ShowParticleChooser();
-	static CPreviewDlg * ShowSkinChooser( idEditorEntity* ent );
+	void				SetDict( idDict* _dict ) { dict = dict; }
+	void				SetEditEntity( idEditorEntity* ent ) { editEntity = ent; }
+	void				CreateEntity();
+	void				AssignModel();
+	static CPreviewDlg* ShowModelChooser();
+	static CPreviewDlg* ShowGuiChooser();
+	static CPreviewDlg* ShowSoundChooser();
+	static CPreviewDlg* ShowMaterialChooser();
+	static CPreviewDlg* ShowParticleChooser();
+	static CPreviewDlg* ShowSkinChooser( idEditorEntity* ent );
 
-	void SetKeyVal( const char * key, const char * val ) {
+	void				SetKeyVal( const char* key, const char* val )
+	{
 		editKey.SetWindowText( key );
 		editVal.SetWindowText( val );
 	}
@@ -63,72 +62,74 @@ public:
 	void InsertCurvePoint();
 	void DeleteCurvePoint();
 
-// Dialog Data
-	enum { IDD = IDD_DIALOG_ENTITY };
+	// Dialog Data
+	enum
+	{
+		IDD = IDD_DIALOG_ENTITY
+	};
 
 protected:
-	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX ); // DDX/DDV support
 
 public:
-
-	virtual BOOL OnInitDialog();
-	virtual INT_PTR OnToolHitTest( CPoint point, TOOLINFO* pTI ) const;
-	void AddClassNames();
-	void UpdateEntitySel( const eclass_t * ent );
-	void SetKeyValPairs( bool updateAnims = true );
-	static const char * TranslateString( const char * p );
-	void AddProp();
-	void DelProp();
-	void UpdateFromListBox();
-	CEdit editKey;
-	CEdit editVal;
-	void UpdateKeyVal( const char * key, const char * val );
-	void SelectCurvePointByRay( const idVec3& org, const idVec3& dir, int buttons );
-	void UpdateEntityCurve();
-
+	virtual BOOL	   OnInitDialog();
+	virtual INT_PTR	   OnToolHitTest( CPoint point, TOOLINFO* pTI ) const;
+	void			   AddClassNames();
+	void			   UpdateEntitySel( const eclass_t* ent );
+	void			   SetKeyValPairs( bool updateAnims = true );
+	static const char* TranslateString( const char* p );
+	void			   AddProp();
+	void			   DelProp();
+	void			   UpdateFromListBox();
+	CEdit			   editKey;
+	CEdit			   editVal;
+	void			   UpdateKeyVal( const char* key, const char* val );
+	void			   SelectCurvePointByRay( const idVec3& org, const idVec3& dir, int buttons );
+	void			   UpdateEntityCurve();
 
 private:
-	idEditorEntity * editEntity;
-	bool multipleEntities;
-	CPropertyList listKeyVal;
-	CPropertyList listVars;
-	CComboBox comboClass;
-	idDict * dict;
-	const idMD5Anim * currentAnimation;
-	int currentAnimationFrame;
+	idEditorEntity*		 editEntity;
+	bool				 multipleEntities;
+	CPropertyList		 listKeyVal;
+	CPropertyList		 listVars;
+	CComboBox			 comboClass;
+	idDict*				 dict;
+	const idMD5Anim*	 currentAnimation;
+	int					 currentAnimationFrame;
 
-	const char * AngleKey();
+	const char*			 AngleKey();
 
 	idPointListInterface curvePoints;
+
 public:
 	void UpdateFromAnimationFrame( bool updateKeyValueDisplay = true );
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnSize( UINT nType, int cx, int cy );
-	CStatic staticTitle;
-	CStatic staticKey;
-	CStatic staticVal;
-	CStatic staticFrame;
-	CButton btnPlayAnim;
-	CButton btnStopAnim;
-	CButton btnBrowse;
-	CButton btn135;
-	CButton btn90;
-	CButton btn45;
-	CButton btn180;
-	CButton btn360;
-	CButton btn225;
-	CButton btn270;
-	CButton btn315;
-	CButton btnUp;
-	CButton btnDown;
-	CButton btnModel;
-	CButton btnSound;
-	CButton btnGui;
-	CButton btnParticle;
-	CButton btnSkin;
-	CButton btnCurve;
-	CComboBox cbAnimations;
-	CSliderCtrl slFrameSlider;
+	CStatic		 staticTitle;
+	CStatic		 staticKey;
+	CStatic		 staticVal;
+	CStatic		 staticFrame;
+	CButton		 btnPlayAnim;
+	CButton		 btnStopAnim;
+	CButton		 btnBrowse;
+	CButton		 btn135;
+	CButton		 btn90;
+	CButton		 btn45;
+	CButton		 btn180;
+	CButton		 btn360;
+	CButton		 btn225;
+	CButton		 btn270;
+	CButton		 btn315;
+	CButton		 btnUp;
+	CButton		 btnDown;
+	CButton		 btnModel;
+	CButton		 btnSound;
+	CButton		 btnGui;
+	CButton		 btnParticle;
+	CButton		 btnSkin;
+	CButton		 btnCurve;
+	CComboBox	 cbAnimations;
+	CSliderCtrl	 slFrameSlider;
 	afx_msg void OnCbnSelchangeComboClass();
 	afx_msg void OnLbnSelchangeListkeyval();
 	virtual BOOL PreTranslateMessage( MSG* pMsg );
@@ -150,15 +151,14 @@ public:
 	afx_msg void OnBnClickedButtonCreate();
 	afx_msg void OnBnClickedStartAnimation();
 	afx_msg void OnBnClickedStopAnimation();
-	CButton btnCreate;
+	CButton		 btnCreate;
 	afx_msg void OnLbnDblclkListkeyval();
 	afx_msg void OnLbnSelchangeListVars();
 	afx_msg void OnLbnDblclkListVars();
-	void OnNMReleasedcaptureSlider1( NMHDR* pNMHDR, LRESULT* pResult );
+	void		 OnNMReleasedcaptureSlider1( NMHDR* pNMHDR, LRESULT* pResult );
 	afx_msg void OnCbnAnimationChange();
-	void OnTimer( UINT_PTR nIDEvent );
+	void		 OnTimer( UINT_PTR nIDEvent );
 	afx_msg void OnBnClickedButtonParticle();
 	afx_msg void OnBnClickedButtonSkin();
 	afx_msg void OnBnClickedButtonCurve();
-
 };

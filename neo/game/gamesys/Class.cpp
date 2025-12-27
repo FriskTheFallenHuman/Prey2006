@@ -289,8 +289,14 @@ void idClass::FindUninitializedMemory( void ) {
 	size >>= 2;
 	for ( int i = 0; i < size; i++ ) {
 		if ( ptr[i] == 0xcdcdcdcd ) {
+#ifdef ID_USE_TYPEINFO
 			const char *varName = GetTypeVariableName( GetClassname(), i << 2 );
-			gameLocal.Warning( "type '%s' has uninitialized variable %s (offset %d)", GetClassname(), varName, i << 2 );
+			if ( varName == nullptr )
+				continue;
+#else
+			const char *varName = "[unknown]";
+#endif
+			gameLocal.Warning( "type '%s' has uninitialized variable at offset %d: %s", GetClassname(), i << 2, varName );
 		}
 	}
 #endif
@@ -443,10 +449,10 @@ idClass::new
 #endif
 
 void * idClass::operator new( size_t s ) {
-	int *p;
+	intptr_t *p;
 
-	s += sizeof( int );
-	p = (int *)Mem_Alloc( s );
+	s += sizeof( intptr_t );
+	p = (intptr_t *)Mem_Alloc( s );
 	*p = s;
 	memused += s;
 	numobjects++;
@@ -454,7 +460,7 @@ void * idClass::operator new( size_t s ) {
 #ifdef ID_DEBUG_UNINITIALIZED_MEMORY
 	unsigned int *ptr = (unsigned int *)p;
 	int size = s;
-	assert( ( size & 3 ) == 0 );
+	assert( ( size & (sizeof(intptr_t) - 1) ) == 0 );
 	// HUMANHEAD tmj: bugfix - shifting by 2 gives the number of DWORDs to fill.
 	// Shifting by 3 is incorrect as it only fills the memory half way.
 	size >>= 2;
@@ -467,10 +473,10 @@ void * idClass::operator new( size_t s ) {
 }
 
 void * idClass::operator new( size_t s, int, int, char *, int ) {
-	int *p;
+	intptr_t *p;
 
-	s += sizeof( int );
-	p = (int *)Mem_Alloc( s );
+	s += sizeof( intptr_t );
+	p = (intptr_t *)Mem_Alloc( s );
 	*p = s;
 	memused += s;
 	numobjects++;
@@ -478,7 +484,7 @@ void * idClass::operator new( size_t s, int, int, char *, int ) {
 #ifdef ID_DEBUG_UNINITIALIZED_MEMORY
 	unsigned int *ptr = (unsigned int *)p;
 	int size = s;
-	assert( ( size & 3 ) == 0 );
+	assert( ( size & (sizeof(intptr_t) - 1) ) == 0 );
 	// HUMANHEAD tmj: bugfix - shifting by 2 gives the number of DWORDs to fill.
 	// Shifting by 3 is incorrect as it only fills the memory half way.
 	size >>= 2;
@@ -500,10 +506,10 @@ idClass::delete
 ================
 */
 void idClass::operator delete( void *ptr ) {
-	int *p;
+	intptr_t *p;
 
 	if ( ptr ) {
-		p = ( ( int * )ptr ) - 1;
+		p = ( ( intptr_t * )ptr ) - 1;
 		memused -= *p;
 		numobjects--;
 		Mem_Free( p );
@@ -511,10 +517,10 @@ void idClass::operator delete( void *ptr ) {
 }
 
 void idClass::operator delete( void *ptr, int, int, char *, int ) {
-	int *p;
+	intptr_t *p;
 
 	if ( ptr ) {
-		p = ( ( int * )ptr ) - 1;
+		p = ( ( intptr_t * )ptr ) - 1;
 		memused -= *p;
 		numobjects--;
 		Mem_Free( p );

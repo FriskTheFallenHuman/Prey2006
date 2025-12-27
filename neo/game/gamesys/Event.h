@@ -47,7 +47,7 @@ If you have questions concerning this license or the applicable additional terms
 #define D_EVENT_TRACE				't'
 #define D_EVENT_INTPTR				'y'
 
-#define MAX_EVENTS					4096
+#define MAX_EVENTS					8192		// Upped from 4096
 
 //HUMANHEAD: aob - needed for networking to send the least amount of bits
 extern const int MAX_EVENTS_NUM_BITS;

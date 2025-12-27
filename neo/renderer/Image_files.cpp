@@ -32,7 +32,6 @@ If you have questions concerning this license or the applicable additional terms
 // DG: replace libjpeg with stb_image.h because it causes fewer headaches
 #define STBI_NO_HDR
 #define STBI_NO_LINEAR
-#define STBI_ONLY_JPEG // at least for now, only use it for JPEG
 #define STBI_NO_STDIO  // images are passed as buffers
 #include "stb_image.h"
 
@@ -51,7 +50,7 @@ void R_LoadImage( const char *name, byte **pic, int *width, int *height, bool ma
 R_WriteTGA
 ================
 */
-void R_WriteTGA( const char *filename, const byte *data, int width, int height, bool flipVertical ) {
+void R_WriteTGA( const char *filename, const byte *data, int width, int height, bool flipVertical, const char* basePath ) {
 	byte	*buffer;
 	int		i;
 	int		bufferSize = width*height*4 + 18;
@@ -77,7 +76,7 @@ void R_WriteTGA( const char *filename, const byte *data, int width, int height, 
 		buffer[i+3] = data[i-imgStart+3];		// alpha
 	}
 
-	fileSystem->WriteFile( filename, buffer, bufferSize );
+	fileSystem->WriteFile( filename, buffer, bufferSize, basePath );
 
 	Mem_Free (buffer);
 }
@@ -830,6 +829,21 @@ If pic is NULL, the image won't actually be loaded, it will just find the
 timestamp.
 =================
 */
+
+typedef struct {
+	const char *ext;
+	void (*ImageLoader)( const char *filename, byte **pic, int *width, int *height, ID_TIME_T *timestamp );
+} imageExtToLoader_t;
+
+static imageExtToLoader_t imageLoaders[] = {
+	{ "tga", LoadTGA },
+	{ "jpg", LoadJPG },
+	{ "pcx", LoadPCX32 },
+	{ "bmp", LoadBMP },
+};
+
+static const int numImageLoaders = sizeof( imageLoaders ) / sizeof( imageLoaders[0] );
+
 void R_LoadImage( const char *cname, byte **pic, int *width, int *height, ID_TIME_T *timestamp, bool makePowerOf2 ) {
 	idStr name = cname;
 
@@ -848,7 +862,7 @@ void R_LoadImage( const char *cname, byte **pic, int *width, int *height, ID_TIM
 
 	name.DefaultFileExtension( ".tga" );
 
-	if (name.Length()<5) {
+	if ( name.Length() < 5 ) {
 		return;
 	}
 
@@ -856,19 +870,36 @@ void R_LoadImage( const char *cname, byte **pic, int *width, int *height, ID_TIM
 	idStr ext;
 	name.ExtractFileExtension( ext );
 
-	if ( ext == "tga" ) {
-		LoadTGA( name.c_str(), pic, width, height, timestamp );            // try tga first
-		if ( ( pic && *pic == 0 ) || ( timestamp && *timestamp == FILE_NOT_FOUND_TIMESTAMP ) ) {
-			name.StripFileExtension();
-			name.DefaultFileExtension( ".jpg" );
-			LoadJPG( name.c_str(), pic, width, height, timestamp );
+	// try
+	if ( !ext.IsEmpty() ) {
+		// try only the image with the specified extension: default .tga
+		int i;
+		for ( i = 0; i < numImageLoaders; i++ ) {
+			if ( !ext.Icmp( imageLoaders[i].ext ) ) {
+				imageLoaders[i].ImageLoader( name.c_str(), pic, width, height, timestamp );
+				break;
+			}
 		}
-	} else if ( ext == "pcx" ) {
-		LoadPCX32( name.c_str(), pic, width, height, timestamp );
-	} else if ( ext == "bmp" ) {
-		LoadBMP( name.c_str(), pic, width, height, timestamp );
-	} else if ( ext == "jpg" ) {
-		LoadJPG( name.c_str(), pic, width, height, timestamp );
+
+		if ( i < numImageLoaders ) {
+			if ( ( pic && *pic == NULL ) || ( timestamp && *timestamp == FILE_NOT_FOUND_TIMESTAMP ) ) {
+				// image with the specified extension was not found so try all extensions
+				for ( i = 0; i < numImageLoaders; i++ )	{
+					name.SetFileExtension( imageLoaders[i].ext );
+					imageLoaders[i].ImageLoader( name.c_str(), pic, width, height, timestamp );
+
+					if( pic && *pic != NULL ) {
+						//idLib::Warning( "image %s failed to load, using %s instead", origName.c_str(), name.c_str());
+						break;
+					}
+
+					if ( !pic && timestamp && *timestamp != FILE_NOT_FOUND_TIMESTAMP ) {
+						// we are only interested in the timestamp and we got one
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	if ( ( width && *width < 1 ) || ( height && *height < 1 ) ) {
@@ -901,12 +932,18 @@ void R_LoadImage( const char *cname, byte **pic, int *width, int *height, ID_TIM
 			if ( globalImages->image_roundDown.GetBool() && scaled_height > h ) {
 				scaled_height >>= 1;
 			}
+			int outWidth = scaled_width;
+			int outHeight = scaled_height;
+			resampledBuffer = R_ResampleTexture( *pic, w, h, outWidth, outHeight );
+			if ( outWidth != scaled_width || outHeight != scaled_height ) {
+				common->Warning( "Texture '%s' didn't have power-of-two size *and* was too big, scaled from %dx%d to %dx%d",
+				                 name.c_str(), w, h, outWidth, outHeight );
+			}
 
-			resampledBuffer = R_ResampleTexture( *pic, w, h, scaled_width, scaled_height );
 			R_StaticFree( *pic );
 			*pic = resampledBuffer;
-			*width = scaled_width;
-			*height = scaled_height;
+			*width = outWidth;
+			*height = outHeight;
 		}
 	}
 }
@@ -921,16 +958,29 @@ Loads six files with proper extensions
 */
 bool R_LoadCubeImages( const char *imgName, cubeFiles_t extensions, byte *pics[6], int *outSize, ID_TIME_T *timestamp ) {
 	int		i, j;
-	const char	*cameraSides[6] =  { "_forward.tga", "_back.tga", "_left.tga", "_right.tga",
-		"_up.tga", "_down.tga" };
-	const char	*axisSides[6] =  { "_px.tga", "_nx.tga", "_py.tga", "_ny.tga",
-		"_pz.tga", "_nz.tga" };
+	// Doom 3 Style skybox system
+	const char	*cameraSides[6] =  { "_forward.tga", "_back.tga", "_left.tga", "_right.tga", "_up.tga", "_down.tga" };
+
+	// motorsep 12-30-2022; order didn't really matter. Naming and transforms matter. Bixorama doesn't generate sequence with "_forward". Replaced that with "_front".
+	// also adjusted transforms to work with cubemap generated by Bixorama out of the box. Equirec > Bixorama > Cubemap (individual sides) > Engine. No more manual transforms in GIMP.
+	const char *cameraSidesAlt[6] = { "_right.tga", "_left.tga", "_front.tga", "_back.tga", "_up.tga", "_down.tga" };
+
+	// Source Engine style skybox system
+	const char* cameraSidesSource[6] = { "bk.tga", "dn.tga", "ft.tga", "lf.tga", "rt.tga", "up.tga" };
+
+	// Doom 3 Alt skybox system ( <skyname>BK, <skyname>DN, <skyname>FT, <skyname>LF, <skyname>RT <skyname>UP )
+	const char	*axisSides[6] =  { "_px.tga", "_nx.tga", "_py.tga", "_ny.tga", "_pz.tga", "_nz.tga" };
+
 	const char	**sides;
 	char	fullName[MAX_IMAGE_NAME];
 	int		width, height, size = 0;
 
 	if ( extensions == CF_CAMERA ) {
 		sides = cameraSides;
+	} else if ( extensions == CF_CAMERA_ALT ) {
+		sides = cameraSidesAlt;
+	} else if ( extensions == CF_CAMERA_SOURCE ) {
+		sides = cameraSidesSource;
 	} else {
 		sides = axisSides;
 	}
@@ -972,10 +1022,10 @@ bool R_LoadCubeImages( const char *imgName, cubeFiles_t extensions, byte *pics[6
 			// convert from "camera" images to native cube map images
 			switch( i ) {
 			case 0:	// forward
-				R_RotatePic( pics[i], width);
+				R_RotatePic( pics[i], width );
 				break;
 			case 1:	// back
-				R_RotatePic( pics[i], width);
+				R_RotatePic( pics[i], width );
 				R_HorizontalFlip( pics[i], width, height );
 				R_VerticalFlip( pics[i], width, height );
 				break;
@@ -986,10 +1036,36 @@ bool R_LoadCubeImages( const char *imgName, cubeFiles_t extensions, byte *pics[6
 				R_HorizontalFlip( pics[i], width, height );
 				break;
 			case 4:	// up
-				R_RotatePic( pics[i], width);
+				R_RotatePic( pics[i], width );
 				break;
 			case 5: // down
-				R_RotatePic( pics[i], width);
+				R_RotatePic( pics[i], width );
+				break;
+			}
+		} else if ( pics && ( extensions == CF_CAMERA_ALT || extensions == CF_CAMERA_SOURCE ) ) { // motorsep 12-30-2022; to use with cubemaps created from equirectangular panoramas in Bixorama (or perhaps any other similar software)
+			switch ( i ) {
+			case 0:	// forward
+				R_RotatePic( pics[i], width );
+				break;
+			case 1:	// back
+				R_RotatePic( pics[i], width );
+				R_HorizontalFlip( pics[i], width, height );
+				R_VerticalFlip( pics[i], width, height );
+				break;
+			case 2:	// left
+				R_VerticalFlip( pics[i], width, height );
+				break;
+			case 3:	// right
+				R_HorizontalFlip( pics[i], width, height );
+				break;
+			case 4:	// up
+				R_RotatePic( pics[i], width );
+				R_RotatePic( pics[i], width );
+				R_VerticalFlip( pics[i], width, height );
+				break;
+			case 5: // down
+				//R_RotatePic( pics[i], width );
+				R_HorizontalFlip( pics[i], width, height );
 				break;
 			}
 		}

@@ -542,7 +542,7 @@ for ( ent = spawnedEntities.Next(); ent != NULL; ent = ent->spawnNode.Next() ) {
         idLight *light = static_cast<idLight *>(ent);
     }
 }*/
-	//FIXME: Use gameEdit->FindEntity ???
+	//FIXME: Use gameEditLocal.FindEntity ???
 	for (int ix=0; ix<gameLocal.num_entities; ix++) {
 		ent = gameLocal.entities[ix];
 		if (!ent) {

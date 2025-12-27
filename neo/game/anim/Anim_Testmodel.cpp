@@ -797,6 +797,15 @@ void idTestModel::TestModel_f( const idCmdArgs &args ) {
 				name.DefaultFileExtension( ".ase" );
 			}
 
+#ifdef ID_MAYA_IMPORT_TOOL
+			// Maya ascii format is supported natively now
+			if ( strstr( name, ".ma" ) || strstr( name, ".mb" ) ) {
+				idModelExport exporter;
+				exporter.ExportModel( name );
+				name.SetFileExtension( MD5_MESH_EXT );
+			}
+#endif
+
 			if ( !renderModelManager->CheckModel( name ) ) {
 				gameLocal.Printf( "Can't register model\n" );
 				return;
@@ -835,7 +844,7 @@ void idTestModel::ArgCompletion_TestModel( const idCmdArgs &args, void(*callback
 	for ( i = 0; i < num; i++ ) {
 		callback( idStr( args.Argv( 0 ) ) + " " + declManager->DeclByIndex( DECL_MODELDEF, i , false )->GetName() );
 	}
-	cmdSystem->ArgCompletion_FolderExtension( args, callback, "models/", false, ".lwo", ".ase", ".md5mesh", ".ma", ".mb", NULL );
+	cmdSystem->ArgCompletion_FolderExtension( args, callback, false, "models/", ".lwo", ".ase", ".md5mesh", ".md3", ".ma", ".mb", ".obj", NULL );
 }
 
 /*

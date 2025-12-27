@@ -34,9 +34,8 @@ If you have questions concerning this license or the applicable additional terms
 ===============================================================================
 */
 
-#define GAME_NAME						"Prey"			// appears on window titles and errors
-
-#define	ENGINE_VERSION					"Prey 1.5"		// printed in console
+#define GAME_NAME						"Prey"		// appears in errors
+#define	ENGINE_VERSION					"Prey 1.5.4 - Pre release 1"	// printed in console, used for window title
 
 #ifdef ID_REPRODUCIBLE_BUILD
 	// for reproducible builds we hardcode values that would otherwise come from __DATE__ and __TIME__
@@ -52,9 +51,9 @@ If you have questions concerning this license or the applicable additional terms
 // paths
 //HUMANHEAD jsh PCF 5/26/06: prey demo uses "base" so that save games all go in same folder
 //#ifdef ID_DEMO_BUILD
-//	#define BASE_GAMEDIR					"demo"
+//	#define BASE_GAMEDIR				"demo"
 //#else
-	#define	BASE_GAMEDIR					"base"
+	#define	BASE_GAMEDIR				"base"
 //#endif
 
 // filenames
@@ -92,32 +91,45 @@ If you have questions concerning this license or the applicable additional terms
 
 // see ASYNC_PROTOCOL_VERSION
 // use a different major for each game
-//Q4MASTER
-//use 2
-#ifdef ID_DEMO_BUILD
-#define ASYNC_PROTOCOL_MAJOR			4	// Doom3=1, Quake4=2, Prey=3, Prey Demo=4
-#else
-#define ASYNC_PROTOCOL_MAJOR			3	// Doom3=1, Quake4=2, Prey=3
-#endif
+// 1: Doom3
+// 2: Quake4
+// 3: Prey
+// 4: Prey Demo
+// 5: Prey (2006 Source Port)
+#define ASYNC_PROTOCOL_MAJOR			5
 
 // Savegame Version
 // Update when you can no longer maintain compatibility with previous savegames
 // NOTE: a seperate core savegame version and game savegame version could be useful
+// 16: Doom v1.1
+// 17: Doom v1.2 / D3XP. Can still read old v16 with defaults for new data
+// 18: dhewm3 with CstDoom3 anchored window support - can still read v16 and v17, unless gamedata changed
+// 114: Prey
 #define SAVEGAME_VERSION				114
 
-#define RENDERDEMO_VERSION				100
+// <= Doom v1.1: 1. no DS_VERSION token ( default )
+// Doom v1.2: 2
+// Prey: 100
+// Prey (2006): 101 - Unlikely we would encounter a demo, but since its basically impossible to load them here
+#define RENDERDEMO_VERSION				101
 
-// editor info
-#define TOOLS_REGISTRY_PATH				"Software\\Human Head\\Prey\\Tools\\"
-#define EDITOR_REGISTRY_KEY				"PreyEditor"
-#define EDITOR_WINDOWTEXT				"PREDITOR"
+#ifdef _WIN32
+	// editor info
+	#define TOOLS_REGISTRY_PATH				"Software\\Human Head\\Prey\\Tools\\"
+	#define EDITOR_REGISTRY_KEY				"PreyEditor"
+	#define EDITOR_WINDOWTEXT				"PREDITOR"
 
-// win32 info
-#define WIN32_CONSOLE_CLASS				"Prey WinConsole"
+	// win32 info classes
+	#define WIN32_CONSOLE_CLASS				"Prey WinConsole"
+#endif // _WIN32
 
 // Linux info
 #ifndef LINUX_DEFAULT_PATH // allow overriding it from the build system with -DLINUX_DEFAULT_PATH="/bla/foo/whatever"
-	#define LINUX_DEFAULT_PATH			"/usr/local/games/prey06"
+	#ifdef ID_DEMO_BUILD
+		#define LINUX_DEFAULT_PATH			"/usr/local/games/prey06-demo"
+	#else
+		#define LINUX_DEFAULT_PATH			"/usr/local/games/prey06"
+	#endif
 #endif
 
 // CD Key file info

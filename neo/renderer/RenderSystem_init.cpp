@@ -45,10 +45,10 @@ glconfig_t	glConfig;
 idCVar r_inhibitFragmentProgram( "r_inhibitFragmentProgram", "0", CVAR_RENDERER | CVAR_BOOL, "ignore the fragment program extension" );
 idCVar r_useLightPortalFlow( "r_useLightPortalFlow", "1", CVAR_RENDERER | CVAR_BOOL, "use a more precise area reference determination" );
 idCVar r_multiSamples( "r_multiSamples", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "number of antialiasing samples" );
-idCVar r_mode( "r_mode", "-1", CVAR_ARCHIVE | CVAR_RENDERER | CVAR_INTEGER, "video mode number" );
-idCVar r_displayRefresh( "r_displayRefresh", "0", CVAR_RENDERER | CVAR_INTEGER | CVAR_NOCHEAT, "optional display refresh rate option for vid mode", 0.0f, 200.0f );
+idCVar r_mode( "r_mode", "5", CVAR_ARCHIVE | CVAR_RENDERER | CVAR_INTEGER, "video mode number" );
+idCVar r_displayRefresh( "r_displayRefresh", "0", CVAR_RENDERER | CVAR_INTEGER | CVAR_NOCHEAT | CVAR_ARCHIVE, "optional display refresh rate option for vid mode", 0.0f, 500.0f );
 idCVar r_fullscreen( "r_fullscreen", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "0 = windowed, 1 = full screen" );
-idCVar r_fullscreenDesktop( "r_fullscreenDesktop", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "0: 'real' fullscreen mode 1: keep resolution 'desktop' fullscreen mode" );
+idCVar r_fullscreenDesktop( "r_fullscreenDesktop", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL | CVAR_NEW, "0: 'real' fullscreen mode 1: keep resolution 'desktop' fullscreen mode" );
 idCVar r_customWidth( "r_customWidth", "720", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "custom screen width. set r_mode to -1 to activate" );
 idCVar r_customHeight( "r_customHeight", "486", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "custom screen height. set r_mode to -1 to activate" );
 idCVar r_singleTriangle( "r_singleTriangle", "0", CVAR_RENDERER | CVAR_BOOL, "only draw a single triangle per primitive" );
@@ -66,7 +66,6 @@ idCVar r_useTwoSidedStencil( "r_useTwoSidedStencil", "1", CVAR_RENDERER | CVAR_B
 idCVar r_useDeferredTangents( "r_useDeferredTangents", "1", CVAR_RENDERER | CVAR_BOOL, "defer tangents calculations after deform" );
 idCVar r_useCachedDynamicModels( "r_useCachedDynamicModels", "1", CVAR_RENDERER | CVAR_BOOL, "cache snapshots of dynamic models" );
 
-idCVar r_useVertexBuffers( "r_useVertexBuffers", "1", CVAR_RENDERER | CVAR_INTEGER, "use ARB_vertex_buffer_object for vertexes", 0, 1, idCmdSystem::ArgCompletion_Integer<0,1>  );
 idCVar r_useIndexBuffers( "r_useIndexBuffers", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "use ARB_vertex_buffer_object for indexes", 0, 1, idCmdSystem::ArgCompletion_Integer<0,1>  );
 
 idCVar r_useStateCaching( "r_useStateCaching", "1", CVAR_RENDERER | CVAR_BOOL, "avoid redundant state changes in GL_*() calls" );
@@ -80,7 +79,7 @@ idCVar r_swapInterval( "r_swapInterval", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVA
 
 idCVar r_gamma( "r_gamma", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_FLOAT, "changes gamma tables", 0.5f, 3.0f );
 idCVar r_brightness( "r_brightness", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_FLOAT, "changes gamma tables", 0.5f, 2.0f );
-idCVar r_gammaInShader( "r_gammaInShader", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "Set gamma and brightness in shaders instead using hardware gamma" );
+idCVar r_gammaInShader( "r_gammaInShader", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL | CVAR_NEW, "Set gamma and brightness in shaders instead using hardware gamma" );
 
 idCVar r_jitter( "r_jitter", "0", CVAR_RENDERER | CVAR_BOOL, "randomly subpixel jitter the projection matrix" );
 
@@ -130,8 +129,7 @@ idCVar r_skipSubviews( "r_skipSubviews", "0", CVAR_RENDERER | CVAR_INTEGER, "1 =
 idCVar r_skipGuiShaders( "r_skipGuiShaders", "0", CVAR_RENDERER | CVAR_INTEGER, "1 = skip all gui elements on surfaces, 2 = skip drawing but still handle events, 3 = draw but skip events", 0, 3, idCmdSystem::ArgCompletion_Integer<0,3> );
 idCVar r_skipParticles( "r_skipParticles", "0", CVAR_RENDERER | CVAR_INTEGER, "1 = skip all particle systems", 0, 1, idCmdSystem::ArgCompletion_Integer<0,1> );
 idCVar r_subviewOnly( "r_subviewOnly", "0", CVAR_RENDERER | CVAR_BOOL, "1 = don't render main view, allowing subviews to be debugged" );
-idCVar r_shadows( "r_shadows", "1", CVAR_RENDERER | CVAR_BOOL  | CVAR_ARCHIVE, "enable shadows" );
-idCVar r_testARBProgram( "r_testARBProgram", "0", CVAR_RENDERER | CVAR_BOOL, "experiment with vertex/fragment programs" );
+idCVar r_shadows( "r_shadows", "1", CVAR_RENDERER | CVAR_INTEGER  | CVAR_ARCHIVE, "enable shadows, 0 = No shadows 1 = Draw Shadows 2 = Draw Shadows + Extra shadows", 0, 2, idCmdSystem::ArgCompletion_Integer<0,2> );
 idCVar r_testGamma( "r_testGamma", "0", CVAR_RENDERER | CVAR_FLOAT, "if > 0 draw a grid pattern to test gamma levels", 0, 195 );
 idCVar r_testGammaBias( "r_testGammaBias", "0", CVAR_RENDERER | CVAR_FLOAT, "if > 0 draw a grid pattern to test gamma levels" );
 idCVar r_testStepGamma( "r_testStepGamma", "0", CVAR_RENDERER | CVAR_FLOAT, "if > 0 draw a grid pattern to test gamma levels" );
@@ -212,18 +210,18 @@ idCVar r_materialOverride( "r_materialOverride", "", CVAR_RENDERER, "overrides a
 idCVar r_debugRenderToTexture( "r_debugRenderToTexture", "0", CVAR_RENDERER | CVAR_INTEGER, "" );
 
 // DG: let users disable the "scale menus to 4:3" hack
-idCVar r_scaleMenusTo43( "r_scaleMenusTo43", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "Scale menus, fullscreen videos and PDA to 4:3 aspect ratio" );
+idCVar r_scaleMenusTo43( "r_scaleMenusTo43", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL | CVAR_NEW, "Scale menus, fullscreen videos and PDA to 4:3 aspect ratio" );
 // DG: the fscking patent has finally expired
-idCVar r_useCarmacksReverse( "r_useCarmacksReverse", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "Use Z-Fail (Carmack's Reverse) when rendering shadows" );
-idCVar r_useStencilOpSeparate( "r_useStencilOpSeparate", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "Use glStencilOpSeparate() (if available) when rendering shadows" );
-idCVar r_screenshotFormat("r_screenshotFormat", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "Screenshot format. 0 = TGA (default), 1 = BMP, 2 = PNG, 3 = JPG");
-idCVar r_screenshotJpgQuality("r_screenshotJpgQuality", "75", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "Screenshot quality for JPG images (1-100). Lower value means smaller file but worse quality");
-idCVar r_screenshotPngCompression("r_screenshotPngCompression", "3", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER, "Compression level when using PNG screenshots (0-9). Higher levels generate smaller files, but take noticeably longer");
+idCVar r_useCarmacksReverse( "r_useCarmacksReverse", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL | CVAR_NEW, "Use Z-Fail (Carmack's Reverse) when rendering shadows" );
+idCVar r_useStencilOpSeparate( "r_useStencilOpSeparate", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL | CVAR_NEW, "Use glStencilOpSeparate() (if available) when rendering shadows" );
+idCVar r_screenshotFormat("r_screenshotFormat", "0", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER | CVAR_NEW, "Screenshot format. 0 = TGA (default), 1 = BMP, 2 = PNG, 3 = JPG");
+idCVar r_screenshotJpgQuality("r_screenshotJpgQuality", "75", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER | CVAR_NEW, "Screenshot quality for JPG images (1-100). Lower value means smaller file but worse quality");
+idCVar r_screenshotPngCompression("r_screenshotPngCompression", "3", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_INTEGER | CVAR_NEW, "Compression level when using PNG screenshots (0-9). Higher levels generate smaller files, but take noticeably longer");
 // DG: allow freely resizing the window
-idCVar r_windowResizable("r_windowResizable", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "Allow resizing (and maximizing) the window (needs SDL2; with 2.0.5 or newer it's applied immediately)" );
-idCVar r_vidRestartAlwaysFull( "r_vidRestartAlwaysFull", 0, CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL, "Always do a full vid_restart (ignore 'partial' argument), e.g. when changing window size" );
+idCVar r_windowResizable("r_windowResizable", "1", CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL | CVAR_NEW, "Allow resizing (and maximizing) the window (needs SDL2; with 2.0.5 or newer it's applied immediately)" );
+idCVar r_vidRestartAlwaysFull( "r_vidRestartAlwaysFull", 0, CVAR_RENDERER | CVAR_ARCHIVE | CVAR_BOOL | CVAR_NEW, "Always do a full vid_restart (ignore 'partial' argument), e.g. when changing window size" );
 
-idCVar r_glDebugContext( "r_glDebugContext", "0", CVAR_RENDERER | CVAR_BOOL, "Enable OpenGL Debug context - requires vid_restart, needs SDL2" );
+idCVar r_glDebugContext( "r_glDebugContext", "0", CVAR_RENDERER | CVAR_BOOL | CVAR_NEW, "Enable OpenGL Debug context - requires vid_restart, needs SDL2" );
 
 // define qgl functions
 #define QGLPROC(name, rettype, args) rettype (APIENTRYP q##name) args;
@@ -277,14 +275,6 @@ PFNGLSTENCILOPSEPARATEPROC qglStencilOpSeparate;
 // GL_ARB_debug_output
 PFNGLDEBUGMESSAGECALLBACKARBPROC        qglDebugMessageCallbackARB;
 
-// eez: This is a slight hack for letting us select the desired screenshot format in other functions
-//  This is a hack to avoid adding another function parameter to idRenderSystem::TakeScreenshot(),
-//  which would break the API of the dhewm3 SDK for mods.
-//  Note that this is reset to -1 (which means: use value of r_screenshotFormat) at the end of
-//  idRenderSystemLocal::TakeScreenshot(), so if your code wants to enforce a specific format,
-//  it must set g_screenshotFormat accordingly before each call to TakeScreenshot().
-int g_screenshotFormat = -1;
-
 enum {
 	// Not all GL.h header know about GL_DEBUG_SEVERITY_NOTIFICATION_*.
 	QGL_DEBUG_SEVERITY_NOTIFICATION = 0x826B
@@ -295,7 +285,7 @@ enum {
  */
 static void APIENTRY
 DebugCallback( GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
-			  const GLchar *message, const void *userParam )
+              const GLchar *message, const void *userParam )
 {
 	const char* sourceStr = "Source: Unknown";
 	const char* typeStr = "Type: Unknown";
@@ -402,8 +392,12 @@ static void R_CheckPortableExtensions( void ) {
 		glConfig.textureCompressionAvailable = true;
 		qglCompressedTexImage2DARB = (PFNGLCOMPRESSEDTEXIMAGE2DARBPROC)GLimp_ExtensionPointer( "glCompressedTexImage2DARB" );
 		qglGetCompressedTexImageARB = (PFNGLGETCOMPRESSEDTEXIMAGEARBPROC)GLimp_ExtensionPointer( "glGetCompressedTexImageARB" );
+		if ( R_CheckExtension( "GL_ARB_texture_compression_bptc" ) ) {
+			glConfig.bptcTextureCompressionAvailable = true;
+		}
 	} else {
 		glConfig.textureCompressionAvailable = false;
+		glConfig.bptcTextureCompressionAvailable = false;
 	}
 
 	// GL_EXT_texture_filter_anisotropic
@@ -615,7 +609,7 @@ vidmode_t r_vidModes[] = {
 // DG: made this an enum so even stupid compilers accept it as array length below
 enum {	s_numVidModes = sizeof( r_vidModes ) / sizeof( r_vidModes[0] ) };
 
-static bool R_GetModeInfo( int *width, int *height, int mode ) {
+bool R_GetModeInfo( int *width, int *height, int mode ) {
 	vidmode_t	*vm;
 
 	if ( mode < -1 ) {
@@ -853,7 +847,7 @@ void R_InitOpenGL( void ) {
 				cmdSystem->BufferCommandText( CMD_EXEC_NOW, "vid_restart partial windowed\n" );
 				Sys_GrabMouseCursor( false );
 			}
-			int ret = MessageBox( NULL, "Please install OpenGL drivers from your graphics hardware vendor to run " GAME_NAME ".\nYour OpenGL functionality is limited.",
+			int ret = MessageBoxA( NULL, "Please install OpenGL drivers from your graphics hardware vendor to run " GAME_NAME ".\nYour OpenGL functionality is limited.",
 				"Insufficient OpenGL capabilities", MB_OKCANCEL | MB_ICONWARNING | MB_TASKMODAL );
 			if ( ret == IDCANCEL ) {
 				cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "quit\n" );
@@ -1214,7 +1208,7 @@ static float R_RenderingFPS( const renderView_t *renderView ) {
 	while( 1 ) {
 		// render
 		renderSystem->BeginFrame( glConfig.vidWidth, glConfig.vidHeight );
-		tr.primaryWorld->RenderScene(const_cast<renderView_t *>(renderView));
+		tr.primaryWorld->RenderScene( renderView );
 		renderSystem->EndFrame( NULL, NULL );
 		qglFinish();
 		count++;
@@ -1385,7 +1379,7 @@ Downsample is the number of steps to mipmap the image before saving it
 If ref == NULL, session->updateScreen will be used
 ==================
 */
-void idRenderSystemLocal::TakeScreenshot( int width, int height, const char *fileName, int blends, renderView_t *ref ) {
+void idRenderSystemLocal::TakeScreenshot( int width, int height, const char *fileName, int blends, renderView_t *ref, SShotFormat_t overrideFormat ) {
 	byte		*buffer, *swapBuffer;
 	int			i, j;
 
@@ -1431,7 +1425,7 @@ void idRenderSystemLocal::TakeScreenshot( int width, int height, const char *fil
 		memcpy(line1, line2, lineSize);
 		memcpy(line2, swapBuffer, lineSize);
 	}
-	
+
 	idFile* f;
 	if (strstr(fileName, "viewnote")) {
 		f = fileSystem->OpenFileWrite( fileName, "fs_cdpath" );
@@ -1441,27 +1435,26 @@ void idRenderSystemLocal::TakeScreenshot( int width, int height, const char *fil
 	}
 
 	// If no specific format is requested, default to using the CVar value.
-	if (g_screenshotFormat == -1) {
-		g_screenshotFormat = cvarSystem->GetCVarInteger( "r_screenshotFormat" );
+	if ( overrideFormat == -1 ) {
+		overrideFormat = (SShotFormat_t)cvarSystem->GetCVarInteger( "r_screenshotFormat" );
 	}
 
-	switch (g_screenshotFormat) {
+	switch ( overrideFormat ) {
 		default:
+		case FORMAT_TGA:
 			stbi_write_tga_to_func( WriteScreenshotForSTBIW, f, width, height, 3, buffer );
 			break;
-		case 1:
+		case FORMAT_BMP:
 			stbi_write_bmp_to_func( WriteScreenshotForSTBIW, f, width, height, 3, buffer);
 			break;
-		case 2:
+		case FORMAT_PNG:
 			stbi_write_png_compression_level = idMath::ClampInt( 0, 9, r_screenshotPngCompression.GetInteger() );
 			stbi_write_png_to_func( WriteScreenshotForSTBIW, f, width, height, 3, buffer, 3 * width );
 			break;
-		case 3:
+		case FORMAT_JPEG:
 			stbi_write_jpg_to_func( WriteScreenshotForSTBIW, f, width, height, 3, buffer, idMath::ClampInt( 1, 100, r_screenshotJpgQuality.GetInteger() ) );
 			break;
 	}
-
-	g_screenshotFormat = -1;
 
 	fileSystem->CloseFile(f);
 
@@ -1522,7 +1515,7 @@ void R_ScreenshotFilename( int &lastNumber, const char *base, idStr &fileName ) 
 				sprintf(fileName, "%s%i%i%i%i%i.jpg", base, a, b, c, d, e);
 				break;
 		}
-		
+
 		if ( lastNumber == 99999 ) {
 			break;
 		}
@@ -1593,7 +1586,7 @@ void R_ScreenShot_f( const idCmdArgs &args ) {
 	// put the console away
 	console->Close();
 
-	tr.TakeScreenshot( width, height, checkname, blends, NULL );
+	tr.TakeScreenshot( width, height, checkname, blends, NULL, FORMAT_NONE );
 
 	common->Printf( "Wrote %s\n", checkname.c_str() );
 }
@@ -1721,8 +1714,7 @@ void R_EnvShot_f( const idCmdArgs &args ) {
 		ref.height = glConfig.vidHeight;
 		ref.viewaxis = axis[i];
 		sprintf( fullname, "env/%s%s", baseName, extensions[i] );
-		g_screenshotFormat = 0;
-		tr.TakeScreenshot( size, size, fullname, blends, &ref );
+		tr.TakeScreenshot( size, size, fullname, blends, &ref, FORMAT_NONE );
 	}
 
 	common->Printf( "Wrote %s, etc\n", fullname.c_str() );
@@ -1910,7 +1902,7 @@ void R_MakeAmbientMap_f( const idCmdArgs &args ) {
 			}
 			common->Printf( "writing %s\n", fullname.c_str() );
 			session->UpdateScreen();
-			R_WriteTGA( fullname, outBuffer, outSize, outSize );
+			R_WriteTGA( fullname, outBuffer, outSize, outSize, "fs_basepath" );
 		}
 	}
 
@@ -2018,12 +2010,6 @@ static void GfxInfo_f( const idCmdArgs &args ) {
 	} else if ( tss ) {
 		common->Printf( "Using two sided stencil\n" );
 	}
-
-	if ( vertexCache.IsFast() ) {
-		common->Printf( "Vertex cache is fast\n" );
-	} else {
-		common->Printf( "Vertex cache is SLOW\n" );
-	}
 }
 
 /*
@@ -2084,12 +2070,6 @@ void R_VidRestart_f( const idCmdArgs &args ) {
 				return;
 			}
 		}
-	}
-
-	// DG: notify the game DLL about the reloadImages and (non-partial) vid_restart commands
-	if(gameCallbacks.reloadImagesCB != NULL)
-	{
-		gameCallbacks.reloadImagesCB(gameCallbacks.reloadImagesUserArg, args);
 	}
 
 	// this could take a while, so give them the cursor back ASAP
@@ -2329,6 +2309,10 @@ void idRenderSystemLocal::Init( void ) {
 
 	R_InitTriSurfData();
 
+#ifdef ID_BUILD_FREETYPE
+	R_InitFreeType();
+#endif // ID_BUILD_FREETYPE
+
 	globalImages->Init();
 
 	idCinematic::InitCinematic( );
@@ -2358,7 +2342,9 @@ void idRenderSystemLocal::Shutdown( void ) {
 
 	common->SetRefreshOnPrint( false ); // without a renderer there's nothing to refresh
 
+#ifdef ID_BUILD_FREETYPE
 	R_DoneFreeType( );
+#endif // ID_BUILD_FREETYPE
 
 	if ( glConfig.isInitialized ) {
 		globalImages->PurgeAllImages();
@@ -2470,6 +2456,24 @@ idRenderSystemLocal::IsFullScreen
 */
 bool idRenderSystemLocal::IsFullScreen( void ) const {
 	return glConfig.isFullscreen;
+}
+
+/*
+========================
+idRenderSystemLocal::GetWindowsWidth
+========================
+*/
+int idRenderSystemLocal::GetWindowsWidth( void ) const {
+	return glConfig.winWidth;
+}
+
+/*
+========================
+idRenderSystemLocal::GetWindowsHeight
+========================
+*/
+int idRenderSystemLocal::GetWindowsHeight( void ) const {
+	return glConfig.winHeight;
 }
 
 /*
