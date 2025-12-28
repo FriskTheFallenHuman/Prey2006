@@ -33,8 +33,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "AfBodyEditor.h"
 
-#define ARRAY_COUNT IM_ARRAYSIZE
-
 static const char* bodyTypeNames[] = { "none", "box", "octahedron", "dedecahedron", "cylinder", "cone", "bone", "polygon", "polygonvolume", "custom" };
 
 static const char* modifyJointsNames[] = { "axis", "origin", "both" };
@@ -118,7 +116,7 @@ bool AfBodyEditor::Do()
 			body->jointName = joints[comboJoint1];
 			changed			= true;
 		}
-		changed = ImGui::Combo( "Modify", ( int* )&body->jointMod, modifyJointsNames, ARRAY_COUNT( modifyJointsNames ) ) || changed;
+		changed = ImGui::Combo( "Modify", ( int* )&body->jointMod, modifyJointsNames, IM_ARRAYSIZE( modifyJointsNames ) ) || changed;
 		changed = ImGui::InputTextStr( "Contained Joints", &body->containedJoints ) || changed;
 	}
 
@@ -149,7 +147,7 @@ bool AfBodyEditor::Position()
 
 	ImGui::Columns( 2, "positionColumns2" );
 
-	changed = ImGui::Combo( "Type", ( int* )&body->origin.type, afVecTypeNames, ARRAY_COUNT( afVecTypeNames ) ) || changed;
+	changed = ImGui::Combo( "Type", ( int* )&body->origin.type, afVecTypeNames, IM_ARRAYSIZE( afVecTypeNames ) ) || changed;
 
 	ImGui::NextColumn();
 	changed = PositionProperty() || changed;
@@ -266,7 +264,7 @@ bool AfBodyEditor::CollisionModel()
 	ImGui::PushID( "CollisionModel" );
 
 	ImGui::Columns( 2, "collisonColumns2" );
-	changed = ImGui::Combo( "Model Type", &body->modelType, ModelTypeItemGetter, nullptr, ARRAY_COUNT( bodyTypeNames ) ) || changed;
+	changed = ImGui::Combo( "Model Type", &body->modelType, ModelTypeItemGetter, nullptr, IM_ARRAYSIZE( bodyTypeNames ) ) || changed;
 	changed = ImGui::DragFloat( "Density", &body->density ) || changed;
 	ImGui::NextColumn();
 	changed = CollisionModelSize() || changed;
@@ -327,7 +325,7 @@ bool AfBodyEditor::InputAfVector( const char* label, idAFVector* vec )
 
 static bool ModelTypeItemGetter( void* data, int index, const char** out )
 {
-	if( index < 0 || index >= ARRAY_COUNT( bodyTypeNames ) )
+	if( index < 0 || index >= IM_ARRAYSIZE( bodyTypeNames ) )
 	{
 		return false;
 	}

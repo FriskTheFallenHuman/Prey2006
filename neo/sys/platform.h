@@ -339,10 +339,6 @@ typedef bool          BOOL;
 #define FALSE false
 #endif
 
-#ifndef max
-#define max(a, b) (((a) > (b)) ? (a) : (b))
-#endif
-
 #endif
 
 #define	MAX_STRING_CHARS		1024		// max length of a string

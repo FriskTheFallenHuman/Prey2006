@@ -337,10 +337,10 @@ void rvGESelectionMgr::UpdateRectangle( void )
 		idRectangle selRect;
 		selRect = rvGEWindowWrapper::GetWrapper( mSelections[i] )->GetScreenRect();
 
-		mRect.w = max( selRect.x + selRect.w, mRect.w );
-		mRect.h = max( selRect.y + selRect.h, mRect.h );
-		mRect.x = min( selRect.x, mRect.x );
-		mRect.y = min( selRect.y, mRect.y );
+		mRect.w = Max( selRect.x + selRect.w, mRect.w );
+		mRect.h = Max( selRect.y + selRect.h, mRect.h );
+		mRect.x = Min( selRect.x, mRect.x );
+		mRect.y = Min( selRect.y, mRect.y );
 	}
 
 	mRect.w -= mRect.x;

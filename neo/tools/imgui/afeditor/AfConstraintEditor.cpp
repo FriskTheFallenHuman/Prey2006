@@ -33,8 +33,6 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "AfConstraintEditor.h"
 
-#define ARRAY_COUNT IM_ARRAYSIZE
-
 static const char* constraintTypeNames[] = { "Invalid", "Fixed", "Ball and Socket Joint", "Universal Joint", "Hinge", "Slider", "Spring" };
 
 static const char* afVecTypeNames[] = { "coordinates", "joint", "bone center", "bone direction" };
@@ -89,7 +87,7 @@ bool AfConstraintEditor::Do()
 	if( ImGui::CollapsingHeader( "General" ) )
 	{
 		ImGui::Columns( 2, "constraintGeneral2" );
-		changed = ImGui::Combo( "Type##General", ( int* )&constraint->type, constraintTypeNames, ARRAY_COUNT( constraintTypeNames ) ) || changed;
+		changed = ImGui::Combo( "Type##General", ( int* )&constraint->type, constraintTypeNames, IM_ARRAYSIZE( constraintTypeNames ) ) || changed;
 		changed = ImGui::DragFloat( "Friction##Friction", &constraint->friction ) || changed;
 
 		if( constraint->type == DECLAF_CONSTRAINT_SPRING )
@@ -158,7 +156,7 @@ bool AfConstraintEditor::Do()
 	{
 		ImGui::PushID( "Anchor1" );
 		ImGui::Columns( 2, "anchorColumn2" );
-		changed = ImGui::Combo( "Type##anchor", ( int* )&constraint->anchor.type, afVecTypeNames, ARRAY_COUNT( afVecTypeNames ) ) || changed;
+		changed = ImGui::Combo( "Type##anchor", ( int* )&constraint->anchor.type, afVecTypeNames, IM_ARRAYSIZE( afVecTypeNames ) ) || changed;
 		ImGui::NextColumn();
 		changed = InputAfVector( &constraint->anchor ) || changed;
 		ImGui::Columns( 1 );
@@ -171,7 +169,7 @@ bool AfConstraintEditor::Do()
 		{
 			ImGui::PushID( "Anchor2" );
 			ImGui::Columns( 2, "anchorColumn2" );
-			changed = ImGui::Combo( "Type##anchor", ( int* )&constraint->anchor2.type, afVecTypeNames, ARRAY_COUNT( afVecTypeNames ) ) || changed;
+			changed = ImGui::Combo( "Type##anchor", ( int* )&constraint->anchor2.type, afVecTypeNames, IM_ARRAYSIZE( afVecTypeNames ) ) || changed;
 			ImGui::NextColumn();
 			changed = InputAfVector( &constraint->anchor2 ) || changed;
 			ImGui::Columns( 1 );
@@ -185,7 +183,7 @@ bool AfConstraintEditor::Do()
 		{
 			ImGui::PushID( "Shaft 1" );
 			ImGui::Columns( 2, "shaft12" );
-			changed = ImGui::Combo( "Type", ( int* )&constraint->shaft[0].type, afVecTypeNames, ARRAY_COUNT( afVecTypeNames ) ) || changed;
+			changed = ImGui::Combo( "Type", ( int* )&constraint->shaft[0].type, afVecTypeNames, IM_ARRAYSIZE( afVecTypeNames ) ) || changed;
 			ImGui::NextColumn();
 			changed = InputAfVector( &constraint->shaft[0] ) || changed;
 			ImGui::Columns( 1 );
@@ -196,7 +194,7 @@ bool AfConstraintEditor::Do()
 		{
 			ImGui::PushID( "Shaft 2" );
 			ImGui::Columns( 2, "shaft22" );
-			changed = ImGui::Combo( "Type", ( int* )&constraint->shaft[1].type, afVecTypeNames, ARRAY_COUNT( afVecTypeNames ) ) || changed;
+			changed = ImGui::Combo( "Type", ( int* )&constraint->shaft[1].type, afVecTypeNames, IM_ARRAYSIZE( afVecTypeNames ) ) || changed;
 			ImGui::NextColumn();
 			changed = InputAfVector( &constraint->shaft[1] ) || changed;
 			ImGui::Columns( 1 );
@@ -224,7 +222,7 @@ bool AfConstraintEditor::Do()
 		{
 			ImGui::PushID( "LimitType" );
 			ImGui::Columns( 2, "limit2" );
-			changed = ImGui::Combo( "Type", ( int* )&constraint->limit, ConstraintLimitTypeGetter, nullptr, ARRAY_COUNT( constraintLimitTypeNames ) - 1 ) || changed;
+			changed = ImGui::Combo( "Type", ( int* )&constraint->limit, ConstraintLimitTypeGetter, nullptr, IM_ARRAYSIZE( constraintLimitTypeNames ) - 1 ) || changed;
 			ImGui::NextColumn();
 			switch( constraint->limit )
 			{
@@ -245,7 +243,7 @@ bool AfConstraintEditor::Do()
 		{
 			ImGui::PushID( "LimitO" );
 			ImGui::Columns( 2, "limitOrientation2" );
-			changed = ImGui::Combo( "Type", ( int* )&constraint->limitAxis.type, afVecTypeNames, ARRAY_COUNT( afVecTypeNames ) ) || changed;
+			changed = ImGui::Combo( "Type", ( int* )&constraint->limitAxis.type, afVecTypeNames, IM_ARRAYSIZE( afVecTypeNames ) ) || changed;
 			ImGui::NextColumn();
 			changed = InputAfVector( &constraint->limitAxis ) || changed;
 			ImGui::Columns( 1 );
@@ -352,7 +350,7 @@ bool ConstraintLimitTypeGetter( void* data, int index, const char** out )
 {
 	index += 1;
 
-	if( index < 0 || index > ARRAY_COUNT( constraintLimitTypeNames ) )
+	if( index < 0 || index > IM_ARRAYSIZE( constraintLimitTypeNames ) )
 	{
 		*out = constraintLimitTypeNames[0];
 		return false;

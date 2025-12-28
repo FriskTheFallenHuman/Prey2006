@@ -1115,7 +1115,7 @@ float hhVehicle::CmdScale( const usercmd_t* cmd ) const {
 	idVec3 abscmd(abs(cmd->forwardmove), abs(cmd->rightmove), abs(cmd->upmove));
 
 	// Bound the cmd vector to a sphere whose radius is equal to the longest cmd axis
-	int desiredLength = max(max(abscmd[0], abscmd[1]), abscmd[2]);
+	int desiredLength = Max(Max(abscmd[0], abscmd[1]), abscmd[2]);
 	if ( desiredLength != 0.0f ) {
 		float currentLength = abscmd.Length();
 		scale = desiredLength / currentLength;

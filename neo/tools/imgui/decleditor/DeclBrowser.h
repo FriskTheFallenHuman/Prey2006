@@ -28,7 +28,7 @@ If you have questions concerning this license or the applicable additional terms
 */
 
 #ifndef __DECLBROWSER_H__
-	#define __DECBROWSER_H__
+#define __DECLBROWSER_H__
 
 namespace ImGuiTools
 {

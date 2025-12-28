@@ -351,7 +351,9 @@ void Sys_CreateConsole( void ) {
 		return;
 	}
 
+#ifdef _MSC_VER
 	SetWindowTheme( s_wcd.hWnd, L"Explorer", NULL );
+#endif
 
 	//
 	// create fonts

@@ -3427,7 +3427,7 @@ void CMainFrame::OnCameraBack()
 	auto						 currentFrameTime = std::chrono::steady_clock::now();
 	std::chrono::duration<float> deltaTime		  = currentFrameTime - lastFrameTime;
 	lastFrameTime								  = std::chrono::steady_clock::now();
-	float  deltaTimeSeconds						  = std::min( deltaTime.count(), 0.1f );
+	float  deltaTimeSeconds						  = Min( deltaTime.count(), 0.1f );
 
 	// Calculate movement based on delta time
 	float  moveAmount = radiant_cameraMoveSpeed.GetFloat() * deltaTimeSeconds;
@@ -3464,7 +3464,7 @@ void CMainFrame::OnCameraForward()
 	auto						 currentFrameTime = std::chrono::steady_clock::now();
 	std::chrono::duration<float> deltaTime		  = currentFrameTime - lastFrameTime;
 	lastFrameTime								  = std::chrono::steady_clock::now();
-	float  deltaTimeSeconds						  = std::min( deltaTime.count(), 0.1f );
+	float  deltaTimeSeconds						  = Min( deltaTime.count(), 0.1f );
 
 	// Calculate movement based on delta time
 	float  moveAmount = radiant_cameraMoveSpeed.GetFloat() * deltaTimeSeconds;
@@ -3491,7 +3491,7 @@ void CMainFrame::OnCameraLeft()
 	auto						 currentFrameTime = std::chrono::steady_clock::now();
 	std::chrono::duration<float> deltaTime		  = currentFrameTime - lastFrameTime;
 	lastFrameTime								  = std::chrono::steady_clock::now();
-	float  deltaTimeSeconds						  = std::min( deltaTime.count(), 0.1f );
+	float  deltaTimeSeconds						  = Min( deltaTime.count(), 0.1f );
 
 	// Calculate movement based on delta time
 	float  moveAmount = radiant_cameraMoveSpeed.GetFloat() * deltaTimeSeconds;
@@ -3518,7 +3518,7 @@ void CMainFrame::OnCameraRight()
 	auto						 currentFrameTime = std::chrono::steady_clock::now();
 	std::chrono::duration<float> deltaTime		  = currentFrameTime - lastFrameTime;
 	lastFrameTime								  = std::chrono::steady_clock::now();
-	float  deltaTimeSeconds						  = std::min( deltaTime.count(), 0.1f );
+	float  deltaTimeSeconds						  = Min( deltaTime.count(), 0.1f );
 
 	// Calculate movement based on delta time
 	float  moveAmount = radiant_cameraMoveSpeed.GetFloat() * deltaTimeSeconds;

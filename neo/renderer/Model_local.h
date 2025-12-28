@@ -145,7 +145,7 @@ protected:
 	ID_TIME_T						timeStamp;
 
 	// HUMANHEAD pdm
-	idRenderModel *				HH_InstantiateDynamicModel( const struct renderEntity_s *ent, const struct viewDef_s *view, idRenderModel *cachedModel ) {}
+	idRenderModel *				HH_InstantiateDynamicModel( const struct renderEntity_s *ent, const struct viewDef_s *view, idRenderModel *cachedModel ) { return NULL; }
 	void						HH_UpdateSurface( const struct viewDef_s *view, const struct renderEntity_s *ent, modelSurface_t *surf, const int surfaceIndex) {}
 	// HUMANHEAD END
 

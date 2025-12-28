@@ -2343,7 +2343,7 @@ void idCommonLocal::InitCommands( void ) {
 	cmdSystem->AddCommand( "setMachineSpec", Com_SetMachineSpec_f, CMD_FL_SYSTEM, "detects system capabilities and sets com_machineSpec to appropriate value" );
 	cmdSystem->AddCommand( "execMachineSpec", Com_ExecMachineSpec_f, CMD_FL_SYSTEM, "execs the appropriate config files and sets cvars based on com_machineSpec" );
 
-	cmdSystem->AddCommand( "dhewm3Settings", Com_Dhewm3Settings_f, CMD_FL_SYSTEM, "Toggles (opens/closes) the (advanced) dhewm3 settings menu" );
+	cmdSystem->AddCommand( "dhewm3Settings", Com_Dhewm3Settings_f, CMD_FL_SYSTEM, "Toggles (opens/closes) the (advanced) settings menu" );
 
 #if	!defined( ID_DEMO_BUILD ) && !defined( ID_DEDICATED )
 	// compilers
@@ -2357,7 +2357,7 @@ void idCommonLocal::InitCommands( void ) {
 	cmdSystem->AddCommand( "MatbuildDir", MatBuildDir_f, CMD_FL_TOOL, "builds interaction materials for a given directory.", idCmdSystem::ArgCompletion_MapName );
 #endif
 
-#ifdef ID_ALLOW_TOOLS
+#ifndef IMGUI_DISABLE
 	// editors
 	cmdSystem->AddCommand( "editLights", Com_EditLights_f, CMD_FL_TOOL, "launches the in-game Light Editor" );
 	cmdSystem->AddCommand( "editSounds", Com_EditSounds_f, CMD_FL_TOOL, "launches the in-game Sound Editor" );
@@ -2367,6 +2367,9 @@ void idCommonLocal::InitCommands( void ) {
 	cmdSystem->AddCommand( "editScripts", Com_EditScripts_f, CMD_FL_TOOL, "launches the in-game Script Editor" );
 	//BSM Nerve: Add support for the material editor
 	cmdSystem->AddCommand( "materialEditor", Com_MaterialEditor_f, CMD_FL_TOOL, "launches the Material Editor" );
+#endif
+
+#ifdef ID_ALLOW_TOOLS
 #ifdef _WIN32
 	cmdSystem->AddCommand( "editor", Com_Editor_f, CMD_FL_TOOL, "launches the level editor Radiant" );
 	cmdSystem->AddCommand( "editGUIs", Com_EditGUIs_f, CMD_FL_TOOL, "launches the GUI Editor" );
