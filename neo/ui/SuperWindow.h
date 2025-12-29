@@ -15,12 +15,12 @@ public:
     hhSuperWindow(idDeviceContext *d, idUserInterfaceLocal *gui);
 
     virtual idWinVar *  GetWinVarByName(const char *_name, bool winLookup = false, drawWin_t **owner = NULL);
-	virtual void		PostParse();
+	virtual void		PostParse(void);
 	virtual void		Draw(int time, float x, float y);
 
 private:
     virtual bool		ParseInternalVar(const char *name, idParser *src);
-	void				CommonInit();
+	void				CommonInit(void);
 
     hhBackgroundGroup   barMat; // leftMat topMat cornerMat // RO; non-ref; non-script;
     idVec2              cornerSize; // RO; non-ref; non-script;
