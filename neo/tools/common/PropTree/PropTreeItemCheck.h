@@ -23,60 +23,56 @@
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeItemCheck window
 
-class PROPTREE_API CPropTreeItemCheck : public CButton, public CPropTreeItem {
-// Construction
+class PROPTREE_API CPropTreeItemCheck : public CButton, public CPropTreeItem
+{
+	// Construction
 public:
 	CPropTreeItemCheck();
 	virtual ~CPropTreeItemCheck();
 
-// Attributes
+	// Attributes
 public:
 	// The attribute area needs drawing
-	virtual void DrawAttribute( CDC* pDC, const RECT& rc );
+	virtual void   DrawAttribute( CDC* pDC, const RECT& rc );
 
 	// Retrieve the item's attribute value
 	virtual LPARAM GetItemValue();
 
 	// Set the item's attribute value
-	virtual void SetItemValue( LPARAM lParam );
+	virtual void   SetItemValue( LPARAM lParam );
 
 	// Called when attribute area has changed size
-	virtual void OnMove();
+	virtual void   OnMove();
 
 	// Called when the item needs to refresh its data
-	virtual void OnRefresh();
+	virtual void   OnRefresh();
 
 	// Called when the item needs to commit its changes
-	virtual void OnCommit();
+	virtual void   OnCommit();
 
 	// Called to activate the item
-	virtual void OnActivate( int activateType, CPoint point );
+	virtual void   OnActivate( int activateType, CPoint point );
 
-	bool HitCheckBoxTest( const POINT& pt );
+	bool		   HitCheckBoxTest( const POINT& pt );
 
-	bool CreateCheckBox();
+	bool		   CreateCheckBox();
 
-	BOOL		GetCheckState() {
-		return checkState;
-	};
-	void	SetCheckState( BOOL state );
-
+	BOOL		   GetCheckState() { return checkState; };
+	void		   SetCheckState( BOOL state );
 
 protected:
-	BOOL checkState;
+	BOOL  checkState;
 	CRect checkRect;
 
-// Operations
+	// Operations
 public:
-
-// Overrides
+	// Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CPropTreeItemCheck)
 	//}}AFX_VIRTUAL
 
-// Implementation
+	// Implementation
 public:
-
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CPropTreeItemCheck)
@@ -85,7 +81,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 public:
-
 	afx_msg void OnBnKillfocus();
 	afx_msg void OnBnClicked();
 };

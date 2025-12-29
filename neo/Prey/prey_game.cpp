@@ -106,7 +106,7 @@ void hhGameLocal::MapShutdown( void ) {
 //	hhGameLocal::InitFromNewMap
 //
 //---------------------------------------------------
-void hhGameLocal::InitFromNewMap( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, bool isServer, bool isClient, int randseed ) {
+void hhGameLocal::InitFromNewMap( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, bool isServer, bool isClient, int randseed, int activeEditors ) {
 	
 	//HUMANHEAD rww - throw up the prey logo if using the logitech lcd screen
 	if (logitechLCDEnabled) {
@@ -122,7 +122,7 @@ void hhGameLocal::InitFromNewMap( const char *mapName, idRenderWorld *renderWorl
 
 	hands.Clear();
 
-	idGameLocal::InitFromNewMap(mapName, renderWorld, soundWorld, isServer, isClient, randseed);
+	idGameLocal::InitFromNewMap(mapName, renderWorld, soundWorld, isServer, isClient, randseed, activeEditors);
 
 	// CJR: Determine if this map is a LOTA map by looking for a special entity on the map
 	bIsLOTA = false;
@@ -665,7 +665,7 @@ void hhGameLocal::LogitechLCDUpdate(void) {
 // RunFrame()
 //
 //	PDMMERGE PERSISTENTMERGE: Overridden, Done for 6-03-05 merge
-gameReturn_t hhGameLocal::RunFrame( const usercmd_t *clientCmds ) {
+gameReturn_t hhGameLocal::RunFrame( const usercmd_t *clientCmds, int activeEditors ) {
 	idEntity *	ent;
 	int			num;
 	float		ms;
@@ -678,6 +678,9 @@ gameReturn_t hhGameLocal::RunFrame( const usercmd_t *clientCmds ) {
 	bool		dormant;
 	const float thinkalpha = 0.98f;	// filter with historical timings
 	// HUMANHEAD END
+
+	//exposing editor flag so debugger does not miss any script calls during load/startup
+	editors = activeEditors;
 
 	ret.sessionCommand[0] = 0;
 
@@ -897,7 +900,7 @@ gameReturn_t hhGameLocal::RunFrame( const usercmd_t *clientCmds ) {
 
 		// see if a target_sessionCommand has forced a changelevel
 		if ( sessionCommand.Length() ) {
-			strncpy( ret.sessionCommand, sessionCommand, sizeof( ret.sessionCommand ) );
+			idStr::Copynz( ret.sessionCommand, sessionCommand, sizeof( ret.sessionCommand ) );
 			break;
 		}
 
@@ -1288,7 +1291,7 @@ bool hhGameLocal::InhibitEntitySpawn( idDict &spawnArgs ) {
 
 		if ( inlineEnt == 1 ) { // This means we must hand the model, too
 			renderEntity_t *renderEnt = new renderEntity_t;
-			gameEdit->ParseSpawnArgsToRenderEntity( &spawnArgs, renderEnt );
+			gameEditLocal.ParseSpawnArgsToRenderEntity( &spawnArgs, renderEnt );
 			HH_ASSERT( renderEnt->hModel && !renderEnt->callback && renderEnt->shaderParms[ SHADERPARM_ANY_DEFORM ] == DEFORMTYPE_NONE ); // Inlined statics can't have a callback
 			renderEnt->entityNum = 0; // WorldSpawn
 			gameRenderWorld->AddEntityDef( renderEnt );

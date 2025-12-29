@@ -1,9 +1,9 @@
-#if !defined(AFX_PROPTREEITEMCOLOR_H__50C09AC0_1F02_4150_AA6A_5151345D87A2__INCLUDED_)
-#define AFX_PROPTREEITEMCOLOR_H__50C09AC0_1F02_4150_AA6A_5151345D87A2__INCLUDED_
+#if !defined( AFX_PROPTREEITEMCOLOR_H__50C09AC0_1F02_4150_AA6A_5151345D87A2__INCLUDED_ )
+	#define AFX_PROPTREEITEMCOLOR_H__50C09AC0_1F02_4150_AA6A_5151345D87A2__INCLUDED_
 
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+	#if _MSC_VER > 1000
+		#pragma once
+	#endif // _MSC_VER > 1000
 // PropTreeItemColor.h : header file
 //
 //  Copyright (C) 1998-2001 Scott Ramsay
@@ -22,60 +22,60 @@
 //	If you use this code, drop me an email.  I'd like to know if you find the code
 //	useful.
 
-#include "PropTreeItem.h"
+	#include "PropTreeItem.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeItemColor window
 
-class PROPTREE_API CPropTreeItemColor : public CWnd, public CPropTreeItem {
-// Construction
+class PROPTREE_API CPropTreeItemColor : public CWnd, public CPropTreeItem
+{
+	// Construction
 public:
 	CPropTreeItemColor();
 	virtual ~CPropTreeItemColor();
 
-// Attributes
+	// Attributes
 public:
 	// The attribute area needs drawing
-	virtual void DrawAttribute( CDC* pDC, const RECT& rc );
+	virtual void   DrawAttribute( CDC* pDC, const RECT& rc );
 
 	// Retrieve the item's attribute value
 	virtual LPARAM GetItemValue();
 
 	// Set the item's attribute value
-	virtual void SetItemValue( LPARAM lParam );
+	virtual void   SetItemValue( LPARAM lParam );
 
 	// Called when attribute area has changed size
-	virtual void OnMove();
+	virtual void   OnMove();
 
 	// Called when the item needs to refresh its data
-	virtual void OnRefresh();
+	virtual void   OnRefresh();
 
 	// Called when the item needs to commit its changes
-	virtual void OnCommit();
+	virtual void   OnCommit();
 
 	// Called to activate the item
-	virtual void OnActivate( int activateType, CPoint point );
+	virtual void   OnActivate( int activateType, CPoint point );
 
-	static void SetDefaultColorsList( COLORREF* pColors );
+	static void	   SetDefaultColorsList( COLORREF* pColors );
 
 protected:
-	COLORREF			m_cColor;
-	COLORREF			m_cPrevColor;
-	CRect				m_rcButton;
-	LONG				m_nSpot;
-	BOOL				m_bButton;
-	BOOL				m_bInDialog;
+	COLORREF		 m_cColor;
+	COLORREF		 m_cPrevColor;
+	CRect			 m_rcButton;
+	LONG			 m_nSpot;
+	BOOL			 m_bButton;
+	BOOL			 m_bInDialog;
 
-	static COLORREF	* s_pColors;
+	static COLORREF* s_pColors;
 
-// Overrides
+	// Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CPropTreeItemColor)
 	//}}AFX_VIRTUAL
 
-// Implementation
+	// Implementation
 public:
-
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CPropTreeItemColor)

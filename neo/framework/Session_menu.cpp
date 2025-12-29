@@ -33,6 +33,8 @@ If you have questions concerning this license or the applicable additional terms
 
 idCVar	idSessionLocal::gui_configServerRate( "gui_configServerRate", "0", CVAR_GUI | CVAR_ARCHIVE | CVAR_ROM | CVAR_INTEGER, "" );
 
+extern idCVar joy_gamepadLayout; // DG: used here to update bindings window when cvar is changed
+
 // implements the setup for, and commands from, the main menu
 
 /*
@@ -303,7 +305,11 @@ void idSessionLocal::SetMainMenuGuiVars( void ) {
 	}
 
 	SetCDKeyGuiVars( );
+#ifdef ID_DEMO_BUILD
+	guiMainMenu->SetStateString( "nightmare", "0" );
+#else
 	guiMainMenu->SetStateString( "nightmare", cvarSystem->GetCVarBool( "g_nightmare" ) ? "1" : "0" );
+#endif
 	guiMainMenu->SetStateString( "roadhouseCompleted", cvarSystem->GetCVarBool( "g_roadhouseCompleted" ) ? "1" : "0" );
 	guiMainMenu->SetStateString( "browser_levelshot", "guis/assets/loading/thumbs/nothing" );
 
@@ -468,8 +474,9 @@ void idSessionLocal::HandleRestartMenuCommands( const char *menuCommand ) {
 		}
 
 		if ( !idStr::Icmp( cmd, "restart" ) ) {
-			if ( !LoadGame( GetAutoSaveName( mapSpawnData.serverInfo.GetString("si_map") ) ) ) {
-				// If we can't load the autosave then just restart the map
+			if ( com_disableAutoSaves.GetBool() // DG: support com_disableAutoSaves
+				|| !LoadGame( GetAutoSaveName( mapSpawnData.serverInfo.GetString("si_map") ) ) ) {
+				// If we can't load the autosave (or they're disabled) then just restart the map
 				MoveToNewMap( mapSpawnData.serverInfo.GetString("si_map") );
 			}
 			continue;
@@ -555,7 +562,11 @@ void idSessionLocal::HandleMainMenuCommands( const char *menuCommand ) {
 			if ( icmd < args.Argc() ) {
 				StartNewGame( args.Argv( icmd++ ) );
 			} else {
+#ifndef ID_DEMO_BUILD
 				StartNewGame( STARTING_LEVEL );
+#else
+				StartNewGame( STARTING_LEVEL );
+#endif
 			}
 			// need to do this here to make sure com_frameTime is correct or the gui activates with a time that
 			// is "however long map load took" time in the past
@@ -1151,6 +1162,14 @@ void idSessionLocal::GuiFrameEvents() {
 	const char	*cmd;
 	sysEvent_t  ev;
 	idUserInterface	*gui;
+
+	// DG: if joy_gamepadLayout changes, the binding names in the main/controls menu must be updated
+	if ( joy_gamepadLayout.IsModified() ) {
+		if ( guiMainMenu != NULL ) {
+			guiMainMenu->SetKeyBindingNames();
+		}
+		joy_gamepadLayout.ClearModified();
+	}
 
 	// stop generating move and button commands when a local console or menu is active
 	// running here so SP, async networking and no game all go through it

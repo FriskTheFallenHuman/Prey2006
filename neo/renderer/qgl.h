@@ -42,7 +42,11 @@ If you have questions concerning this license or the applicable additional terms
 	#endif
 #endif
 
-#include <SDL_opengl.h>
+#ifdef D3_SDL3
+  #include <SDL3/SDL_opengl.h>
+#else // SDL2
+  #include <SDL_opengl.h>
+#endif
 
 #if defined( ID_DEDICATED ) && defined( _WIN32 )
 // restore WINGDIAPI
@@ -105,6 +109,14 @@ extern PFNGLSTENCILOPSEPARATEPROC qglStencilOpSeparate;
 // ARB_texture_compression
 extern	PFNGLCOMPRESSEDTEXIMAGE2DARBPROC	qglCompressedTexImage2DARB;
 extern	PFNGLGETCOMPRESSEDTEXIMAGEARBPROC	qglGetCompressedTexImageARB;
+
+// ARB_texture_compression_bptc - uses ARB_texture_compression, just adds new constants
+// that might be missing in old OpenGL headers
+#ifndef GL_COMPRESSED_RGBA_BPTC_UNORM_ARB
+  // currently the only one we use, there's also COMPRESSED_SRGB_ALPHA_BPTC_UNORM_ARB (0x8E8D)
+  // and COMPRESSED_RGB_BPTC_SIGNED_FLOAT_ARB (0x8E8E) and COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_ARB (0x8E8F)
+  #define GL_COMPRESSED_RGBA_BPTC_UNORM_ARB 0x8E8C
+#endif
 
 // ARB_vertex_program / ARB_fragment_program
 extern PFNGLVERTEXATTRIBPOINTERARBPROC		qglVertexAttribPointerARB;

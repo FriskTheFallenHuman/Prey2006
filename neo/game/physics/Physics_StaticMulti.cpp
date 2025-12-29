@@ -1024,7 +1024,7 @@ idPhysics_StaticMulti::ReadFromSnapshot
 ================
 */
 void idPhysics_StaticMulti::ReadFromSnapshot( const idBitMsgDelta &msg ) {
-	int i, num id_attribute((unused));
+	int i, num;
 	idCQuat quat, localQuat;
 
 	num = msg.ReadByte();

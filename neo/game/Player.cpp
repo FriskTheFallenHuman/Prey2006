@@ -314,7 +314,7 @@ void idInventory::RestoreInventory( idPlayer *owner, const idDict &dict ) {
 	weapons	= dict.GetInt( "weapon_bits", "0" );
 
 #ifdef ID_DEMO_BUILD
-		Give( owner, dict, "weapon", dict.GetString( "weapon" ), NULL, false );
+	Give( owner, dict, "weapon", dict.GetString( "weapon" ), NULL, false );
 #else
 	if ( g_skill.GetInteger() >= 3 ) {
 		Give( owner, dict, "weapon", dict.GetString( "weapon_nightmare" ), NULL, false );
@@ -1259,6 +1259,7 @@ void idPlayer::Spawn( void ) {
 		} else if ( spawnArgs.GetString( "hud", "", temp ) ) {
 			hud = uiManager->FindGui( temp, true, false, true );
 		}
+
 		if ( hud ) {
 			hud->Activate( true, gameLocal.time );
 		}
@@ -4020,6 +4021,11 @@ void idPlayer::UpdateFocus( void ) {
 
 	if ( focusGUIent && focusUI ) {
 		if ( !oldFocus || oldFocus != focusGUIent ) {
+			// DG: tell the old UI it isn't focused anymore
+			if ( oldFocus != NULL && oldUI != NULL ) {
+				command = oldUI->Activate( false, gameLocal.time );
+				// TODO: HandleGuiCommands( oldFocus, command ); ?
+			} // DG end
 			command = focusUI->Activate( true, gameLocal.time );
 			HandleGuiCommands( focusGUIent, command );
 			StartSound( "snd_guienter", SND_CHANNEL_ANY, 0, false, NULL );
@@ -5408,7 +5414,7 @@ void idPlayer::Think( void ) {
 		}
 	}
 
-	if ( gameLocal.isMultiplayer || g_showPlayerShadow.GetBool() ) {
+	if ( cvarSystem->GetCVarInteger( "r_shadows" ) == 2 ) {
 		renderEntity.suppressShadowInViewID	= 0;
 		if ( headRenderEnt ) {
 			headRenderEnt->suppressShadowInViewID = 0;
@@ -5461,11 +5467,10 @@ idPlayer::RouteGuiMouse
 */
 void idPlayer::RouteGuiMouse( idUserInterface *gui ) {
 	sysEvent_t ev;
-	const char *command;
 
 	if ( usercmd.mx != oldMouseX || usercmd.my != oldMouseY ) {
 		ev = sys->GenerateMouseMoveEvent( usercmd.mx - oldMouseX, usercmd.my - oldMouseY );
-		command = gui->HandleEvent( &ev, gameLocal.time );
+		gui->HandleEvent( &ev, gameLocal.time );
 		oldMouseX = usercmd.mx;
 		oldMouseY = usercmd.my;
 	}
@@ -6786,7 +6791,7 @@ void idPlayer::ClientPredictionThink( void ) {
 		headRenderEnt = NULL;
 	}
 
-	if ( gameLocal.isMultiplayer || g_showPlayerShadow.GetBool() ) {
+	if ( gameLocal.isMultiplayer || cvarSystem->GetCVarInteger( "r_shadows" ) == 2 ) {
 		renderEntity.suppressShadowInViewID	= 0;
 		if ( headRenderEnt ) {
 			headRenderEnt->suppressShadowInViewID = 0;
@@ -7304,6 +7309,7 @@ bool idPlayer::ClientReceiveEvent( int event, int time, const idBitMsg &msg ) {
 		default:
 			break;
 	}
+
 	return idActor::ClientReceiveEvent( event, time, msg );
 }
 

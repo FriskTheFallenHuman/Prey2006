@@ -1476,10 +1476,10 @@ idVarDef *idProgram::AllocDef( idTypeDef *type, const char *name, idVarDef *scop
 			scope->value.functionPtr->locals += type->Size();
 		}
 	} else {
-			//
-			// global variable
-			//
-			def->value.bytePtr = ReserveMem(def->TypeDef()->Size());
+		//
+		// global variable
+		//
+		def->value.bytePtr = ReserveMem(def->TypeDef()->Size());
 
 #ifdef _HH_GLOBAL_COUNTER //HUMANHEAD rww
 		if (globalOutputFile) {
@@ -1946,7 +1946,7 @@ bool idProgram::CompileText( const char *source, const char *text, bool console 
 	filenum = GetFilenum( ospath );
 
 	try {
-		compiler.CompileFile( text, filename, console );
+		compiler.CompileFile( text, ospath.c_str(), console );
 
 		// check to make sure all functions prototyped have code
 		for( i = 0; i < varDefs.Num(); i++ ) {
@@ -2144,7 +2144,7 @@ void idProgram::Save( idSaveGame *savefile ) const {
 		savefile->WriteByte( variables[i] );
 	}
 
-	int checksum = CalculateChecksum();
+	int checksum = CalculateChecksum(false);
 	savefile->WriteInt( checksum );
 }
 
@@ -2178,9 +2178,11 @@ bool idProgram::Restore( idRestoreGame *savefile ) {
 	int saved_checksum, checksum;
 
 	savefile->ReadInt( saved_checksum );
-	checksum = CalculateChecksum();
+	bool isOldSavegame = savefile->GetBuildNumber() <= 1304;
+	checksum = CalculateChecksum(isOldSavegame);
 
 	if ( saved_checksum != checksum ) {
+		gameLocal.Warning( "WARNING: Real Script checksum didn't match the one from the savegame!");
 		result = false;
 	}
 
@@ -2192,7 +2194,7 @@ bool idProgram::Restore( idRestoreGame *savefile ) {
 idProgram::CalculateChecksum
 ================
 */
-int idProgram::CalculateChecksum( void ) const {
+int idProgram::CalculateChecksum( bool forOldSavegame ) const {
 	int i, result;
 
 	typedef struct {
@@ -2207,6 +2209,17 @@ int idProgram::CalculateChecksum( void ) const {
 	statementBlock_t	*statementList = new statementBlock_t[ statements.Num() ];
 
 	memset( statementList, 0, ( sizeof(statementBlock_t) * statements.Num() ) );
+
+	// DG hack: get the vardef for the argSize == 0 constant for savegame-compat
+	int constantZeroNum = -1;
+	if ( forOldSavegame ) {
+		for( idVarDef* def = GetDefList( "<IMMEDIATE>" ); def != NULL; def = def->Next() ) {
+			if ( def->Type() == ev_argsize && def->value.argSize == 0 ) {
+				constantZeroNum = def->num;
+				break;
+			}
+		}
+	}
 
 	// Copy info into new list, using the variable numbers instead of a pointer to the variable
 	for( i = 0; i < statements.Num(); i++ ) {
@@ -2223,7 +2236,15 @@ int idProgram::CalculateChecksum( void ) const {
 			statementList[i].b = -1;
 		}
 		if ( statements[i].c ) {
-			statementList[i].c = statements[i].c->num;
+			// DG: old savegames wrongly assumed argSize 0 for some statements.
+			//     So for the checksums to match we need to use the corresponding vardef num here
+			//     See idCompiler::EmitFunctionParms() and ParseFunctionDef() for more details.
+			if ( forOldSavegame && statements[i].op == OP_OBJECTCALL
+			     && statements[i].flags == statement_t::FLAG_OBJECTCALL_IMPL_NOT_PARSED_YET ) {
+				statementList[i].c = constantZeroNum;
+			} else {
+				statementList[i].c = statements[i].c->num;
+			}
 		} else {
 			statementList[i].c = -1;
 		}

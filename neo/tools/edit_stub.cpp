@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -29,65 +30,58 @@ If you have questions concerning this license or the applicable additional terms
 #include "precompiled.h"
 #pragma hdrstop
 
-void	RadiantInit( void ) {
+void RadiantInit( void )
+{
 	common->Printf( "The level editor Radiant only runs on Win32\n" );
 }
-void	RadiantShutdown( void ) {}
-void	RadiantRun( void ) {}
-void	RadiantPrint( const char * text ) {}
-
-void	LightEditorInit( const idDict* spawnArgs ) {
-	common->Printf( "The Light Editor only runs on Win32\n" );
+void RadiantShutdown( void )
+{
 }
-void	LightEditorShutdown( void ) {}
-void	LightEditorRun( void ) {}
+void RadiantRun( void )
+{
+}
+void RadiantPrint( const char* text )
+{
+}
 
-void	SoundEditorInit( const idDict* spawnArgs ) {
+void SoundEditorInit( const idDict* spawnArgs )
+{
 	common->Printf( "The Sound Editor only runs on Win32\n" );
 }
-void	SoundEditorShutdown( void ) {}
-void	SoundEditorRun( void ) {}
-
-void	AFEditorInit( const idDict* spawnArgs ) {
-	common->Printf( "The Articulated Figure Editor only runs on Win32\n" );
+void SoundEditorShutdown( void )
+{
 }
-void	AFEditorShutdown( void ) {}
-void	AFEditorRun( void ) {}
-
-void	ParticleEditorInit( const idDict* spawnArgs ) {
-	common->Printf( "The Particle Editor only runs on Win32\n" );
+void SoundEditorRun( void )
+{
 }
-void	ParticleEditorShutdown( void ) {}
-void	ParticleEditorRun( void ) {}
 
-void	ScriptEditorInit( const idDict* spawnArgs ) {
-	common->Printf( "The Script Editor only runs on Win32\n" );
-}
-void	ScriptEditorShutdown( void ) {}
-void	ScriptEditorRun( void ) {}
-
-void	DeclBrowserInit( const idDict* spawnArgs ) {
-	common->Printf( "The Declaration Browser only runs on Win32\n" );
-}
-void	DeclBrowserShutdown( void ) {}
-void	DeclBrowserRun( void ) {}
-void	DeclBrowserReloadDeclarations( void ) {}
-
-void	GUIEditorInit( void ) {
+void GUIEditorInit( void )
+{
 	common->Printf( "The GUI Editor only runs on Win32\n" );
 }
-void	GUIEditorShutdown( void ) {}
-void	GUIEditorRun( void ) {}
-bool	GUIEditorHandleMessage( void * msg ) {
+void GUIEditorShutdown( void )
+{
+}
+void GUIEditorRun( void )
+{
+}
+bool GUIEditorHandleMessage( void* msg )
+{
 	return false;
 }
 
-void	DebuggerClientLaunch( void ) {}
-void	DebuggerClientInit( const char * cmdline ) {
+void DebuggerClientLaunch( void )
+{
+}
+void DebuggerClientInit( const char* cmdline )
+{
 	common->Printf( "The Script Debugger Client only runs on Win32\n" );
 }
 
-void	MaterialEditorInit() {
+void MaterialEditorInit()
+{
 	common->Printf( "The Material editor only runs on Win32\n" );
 }
-void	MaterialEditorPrintConsole( const char * text ) {}
+void MaterialEditorPrintConsole( const char* text )
+{
+}

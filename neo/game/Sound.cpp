@@ -202,7 +202,7 @@ void idSound::UpdateChangeableSpawnArgs( const idDict *source ) {
 		FreeSoundEmitter( true );
 		spawnArgs.Copy( *source );
 		idSoundEmitter *saveRef = refSound.referenceSound;
-		gameEdit->ParseSpawnArgsToRefSound( &spawnArgs, &refSound );
+		gameEditLocal.ParseSpawnArgsToRefSound( &spawnArgs, &refSound );
 		refSound.referenceSound = saveRef;
 
 		idVec3 origin;
@@ -245,10 +245,10 @@ void idSound::SetSound( const char *sound, int channel ) {
 	if ( shader != refSound.shader ) {
 		FreeSoundEmitter( true );
 	}
-	gameEdit->ParseSpawnArgsToRefSound(&spawnArgs, &refSound);
+	gameEditLocal.ParseSpawnArgsToRefSound( &spawnArgs, &refSound );
 	refSound.shader = shader;
 	// start it if it isn't already playing, and we aren't waitForTrigger
-	if ( !refSound.waitfortrigger && !(refSound.referenceSound && refSound.referenceSound->CurrentlyPlaying() ) ) {
+	if ( !refSound.waitfortrigger && !( refSound.referenceSound && refSound.referenceSound->CurrentlyPlaying() ) ) {
 		DoSound( true );
 	}
 }

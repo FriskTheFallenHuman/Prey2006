@@ -1222,8 +1222,7 @@ void hhWeapon::PresentWeapon( bool showViewModel ) {
 		// deal with the third-person visible world model
 		// don't show shadows of the world model in first person
 #ifdef HUMANHEAD
-		if ( gameLocal.isMultiplayer || (g_showPlayerShadow.GetBool() && pm_modelView.GetInteger() == 1) || pm_thirdPerson.GetBool() 
-			|| (pm_modelView.GetInteger()  == 2 && owner->health <= 0)) {
+		if ( cvarSystem->GetCVarInteger( "r_shadows" ) == 2 || (pm_modelView.GetInteger()  == 2 && owner->health <= 0)) {
 			worldModel->GetRenderEntity()->suppressShadowInViewID	= 0;
 		} else {
 			worldModel->GetRenderEntity()->suppressShadowInViewID	= owner->entityNumber+1;
@@ -1233,7 +1232,7 @@ void hhWeapon::PresentWeapon( bool showViewModel ) {
 		
 		// deal with the third-person visible world model
 		// don't show shadows of the world model in first person
-		if ( gameLocal.isMultiplayer || g_showPlayerShadow.GetBool() || pm_thirdPerson.GetBool() ) {
+		if ( cvarSystem->GetCVarInteger( "r_shadows" ) == 2 ) {
 			worldModel.GetEntity()->GetRenderEntity()->suppressShadowInViewID	= 0;
 		} else {
 			worldModel.GetEntity()->GetRenderEntity()->suppressShadowInViewID	= owner->entityNumber+1;

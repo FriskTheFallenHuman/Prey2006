@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -34,21 +35,21 @@ If you have questions concerning this license or the applicable additional terms
 #include "MainFrm.h"
 #include "lightdlg.h"
 
-#include <process.h>    // for _beginthreadex and _endthreadex
-#include <ddeml.h>  // for MSGF_DDEMGR
+#include <process.h> // for _beginthreadex and _endthreadex
+#include <ddeml.h>	 // for MSGF_DDEMGR
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
 idCVar radiant_entityMode( "radiant_entityMode", "0", CVAR_TOOL | CVAR_ARCHIVE, "" );
 
 BEGIN_MESSAGE_MAP( CRadiantApp, CWinAppEx )
-	ON_COMMAND( ID_HELP, &CRadiantApp::OnAppHelp )
-	ON_COMMAND( ID_HELP_ABOUT, &CRadiantApp::OnAppAbout )
-	// Standard file based document commands
-	ON_COMMAND( ID_FILE_NEW, &CWinAppEx::OnFileNew )
-	ON_COMMAND( ID_FILE_OPEN, &CWinAppEx::OnFileOpen )
+ON_COMMAND( ID_HELP, &CRadiantApp::OnAppHelp )
+ON_COMMAND( ID_HELP_ABOUT, &CRadiantApp::OnAppAbout )
+// Standard file based document commands
+ON_COMMAND( ID_FILE_NEW, &CWinAppEx::OnFileNew )
+ON_COMMAND( ID_FILE_OPEN, &CWinAppEx::OnFileOpen )
 END_MESSAGE_MAP()
 
 /*
@@ -56,7 +57,8 @@ END_MESSAGE_MAP()
 CRadiantApp::CRadiantApp
 ================
 */
-CRadiantApp::CRadiantApp() noexcept {
+CRadiantApp::CRadiantApp() noexcept
+{
 	SetAppID( _T( "Radiant.AppID.NoVersion" ) );
 }
 
@@ -67,7 +69,8 @@ CRadiantApp theApp;
 CRadiantApp::InitInstance
 ================
 */
-BOOL CRadiantApp::InitInstance() {
+BOOL		CRadiantApp::InitInstance()
+{
 	// InitCommonControlsEx() is required on Windows XP if an application
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable
 	// visual styles.  Otherwise, any window creation will fail.
@@ -81,7 +84,8 @@ BOOL CRadiantApp::InitInstance() {
 	CWinAppEx::InitInstance();
 
 	// Initialize OLE libraries
-	if ( !AfxOleInit() ) {
+	if( !AfxOleInit() )
+	{
 		return FALSE;
 	}
 
@@ -95,7 +99,7 @@ BOOL CRadiantApp::InitInstance() {
 	// Change the registry key under which our settings are stored.
 	SetRegistryKey( EDITOR_REGISTRY_KEY );
 
-	LoadStdProfileSettings();  // Load standard INI file options (including MRU)
+	LoadStdProfileSettings(); // Load standard INI file options (including MRU)
 
 	// create main MDI Frame window
 	g_PrefsDlg.LoadPrefs();
@@ -109,21 +113,19 @@ BOOL CRadiantApp::InitInstance() {
 	InitTooltipManager();
 	CMFCToolTipInfo ttParams;
 	ttParams.m_bVislManagerTheme = TRUE;
-	theApp.GetTooltipManager()->SetTooltipParams( AFX_TOOLTIP_TYPE_ALL,
-			RUNTIME_CLASS( CMFCToolTipCtrl ), &ttParams );
+	theApp.GetTooltipManager()->SetTooltipParams( AFX_TOOLTIP_TYPE_ALL, RUNTIME_CLASS( CMFCToolTipCtrl ), &ttParams );
 
 	// To create the main window, this code creates a new frame window
 	// object and then sets it as the application's main window object
 	CFrameWnd* pFrame = new CMainFrame;
-	if ( !pFrame ) {
+	if( !pFrame )
+	{
 		return FALSE;
 	}
 
 	m_pMainWnd = pFrame;
 	// create and load the frame with its resources
-	pFrame->LoadFrame( IDR_MAINFRAME,
-					   WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, nullptr,
-					   nullptr );
+	pFrame->LoadFrame( IDR_MAINFRAME, WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, nullptr, nullptr );
 
 	// The one and only window has been initialized, so show and update it
 	pFrame->ShowWindow( SW_SHOW );
@@ -137,7 +139,8 @@ BOOL CRadiantApp::InitInstance() {
 CRadiantApp::ExitInstance
 ================
 */
-int CRadiantApp::ExitInstance() {
+int CRadiantApp::ExitInstance()
+{
 	common->Shutdown();
 	g_pParentWnd = NULL;
 	ExitProcess( 0 );
@@ -149,12 +152,14 @@ int CRadiantApp::ExitInstance() {
 CRadiantApp::OnIdle
 ================
 */
-BOOL CRadiantApp::OnIdle( LONG lCount ) {
-	if ( g_pParentWnd ) {
+BOOL CRadiantApp::OnIdle( LONG lCount )
+{
+	if( g_pParentWnd )
+	{
 		g_pParentWnd->RoutineProcessing();
 	}
 	return FALSE;
-	//return CWinAppEx::OnIdle(lCount);
+	// return CWinAppEx::OnIdle(lCount);
 }
 
 /*
@@ -162,7 +167,8 @@ BOOL CRadiantApp::OnIdle( LONG lCount ) {
 CRadiantApp::OnAppHelp
 ================
 */
-void CRadiantApp::OnAppHelp() {
+void CRadiantApp::OnAppHelp()
+{
 	ShellExecute( m_pMainWnd->GetSafeHwnd(), "open", "https://iddevnet.dhewm3.org/doom3/index.html", NULL, NULL, SW_SHOW );
 }
 
@@ -171,55 +177,65 @@ void CRadiantApp::OnAppHelp() {
 CRadiantApp::Run
 ================
 */
-int CRadiantApp::Run() {
-	BOOL bIdle = TRUE;
+int CRadiantApp::Run( void )
+{
+	BOOL bIdle		= TRUE;
 	LONG lIdleCount = 0;
 
 	lastFrameTime = std::chrono::steady_clock::now();
 
 #if _MSC_VER >= 1300
-	MSG* msg = AfxGetCurrentMessage();			// TODO Robert fix me!!
+	MSG* msg = AfxGetCurrentMessage(); // TODO Robert fix me!!
 #else
 	MSG* msg = &m_msgCur;
 #endif
 
 	// phase1: check to see if we can do idle work
-	while ( bIdle &&	!::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) ) {
+	while( bIdle && !::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) )
+	{
 		// call OnIdle while in bIdle state
-		if ( !OnIdle( lIdleCount++ ) ) {
+		if( !OnIdle( lIdleCount++ ) )
+		{
 			bIdle = FALSE; // assume "no idle" state
 		}
 	}
 
 	// phase2: pump messages while available
-	do {
+	do
+	{
 		// pump message, but quit on WM_QUIT
-		if ( !PumpMessage() ) {
+		if( !PumpMessage() )
+		{
 			return ExitInstance();
 		}
 
 		// reset "no idle" state after pumping "normal" message
-		if ( IsIdleMessage( msg ) ) {
-			bIdle = TRUE;
+		if( IsIdleMessage( msg ) )
+		{
+			bIdle	   = TRUE;
 			lIdleCount = 0;
 		}
 
-	} while ( ::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) );
+	} while( ::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) );
 
 	return 0;
 }
 
-class CAboutRadiantDlg : public CAboutDlg {
+class CAboutRadiantDlg : public CAboutDlg
+{
 public:
-	CAboutRadiantDlg();
+	CAboutRadiantDlg( void );
 	virtual BOOL OnInitDialog();
 };
 
-CAboutRadiantDlg::CAboutRadiantDlg() : CAboutDlg( IDD_ABOUT ) {
+CAboutRadiantDlg::CAboutRadiantDlg() :
+	CAboutDlg( IDD_ABOUT )
+{
 	SetDialogTitle( _T( "About Prey Editor" ) );
 }
 
-BOOL CAboutRadiantDlg::OnInitDialog() {
+BOOL CAboutRadiantDlg::OnInitDialog()
+{
 	CAboutDlg::OnInitDialog();
 
 	CString buffer;
@@ -234,7 +250,8 @@ BOOL CAboutRadiantDlg::OnInitDialog() {
 CRadiantApp::OnAppAbout
 ================
 */
-void CRadiantApp::OnAppAbout() {
+void CRadiantApp::OnAppAbout()
+{
 	CAboutRadiantDlg aboutDlg;
 	aboutDlg.DoModal();
 }

@@ -57,6 +57,8 @@ public:
 
 	void			SetColor( dword color );
 	dword			GetColor( void ) const;
+
+	void			SetTangent( const idVec3 &t, const float sign );
 };
 
 ID_INLINE float idDrawVert::operator[]( const int index ) const {
@@ -75,6 +77,23 @@ ID_INLINE void idDrawVert::Clear( void ) {
 	tangents[0].Zero();
 	tangents[1].Zero();
 	color[0] = color[1] = color[2] = color[3] = 0;
+}
+
+/*
+========================
+idDrawVert::SetTangent
+========================
+*/
+ID_INLINE void idDrawVert::SetTangent( const idVec3 &t, const float sign ) {
+
+	tangents[0] = t;
+	tangents[0].Normalize(); normal.Normalize(); // OR: Just; normal.Normalize();
+	tangents[1].Cross(normal, tangents[0]);
+	tangents[1].Normalize();
+	tangents[0].Cross(tangents[1], normal);
+	tangents[0].Normalize();
+	tangents[1] *= sign;
+
 }
 
 ID_INLINE void idDrawVert::Lerp( const idDrawVert &a, const idDrawVert &b, const float f ) {

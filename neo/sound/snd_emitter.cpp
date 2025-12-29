@@ -973,7 +973,8 @@ void idSoundEmitterLocal::StopSound( const s_channelType channel ) {
 		chan->ALStop();
 
 		// if this was an onDemand sound, purge the sample now
-		if ( chan->leadinSample->onDemand ) {
+		// Note: if sound is disabled (s_noSound 1), leadinSample can be NULL
+		if ( chan->leadinSample && chan->leadinSample->onDemand ) {
 			chan->leadinSample->PurgeSoundSample();
 		}
 
@@ -1191,17 +1192,18 @@ idSlowChannel::Reset
 ===================
 */
 void idSlowChannel::Reset() {
-	memset( this, 0, sizeof( *this ) );
-
-	this->chan = chan;
+	// DG: memset() on this is problematic, because lowpass (SoundFX_LowpassFast) has a vtable
+	//memset( this, 0, sizeof( *this ) );
+	active = false;
+	chan = NULL;
+	playbackState = triggerOffset = 0;
+	lowpass.Clear();
 
 	curPosition.Set( 0 );
 	newPosition.Set( 0 );
 
 	curSampleOffset = -10000;
 	newSampleOffset = -10000;
-
-	triggerOffset = 0;
 }
 
 /*

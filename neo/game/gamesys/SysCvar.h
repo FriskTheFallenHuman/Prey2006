@@ -167,6 +167,8 @@ extern idCVar	g_blobSize;
 
 extern idCVar	g_testHealthVision;
 extern idCVar	g_editEntityMode;
+extern idCVar	g_editEntityDistance;
+extern idCVar	g_editEntityTextDistance;
 extern idCVar	g_dragEntity;
 extern idCVar	g_dragDamping;
 extern idCVar	g_dragShowSelection;
@@ -262,7 +264,6 @@ extern idCVar	pm_modelView;
 extern idCVar	pm_airTics;
 
 extern idCVar	g_showAimHealth; //HUMANHEAD rww
-extern idCVar	g_showPlayerShadow;
 extern idCVar	g_showHud;
 extern idCVar	g_showProjectilePct;
 extern idCVar	g_showBrass;

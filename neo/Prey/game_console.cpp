@@ -766,7 +766,7 @@ void hhConsoleAlarm::Event_SpawnMonster() {
 		idClipModel *cm;
 		idClipModel *clipModels[ MAX_GENTITIES ];
 		entDef->GetVector( "size", "0", entSize );
-		idBounds bounds = idBounds( ent->GetOrigin() ).Expand( max( entSize.x, entSize.y ) );
+		idBounds bounds = idBounds( ent->GetOrigin() ).Expand( Max( entSize.x, entSize.y ) );
 		int num = gameLocal.clip.ClipModelsTouchingBounds( bounds, MASK_MONSTERSOLID, clipModels, MAX_GENTITIES );
 		if ( ai_debugBrain.GetBool() ) {
 			gameRenderWorld->DebugBounds( colorRed, bounds, vec3_origin, 5000 );

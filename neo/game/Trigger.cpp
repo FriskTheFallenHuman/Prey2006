@@ -1068,6 +1068,7 @@ idTrigger_Touch::idTrigger_Touch
 */
 idTrigger_Touch::idTrigger_Touch( void ) {
 	clipModel = NULL;
+	delete clipModel;	// SRS - Delete clipModel on cleanup, otherwise will leak
 }
 
 /*

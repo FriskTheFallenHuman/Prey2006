@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -30,36 +31,38 @@ If you have questions concerning this license or the applicable additional terms
 
 // return vals for modal dialogue, any values will do that don't clash with the first 9 or so defined by IDOK etc
 //
-#define ID_RET_REPLACE	100
-#define ID_RET_FIND		101
-
+#define ID_RET_REPLACE 100
+#define ID_RET_FIND	   101
 
 // CEntKeyFindReplace dialog
 
-class CEntKeyFindReplace : public CDialogEx {
-// Construction
+class CEntKeyFindReplace : public CDialogEx
+{
+	// Construction
 public:
 	CEntKeyFindReplace( CString* p_strFindKey,
-						CString* p_strFindValue,
-						CString* p_strReplaceKey,
-						CString* p_strReplaceValue,
-						bool* 	p_bWholeStringMatchOnly,
-						bool* 	p_bSelectAllMatchingEnts,
-						CWnd* 	pParent = NULL );  // standard constructor
+		CString*				 p_strFindValue,
+		CString*				 p_strReplaceKey,
+		CString*				 p_strReplaceValue,
+		bool*					 p_bWholeStringMatchOnly,
+		bool*					 p_bSelectAllMatchingEnts,
+		CWnd*					 pParent = NULL ); // standard constructor
 
-	enum { IDD = IDD_ENTFINDREPLACE };
-	CString	m_strFindKey;
-	CString	m_strFindValue;
-	CString	m_strReplaceKey;
-	CString	m_strReplaceValue;
+	enum
+	{
+		IDD = IDD_ENTFINDREPLACE
+	};
+	CString m_strFindKey;
+	CString m_strFindValue;
+	CString m_strReplaceKey;
+	CString m_strReplaceValue;
 	BOOL	m_bWholeStringMatchOnly;
 	BOOL	m_bSelectAllMatchingEnts;
 
 protected:
-	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX ); // DDX/DDV support
 
 protected:
-
 	virtual void OnCancel();
 	afx_msg void OnReplace();
 	afx_msg void OnFind();
@@ -68,12 +71,12 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 
-	CString * m_pStrFindKey;
-	CString * m_pStrFindValue;
-	CString * m_pStrReplaceKey;
-	CString * m_pStrReplaceValue;
-	bool 	* m_pbWholeStringMatchOnly;
-	bool 	* m_pbSelectAllMatchingEnts;
+	CString* m_pStrFindKey;
+	CString* m_pStrFindValue;
+	CString* m_pStrReplaceKey;
+	CString* m_pStrReplaceValue;
+	bool*	 m_pbWholeStringMatchOnly;
+	bool*	 m_pbSelectAllMatchingEnts;
 
-	void CopyFields();
+	void	 CopyFields();
 };

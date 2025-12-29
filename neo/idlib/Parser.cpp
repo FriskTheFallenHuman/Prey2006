@@ -3099,7 +3099,6 @@ int idParser::LoadMemory(const char *ptr, int length, const char *name ) {
 		idParser::definehash = (define_t **) Mem_ClearedAlloc( DEFINEHASHSIZE * sizeof(define_t *) );
 		idParser::AddGlobalDefinesToSource();
 	}
-
 	return true;
 }
 

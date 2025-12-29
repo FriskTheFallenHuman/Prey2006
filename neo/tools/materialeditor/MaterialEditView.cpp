@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -31,61 +32,66 @@ If you have questions concerning this license or the applicable additional terms
 #include "MaterialEditView.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
-#define EDIT_HEIGHT 25
+#define EDIT_HEIGHT		 25
 
-#define EDIT_TAB_CONTROL	0x2006
-#define NAME_CONTROL		0x2007
+#define EDIT_TAB_CONTROL 0x2006
+#define NAME_CONTROL	 0x2007
 
 IMPLEMENT_DYNCREATE( MaterialEditView, CFormView )
 
 BEGIN_MESSAGE_MAP( MaterialEditView, CFormView )
-	ON_WM_SIZE()
-	ON_WM_CREATE()
-	ON_NOTIFY( TCN_SELCHANGE, EDIT_TAB_CONTROL, OnTcnSelChange )
-	ON_NOTIFY( EN_CHANGE, IDC_MATERIALEDITOR_EDIT_TEXT, OnEnChangeEdit )
+ON_WM_SIZE()
+ON_WM_CREATE()
+ON_NOTIFY( TCN_SELCHANGE, EDIT_TAB_CONTROL, OnTcnSelChange )
+ON_NOTIFY( EN_CHANGE, IDC_MATERIALEDITOR_EDIT_TEXT, OnEnChangeEdit )
 END_MESSAGE_MAP()
 
 /**
-* Constructor for MaterialEditView.
-*/
-MaterialEditView::MaterialEditView()
-	: CFormView( MaterialEditView::IDD ) {
-
-	initHack = false;
-	sourceInit = false;
+ * Constructor for MaterialEditView.
+ */
+MaterialEditView::MaterialEditView() :
+	CFormView( MaterialEditView::IDD )
+{
+	initHack	  = false;
+	sourceInit	  = false;
 	sourceChanged = false;
 }
 
 /**
-* Destructor for MaterialEditView.
-*/
-MaterialEditView::~MaterialEditView() {
+ * Destructor for MaterialEditView.
+ */
+MaterialEditView::~MaterialEditView()
+{
 }
 
 /**
-* Called when the selected material has changed.
-* @param pMaterial The newly selected material.
-*/
-void MaterialEditView::MV_OnMaterialSelectionChange( MaterialDoc* pMaterial ) {
-
-	//Apply any text changes that have been made
+ * Called when the selected material has changed.
+ * @param pMaterial The newly selected material.
+ */
+void MaterialEditView::MV_OnMaterialSelectionChange( MaterialDoc* pMaterial )
+{
+	// Apply any text changes that have been made
 	ApplyMaterialSource();
 
-	if ( pMaterial ) {
+	if( pMaterial )
+	{
 		m_nameEdit.SetWindowText( pMaterial->name );
 		m_textView.SetReadOnly( false );
 
-		//If the edit tab is selected then get the source
+		// If the edit tab is selected then get the source
 		int sel = m_tabs.GetCurSel();
-		if ( sel == 1 ) {
+		if( sel == 1 )
+		{
 			GetMaterialSource();
 		}
 
 		currentMaterialName = pMaterial->name;
-	} else {
+	}
+	else
+	{
 		m_nameEdit.SetWindowText( "" );
 
 		GetMaterialSource();
@@ -95,16 +101,19 @@ void MaterialEditView::MV_OnMaterialSelectionChange( MaterialDoc* pMaterial ) {
 	}
 }
 
-void MaterialEditView::MV_OnMaterialNameChanged( MaterialDoc* pMaterial, const char * oldName ) {
-	if ( !currentMaterialName.Icmp( oldName ) ) {
+void MaterialEditView::MV_OnMaterialNameChanged( MaterialDoc* pMaterial, const char* oldName )
+{
+	if( !currentMaterialName.Icmp( oldName ) )
+	{
 		currentMaterialName = pMaterial->name;
 	}
 }
 
 /**
-* Returns the current source text in the source edit control.
-*/
-idStr MaterialEditView::GetSourceText() {
+ * Returns the current source text in the source edit control.
+ */
+idStr MaterialEditView::GetSourceText()
+{
 	idStr text;
 	m_textView.GetText( text );
 
@@ -119,19 +128,21 @@ idStr MaterialEditView::GetSourceText() {
 }
 
 /**
-* Gets the source of the current document and populates the
-* source edit control.
-*/
-void MaterialEditView::GetMaterialSource() {
-
-	//Clear it
+ * Gets the source of the current document and populates the
+ * source edit control.
+ */
+void MaterialEditView::GetMaterialSource()
+{
+	// Clear it
 	sourceInit = true;
 	m_textView.SetText( "" );
 	sourceInit = false;
 
-	if ( materialDocManager ) {
+	if( materialDocManager )
+	{
 		MaterialDoc* material = materialDocManager->GetCurrentMaterialDoc();
-		if ( material ) {
+		if( material )
+		{
 			idStr text = material->GetEditSourceText();
 
 			// clean up new-line crapola
@@ -149,18 +160,20 @@ void MaterialEditView::GetMaterialSource() {
 }
 
 /**
-* Takes the source out of the edit control and applies it
-* to the material.
-*/
-void MaterialEditView::ApplyMaterialSource() {
-
-	if ( !sourceChanged ) {
+ * Takes the source out of the edit control and applies it
+ * to the material.
+ */
+void MaterialEditView::ApplyMaterialSource()
+{
+	if( !sourceChanged )
+	{
 		return;
 	}
 
 	MaterialDoc* material = materialDocManager->CreateMaterialDoc( currentMaterialName );
 
-	if ( material ) {
+	if( material )
+	{
 		idStr text = GetSourceText();
 		material->ApplySourceModify( text );
 	}
@@ -169,23 +182,24 @@ void MaterialEditView::ApplyMaterialSource() {
 }
 
 /**
-* Transfers data to and from the controls in the console.
-*/
-void MaterialEditView::DoDataExchange( CDataExchange* pDX ) {
-
+ * Transfers data to and from the controls in the console.
+ */
+void MaterialEditView::DoDataExchange( CDataExchange* pDX )
+{
 	CFormView::DoDataExchange( pDX );
 
 	DDX_Control( pDX, IDC_MATERIALEDITOR_EDIT_TEXT, m_textView );
 }
 
 /**
-* Called by the MFC framework when the view is being created.
-*/
-void MaterialEditView::OnInitialUpdate() {
-
+ * Called by the MFC framework when the view is being created.
+ */
+void MaterialEditView::OnInitialUpdate()
+{
 	CFormView::OnInitialUpdate();
 
-	if ( !initHack ) {
+	if( !initHack )
+	{
 		initHack = true;
 		m_textView.Init();
 		m_textView.LoadKeyWordsFromFile( "editors/material.def" );
@@ -197,10 +211,12 @@ void MaterialEditView::OnInitialUpdate() {
 }
 
 /**
-* Called by the MFC framework when the view is being created.
-*/
-int MaterialEditView::OnCreate( LPCREATESTRUCT lpCreateStruct ) {
-	if ( CFormView::OnCreate( lpCreateStruct ) == -1 ) {
+ * Called by the MFC framework when the view is being created.
+ */
+int MaterialEditView::OnCreate( LPCREATESTRUCT lpCreateStruct )
+{
+	if( CFormView::OnCreate( lpCreateStruct ) == -1 )
+	{
 		return -1;
 	}
 
@@ -208,20 +224,22 @@ int MaterialEditView::OnCreate( LPCREATESTRUCT lpCreateStruct ) {
 
 	m_editSplitter.CreateStatic( this, 1, 2 );
 
-	if ( !m_editSplitter.CreateView( 0, 0, RUNTIME_CLASS( StageView ), CSize( 200, 200 ), NULL ) ) {
+	if( !m_editSplitter.CreateView( 0, 0, RUNTIME_CLASS( StageView ), CSize( 200, 200 ), NULL ) )
+	{
 		TRACE0( "Failed to create stage property pane\n" );
 		return -1;
 	}
 
-	if ( !m_editSplitter.CreateView( 0, 1, RUNTIME_CLASS( MaterialPropTreeView ), CSize( 500, 200 ), NULL ) ) {
+	if( !m_editSplitter.CreateView( 0, 1, RUNTIME_CLASS( MaterialPropTreeView ), CSize( 500, 200 ), NULL ) )
+	{
 		TRACE0( "Failed to create property pane\n" );
 		return -1;
 	}
 
 	m_nameEdit.SetFont( materialEditorFont );
 
-	m_stageView = ( StageView * )m_editSplitter.GetPane( 0, 0 );
-	m_materialPropertyView = ( MaterialPropTreeView * )m_editSplitter.GetPane( 0, 1 );
+	m_stageView			   = ( StageView* )m_editSplitter.GetPane( 0, 0 );
+	m_materialPropertyView = ( MaterialPropTreeView* )m_editSplitter.GetPane( 0, 1 );
 
 	m_tabs.Create( TCS_BOTTOM | TCS_FLATBUTTONS | WS_CHILD | WS_VISIBLE, CRect( 0, 0, 0, 0 ), this, EDIT_TAB_CONTROL );
 	m_tabs.InsertItem( 0, "Properties" );
@@ -231,7 +249,8 @@ int MaterialEditView::OnCreate( LPCREATESTRUCT lpCreateStruct ) {
 
 	// Load the icon
 	HICON hIcon = AfxGetApp()->LoadIconA( IDI_GUIED );
-	if ( hIcon ) {
+	if( hIcon )
+	{
 		SetIcon( hIcon, TRUE );
 		SetIcon( hIcon, FALSE );
 	}
@@ -240,54 +259,59 @@ int MaterialEditView::OnCreate( LPCREATESTRUCT lpCreateStruct ) {
 }
 
 /**
-* Windows message called when the window is resized.
-*/
-void MaterialEditView::OnSize( UINT nType, int cx, int cy ) {
+ * Windows message called when the window is resized.
+ */
+void MaterialEditView::OnSize( UINT nType, int cx, int cy )
+{
 	CFormView::OnSize( nType, cx, cy );
 
 	CRect tabRect;
 	m_tabs.GetItemRect( 0, tabRect );
 
-
 	float scaling_factor = Win_GetWindowScalingFactor( GetSafeHwnd() );
-	int s2 = int( 2 * scaling_factor );
-	int s8 = int( 8 * scaling_factor );
-	int s4 = int( 4 * scaling_factor );
-	int s5 = int( 5 * scaling_factor );
-	int s6 = int( 6 * scaling_factor );
-	int s12 = int( 12 * scaling_factor );
-	int s16 = int( 16 * scaling_factor );
-	int s22 = int( 22 * scaling_factor );
+	int	  s2			 = int( 2 * scaling_factor );
+	int	  s8			 = int( 8 * scaling_factor );
+	int	  s4			 = int( 4 * scaling_factor );
+	int	  s5			 = int( 5 * scaling_factor );
+	int	  s6			 = int( 6 * scaling_factor );
+	int	  s12			 = int( 12 * scaling_factor );
+	int	  s16			 = int( 16 * scaling_factor );
+	int	  s22			 = int( 22 * scaling_factor );
 
-	int tabHeight = tabRect.Height() + s5;
+	int	  tabHeight = tabRect.Height() + s5;
 
-	//Hardcode the edit window height
-	if ( m_nameEdit.GetSafeHwnd() ) {
+	// Hardcode the edit window height
+	if( m_nameEdit.GetSafeHwnd() )
+	{
 		m_nameEdit.MoveWindow( 1, 1, cx - s2, 20 );
 	}
 
-	if ( m_tabs.GetSafeHwnd() ) {
+	if( m_tabs.GetSafeHwnd() )
+	{
 		m_tabs.MoveWindow( 0, cy - tabHeight, cx, tabHeight );
 	}
 
-	if ( m_editSplitter.GetSafeHwnd() ) {
+	if( m_editSplitter.GetSafeHwnd() )
+	{
 		m_editSplitter.MoveWindow( 1, 22, cx - s2, cy - tabHeight - s22 );
 	}
 
-	if ( m_textView.GetSafeHwnd() ) {
+	if( m_textView.GetSafeHwnd() )
+	{
 		m_textView.MoveWindow( 1, 22, cx - s2, cy - tabHeight - s22 );
 	}
 }
 
 /**
-* Called when the user changes the properties/text tab selection. This methods shows and hides
-* the appropriate windows.
-*/
-void MaterialEditView::OnTcnSelChange( NMHDR* pNMHDR, LRESULT* pResult ) {
-
+ * Called when the user changes the properties/text tab selection. This methods shows and hides
+ * the appropriate windows.
+ */
+void MaterialEditView::OnTcnSelChange( NMHDR* pNMHDR, LRESULT* pResult )
+{
 	int sel = m_tabs.GetCurSel();
 
-	switch ( sel ) {
+	switch( sel )
+	{
 		case 0:
 			m_editSplitter.ShowWindow( SW_SHOW );
 			m_textView.ShowWindow( SW_HIDE );
@@ -307,12 +331,15 @@ void MaterialEditView::OnTcnSelChange( NMHDR* pNMHDR, LRESULT* pResult ) {
 }
 
 /**
-* Called when the user changes text in the edit control
-*/
-void MaterialEditView::OnEnChangeEdit( NMHDR* pNMHDR, LRESULT* pResult ) {
-	if ( materialDocManager && !sourceInit ) {
+ * Called when the user changes text in the edit control
+ */
+void MaterialEditView::OnEnChangeEdit( NMHDR* pNMHDR, LRESULT* pResult )
+{
+	if( materialDocManager && !sourceInit )
+	{
 		MaterialDoc* material = materialDocManager->GetCurrentMaterialDoc();
-		if ( material && !material->IsSourceModified() ) {
+		if( material && !material->IsSourceModified() )
+		{
 			sourceChanged = true;
 			material->SourceModify( this );
 		}

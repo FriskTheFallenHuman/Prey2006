@@ -1,13 +1,22 @@
 {
 	"name": "prey06",
-	"version": "1.5.0",
+	"version": "1.5.4",
 	"dependencies": [
-		"curl",
+		{
+			"name": "curl",
+			"platform": "!linux"
+		},
 		"openal-soft",
 		"sdl2",
+		"sdl3",
 		{
 			"name": "libbacktrace",
 			"platform": "!windows"
+		},
+		{
+			"name": "freetype",
+			"default-features": false,
+			"features": [ "error-strings", "subpixel-rendering" ]
 		}
 	]
 }

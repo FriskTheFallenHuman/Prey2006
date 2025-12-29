@@ -878,6 +878,7 @@ void idAsyncClient::ProcessReliableMessagePure( const idBitMsg &msg ) {
 	byte		msgBuf[ MAX_MESSAGE_SIZE ];
 	int			inChecksums[ MAX_PURE_PAKS ];
 	int			i;
+	int			gamePakChecksum;
 	int			serverGameInitId;
 
 	session->SetGUI( NULL, NULL );
@@ -902,7 +903,7 @@ void idAsyncClient::ProcessReliableMessagePure( const idBitMsg &msg ) {
 	sessLocal.ExecuteMapChange( true );
 
 	// upon receiving our pure list, the server will send us SCS_INGAME and we'll start getting snapshots
-	fileSystem->GetPureServerChecksums( inChecksums );
+	fileSystem->GetPureServerChecksums( inChecksums, -1, &gamePakChecksum );
 	outMsg.Init( msgBuf, sizeof( msgBuf ) );
 	outMsg.WriteByte( CLIENT_RELIABLE_MESSAGE_PURE );
 
@@ -913,6 +914,7 @@ void idAsyncClient::ProcessReliableMessagePure( const idBitMsg &msg ) {
 		outMsg.WriteInt( inChecksums[ i++ ] );
 	}
 	outMsg.WriteInt( 0 );
+	outMsg.WriteInt( gamePakChecksum );
 
 	if ( !channel.SendReliableMessage( outMsg ) ) {
 		common->Error( "client->server reliable messages overflow\n" );
@@ -1188,6 +1190,7 @@ void idAsyncClient::ProcessInfoResponseMessage( const netadr_t from, const idBit
 		}
 		serverInfo.clients++;
 	}
+	serverInfo.OSMask = msg.ReadInt();
 	index = serverList.InfoResponse( serverInfo );
 
 	common->Printf( "%d: server %s - protocol %d.%d - %s\n", index, Sys_NetAdrToString( serverInfo.adr ), protocol >> 16, protocol & 0xffff, serverInfo.serverInfo.GetString( "si_name" ) );
@@ -1371,7 +1374,9 @@ idAsyncClient::ValidatePureServerChecksums
 bool idAsyncClient::ValidatePureServerChecksums( const netadr_t from, const idBitMsg &msg ) {
 	int			i, numChecksums, numMissingChecksums;
 	int			inChecksums[ MAX_PURE_PAKS ];
+	int			inGamePakChecksum;
 	int			missingChecksums[ MAX_PURE_PAKS ];
+	int			missingGamePakChecksum;
 	idBitMsg	dlmsg;
 	byte		msgBuf[MAX_MESSAGE_SIZE];
 
@@ -1388,15 +1393,16 @@ bool idAsyncClient::ValidatePureServerChecksums( const netadr_t from, const idBi
 		}
 	} while ( i );
 	inChecksums[ numChecksums ] = 0;
+	inGamePakChecksum = msg.ReadInt();
 
-	fsPureReply_t reply = fileSystem->SetPureServerChecksums( inChecksums, missingChecksums );
+	fsPureReply_t reply = fileSystem->SetPureServerChecksums( inChecksums, inGamePakChecksum, missingChecksums, &missingGamePakChecksum );
 	switch ( reply ) {
 		case PURE_RESTART:
 			// need to restart the filesystem with a different pure configuration
 			cmdSystem->BufferCommandText( CMD_EXEC_NOW, "disconnect" );
 			// restart with the right FS configuration and get back to the server
 			clientState = CS_PURERESTART;
-			fileSystem->SetRestartChecksums( inChecksums );
+			fileSystem->SetRestartChecksums( inChecksums, inGamePakChecksum );
 			cmdSystem->BufferCommandText( CMD_EXEC_NOW, "reloadEngine" );
 			return false;
 		case PURE_MISSING: {
@@ -1416,6 +1422,9 @@ bool idAsyncClient::ValidatePureServerChecksums( const netadr_t from, const idBi
 				if ( numMissingChecksums > 0 ) {
 					message += va( common->GetLanguageDict()->GetString( "#str_06751" ), numMissingChecksums, checksums.c_str() );
 				}
+				if ( missingGamePakChecksum ) {
+					message += va( common->GetLanguageDict()->GetString( "#str_06750" ), missingGamePakChecksum );
+				}
 
 				common->Printf( "%s", message.c_str() );
 				cmdSystem->BufferCommandText( CMD_EXEC_NOW, "disconnect" );
@@ -1427,9 +1436,12 @@ bool idAsyncClient::ValidatePureServerChecksums( const netadr_t from, const idBi
 					return false;
 				}
 				// ask the server to send back download info
-				common->DPrintf( "missing '%d' paks: %s\n", numMissingChecksums, checksums.c_str() );
+				common->DPrintf( "missing %d paks: %s\n", numMissingChecksums + ( missingGamePakChecksum ? 1 : 0 ), checksums.c_str() );
+				if ( missingGamePakChecksum ) {
+					common->DPrintf( "game code pak: 0x%x\n", missingGamePakChecksum );
+				}
 				// store the requested downloads
-				GetDownloadRequest( missingChecksums, numMissingChecksums );
+				GetDownloadRequest( missingChecksums, numMissingChecksums, missingGamePakChecksum );
 				// build the download request message
 				// NOTE: in a specific function?
 				dlmsg.Init( msgBuf, sizeof( msgBuf ) );
@@ -1440,6 +1452,7 @@ bool idAsyncClient::ValidatePureServerChecksums( const netadr_t from, const idBi
 				// used to make sure the server replies to the same download request
 				dlmsg.WriteInt( dlRequest );
 				// special case the code pak - if we have a 0 checksum then we don't need to download it
+				dlmsg.WriteInt( missingGamePakChecksum );
 				// 0-terminated list of missing paks
 				i = 0;
 				while ( missingChecksums[ i ] ) {
@@ -1451,6 +1464,10 @@ bool idAsyncClient::ValidatePureServerChecksums( const netadr_t from, const idBi
 
 			return false;
 		}
+		case PURE_NODLL:
+			common->Printf( common->GetLanguageDict()->GetString( "#str_07211" ), Sys_NetAdrToString( from ) );
+			cmdSystem->BufferCommandText( CMD_EXEC_NOW, "disconnect" );
+			return false;
 		default:
 			break;
 	}
@@ -1468,6 +1485,7 @@ void idAsyncClient::ProcessPureMessage( const netadr_t from, const idBitMsg &msg
 	byte		msgBuf[ MAX_MESSAGE_SIZE ];
 	int			i;
 	int			inChecksums[ MAX_PURE_PAKS ];
+	int			gamePakChecksum;
 
 	if ( clientState != CS_CONNECTING ) {
 		common->Printf( "clientState != CS_CONNECTING, pure msg ignored\n" );
@@ -1478,7 +1496,7 @@ void idAsyncClient::ProcessPureMessage( const netadr_t from, const idBitMsg &msg
 		return;
 	}
 
-	fileSystem->GetPureServerChecksums( inChecksums );
+	fileSystem->GetPureServerChecksums( inChecksums, -1, &gamePakChecksum );
 	outMsg.Init( msgBuf, sizeof( msgBuf ) );
 	outMsg.WriteShort( CONNECTIONLESS_MESSAGE_ID );
 	outMsg.WriteString( "pureClient" );
@@ -1489,7 +1507,7 @@ void idAsyncClient::ProcessPureMessage( const netadr_t from, const idBitMsg &msg
 		outMsg.WriteInt( inChecksums[ i++ ] );
 	}
 	outMsg.WriteInt( 0 );
-
+	outMsg.WriteInt( gamePakChecksum );
 	clientPort.SendPacket( from, outMsg.GetData(), outMsg.GetSize() );
 }
 
@@ -1646,6 +1664,12 @@ void idAsyncClient::SetupConnection( void ) {
 		msg.WriteShort( CONNECTIONLESS_MESSAGE_ID );
 		msg.WriteString( "connect" );
 		msg.WriteInt( ASYNC_PROTOCOL_VERSION );
+#if ID_FAKE_PURE
+		// fake win32 OS - might need to adapt depending on the case
+		msg.WriteShort( 0 );
+#else
+		msg.WriteShort( BUILD_OS_ID );
+#endif
 		msg.WriteInt( clientDataChecksum );
 		msg.WriteInt( serverChallenge );
 		msg.WriteShort( clientId );
@@ -1898,6 +1922,7 @@ void idAsyncClient::SendVersionCheck( bool fromMenu ) {
 	msg.WriteShort( CONNECTIONLESS_MESSAGE_ID );
 	msg.WriteString( "versionCheck" );
 	msg.WriteInt( ASYNC_PROTOCOL_VERSION );
+	msg.WriteShort( BUILD_OS_ID );
 	msg.WriteString( cvarSystem->GetCVarString( "si_version" ) );
 	msg.WriteString( cvarSystem->GetCVarString( "com_guid" ) );
 	clientPort.SendPacket( idAsyncNetwork::GetMasterAddress(), msg.GetData(), msg.GetSize() );
@@ -2291,16 +2316,17 @@ void idAsyncClient::ProcessDownloadInfoMessage( const netadr_t from, const idBit
 idAsyncClient::GetDownloadRequest
 ===============
 */
-int idAsyncClient::GetDownloadRequest( const int checksums[ MAX_PURE_PAKS ], int count ) {
+int idAsyncClient::GetDownloadRequest( const int checksums[ MAX_PURE_PAKS ], int count, int gamePakChecksum ) {
 	assert( !checksums[ count ] ); // 0-terminated
-	if ( memcmp( dlChecksums, checksums, sizeof( int ) * count ) ) {
+	if ( memcmp( dlChecksums + 1, checksums, sizeof( int ) * count ) || gamePakChecksum != dlChecksums[ 0 ] ) {
 		idRandom newreq;
 
-		memcpy( dlChecksums, checksums, sizeof( int ) * MAX_PURE_PAKS );
+		dlChecksums[ 0 ] = gamePakChecksum;
+		memcpy( dlChecksums + 1, checksums, sizeof( int ) * MAX_PURE_PAKS );
 
 		newreq.SetSeed( Sys_Milliseconds() );
 		dlRequest = newreq.RandomInt();
-		dlCount = count;
+		dlCount = count + ( gamePakChecksum ? 1 : 0 );
 		return dlRequest;
 	}
 	// this is the same dlRequest, we haven't heard from the server. keep the same id

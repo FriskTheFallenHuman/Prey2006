@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -30,25 +31,29 @@ If you have questions concerning this license or the applicable additional terms
 
 // CCommandsDlg dialog
 
-class CCommandsDlg : public CDialogEx {
+class CCommandsDlg : public CDialogEx
+{
 public:
-	CCommandsDlg( CWnd* Parent = nullptr );   // standard constructor
+	CCommandsDlg( CWnd* Parent = nullptr ); // standard constructor
 
 	// Dialog Data
-	enum { IDD = IDD_DLG_COMMANDLIST };
+	enum
+	{
+		IDD = IDD_DLG_COMMANDLIST
+	};
 	CListBox m_lstCommands;
 
 protected:
-	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX ); // DDX/DDV support
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
 	DECLARE_MESSAGE_MAP()
 
 private:
-	void PopulateCommandList();
+	void	PopulateCommandList();
 	CString FormatCommandLine( int commandIndex );
 	CString GetCommandKeyString( int commandIndex );
 	CString GetCommandModifiersString( int commandIndex );
-	void WriteCommandToFile( CFile& fileout, const CString& strLine );
+	void	WriteCommandToFile( CFile& fileout, const CString& strLine );
 };

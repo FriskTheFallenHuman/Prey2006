@@ -375,9 +375,9 @@ void idChoiceWindow::PostParse() {
 	bool injectCustomMode = true;
 
 	/*
-	 * Mods that have their own video settings menu can tell dhewm3 to replace the
+	 * Mods that have their own video settings menu can tell the engine to replace the
 	 * "choices" and "values" entries in their choiceDef with the resolutions supported by
-	 * dhewm3 (and corresponding modes). So if we add new video modes to dhewm3,
+	 * the engine (and corresponding modes). So if we add new video modes to the engine,
 	 * they'll automatically appear in the menu without changing the .gui
 	 * To enable this, the mod authors only need to add an "injectResolutions 1" entry
 	 * to their resolution choiceDef. By default, the first entry will be "r_custom*"
@@ -439,7 +439,9 @@ void idChoiceWindow::Draw(int time, float x, float y) {
 		shadowRect.x += textShadow;
 		shadowRect.y += textShadow;
 
-		dc->DrawText( shadowText, textScale, textAlign, colorBlack, shadowRect, false, -1 );
+		if (choices.Num() > 0) {
+			dc->DrawText( shadowText, textScale, textAlign, colorBlack, shadowRect, false, -1 );
+		}
 	}
 
 	if ( hover && !noEvents && Contains(gui->CursorX(), gui->CursorY()) ) {

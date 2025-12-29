@@ -170,7 +170,7 @@ void idDragEntity::Update( idPlayer *player ) {
 	trace_t trace;
 	idEntity *newEnt;
 	idAngles angles;
-	jointHandle_t newJoint;
+	jointHandle_t newJoint = INVALID_JOINT;
 	idStr newBodyName;
 
 	player->GetViewPos( viewPoint, viewAxis );
@@ -548,10 +548,7 @@ void idEditEntities::DisplayEntities( void ) {
 			break;
 		case 2:
 			sit.typeInfo = &idSound::Type;
-			sit.textKey = "s_shader";
-			selectableEntityClasses.Append( sit );
-			sit.typeInfo = &idLight::Type;
-			sit.textKey = "texture";
+			sit.textKey = "s_shader|name";
 			selectableEntityClasses.Append( sit );
 			break;
 		case 3:
@@ -587,10 +584,12 @@ void idEditEntities::DisplayEntities( void ) {
 	idBounds viewTextBounds( gameLocal.GetLocalPlayer()->GetPhysics()->GetOrigin() );
 	idMat3 axis = gameLocal.GetLocalPlayer()->viewAngles.ToMat3();
 
-	viewBounds.ExpandSelf( 512 );
-	viewTextBounds.ExpandSelf( 128 );
+	viewBounds.ExpandSelf( g_editEntityDistance.GetFloat() );
+	viewTextBounds.ExpandSelf( g_editEntityTextDistance.GetFloat() );
 
 	idStr textKey;
+	idStr textKey2;
+	idStr strOutput;
 
 	for( ent = gameLocal.spawnedEntities.Next(); ent != NULL; ent = ent->spawnNode.Next() ) {
 
@@ -601,7 +600,16 @@ void idEditEntities::DisplayEntities( void ) {
 			continue;
 		}
 
+		textKey2 = "";
+		int iIndex = textKey.Find( '|' );
+		if ( iIndex >= 0 ) {
+			textKey2 = textKey.Mid ( iIndex + 1, textKey.Length() - ( iIndex + 1 ) );	// hmmm, they emulate 99% of MS CString but don't have a single-param Mid() func?
+			textKey  = textKey.Left( iIndex );
+		}
+
 		bool drawArrows = false;
+		bool drawDirection = false;
+
 		if ( ent->GetType() == &idAFEntity_Base::Type ) {
 			if ( !static_cast<idAFEntity_Base *>(ent)->IsActiveAF() ) {
 				continue;
@@ -610,6 +618,7 @@ void idEditEntities::DisplayEntities( void ) {
 			if ( ent->fl.selected ) {
 				drawArrows = true;
 			}
+			ent->UpdateSound();
 			const idSoundShader * ss = declManager->FindSound( ent->spawnArgs.GetString( textKey ) );
 			if ( ss->HasDefaultSound() || ss->base->GetState() == DS_DEFAULTED ) {
 				color.Set( 1.0f, 0.0f, 1.0f, 1.0f );
@@ -617,6 +626,42 @@ void idEditEntities::DisplayEntities( void ) {
 		} else if ( ent->GetType() == &idFuncEmitter::Type ) {
 			if ( ent->fl.selected ) {
 				drawArrows = true;
+				drawDirection = true;
+			}
+		} else if ( ent->GetType() == &idLight::Type ) {
+			if ( ent->fl.selected ) {
+				drawArrows = true;
+				drawDirection = true;
+
+				idLight* light = static_cast<idLight*>( ent );
+
+				cvarSystem->SetCVarInteger( "r_singleLight", light->GetLightDefHandle() );
+				cvarSystem->SetCVarInteger( "r_showLights", 3 );
+
+				renderLight_t renderLight = light->GetRenderLight();
+
+				// draw arrow from entity origin to globalLightOrigin
+
+				idVec3 globalLightOrigin;
+				if ( renderLight.parallel ) {
+					idVec3 dir = renderLight.lightCenter;
+					if ( dir.Normalize() == 0.0f ) {
+						// make point straight up if not specified
+						dir[2] = 1.0f;
+					}
+					globalLightOrigin = renderLight.origin + dir * 100000.0f;
+				} else {
+					globalLightOrigin = renderLight.origin + renderLight.axis * renderLight.lightCenter;
+				}
+
+				idVec3 start = ent->GetPhysics()->GetOrigin();
+				idVec3 end = globalLightOrigin;
+
+				gameRenderWorld->DebugArrow( colorYellow, start, end, 2 );
+
+				if ( !renderLight.parallel ) {
+					gameRenderWorld->DrawText( "globalLightOrigin", end + idVec3( 4, 0, 0 ), 0.15f, colorYellow, axis );
+				}
 			}
 		}
 
@@ -647,10 +692,21 @@ void idEditEntities::DisplayEntities( void ) {
 			gameRenderWorld->DrawText( "z-", end + idVec3( 0, 0, -4 ), 0.15f, colorWhite, axis );
 		}
 
+		if ( drawDirection ) {
+			idVec3 start = ent->GetPhysics()->GetOrigin ( );
+			idVec3 end   = start + ent->GetPhysics()->GetAxis()[0] * 35.0f;
+			gameRenderWorld->DebugArrow ( colorYellow, start, end, 6 );
+		}
+
 		if ( textKey.Length() ) {
-			const char *text = ent->spawnArgs.GetString( textKey );
 			if ( viewTextBounds.ContainsPoint( ent->GetPhysics()->GetOrigin() ) ) {
-				gameRenderWorld->DrawText( text, ent->GetPhysics()->GetOrigin() + idVec3(0, 0, 12), 0.25, colorWhite, axis, 1 );
+				strOutput = ent->spawnArgs.GetString( textKey );
+				if ( !textKey2.IsEmpty() ) {
+					strOutput += " ( ";
+					strOutput += ent->spawnArgs.GetString( textKey2 );
+					strOutput += " )";
+				}
+				gameRenderWorld->DrawText( strOutput.c_str(), ent->GetPhysics()->GetOrigin() + idVec3( 0, 0, 12 ), 0.25, colorWhite, axis, 1 );
 			}
 		}
 	}
@@ -660,21 +716,22 @@ void idEditEntities::DisplayEntities( void ) {
 /*
 ===============================================================================
 
-	idGameEdit
+	Local game interface with methods for in-game editing.
 
 ===============================================================================
 */
 
-idGameEditExt		gameEditLocal;
-idGameEdit *		gameEdit = &gameEditLocal;
+// the rest of the engine will only reference the "gameEdit" variable, while all local aspects stay hidden
+idGameEditLocal		gameEditLocal;
+idGameEdit *		gameEdit = &gameEditLocal;	// statically pointed at an idGameEditLocal
 
 
 /*
 =============
-idGameEdit::GetSelectedEntities
+idGameEditLocal::GetSelectedEntities
 =============
 */
-int idGameEdit::GetSelectedEntities( idEntity *list[], int max ) {
+int idGameEditLocal::GetSelectedEntities( idEntity *list[], int max ) {
 	int num = 0;
 	idEntity *ent;
 
@@ -691,10 +748,10 @@ int idGameEdit::GetSelectedEntities( idEntity *list[], int max ) {
 
 /*
 =============
-idGameEdit::TriggerSelected
+idGameEditLocal::TriggerSelected
 =============
 */
-void idGameEdit::TriggerSelected() {
+void idGameEditLocal::TriggerSelected() {
 	idEntity *ent;
 	for( ent = gameLocal.spawnedEntities.Next(); ent != NULL; ent = ent->spawnNode.Next() ) {
 		if ( ent->fl.selected ) {
@@ -705,64 +762,67 @@ void idGameEdit::TriggerSelected() {
 
 /*
 ================
-idGameEdit::ClearEntitySelection
+idGameEditLocal::ClearEntitySelection
 ================
 */
-void idGameEdit::ClearEntitySelection() {
+void idGameEditLocal::ClearEntitySelection() {
 	idEntity *ent;
 
 	for( ent = gameLocal.spawnedEntities.Next(); ent != NULL; ent = ent->spawnNode.Next() ) {
 		ent->fl.selected = false;
 	}
-	gameLocal.editEntities->ClearSelectedEntities();
+
+	if ( gameLocal.editEntities ) {
+		gameLocal.editEntities->ClearSelectedEntities();
+	}
 }
 
 /*
 ================
-idGameEdit::AddSelectedEntity
+idGameEditLocal::AddSelectedEntity
 ================
 */
-void idGameEdit::AddSelectedEntity( idEntity *ent ) {
-	if ( ent ) {
+void idGameEditLocal::AddSelectedEntity( idEntity *ent ) {
+	if ( ent && gameLocal.editEntities ) {
 		gameLocal.editEntities->AddSelectedEntity( ent );
 	}
 }
 
 /*
 ================
-idGameEdit::FindEntityDefDict
+idGameEditLocal::FindEntityDefDict
 ================
 */
-const idDict *idGameEdit::FindEntityDefDict( const char *name, bool makeDefault ) const {
+const idDict *idGameEditLocal::FindEntityDefDict( const char *name, bool makeDefault ) const {
 	return gameLocal.FindEntityDefDict( name, makeDefault );
 }
 
 /*
 ================
-idGameEdit::SpawnEntityDef
+idGameEditLocal::SpawnEntityDef
 ================
 */
-void idGameEdit::SpawnEntityDef( const idDict &args, idEntity **ent ) {
+void idGameEditLocal::SpawnEntityDef( const idDict &args, idEntity **ent ) {
 	gameLocal.SpawnEntityDef( args, ent );
 }
 
 /*
 ================
-idGameEdit::FindEntity
+idGameEditLocal::FindEntity
 ================
 */
-idEntity *idGameEdit::FindEntity( const char *name ) const {
+idEntity *idGameEditLocal::FindEntity( const char *name ) const {
 	return gameLocal.FindEntity( name );
 }
 
 /*
 =============
-idGameEdit::GetUniqueEntityName
+idGameEditLocal::GetUniqueEntityName
 
 generates a unique name for a given classname
 =============
 */
-const char *idGameEdit::GetUniqueEntityName( const char *classname ) const {
+const char *idGameEditLocal::GetUniqueEntityName( const char *classname ) const {
 	int			id;
 	static char	name[1024];
 
@@ -781,10 +841,10 @@ const char *idGameEdit::GetUniqueEntityName( const char *classname ) const {
 
 /*
 ================
-idGameEdit::EntityGetOrigin
+idGameEditLocal::EntityGetOrigin
 ================
 */
-void  idGameEdit::EntityGetOrigin( idEntity *ent, idVec3 &org ) const {
+void  idGameEditLocal::EntityGetOrigin( idEntity *ent, idVec3 &org ) const {
 	if ( ent ) {
 		org = ent->GetPhysics()->GetOrigin();
 	}
@@ -792,10 +852,10 @@ void  idGameEdit::EntityGetOrigin( idEntity *ent, idVec3 &org ) const {
 
 /*
 ================
-idGameEdit::EntityGetAxis
+idGameEditLocal::EntityGetAxis
 ================
 */
-void idGameEdit::EntityGetAxis( idEntity *ent, idMat3 &axis ) const {
+void idGameEditLocal::EntityGetAxis( idEntity *ent, idMat3 &axis ) const {
 	if ( ent ) {
 		axis = ent->GetPhysics()->GetAxis();
 	}
@@ -803,10 +863,10 @@ void idGameEdit::EntityGetAxis( idEntity *ent, idMat3 &axis ) const {
 
 /*
 ================
-idGameEdit::EntitySetOrigin
+idGameEditLocal::EntitySetOrigin
 ================
 */
-void idGameEdit::EntitySetOrigin( idEntity *ent, const idVec3 &org ) {
+void idGameEditLocal::EntitySetOrigin( idEntity *ent, const idVec3 &org ) {
 	if ( ent ) {
 		ent->SetOrigin( org );
 	}
@@ -814,10 +874,10 @@ void idGameEdit::EntitySetOrigin( idEntity *ent, const idVec3 &org ) {
 
 /*
 ================
-idGameEdit::EntitySetAxis
+idGameEditLocal::EntitySetAxis
 ================
 */
-void idGameEdit::EntitySetAxis( idEntity *ent, const idMat3 &axis ) {
+void idGameEditLocal::EntitySetAxis( idEntity *ent, const idMat3 &axis ) {
 	if ( ent ) {
 		ent->SetAxis( axis );
 	}
@@ -825,10 +885,10 @@ void idGameEdit::EntitySetAxis( idEntity *ent, const idMat3 &axis ) {
 
 /*
 ================
-idGameEdit::EntitySetColor
+idGameEditLocal::EntitySetColor
 ================
 */
-void idGameEdit::EntitySetColor( idEntity *ent, const idVec3 color ) {
+void idGameEditLocal::EntitySetColor( idEntity *ent, const idVec3 color ) {
 	if ( ent ) {
 		ent->SetColor( color );
 	}
@@ -836,10 +896,10 @@ void idGameEdit::EntitySetColor( idEntity *ent, const idVec3 color ) {
 
 /*
 ================
-idGameEdit::EntityTranslate
+idGameEditLocal::EntityTranslate
 ================
 */
-void idGameEdit::EntityTranslate( idEntity *ent, const idVec3 &org ) {
+void idGameEditLocal::EntityTranslate( idEntity *ent, const idVec3 &org ) {
 	if ( ent ) {
 		ent->GetPhysics()->Translate( org );
 	}
@@ -847,10 +907,10 @@ void idGameEdit::EntityTranslate( idEntity *ent, const idVec3 &org ) {
 
 /*
 ================
-idGameEdit::EntityGetSpawnArgs
+idGameEditLocal::EntityGetSpawnArgs
 ================
 */
-const idDict *idGameEdit::EntityGetSpawnArgs( idEntity *ent ) const {
+const idDict *idGameEditLocal::EntityGetSpawnArgs( idEntity *ent ) const {
 	if ( ent ) {
 		return &ent->spawnArgs;
 	}
@@ -859,10 +919,10 @@ const idDict *idGameEdit::EntityGetSpawnArgs( idEntity *ent ) const {
 
 /*
 ================
-idGameEdit::EntityUpdateChangeableSpawnArgs
+idGameEditLocal::EntityUpdateChangeableSpawnArgs
 ================
 */
-void idGameEdit::EntityUpdateChangeableSpawnArgs( idEntity *ent, const idDict *dict ) {
+void idGameEditLocal::EntityUpdateChangeableSpawnArgs( idEntity *ent, const idDict *dict ) {
 	if ( ent ) {
 		ent->UpdateChangeableSpawnArgs( dict );
 	}
@@ -870,10 +930,10 @@ void idGameEdit::EntityUpdateChangeableSpawnArgs( idEntity *ent, const idDict *d
 
 /*
 ================
-idGameEdit::EntityChangeSpawnArgs
+idGameEditLocal::EntityChangeSpawnArgs
 ================
 */
-void idGameEdit::EntityChangeSpawnArgs( idEntity *ent, const idDict *newArgs ) {
+void idGameEditLocal::EntityChangeSpawnArgs( idEntity *ent, const idDict *newArgs ) {
 	if ( ent ) {
 		for ( int i = 0 ; i < newArgs->GetNumKeyVals () ; i ++ ) {
 			const idKeyValue *kv = newArgs->GetKeyVal( i );
@@ -889,10 +949,10 @@ void idGameEdit::EntityChangeSpawnArgs( idEntity *ent, const idDict *newArgs ) {
 
 /*
 ================
-idGameEdit::EntityUpdateVisuals
+idGameEditLocal::EntityUpdateVisuals
 ================
 */
-void idGameEdit::EntityUpdateVisuals( idEntity *ent ) {
+void idGameEditLocal::EntityUpdateVisuals( idEntity *ent ) {
 	if ( ent ) {
 		ent->UpdateVisuals();
 	}
@@ -900,10 +960,10 @@ void idGameEdit::EntityUpdateVisuals( idEntity *ent ) {
 
 /*
 ================
-idGameEdit::EntitySetModel
+idGameEditLocal::EntitySetModel
 ================
 */
-void idGameEdit::EntitySetModel( idEntity *ent, const char *val ) {
+void idGameEditLocal::EntitySetModel( idEntity *ent, const char *val ) {
 	if ( ent ) {
 		ent->spawnArgs.Set( "model", val );
 		ent->SetModel( val );
@@ -912,10 +972,10 @@ void idGameEdit::EntitySetModel( idEntity *ent, const char *val ) {
 
 /*
 ================
-idGameEdit::EntityStopSound
+idGameEditLocal::EntityStopSound
 ================
 */
-void idGameEdit::EntityStopSound( idEntity *ent ) {
+void idGameEditLocal::EntityStopSound( idEntity *ent ) {
 	if ( ent ) {
 		ent->StopSound( SND_CHANNEL_ANY, false );
 	}
@@ -923,65 +983,65 @@ void idGameEdit::EntityStopSound( idEntity *ent ) {
 
 /*
 ================
-idGameEdit::EntityDelete
+idGameEditLocal::EntityDelete
 ================
 */
-void idGameEdit::EntityDelete( idEntity *ent ) {
+void idGameEditLocal::EntityDelete( idEntity *ent ) {
 	delete ent;
 }
 
 /*
 ================
-idGameEdit::PlayerIsValid
+idGameEditLocal::PlayerIsValid
 ================
 */
-bool idGameEdit::PlayerIsValid() const {
+bool idGameEditLocal::PlayerIsValid() const {
 	return ( gameLocal.GetLocalPlayer() != NULL );
 }
 
 /*
 ================
-idGameEdit::PlayerGetOrigin
+idGameEditLocal::PlayerGetOrigin
 ================
 */
-void idGameEdit::PlayerGetOrigin( idVec3 &org ) const {
+void idGameEditLocal::PlayerGetOrigin( idVec3 &org ) const {
 	org = gameLocal.GetLocalPlayer()->GetPhysics()->GetOrigin();
 }
 
 /*
 ================
-idGameEdit::PlayerGetAxis
+idGameEditLocal::PlayerGetAxis
 ================
 */
-void idGameEdit::PlayerGetAxis( idMat3 &axis ) const {
+void idGameEditLocal::PlayerGetAxis( idMat3 &axis ) const {
 	axis = gameLocal.GetLocalPlayer()->GetPhysics()->GetAxis();
 }
 
 /*
 ================
-idGameEdit::PlayerGetViewAngles
+idGameEditLocal::PlayerGetViewAngles
 ================
 */
-void idGameEdit::PlayerGetViewAngles( idAngles &angles ) const {
+void idGameEditLocal::PlayerGetViewAngles( idAngles &angles ) const {
 	angles = gameLocal.GetLocalPlayer()->viewAngles;
 }
 
 /*
 ================
-idGameEdit::PlayerGetEyePosition
+idGameEditLocal::PlayerGetEyePosition
 ================
 */
-void idGameEdit::PlayerGetEyePosition( idVec3 &org ) const {
+void idGameEditLocal::PlayerGetEyePosition( idVec3 &org ) const {
 	org = gameLocal.GetLocalPlayer()->GetEyePosition();
 }
 
 
 /*
 ================
-idGameEdit::MapGetEntityDict
+idGameEditLocal::MapGetEntityDict
 ================
 */
-const idDict *idGameEdit::MapGetEntityDict( const char *name ) const {
+const idDict *idGameEditLocal::MapGetEntityDict( const char *name ) const {
 	idMapFile *mapFile = gameLocal.GetLevelMap();
 	if ( mapFile && name && *name ) {
 		idMapEntity *mapent = mapFile->FindEntity( name );
@@ -994,10 +1054,10 @@ const idDict *idGameEdit::MapGetEntityDict( const char *name ) const {
 
 /*
 ================
-idGameEdit::MapSave
+idGameEditLocal::MapSave
 ================
 */
-void idGameEdit::MapSave( const char *path ) const {
+void idGameEditLocal::MapSave( const char *path ) const {
 	idMapFile *mapFile = gameLocal.GetLevelMap();
 	if (mapFile) {
 		mapFile->Write( (path) ? path : mapFile->GetName(), ".map");
@@ -1006,10 +1066,10 @@ void idGameEdit::MapSave( const char *path ) const {
 
 /*
 ================
-idGameEdit::MapSetEntityKeyVal
+idGameEditLocal::MapSetEntityKeyVal
 ================
 */
-void idGameEdit::MapSetEntityKeyVal( const char *name, const char *key, const char *val ) const {
+void idGameEditLocal::MapSetEntityKeyVal( const char *name, const char *key, const char *val ) const {
 	idMapFile *mapFile = gameLocal.GetLevelMap();
 	if ( mapFile && name && *name ) {
 		idMapEntity *mapent = mapFile->FindEntity( name );
@@ -1021,10 +1081,10 @@ void idGameEdit::MapSetEntityKeyVal( const char *name, const char *key, const ch
 
 /*
 ================
-idGameEdit::MapCopyDictToEntity
+idGameEditLocal::MapCopyDictToEntity
 ================
 */
-void idGameEdit::MapCopyDictToEntity( const char *name, const idDict *dict ) const {
+void idGameEditLocal::MapCopyDictToEntity( const char *name, const idDict *dict ) const {
 	idMapFile *mapFile = gameLocal.GetLevelMap();
 	if ( mapFile && name && *name ) {
 		idMapEntity *mapent = mapFile->FindEntity( name );
@@ -1043,10 +1103,10 @@ void idGameEdit::MapCopyDictToEntity( const char *name, const idDict *dict ) con
 
 /*
 ================
-idGameEdit::MapGetUniqueMatchingKeyVals
+idGameEditLocal::MapGetUniqueMatchingKeyVals
 ================
 */
-int idGameEdit::MapGetUniqueMatchingKeyVals( const char *key, const char *list[], int max ) const {
+int idGameEditLocal::MapGetUniqueMatchingKeyVals( const char *key, const char *list[], int max ) const {
 	idMapFile *mapFile = gameLocal.GetLevelMap();
 	int count = 0;
 	if ( mapFile ) {
@@ -1065,10 +1125,10 @@ int idGameEdit::MapGetUniqueMatchingKeyVals( const char *key, const char *list[]
 
 /*
 ================
-idGameEdit::MapAddEntity
+idGameEditLocal::MapAddEntity
 ================
 */
-void idGameEdit::MapAddEntity( const idDict *dict ) const {
+void idGameEditLocal::MapAddEntity( const idDict *dict ) const {
 	idMapFile *mapFile = gameLocal.GetLevelMap();
 	if ( mapFile ) {
 		idMapEntity *ent = new idMapEntity();
@@ -1079,10 +1139,10 @@ void idGameEdit::MapAddEntity( const idDict *dict ) const {
 
 /*
 ================
-idGameEdit::MapRemoveEntity
+idGameEditLocal::MapRemoveEntity
 ================
 */
-void idGameEdit::MapRemoveEntity( const char *name ) const {
+void idGameEditLocal::MapRemoveEntity( const char *name ) const {
 	idMapFile *mapFile = gameLocal.GetLevelMap();
 	if ( mapFile ) {
 		idMapEntity *ent = mapFile->FindEntity( name );
@@ -1095,10 +1155,10 @@ void idGameEdit::MapRemoveEntity( const char *name ) const {
 
 /*
 ================
-idGameEdit::MapGetEntitiesMatchignClassWithString
+idGameEditLocal::MapGetEntitiesMatchignClassWithString
 ================
 */
-int idGameEdit::MapGetEntitiesMatchingClassWithString( const char *classname, const char *match, const char *list[], const int max ) const {
+int idGameEditLocal::MapGetEntitiesMatchingClassWithString( const char *classname, const char *match, const char *list[], const int max ) const {
 	idMapFile *mapFile = gameLocal.GetLevelMap();
 	int count = 0;
 	if ( mapFile ) {
@@ -1126,10 +1186,10 @@ int idGameEdit::MapGetEntitiesMatchingClassWithString( const char *classname, co
 
 /*
 ================
-idGameEdit::MapEntityTranslate
+idGameEditLocal::MapEntityTranslate
 ================
 */
-void idGameEdit::MapEntityTranslate( const char *name, const idVec3 &v ) const {
+void idGameEditLocal::MapEntityTranslate( const char *name, const idVec3 &v ) const {
 	idMapFile *mapFile = gameLocal.GetLevelMap();
 	if ( mapFile && name && *name ) {
 		idMapEntity *mapent = mapFile->FindEntity( name );
@@ -1142,49 +1202,1074 @@ void idGameEdit::MapEntityTranslate( const char *name, const idVec3 &v ) const {
 	}
 }
 
+/*
+===============================================================================
+
+  editor support routines
+
+===============================================================================
+*/
+
+
+/*
+================
+idGameEditLocal::AF_SpawnEntity
+================
+*/
+bool idGameEditLocal::AF_SpawnEntity( const char *fileName ) {
+	idDict args;
+	idPlayer *player;
+	idAFEntity_Generic *ent;
+	const idDeclAF *af;
+	idVec3 org;
+	float yaw;
+
+	player = gameLocal.GetLocalPlayer();
+	if ( !player || !gameLocal.CheatsOk( false ) ) {
+		return false;
+	}
+
+	af = static_cast<const idDeclAF *>( declManager->FindType( DECL_AF, fileName ) );
+	if ( !af ) {
+		return false;
+	}
+
+	yaw = player->viewAngles.yaw;
+	args.Set( "angle", va( "%f", yaw + 180 ) );
+	org = player->GetPhysics()->GetOrigin() + idAngles( 0, yaw, 0 ).ToForward() * 80 + idVec3( 0, 0, 1 );
+	args.Set( "origin", org.ToString() );
+	// HUMANHEAD nla - Need them to spawn a hhAFEntity
+#ifdef HUMANHEAD
+	args.Set( "spawnclass", "hhAFEntity" );
+#else
+	args.Set( "spawnclass", "idAFEntity_Generic" );
+#endif	// HUMANHEAD END
+	if ( af->model[0] ) {
+		args.Set( "model", af->model.c_str() );
+	} else {
+		args.Set( "model", fileName );
+	}
+	if ( af->skin[0] ) {
+		args.Set( "skin", af->skin.c_str() );
+	}
+	args.Set( "articulatedFigure", fileName );
+	args.Set( "nodrop", "1" );
+	// HUMANHEAD nla - Need them to spawn a hhAFEntity
+#ifdef HUMANHEAD
+	ent = static_cast<idAFEntity_Generic *>( gameLocal.SpawnObject( "ragdoll_base", &args ) );
+#else
+	ent = static_cast<idAFEntity_Generic *>(gameLocal.SpawnEntityType( idAFEntity_Generic::Type, &args));
+#endif	// HUMANHEAD END
+
+	// always update this entity
+	ent->BecomeActive( TH_THINK );
+	ent->KeepRunningPhysics();
+	ent->fl.forcePhysicsUpdate = true;
+
+	player->dragEntity.SetSelected( ent );
+
+	return true;
+}
+
+/*
+================
+idGameEditLocal::AF_UpdateEntities
+================
+*/
+void idGameEditLocal::AF_UpdateEntities( const char *fileName ) {
+	idEntity *ent;
+	idAFEntity_Base *af;
+	idStr name;
+
+	name = fileName;
+	name.StripFileExtension();
+
+	// reload any idAFEntity_Generic which uses the given articulated figure file
+	for( ent = gameLocal.spawnedEntities.Next(); ent != NULL; ent = ent->spawnNode.Next() ) {
+		if ( ent->IsType( idAFEntity_Base::Type ) ) {
+			af = static_cast<idAFEntity_Base *>(ent);
+			if ( name.Icmp( af->GetAFName() ) == 0 ) {
+				af->LoadAF();
+				af->GetAFPhysics()->PutToRest();
+			}
+		}
+	}
+}
+
+/*
+================
+idGameEditLocal::AF_UndoChanges
+================
+*/
+void idGameEditLocal::AF_UndoChanges( void ) {
+	int i, c;
+	idEntity *ent;
+	idAFEntity_Base *af;
+	idDeclAF *decl;
+
+	c = declManager->GetNumDecls( DECL_AF );
+	for ( i = 0; i < c; i++ ) {
+		decl = static_cast<idDeclAF *>( const_cast<idDecl *>( declManager->DeclByIndex( DECL_AF, i, false ) ) );
+		if ( !decl->modified ) {
+			continue;
+		}
+
+		decl->Invalidate();
+		declManager->FindType( DECL_AF, decl->GetName() );
+
+		// reload all AF entities using the file
+		for( ent = gameLocal.spawnedEntities.Next(); ent != NULL; ent = ent->spawnNode.Next() ) {
+			if ( ent->IsType( idAFEntity_Base::Type ) ) {
+				af = static_cast<idAFEntity_Base *>(ent);
+				if ( idStr::Icmp( decl->GetName(), af->GetAFName() ) == 0 ) {
+					af->LoadAF();
+				}
+			}
+		}
+	}
+}
+
+/*
+================
+GetJointTransform
+================
+*/
+typedef struct {
+	renderEntity_t *ent;
+	const idMD5Joint *joints;
+} jointTransformData_t;
+
+static bool GetJointTransform( void *model, const idJointMat *frame, const char *jointName, idVec3 &origin, idMat3 &axis ) {
+	int i;
+	jointTransformData_t *data = reinterpret_cast<jointTransformData_t *>(model);
+
+	for ( i = 0; i < data->ent->numJoints; i++ ) {
+		if ( data->joints[i].name.Icmp( jointName ) == 0 ) {
+			break;
+		}
+	}
+	if ( i >= data->ent->numJoints ) {
+		return false;
+	}
+	origin = frame[i].ToVec3();
+	axis = frame[i].ToMat3();
+	return true;
+}
+
+/*
+================
+GetArgString
+================
+*/
+static const char *GetArgString( const idDict &args, const idDict *defArgs, const char *key ) {
+	const char *s;
+
+	s = args.GetString( key );
+	if ( !s[0] && defArgs ) {
+		s = defArgs->GetString( key );
+	}
+	return s;
+}
+
+/*
+================
+idGameEditLocal::AF_CreateMesh
+================
+*/
+idRenderModel *idGameEditLocal::AF_CreateMesh( const idDict &args, idVec3 &meshOrigin, idMat3 &meshAxis, bool &poseIsSet ) {
+	int i, jointNum;
+	const idDeclAF *af;
+	const idDeclAF_Body *fb;
+	renderEntity_t ent;
+	idVec3 origin, *bodyOrigin, *newBodyOrigin, *modifiedOrigin;
+	idMat3 axis, *bodyAxis, *newBodyAxis, *modifiedAxis;
+	declAFJointMod_t *jointMod;
+	idAngles angles;
+	const idDict *defArgs;
+	const idKeyValue *arg;
+	idStr name;
+	jointTransformData_t data;
+	const char *classname, *afName, *modelName;
+	idRenderModel *md5;
+	const idDeclModelDef *modelDef;
+	const idMD5Anim *MD5anim;
+	const idMD5Joint *MD5joint;
+	const idMD5Joint *MD5joints;
+	int numMD5joints;
+	idJointMat *originalJoints;
+	int parentNum;
+
+	poseIsSet = false;
+	meshOrigin.Zero();
+	meshAxis.Identity();
+
+	classname = args.GetString( "classname" );
+	defArgs = gameLocal.FindEntityDefDict( classname );
+	if ( !defArgs ) {
+		gameLocal.Error( "Unknown classname '%s'", classname );
+	}
+
+	// get the articulated figure
+	afName = GetArgString( args, defArgs, "articulatedFigure" );
+	af = static_cast<const idDeclAF *>( declManager->FindType( DECL_AF, afName ) );
+	if ( !af ) {
+		return NULL;
+	}
+
+	// get the md5 model
+	modelName = GetArgString( args, defArgs, "model" );
+	modelDef = static_cast< const idDeclModelDef *>( declManager->FindType( DECL_MODELDEF, modelName, false ) );
+	if ( !modelDef ) {
+		return NULL;
+	}
+
+	// make sure model hasn't been purged
+	if ( modelDef->ModelHandle() && !modelDef->ModelHandle()->IsLoaded() ) {
+		modelDef->ModelHandle()->LoadModel();
+	}
+
+	// get the md5
+	md5 = modelDef->ModelHandle();
+	if ( !md5 || md5->IsDefaultModel() ) {
+		return NULL;
+	}
+
+	// get the articulated figure pose anim
+	int animNum = modelDef->GetAnim( "af_pose" );
+	if ( !animNum ) {
+		return NULL;
+	}
+	const idAnim *anim = modelDef->GetAnim( animNum );
+	if ( !anim ) {
+		return NULL;
+	}
+	MD5anim = anim->MD5Anim( 0 );
+	MD5joints = md5->GetJoints();
+	numMD5joints = md5->NumJoints();
+
+	// setup a render entity
+	memset( &ent, 0, sizeof( ent ) );
+	ent.customSkin = modelDef->GetSkin();
+	ent.bounds.Clear();
+	ent.numJoints = numMD5joints;
+	ent.joints = ( idJointMat * )_alloca16( ent.numJoints * sizeof( *ent.joints ) );
+
+	// create animation from of the af_pose
+	ANIM_CreateAnimFrame( md5, MD5anim, ent.numJoints, ent.joints, 1, modelDef->GetVisualOffset(), false );
+
+	// buffers to store the initial origin and axis for each body
+	bodyOrigin = (idVec3 *) _alloca16( af->bodies.Num() * sizeof( idVec3 ) );
+	bodyAxis = (idMat3 *) _alloca16( af->bodies.Num() * sizeof( idMat3 ) );
+	newBodyOrigin = (idVec3 *) _alloca16( af->bodies.Num() * sizeof( idVec3 ) );
+	newBodyAxis = (idMat3 *) _alloca16( af->bodies.Num() * sizeof( idMat3 ) );
+
+	// finish the AF positions
+	data.ent = &ent;
+	data.joints = MD5joints;
+	af->Finish( GetJointTransform, ent.joints, &data );
+
+	// get the initial origin and axis for each AF body
+	for ( i = 0; i < af->bodies.Num(); i++ ) {
+		fb = af->bodies[i];
+
+		if ( fb->modelType == TRM_BONE ) {
+			// axis of bone trace model
+			axis[2] = fb->v2.ToVec3() - fb->v1.ToVec3();
+			axis[2].Normalize();
+			axis[2].NormalVectors( axis[0], axis[1] );
+			axis[1] = -axis[1];
+		} else {
+			axis = fb->angles.ToMat3();
+		}
+
+		newBodyOrigin[i] = bodyOrigin[i] = fb->origin.ToVec3();
+		newBodyAxis[i] = bodyAxis[i] = axis;
+	}
+
+	// get any new body transforms stored in the key/value pairs
+	for ( arg = args.MatchPrefix( "body ", NULL ); arg; arg = args.MatchPrefix( "body ", arg ) ) {
+		name = arg->GetKey();
+		name.Strip( "body " );
+		for ( i = 0; i < af->bodies.Num(); i++ ) {
+			fb = af->bodies[i];
+			if ( fb->name.Icmp( name ) == 0 ) {
+				break;
+			}
+		}
+		if ( i >= af->bodies.Num() ) {
+			continue;
+		}
+		sscanf( arg->GetValue(), "%f %f %f %f %f %f", &origin.x, &origin.y, &origin.z, &angles.pitch, &angles.yaw, &angles.roll );
+
+		if ( fb->jointName.Icmp( "origin" ) == 0 ) {
+			meshAxis = bodyAxis[i].Transpose() * angles.ToMat3();
+			meshOrigin = origin - bodyOrigin[i] * meshAxis;
+			poseIsSet = true;
+		} else {
+			newBodyOrigin[i] = origin;
+			newBodyAxis[i] = angles.ToMat3();
+		}
+	}
+
+	// save the original joints
+	originalJoints = ( idJointMat * )_alloca16( numMD5joints * sizeof( originalJoints[0] ) );
+	memcpy( originalJoints, ent.joints, numMD5joints * sizeof( originalJoints[0] ) );
+
+	// buffer to store the joint mods
+	jointMod = (declAFJointMod_t *) _alloca16( numMD5joints * sizeof( declAFJointMod_t ) );
+	memset( jointMod, -1, numMD5joints * sizeof( declAFJointMod_t ) );
+	modifiedOrigin = (idVec3 *) _alloca16( numMD5joints * sizeof( idVec3 ) );
+	memset( modifiedOrigin, 0, numMD5joints * sizeof( idVec3 ) );
+	modifiedAxis = (idMat3 *) _alloca16( numMD5joints * sizeof( idMat3 ) );
+	memset( modifiedAxis, 0, numMD5joints * sizeof( idMat3 ) );
+
+	// get all the joint modifications
+	for ( i = 0; i < af->bodies.Num(); i++ ) {
+		fb = af->bodies[i];
+
+		if ( fb->jointName.Icmp( "origin" ) == 0 ) {
+			continue;
+		}
+
+		for ( jointNum = 0; jointNum < numMD5joints; jointNum++ ) {
+			if ( MD5joints[jointNum].name.Icmp( fb->jointName ) == 0 ) {
+				break;
+			}
+		}
+
+		if ( jointNum >= 0 && jointNum < ent.numJoints ) {
+			jointMod[ jointNum ] = fb->jointMod;
+			modifiedAxis[ jointNum ] = ( bodyAxis[i] * originalJoints[jointNum].ToMat3().Transpose() ).Transpose() * ( newBodyAxis[i] * meshAxis.Transpose() );
+			// FIXME: calculate correct modifiedOrigin
+			modifiedOrigin[ jointNum ] = originalJoints[ jointNum ].ToVec3();
+		}
+	}
+
+	// apply joint modifications to the skeleton
+	MD5joint = MD5joints + 1;
+	for( i = 1; i < numMD5joints; i++, MD5joint++ ) {
+
+		parentNum = MD5joint->parent - MD5joints;
+		idMat3 parentAxis = originalJoints[ parentNum ].ToMat3();
+		idMat3 localm = originalJoints[i].ToMat3() * parentAxis.Transpose();
+		idVec3 localt = ( originalJoints[i].ToVec3() - originalJoints[ parentNum ].ToVec3() ) * parentAxis.Transpose();
+
+		switch( jointMod[i] ) {
+			case DECLAF_JOINTMOD_ORIGIN: {
+				ent.joints[ i ].SetRotation( localm * ent.joints[ parentNum ].ToMat3() );
+				ent.joints[ i ].SetTranslation( modifiedOrigin[ i ] );
+				break;
+			}
+			case DECLAF_JOINTMOD_AXIS: {
+				ent.joints[ i ].SetRotation( modifiedAxis[ i ] );
+				ent.joints[ i ].SetTranslation( ent.joints[ parentNum ].ToVec3() + localt * ent.joints[ parentNum ].ToMat3() );
+				break;
+			}
+			case DECLAF_JOINTMOD_BOTH: {
+				ent.joints[ i ].SetRotation( modifiedAxis[ i ] );
+				ent.joints[ i ].SetTranslation( modifiedOrigin[ i ] );
+				break;
+			}
+			default: {
+				ent.joints[ i ].SetRotation( localm * ent.joints[ parentNum ].ToMat3() );
+				ent.joints[ i ].SetTranslation( ent.joints[ parentNum ].ToVec3() + localt * ent.joints[ parentNum ].ToMat3() );
+				break;
+			}
+		}
+	}
+
+	// instantiate a mesh using the joint information from the render entity
+	return md5->InstantiateDynamicModel( &ent, NULL, NULL );
+}
+
+/***********************************************************************
+
+	Util functions
+
+***********************************************************************/
+
+/*
+=====================
+ANIM_GetModelDefFromEntityDef
+=====================
+*/
+const idDeclModelDef *ANIM_GetModelDefFromEntityDef( const idDict *args ) {
+	const idDeclModelDef *modelDef;
+
+	idStr name = args->GetString( "model" );
+	modelDef = static_cast<const idDeclModelDef *>( declManager->FindType( DECL_MODELDEF, name, false ) );
+	if ( modelDef && modelDef->ModelHandle() ) {
+		return modelDef;
+	}
+
+	return NULL;
+}
+
+/*
+=====================
+idGameEditLocal::ANIM_GetModelFromEntityDef
+=====================
+*/
+idRenderModel *idGameEditLocal::ANIM_GetModelFromEntityDef( const idDict *args ) {
+	idRenderModel *model;
+	const idDeclModelDef *modelDef;
+
+	model = NULL;
+
+	idStr name = args->GetString( "model" );
+	modelDef = static_cast<const idDeclModelDef *>( declManager->FindType( DECL_MODELDEF, name, false ) );
+	if ( modelDef ) {
+		model = modelDef->ModelHandle();
+	}
+
+	if ( !model ) {
+		model = renderModelManager->FindModel( name );
+	}
+
+	if ( model && model->IsDefaultModel() ) {
+		return NULL;
+	}
+
+	return model;
+}
+
+/*
+=====================
+idGameEditLocal::ANIM_GetModelFromEntityDef
+=====================
+*/
+idRenderModel *idGameEditLocal::ANIM_GetModelFromEntityDef( const char *classname ) {
+	const idDict *args;
+
+	args = gameLocal.FindEntityDefDict( classname, false );
+	if ( !args ) {
+		return NULL;
+	}
+
+	return ANIM_GetModelFromEntityDef( args );
+}
+
+/*
+=====================
+idGameEditLocal::ANIM_GetModelOffsetFromEntityDef
+=====================
+*/
+const idVec3 &idGameEditLocal::ANIM_GetModelOffsetFromEntityDef( const char *classname ) {
+	const idDict *args;
+	const idDeclModelDef *modelDef;
+
+	args = gameLocal.FindEntityDefDict( classname, false );
+	if ( !args ) {
+		return vec3_origin;
+	}
+
+	modelDef = ANIM_GetModelDefFromEntityDef( args );
+	if ( !modelDef ) {
+		return vec3_origin;
+	}
+
+	return modelDef->GetVisualOffset();
+}
+
+/*
+=====================
+idGameEditLocal::ANIM_GetModelFromName
+=====================
+*/
+idRenderModel *idGameEditLocal::ANIM_GetModelFromName( const char *modelName ) {
+	const idDeclModelDef *modelDef;
+	idRenderModel *model;
+
+	model = NULL;
+	modelDef = static_cast<const idDeclModelDef *>( declManager->FindType( DECL_MODELDEF, modelName, false ) );
+	if ( modelDef ) {
+		model = modelDef->ModelHandle();
+	}
+	if ( !model ) {
+		model = renderModelManager->FindModel( modelName );
+	}
+	return model;
+}
+
+/*
+=====================
+idGameEditLocal::ANIM_GetAnimFromEntityDef
+=====================
+*/
+const idMD5Anim *idGameEditLocal::ANIM_GetAnimFromEntityDef( const char *classname, const char *animname ) {
+	const idDict *args;
+	const idMD5Anim *md5anim;
+	const idAnim *anim;
+	int	animNum;
+	const char	*modelname;
+	const idDeclModelDef *modelDef;
+
+	args = gameLocal.FindEntityDefDict( classname, false );
+	if ( !args ) {
+		return NULL;
+	}
+
+	md5anim = NULL;
+	modelname = args->GetString( "model" );
+	modelDef = static_cast<const idDeclModelDef *>( declManager->FindType( DECL_MODELDEF, modelname, false ) );
+	if ( modelDef ) {
+		animNum = modelDef->GetAnim( animname );
+		if ( animNum ) {
+			anim = modelDef->GetAnim( animNum );
+			if ( anim ) {
+				md5anim = anim->MD5Anim( 0 );
+			}
+		}
+	}
+	return md5anim;
+}
+
+// HUMANHEAD pdm: Allow editor to query a dictionary to get animation to allow entitydefs that are not completely predefined
+// to display animated models.  (like func_animates)
+const idMD5Anim *idGameEditLocal::ANIM_GetAnimFromArgs( const idDict *args, const char *animname ) {
+	const idMD5Anim *md5anim;
+	const idAnim *anim;
+	int	animNum;
+	const char	*modelname;
+	const idDeclModelDef *modelDef;
+
+	md5anim = NULL;
+	modelname = args->GetString( "model" );
+	modelDef = static_cast<const idDeclModelDef *>( declManager->FindType( DECL_MODELDEF, modelname, false ) );
+	if ( modelDef ) {
+		animNum = modelDef->GetAnim( animname );
+		if ( animNum ) {
+			anim = modelDef->GetAnim( animNum );
+			if ( anim ) {
+				md5anim = anim->MD5Anim( 0 );
+			}
+		}
+	}
+	return md5anim;
+}
+
+/*
+=====================
+idGameEditLocal::ANIM_GetNumAnimsFromEntityDef
+=====================
+*/
+int idGameEditLocal::ANIM_GetNumAnimsFromEntityDef( const idDict *args ) {
+	const char *modelname;
+	const idDeclModelDef *modelDef;
+
+	modelname = args->GetString( "model" );
+	modelDef = static_cast<const idDeclModelDef *>( declManager->FindType( DECL_MODELDEF, modelname, false ) );
+	if ( modelDef ) {
+		return modelDef->NumAnims();
+	}
+	return 0;
+}
+
+/*
+=====================
+idGameEditLocal::ANIM_GetAnimNameFromEntityDef
+=====================
+*/
+const char *idGameEditLocal::ANIM_GetAnimNameFromEntityDef( const idDict *args, int animNum ) {
+	const char *modelname;
+	const idDeclModelDef *modelDef;
+
+	modelname = args->GetString( "model" );
+	modelDef = static_cast<const idDeclModelDef *>( declManager->FindType( DECL_MODELDEF, modelname, false ) );
+	if ( modelDef ) {
+		const idAnim* anim = modelDef->GetAnim( animNum );
+		if ( anim ) {
+			return anim->FullName();
+		}
+	}
+	return "";
+}
+
+/*
+=====================
+idGameEditLocal::ANIM_GetAnim
+=====================
+*/
+const idMD5Anim *idGameEditLocal::ANIM_GetAnim( const char *fileName ) {
+	return animationLib.GetAnim( fileName );
+}
+
+/*
+=====================
+idGameEditLocal::ANIM_GetLength
+=====================
+*/
+int	idGameEditLocal::ANIM_GetLength( const idMD5Anim *anim ) {
+	if ( !anim ) {
+		return 0;
+	}
+	return anim->Length();
+}
+
+/*
+=====================
+idGameEditLocal::ANIM_GetNumFrames
+=====================
+*/
+int idGameEditLocal::ANIM_GetNumFrames( const idMD5Anim *anim ) {
+	if ( !anim ) {
+		return 0;
+	}
+	return anim->NumFrames();
+}
+
+/*
+=====================
+idGameEditLocal::ANIM_CreateAnimFrame
+=====================
+*/
+void idGameEditLocal::ANIM_CreateAnimFrame( const idRenderModel *model, const idMD5Anim *anim, int numJoints, idJointMat *joints, int time, const idVec3 &offset, bool remove_origin_offset ) {
+	int					i;
+	frameBlend_t		frame;
+	const idMD5Joint	*md5joints;
+	int					*index;
+
+	if ( !model || model->IsDefaultModel() || !anim ) {
+		return;
+	}
+
+	if ( numJoints != model->NumJoints() ) {
+		gameLocal.Error( "ANIM_CreateAnimFrame: different # of joints in renderEntity_t than in model (%s)", model->Name() );
+	}
+
+	if ( !model->NumJoints() ) {
+		// FIXME: Print out a warning?
+		return;
+	}
+
+	if ( !joints ) {
+		gameLocal.Error( "ANIM_CreateAnimFrame: NULL joint frame pointer on model (%s)", model->Name() );
+	}
+
+	if ( numJoints != anim->NumJoints() ) {
+		gameLocal.Warning( "Model '%s' has different # of joints than anim '%s'", model->Name(), anim->Name() );
+		for( i = 0; i < numJoints; i++ ) {
+			joints[i].SetRotation( mat3_identity );
+			joints[i].SetTranslation( offset );
+		}
+		return;
+	}
+
+	// create index for all joints
+	index = ( int * )_alloca16( numJoints * sizeof( int ) );
+	for ( i = 0; i < numJoints; i++ ) {
+		index[i] = i;
+	}
+
+	// create the frame
+	anim->ConvertTimeToFrame( time, 1, frame );
+	idJointQuat *jointFrame = ( idJointQuat * )_alloca16( numJoints * sizeof( *jointFrame ) );
+	anim->GetInterpolatedFrame( frame, jointFrame, index, numJoints );
+
+	// convert joint quaternions to joint matrices
+	SIMDProcessor->ConvertJointQuatsToJointMats( joints, jointFrame, numJoints );
+
+	// first joint is always root of entire hierarchy
+	if ( remove_origin_offset ) {
+		joints[0].SetTranslation( offset );
+	} else {
+		joints[0].SetTranslation( joints[0].ToVec3() + offset );
+	}
+
+	// transform the children
+	md5joints = model->GetJoints();
+	for( i = 1; i < numJoints; i++ ) {
+		joints[i] *= joints[ md5joints[i].parent - md5joints ];
+	}
+}
+
+/*
+=====================
+idGameEditLocal::ANIM_CreateMeshForAnim
+=====================
+*/
+idRenderModel *idGameEditLocal::ANIM_CreateMeshForAnim( idRenderModel *model, const char *classname, const char *animname, int frame, bool remove_origin_offset ) {
+	renderEntity_t			ent;
+	const idDict			*args;
+	const char				*temp;
+	idRenderModel			*newmodel;
+	const idMD5Anim			*md5anim;
+	idStr					filename;
+	idStr					extension;
+	const idAnim			*anim;
+	int						animNum;
+	idVec3					offset;
+	const idDeclModelDef	*modelDef;
+
+	if ( !model || model->IsDefaultModel() ) {
+		return NULL;
+	}
+
+	args = gameLocal.FindEntityDefDict( classname, false );
+	if ( !args ) {
+		return NULL;
+	}
+
+	memset( &ent, 0, sizeof( ent ) );
+
+	ent.bounds.Clear();
+	ent.suppressSurfaceInViewID = 0;
+
+	modelDef = ANIM_GetModelDefFromEntityDef( args );
+	if ( modelDef ) {
+		animNum = modelDef->GetAnim( animname );
+		if ( !animNum ) {
+			return NULL;
+		}
+		anim = modelDef->GetAnim( animNum );
+		if ( !anim ) {
+			return NULL;
+		}
+		md5anim = anim->MD5Anim( 0 );
+		ent.customSkin = modelDef->GetDefaultSkin();
+		offset = modelDef->GetVisualOffset();
+	} else {
+		filename = animname;
+		filename.ExtractFileExtension( extension );
+		if ( !extension.Length() ) {
+			animname = args->GetString( va( "anim %s", animname ) );
+		}
+
+		md5anim = animationLib.GetAnim( animname );
+		offset.Zero();
+	}
+
+	if ( !md5anim ) {
+		return NULL;
+	}
+
+	temp = args->GetString( "skin", "" );
+	if ( temp[ 0 ] ) {
+		ent.customSkin = declManager->FindSkin( temp );
+	}
+
+	ent.numJoints = model->NumJoints();
+	ent.joints = ( idJointMat * )Mem_Alloc16( ent.numJoints * sizeof( *ent.joints ) );
+
+	ANIM_CreateAnimFrame( model, md5anim, ent.numJoints, ent.joints, FRAME2MS( frame ), offset, remove_origin_offset );
+
+	newmodel = model->InstantiateDynamicModel( &ent, NULL, NULL );
+
+	Mem_Free16( ent.joints );
+	ent.joints = NULL;
+
+	return newmodel;
+}
+
+/*
+================
+idGameEditLocal::ParseSpawnArgsToRenderEntity
+
+parse the static model parameters
+this is the canonical renderEntity parm parsing,
+which should be used by dmap and the editor
+================
+*/
+void idGameEditLocal::ParseSpawnArgsToRenderEntity( const idDict *args, renderEntity_t *renderEntity ) {
+	int			i;
+	const char	*temp;
+	idVec3		color;
+	float		angle;
+	const idDeclModelDef *modelDef;
+
+	memset( renderEntity, 0, sizeof( *renderEntity ) );
+
+	temp = args->GetString( "model" );
+
+	modelDef = NULL;
+	if ( temp[0] != '\0' ) {
+		modelDef = static_cast<const idDeclModelDef *>( declManager->FindType( DECL_MODELDEF, temp, false ) );
+		if ( modelDef ) {
+			renderEntity->hModel = modelDef->ModelHandle();
+		}
+		if ( !renderEntity->hModel ) {
+			renderEntity->hModel = renderModelManager->FindModel( temp );
+		}
+	}
+	if ( renderEntity->hModel ) {
+		renderEntity->bounds = renderEntity->hModel->Bounds( renderEntity );
+	} else {
+		renderEntity->bounds.Zero();
+	}
+
+	temp = args->GetString( "skin" );
+	if ( temp[0] != '\0' ) {
+		renderEntity->customSkin = declManager->FindSkin( temp );
+	} else if ( modelDef ) {
+		renderEntity->customSkin = modelDef->GetDefaultSkin();
+	}
+
+	temp = args->GetString( "shader" );
+	if ( temp[0] != '\0' ) {
+		renderEntity->customShader = declManager->FindMaterial( temp );
+	}
+
+	args->GetVector( "origin", "0 0 0", renderEntity->origin );
+
+	// get the rotation matrix in either full form, or single angle form
+	if ( !args->GetMatrix( "rotation", "1 0 0 0 1 0 0 0 1", renderEntity->axis ) ) {
+		//HUMANHEAD: aob - so editor 'up' and 'down' buttons work on entities
+		idAngles angles( ang_zero );
+		angle = args->GetFloat( "angle" );
+		if( angle == -1 ) {
+			angles[ 0 ] = -90.0f;
+		}
+		else if( angle == -2 ) {
+			angles[ 0 ] = 90.0f;
+		}
+		else {
+			angles[ 0 ] = args->GetFloat( "pitch" );
+			angles[ 1 ] = angle;
+			angles[ 2 ] = args->GetFloat( "roll" );
+		}
+		//HUMANHEAD END
+		renderEntity->axis = angles.ToMat3();
+	}
+
+	renderEntity->referenceSound = NULL;
+
+	// get shader parms
+	args->GetVector( "_color", "1 1 1", color );
+	renderEntity->shaderParms[ SHADERPARM_RED ]		= color[0];
+	renderEntity->shaderParms[ SHADERPARM_GREEN ]	= color[1];
+	renderEntity->shaderParms[ SHADERPARM_BLUE ]	= color[2];
+	renderEntity->shaderParms[ 3 ]					= args->GetFloat( "shaderParm3", "1" );
+	renderEntity->shaderParms[ 4 ]					= args->GetFloat( "shaderParm4", "0" );
+	renderEntity->shaderParms[ 5 ]					= args->GetFloat( "shaderParm5", "0" );
+	renderEntity->shaderParms[ 6 ]					= args->GetFloat( "shaderParm6", "0" );
+	renderEntity->shaderParms[ 7 ]					= args->GetFloat( "shaderParm7", "0" );
+	renderEntity->shaderParms[ 8 ]					= args->GetFloat( "shaderParm8", "0" );
+	renderEntity->shaderParms[ 9 ]					= args->GetFloat( "shaderParm9", "0" );
+	renderEntity->shaderParms[ 10 ]					= args->GetFloat( "shaderParm10", "0" );
+	renderEntity->shaderParms[ 11 ]					= args->GetFloat( "shaderParm11", "0" );
+
+	// HUMANHEAD pdm: added scale available at spawn time (should be visible in editor, but isn't)
+	renderEntity->shaderParms[ 12 ]					= args->GetFloat( "shaderParm12", "0" );
+	renderEntity->onlyVisibleInSpirit				= args->GetBool( "onlyVisibleInSpirit" );
+	renderEntity->onlyInvisibleInSpirit				= args->GetBool( "onlyInvisibleInSpirit" );	// tmj
+	renderEntity->lowSkippable						= args->GetBool( "lowSkippable" );	// bjk
+	if(renderEntity->onlyVisibleInSpirit && renderEntity->onlyInvisibleInSpirit) {
+		gameLocal.Warning( "Entity is both visible and invisible in spiritwalk: %s", args->GetString( "name" ));
+	}
+
+	if (args->FindKey("deformType")) {
+		int deformType = args->GetInt("deformType");
+		float parm1 = args->GetFloat("deformParm1");
+		float parm2 = args->GetFloat("deformParm2");
+		SetDeformationOnRenderEntity(renderEntity, deformType, parm1, parm2);
+	}
+
+	if (args->FindKey("scale")) {
+		renderEntity->shaderParms[SHADERPARM_ANY_DEFORM] = DEFORMTYPE_SCALE;
+		renderEntity->shaderParms[SHADERPARM_ANY_DEFORM_PARM1] = args->GetFloat("scale", "0");
+	}
+	// HUMANHEAD END
+
+	// check noDynamicInteractions flag
+	renderEntity->noDynamicInteractions = args->GetBool( "noDynamicInteractions" );
+
+	// check noshadows flag
+	renderEntity->noShadow = args->GetBool( "noshadows" );
+
+	// check noselfshadows flag
+	renderEntity->noSelfShadow = args->GetBool( "noselfshadows" );
+
+	// init any guis, including entity-specific states
+	for( i = 0; i < MAX_RENDERENTITY_GUI; i++ ) {
+		temp = args->GetString( i == 0 ? "gui" : va( "gui%d", i + 1 ) );
+		if ( temp[ 0 ] != '\0' ) {
+			AddRenderGui( temp, &renderEntity->gui[ i ], args );
+		}
+	}
+}
+
+/*
+================
+idGameEditLocal::ParseSpawnArgsToRefSound
+
+parse the sound parameters
+this is the canonical refSound parm parsing,
+which should be used by dmap and the editor
+================
+*/
+void idGameEditLocal::ParseSpawnArgsToRefSound( const idDict *args, refSound_t *refSound ) {
+	const char	*temp;
+
+	memset( refSound, 0, sizeof( *refSound ) );
+
+	refSound->parms.minDistance = args->GetFloat( "s_mindistance" );
+	refSound->parms.maxDistance = args->GetFloat( "s_maxdistance" );
+	refSound->parms.volume = args->GetFloat( "s_volume" );
+	refSound->parms.shakes = args->GetFloat( "s_shakes" );
+
+	args->GetVector( "origin", "0 0 0", refSound->origin );
+
+	refSound->referenceSound  = NULL;
+
+	// if a diversity is not specified, every sound start will make
+	// a random one.  Specifying diversity is usefull to make multiple
+	// lights all share the same buzz sound offset, for instance.
+	refSound->diversity = args->GetFloat( "s_diversity", "-1" );
+	refSound->waitfortrigger = args->GetBool( "s_waitfortrigger" );
+
+	if ( args->GetBool( "s_omni" ) ) {
+		refSound->parms.soundShaderFlags |= SSF_OMNIDIRECTIONAL;
+	}
+	if ( args->GetBool( "s_looping" ) ) {
+		refSound->parms.soundShaderFlags |= SSF_LOOPING;
+	}
+	if ( args->GetBool( "s_occlusion" ) ) {
+		refSound->parms.soundShaderFlags |= SSF_NO_OCCLUSION;
+	}
+	if ( args->GetBool( "s_global" ) ) {
+		refSound->parms.soundShaderFlags |= SSF_GLOBAL;
+	}
+	if ( args->GetBool( "s_unclamped" ) ) {
+		refSound->parms.soundShaderFlags |= SSF_UNCLAMPED;
+	}
+	refSound->parms.soundClass = args->GetInt( "s_soundClass" );
+
+	temp = args->GetString( "s_shader" );
+	if ( temp[0] != '\0' ) {
+		refSound->shader = declManager->FindSound( temp );
+	}
+}
+
+/*
+================
+idGameEditLocal::ParseSpawnArgsToRenderLight
+
+parse the light parameters
+this is the canonical renderLight parm parsing,
+which should be used by dmap and the editor
+================
+*/
+void idGameEditLocal::ParseSpawnArgsToRenderLight( const idDict *args, renderLight_t *renderLight ) {
+	bool	gotTarget, gotUp, gotRight;
+	const char	*texture;
+	idVec3	color;
+
+	memset( renderLight, 0, sizeof( *renderLight ) );
+
+	if (!args->GetVector("light_origin", "", renderLight->origin)) {
+		args->GetVector( "origin", "", renderLight->origin );
+	}
+
+	gotTarget = args->GetVector( "light_target", "", renderLight->target );
+	gotUp = args->GetVector( "light_up", "", renderLight->up );
+	gotRight = args->GetVector( "light_right", "", renderLight->right );
+	args->GetVector( "light_start", "0 0 0", renderLight->start );
+	if ( !args->GetVector( "light_end", "", renderLight->end ) ) {
+		renderLight->end = renderLight->target;
+	}
+
+	// we should have all of the target/right/up or none of them
+	if ( ( gotTarget || gotUp || gotRight ) != ( gotTarget && gotUp && gotRight ) ) {
+		gameLocal.Printf( "Light at (%f,%f,%f) has bad target info\n",
+			renderLight->origin[0], renderLight->origin[1], renderLight->origin[2] );
+		return;
+	}
+
+	if ( !gotTarget ) {
+		renderLight->pointLight = true;
+
+		// allow an optional relative center of light and shadow offset
+		args->GetVector( "light_center", "0 0 0", renderLight->lightCenter );
+
+		// create a point light
+		if (!args->GetVector( "light_radius", "300 300 300", renderLight->lightRadius ) ) {
+			float radius;
+
+			args->GetFloat( "light", "300", radius );
+			renderLight->lightRadius[0] = renderLight->lightRadius[1] = renderLight->lightRadius[2] = radius;
+		}
+	}
+
+	// get the rotation matrix in either full form, or single angle form
+	idAngles angles;
+	idMat3 mat;
+	if ( !args->GetMatrix( "light_rotation", "1 0 0 0 1 0 0 0 1", mat ) ) {
+		if ( !args->GetMatrix( "rotation", "1 0 0 0 1 0 0 0 1", mat ) ) {
+			args->GetFloat( "angle", "0", angles[ 1 ] );
+			angles[ 0 ] = 0;
+			angles[ 1 ] = idMath::AngleNormalize360( angles[ 1 ] );
+			angles[ 2 ] = 0;
+			mat = angles.ToMat3();
+		}
+	}
+
+	// fix degenerate identity matrices
+	mat[0].FixDegenerateNormal();
+	mat[1].FixDegenerateNormal();
+	mat[2].FixDegenerateNormal();
+
+	renderLight->axis = mat;
+
+	// check for other attributes
+	args->GetVector( "_color", "1 1 1", color );
+	renderLight->shaderParms[ SHADERPARM_RED ]		= color[0];
+	renderLight->shaderParms[ SHADERPARM_GREEN ]	= color[1];
+	renderLight->shaderParms[ SHADERPARM_BLUE ]		= color[2];
+	args->GetFloat( "shaderParm3", "1", renderLight->shaderParms[ SHADERPARM_TIMESCALE ] );
+	if ( !args->GetFloat( "shaderParm4", "0", renderLight->shaderParms[ SHADERPARM_TIMEOFFSET ] ) ) {
+		// offset the start time of the shader to sync it to the game time
+		renderLight->shaderParms[ SHADERPARM_TIMEOFFSET ] = -MS2SEC( gameLocal.time );
+	}
+
+	args->GetFloat( "shaderParm5", "0", renderLight->shaderParms[5] );
+	args->GetFloat( "shaderParm6", "0", renderLight->shaderParms[6] );
+	args->GetFloat( "shaderParm7", "0", renderLight->shaderParms[ SHADERPARM_MODE ] );
+	args->GetBool( "noshadows", "0", renderLight->noShadows );
+	args->GetBool( "nospecular", "0", renderLight->noSpecular );
+	args->GetBool( "lowSkippable", "0", renderLight->lowSkippable );	//HUMANHEAD bjk
+	args->GetBool( "parallel", "0", renderLight->parallel );
+
+	args->GetString( "texture", "lights/squarelight1", &texture );
+	// allow this to be NULL
+	renderLight->shader = declManager->FindMaterial( texture, false );
+}
+
 /***********************************************************************
 
   Debugger
 
 ***********************************************************************/
 
-bool idGameEditExt::IsLineCode(const char* filename, int linenumber) const
-{
+bool idGameEditLocal::IsLineCode( const char *filename, int linenumber ) const {
 	idStr fileStr;
-	idProgram* program = &gameLocal.program;
-	for (int i = 0; i < program->NumStatements(); i++)
-	{
-		fileStr = program->GetFilename(program->GetStatement(i).file);
-		fileStr.BackSlashesToSlashes();
+	idProgram *program = &gameLocal.program;
+	for ( int i = 0; i < program->NumStatements( ); i++ ) 	{
+		fileStr = program->GetFilename( program->GetStatement( i ).file );
+		fileStr.BackSlashesToSlashes( );
 
-		if (strcmp(filename, fileStr.c_str()) == 0
-			&& program->GetStatement(i).linenumber == linenumber
-			)
-		{
+		if ( strcmp( filename, fileStr.c_str( ) ) == 0
+			&& program->GetStatement( i ).linenumber == linenumber
+			) {
 			return true;
 		}
 	}
 	return false;
 }
 
-void idGameEditExt::GetLoadedScripts( idStrList** result )
-{
+void idGameEditLocal::GetLoadedScripts( idStrList **result ) {
 	(*result)->Clear();
 	idProgram* program = &gameLocal.program;
 
-	for (int i = 0; i < program->NumFilenames(); i++)
-	{
-		(*result)->AddUnique( idStr(program->GetFilename( i )) );
+	for ( int i = 0; i < program->NumFilenames(); i++ ) {
+		(*result)->AddUnique( idStr( program->GetFilename( i ) ) );
 	}
 }
 
-void idGameEditExt::MSG_WriteScriptList( idBitMsg* msg)
-{
+void idGameEditLocal::MSG_WriteScriptList( idBitMsg *msg ) {
 	idProgram* program = &gameLocal.program;
 
 	msg->WriteInt( program->NumFilenames() );
-	for (int i = 0; i < program->NumFilenames(); i++)
-	{
+	for ( int i = 0; i < program->NumFilenames(); i++ ) {
 		idStr file = program->GetFilename(i);
 		//fix this. it seams that scripts triggered by the runtime are stored with a wrong path
 		//the use // instead of '\'
@@ -1193,12 +2278,129 @@ void idGameEditExt::MSG_WriteScriptList( idBitMsg* msg)
 	}
 }
 
-const char*idGameEditExt::GetFilenameForStatement(idProgram* program, int index) const
-{
-	return program->GetFilenameForStatement(index);
+const char *idGameEditLocal::GetFilenameForStatement( idProgram *program, int index ) const {
+	return program->GetFilenameForStatement( index );
 }
 
-int idGameEditExt::GetLineNumberForStatement(idProgram* program, int index) const
+int idGameEditLocal::GetLineNumberForStatement( idProgram *program, int index ) const {
+	return program->GetLineNumberForStatement( index );
+}
+
+bool idGameEditLocal::CheckForBreakPointHit( const idInterpreter *interpreter, const function_t *function1, const function_t *function2, int depth ) const {
+	return ( ( interpreter->GetCurrentFunction() == function1 ||
+			   interpreter->GetCurrentFunction() == function2)&&
+			 ( interpreter->GetCallstackDepth()  <= depth) );
+}
+
+bool idGameEditLocal::ReturnedFromFunction( const idProgram *program, const idInterpreter *interpreter, int index ) const {
+
+	return ( const_cast<idProgram *>( program )->GetStatement( index ).op == OP_RETURN && interpreter->GetCallstackDepth() <= 1 );
+}
+
+bool idGameEditLocal::GetRegisterValue(const idInterpreter* interpreter, const char* name, idStr& out, int scopeDepth) const
 {
-	return program->GetLineNumberForStatement(index);
+	return const_cast<idInterpreter*>(interpreter)->GetRegisterValue(name, out, scopeDepth);
+}
+
+const idThread *idGameEditLocal::GetThread( const idInterpreter *interpreter ) const {
+	return interpreter->GetThread();
+}
+
+void idGameEditLocal::MSG_WriteCallstackFunc( idBitMsg *msg, const prstack_t *stack, const idProgram *program, int instructionPtr ) {
+	const statement_t*	st;
+	const function_t*	func;
+
+	func  = stack->f;
+
+	// If the function is unknown then just fill in with default data.
+	if ( !func ) {
+		msg->WriteString ( "<UNKNOWN>" );
+		msg->WriteString ( "<UNKNOWN>" );
+		msg->WriteInt ( 0 );
+		return;
+	} else {
+		msg->WriteString ( va("%s(  )", func->Name() ) );
+	}
+
+	if (stack->s == -1) //this is a fake stack created by debugger, use intruction pointer for retrieval.
+		st = &const_cast<idProgram*>( program )->GetStatement( instructionPtr );
+	else // Use the calling statement as the filename and linenumber where the call was made from
+		st = &const_cast<idProgram*>( program )->GetStatement ( stack->s );
+
+	if ( st ) {
+		idStr qpath = const_cast<idProgram*>( program )->GetFilename( st->file );
+		if ( idStr::FindChar( qpath, ':' ) != -1 ) {
+			qpath = fileSystem->OSPathToRelativePath( qpath.c_str() );
+		}
+		qpath.BackSlashesToSlashes ( );
+		msg->WriteString( qpath );
+		msg->WriteInt( st->linenumber );
+	} else {
+		msg->WriteString ( "<UNKNOWN>" );
+		msg->WriteInt ( 0 );
+	}
+}
+
+void idGameEditLocal::MSG_WriteInterpreterInfo( idBitMsg *msg, const idInterpreter *interpreter, const idProgram *program, int instructionPtr ) {
+	int			i;
+	prstack_s	temp;
+
+	msg->WriteShort( (int)interpreter->GetCallstackDepth() );
+
+	// write out the current function
+	temp.f = interpreter->GetCurrentFunction();
+	temp.s = -1;
+	temp.stackbase = 0;
+	MSG_WriteCallstackFunc( msg, &temp, program, instructionPtr );
+
+	// Run through all of the callstack and write each to the msg
+	for ( i = interpreter->GetCallstackDepth() - 1; i > 0; i-- ) {
+		MSG_WriteCallstackFunc( msg, interpreter->GetCallstack() + i, program, instructionPtr );
+	}
+}
+
+int idGameEditLocal::GetInterpreterCallStackDepth( const idInterpreter *interpreter ) {
+	return interpreter->GetCallstackDepth();
+}
+
+const function_t *idGameEditLocal::GetInterpreterCallStackFunction( const idInterpreter *interpreter, int stackDepth/* = -1*/ ) {
+	return interpreter->GetCallstack()[ stackDepth > -1 ? stackDepth : interpreter->GetCallstackDepth() ].f;
+}
+
+int idGameEditLocal::ThreadGetNum( const idThread *thread ) const {
+	return const_cast<idThread *>( thread )->GetThreadNum();
+}
+
+const char* idGameEditLocal::ThreadGetName( const idThread *thread ) const {
+	return const_cast<idThread *>( thread )->GetThreadName();
+}
+
+int	idGameEditLocal::GetTotalScriptThreads( void ) const {
+	return idThread::GetThreads().Num();
+}
+
+const idThread* idGameEditLocal::GetThreadByIndex( int index ) const {
+	return idThread::GetThreads()[index];
+}
+
+bool idGameEditLocal::ThreadIsDoneProcessing( const idThread *thread ) const {
+	return const_cast<idThread *>( thread )->IsDoneProcessing();
+}
+
+bool idGameEditLocal::ThreadIsWaiting( const idThread *thread ) const {
+	return const_cast<idThread *>( thread )->IsWaiting();
+}
+
+bool idGameEditLocal::ThreadIsDying( const idThread *thread ) const {
+	return const_cast<idThread *>( thread )->IsDying();
+}
+
+void idGameEditLocal::MSG_WriteThreadInfo( idBitMsg *msg, const idThread *thread, const idInterpreter *interpreter ) {
+	msg->WriteString( const_cast<idThread *>( thread )->GetThreadName() );
+	msg->WriteInt( const_cast<idThread *>( thread )->GetThreadNum() );
+
+	msg->WriteBits( (int)( thread == interpreter->GetThread() ), 1 );
+	msg->WriteBits( (int)const_cast<idThread *>( thread )->IsDoneProcessing(), 1 );
+	msg->WriteBits( (int)const_cast<idThread *>( thread )->IsWaiting(), 1 );
+	msg->WriteBits( (int)const_cast<idThread *>( thread )->IsDying(), 1 );
 }

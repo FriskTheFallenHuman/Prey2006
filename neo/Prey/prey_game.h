@@ -21,13 +21,13 @@ public:
 	void					UnregisterEntity( idEntity *ent );
 
 	virtual void			MapShutdown( void );	
-	virtual void			InitFromNewMap( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, bool isServer, bool isClient, int randseed );
+	virtual void			InitFromNewMap( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, bool isServer, bool isClient, int randseed, int activeEditors  );
 	virtual void			RadiusDamage( const idVec3 &origin, idEntity *inflictor, idEntity *attacker, idEntity *ignoreDamage, idEntity *ignorePush, const char *damageDefName, float dmgPower = 1.0f );// jrm
 	virtual void			RadiusPush( const idVec3 &origin, const float radius, const float push, const idEntity *inflictor, const idEntity *ignore, float inflictorScale, const bool quake );
 	//HUMANHEAD rww
 	virtual void			LogitechLCDUpdate(void);
 	//HUMANHEAD END
-	virtual gameReturn_t	RunFrame( const usercmd_t *clientCmds );
+	virtual gameReturn_t	RunFrame( const usercmd_t *clientCmds, int activeEditors );
 	virtual void			CacheDictionaryMedia( const idDict *dict );
 	virtual bool			Draw( int clientNum );
 

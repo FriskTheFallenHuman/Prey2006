@@ -267,9 +267,9 @@ void	idRenderWorldLocal::WriteLoadMap() {
 	session->writeDemo->WriteInt( DC_LOADMAP );
 
 	demoHeader_t	header;
-	// DG: Note: here strncpy() makes sense, because all chars of mapname get written
+	// DG: Note: here idStr::Copynz() makes sense, because all chars of mapname get written
 	//     so it's good if the ones behind the actual name are *all* \0
-	strncpy( header.mapname, mapName.c_str(), sizeof( header.mapname ) - 1 );
+	idStr::Copynz( header.mapname, mapName.c_str(), sizeof( header.mapname ) - 1 );
 	header.mapname[sizeof( header.mapname ) - 1] = '\0'; // make sure the last chars is also \0
 	header.version = 4;
 	header.sizeofRenderEntity = sizeof( renderEntity_t );
@@ -472,7 +472,7 @@ ReadRenderLight
 ================
 */
 void	idRenderWorldLocal::ReadRenderLight( ) {
-	renderLight_t	light;
+	renderLight_t	light = {};
 	int				index, i;
 	int				prelightModel, shader, referenceSound;
 

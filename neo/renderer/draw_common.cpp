@@ -32,6 +32,7 @@ If you have questions concerning this license or the applicable additional terms
 
 extern idCVar r_useCarmacksReverse;
 extern idCVar r_useStencilOpSeparate;
+
 /*
 =====================
 RB_BakeTextureMatrixIntoTexgen
@@ -99,33 +100,6 @@ void RB_PrepareStageTexturing( const shaderStage_t *pStage,  const drawSurf_t *s
 		qglTexCoordPointer( 3, GL_FLOAT, 0, vertexCache.Position( surf->dynamicTexCoords ) );
 	}
 	if ( pStage->texture.texgen == TG_SCREEN ) {
-		qglEnable( GL_TEXTURE_GEN_S );
-		qglEnable( GL_TEXTURE_GEN_T );
-		qglEnable( GL_TEXTURE_GEN_Q );
-
-		float	mat[16], plane[4];
-		myGlMultMatrix( surf->space->modelViewMatrix, backEnd.viewDef->projectionMatrix, mat );
-
-		plane[0] = mat[0];
-		plane[1] = mat[4];
-		plane[2] = mat[8];
-		plane[3] = mat[12];
-		qglTexGenfv( GL_S, GL_OBJECT_PLANE, plane );
-
-		plane[0] = mat[1];
-		plane[1] = mat[5];
-		plane[2] = mat[9];
-		plane[3] = mat[13];
-		qglTexGenfv( GL_T, GL_OBJECT_PLANE, plane );
-
-		plane[0] = mat[3];
-		plane[1] = mat[7];
-		plane[2] = mat[11];
-		plane[3] = mat[15];
-		qglTexGenfv( GL_Q, GL_OBJECT_PLANE, plane );
-	}
-
-	if ( pStage->texture.texgen == TG_SCREEN2 ) {
 		qglEnable( GL_TEXTURE_GEN_S );
 		qglEnable( GL_TEXTURE_GEN_T );
 		qglEnable( GL_TEXTURE_GEN_Q );
@@ -247,11 +221,6 @@ void RB_FinishStageTexturing( const shaderStage_t *pStage, const drawSurf_t *sur
 		qglDisable( GL_TEXTURE_GEN_T );
 		qglDisable( GL_TEXTURE_GEN_Q );
 	}
-	if ( pStage->texture.texgen == TG_SCREEN2 ) {
-		qglDisable( GL_TEXTURE_GEN_S );
-		qglDisable( GL_TEXTURE_GEN_T );
-		qglDisable( GL_TEXTURE_GEN_Q );
-	}
 
 	if ( pStage->texture.texgen == TG_GLASSWARP ) {
 		GL_SelectTexture( 2 );
@@ -267,7 +236,6 @@ void RB_FinishStageTexturing( const shaderStage_t *pStage, const drawSurf_t *sur
 		qglDisable( GL_FRAGMENT_PROGRAM_ARB );
 		globalImages->BindNull();
 		GL_SelectTexture( 0 );
-
 	}
 
 	if ( pStage->texture.texgen == TG_REFLECT_CUBE ) {
@@ -289,7 +257,7 @@ void RB_FinishStageTexturing( const shaderStage_t *pStage, const drawSurf_t *sur
 		qglDisable( GL_FRAGMENT_PROGRAM_ARB );
 		qglDisable( GL_VERTEX_PROGRAM_ARB );
 		// Fixme: Hack to get around an apparent bug in ATI drivers.  Should remove as soon as it gets fixed.
-		qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, 0 );
+		qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, 0 ); // FIXME ...
 	}
 
 	if ( pStage->texture.hasMatrix ) {
@@ -548,29 +516,6 @@ void RB_SetProgramEnvironment( bool isPostProcess ) {
 		return;
 	}
 
-#if 0
-	// screen power of two correction factor, one pixel in so we don't get a bilerp
-	// of an uncopied pixel
-	int	 w = backEnd.viewDef->viewport.x2 - backEnd.viewDef->viewport.x1 + 1;
-	pot = globalImages->currentRenderImage->uploadWidth;
-	if ( w == pot ) {
-		parm[0] = 1.0;
-	} else {
-		parm[0] = (float)(w-1) / pot;
-	}
-
-	int	 h = backEnd.viewDef->viewport.y2 - backEnd.viewDef->viewport.y1 + 1;
-	pot = globalImages->currentRenderImage->uploadHeight;
-	if ( h == pot ) {
-		parm[1] = 1.0;
-	} else {
-		parm[1] = (float)(h-1) / pot;
-	}
-
-	parm[2] = 0;
-	parm[3] = 1;
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 0, parm );
-#else
 	// screen power of two correction factor, assuming the copy to _currentRender
 	// also copied an extra row and column for the bilerp
 	int	 w = backEnd.viewDef->viewport.x2 - backEnd.viewDef->viewport.x1 + 1;
@@ -584,7 +529,6 @@ void RB_SetProgramEnvironment( bool isPostProcess ) {
 	parm[2] = 0;
 	parm[3] = 1;
 	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 0, parm );
-#endif
 
 	qglProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 0, parm );
 
@@ -617,8 +561,6 @@ void RB_SetProgramEnvironment( bool isPostProcess ) {
 	parm[2] = backEnd.viewDef->renderView.vieworg[2];
 	parm[3] = 1.0;
 	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 1, parm );
-
-
 }
 
 /*
@@ -789,10 +731,10 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 			//
 			//--------------------------
 
-			// completely skip the stage if we have disable it.
 			if ( r_skipNewAmbient.GetBool() ) {
 				continue;
 			}
+
 			qglColorPointer( 4, GL_UNSIGNED_BYTE, sizeof( idDrawVert ), (void *)&ac->color );
 			qglVertexAttribPointerARB( 9, 3, GL_FLOAT, false, sizeof( idDrawVert ), ac->tangents[0].ToFloatPtr() );
 			qglVertexAttribPointerARB( 10, 3, GL_FLOAT, false, sizeof( idDrawVert ), ac->tangents[1].ToFloatPtr() );
@@ -860,7 +802,7 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 			qglDisable( GL_VERTEX_PROGRAM_ARB );
 			qglDisable( GL_FRAGMENT_PROGRAM_ARB );
 			// Fixme: Hack to get around an apparent bug in ATI drivers.  Should remove as soon as it gets fixed.
-			qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, 0 );
+			qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, 0 ); // FIXME: ...
 
 			qglDisableClientState( GL_COLOR_ARRAY );
 			qglDisableVertexAttribArrayARB( 9 );
@@ -1249,7 +1191,7 @@ been set to 128 on any surfaces that might receive shadows
 =====================
 */
 void RB_StencilShadowPass( const drawSurf_t *drawSurfs ) {
-	if ( !r_shadows.GetBool() ) {
+	if ( r_shadows.GetInteger() <= 0 ) {
 		return;
 	}
 

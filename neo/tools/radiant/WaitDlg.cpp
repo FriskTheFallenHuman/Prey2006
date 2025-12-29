@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -33,23 +34,26 @@ If you have questions concerning this license or the applicable additional terms
 #include "WaitDlg.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
 // CWaitDlg dialog
 
-CWaitDlg::CWaitDlg( CWnd* pParent, const char * msg )
-	: CDialogEx( CWaitDlg::IDD, pParent ) {
-	waitStr = msg;
+CWaitDlg::CWaitDlg( CWnd* pParent, const char* msg ) :
+	CDialogEx( CWaitDlg::IDD, pParent )
+{
+	waitStr		  = msg;
 	cancelPressed = false;
 	Create( CWaitDlg::IDD );
 }
 
-CWaitDlg::~CWaitDlg() {
+CWaitDlg::~CWaitDlg()
+{
 	g_pParentWnd->SetBusy( false );
 }
 
-void CWaitDlg::DoDataExchange( CDataExchange* pDX ) {
+void CWaitDlg::DoDataExchange( CDataExchange* pDX )
+{
 	CDialogEx::DoDataExchange( pDX );
 	DDX_Text( pDX, IDC_WAITSTR, waitStr );
 	DDX_Control( pDX, IDD_WAITDLG_PROGRESS, m_progress );
@@ -60,9 +64,10 @@ END_MESSAGE_MAP()
 
 // CWaitDlg message handlers
 
-BOOL CWaitDlg::OnInitDialog() {
+BOOL CWaitDlg::OnInitDialog()
+{
 	CDialogEx::OnInitDialog();
-	//GetDlgItem(IDC_WAITSTR)->SetWindowText(waitStr);
+	// GetDlgItem(IDC_WAITSTR)->SetWindowText(waitStr);
 	GetDlgItem( IDC_WAITSTR )->SetFocus();
 	UpdateData( FALSE );
 	ShowWindow( SW_SHOW );
@@ -73,14 +78,18 @@ BOOL CWaitDlg::OnInitDialog() {
 	return TRUE;
 }
 
-void CWaitDlg::SetText( const char * msg, float percent, bool append ) {
-	if ( append ) {
+void CWaitDlg::SetText( const char* msg, float percent, bool append )
+{
+	if( append )
+	{
 		waitStr = text;
 		waitStr += "\r\n";
 		waitStr += msg;
-	} else {
+	}
+	else
+	{
 		waitStr = msg;
-		text = msg;
+		text	= msg;
 	}
 
 	m_progress.SetRange( 0, 100 );
@@ -92,28 +101,36 @@ void CWaitDlg::SetText( const char * msg, float percent, bool append ) {
 	ShowWindow( SW_SHOWNORMAL );
 }
 
-void CWaitDlg::AllowCancel( bool enable ) {
+void CWaitDlg::AllowCancel( bool enable )
+{
 	// this shows or hides the Cancel button
 	CWnd* pCancelButton = GetDlgItem( IDCANCEL );
 	ASSERT( pCancelButton );
-	if ( enable ) {
+	if( enable )
+	{
 		pCancelButton->ShowWindow( SW_NORMAL );
-	} else {
+	}
+	else
+	{
 		pCancelButton->ShowWindow( SW_HIDE );
 	}
 }
 
-bool CWaitDlg::CancelPressed() {
-	MSG* msg = AfxGetCurrentMessage();			// TODO Robert fix me!!
-	while ( ::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) ) {
+bool CWaitDlg::CancelPressed( void )
+{
+	MSG* msg = AfxGetCurrentMessage(); // TODO Robert fix me!!
+	while( ::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) )
+	{
 		// pump message
-		if ( !AfxGetApp()->PumpMessage() ) {
+		if( !AfxGetApp()->PumpMessage() )
+		{
 		}
 	}
 
 	return cancelPressed;
 }
 
-void CWaitDlg::OnCancel() {
+void CWaitDlg::OnCancel()
+{
 	cancelPressed = true;
 }

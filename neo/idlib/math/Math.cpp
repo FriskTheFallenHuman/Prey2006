@@ -129,3 +129,30 @@ float idMath::BitsToFloat( int i, int exponentBits, int mantissaBits ) {
 	value = sign << IEEE_FLT_SIGN_BIT | ( exponent + IEEE_FLT_EXPONENT_BIAS ) << IEEE_FLT_MANTISSA_BITS | mantissa;
 	return *reinterpret_cast<float *>(&value);
 }
+
+/*
+================
+idMath::dBToScale
+================
+*/
+float idMath::dBToScale( float db ) {
+	if ( db < -60.0f ) {
+		return( 0.0f );
+	} else {
+
+		return( powf( 2.0f, db * ( 1.0f / 6.0f ) ) );
+	}
+}
+
+/*
+================
+idMath::ScaleToDb
+================
+*/
+float idMath::ScaleToDb( float scale ) {
+	if ( scale <= 0.0f ) {
+		return( -60.0f );
+	} else {
+		return( 6.0f * idMath::Log( scale ) / idMath::Log( 2 ) );
+	}
+}

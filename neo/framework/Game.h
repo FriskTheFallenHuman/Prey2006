@@ -95,10 +95,10 @@ public:
 	virtual void				SetPersistentPlayerInfo( int clientNum, const idDict &playerInfo ) = 0;
 
 	// Loads a map and spawns all the entities.
-	virtual void				InitFromNewMap( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, bool isServer, bool isClient, int randseed ) = 0;
+	virtual void				InitFromNewMap( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, bool isServer, bool isClient, int randseed, int activeEditors ) = 0;
 
 	// Loads a map from a savegame file.
-	virtual bool				InitFromSaveGame( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, idFile *saveGameFile ) = 0;
+	virtual bool				InitFromSaveGame( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, idFile *saveGameFile, int activeEditors ) = 0;
 
 	// Saves the current game state, the session may have written some data to the file already.
 	virtual void				SaveGame( idFile *saveGameFile ) = 0;
@@ -113,7 +113,7 @@ public:
 	virtual void				SpawnPlayer( int clientNum ) = 0;
 
 	// Runs a game frame, may return a session command for level changing, etc
-	virtual gameReturn_t		RunFrame( const usercmd_t *clientCmds ) = 0;
+	virtual gameReturn_t		RunFrame( const usercmd_t *clientCmds, int activeEditors ) = 0;
 
 	// Makes rendering and sound system calls to display for a given clientNum.
 	virtual bool				Draw( int clientNum ) = 0;
@@ -232,125 +232,119 @@ class idProgram;
 class idInterpreter;
 typedef struct prstack_s prstack_t;
 
-// FIXME: this interface needs to be reworked but it properly separates code for the time being
 class idGameEdit {
 public:
 	virtual						~idGameEdit( void ) {}
 
 	// These are the canonical idDict to parameter parsing routines used by both the game and tools.
-	virtual void				ParseSpawnArgsToRenderLight( const idDict *args, renderLight_t *renderLight );
-	virtual void				ParseSpawnArgsToRenderEntity( const idDict *args, renderEntity_t *renderEntity );
-	virtual void				ParseSpawnArgsToRefSound( const idDict *args, refSound_t *refSound );
+	virtual void				ParseSpawnArgsToRenderLight( const idDict *args, renderLight_t *renderLight ) = 0;
+	virtual void				ParseSpawnArgsToRenderEntity( const idDict *args, renderEntity_t *renderEntity ) = 0;
+	virtual void				ParseSpawnArgsToRefSound( const idDict *args, refSound_t *refSound ) = 0;
 
 	// Animation system calls for non-game based skeletal rendering.
-	virtual idRenderModel *		ANIM_GetModelFromEntityDef( const char *classname );
-	virtual const idVec3		&ANIM_GetModelOffsetFromEntityDef( const char *classname );
-	virtual idRenderModel *		ANIM_GetModelFromEntityDef( const idDict *args );
-	virtual idRenderModel *		ANIM_GetModelFromName( const char *modelName );
-	virtual const idMD5Anim *	ANIM_GetAnimFromEntityDef( const char *classname, const char *animname );
-	virtual int					ANIM_GetNumAnimsFromEntityDef( const idDict *args );
-	virtual const char *		ANIM_GetAnimNameFromEntityDef( const idDict *args, int animNum );
-	virtual const idMD5Anim *	ANIM_GetAnim( const char *fileName );
-	virtual int					ANIM_GetLength( const idMD5Anim *anim );
-	virtual int					ANIM_GetNumFrames( const idMD5Anim *anim );
-	virtual void				ANIM_CreateAnimFrame( const idRenderModel *model, const idMD5Anim *anim, int numJoints, idJointMat *frame, int time, const idVec3 &offset, bool remove_origin_offset );
-	virtual idRenderModel *		ANIM_CreateMeshForAnim( idRenderModel *model, const char *classname, const char *animname, int frame, bool remove_origin_offset );
+	virtual idRenderModel *		ANIM_GetModelFromEntityDef( const char *classname ) = 0;
+	virtual const idVec3		&ANIM_GetModelOffsetFromEntityDef( const char *classname ) = 0;
+	virtual idRenderModel *		ANIM_GetModelFromEntityDef( const idDict *args ) = 0;
+	virtual idRenderModel *		ANIM_GetModelFromName( const char *modelName ) = 0;
+	virtual const idMD5Anim *	ANIM_GetAnimFromEntityDef( const char *classname, const char *animname ) = 0;
+	virtual int					ANIM_GetNumAnimsFromEntityDef( const idDict *args ) = 0;
+	virtual const char *		ANIM_GetAnimNameFromEntityDef( const idDict *args, int animNum ) = 0;
+	virtual const idMD5Anim *	ANIM_GetAnim( const char *fileName ) = 0;
+	virtual int					ANIM_GetLength( const idMD5Anim *anim ) = 0;
+	virtual int					ANIM_GetNumFrames( const idMD5Anim *anim ) = 0;
+	virtual void				ANIM_CreateAnimFrame( const idRenderModel *model, const idMD5Anim *anim, int numJoints, idJointMat *frame, int time, const idVec3 &offset, bool remove_origin_offset ) = 0;
+	virtual idRenderModel *		ANIM_CreateMeshForAnim( idRenderModel *model, const char *classname, const char *animname, int frame, bool remove_origin_offset ) = 0;
 
 	// HUMANHEAD pdm
-	virtual const idMD5Anim *	ANIM_GetAnimFromArgs( const idDict *args, const char *animname );
+	virtual const idMD5Anim *	ANIM_GetAnimFromArgs( const idDict *args, const char *animname ) = 0;
 	// HUMANHEAD END
 
 	// Articulated Figure calls for AF editor and Radiant.
-	virtual bool				AF_SpawnEntity( const char *fileName );
-	virtual void				AF_UpdateEntities( const char *fileName );
-	virtual void				AF_UndoChanges( void );
-	virtual idRenderModel *		AF_CreateMesh( const idDict &args, idVec3 &meshOrigin, idMat3 &meshAxis, bool &poseIsSet );
+	virtual bool				AF_SpawnEntity( const char *fileName ) = 0;
+	virtual void				AF_UpdateEntities( const char *fileName ) = 0;
+	virtual void				AF_UndoChanges( void ) = 0;
+	virtual idRenderModel *		AF_CreateMesh( const idDict &args, idVec3 &meshOrigin, idMat3 &meshAxis, bool &poseIsSet ) = 0;
 
 
 	// Entity selection.
-	virtual void				ClearEntitySelection( void );
-	virtual int					GetSelectedEntities( idEntity *list[], int max );
-	virtual void				AddSelectedEntity( idEntity *ent );
+	virtual void				ClearEntitySelection( void ) = 0;
+	virtual int					GetSelectedEntities( idEntity *list[], int max ) = 0;
+	virtual void				AddSelectedEntity( idEntity *ent ) = 0;
 
 	// Selection methods
-	virtual void				TriggerSelected();
+	virtual void				TriggerSelected() = 0;
 
 	// Entity defs and spawning.
-	virtual const idDict *		FindEntityDefDict( const char *name, bool makeDefault = true ) const;
-	virtual void				SpawnEntityDef( const idDict &args, idEntity **ent );
-	virtual idEntity *			FindEntity( const char *name ) const;
-	virtual const char *		GetUniqueEntityName( const char *classname ) const;
+	virtual const idDict *		FindEntityDefDict( const char *name, bool makeDefault = true ) const = 0;
+	virtual void				SpawnEntityDef( const idDict &args, idEntity **ent ) = 0;
+	virtual idEntity *			FindEntity( const char *name ) const = 0;
+	virtual const char *		GetUniqueEntityName( const char *classname ) const = 0;
 
 	// Entity methods.
-	virtual void				EntityGetOrigin( idEntity *ent, idVec3 &org ) const;
-	virtual void				EntityGetAxis( idEntity *ent, idMat3 &axis ) const;
-	virtual void				EntitySetOrigin( idEntity *ent, const idVec3 &org );
-	virtual void				EntitySetAxis( idEntity *ent, const idMat3 &axis );
-	virtual void				EntityTranslate( idEntity *ent, const idVec3 &org );
-	virtual const idDict *		EntityGetSpawnArgs( idEntity *ent ) const;
-	virtual void				EntityUpdateChangeableSpawnArgs( idEntity *ent, const idDict *dict );
-	virtual void				EntityChangeSpawnArgs( idEntity *ent, const idDict *newArgs );
-	virtual void				EntityUpdateVisuals( idEntity *ent );
-	virtual void				EntitySetModel( idEntity *ent, const char *val );
-	virtual void				EntityStopSound( idEntity *ent );
-	virtual void				EntityDelete( idEntity *ent );
-	virtual void				EntitySetColor( idEntity *ent, const idVec3 color );
+	virtual void				EntityGetOrigin( idEntity *ent, idVec3 &org ) const = 0;
+	virtual void				EntityGetAxis( idEntity *ent, idMat3 &axis ) const = 0;
+	virtual void				EntitySetOrigin( idEntity *ent, const idVec3 &org ) = 0;
+	virtual void				EntitySetAxis( idEntity *ent, const idMat3 &axis ) = 0;
+	virtual void				EntityTranslate( idEntity *ent, const idVec3 &org ) = 0;
+	virtual const idDict *		EntityGetSpawnArgs( idEntity *ent ) const = 0;
+	virtual void				EntityUpdateChangeableSpawnArgs( idEntity *ent, const idDict *dict ) = 0;
+	virtual void				EntityChangeSpawnArgs( idEntity *ent, const idDict *newArgs ) = 0;
+	virtual void				EntityUpdateVisuals( idEntity *ent ) = 0;
+	virtual void				EntitySetModel( idEntity *ent, const char *val ) = 0;
+	virtual void				EntityStopSound( idEntity *ent ) = 0;
+	virtual void				EntityDelete( idEntity *ent ) = 0;
+	virtual void				EntitySetColor( idEntity *ent, const idVec3 color ) = 0;
 
 	// Player methods.
-	virtual bool				PlayerIsValid( ) const;
-	virtual void				PlayerGetOrigin( idVec3 &org ) const;
-	virtual void				PlayerGetAxis( idMat3 &axis ) const;
-	virtual void				PlayerGetViewAngles( idAngles &angles ) const;
-	virtual void				PlayerGetEyePosition( idVec3 &org ) const;
+	virtual bool				PlayerIsValid() const = 0;
+	virtual void				PlayerGetOrigin( idVec3 &org ) const = 0;
+	virtual void				PlayerGetAxis( idMat3 &axis ) const = 0;
+	virtual void				PlayerGetViewAngles( idAngles &angles ) const = 0;
+	virtual void				PlayerGetEyePosition( idVec3 &org ) const = 0;
 
 	// In game map editing support.
-	virtual const idDict *		MapGetEntityDict( const char *name ) const;
-	virtual void				MapSave( const char *path = NULL ) const;
-	virtual void				MapSetEntityKeyVal( const char *name, const char *key, const char *val ) const ;
-	virtual void				MapCopyDictToEntity( const char *name, const idDict *dict ) const;
-	virtual int					MapGetUniqueMatchingKeyVals( const char *key, const char *list[], const int max ) const;
-	virtual void				MapAddEntity( const idDict *dict ) const;
-	virtual int					MapGetEntitiesMatchingClassWithString( const char *classname, const char *match, const char *list[], const int max ) const;
-	virtual void				MapRemoveEntity( const char *name ) const;
-	virtual void				MapEntityTranslate( const char *name, const idVec3 &v ) const;
+	virtual const idDict *		MapGetEntityDict( const char *name ) const = 0;
+	virtual void				MapSave( const char *path = NULL ) const = 0;
+	virtual void				MapSetEntityKeyVal( const char *name, const char *key, const char *val ) const  = 0;
+	virtual void				MapCopyDictToEntity( const char *name, const idDict *dict ) const = 0;
+	virtual int					MapGetUniqueMatchingKeyVals( const char *key, const char *list[], const int max ) const = 0;
+	virtual void				MapAddEntity( const idDict *dict ) const = 0;
+	virtual int					MapGetEntitiesMatchingClassWithString( const char *classname, const char *match, const char *list[], const int max ) const = 0;
+	virtual void				MapRemoveEntity( const char *name ) const = 0;
+	virtual void				MapEntityTranslate( const char *name, const idVec3 &v ) const = 0;
+
+	// In game script Debugging Support
+	// IdProgram
+	virtual void				GetLoadedScripts( idStrList **result ) = 0;
+	virtual bool				IsLineCode( const char *filename, int linenumber ) const = 0;
+	virtual const char *		GetFilenameForStatement( idProgram *program, int index ) const = 0;
+	virtual int					GetLineNumberForStatement( idProgram *program, int index ) const = 0;
+
+	// idInterpreter
+	virtual bool				CheckForBreakPointHit( const idInterpreter *interpreter, const function_t *function1, const function_t *function2, int depth ) const = 0;
+	virtual bool				ReturnedFromFunction( const idProgram *program, const idInterpreter *interpreter, int index ) const = 0;
+	virtual bool				GetRegisterValue( const idInterpreter *interpreter, const char *name, idStr& out, int scopeDepth ) const = 0;
+	virtual const idThread*		GetThread( const idInterpreter *interpreter ) const = 0;
+	virtual int					GetInterpreterCallStackDepth( const idInterpreter *interpreter ) = 0;
+	virtual const function_t*	GetInterpreterCallStackFunction( const idInterpreter *interpreter, int stackDepth = -1 ) = 0;
+
+	// IdThread
+	virtual const char *		ThreadGetName( const idThread *thread ) const = 0;
+	virtual int					ThreadGetNum( const idThread *thread ) const = 0;
+	virtual bool				ThreadIsDoneProcessing( const idThread *thread ) const = 0;
+	virtual bool				ThreadIsWaiting( const idThread *thread ) const = 0;
+	virtual bool				ThreadIsDying( const idThread *thread ) const = 0;
+	virtual int					GetTotalScriptThreads( ) const = 0;
+	virtual const idThread*		GetThreadByIndex( int index ) const = 0;
+
+	// MSG helpers
+	virtual void				MSG_WriteThreadInfo( idBitMsg *msg, const idThread *thread, const idInterpreter *interpreter ) = 0;
+	virtual void				MSG_WriteCallstackFunc( idBitMsg *msg, const prstack_t *stack, const idProgram *program, int instructionPtr ) = 0;
+	virtual void				MSG_WriteInterpreterInfo( idBitMsg *msg, const idInterpreter *interpreter, const idProgram *program, int instructionPtr ) = 0;
+	virtual void				MSG_WriteScriptList( idBitMsg *msg ) = 0;
 };
 
 extern idGameEdit *				gameEdit;
-
-// In game script Debugging Support
-class idGameEditExt : public idGameEdit {
-public:
-	virtual						~idGameEditExt( void ) { }
-	// IdProgram
-	virtual void				GetLoadedScripts( idStrList ** result );
-	virtual bool				IsLineCode( const char* filename, int linenumber) const;
-	virtual const char *		GetFilenameForStatement( idProgram* program, int index ) const;
-	virtual int					GetLineNumberForStatement( idProgram* program, int index ) const;
-
-	// idInterpreter
-	virtual bool				CheckForBreakPointHit( const idInterpreter* interpreter, const function_t* function1, const function_t* function2, int depth ) const;
-	virtual bool				ReturnedFromFunction( const idProgram* program, const idInterpreter* interpreter, int index ) const;
-	virtual bool				GetRegisterValue( const idInterpreter* interpreter, const char* name, idStr& out, int scopeDepth ) const;
-	virtual const idThread*		GetThread( const idInterpreter* interpreter ) const;
-	virtual int					GetInterpreterCallStackDepth( const idInterpreter* interpreter );
-	virtual const function_t*	GetInterpreterCallStackFunction( const idInterpreter* interpreter, int stackDepth = -1 );
-
-	// IdThread
-	virtual const char *		ThreadGetName( const idThread* thread ) const;
-	virtual int					ThreadGetNum( const idThread* thread ) const;
-	virtual bool				ThreadIsDoneProcessing( const idThread* thread ) const;
-	virtual bool				ThreadIsWaiting( const idThread* thread ) const;
-	virtual bool				ThreadIsDying( const idThread* thread ) const;
-	virtual int					GetTotalScriptThreads( ) const;
-	virtual const idThread*		GetThreadByIndex( int index ) const;
-
-	// MSG helpers
-	virtual void				MSG_WriteThreadInfo( idBitMsg* msg, const idThread* thread, const idInterpreter* interpreter );
-	virtual void				MSG_WriteCallstackFunc( idBitMsg* msg, const prstack_t* stack, const idProgram* program, int instructionPtr );
-	virtual void				MSG_WriteInterpreterInfo( idBitMsg* msg, const idInterpreter* interpreter, const idProgram* program, int instructionPtr );
-	virtual void				MSG_WriteScriptList( idBitMsg* msg );
-};
-
 
 /*
 ===============================================================================
@@ -360,7 +354,13 @@ public:
 ===============================================================================
 */
 
-const int GAME_API_VERSION		= 10;
+// v8 - Original Doom 3 version
+// v9 - idCommon::SetCallback() and GetAdditionalFunction() - for Mods
+// v10 - Revert debugger to original Quake 4 implementation
+// v11 - Remove Game Callbacks system
+// v12 - Make us very different from Dhewm3
+// v13 - Prey (2006) changes to the game API
+const int GAME_API_VERSION		= 13;
 
 typedef struct {
 

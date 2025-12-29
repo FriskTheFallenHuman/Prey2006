@@ -143,7 +143,7 @@ TestGameAPI
 ============
 */
 void TestGameAPI( void ) {
-	gameImport_t testImport;
+	gameImport_t testImport = {};
 	gameExport_t testExport;
 
 	testImport.sys						= ::sys;
@@ -293,16 +293,6 @@ void idGameLocal::Clear( void ) {
 	//HUMANHEAD END
 }
 
-static bool ( *updateDebuggerFnPtr )( idInterpreter *interpreter, idProgram *program, int instructionPointer ) = NULL;
-bool updateGameDebugger( idInterpreter *interpreter, idProgram *program, int instructionPointer ) {
-	bool ret = false;
-	if ( interpreter != NULL && program != NULL ) {
-		ret = updateDebuggerFnPtr ? updateDebuggerFnPtr( interpreter, program, instructionPointer ) : false;
-	}
-	return ret;
-}
-
-
 /*
 ===========
 idGameLocal::Init
@@ -398,10 +388,6 @@ void idGameLocal::Init( void ) {
 	gamestate = GAMESTATE_NOMAP;
 
 	Printf( "...%d aas types\n", aasList.Num() );
-
-
-	//debugger support
-	common->GetAdditionalFunction(idCommon::FT_UpdateDebugger,(idCommon::FunctionPointer*) &updateDebuggerFnPtr,NULL);
 }
 
 /*
@@ -427,6 +413,11 @@ void idGameLocal::Shutdown( void ) {
 	aasNames.Clear();
 
 	idAI::FreeObstacleAvoidanceNodes();
+
+#ifdef ID_MAYA_IMPORT_TOOL
+	// shutdown the model exporter
+	idModelExport::Shutdown();
+#endif
 
 	idEvent::Shutdown();
 
@@ -505,6 +496,20 @@ void idGameLocal::SaveGame( idFile *f ) {
 	}
 
 	savegame.WriteBuildNumber( BUILD_NUMBER );
+
+	// DG: add some more information to savegame to make future quirks easier
+	savegame.WriteInt( INTERNAL_SAVEGAME_VERSION ); // to be independent of BUILD_NUMBER
+	savegame.WriteString( D3_OSTYPE ); // operating system - from CMake
+	savegame.WriteString( D3_ARCH ); // CPU architecture (e.g. "x86" or "x86_64") - from CMake
+	savegame.WriteString( ENGINE_VERSION );
+	savegame.WriteShort( (short)sizeof(void*) ); // tells us if it's from a 32bit (4) or 64bit system (8)
+#if D3_IS_BIG_ENDIAN
+	const short byteOrder = 4321; // SDL_BIG_ENDIAN
+#else
+	const short byteOrder = 1234; // SDL_LIL_ENDIAN
+#endif
+	savegame.WriteShort( byteOrder ) ;
+	// DG end
 
 #if DEATHWALK_AUTOLOAD // HUMANHEAD mdl
 	savegame.WriteBool( bShouldAppend );
@@ -1338,7 +1343,7 @@ void idGameLocal::MapPopulate( void ) {
 idGameLocal::InitFromNewMap
 ===================
 */
-void idGameLocal::InitFromNewMap( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, bool isServer, bool isClient, int randseed) {
+void idGameLocal::InitFromNewMap( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, bool isServer, bool isClient, int randseed, int activeEditors ) {
 
 	uniqueObjects.Clear(); // HUMANHEAD mdl
 
@@ -1362,6 +1367,9 @@ void idGameLocal::InitFromNewMap( const char *mapName, idRenderWorld *renderWorl
 	}
 
 	Printf( "----- Game Map Init -----\n" );
+
+	//exposing editor flag so debugger does not miss any script calls during load/startup
+	editors = activeEditors;
 
 	gamestate = GAMESTATE_STARTUP;
 
@@ -1415,7 +1423,7 @@ void idGameLocal::InitFromNewMap( const char *mapName, idRenderWorld *renderWorl
 idGameLocal::InitFromSaveGame
 =================
 */
-bool idGameLocal::InitFromSaveGame( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, idFile *saveGameFile ) {
+bool idGameLocal::InitFromSaveGame( const char *mapName, idRenderWorld *renderWorld, idSoundWorld *soundWorld, idFile *saveGameFile, int activeEditors ) {
 	int i;
 	int num;
 	idEntity *ent;
@@ -1427,6 +1435,9 @@ bool idGameLocal::InitFromSaveGame( const char *mapName, idRenderWorld *renderWo
 
 	Printf( "----- Game Map Init SaveGame -----\n" );
 
+	//exposing editor flag so debugger does not miss any script calls during load/startup
+	editors = activeEditors;
+
 	gamestate = GAMESTATE_STARTUP;
 
 	gameRenderWorld = renderWorld;
@@ -1437,6 +1448,35 @@ bool idGameLocal::InitFromSaveGame( const char *mapName, idRenderWorld *renderWo
 	idRestoreGame savegame( saveGameFile );
 
 	savegame.ReadBuildNumber();
+
+	// DG: I enhanced the information in savegames a bit for Prey 1.5.4
+	//     for which I bumped th BUILD_NUMBER to 1306
+	if ( savegame.GetBuildNumber() >= 1306 ) {
+		savegame.ReadInternalSavegameVersion();
+		if( savegame.GetInternalSavegameVersion() > INTERNAL_SAVEGAME_VERSION ) {
+			Warning( "Savegame from newer Prey version, don't know how to load! (its version is %d, only up to %d supported)",
+			         savegame.GetInternalSavegameVersion(), INTERNAL_SAVEGAME_VERSION );
+			return false;
+		}
+		idStr osType;
+		idStr cpuArch;
+		idStr engineVersion;
+		short ptrSize = 0;
+		short byteorder = 0;
+		savegame.ReadString( osType ); // operating system the savegame was crated on (written from D3_OSTYPE)
+		savegame.ReadString( cpuArch ); // written from D3_ARCH (which is set in CMake), like "x86" or "x86_64"
+		savegame.ReadString( engineVersion ); // written from ENGINE_VERSION
+		savegame.ReadShort( ptrSize ); // sizeof(void*) of system that created the savegame, 4 on 32bit systems, 8 on 64bit systems
+		savegame.ReadShort( byteorder ); // SDL_LIL_ENDIAN or SDL_BIG_ENDIAN
+
+		Printf( "Savegame was created by %s on %s %s. BuildNumber was %d, savegameversion %d\n",
+		        engineVersion.c_str(), osType.c_str(), cpuArch.c_str(), savegame.GetBuildNumber(),
+		        savegame.GetInternalSavegameVersion() );
+
+		// right now I have no further use for this information, but in the future
+		// it can be used for quirks for (then-) old savegames
+	}
+	// DG end
 
 	// HUMANHEAD pdm: Support for level appending
 #if DEATHWALK_AUTOLOAD
@@ -1951,7 +1991,9 @@ void idGameLocal::GetShakeSounds( const idDict *dict ) {
 	const char *soundShaderName;
 	idStr soundName;
 
-	if ( dict->GetString( "s_shader", "", &soundShaderName ) && dict->GetFloat( "s_shakes" ) != 0.0f ) {
+	if ( dict->GetString( "s_shader", "", &soundShaderName )
+		 && dict->GetFloat( "s_shakes" ) != 0.0f )
+	{
 		soundShader = declManager->FindSound( soundShaderName );
 
 		for ( int i = 0; i < soundShader->GetNumSounds(); i++ ) {
@@ -2659,7 +2701,7 @@ void idGameLocal::SortSnapshotEntityList( void ) {
 idGameLocal::RunFrame
 ================
 */
-gameReturn_t idGameLocal::RunFrame( const usercmd_t *clientCmds ) {
+gameReturn_t idGameLocal::RunFrame( const usercmd_t *clientCmds, int activeEditors ) {
 /*	HUMANHEAD pdm: OVERRIDDEN
 	idEntity *			ent;
 	int					num;
@@ -2668,6 +2710,9 @@ gameReturn_t idGameLocal::RunFrame( const usercmd_t *clientCmds ) {
 	gameReturn_t		ret;
 	idPlayer			*player;
 	const renderView_t	*view;
+
+	//exposing editor flag so debugger does not miss any script calls during load/startup
+	editors = activeEditors;
 
 #ifdef _DEBUG
 	if ( isMultiplayer ) {
@@ -3029,7 +3074,7 @@ idGameLocal::GetLevelMap
 ================
 */
 idMapFile *idGameLocal::GetLevelMap( void ) {
-	if ( mapFile && mapFile->HasPrimitiveData()) {
+	if ( mapFile && mapFile->HasPrimitiveData() ) {
 		return mapFile;
 	}
 	if ( !mapFileName.Length() ) {

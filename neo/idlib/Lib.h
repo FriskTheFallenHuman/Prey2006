@@ -76,9 +76,15 @@ public:
 	static void					ShutDown( void );
 
 	// wrapper to idCommon functions
-	static void					Error( const char *fmt, ... );
-	static void					Warning( const char *fmt, ... );
-	
+	static void       			Printf( VERIFY_FORMAT_STRING const char *fmt, ... ) ID_STATIC_ATTRIBUTE_PRINTF( 1, 2 );
+	static void       			PrintfIf( const bool test, VERIFY_FORMAT_STRING const char *fmt, ... ) ID_STATIC_ATTRIBUTE_PRINTF( 2, 3 );
+	NO_RETURN static void       Error( VERIFY_FORMAT_STRING const char *fmt, ... ) ID_STATIC_ATTRIBUTE_PRINTF( 1, 2 );
+	NO_RETURN static void       FatalError( VERIFY_FORMAT_STRING const char *fmt, ... ) ID_STATIC_ATTRIBUTE_PRINTF( 1, 2 );
+	static void       			Warning( VERIFY_FORMAT_STRING const char *fmt, ... ) ID_STATIC_ATTRIBUTE_PRINTF( 1, 2 );
+	static void       			WarningIf( const bool test, VERIFY_FORMAT_STRING const char *fmt, ... ) ID_STATIC_ATTRIBUTE_PRINTF( 2, 3 );
+	static void       			DWarning( VERIFY_FORMAT_STRING const char *fmt, ... ) ID_STATIC_ATTRIBUTE_PRINTF( 1, 2 );
+	static void       			DWarningIf( const bool test, VERIFY_FORMAT_STRING const char *fmt, ... ) ID_STATIC_ATTRIBUTE_PRINTF( 2, 3 );
+
 #ifdef _HH_NET_DEBUGGING //HUMANHEAD rww
 	static void					NetworkEntStats(const char *typeName, int type);
 #endif //HUMANHEAD END
@@ -222,6 +228,7 @@ template<class T> ID_INLINE T	Min( T x, T y ) { return ( x < y ) ? x : y; }
 #include "CmdArgs.h"
 
 // containers
+#include "containers/Array.h"
 #include "containers/BTree.h"
 #include "containers/BinSearch.h"
 #include "containers/HashIndex.h"

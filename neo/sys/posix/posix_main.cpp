@@ -43,7 +43,8 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "posix_public.h"
 
-#include <SDL.h> // clipboard
+// SDL.h for clipboard:
+#include "sys/sys_sdl.h"
 
 #define					COMMAND_HISTORY 64
 
@@ -176,14 +177,14 @@ Sys_IsFile
 ==========
 */
 bool Sys_IsFile( const char* path ) {
-    assert( path );
+	assert( path );
 
-    struct stat st;
-    if ( stat( path, &st ) != -1 && S_ISREG( st.st_mode ) ) {
-        return true;
-    }
+	struct stat st;
+	if ( stat( path, &st ) != -1 && S_ISREG( st.st_mode ) ) {
+		return true;
+	}
 
-    return false;
+	return false;
 }
 
 /*
@@ -192,14 +193,14 @@ Sys_IsDirectory
 ===============
 */
 bool Sys_IsDirectory( const char* path ) {
-    assert(path);
+	assert(path);
 
-    struct stat st;
-    if ( stat( path, &st ) != -1 && S_ISDIR( st.st_mode ) ) {
-        return true;
-    }
+	struct stat st;
+	if ( stat( path, &st ) != -1 && S_ISDIR( st.st_mode ) ) {
+		return true;
+	}
 
-    return false;
+	return false;
 }
 
 /*
@@ -688,7 +689,7 @@ void Posix_InitSignalHandlers( void )
 		// cast to size_t which is unsigned and would get really big if fullLogLen < 0 (=> error in snprintf())
 		if((size_t)fullLogLen >= sizeof(logFileName)) {
 			printf("WARNING: Couldn't create qconsolelog.txt at '%s' because its length would be '%d' which is > PATH_MAX (%zd) or < 0!\n",
-			       logPath, fullLogLen, (size_t)PATH_MAX);
+				   logPath, fullLogLen, (size_t)PATH_MAX);
 			return;
 		}
 		struct stat buf;
@@ -785,7 +786,7 @@ void Posix_InitConsoleInput( void ) {
 		char *term = getenv( "TERM" );
 		if ( term ) {
 			if ( strcmp( term, "linux" ) != 0 && strcmp( term, "xterm" ) != 0
-			     && idStr::Cmpn( term, "xterm-", 6 ) != 0 && strcmp( term, "screen" ) != 0) {
+				 && idStr::Cmpn( term, "xterm-", 6 ) != 0 && strcmp( term, "screen" ) != 0) {
 				Sys_Printf( "WARNING: terminal type '%s' is unknown. terminal support may not work correctly\n", term );
 			}
 		}
@@ -852,7 +853,9 @@ void tty_Show() {
 	input_hide--;
 	if ( input_hide == 0 ) {
 		char *buf = input_field.GetBuffer();
-		size_t len = strlen(buf);
+		// DG: it happened (not sure how) that len became very big,
+		//     most likely because of an overflow (underflow?) so I made it signed
+		int len = strlen(buf);
 		if ( len < 1 )
 			return;
 

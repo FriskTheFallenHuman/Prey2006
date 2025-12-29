@@ -456,6 +456,12 @@ public:
 
 	// is EFX support present - -1: disabled at compile time, 0: no suitable hardware, 1: ok
 	virtual int				IsEFXAvailable( void ) = 0;
+
+	virtual	const char		*GetReverbName( int reverb ) = 0;
+	virtual	int				GetNumAreas( void ) = 0;
+	virtual	int				GetReverb( int area ) = 0;
+	virtual	bool			SetReverb( int area, const char *reverbName, const char *fileName ) = 0;
+
 	virtual const char *	GetDeviceName( int index ) = 0;		// CREATIVE
 	virtual const char *	GetDefaultDeviceName( void ) = 0;	// CREATIVE
 

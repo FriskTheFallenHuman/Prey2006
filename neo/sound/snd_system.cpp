@@ -100,11 +100,11 @@ idCVar idSoundSystemLocal::s_useEAXReverb( "s_useEAXReverb", "0", CVAR_SOUND | C
 idCVar idSoundSystemLocal::s_decompressionLimit( "s_decompressionLimit", "6", CVAR_SOUND | CVAR_INTEGER | CVAR_ROM, "specifies maximum uncompressed sample length in seconds" );
 #endif
 
-idCVar idSoundSystemLocal::s_alReverbGain( "s_alReverbGain", "0.5", CVAR_SOUND | CVAR_FLOAT | CVAR_ARCHIVE, "reduce reverb strength (0.0 to 1.0)", 0.0f, 1.0f );
+idCVar idSoundSystemLocal::s_alReverbGain( "s_alReverbGain", "0.5", CVAR_SOUND | CVAR_FLOAT | CVAR_ARCHIVE | CVAR_NEW, "reduce reverb strength (0.0 to 1.0)", 0.0f, 1.0f );
 
-idCVar idSoundSystemLocal::s_scaleDownAndClamp( "s_scaleDownAndClamp", "1", CVAR_SOUND | CVAR_BOOL | CVAR_ARCHIVE, "Clamp and reduce volume of all sounds to prevent clipping or temporary downscaling by OpenAL. When disabling this, you probably want to explicitly disable s_alOutputLimiter" );
-idCVar idSoundSystemLocal::s_alOutputLimiter( "s_alOutputLimiter", "-1", CVAR_SOUND | CVAR_INTEGER | CVAR_ARCHIVE, "Configure OpenAL's output-limiter. 0: Disable, 1: Enable, -1: Let OpenAL decide (default)" );
-idCVar idSoundSystemLocal::s_alHRTF( "s_alHRTF", "-1", CVAR_SOUND | CVAR_INTEGER | CVAR_ARCHIVE, "Enable HRTF for better surround sound with stereo *headphones*. 0: Disable, 1: Enable, -1: Let OpenAL decide (default)" );
+idCVar idSoundSystemLocal::s_scaleDownAndClamp( "s_scaleDownAndClamp", "1", CVAR_SOUND | CVAR_BOOL | CVAR_ARCHIVE | CVAR_NEW, "Clamp and reduce volume of all sounds to prevent clipping or temporary downscaling by OpenAL. When disabling this, you probably want to explicitly disable s_alOutputLimiter" );
+idCVar idSoundSystemLocal::s_alOutputLimiter( "s_alOutputLimiter", "-1", CVAR_SOUND | CVAR_INTEGER | CVAR_ARCHIVE | CVAR_NEW, "Configure OpenAL's output-limiter. 0: Disable, 1: Enable, -1: Let OpenAL decide (default)" );
+idCVar idSoundSystemLocal::s_alHRTF( "s_alHRTF", "-1", CVAR_SOUND | CVAR_INTEGER | CVAR_ARCHIVE | CVAR_NEW, "Enable HRTF for better surround sound with stereo *headphones*. 0: Disable, 1: Enable, -1: Let OpenAL decide (default)" );
 
 bool idSoundSystemLocal::useEFXReverb = false;
 int idSoundSystemLocal::EFXAvailable = -1;
@@ -636,6 +636,9 @@ void idSoundSystemLocal::Shutdown() {
 	// EFX or not, the list needs to be cleared
 	EFXDatabase.Clear();
 
+	// Clear our reverb
+	reverb.Clear();
+
 	efxloaded = false;
 
 	// adjust source count back up to allow for freeing of all resources
@@ -952,7 +955,7 @@ idSoundSystemLocal::AsyncUpdateWrite
 DG: using this now for 60Hz sound updates
 called from async sound thread when com_asyncSound is 3 or 1
 also called from main thread if com_asyncSound == 0
-(those were the default values used in dhewm3 on unix-likes (except mac) or rest)
+(those were the default values used in the engine on unix-likes (except mac) or rest)
 with this, once every async tic new sounds are started and existing ones updated,
 instead of once every ~100ms.
 ===================
@@ -1306,6 +1309,8 @@ void idSoundSystemLocal::BeginLevelLoad() {
 		EFXDatabase.Clear();
 		efxloaded = false;
 	}
+
+	reverb.UnloadFile();
 }
 
 /*
@@ -1334,7 +1339,23 @@ void idSoundSystemLocal::EndLevelLoad( const char *mapstring ) {
 	if ( efxloaded ) {
 		common->Printf("sound: found %s\n", efxname.c_str() );
 	} else {
-		common->Printf("sound: missing %s\n", efxname.c_str() );
+		// we have "efxs/default.efx"
+		efxloaded = EFXDatabase.LoadFile( "efxs/default.efx" );
+		if ( efxloaded ) {
+			common->Printf( "sound: found %s\n", efxname.c_str() );
+		} else {
+			common->Printf( "sound: missing %s\n", efxname.c_str() );
+		}
+	}
+
+	// load <map>.reverb
+	if ( efxloaded ) {
+		int num = reverb.LoadMap( mapstring );
+		if ( num >= 0 ) {
+			common->Printf( "Loaded reverb file '%s', total %d\n", (const char*)idMapReverb::GetMapFileName( mapstring ), num );
+		} else {
+			common->Warning( "Unable load reverb file '%s'!", (const char*)idMapReverb::GetMapFileName( mapstring ) );
+		}
 	}
 }
 
@@ -1616,6 +1637,49 @@ int idSoundSystemLocal::IsEFXAvailable( void ) {
 #else
 	return EFXAvailable;
 #endif
+}
+
+/*
+===============
+idSoundSystemLocal::GetReverbName
+ Get reverb efx name by index
+===============
+*/
+const char *idSoundSystemLocal::GetReverbName( int reverb ) {
+	return reverb >= 0 && reverb < this->reverb.Num() ? this->reverb[reverb].efxName.c_str() : "";
+}
+
+/*
+===============
+idSoundSystemLocal::GetNumAreas
+ Get num of areas
+===============
+*/
+int idSoundSystemLocal::GetNumAreas( void ) {
+	return this->reverb.Num();
+}
+
+/*
+===============
+idSoundSystemLocal::GetReverb
+ Get index of area
+===============
+*/
+int idSoundSystemLocal::GetReverb( int area ) {
+	return this->reverb.GetAreaIndex( area );
+}
+
+/*
+===============
+idSoundSystemLocal::SetReverb
+===============
+*/
+bool idSoundSystemLocal::SetReverb( int area, const char *reverbName, const char *fileName ) {
+	if ( idStr::Icmp( this->reverb.GetName(), fileName ) ) {
+		return false;
+	}
+
+	return this->reverb.Append( area, reverbName );
 }
 
 //HUMANHEAD rww

@@ -163,10 +163,10 @@ DOOM III gold:	33
 1.2 XP:			36-39
 1.3 patch:		40
 1.3.1:			41
-
-dhewm WIP		42
+dhewm			42
+prey (2006)		43
 */
-#define ASYNC_PROTOCOL_MINOR	(42)
+#define ASYNC_PROTOCOL_MINOR	(43)
 #define ASYNC_PROTOCOL_VERSION	(( ASYNC_PROTOCOL_MAJOR << 16 ) + ASYNC_PROTOCOL_MINOR)
 
 #define MAX_ASYNC_CLIENTS		(32)

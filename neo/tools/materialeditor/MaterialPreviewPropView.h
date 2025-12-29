@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -32,15 +33,16 @@ If you have questions concerning this license or the applicable additional terms
 
 // MaterialPreviewPropView view
 
-class MaterialPreviewPropView : public CPropTreeView {
+class MaterialPreviewPropView : public CPropTreeView
+{
 	DECLARE_DYNCREATE( MaterialPreviewPropView )
 
 protected:
-	MaterialPreviewPropView();           // protected constructor used by dynamic creation
+	MaterialPreviewPropView(); // protected constructor used by dynamic creation
 	virtual ~MaterialPreviewPropView();
 
 public:
-	virtual void OnDraw( CDC* pDC );    // overridden to draw this view
+	virtual void OnDraw( CDC* pDC ); // overridden to draw this view
 
 	afx_msg void OnPropertyChangeNotification( NMHDR* nmhdr, LRESULT* lresult );
 	afx_msg void OnPropertyButtonClick( NMHDR* nmhdr, LRESULT* lresult );
@@ -50,16 +52,15 @@ public:
 	virtual void Dump( CDumpContext& dc ) const;
 #endif
 
-	void AddLight();
-	void InitializePropTree();
+	void AddLight( void );
+	void InitializePropTree( void );
 
 	void RegisterPreviewView( MaterialPreviewView* view );
 
 protected:
+	int					 numLights;
 
-	int		numLights;
-
-	MaterialPreviewView	* materialPreview;
+	MaterialPreviewView* materialPreview;
 
 	DECLARE_MESSAGE_MAP()
 };

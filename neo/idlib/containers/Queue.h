@@ -42,14 +42,14 @@ If you have questions concerning this license or the applicable additional terms
 template< class type, int nextOffset >
 class idQueueTemplate {
 public:
-							idQueueTemplate( void );
+				idQueueTemplate( void );
 
-	void					Add( type *element );
-	type *					Get( void );
+	void		Add( type *element );
+	type *		Get( void );
 
 private:
-	type *					first;
-	type *					last;
+	type *		first;
+	type *		last;
 };
 
 #define QUEUE_NEXT_PTR( element )		(*((type**)(((byte*)element)+nextOffset)))
@@ -61,9 +61,9 @@ idQueueTemplate<type,nextOffset>::idQueueTemplate( void ) {
 
 template< class type, int nextOffset >
 void idQueueTemplate<type,nextOffset>::Add( type *element ) {
-	QUEUE_NEXT_PTR(element) = NULL;
+	QUEUE_NEXT_PTR( element ) = NULL;
 	if ( last ) {
-		QUEUE_NEXT_PTR(last) = element;
+		QUEUE_NEXT_PTR( last ) = element;
 	} else {
 		first = element;
 	}
@@ -76,11 +76,11 @@ type *idQueueTemplate<type,nextOffset>::Get( void ) {
 
 	element = first;
 	if ( element ) {
-		first = QUEUE_NEXT_PTR(first);
+		first = QUEUE_NEXT_PTR( first );
 		if ( last == element ) {
 			last = NULL;
 		}
-		QUEUE_NEXT_PTR(element) = NULL;
+		QUEUE_NEXT_PTR( element ) = NULL;
 	}
 	return element;
 }

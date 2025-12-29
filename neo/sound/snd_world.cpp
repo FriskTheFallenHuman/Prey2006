@@ -544,6 +544,18 @@ void idSoundWorldLocal::MixLoop( int current44kHz, int numSpeakers, float *final
 			found = soundSystemLocal.EFXDatabase.FindEffect(s, &effect);
 		}
 
+		// reverb area config in `maps/<map>.reverb` file.
+		if ( !found ) {
+			int reverbIndex = soundSystemLocal.GetReverb( listenerArea );
+			if ( reverbIndex >= 0 ) {
+				s = soundSystemLocal.GetReverbName( reverbIndex );
+				EFXprintf( "Map EFX: area %d -> '%s'\n", reverbIndex, s.c_str() );
+				if ( s && s[0] ) {
+					found = soundSystemLocal.EFXDatabase.FindEffect( s, &effect );
+				}
+			}
+		}
+
 		// only update if change in settings
 		if (found && listenerEffect != effect) {
 			EFXprintf("Switching to EFX '%s' (#%u)\n", s.c_str(), effect);
@@ -2146,10 +2158,13 @@ float idSoundWorldLocal::FindAmplitude( idSoundEmitterLocal *sound, const int lo
 				sourceBuffer[j] = j & 1 ? 32767.0f : -32767.0f;
 			}
 		} else {
-			int offset = (localTime - localTriggerTimes);	// offset in samples
-			int size = ( looping ? chan->soundShader->entries[0]->LengthIn44kHzSamples() : chan->leadinSample->LengthIn44kHzSamples() );
-			short *amplitudeData = (short *)( looping ? chan->soundShader->entries[0]->amplitudeData : chan->leadinSample->amplitudeData );
+			idSoundSample* sample = looping ? chan->soundShader->entries[0] : chan->leadinSample;
+			if ( sample == NULL ) // DG: this happens if sound is disabled (s_noSound 1)
+				continue;
 
+			int offset = (localTime - localTriggerTimes);	// offset in samples
+			int size = sample->LengthIn44kHzSamples();
+			short *amplitudeData = (short *)( sample->amplitudeData );
 			if ( amplitudeData ) {
 				// when the amplitudeData is present use that fill a dummy sourceBuffer
 				// this is to allow for amplitude based effect on hardware audio solutions

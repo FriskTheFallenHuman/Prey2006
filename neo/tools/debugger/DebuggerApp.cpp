@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -29,7 +30,6 @@ If you have questions concerning this license or the applicable additional terms
 #include "precompiled.h"
 #pragma hdrstop
 
-
 #include "../../sys/win32/rc/resource.h"
 #include "DebuggerApp.h"
 
@@ -38,12 +38,12 @@ If you have questions concerning this license or the applicable additional terms
 rvDebuggerApp::rvDebuggerApp
 ================
 */
-rvDebuggerApp::rvDebuggerApp( )  //:
-//mOptions ( TOOLS_REGISTRY_PATH "Debugger" )
+rvDebuggerApp::rvDebuggerApp() //:
+// mOptions ( TOOLS_REGISTRY_PATH "Debugger" )
 {
 	mInstance		= NULL;
 	mDebuggerWindow = NULL;
-	mAccelerators   = NULL;
+	mAccelerators	= NULL;
 }
 
 /*
@@ -51,8 +51,10 @@ rvDebuggerApp::rvDebuggerApp( )  //:
 rvDebuggerApp::~rvDebuggerApp
 ================
 */
-rvDebuggerApp::~rvDebuggerApp( ) {
-	if ( mAccelerators ) {
+rvDebuggerApp::~rvDebuggerApp()
+{
+	if( mAccelerators )
+	{
 		DestroyAcceleratorTable( mAccelerators );
 	}
 }
@@ -64,24 +66,27 @@ rvDebuggerApp::Initialize
 Initializes the debugger application by creating the debugger window
 ================
 */
-bool rvDebuggerApp::Initialize( HINSTANCE instance ) {
+bool rvDebuggerApp::Initialize( HINSTANCE instance )
+{
 	INITCOMMONCONTROLSEX ex;
-	ex.dwICC = ICC_USEREX_CLASSES | ICC_LISTVIEW_CLASSES | ICC_WIN95_CLASSES;
+	ex.dwICC  = ICC_USEREX_CLASSES | ICC_LISTVIEW_CLASSES | ICC_WIN95_CLASSES;
 	ex.dwSize = sizeof( INITCOMMONCONTROLSEX );
 
 	mInstance = instance;
 
-	mOptions.Load( );
+	mOptions.Load();
 
 	mDebuggerWindow = new rvDebuggerWindow;
 
-	if ( !mDebuggerWindow->Create( instance ) ) {
+	if( !mDebuggerWindow->Create( instance ) )
+	{
 		delete mDebuggerWindow;
 		return false;
 	}
 
 	// Initialize the network connection for the debugger
-	if ( !mClient.Initialize( ) ) {
+	if( !mClient.Initialize() )
+	{
 		return false;
 	}
 
@@ -97,15 +102,19 @@ rvDebuggerApp::ProcessWindowMessages
 Process windows messages
 ================
 */
-bool rvDebuggerApp::ProcessWindowMessages() {
-	MSG	msg;
+bool rvDebuggerApp::ProcessWindowMessages( void )
+{
+	MSG msg;
 
-	while ( PeekMessage( &msg, NULL, 0, 0, PM_NOREMOVE ) ) {
-		if ( !GetMessage( &msg, NULL, 0, 0 ) ) {
+	while( PeekMessage( &msg, NULL, 0, 0, PM_NOREMOVE ) )
+	{
+		if( !GetMessage( &msg, NULL, 0, 0 ) )
+		{
 			return false;
 		}
 
-		if ( !TranslateAccelerator( &msg ) ) {
+		if( !TranslateAccelerator( &msg ) )
+		{
 			TranslateMessage( &msg );
 			DispatchMessage( &msg );
 		}
@@ -121,8 +130,10 @@ rvDebuggerApp::TranslateAccelerator
 Translate any accelerators destined for this window
 ================
 */
-bool rvDebuggerApp::TranslateAccelerator( LPMSG msg ) {
-	if ( mDebuggerWindow && ::TranslateAccelerator( mDebuggerWindow->GetWindow(), mAccelerators, msg ) ) {
+bool rvDebuggerApp::TranslateAccelerator( LPMSG msg )
+{
+	if( mDebuggerWindow && ::TranslateAccelerator( mDebuggerWindow->GetWindow(), mAccelerators, msg ) )
+	{
 		return true;
 	}
 
@@ -136,16 +147,18 @@ rvDebuggerApp::Run
 Main Loop for the debugger application
 ================
 */
-int rvDebuggerApp::Run() {
+int rvDebuggerApp::Run( void )
+{
 	// Main message loop:
-	while ( ProcessWindowMessages( ) ) {
-		mClient.ProcessMessages( );
+	while( ProcessWindowMessages() )
+	{
+		mClient.ProcessMessages();
 
 		Sleep( 0 );
 	}
 
-	mClient.Shutdown( );
-	mOptions.Save( );
+	mClient.Shutdown();
+	mOptions.Save();
 
 	delete mDebuggerWindow;
 

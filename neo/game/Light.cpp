@@ -67,101 +67,6 @@ CLASS_DECLARATION( idEntity, idLight )
 	EVENT( EV_Light_FadeIn,			idLight::Event_FadeIn )
 END_CLASS
 
-
-/*
-================
-idGameEdit::ParseSpawnArgsToRenderLight
-
-parse the light parameters
-this is the canonical renderLight parm parsing,
-which should be used by dmap and the editor
-================
-*/
-void idGameEdit::ParseSpawnArgsToRenderLight( const idDict *args, renderLight_t *renderLight ) {
-	bool	gotTarget, gotUp, gotRight;
-	const char	*texture;
-	idVec3	color;
-
-	memset( renderLight, 0, sizeof( *renderLight ) );
-
-	if (!args->GetVector("light_origin", "", renderLight->origin)) {
-		args->GetVector( "origin", "", renderLight->origin );
-	}
-
-	gotTarget = args->GetVector( "light_target", "", renderLight->target );
-	gotUp = args->GetVector( "light_up", "", renderLight->up );
-	gotRight = args->GetVector( "light_right", "", renderLight->right );
-	args->GetVector( "light_start", "0 0 0", renderLight->start );
-	if ( !args->GetVector( "light_end", "", renderLight->end ) ) {
-		renderLight->end = renderLight->target;
-	}
-
-	// we should have all of the target/right/up or none of them
-	if ( ( gotTarget || gotUp || gotRight ) != ( gotTarget && gotUp && gotRight ) ) {
-		gameLocal.Printf( "Light at (%f,%f,%f) has bad target info\n",
-			renderLight->origin[0], renderLight->origin[1], renderLight->origin[2] );
-		return;
-	}
-
-	if ( !gotTarget ) {
-		renderLight->pointLight = true;
-
-		// allow an optional relative center of light and shadow offset
-		args->GetVector( "light_center", "0 0 0", renderLight->lightCenter );
-
-		// create a point light
-		if (!args->GetVector( "light_radius", "300 300 300", renderLight->lightRadius ) ) {
-			float radius;
-
-			args->GetFloat( "light", "300", radius );
-			renderLight->lightRadius[0] = renderLight->lightRadius[1] = renderLight->lightRadius[2] = radius;
-		}
-	}
-
-	// get the rotation matrix in either full form, or single angle form
-	idAngles angles;
-	idMat3 mat;
-	if ( !args->GetMatrix( "light_rotation", "1 0 0 0 1 0 0 0 1", mat ) ) {
-		if ( !args->GetMatrix( "rotation", "1 0 0 0 1 0 0 0 1", mat ) ) {
-	   		args->GetFloat( "angle", "0", angles[ 1 ] );
-   			angles[ 0 ] = 0;
-			angles[ 1 ] = idMath::AngleNormalize360( angles[ 1 ] );
-	   		angles[ 2 ] = 0;
-			mat = angles.ToMat3();
-		}
-	}
-
-	// fix degenerate identity matrices
-	mat[0].FixDegenerateNormal();
-	mat[1].FixDegenerateNormal();
-	mat[2].FixDegenerateNormal();
-
-	renderLight->axis = mat;
-
-	// check for other attributes
-	args->GetVector( "_color", "1 1 1", color );
-	renderLight->shaderParms[ SHADERPARM_RED ]		= color[0];
-	renderLight->shaderParms[ SHADERPARM_GREEN ]	= color[1];
-	renderLight->shaderParms[ SHADERPARM_BLUE ]		= color[2];
-	args->GetFloat( "shaderParm3", "1", renderLight->shaderParms[ SHADERPARM_TIMESCALE ] );
-	if ( !args->GetFloat( "shaderParm4", "0", renderLight->shaderParms[ SHADERPARM_TIMEOFFSET ] ) ) {
-		// offset the start time of the shader to sync it to the game time
-		renderLight->shaderParms[ SHADERPARM_TIMEOFFSET ] = -MS2SEC( gameLocal.time );
-	}
-
-	args->GetFloat( "shaderParm5", "0", renderLight->shaderParms[5] );
-	args->GetFloat( "shaderParm6", "0", renderLight->shaderParms[6] );
-	args->GetFloat( "shaderParm7", "0", renderLight->shaderParms[ SHADERPARM_MODE ] );
-	args->GetBool( "noshadows", "0", renderLight->noShadows );
-	args->GetBool( "nospecular", "0", renderLight->noSpecular );
-	args->GetBool( "lowSkippable", "0", renderLight->lowSkippable );	//HUMANHEAD bjk
-	args->GetBool( "parallel", "0", renderLight->parallel );
-
-	args->GetString( "texture", "lights/squarelight1", &texture );
-	// allow this to be NULL
-	renderLight->shader = declManager->FindMaterial( texture, false );
-}
-
 /*
 ================
 idLight::UpdateChangeableSpawnArgs
@@ -175,12 +80,14 @@ void idLight::UpdateChangeableSpawnArgs( const idDict *source ) {
 		source->Print();
 	}
 	FreeSoundEmitter( true );
-	gameEdit->ParseSpawnArgsToRefSound( source ? source : &spawnArgs, &refSound );
+	gameEditLocal.ParseSpawnArgsToRefSound( source ? source : &spawnArgs, &refSound );
 	if ( refSound.shader && !refSound.waitfortrigger ) {
 		StartSoundShader( refSound.shader, SND_CHANNEL_ANY, 0, false, NULL );
 	}
 
-	gameEdit->ParseSpawnArgsToRenderLight( source ? source : &spawnArgs, &renderLight );
+	gameEditLocal.ParseSpawnArgsToRenderLight( source ? source : &spawnArgs, &renderLight );
+
+	GetPhysics()->SetAxis( renderLight.axis );
 
 	UpdateVisuals();
 }
@@ -314,7 +221,7 @@ void idLight::Spawn( void ) {
 	const char *demonic_shader;
 
 	// do the parsing the same way dmap and the editor do
-	gameEdit->ParseSpawnArgsToRenderLight( &spawnArgs, &renderLight );
+	gameEditLocal.ParseSpawnArgsToRenderLight( &spawnArgs, &renderLight );
 
 	// we need the origin and axis relative to the physics origin/axis
 	localLightOrigin = ( renderLight.origin - GetPhysics()->GetOrigin() ) * GetPhysics()->GetAxis().Transpose();
@@ -837,11 +744,7 @@ idLight::ShowEditingDialog
 ===============
 */
 void idLight::ShowEditingDialog( void ) {
-	if ( g_editEntityMode.GetInteger() == 1 ) {
-		common->InitTool( EDITOR_LIGHT, &spawnArgs );
-	} else {
-		common->InitTool( EDITOR_SOUND, &spawnArgs );
-	}
+	common->InitTool( EDITOR_LIGHT, &spawnArgs );
 }
 
 /*

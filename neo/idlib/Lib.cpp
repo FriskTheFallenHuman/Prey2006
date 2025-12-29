@@ -38,6 +38,33 @@ If you have questions concerning this license or the applicable additional terms
 #include <unistd.h>
 #endif
 
+#ifdef D3_SDL3
+  #include <SDL3/SDL_endian.h>
+  // some defines for backwards-compat with SDL2
+  #define SDL_SwapBE16(X)  SDL_Swap16BE(X)
+  #define SDL_SwapLE16(X)  SDL_Swap16LE(X)
+  #define SDL_SwapBE32(X)  SDL_Swap32BE(X)
+  #define SDL_SwapLE32(X)  SDL_Swap32LE(X)
+#else // SDL2
+  #include <SDL_endian.h>
+#endif
+
+#ifndef D3_IS_BIG_ENDIAN
+  #error "D3_IS_BIG_ENDIAN should be defined by the build system (CMake)!"
+#endif
+
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+  #if D3_IS_BIG_ENDIAN != 1
+	#error "CMake (which sets D3_IS_BIG_ENDIAN) and SDL disagree about the endianess! CMake says little, SDL says big"
+  #endif
+#elif SDL_BYTEORDER == SDL_LIL_ENDIAN
+  #if D3_IS_BIG_ENDIAN != 0
+	#error "CMake (which sets D3_IS_BIG_ENDIAN) and SDL disagree about the endianess! CMake says big, SDL says little"
+  #endif
+#else
+  #error "According to SDL, endianess is neither Big nor Little - the engine doesn't support other byteorders!"
+#endif
+
 /*
 ===============================================================================
 
@@ -234,6 +261,28 @@ void UnpackColor( const dword color, idVec3 &unpackedColor ) {
 
 /*
 ===============
+idLib::FatalError
+===============
+*/
+void idLib::FatalError( const char* fmt, ... )
+{
+	va_list		argptr;
+	char		text[MAX_STRING_CHARS];
+
+	va_start( argptr, fmt );
+	idStr::vsnPrintf( text, sizeof( text ), fmt, argptr );
+	va_end( argptr );
+
+	common->FatalError( "%s", text );
+
+#if !defined( _WIN32 )
+	// SRS - Added exit to silence build warning since FatalError has attribute noreturn
+	exit( EXIT_FAILURE );
+#endif
+}
+
+/*
+===============
 idLib::Error
 ===============
 */
@@ -246,6 +295,11 @@ void idLib::Error( const char *fmt, ... ) {
 	va_end( argptr );
 
 	common->Error( "%s", text );
+
+#if !defined( _WIN32 )
+	// SRS - Added exit to silence build warning since FatalError has attribute noreturn
+	exit( EXIT_FAILURE );
+#endif
 }
 
 /*
@@ -265,6 +319,93 @@ void idLib::Warning( const char *fmt, ... ) {
 }
 
 /*
+===============
+idLib::WarningIf
+===============
+*/
+void idLib::WarningIf( const bool test, const char *fmt, ... ) {
+	if ( !test ) {
+		return;
+	}
+
+	va_list		argptr;
+	char		text[MAX_STRING_CHARS];
+
+	va_start( argptr, fmt );
+	idStr::vsnPrintf( text, sizeof( text ), fmt, argptr );
+	va_end( argptr );
+
+	common->Warning( "%s", text );
+}
+
+/*
+===============
+idLib::DWarning
+===============
+*/
+void idLib::DWarning( const char *fmt, ... ) {
+	va_list		argptr;
+	char		text[MAX_STRING_CHARS];
+
+	va_start( argptr, fmt );
+	idStr::vsnPrintf( text, sizeof( text ), fmt, argptr );
+	va_end( argptr );
+
+	common->DWarning( "%s", text );
+}
+
+/*
+===============
+idLib::DWarningIf
+===============
+*/
+void idLib::DWarningIf( const bool test, const char *fmt, ... ) {
+	if ( !test ) {
+		return;
+	}
+
+	va_list		argptr;
+	char		text[MAX_STRING_CHARS];
+
+	va_start( argptr, fmt );
+	idStr::vsnPrintf( text, sizeof( text ), fmt, argptr );
+	va_end( argptr );
+
+	common->DWarning( "%s", text );
+}
+
+
+/*
+===============
+idLib::Printf
+===============
+*/
+void idLib::Printf( const char *fmt, ... ) {
+	va_list		argptr;
+	va_start( argptr, fmt );
+	if ( common ) {
+		common->VPrintf( fmt, argptr );
+	}
+	va_end( argptr );
+}
+
+/*
+===============
+idLib::PrintfIf
+===============
+*/
+void idLib::PrintfIf( const bool test, const char *fmt, ... ) {
+	if ( !test ) {
+		return;
+	}
+
+	va_list		argptr;
+	va_start( argptr, fmt );
+	common->VPrintf( fmt, argptr );
+	va_end( argptr );
+}
+
+/*
 ===============================================================================
 
 	Byte order functions
@@ -281,7 +422,7 @@ ID_INLINE static float FloatSwap( float f ) {
 	union {
 		float	f;
 		unsigned int u;
-	} id_attribute((may_alias)) dat;
+	} dat;
 
 	dat.f = f;
 	dat.u = SDL_Swap32(dat.u);

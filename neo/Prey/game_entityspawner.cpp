@@ -86,7 +86,7 @@ void hhEntitySpawner::Event_SpawnEntity( void ) {
 		return;
 	}
 	entDef->GetVector( "size", "0", entSize );
-	idBounds bounds = idBounds( GetPhysics()->GetOrigin() ).Expand( max( entSize.x, entSize.y ) );
+	idBounds bounds = idBounds( GetPhysics()->GetOrigin() ).Expand( Max( entSize.x, entSize.y ) );
 	idEntity* ents[MAX_GENTITIES];
 	int numModels = gameLocal.clip.EntitiesTouchingBounds( bounds, -1, ents, MAX_GENTITIES );
 	for ( int i = 0; i < numModels ; i++ ) {

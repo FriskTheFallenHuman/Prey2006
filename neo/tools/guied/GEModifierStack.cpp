@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -29,54 +30,61 @@ If you have questions concerning this license or the applicable additional terms
 #include "precompiled.h"
 #pragma hdrstop
 
-
 #include "GEApp.h"
 #include "GEModifierStack.h"
 
-rvGEModifierStack::rvGEModifierStack( ) {
+rvGEModifierStack::rvGEModifierStack()
+{
 	mCurrentModifier = -1;
 }
 
-rvGEModifierStack::~rvGEModifierStack( ) {
-	Reset( );
+rvGEModifierStack::~rvGEModifierStack()
+{
+	Reset();
 }
 
-void rvGEModifierStack::Reset() {
+void rvGEModifierStack::Reset( void )
+{
 	int i;
 
-	for ( i = 0; i < mModifiers.Num( ); i ++ ) {
+	for( i = 0; i < mModifiers.Num(); i++ )
+	{
 		delete mModifiers[i];
 	}
 
-	mModifiers.Clear( );
+	mModifiers.Clear();
 }
 
-bool rvGEModifierStack::Append( rvGEModifier* modifier ) {
+bool rvGEModifierStack::Append( rvGEModifier* modifier )
+{
 	// TODO: Add the modifier and clear all redo modifiers
-	if ( !modifier->IsValid( ) ) {
+	if( !modifier->IsValid() )
+	{
 		delete modifier;
 		return false;
 	}
 
-	while ( mCurrentModifier < mModifiers.Num( ) - 1 ) {
+	while( mCurrentModifier < mModifiers.Num() - 1 )
+	{
 		delete mModifiers[mModifiers.Num() - 1];
 		mModifiers.RemoveIndex( mModifiers.Num() - 1 );
 	}
 
-	if ( !mMergeBlock && mModifiers.Num( ) ) {
+	if( !mMergeBlock && mModifiers.Num() )
+	{
 		rvGEModifier* top = mModifiers[mModifiers.Num() - 1];
 
 		// See if the two modifiers can merge
-		if ( top->GetWindow() == modifier->GetWindow() &&
-				!idStr::Icmp( top->GetName( ), modifier->GetName( ) ) &&
-				top->CanMerge( modifier ) ) {
+		if( top->GetWindow() == modifier->GetWindow() && !idStr::Icmp( top->GetName(), modifier->GetName() ) && top->CanMerge( modifier ) )
+		{
 			// Merge the two modifiers
-			if ( top->Merge( modifier ) ) {
-				top->Apply( );
+			if( top->Merge( modifier ) )
+			{
+				top->Apply();
 
-				gApp.GetProperties().Update( );
-				gApp.GetTransformer().Update( );
-				gApp.GetItemProperties().Update( );
+				gApp.GetProperties().Update();
+				gApp.GetTransformer().Update();
+				gApp.GetItemProperties().Update();
 
 				delete modifier;
 				return true;
@@ -85,43 +93,47 @@ bool rvGEModifierStack::Append( rvGEModifier* modifier ) {
 	}
 
 	mModifiers.Append( modifier );
-	mCurrentModifier = mModifiers.Num( ) - 1;
+	mCurrentModifier = mModifiers.Num() - 1;
 
-	modifier->Apply( );
+	modifier->Apply();
 
 	mMergeBlock = false;
 
-	gApp.GetProperties().Update( );
-	gApp.GetTransformer().Update( );
-	gApp.GetItemProperties().Update( );
+	gApp.GetProperties().Update();
+	gApp.GetTransformer().Update();
+	gApp.GetItemProperties().Update();
 
 	return true;
 }
 
-bool rvGEModifierStack::Undo() {
-	if ( mCurrentModifier < 0 ) {
+bool rvGEModifierStack::Undo( void )
+{
+	if( mCurrentModifier < 0 )
+	{
 		return false;
 	}
 
-	mModifiers[mCurrentModifier]->Undo( );
+	mModifiers[mCurrentModifier]->Undo();
 	mCurrentModifier--;
 
-	gApp.GetProperties().Update( );
-	gApp.GetItemProperties().Update( );
-	gApp.GetTransformer().Update( );
+	gApp.GetProperties().Update();
+	gApp.GetItemProperties().Update();
+	gApp.GetTransformer().Update();
 
 	return true;
 }
 
-bool rvGEModifierStack::Redo() {
-	if ( mCurrentModifier + 1 < mModifiers.Num( ) ) {
+bool rvGEModifierStack::Redo( void )
+{
+	if( mCurrentModifier + 1 < mModifiers.Num() )
+	{
 		mCurrentModifier++;
-		mModifiers[mCurrentModifier]->Apply( );
+		mModifiers[mCurrentModifier]->Apply();
 	}
 
-	gApp.GetProperties().Update( );
-	gApp.GetItemProperties().Update( );
-	gApp.GetTransformer().Update( );
+	gApp.GetProperties().Update();
+	gApp.GetItemProperties().Update();
+	gApp.GetTransformer().Update();
 
 	return true;
 }

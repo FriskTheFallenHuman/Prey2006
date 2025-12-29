@@ -131,7 +131,7 @@ protected:
 	void						SetTextLocal( const char *text, const int length );
 
 private:
-	idDecl *					self;
+	idDecl *					self = nullptr;
 
 	idStr						name;					// name of the decl
 	char *						textSource;				// decl text definition
@@ -205,7 +205,7 @@ public:
 	//BSM Added for the material editors rename capabilities
 	virtual bool				RenameDecl( declType_t type, const char* oldName, const char* newName );
 
-	virtual void				MediaPrint( const char *fmt, ... ) id_attribute((format(printf,2,3)));
+	virtual void				MediaPrint( VERIFY_FORMAT_STRING const char *fmt, ... ) ID_INSTANCE_ATTRIBUTE_PRINTF( 1, 2 );
 	virtual void				WritePrecacheCommands( idFile *f );
 
 	virtual const idMaterial *		FindMaterial( const char *name, bool makeDefault = true );
@@ -253,6 +253,7 @@ private:
 };
 
 idCVar idDeclManagerLocal::decl_show( "decl_show", "0", CVAR_SYSTEM, "set to 1 to print parses, 2 to also print references", 0, 2, idCmdSystem::ArgCompletion_Integer<0,2> );
+idCVar decl_warn_duplicates( "decl_warn_duplicates", "0", CVAR_SYSTEM, "set to 1 to print warnings about duplicated entries", 0, 1, idCmdSystem::ArgCompletion_Integer<0,1> );
 
 idDeclManagerLocal	declManagerLocal;
 idDeclManager *		declManager = &declManagerLocal;
@@ -419,7 +420,7 @@ SetupHuffman
 ================
 */
 void SetupHuffman( void ) {
-	int i, height id_attribute((unused));
+	int i, height;
 	huffmanNode_t *firstNode, *node;
 	huffmanCode_t code;
 
@@ -731,8 +732,10 @@ int idDeclFile::LoadAndParse() {
 		if ( newDecl ) {
 			// update the existing copy
 			if ( newDecl->sourceFile != this || newDecl->redefinedInReload ) {
-				src.Warning( "%s '%s' previously defined at %s:%i", declManagerLocal.GetDeclNameFromType( identifiedType ),
-								name.c_str(), newDecl->sourceFile->fileName.c_str(), newDecl->sourceLine );
+				if ( decl_warn_duplicates.GetBool() ) {
+					src.Warning( "%s '%s' previously defined at %s:%i", declManagerLocal.GetDeclNameFromType( identifiedType ),
+									name.c_str(), newDecl->sourceFile->fileName.c_str(), newDecl->sourceLine );
+				}
 				continue;
 			}
 			if ( newDecl->declState != DS_UNPARSED ) {
@@ -1123,14 +1126,14 @@ const idDecl *idDeclManagerLocal::FindType( declType_t type, const char *name, b
 	// if it hasn't been parsed yet, parse it now
 	if ( decl->declState == DS_UNPARSED ) {
 		decl->ParseLocal();
+
+		// SRS - set non-purgeable flag only after ParseLocal(), don't reset if declState is parsed or defaulted
+		decl->parsedOutsideLevelLoad = !insideLevelLoad;
 	}
 
 	// mark it as referenced
 	decl->referencedThisLevel = true;
 	decl->everReferenced = true;
-	if ( insideLevelLoad ) {
-		decl->parsedOutsideLevelLoad = false;
-	}
 
 	return decl->self;
 }
@@ -1247,7 +1250,9 @@ void idDeclManagerLocal::ListType( const idCmdArgs &args, declType_t type ) {
 			continue;
 		}
 
-		if ( decl->referencedThisLevel ) {
+		if ( decl->parsedOutsideLevelLoad ) {
+			common->Printf( "!" );
+		} else if ( decl->referencedThisLevel ) {
 			common->Printf( "*" );
 		} else if ( decl->everReferenced ) {
 			common->Printf( "." );
@@ -1731,7 +1736,8 @@ idDeclLocal *idDeclManagerLocal::FindTypeWithoutParsing( declType_t type, const 
 	decl->sourceFile = &implicitDecls;
 	decl->referencedThisLevel = false;
 	decl->everReferenced = false;
-	decl->parsedOutsideLevelLoad = !insideLevelLoad;
+	// SRS - initialize to false, otherwise all decls will be set to non-purgeable during Init()
+	decl->parsedOutsideLevelLoad = false;	// !insideLevelLoad;
 
 	// add it to the linear list and hash table
 	decl->index = linearLists[typeIndex].Num();

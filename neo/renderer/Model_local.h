@@ -97,6 +97,9 @@ public:
 	bool						LoadASE( const char *fileName );
 	bool						LoadLWO( const char *fileName );
 	bool						LoadFLT( const char *fileName );
+#ifdef ID_MAYA_IMPORT_TOOL
+	bool						LoadMA( const char *filename );
+#endif
 	// HUMANHEAD mdc - added support for precomputed models
 	bool						LoadPPM( const char *fileName ) { return false; }
 	bool						WritePPM( const char *fileName ) { return false; }
@@ -105,6 +108,9 @@ public:
 
 	bool						ConvertASEToModelSurfaces( const struct aseModel_s *ase );
 	bool						ConvertLWOToModelSurfaces( const struct st_lwObject *lwo );
+#ifdef ID_MAYA_IMPORT_TOOL
+	bool						ConvertMAToModelSurfaces( const struct maModel_s *ma );
+#endif
 
 	struct aseModel_s *			ConvertLWOToASE( const struct st_lwObject *obj, const char *fileName );
 
@@ -139,7 +145,7 @@ protected:
 	ID_TIME_T						timeStamp;
 
 	// HUMANHEAD pdm
-	idRenderModel *				HH_InstantiateDynamicModel( const struct renderEntity_s *ent, const struct viewDef_s *view, idRenderModel *cachedModel ) {}
+	idRenderModel *				HH_InstantiateDynamicModel( const struct renderEntity_s *ent, const struct viewDef_s *view, idRenderModel *cachedModel ) { return NULL; }
 	void						HH_UpdateSurface( const struct viewDef_s *view, const struct renderEntity_s *ent, modelSurface_t *surf, const int surfaceIndex) {}
 	// HUMANHEAD END
 
@@ -262,9 +268,18 @@ private:
 struct md3Header_s;
 struct md3Surface_s;
 
+struct silInfo_t {
+	int numIndexes;
+	int numSilEdges;
+	glIndex_t* indexes;
+	glIndex_t* silIndexes;
+	silEdge_t* silEdges;
+};
+
 class idRenderModelMD3 : public idRenderModelStatic {
 public:
 	idRenderModelMD3();
+	~idRenderModelMD3();
 
 	virtual void				InitFromFile( const char *fileName );
 	virtual dynamicModel_t		IsDynamicModel() const;
@@ -276,7 +291,16 @@ private:
 	int							dataSize;		// just for listing purposes
 	struct md3Header_s *		md3;			// only if type == MOD_MESH
 	int							numLods;
+
+	int							lastFrame;
+	int							lastOldFrame;
+	float						lastBackLerp;
 	idList<const idMaterial*>	shaders;		// DG: md3Shader_t::shaderIndex indexes into this array
+
+	// DG: added the following so we can generate/store sil edges for shadows
+	idList<silInfo_t>			silInfos;		// used to create srfTriangles_t from base frames and new vertexes (md3->numSurfaces entries)
+
+	struct silInfo_t			BuildSilInfo(struct md3Surface_s* surf);
 
 	void						LerpMeshVertexes( srfTriangles_t *tri, const struct md3Surface_s *surf, const float backlerp, const int frame, const int oldframe ) const;
 };
@@ -357,8 +381,13 @@ public:
 	virtual float				DepthHack() const;
 	virtual int					Memory() const;
 
+	float						SofteningRadius( const int stage ) const;	// #3878 soft particles
+
 private:
+	void						SetSofteningRadii(); // #3878 soft particles
+
 	const idDeclParticle *		particleSystem;
+	idList<float>				softeningRadii; // #3878 soft particles
 };
 
 /*

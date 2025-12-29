@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -37,14 +38,15 @@ If you have questions concerning this license or the applicable additional terms
 #include "../../renderer/tr_local.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
 /*
  =======================================================================================================================
  =======================================================================================================================
  */
-bool Sys_KeyDown( int key ) {
+bool Sys_KeyDown( int key )
+{
 	return ( ( ::GetAsyncKeyState( key ) & 0x8000 ) != 0 );
 }
 
@@ -55,10 +57,11 @@ IMPLEMENT_DYNCREATE( CNewTexWnd, CWnd );
  =======================================================================================================================
  =======================================================================================================================
  */
-CNewTexWnd::CNewTexWnd() {
+CNewTexWnd::CNewTexWnd()
+{
 	m_bNeedRange = true;
 	hglrcTexture = NULL;
-	hdcTexture = NULL;
+	hdcTexture	 = NULL;
 	cursor.x = cursor.y = 0;
 	origin.x = origin.y = 0;
 }
@@ -67,52 +70,57 @@ CNewTexWnd::CNewTexWnd() {
  =======================================================================================================================
  =======================================================================================================================
  */
-CNewTexWnd::~CNewTexWnd() {
+CNewTexWnd::~CNewTexWnd()
+{
 }
 
 BEGIN_MESSAGE_MAP( CNewTexWnd, CWnd )
 //{{AFX_MSG_MAP(CNewTexWnd)
-	ON_WM_CREATE()
-	ON_WM_SIZE()
-	ON_WM_PARENTNOTIFY()
-	ON_WM_KEYDOWN()
-	ON_WM_KEYUP()
-	ON_WM_PAINT()
-	ON_WM_VSCROLL()
-	ON_WM_LBUTTONDOWN()
-	ON_WM_MBUTTONDOWN()
-	ON_WM_RBUTTONDOWN()
-	ON_WM_LBUTTONUP()
-	ON_WM_MBUTTONUP()
-	ON_WM_RBUTTONUP()
-	ON_WM_MOUSEMOVE()
-	ON_WM_MOUSEWHEEL()
-	//}}AFX_MSG_MAP
-	ON_WM_SETFOCUS()
+ON_WM_CREATE()
+ON_WM_SIZE()
+ON_WM_PARENTNOTIFY()
+ON_WM_KEYDOWN()
+ON_WM_KEYUP()
+ON_WM_PAINT()
+ON_WM_VSCROLL()
+ON_WM_LBUTTONDOWN()
+ON_WM_MBUTTONDOWN()
+ON_WM_RBUTTONDOWN()
+ON_WM_LBUTTONUP()
+ON_WM_MBUTTONUP()
+ON_WM_RBUTTONUP()
+ON_WM_MOUSEMOVE()
+ON_WM_MOUSEWHEEL()
+//}}AFX_MSG_MAP
+ON_WM_SETFOCUS()
 END_MESSAGE_MAP()
 //
 // =======================================================================================================================
 //    CNewTexWnd message handlers
 // =======================================================================================================================
 //
-BOOL CNewTexWnd::PreCreateWindow( CREATESTRUCT& cs ) {
-	WNDCLASS	wc;
-	HINSTANCE	hInstance = AfxGetInstanceHandle();
-	if ( ::GetClassInfo( hInstance, TEXTURE_WINDOW_CLASS, &wc ) == FALSE ) {
+BOOL CNewTexWnd::PreCreateWindow( CREATESTRUCT& cs )
+{
+	WNDCLASS  wc;
+	HINSTANCE hInstance = AfxGetInstanceHandle();
+	if( ::GetClassInfo( hInstance, TEXTURE_WINDOW_CLASS, &wc ) == FALSE )
+	{
 		// Register a new class
 		memset( &wc, 0, sizeof( wc ) );
-		wc.style = CS_NOCLOSE | CS_PARENTDC;	// | CS_OWNDC;
+		wc.style		 = CS_NOCLOSE | CS_PARENTDC; // | CS_OWNDC;
 		wc.lpszClassName = TEXTURE_WINDOW_CLASS;
-		wc.hCursor = LoadCursor( NULL, IDC_ARROW );
-		wc.lpfnWndProc = ::DefWindowProc;
-		if ( AfxRegisterClass( &wc ) == FALSE ) {
+		wc.hCursor		 = LoadCursor( NULL, IDC_ARROW );
+		wc.lpfnWndProc	 = ::DefWindowProc;
+		if( AfxRegisterClass( &wc ) == FALSE )
+		{
 			idLib::Error( "CNewTexWnd RegisterClass: failed" );
 		}
 	}
 
 	cs.lpszClass = TEXTURE_WINDOW_CLASS;
-	cs.lpszName = "TEX";
-	if ( cs.style != QE3_CHILDSTYLE && cs.style != QE3_STYLE ) {
+	cs.lpszName	 = "TEX";
+	if( cs.style != QE3_CHILDSTYLE && cs.style != QE3_STYLE )
+	{
 		cs.style = QE3_SPLITTER_STYLE;
 	}
 
@@ -123,8 +131,10 @@ BOOL CNewTexWnd::PreCreateWindow( CREATESTRUCT& cs ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-int CNewTexWnd::OnCreate( LPCREATESTRUCT lpCreateStruct ) {
-	if ( CWnd::OnCreate( lpCreateStruct ) == -1 ) {
+int CNewTexWnd::OnCreate( LPCREATESTRUCT lpCreateStruct )
+{
+	if( CWnd::OnCreate( lpCreateStruct ) == -1 )
+	{
 		return -1;
 	}
 
@@ -144,7 +154,8 @@ int CNewTexWnd::OnCreate( LPCREATESTRUCT lpCreateStruct ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void CNewTexWnd::OnSize( UINT nType, int cx, int cy ) {
+void CNewTexWnd::OnSize( UINT nType, int cx, int cy )
+{
 	CWnd::OnSize( nType, cx, cy );
 	GetClientRect( rectClient );
 	m_bNeedRange = true;
@@ -154,7 +165,8 @@ void CNewTexWnd::OnSize( UINT nType, int cx, int cy ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void CNewTexWnd::OnParentNotify( UINT message, LPARAM lParam ) {
+void CNewTexWnd::OnParentNotify( UINT message, LPARAM lParam )
+{
 	CWnd::OnParentNotify( message, lParam );
 }
 
@@ -162,7 +174,8 @@ void CNewTexWnd::OnParentNotify( UINT message, LPARAM lParam ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void CNewTexWnd::UpdatePrefs() {
+void CNewTexWnd::UpdatePrefs()
+{
 	ShowScrollBar( SB_VERT, true );
 	m_bNeedRange = true;
 	Invalidate();
@@ -173,7 +186,8 @@ void CNewTexWnd::UpdatePrefs() {
  =======================================================================================================================
  =======================================================================================================================
  */
-void CNewTexWnd::OnKeyDown( UINT nChar, UINT nRepCnt, UINT nFlags ) {
+void CNewTexWnd::OnKeyDown( UINT nChar, UINT nRepCnt, UINT nFlags )
+{
 	g_pParentWnd->HandleKey( nChar, nRepCnt, nFlags );
 }
 
@@ -181,7 +195,8 @@ void CNewTexWnd::OnKeyDown( UINT nChar, UINT nRepCnt, UINT nFlags ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void CNewTexWnd::OnKeyUp( UINT nChar, UINT nRepCnt, UINT nFlags ) {
+void CNewTexWnd::OnKeyUp( UINT nChar, UINT nRepCnt, UINT nFlags )
+{
 	g_pParentWnd->HandleKey( nChar, nRepCnt, nFlags, false );
 }
 
@@ -189,10 +204,13 @@ void CNewTexWnd::OnKeyUp( UINT nChar, UINT nRepCnt, UINT nFlags ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-const idMaterial * CNewTexWnd::NextPos() {
+const idMaterial* CNewTexWnd::NextPos()
+{
 	const idMaterial* mat = NULL;
-	while ( 1 ) {
-		if ( currentIndex >= declManager->GetNumDecls( DECL_MATERIAL ) ) {
+	while( 1 )
+	{
+		if( currentIndex >= declManager->GetNumDecls( DECL_MATERIAL ) )
+		{
 			return NULL;
 		}
 
@@ -200,15 +218,17 @@ const idMaterial * CNewTexWnd::NextPos() {
 
 		currentIndex++;
 
-		//if (mat->getName()[0] == '(') { // fake color texture
+		// if (mat->getName()[0] == '(') { // fake color texture
 		//	continue;
-		//}
+		// }
 
-		if ( !mat->IsValid() ) {
+		if( !mat->IsValid() )
+		{
 			continue;
 		}
 
-		if ( !mat->TestMaterialFlag( MF_EDITOR_VISIBLE ) ) {
+		if( !mat->TestMaterialFlag( MF_EDITOR_VISIBLE ) )
+		{
 			continue;
 		}
 		break;
@@ -217,10 +237,11 @@ const idMaterial * CNewTexWnd::NextPos() {
 	// ensure it is uploaded
 	declManager->FindMaterial( mat->GetName() );
 
-	int width = mat->GetEditorImage()->uploadWidth * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
+	int width  = mat->GetEditorImage()->uploadWidth * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
 	int height = mat->GetEditorImage()->uploadHeight * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
 
-	if ( current.x + width > rectClient.Width() - 8 && currentRow ) {
+	if( current.x + width > rectClient.Width() - 8 && currentRow )
+	{
 		// go to the next row unless the texture is the first on the row
 		current.x = 8;
 		current.y -= currentRow + FONT_HEIGHT + 4;
@@ -230,7 +251,8 @@ const idMaterial * CNewTexWnd::NextPos() {
 	draw = current;
 
 	// Is our texture larger than the row? If so, grow the row height to match it
-	if ( currentRow < height ) {
+	if( currentRow < height )
+	{
 		currentRow = height;
 	}
 
@@ -244,24 +266,21 @@ const idMaterial * CNewTexWnd::NextPos() {
  =======================================================================================================================
  =======================================================================================================================
  */
-void CNewTexWnd::OnPaint() {
+void CNewTexWnd::OnPaint()
+{
+	CPaintDC dc( this ); // device context for painting
 
-	CPaintDC	dc( this );	// device context for painting
+	int		 nOld = g_qeglobals.d_texturewin.m_nTotalHeight;
 
-	int nOld = g_qeglobals.d_texturewin.m_nTotalHeight;
-
-	//hdcTexture = GetDC();
-	if ( !qwglMakeCurrent( dc.GetSafeHdc(), win32.hGLRC ) ) {
+	// hdcTexture = GetDC();
+	if( !qwglMakeCurrent( dc.GetSafeHdc(), win32.hGLRC ) )
+	{
 		common->Printf( "ERROR: wglMakeCurrent failed..\n " );
-	} else {
-		const char	* name;
-		qglClearColor
-		(
-			g_qeglobals.d_savedinfo.colors[COLOR_TEXTUREBACK][0],
-			g_qeglobals.d_savedinfo.colors[COLOR_TEXTUREBACK][1],
-			g_qeglobals.d_savedinfo.colors[COLOR_TEXTUREBACK][2],
-			0
-		);
+	}
+	else
+	{
+		const char* name;
+		qglClearColor( g_qeglobals.d_savedinfo.colors[COLOR_TEXTUREBACK][0], g_qeglobals.d_savedinfo.colors[COLOR_TEXTUREBACK][1], g_qeglobals.d_savedinfo.colors[COLOR_TEXTUREBACK][2], 0 );
 		qglViewport( 0, 0, rectClient.Width(), rectClient.Height() );
 		qglScissor( 0, 0, rectClient.Width(), rectClient.Height() );
 		qglMatrixMode( GL_PROJECTION );
@@ -273,21 +292,24 @@ void CNewTexWnd::OnPaint() {
 		qglPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 
 		// init stuff
-		current.x = 8;
-		current.y = -8;
-		currentRow = 0;
+		current.x	 = 8;
+		current.y	 = -8;
+		currentRow	 = 0;
 		currentIndex = 0;
-		while ( 1 ) {
+		while( 1 )
+		{
 			const idMaterial* mat = NextPos();
-			if ( mat == NULL ) {
+			if( mat == NULL )
+			{
 				break;
 			}
 
-			int width = mat->GetEditorImage()->uploadWidth * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
+			int width  = mat->GetEditorImage()->uploadWidth * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
 			int height = mat->GetEditorImage()->uploadHeight * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
 
 			// Is this texture visible?
-			if ( ( draw.y - height - FONT_HEIGHT < origin.y ) && ( draw.y > origin.y - rectClient.Height() ) ) {
+			if( ( draw.y - height - FONT_HEIGHT < origin.y ) && ( draw.y > origin.y - rectClient.Height() ) )
+			{
 				// if in use, draw a background
 				qglLineWidth( 1 );
 				qglColor3f( 1, 1, 1 );
@@ -300,7 +322,7 @@ void CNewTexWnd::OnPaint() {
 				qglEnd();
 
 				// Draw the texture
-				float	fScale = ( g_PrefsDlg.m_bHiColorTextures == TRUE ) ? ( ( float )g_PrefsDlg.m_nTextureScale / 100 ) : 1.0;
+				float fScale = ( g_PrefsDlg.m_bHiColorTextures == TRUE ) ? ( ( float )g_PrefsDlg.m_nTextureScale / 100 ) : 1.0;
 
 				GL_SelectTexture( 0 );
 				mat->GetEditorImage()->Bind();
@@ -318,7 +340,8 @@ void CNewTexWnd::OnPaint() {
 				qglEnd();
 
 				// draw the selection border
-				if ( !idStr::Icmp( g_qeglobals.d_texturewin.texdef.name, mat->GetName() ) ) {
+				if( !idStr::Icmp( g_qeglobals.d_texturewin.texdef.name, mat->GetName() ) )
+				{
 					qglLineWidth( 3 );
 					qglColor3f( 1, 0, 0 );
 					globalImages->BindNull();
@@ -339,17 +362,21 @@ void CNewTexWnd::OnPaint() {
 				qglRasterPos2f( draw.x, draw.y - FONT_HEIGHT + 2 );
 
 				// don't draw the directory name
-				for ( name = mat->GetName(); *name && *name != '/' && *name != '\\'; name++ ) {
+				for( name = mat->GetName(); *name && *name != '/' && *name != '\\'; name++ )
+				{
 					;
 				}
 
-				if ( !*name ) {
+				if( !*name )
+				{
 					name = mat->GetName();
-				} else {
+				}
+				else
+				{
 					name++;
 				}
 				qglCallLists( strlen( name ), GL_UNSIGNED_BYTE, name );
-				//qglCallLists(va("%s -- %d, %d" strlen(name), GL_UNSIGNED_BYTE, name);
+				// qglCallLists(va("%s -- %d, %d" strlen(name), GL_UNSIGNED_BYTE, name);
 			}
 		}
 
@@ -362,49 +389,58 @@ void CNewTexWnd::OnPaint() {
 		TRACE( "Texture Paint\n" );
 	}
 
-	if ( m_bNeedRange || g_qeglobals.d_texturewin.m_nTotalHeight != nOld ) {
+	if( m_bNeedRange || g_qeglobals.d_texturewin.m_nTotalHeight != nOld )
+	{
 		m_bNeedRange = false;
 		SetScrollRange( SB_VERT, 0, g_qeglobals.d_texturewin.m_nTotalHeight, TRUE );
 	}
 
-	//ReleaseDC(hdcTexture);
+	// ReleaseDC(hdcTexture);
 }
 
 /*
  =======================================================================================================================
  =======================================================================================================================
  */
-void CNewTexWnd::OnVScroll( UINT nSBCode, UINT nPos, CScrollBar* pScrollBar ) {
+void CNewTexWnd::OnVScroll( UINT nSBCode, UINT nPos, CScrollBar* pScrollBar )
+{
 	CWnd::OnVScroll( nSBCode, nPos, pScrollBar );
 
 	int n = GetScrollPos( SB_VERT );
-	switch ( nSBCode ) {
-		case SB_LINEUP: {
+	switch( nSBCode )
+	{
+		case SB_LINEUP:
+		{
 			n = ( n - 15 > 0 ) ? n - 15 : 0;
 			break;
 		}
 
-		case SB_LINEDOWN: {
+		case SB_LINEDOWN:
+		{
 			n = ( n + 15 < g_qeglobals.d_texturewin.m_nTotalHeight ) ? n + 15 : n;
 			break;
 		}
 
-		case SB_PAGEUP: {
+		case SB_PAGEUP:
+		{
 			n = ( n - g_qeglobals.d_texturewin.height > 0 ) ? n - g_qeglobals.d_texturewin.height : 0;
 			break;
 		}
 
-		case SB_PAGEDOWN: {
+		case SB_PAGEDOWN:
+		{
 			n = ( n + g_qeglobals.d_texturewin.height < g_qeglobals.d_texturewin.m_nTotalHeight ) ? n + g_qeglobals.d_texturewin.height : n;
 			break;
 		}
 
-		case SB_THUMBPOSITION: {
+		case SB_THUMBPOSITION:
+		{
 			n = nPos;
 			break;
 		}
 
-		case SB_THUMBTRACK: {
+		case SB_THUMBTRACK:
+		{
 			n = nPos;
 			break;
 		}
@@ -418,7 +454,8 @@ void CNewTexWnd::OnVScroll( UINT nSBCode, UINT nPos, CScrollBar* pScrollBar ) {
 	// Sys_UpdateWindows(W_TEXTURE);
 }
 
-BOOL CNewTexWnd::DestroyWindow() {
+BOOL CNewTexWnd::DestroyWindow()
+{
 	ReleaseDC( hdcTexture );
 	return CWnd::DestroyWindow();
 }
@@ -427,18 +464,11 @@ BOOL CNewTexWnd::DestroyWindow() {
  =======================================================================================================================
  =======================================================================================================================
  */
-BOOL CNewTexWnd::Create
-(
-	LPCTSTR			lpszClassName,
-	LPCTSTR			lpszWindowName,
-	DWORD			dwStyle,
-	const RECT&		rect,
-	CWnd*			pParentWnd,
-	UINT			nID,
-	CCreateContext*	pContext
-) {
-	BOOL	ret = CWnd::Create( lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext );
-	if ( ret ) {
+BOOL CNewTexWnd::Create( LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext )
+{
+	BOOL ret = CWnd::Create( lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext );
+	if( ret )
+	{
 		hdcTexture = GetDC();
 		QEW_SetupPixelFormat( hdcTexture->m_hDC, false );
 	}
@@ -446,48 +476,53 @@ BOOL CNewTexWnd::Create
 	return ret;
 }
 
-const idMaterial * CNewTexWnd::getMaterialAtPoint( CPoint point ) {
-
+const idMaterial* CNewTexWnd::getMaterialAtPoint( CPoint point )
+{
 	// init stuff
 	int my = rectClient.Height() - 1 - point.y;
 	my += origin.y - rectClient.Height();
 
-	current.x = 8;
-	current.y = -8;
-	currentRow = 0;
+	current.x	 = 8;
+	current.y	 = -8;
+	currentRow	 = 0;
 	currentIndex = 0;
 
-	while ( 1 ) {
+	while( 1 )
+	{
 		const idMaterial* mat = NextPos();
-		if ( mat == NULL ) {
+		if( mat == NULL )
+		{
 			return NULL;
 		}
 
-		int width = mat->GetEditorImage()->uploadWidth * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
+		int width  = mat->GetEditorImage()->uploadWidth * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
 		int height = mat->GetEditorImage()->uploadHeight * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
-		//if (point.x > draw.x && point.x - draw.x < width && my < draw.y && my + draw.y < height + FONT_HEIGHT) {
-		if ( point.x > draw.x && point.x - draw.x < width && my < draw.y &&  draw.y - my < height + FONT_HEIGHT ) {
+		// if (point.x > draw.x && point.x - draw.x < width && my < draw.y && my + draw.y < height + FONT_HEIGHT) {
+		if( point.x > draw.x && point.x - draw.x < width && my < draw.y && draw.y - my < height + FONT_HEIGHT )
+		{
 			return mat;
 		}
-
 	}
-
 }
 /*
  =======================================================================================================================
  =======================================================================================================================
  */
-void CNewTexWnd::OnLButtonDown( UINT nFlags, CPoint point ) {
+void CNewTexWnd::OnLButtonDown( UINT nFlags, CPoint point )
+{
 	cursor = point;
 
 	SetFocus();
-	bool fitScale = Sys_KeyDown( VK_CONTROL );
-	bool edit = Sys_KeyDown( VK_SHIFT ) && !fitScale;
+	bool			  fitScale = Sys_KeyDown( VK_CONTROL );
+	bool			  edit	   = Sys_KeyDown( VK_SHIFT ) && !fitScale;
 
 	const idMaterial* mat = getMaterialAtPoint( point );
-	if ( mat ) {
+	if( mat )
+	{
 		Select_SetDefaultTexture( mat, fitScale, true );
-	} else {
+	}
+	else
+	{
 		Sys_Status( "Did not select a texture\n", 0 );
 	}
 
@@ -500,16 +535,17 @@ void CNewTexWnd::OnLButtonDown( UINT nFlags, CPoint point ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void CNewTexWnd::OnMButtonDown( UINT nFlags, CPoint point ) {
+void CNewTexWnd::OnMButtonDown( UINT nFlags, CPoint point )
+{
 	CWnd::OnMButtonDown( nFlags, point );
-
 }
 
 /*
  =======================================================================================================================
  =======================================================================================================================
  */
-void CNewTexWnd::OnRButtonDown( UINT nFlags, CPoint point ) {
+void CNewTexWnd::OnRButtonDown( UINT nFlags, CPoint point )
+{
 	cursor = point;
 	SetFocus();
 }
@@ -518,7 +554,8 @@ void CNewTexWnd::OnRButtonDown( UINT nFlags, CPoint point ) {
  ===============================t========================================================================================
  =======================================================================================================================
  */
-void CNewTexWnd::OnLButtonUp( UINT nFlags, CPoint point ) {
+void CNewTexWnd::OnLButtonUp( UINT nFlags, CPoint point )
+{
 	CWnd::OnLButtonUp( nFlags, point );
 	g_pParentWnd->SetFocus();
 }
@@ -527,7 +564,8 @@ void CNewTexWnd::OnLButtonUp( UINT nFlags, CPoint point ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void CNewTexWnd::OnMButtonUp( UINT nFlags, CPoint point ) {
+void CNewTexWnd::OnMButtonUp( UINT nFlags, CPoint point )
+{
 	CWnd::OnMButtonUp( nFlags, point );
 }
 
@@ -535,7 +573,8 @@ void CNewTexWnd::OnMButtonUp( UINT nFlags, CPoint point ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void CNewTexWnd::OnRButtonUp( UINT nFlags, CPoint point ) {
+void CNewTexWnd::OnRButtonUp( UINT nFlags, CPoint point )
+{
 	CWnd::OnRButtonUp( nFlags, point );
 }
 
@@ -543,53 +582,67 @@ void CNewTexWnd::OnRButtonUp( UINT nFlags, CPoint point ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void CNewTexWnd::OnMouseMove( UINT nFlags, CPoint point ) {
+void CNewTexWnd::OnMouseMove( UINT nFlags, CPoint point )
+{
 	int scale = 1;
 
-	if ( Sys_KeyDown( VK_SHIFT ) ) {
+	if( Sys_KeyDown( VK_SHIFT ) )
+	{
 		scale = 4;
 	}
 
 	// rbutton = drag texture origin
-	if ( Sys_KeyDown( VK_RBUTTON ) ) {
-		if ( point.y != cursor.y ) {
-			if ( Sys_KeyDown( VK_MENU ) ) {
-				long	* px = &point.x;
-				long	* px2 = &cursor.x;
+	if( Sys_KeyDown( VK_RBUTTON ) )
+	{
+		if( point.y != cursor.y )
+		{
+			if( Sys_KeyDown( VK_MENU ) )
+			{
+				long* px  = &point.x;
+				long* px2 = &cursor.x;
 
-				if ( idMath::Diff( point.y, cursor.y ) > idMath::Diff( point.x, cursor.x ) ) {
-					px = &point.y;
+				if( idMath::Diff( point.y, cursor.y ) > idMath::Diff( point.x, cursor.x ) )
+				{
+					px	= &point.y;
 					px2 = &cursor.y;
 				}
 
-				if ( *px > *px2 ) {
+				if( *px > *px2 )
+				{
 					// zoom in
 					g_PrefsDlg.m_nTextureScale += 4;
-					if ( g_PrefsDlg.m_nTextureScale > 500 ) {
+					if( g_PrefsDlg.m_nTextureScale > 500 )
+					{
 						g_PrefsDlg.m_nTextureScale = 500;
 					}
-				} else if ( *px < *px2 ) {
+				}
+				else if( *px < *px2 )
+				{
 					// zoom out
 					g_PrefsDlg.m_nTextureScale -= 4;
-					if ( g_PrefsDlg.m_nTextureScale < 1 ) {
+					if( g_PrefsDlg.m_nTextureScale < 1 )
+					{
 						g_PrefsDlg.m_nTextureScale = 1;
 					}
 				}
 
-				*px2 = *px;
+				*px2		  = *px;
 				CPoint screen = cursor;
 				ClientToScreen( &screen );
 				SetCursorPos( screen.x, screen.y );
-				//Sys_SetCursorPos(cursor.x, cursor.y);
+				// Sys_SetCursorPos(cursor.x, cursor.y);
 				InvalidateRect( NULL, false );
 				UpdateWindow();
-			} else if ( point.y != cursor.y || point.x != cursor.x ) {
+			}
+			else if( point.y != cursor.y || point.x != cursor.x )
+			{
 				origin.y += ( point.y - cursor.y ) * scale;
-				if ( origin.y > 0 ) {
+				if( origin.y > 0 )
+				{
 					origin.y = 0;
 				}
 
-				//Sys_SetCursorPos(cursor.x, cursor.y);
+				// Sys_SetCursorPos(cursor.x, cursor.y);
 				CPoint screen = cursor;
 				ClientToScreen( &screen );
 				SetCursorPos( screen.x, screen.y );
@@ -608,9 +661,10 @@ void CNewTexWnd::OnMouseMove( UINT nFlags, CPoint point ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void Texture_SetTexture( texdef_t * texdef, brushprimit_texdef_t	* brushprimit_texdef, bool bFitScale, bool bSetSelection ) {
-
-	if ( texdef->name[0] == '(' ) {
+void Texture_SetTexture( texdef_t* texdef, brushprimit_texdef_t* brushprimit_texdef, bool bFitScale, bool bSetSelection )
+{
+	if( texdef->name[0] == '(' )
+	{
 		Sys_Status( "Can't select an entity texture\n", 0 );
 		return;
 	}
@@ -625,13 +679,15 @@ void Texture_SetTexture( texdef_t * texdef, brushprimit_texdef_t	* brushprimit_t
 
 	g_dlgFind.updateTextures( texdef->name );
 
-	if ( !g_dlgFind.isOpen() && bSetSelection ) {
+	if( !g_dlgFind.isOpen() && bSetSelection )
+	{
 		Select_SetTexture( texdef, brushprimit_texdef, bFitScale );
 	}
 
 	g_Inspectors->texWnd.EnsureTextureIsVisible( texdef->name );
 
-	if ( g_Inspectors->mediaDlg.IsWindowVisible() ) {
+	if( g_Inspectors->mediaDlg.IsWindowVisible() )
+	{
 		g_Inspectors->mediaDlg.SelectCurrentItem( true, g_qeglobals.d_texturewin.texdef.name, CDialogTextures::MATERIALS );
 	}
 
@@ -645,15 +701,19 @@ void Texture_SetTexture( texdef_t * texdef, brushprimit_texdef_t	* brushprimit_t
 	Sys_UpdateWindows( W_TEXTURE );
 }
 
-const idMaterial * Texture_LoadLight( const char * name ) {
+const idMaterial* Texture_LoadLight( const char* name )
+{
 	return declManager->FindMaterial( name );
 }
 
-void Texture_ShowAll() {
+void Texture_ShowAll( void )
+{
 	int count = declManager->GetNumDecls( DECL_MATERIAL );
-	for ( int i = 0; i < count; i++ ) {
+	for( int i = 0; i < count; i++ )
+	{
 		const idMaterial* mat = declManager->MaterialByIndex( i, false );
-		if ( mat ) {
+		if( mat )
+		{
 			mat->SetMaterialFlag( MF_EDITOR_VISIBLE );
 		}
 	}
@@ -661,11 +721,14 @@ void Texture_ShowAll() {
 	Sys_UpdateWindows( W_TEXTURE );
 }
 
-void Texture_HideAll() {
+void Texture_HideAll()
+{
 	int count = declManager->GetNumDecls( DECL_MATERIAL );
-	for ( int i = 0; i < count; i++ ) {
+	for( int i = 0; i < count; i++ )
+	{
 		const idMaterial* mat = declManager->MaterialByIndex( i, false );
-		if ( mat ) {
+		if( mat )
+		{
 			mat->ClearMaterialFlag( MF_EDITOR_VISIBLE );
 		}
 	}
@@ -673,35 +736,50 @@ void Texture_HideAll() {
 	Sys_UpdateWindows( W_TEXTURE );
 }
 
-const idMaterial * Texture_ForName( const char * name ) {
+const idMaterial* Texture_ForName( const char* name )
+{
 	const idMaterial* mat = declManager->FindMaterial( name );
-	if ( !mat ) {
+	if( !mat )
+	{
 		mat = declManager->FindMaterial( "_default" );
-	} else {
+	}
+	else
+	{
 		mat->SetMaterialFlag( MF_EDITOR_VISIBLE );
 	}
 	return mat;
 }
 
-void Texture_ShowInuse() {
+void Texture_ShowInuse( void )
+{
 	Texture_HideAll();
 
 	idEditorBrush* b;
-	for ( b = active_brushes.next; b != NULL && b != &active_brushes; b = b->next ) {
-		if ( b->pPatch ) {
+	for( b = active_brushes.next; b != NULL && b != &active_brushes; b = b->next )
+	{
+		if( b->pPatch )
+		{
 			Texture_ForName( b->pPatch->d_texture->GetName() );
-		} else {
-			for ( face_t * f = b->brush_faces; f; f = f->next ) {
+		}
+		else
+		{
+			for( face_t* f = b->brush_faces; f; f = f->next )
+			{
 				Texture_ForName( f->texdef.name );
 			}
 		}
 	}
 
-	for ( b = selected_brushes.next; b != NULL && b != &selected_brushes; b = b->next ) {
-		if ( b->pPatch ) {
+	for( b = selected_brushes.next; b != NULL && b != &selected_brushes; b = b->next )
+	{
+		if( b->pPatch )
+		{
 			Texture_ForName( b->pPatch->d_texture->GetName() );
-		} else {
-			for ( face_t * f = b->brush_faces; f; f = f->next ) {
+		}
+		else
+		{
+			for( face_t* f = b->brush_faces; f; f = f->next )
+			{
 				Texture_ForName( f->texdef.name );
 			}
 		}
@@ -719,14 +797,16 @@ bool texture_showinuse = true;
 	Texture_SetMode
  =======================================================================================================================
  */
-void Texture_SetMode( int iMenu ) {
-	int		iMode;
-	HMENU	hMenu;
-	bool	texturing = true;
+void Texture_SetMode( int iMenu )
+{
+	int	  iMode;
+	HMENU hMenu;
+	bool  texturing = true;
 
 	hMenu = GetMenu( g_pParentWnd->GetSafeHwnd() );
 
-	switch ( iMenu ) {
+	switch( iMenu )
+	{
 		case ID_VIEW_NEAREST:
 			iMode = GL_NEAREST;
 			break;
@@ -747,13 +827,13 @@ void Texture_SetMode( int iMenu ) {
 			break;
 
 		case ID_TEXTURES_WIREFRAME:
-			iMode = 0;
+			iMode	  = 0;
 			texturing = false;
 			break;
 
 		case ID_TEXTURES_FLATSHADE:
 		default:
-			iMode = 0;
+			iMode	  = 0;
 			texturing = false;
 			break;
 	}
@@ -771,19 +851,23 @@ void Texture_SetMode( int iMenu ) {
 
 	g_qeglobals.d_savedinfo.iTexMenu = iMenu;
 
-	if ( !texturing && iMenu == ID_TEXTURES_WIREFRAME ) {
+	if( !texturing && iMenu == ID_TEXTURES_WIREFRAME )
+	{
 		g_pParentWnd->GetCamera()->Camera().draw_mode = cd_wire;
 		Map_BuildBrushData();
 		Sys_UpdateWindows( W_ALL );
 		return;
-	} else if ( !texturing && iMenu == ID_TEXTURES_FLATSHADE ) {
+	}
+	else if( !texturing && iMenu == ID_TEXTURES_FLATSHADE )
+	{
 		g_pParentWnd->GetCamera()->Camera().draw_mode = cd_solid;
 		Map_BuildBrushData();
 		Sys_UpdateWindows( W_ALL );
 		return;
 	}
 
-	if ( g_pParentWnd->GetCamera()->Camera().draw_mode != cd_texture ) {
+	if( g_pParentWnd->GetCamera()->Camera().draw_mode != cd_texture )
+	{
 		g_pParentWnd->GetCamera()->Camera().draw_mode = cd_texture;
 		Map_BuildBrushData();
 	}
@@ -791,32 +875,37 @@ void Texture_SetMode( int iMenu ) {
 	Sys_UpdateWindows( W_ALL );
 }
 
-
-void CNewTexWnd::EnsureTextureIsVisible( const char * name ) {
+void CNewTexWnd::EnsureTextureIsVisible( const char* name )
+{
 	// scroll origin so the texture is completely on screen
 	// init stuff
-	current.x = 8;
-	current.y = -8;
-	currentRow = 0;
+	current.x	 = 8;
+	current.y	 = -8;
+	currentRow	 = 0;
 	currentIndex = 0;
 
-	while ( 1 ) {
+	while( 1 )
+	{
 		const idMaterial* mat = NextPos();
-		if ( mat == NULL ) {
+		if( mat == NULL )
+		{
 			break;
 		}
 
-		int width = mat->GetEditorImage()->uploadWidth * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
+		int width  = mat->GetEditorImage()->uploadWidth * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
 		int height = mat->GetEditorImage()->uploadHeight * ( ( float )g_PrefsDlg.m_nTextureScale / 100 );
 
-		if ( !idStr::Icmp( name, mat->GetName() ) ) {
-			if ( current.y > origin.y ) {
+		if( !idStr::Icmp( name, mat->GetName() ) )
+		{
+			if( current.y > origin.y )
+			{
 				origin.y = current.y;
 				Sys_UpdateWindows( W_TEXTURE );
 				return;
 			}
 
-			if ( current.y - height - 2 * FONT_HEIGHT < origin.y - rectClient.Height() ) {
+			if( current.y - height - 2 * FONT_HEIGHT < origin.y - rectClient.Height() )
+			{
 				origin.y = current.y - height - 2 * FONT_HEIGHT + rectClient.Height();
 				Sys_UpdateWindows( W_TEXTURE );
 				return;
@@ -825,35 +914,38 @@ void CNewTexWnd::EnsureTextureIsVisible( const char * name ) {
 			return;
 		}
 	}
-
 }
 
-
-BOOL CNewTexWnd::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult ) {
+BOOL CNewTexWnd::OnToolTipNotify( UINT id, NMHDR* pNMHDR, LRESULT* pResult )
+{
 	static char tip[1024];
-	CPoint point;
+	CPoint		point;
 	GetCursorPos( &point );
 	const idMaterial* mat = getMaterialAtPoint( point );
 
-	if ( mat ) {
-		TOOLTIPTEXT* pTTT = ( TOOLTIPTEXT * )pNMHDR;
+	if( mat )
+	{
+		TOOLTIPTEXT* pTTT = ( TOOLTIPTEXT* )pNMHDR;
 		strcpy( tip, mat->GetDescription() );
 		pTTT->lpszText = tip;
-		pTTT->hinst = NULL;
+		pTTT->hinst	   = NULL;
 		return ( TRUE );
 	}
 	return ( FALSE );
 }
 
-INT_PTR CNewTexWnd::OnToolHitTest( CPoint point, TOOLINFO* pTI ) {
+INT_PTR CNewTexWnd::OnToolHitTest( CPoint point, TOOLINFO* pTI )
+{
 	const idMaterial* mat = getMaterialAtPoint( point );
-	if ( mat ) {
+	if( mat )
+	{
 		return 0;
 	}
 	return -1;
 }
 
-BOOL CNewTexWnd::OnMouseWheel( UINT nFlags, short zDelta, CPoint pt ) {
+BOOL CNewTexWnd::OnMouseWheel( UINT nFlags, short zDelta, CPoint pt )
+{
 	OnVScroll( ( zDelta >= 0 ) ? SB_LINEUP : SB_LINEDOWN, 0, NULL );
 	OnVScroll( ( zDelta >= 0 ) ? SB_LINEUP : SB_LINEDOWN, 0, NULL );
 	OnVScroll( ( zDelta >= 0 ) ? SB_LINEUP : SB_LINEDOWN, 0, NULL );
@@ -863,14 +955,18 @@ BOOL CNewTexWnd::OnMouseWheel( UINT nFlags, short zDelta, CPoint pt ) {
 	return TRUE;
 }
 
-BOOL CNewTexWnd::PreTranslateMessage( MSG* pMsg ) {
-	if ( pMsg->message == WM_KEYDOWN ) {
-		if ( pMsg->wParam == VK_ESCAPE ) {
+BOOL CNewTexWnd::PreTranslateMessage( MSG* pMsg )
+{
+	if( pMsg->message == WM_KEYDOWN )
+	{
+		if( pMsg->wParam == VK_ESCAPE )
+		{
 			g_pParentWnd->GetCamera()->SetFocus();
 			Select_Deselect();
 			return TRUE;
 		}
-		if ( pMsg->wParam == VK_RIGHT || pMsg->wParam == VK_LEFT || pMsg->wParam == VK_UP || pMsg->wParam == VK_DOWN ) {
+		if( pMsg->wParam == VK_RIGHT || pMsg->wParam == VK_LEFT || pMsg->wParam == VK_UP || pMsg->wParam == VK_DOWN )
+		{
 			g_pParentWnd->PostMessage( WM_KEYDOWN, pMsg->wParam );
 			return TRUE;
 		}
@@ -878,7 +974,8 @@ BOOL CNewTexWnd::PreTranslateMessage( MSG* pMsg ) {
 	return CWnd::PreTranslateMessage( pMsg );
 }
 
-void CNewTexWnd::OnSetFocus( CWnd* pOldWnd ) {
+void CNewTexWnd::OnSetFocus( CWnd* pOldWnd )
+{
 	CWnd::OnSetFocus( pOldWnd );
 	Invalidate();
 	RedrawWindow();

@@ -167,7 +167,6 @@ typedef enum {
 	TG_SKYBOX_CUBE,
 	TG_WOBBLESKY_CUBE,
 	TG_SCREEN,			// screen aligned, for mirrorRenders and screen space temporaries
-	TG_SCREEN2,
 	TG_GLASSWARP
 } texgen_t;
 
@@ -304,8 +303,9 @@ typedef enum {
 	MF_USESDISTANCE				= BIT(7),	// HUMANHEAD pdm: distance optimization
 	MF_LIGHT_WHOLE_MESH			= BIT(8),	// HUMANHEAD bjk: dont cull tris with light bounds
 	//HUMANHEAD PCF rww 05/11/06 - can be used explicitly by surfaces which use alpha coverage but do not want collision anyway
-	MF_SKIPCLIP					= BIT(9)
+	MF_SKIPCLIP					= BIT(9),
 	//HUMANHEAD END
+	MF_UNLIT					= BIT(10)	// receive no lighting
 } materialFlags_t;
 
 // contents flags, NOTE: make sure to keep the defines in doom_defs.script up to date with these!
@@ -413,7 +413,7 @@ typedef enum {
 	SURF_NOSTEPS				= BIT(9),	// no footstep sounds
 	SURF_DISCRETE				= BIT(10),	// not clipped or merged by utilities
 	SURF_NOFRAGMENT				= BIT(11),	// dmap won't cut surface at each bsp boundary
-	SURF_NULLNORMAL				= BIT(12),	// renderbump will draw this surface as 0x80 0x80 0x80, which
+	SURF_NULLNORMAL				= BIT(12)	// renderbump will draw this surface as 0x80 0x80 0x80, which
 											// won't collect light from any angle
 } surfaceFlags_t;
 
@@ -481,7 +481,7 @@ public:
 						// returns true if the material will generate interactions with normal lights
 						// Many special effect surfaces don't have any bump/diffuse/specular
 						// stages, and don't interact with lights at all
-	bool				ReceivesLighting( void ) const { return numAmbientStages != numStages; }
+	bool				ReceivesLighting( void ) const { return ( numAmbientStages != numStages ) && ( materialFlags & MF_UNLIT ) == 0; }
 
 						// returns true if the material should generate interactions on sides facing away
 						// from light centers, as with noshadow and noselfshadow options
@@ -521,7 +521,7 @@ public:
 						// necessary to prevent mutliple gui surfaces, mirrors, autosprites, and some other
 						// special effects from being combined into a single surface
 						// guis, merging sprites or other effects, mirrors and remote views are always discrete
-	bool				IsDiscrete( void ) const { return ( entityGui || gui || deform != DFRM_NONE || sort == SS_SUBVIEW ||
+	bool				IsDiscrete( void ) const { return ( entityGui || gui || deform != DFRM_NONE || (int)sort == SS_SUBVIEW ||
 												( surfaceFlags & SURF_DISCRETE ) != 0 ); }
 
 						// Normally, dmap chops each surface by every BSP boundary, then reoptimizes.

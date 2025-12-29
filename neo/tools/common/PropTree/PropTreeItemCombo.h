@@ -1,9 +1,9 @@
-#if !defined(AFX_PROPTREEITEMCOMBO_H__9916BC6F_751F_4B15_996F_3C9F6334A259__INCLUDED_)
-#define AFX_PROPTREEITEMCOMBO_H__9916BC6F_751F_4B15_996F_3C9F6334A259__INCLUDED_
+#if !defined( AFX_PROPTREEITEMCOMBO_H__9916BC6F_751F_4B15_996F_3C9F6334A259__INCLUDED_ )
+	#define AFX_PROPTREEITEMCOMBO_H__9916BC6F_751F_4B15_996F_3C9F6334A259__INCLUDED_
 
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
+	#if _MSC_VER > 1000
+		#pragma once
+	#endif // _MSC_VER > 1000
 // PropTreeItemCombo.h : header file
 //
 //  Copyright (C) 1998-2001 Scott Ramsay
@@ -22,68 +22,68 @@
 //	If you use this code, drop me an email.  I'd like to know if you find the code
 //	useful.
 
-#include "PropTreeItem.h"
+	#include "PropTreeItem.h"
 
 /////////////////////////////////////////////////////////////////////////////
 // CPropTreeItemCombo window
 
-class PROPTREE_API CPropTreeItemCombo : public CComboBox, public CPropTreeItem {
-// Construction
+class PROPTREE_API CPropTreeItemCombo : public CComboBox, public CPropTreeItem
+{
+	// Construction
 public:
 	CPropTreeItemCombo();
 	virtual ~CPropTreeItemCombo();
 
-// Attributes
+	// Attributes
 public:
 	// The attribute area needs drawing
-	virtual void DrawAttribute( CDC* pDC, const RECT& rc );
+	virtual void   DrawAttribute( CDC* pDC, const RECT& rc );
 
 	// Retrieve the item's attribute value
 	virtual LPARAM GetItemValue();
 
 	// Set the item's attribute value
-	virtual void SetItemValue( LPARAM lParam );
+	virtual void   SetItemValue( LPARAM lParam );
 
 	// Called when attribute area has changed size
-	virtual void OnMove();
+	virtual void   OnMove();
 
 	// Called when the item needs to refresh its data
-	virtual void OnRefresh();
+	virtual void   OnRefresh();
 
 	// Called when the item needs to commit its changes
-	virtual void OnCommit();
+	virtual void   OnCommit();
 
 	// Called to activate the item
-	virtual void OnActivate( int activateType, CPoint point );
+	virtual void   OnActivate( int activateType, CPoint point );
 
 	// Create your combo box with your specified styles
-	BOOL CreateComboBox( DWORD dwStyle = WS_CHILD | WS_VSCROLL | CBS_SORT | CBS_DROPDOWNLIST );
+	BOOL		   CreateComboBox( DWORD dwStyle = WS_CHILD | WS_VSCROLL | CBS_SORT | CBS_DROPDOWNLIST );
 
 	// Create combo box with TRUE/FALSE selections
-	BOOL CreateComboBoxBool();
+	BOOL		   CreateComboBoxBool();
 
 	// Set the height for the dropdown combo box
-	void SetDropDownHeight( LONG nDropHeight );
+	void		   SetDropDownHeight( LONG nDropHeight );
 
 	// Get the height of the dropdown combo box
-	LONG GetDropDownHeight();
+	LONG		   GetDropDownHeight();
 
 protected:
-	LPARAM		m_lComboData;
-	LONG		m_nDropHeight;
+	LPARAM m_lComboData;
+	LONG   m_nDropHeight;
 
-// Operations
+	// Operations
 protected:
 	LONG FindCBData( LPARAM lParam );
 
-// Overrides
+	// Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CPropTreeItemCombo)
 	//}}AFX_VIRTUAL
 
-// Implementation
+	// Implementation
 public:
-
 	// Generated message map functions
 protected:
 	//{{AFX_MSG(CPropTreeItemCombo)

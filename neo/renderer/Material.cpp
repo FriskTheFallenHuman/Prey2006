@@ -988,6 +988,16 @@ void idMaterial::ParseFragmentMap( idLexer &src, newShaderStage_t *newStage ) {
 			cubeMap = CF_CAMERA;
 			continue;
 		}
+		// motorsep 12-30-2022; to use with cubemaps created from equirectangular panoramas in Bixorama (or perhaps any other similar software)
+		if ( !token.Icmp( "cameraCubeSky" ) ) {
+			cubeMap = CF_CAMERA_ALT;
+			continue;
+		}
+		// Source engine style skybox
+		if ( !token.Icmp( "skybox" ) ) {
+			cubeMap = CF_CAMERA_SOURCE;
+			continue;
+		}
 		if ( !token.Icmp( "nearest" ) ) {
 			tf = TF_NEAREST;
 			continue;
@@ -1198,7 +1208,7 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 			continue;
 		}
 		if (  !token.Icmp( "screen2" ) ) {
-			ts->texgen = TG_SCREEN2;
+			ts->texgen = TG_SCREEN;
 			continue;
 		}
 		if (  !token.Icmp( "glassWarp" ) ) {
@@ -1247,6 +1257,22 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 			str = R_ParsePastImageProgram( src );
 			idStr::Copynz( imageName, str, sizeof( imageName ) );
 			cubeMap = CF_CAMERA;
+			continue;
+		}
+
+		// motorsep 12-30-2022; to use with cubemaps created from equirectangular panoramas in Bixorama (or perhaps any other similar software)
+		if ( !token.Icmp("cameraCubeSky" ) ) {
+			str = R_ParsePastImageProgram( src );
+			idStr::Copynz( imageName, str, sizeof( imageName ) );
+			cubeMap = CF_CAMERA_ALT;
+			continue;
+		}
+
+		// Source engine style skybox
+		if ( !token.Icmp( "skybox" ) ) {
+			str = R_ParsePastImageProgram( src );
+			idStr::Copynz( imageName, str, sizeof( imageName ) );
+			cubeMap = CF_CAMERA_SOURCE;
 			continue;
 		}
 
@@ -1647,7 +1673,7 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 			continue;
 		}
 
-		src.Warning( "unknown token '%s' in material '%s'", token.c_str(), GetName() );
+		common->Warning( "unknown token '%s' in material '%s'", token.c_str(), GetName() );
 		SetMaterialFlag( MF_DEFAULTED );
 		return;
 	}
@@ -1960,7 +1986,6 @@ void idMaterial::ParseMaterial( idLexer &src ) {
 			continue;
 		}
 
-
 		// polygonOffset
 		else if ( !token.Icmp( "polygonOffset" ) ) {
 			SetMaterialFlag( MF_POLYGONOFFSET );
@@ -2080,6 +2105,11 @@ void idMaterial::ParseMaterial( idLexer &src ) {
 		// unsmoothedTangents
 		else if ( !token.Icmp( "unsmoothedTangents" ) ) {
 			unsmoothedTangents = true;
+			continue;
+		}
+
+		else if( !token.Icmp( "unlit" ) ) {
+			SetMaterialFlag( MF_UNLIT );
 			continue;
 		}
 		// lightFallofImage <imageprogram>
@@ -2309,10 +2339,9 @@ void idMaterial::ParseMaterial( idLexer &src ) {
 	if ( cullType == CT_TWO_SIDED ) {
 		for ( i = 0 ; i < numStages ; i++ ) {
 			if ( pd->parseStages[i].lighting != SL_AMBIENT || pd->parseStages[i].texture.texgen != TG_EXPLICIT ) {
-				if ( cullType == CT_TWO_SIDED ) {
-					cullType = CT_FRONT_SIDED;
-					shouldCreateBackSides = true;
-				}
+				cullType = CT_FRONT_SIDED;
+				shouldCreateBackSides = true;
+
 				break;
 			}
 		}

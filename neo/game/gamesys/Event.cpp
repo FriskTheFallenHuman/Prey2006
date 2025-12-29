@@ -139,8 +139,8 @@ idEventDef::idEventDef( const char *command, const char *formatspec, char return
 	eventnum = numEventDefs;
 	for( i = 0; i < eventnum; i++ ) {
 		ev = eventDefList[ i ];
-		if ( strcmp( command, ev->name ) == 0 ) {
-			if ( strcmp( formatspec, ev->formatspec ) != 0 ) {
+		if ( idStr::Cmp( command, ev->name ) == 0 ) {
+			if ( idStr::Cmp( formatspec, ev->formatspec ) != 0 ) {
 				eventError = true;
 				sprintf( eventErrorMsg, "idEvent '%s' defined twice with same name but differing format strings ('%s'!='%s').",
 					command, formatspec, ev->formatspec );
@@ -203,7 +203,7 @@ const idEventDef *idEventDef::FindEvent( const char *name ) {
 	num = numEventDefs;
 	for( i = 0; i < num; i++ ) {
 		ev = eventDefList[ i ];
-		if ( strcmp( name, ev->name ) == 0 ) {
+		if ( idStr::Cmp( name, ev->name ) == 0 ) {
 			return ev;
 		}
 	}
@@ -562,14 +562,6 @@ void idEvent::ServiceEvents( void ) {
 		assert( event->object );
 		event->object->ProcessEventArgPtr( ev, args );
 
-#if 0
-		// event functions may never leave return values on the FPU stack
-		// enable this code to check if any event call left values on the FPU stack
-		if ( !sys->FPU_StackIsEmpty() ) {
-			gameLocal.Error( "idEvent::ServiceEvents %d: %s left a value on the FPU stack\n", num, ev->GetName() );
-		}
-#endif
-
 		// return the event to the free list
 		event->Free();
 
@@ -892,8 +884,6 @@ CreateEventCallbackHandler
 ================
 */
 void CreateEventCallbackHandler( void ) {
-	int num;
-	int count;
 	int i, j, k;
 	char argString[ D_EVENT_MAXARGS + 1 ];
 	idStr string1;

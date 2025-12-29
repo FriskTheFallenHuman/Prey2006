@@ -747,7 +747,7 @@ void idActor::SetupHead( void ) {
 		damageJoint = joint;
 		for( i = 0; i < damageGroups.Num(); i++ ) {
 			if ( damageGroups[ i ] == "head" ) {
-				damageJoint = static_cast<jointHandle_t>( i );
+				damageJoint = i;
 				break;
 			}
 		}
@@ -2573,10 +2573,9 @@ bool idActor::Pain( idEntity *inflictor, idEntity *attacker, int damage, const i
 	}
 
 	if ( g_debugDamage.GetBool() ) {
-		gameLocal.Printf( "Damage: joint: '%s', zone '%s', anim '%s'\n", animator.GetJointName( ( jointHandle_t )location ),
+		gameLocal.Printf( "Damage: joint: '%s', zone '%s', anim '%s'\n", animator.GetJointName( location ),
 			damageGroup.c_str(), painAnim.c_str() );
 	}
-
 
 	return true;
 }
@@ -3116,6 +3115,7 @@ void idActor::Event_PlayCycle( int channel, const char *animname ) {
 
 	default:
 		gameLocal.Error( "Unknown anim group" );
+		break;
 	}
 
 	idThread::ReturnInt( true );
@@ -3224,6 +3224,7 @@ void idActor::Event_IdleAnim( int channel, const char *animname ) {
 
 	default:
 		gameLocal.Error( "Unknown anim group" );
+		break;
 	}
 
 	idThread::ReturnInt( true );
@@ -3275,6 +3276,7 @@ void idActor::Event_SetSyncedAnimWeight( int channel, int anim, float weight ) {
 
 	default:
 		gameLocal.Error( "Unknown anim group" );
+		break;
 	}
 }
 
@@ -3583,7 +3585,6 @@ idActor::Event_NextEnemy
 */
 void idActor::Event_NextEnemy( idEntity *ent ) {
 	idActor *actor;
-
 	if ( !ent || ( ent == this ) ) {
 		actor = enemyList.Next();
 	} else {

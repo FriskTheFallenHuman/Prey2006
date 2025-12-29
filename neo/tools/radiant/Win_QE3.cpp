@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -36,12 +37,14 @@ If you have questions concerning this license or the applicable additional terms
  =======================================================================================================================
  =======================================================================================================================
  */
-void Sys_MarkMapModified() {
+void Sys_MarkMapModified( void )
+{
 	idStr title;
 
-	if ( mapModified != 1 ) {
-		mapModified = 1;	// mark the map as changed
-		title = currentmap;
+	if( mapModified != 1 )
+	{
+		mapModified = 1; // mark the map as changed
+		title		= currentmap;
 		title += " *";
 		title.BackSlashesToSlashes();
 		Sys_SetTitle( title );
@@ -52,7 +55,8 @@ void Sys_MarkMapModified() {
  =======================================================================================================================
  =======================================================================================================================
  */
-void Sys_SetTitle( const char * text ) {
+void Sys_SetTitle( const char* text )
+{
 	g_pParentWnd->SetWindowText( va( "%s: %s", EDITOR_WINDOWTEXT, text ) );
 }
 
@@ -63,16 +67,20 @@ void Sys_SetTitle( const char * text ) {
  */
 HCURSOR waitcursor;
 
-void Sys_BeginWait() {
+void	Sys_BeginWait( void )
+{
 	waitcursor = SetCursor( LoadCursor( NULL, IDC_WAIT ) );
 }
 
-bool Sys_Waiting() {
+bool Sys_Waiting()
+{
 	return ( waitcursor != NULL );
 }
 
-void Sys_EndWait() {
-	if ( waitcursor ) {
+void Sys_EndWait( void )
+{
+	if( waitcursor )
+	{
 		SetCursor( waitcursor );
 		waitcursor = NULL;
 	}
@@ -82,8 +90,9 @@ void Sys_EndWait() {
  =======================================================================================================================
  =======================================================================================================================
  */
-void Sys_GetCursorPos( int * x, int * y ) {
-	POINT	lpPoint;
+void Sys_GetCursorPos( int* x, int* y )
+{
+	POINT lpPoint;
 
 	GetCursorPos( &lpPoint );
 	*x = lpPoint.x;
@@ -94,7 +103,8 @@ void Sys_GetCursorPos( int * x, int * y ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-void Sys_SetCursorPos( int x, int y ) {
+void Sys_SetCursorPos( int x, int y )
+{
 	SetCursorPos( x, y );
 }
 
@@ -102,7 +112,8 @@ void Sys_SetCursorPos( int x, int y ) {
  =======================================================================================================================
  =======================================================================================================================
  */
-double Sys_DoubleTime() {
+double Sys_DoubleTime( void )
+{
 	return clock() / 1000.0;
 }
 
@@ -110,13 +121,18 @@ double Sys_DoubleTime() {
  =======================================================================================================================
  =======================================================================================================================
  */
-int WINAPI QEW_SetupPixelFormat( HDC hDC, bool zbuffer ) {
+int WINAPI QEW_SetupPixelFormat( HDC hDC, bool zbuffer )
+{
 	int pixelFormat = Win_ChoosePixelFormat( hDC );
-	if ( pixelFormat > 0 ) {
-		if ( SetPixelFormat( hDC, pixelFormat, &win32.pfd ) == NULL ) {
+	if( pixelFormat > 0 )
+	{
+		if( SetPixelFormat( hDC, pixelFormat, &win32.pfd ) == NULL )
+		{
 			idLib::Error( "SetPixelFormat failed." );
 		}
-	} else {
+	}
+	else
+	{
 		idLib::Error( "ChoosePixelFormat failed." );
 	}
 
@@ -128,46 +144,51 @@ int WINAPI QEW_SetupPixelFormat( HDC hDC, bool zbuffer ) {
 	FILE DIALOGS
  =======================================================================================================================
  */
-bool ConfirmModified() {
-	if ( !mapModified ) {
+bool ConfirmModified( void )
+{
+	if( !mapModified )
+	{
 		return true;
 	}
 
-	if ( g_pParentWnd->MessageBox( "This will lose changes to the map.", "Unsaved Changes", MB_OKCANCEL | MB_ICONWARNING ) == IDCANCEL ) {
+	if( g_pParentWnd->MessageBox( "This will lose changes to the map.", "Unsaved Changes", MB_OKCANCEL | MB_ICONWARNING ) == IDCANCEL )
+	{
 		return false;
 	}
 
 	return true;
 }
 
-static OPENFILENAME ofn;														/* common dialog box structure */
-static char			szFile[MAX_PATH];											/* filename string */
-static char			szFileTitle[260];											/* file title string */
-static char			szFilter[260] =	"Map file (*.map, *.reg)\0*.map;*.reg\0";	/* filter string */
+static OPENFILENAME ofn;													  /* common dialog box structure */
+static char			szFile[MAX_PATH];										  /* filename string */
+static char			szFileTitle[260];										  /* file title string */
+static char			szFilter[260] = "Map file (*.map, *.reg)\0*.map;*.reg\0"; /* filter string */
 
 /*
  =======================================================================================================================
  =======================================================================================================================
  */
-void OpenDialog() {
+void				OpenDialog( void )
+{
 	/* Place the terminating null character in the szFile. */
 	szFile[0] = '\0';
 
 	/* Set the members of the OPENFILENAME structure. */
 	ZeroMemory( &ofn, sizeof( OPENFILENAME ) );
-	ofn.lStructSize = sizeof( OPENFILENAME );
-	ofn.hwndOwner = g_pParentWnd->GetSafeHwnd();
-	ofn.lpstrFilter = szFilter;
-	ofn.nFilterIndex = 1;
-	ofn.lpstrFile = szFile;
-	ofn.nMaxFile = sizeof( szFile );
-	ofn.lpstrFileTitle = szFileTitle;
-	ofn.nMaxFileTitle = sizeof( szFileTitle );
+	ofn.lStructSize		= sizeof( OPENFILENAME );
+	ofn.hwndOwner		= g_pParentWnd->GetSafeHwnd();
+	ofn.lpstrFilter		= szFilter;
+	ofn.nFilterIndex	= 1;
+	ofn.lpstrFile		= szFile;
+	ofn.nMaxFile		= sizeof( szFile );
+	ofn.lpstrFileTitle	= szFileTitle;
+	ofn.nMaxFileTitle	= sizeof( szFileTitle );
 	ofn.lpstrInitialDir = NULL;
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+	ofn.Flags			= OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
 	/* Display the Open dialog box. */
-	if ( !GetOpenFileName( &ofn ) ) {
+	if( !GetOpenFileName( &ofn ) )
+	{
 		return; // canceled
 	}
 
@@ -181,46 +202,51 @@ void OpenDialog() {
 	Map_LoadFile( ofn.lpstrFile );
 
 	g_PrefsDlg.SavePrefs();
-
 }
 
 /*
  =======================================================================================================================
  =======================================================================================================================
  */
-void SaveAsDialog( bool bRegion ) {
+void SaveAsDialog( bool bRegion )
+{
 	/* Place the terminating null character in the szFile. */
 	szFile[0] = '\0';
 
 	/* Set the members of the OPENFILENAME structure. */
 	ZeroMemory( &ofn, sizeof( OPENFILENAME ) );
-	ofn.lStructSize = sizeof( OPENFILENAME );
-	ofn.hwndOwner = g_pParentWnd->GetSafeHwnd();
-	ofn.lpstrFilter = szFilter;
-	ofn.nFilterIndex = 1;
-	ofn.lpstrFile = szFile;
-	ofn.nMaxFile = sizeof( szFile );
-	ofn.lpstrFileTitle = szFileTitle;
-	ofn.nMaxFileTitle = sizeof( szFileTitle );
+	ofn.lStructSize		= sizeof( OPENFILENAME );
+	ofn.hwndOwner		= g_pParentWnd->GetSafeHwnd();
+	ofn.lpstrFilter		= szFilter;
+	ofn.nFilterIndex	= 1;
+	ofn.lpstrFile		= szFile;
+	ofn.nMaxFile		= sizeof( szFile );
+	ofn.lpstrFileTitle	= szFileTitle;
+	ofn.nMaxFileTitle	= sizeof( szFileTitle );
 	ofn.lpstrInitialDir = "";
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_OVERWRITEPROMPT;
+	ofn.Flags			= OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_OVERWRITEPROMPT;
 
 	/* Display the Open dialog box. */
-	if ( !GetSaveFileName( &ofn ) ) {
+	if( !GetSaveFileName( &ofn ) )
+	{
 		return; // canceled
 	}
 
-	if ( bRegion ) {
+	if( bRegion )
+	{
 		DefaultExtension( ofn.lpstrFile, ".reg" );
-	} else {
+	}
+	else
+	{
 		DefaultExtension( ofn.lpstrFile, ".map" );
 	}
 
-	if ( !bRegion ) {
+	if( !bRegion )
+	{
 		strcpy( currentmap, ofn.lpstrFile );
 		AddNewItem( g_qeglobals.d_lpMruMenu, ofn.lpstrFile );
 		PlaceMenuMRUItem( g_qeglobals.d_lpMruMenu, GetSubMenu( GetMenu( g_pParentWnd->GetSafeHwnd() ), 0 ), ID_FILE_EXIT );
 	}
 
-	Map_SaveFile( ofn.lpstrFile, bRegion );	// ignore region
+	Map_SaveFile( ofn.lpstrFile, bRegion ); // ignore region
 }

@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -34,57 +35,70 @@ If you have questions concerning this license or the applicable additional terms
 #include "BrushSidesDlg.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
 IMPLEMENT_DYNAMIC( CBrushSidesDlg, CDialogEx )
 
-CBrushSidesDlg::CBrushSidesDlg( bool bDoCone, bool bDoSphere, CWnd* pParent )
-	: CDialogEx( IDD_SIDES, pParent ), m_bDoCone( bDoCone ), m_bDoSphere( bDoSphere ) {
+CBrushSidesDlg::CBrushSidesDlg( bool bDoCone, bool bDoSphere, CWnd* pParent ) :
+	CDialogEx( IDD_SIDES, pParent ),
+	m_bDoCone( bDoCone ),
+	m_bDoSphere( bDoSphere )
+{
 }
 
-
-CBrushSidesDlg::~CBrushSidesDlg() {
+CBrushSidesDlg::~CBrushSidesDlg()
+{
 }
 
-void CBrushSidesDlg::DoDataExchange( CDataExchange* pDX ) {
+void CBrushSidesDlg::DoDataExchange( CDataExchange* pDX )
+{
 	CDialogEx::DoDataExchange( pDX );
 	DDX_Control( pDX, IDC_SIDES, m_editSides );
 }
 
 BEGIN_MESSAGE_MAP( CBrushSidesDlg, CDialogEx )
-	ON_BN_CLICKED( IDOK, OnOK )
-	ON_BN_CLICKED( IDCANCEL, OnCancel )
+ON_BN_CLICKED( IDOK, OnOK )
+ON_BN_CLICKED( IDCANCEL, OnCancel )
 END_MESSAGE_MAP()
 
-BOOL CBrushSidesDlg::OnInitDialog() {
+BOOL CBrushSidesDlg::OnInitDialog()
+{
 	CDialogEx::OnInitDialog();
 
 	m_editSides.SetFocus();
 
-	return FALSE;  // return TRUE unless you set the focus to a control
+	return FALSE; // return TRUE unless you set the focus to a control
 }
 
-void CBrushSidesDlg::OnOK() {
+void CBrushSidesDlg::OnOK()
+{
 	CString str;
 	m_editSides.GetWindowText( str );
 
-	if ( m_bDoCone ) {
+	if( m_bDoCone )
+	{
 		Brush_MakeSidedCone( _ttoi( str ) );
-	} else if ( m_bDoSphere ) {
+	}
+	else if( m_bDoSphere )
+	{
 		Brush_MakeSidedSphere( _ttoi( str ) );
-	} else {
+	}
+	else
+	{
 		Brush_MakeSided( _ttoi( str ) );
 	}
 
 	CDialogEx::OnOK();
 }
 
-void CBrushSidesDlg::OnCancel() {
+void CBrushSidesDlg::OnCancel()
+{
 	CDialogEx::OnCancel();
 }
 
-void DoSides( bool bCone, bool bSphere, bool bTorus ) {
+void DoSides( bool bCone, bool bSphere, bool bTorus )
+{
 	CBrushSidesDlg dlg( bCone, bSphere );
 	dlg.DoModal();
 }

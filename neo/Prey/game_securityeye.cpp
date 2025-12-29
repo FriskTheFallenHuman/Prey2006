@@ -326,7 +326,7 @@ void hhSecurityEye::LookAtLinear(idVec3 &pos) {
 	durationPitch = SEC2MS(delta / m_fPathScanRate);
 
 	// Both converge together at the same time
-	duration = max(durationYaw, durationPitch);
+	duration = Max(durationYaw, durationPitch);
 	currentYaw.Init(gameLocal.time, duration, curYaw, localAngles.yaw);
 	currentPitch.Init(gameLocal.time, duration, curPitch, localAngles.pitch);
 }

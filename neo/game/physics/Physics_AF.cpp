@@ -1024,7 +1024,7 @@ idAFConstraint_UniversalJoint::SetShafts
 */
 void idAFConstraint_UniversalJoint::SetShafts( const idVec3 &cardanShaft1, const idVec3 &cardanShaft2 ) {
 	idVec3 cardanAxis;
-	float l id_attribute((unused));
+	float l;
 
 	shaft1 = cardanShaft1;
 	l = shaft1.Normalize();
@@ -4992,8 +4992,7 @@ void idPhysics_AF::EvaluateBodies( float timeStep ) {
 											mat3_zero, axis * body->inverseInertiaTensor * axis.Transpose() );
 
 			body->fl.spatialInertiaSparse = true;
-		}
-		else {
+		} else {
 			idMat3 massMoment = body->mass * SkewSymmetric( body->centerOfMass );
 
 			// spatial inertia in world space
@@ -5441,6 +5440,9 @@ void idPhysics_AF::Evolve( float timeStep ) {
 	// make absolutely sure all contact constraints are satisfied
 	VerifyContactConstraints();
 
+	// DG: from TDM: make friction independent of the frametime (i.e. the time between two calls of this function)
+	float frictionTickMul = timeStep / MS2SEC( USERCMD_MSEC );
+
 	// calculate the position of the bodies for the next physics state
 	for ( i = 0; i < bodies.Num(); i++ ) {
 		body = bodies[i];
@@ -5459,8 +5461,9 @@ void idPhysics_AF::Evolve( float timeStep ) {
 		body->next->worldAxis.OrthoNormalizeSelf();
 
 		// linear and angular friction
-		body->next->spatialVelocity.SubVec3(0) -= body->linearFriction * body->next->spatialVelocity.SubVec3(0);
-		body->next->spatialVelocity.SubVec3(1) -= body->angularFriction * body->next->spatialVelocity.SubVec3(1);
+		// DG: from TDM: use frictionTicMul from above
+		body->next->spatialVelocity.SubVec3(0) -= frictionTickMul * body->linearFriction * body->next->spatialVelocity.SubVec3(0);
+		body->next->spatialVelocity.SubVec3(1) -= frictionTickMul * body->angularFriction * body->next->spatialVelocity.SubVec3(1);
 	}
 }
 
@@ -5836,6 +5839,7 @@ void idPhysics_AF::AddGravity( void ) {
 
 	for ( i = 0; i < bodies.Num(); i++ ) {
 		body = bodies[i];
+
 		// add gravitational force
 		body->current->externalForce.SubVec3( 0 ) += body->mass * gravityVector;
 	}
@@ -8150,7 +8154,7 @@ idPhysics_AF::ReadFromSnapshot
 ================
 */
 void idPhysics_AF::ReadFromSnapshot( const idBitMsgDelta &msg ) {
-	int i, num id_attribute((unused));
+	int i, num;
 	idCQuat quat;
 
 	current.atRest = msg.ReadInt();

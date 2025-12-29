@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -34,48 +35,53 @@ If you have questions concerning this license or the applicable additional terms
 #include "EntityListDlg.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
 CEntityListDlg g_EntityListDlg;
 
 // CEntityListDlg dialog
 
-void CEntityListDlg::ShowDialog() {
-	if ( g_EntityListDlg.GetSafeHwnd() == NULL ) {
+void		   CEntityListDlg::ShowDialog()
+{
+	if( g_EntityListDlg.GetSafeHwnd() == NULL )
+	{
 		g_EntityListDlg.Create( IDD_DLG_ENTITYLIST );
 	}
 	g_EntityListDlg.UpdateList();
 	g_EntityListDlg.ShowWindow( SW_SHOW );
-
 }
 
-CEntityListDlg::CEntityListDlg( CWnd* pParent )
-	: CDialogEx( CEntityListDlg::IDD, pParent ) {
+CEntityListDlg::CEntityListDlg( CWnd* pParent ) :
+	CDialogEx( CEntityListDlg::IDD, pParent )
+{
 }
 
-
-void CEntityListDlg::DoDataExchange( CDataExchange* pDX ) {
+void CEntityListDlg::DoDataExchange( CDataExchange* pDX )
+{
 	CDialogEx::DoDataExchange( pDX );
 	DDX_Control( pDX, IDC_LIST_ENTITY, m_lstEntity );
 	DDX_Control( pDX, IDC_LIST_ENTITIES, listEntities );
 }
 
 BEGIN_MESSAGE_MAP( CEntityListDlg, CDialogEx )
-	ON_BN_CLICKED( IDC_SELECT, OnSelect )
-	ON_WM_CLOSE()
-	ON_WM_DESTROY()
-	ON_LBN_SELCHANGE( IDC_LIST_ENTITIES, OnLbnSelchangeListEntities )
-	ON_LBN_DBLCLK( IDC_LIST_ENTITIES, OnLbnDblclkListEntities )
+ON_BN_CLICKED( IDC_SELECT, OnSelect )
+ON_WM_CLOSE()
+ON_WM_DESTROY()
+ON_LBN_SELCHANGE( IDC_LIST_ENTITIES, OnLbnSelchangeListEntities )
+ON_LBN_DBLCLK( IDC_LIST_ENTITIES, OnLbnDblclkListEntities )
 END_MESSAGE_MAP()
 
 // CEntityListDlg message handlers
 
-void CEntityListDlg::OnSelect() {
+void CEntityListDlg::OnSelect()
+{
 	int index = listEntities.GetCurSel();
-	if ( index != LB_ERR ) {
-		idEditorEntity* ent = reinterpret_cast<idEditorEntity *>( listEntities.GetItemDataPtr( index ) );
-		if ( ent ) {
+	if( index != LB_ERR )
+	{
+		idEditorEntity* ent = reinterpret_cast<idEditorEntity*>( listEntities.GetItemDataPtr( index ) );
+		if( ent )
+		{
 			Select_Deselect();
 			Select_Brush( ent->brushes.onext );
 		}
@@ -83,27 +89,34 @@ void CEntityListDlg::OnSelect() {
 	Sys_UpdateWindows( W_ALL );
 }
 
-void CEntityListDlg::UpdateList() {
+void CEntityListDlg::UpdateList()
+{
 	listEntities.ResetContent();
-	for ( idEditorEntity * pEntity = entities.next ; pEntity != &entities ; pEntity = pEntity->next ) {
+	for( idEditorEntity* pEntity = entities.next; pEntity != &entities; pEntity = pEntity->next )
+	{
 		int index = listEntities.AddString( pEntity->epairs.GetString( "name" ) );
-		if ( index != LB_ERR ) {
-			listEntities.SetItemDataPtr( index, ( void * )pEntity );
+		if( index != LB_ERR )
+		{
+			listEntities.SetItemDataPtr( index, ( void* )pEntity );
 		}
 	}
 }
 
-void CEntityListDlg::OnSysCommand( UINT nID,  LPARAM lParam ) {
-	if ( nID == SC_CLOSE ) {
+void CEntityListDlg::OnSysCommand( UINT nID, LPARAM lParam )
+{
+	if( nID == SC_CLOSE )
+	{
 		DestroyWindow();
 	}
 }
 
-void CEntityListDlg::OnCancel() {
+void CEntityListDlg::OnCancel()
+{
 	DestroyWindow();
 }
 
-BOOL CEntityListDlg::OnInitDialog() {
+BOOL CEntityListDlg::OnInitDialog()
+{
 	CDialogEx::OnInitDialog();
 
 	UpdateList();
@@ -118,18 +131,23 @@ BOOL CEntityListDlg::OnInitDialog() {
 	return TRUE;
 }
 
-void CEntityListDlg::OnClose() {
+void CEntityListDlg::OnClose()
+{
 	DestroyWindow();
 }
 
-void CEntityListDlg::OnLbnSelchangeListEntities() {
+void CEntityListDlg::OnLbnSelchangeListEntities()
+{
 	int index = listEntities.GetCurSel();
-	if ( index != LB_ERR ) {
+	if( index != LB_ERR )
+	{
 		m_lstEntity.DeleteAllItems();
-		idEditorEntity* pEntity = reinterpret_cast<idEditorEntity *>( listEntities.GetItemDataPtr( index ) );
-		if ( pEntity ) {
+		idEditorEntity* pEntity = reinterpret_cast<idEditorEntity*>( listEntities.GetItemDataPtr( index ) );
+		if( pEntity )
+		{
 			int count = pEntity->epairs.GetNumKeyVals();
-			for ( int i = 0; i < count; i++ ) {
+			for( int i = 0; i < count; i++ )
+			{
 				int nParent = m_lstEntity.InsertItem( 0, pEntity->epairs.GetKeyVal( i )->GetKey() );
 				m_lstEntity.SetItem( nParent, 1, LVIF_TEXT, pEntity->epairs.GetKeyVal( i )->GetValue(), 0, 0, 0, ( LPARAM )( pEntity ) );
 			}
@@ -137,6 +155,7 @@ void CEntityListDlg::OnLbnSelchangeListEntities() {
 	}
 }
 
-void CEntityListDlg::OnLbnDblclkListEntities() {
+void CEntityListDlg::OnLbnDblclkListEntities()
+{
 	OnSelect();
 }

@@ -29,16 +29,26 @@ If you have questions concerning this license or the applicable additional terms
 #include "precompiled.h"
 #pragma hdrstop
 
-#include <SDL.h>
+#if SDL_VERSION_ATLEAST(3, 0, 0)
+  // DG: compat with SDL2
+  #define SDL_setenv SDL_setenv_unsafe
+#endif
 
 #include "../renderer/Image.h"
 
-#include "Session_local.h" // DG: For FT_IsDemo/isDemo() hack
+#include "Session_local.h"
 
 #include "../tools/compilers/dmap/dmap.h"
 
+#ifdef _WIN32
+	#include "../sys/win32/win_local.h" // for Conbuf_AppendText()
+#endif // _WIN32
+
 #define	MAX_PRINT_MSG_SIZE	4096
 #define MAX_WARNING_LIST	256
+
+// DG: implemented in Dhewm3SettingsMenu.cpp (the only Com_*_f() function not implemented in this file)
+extern void Com_Dhewm3Settings_f( const idCmdArgs &args );
 
 typedef enum {
 	ERP_NONE,
@@ -54,9 +64,10 @@ typedef enum {
 #endif
 
 struct version_s {
-			version_s( void ) { sprintf( string, "%s.%d%s %s-%s %s %s", ENGINE_VERSION, BUILD_NUMBER, BUILD_DEBUG, BUILD_OS, BUILD_CPU, ID__DATE__, ID__TIME__ ); }
+			version_s( void ) { sprintf( string, "%s.%d%s %s-%s %s %s", ENGINE_VERSION, BUILD_NUMBER, BUILD_DEBUG, BUILD_OS, D3_ARCH, ID__DATE__, ID__TIME__ ); }
 	char	string[256];
 } version;
+
 
 idCVar com_version( "si_version", version.string, CVAR_SYSTEM|CVAR_ROM|CVAR_SERVERINFO, "engine version" );
 idCVar com_skipRenderer( "com_skipRenderer", "0", CVAR_BOOL|CVAR_SYSTEM, "skip the renderer completely" );
@@ -97,8 +108,7 @@ int				com_frameNumber;		// variable frame number
 volatile int	com_ticNumber;			// 60 hz tics
 int				com_editors;			// currently opened editor(s)
 bool			com_editorActive;		//  true if an editor has focus
-
-bool			com_debuggerSupported;	// only set to true when the updateDebugger function is set. see GetAdditionalFunction()
+bool			com_editorCMDActive = false;	// same as com_editors but for cmd tools
 
 #ifdef _WIN32
 HWND			com_hwndMsg = NULL;
@@ -130,20 +140,21 @@ public:
 	virtual void				ActivateTool( bool active );
 	virtual void				WriteConfigToFile( const char *filename );
 	virtual void				WriteFlaggedCVarsToFile( const char *filename, int flags, const char *setCmd );
+	virtual void				DebuggerCheckBreakpoint( idInterpreter *interpreter, idProgram *program, int instructionPointer );
 	virtual void				BeginRedirect( char *buffer, int buffersize, void (*flush)( const char * ) );
 	virtual void				EndRedirect( void );
 	virtual void				SetRefreshOnPrint( bool set );
-	virtual void				Printf( const char *fmt, ... ) id_attribute((format(printf,2,3)));
+	virtual void                Printf( VERIFY_FORMAT_STRING const char *fmt, ... ) ID_INSTANCE_ATTRIBUTE_PRINTF( 1, 2 );
 	virtual void				VPrintf( const char *fmt, va_list arg );
-	virtual void				DPrintf( const char *fmt, ... ) id_attribute((format(printf,2,3)));
-	virtual void				VerbosePrintf( const char *fmt, ... ) id_attribute((format(printf,2,3)));
-	virtual void				VerboseWarning( const char *fmt, ... ) id_attribute((format(printf,2,3)));
-	virtual void				Warning( const char *fmt, ... ) id_attribute((format(printf,2,3)));
-	virtual void				DWarning( const char *fmt, ...) id_attribute((format(printf,2,3)));
+	virtual void				VerbosePrintf( VERIFY_FORMAT_STRING const char *fmt, ... ) ID_INSTANCE_ATTRIBUTE_PRINTF( 1, 2 );
+	virtual void				VerboseWarning( VERIFY_FORMAT_STRING const char *fmt, ... ) ID_INSTANCE_ATTRIBUTE_PRINTF( 1, 2 );
+	virtual void                DPrintf( VERIFY_FORMAT_STRING const char *fmt, ... ) ID_INSTANCE_ATTRIBUTE_PRINTF( 1, 2 );
+	virtual void                Warning( VERIFY_FORMAT_STRING const char *fmt, ... ) ID_INSTANCE_ATTRIBUTE_PRINTF( 1, 2 );
+	virtual void                DWarning( VERIFY_FORMAT_STRING const char *fmt, ... ) ID_INSTANCE_ATTRIBUTE_PRINTF( 1, 2 );
 	virtual void				PrintWarnings( void );
 	virtual void				ClearWarnings( const char *reason );
-	virtual void				Error( const char *fmt, ... ) id_attribute((format(printf,2,3)));
-	virtual void				FatalError( const char *fmt, ... ) id_attribute((format(printf,2,3)));
+	virtual void                Error( VERIFY_FORMAT_STRING const char *fmt, ... ) ID_INSTANCE_ATTRIBUTE_PRINTF( 1, 2 );
+	virtual void                FatalError( VERIFY_FORMAT_STRING const char *fmt, ... ) ID_INSTANCE_ATTRIBUTE_PRINTF( 1, 2 );
 	virtual const idLangDict *	GetLanguageDict( void );
 
 	virtual const char *		KeysFromBinding( const char *bind );
@@ -159,22 +170,6 @@ public:
 	virtual void				APrintf( const char *fmt, ... ) {}	// Another print interface for animation module
 	virtual double				GetAsyncTime() { return 0; };						// Method for safely retrieving async profile info
 	virtual bool				CanUseOpenAL( void ) { return true; }
-
-	// DG: hack to allow adding callbacks and exporting additional functions without breaking the game ABI
-	//     see Common.h for longer explanation...
-
-	// returns true if setting the callback was successful, else false
-	// When a game DLL is unloaded the callbacks are automatically removed from the Engine
-	// so you usually don't have to worry about that; but you can call this with cb = NULL
-	// and userArg = NULL to remove a callback manually (e.g. if userArg refers to an object you deleted)
-	virtual bool				SetCallback(idCommon::CallbackType cbt, idCommon::FunctionPointer cb, void* userArg);
-
-	// returns true if that function is available in this version of dhewm3
-	// *out_fnptr will be the function (you'll have to cast it probably)
-	// *out_userArg will be an argument you have to pass to the function, if appropriate (else NULL)
-	// NOTE: this doesn't do anything yet, but allows to add ugly mod-specific hacks without breaking the Game interface
-	virtual bool				GetAdditionalFunction(idCommon::FunctionType ft, idCommon::FunctionPointer* out_fnptr, void** out_userArg);
-
 	// DG end
 
 	void						InitGame( void );
@@ -201,7 +196,6 @@ private:
 	void						DumpWarnings( void );
 	void						SingleAsyncTic( void );
 	void						LoadGameDLL( void );
-	void						LoadGameDLLbyName( const char *dll, idStr& s );
 	void						UnloadGameDLL( void );
 	void						DrawSplashScreen( void );
 	void						FilterLangList( idStrList* list, idStr lang );
@@ -243,7 +237,6 @@ idCommonLocal::idCommonLocal( void ) {
 	com_fullyInitialized = false;
 	com_refreshOnPrint = false;
 	com_errorEntered = 0;
-	com_debuggerSupported = false;
 
 	strcpy( errorMessage, "" );
 
@@ -576,9 +569,13 @@ void idCommonLocal::PrintWarnings( void ) {
 	}
 	if ( warningList.Num() ) {
 		if ( warningList.Num() >= MAX_WARNING_LIST ) {
-			Printf( "more than %d warnings\n", MAX_WARNING_LIST );
+			Printf("----- more than %d warnings -----\n", MAX_WARNING_LIST );
 		} else {
-			Printf( "%d warnings\n", warningList.Num() );
+			if ( warningList.Num() > 1 ) {
+				Printf("----- %d warnings -----\n", warningList.Num() );
+			} else {
+				Printf("----- %d warning -----\n", warningList.Num() );
+			}
 		}
 	}
 }
@@ -617,9 +614,13 @@ void idCommonLocal::DumpWarnings( void ) {
 			warningFile->Printf( "WARNING: %s\n", warningList[i].c_str() );
 		}
 		if ( warningList.Num() >= MAX_WARNING_LIST ) {
-			warningFile->Printf( "\nmore than %d warnings!\n", MAX_WARNING_LIST );
+			warningFile->Printf("----- more than %d warnings -----\n", MAX_WARNING_LIST );
 		} else {
-			warningFile->Printf( "\n%d warnings.\n", warningList.Num() );
+			if ( warningList.Num() > 1 ) {
+				warningFile->Printf("----- %d warnings -----\n", warningList.Num() );
+			} else {
+				warningFile->Printf("----- %d warning -----\n", warningList.Num() );
+			}
 		}
 
 		warningFile->Printf( "\n\n----- Errors -----\n\n" );
@@ -729,6 +730,9 @@ void idCommonLocal::Error( const char *fmt, ... ) {
 		cmdSystem->BufferCommandText( CMD_EXEC_NOW, "vid_restart partial windowed\n" );
 	}
 
+	// make sure no cmd tools are active
+	com_editorCMDActive = false;
+
 	Shutdown();
 
 	Sys_Error( "%s", errorMessage );
@@ -815,9 +819,9 @@ command lines.
 
 All of these are valid:
 
-doom +set test blah +map test
-doom set test blah+map test
-doom set test blah + map test
+game +set test blah +map test
+game set test blah+map test
+game set test blah + map test
 
 ============================================================================
 */
@@ -998,15 +1002,21 @@ idCommonLocal::InitTool
 =================
 */
 void idCommonLocal::InitTool( const toolFlag_t tool, const idDict *dict ) {
-#ifdef ID_ALLOW_TOOLS
+#ifndef IMGUI_DISABLE
 	if ( tool & EDITOR_SOUND ) {
-		SoundEditorInit( dict );
+		ImGuiTools::SoundEditorInit( dict );
 	} else if ( tool & EDITOR_LIGHT ) {
-		LightEditorInit( dict );
+		ImGuiTools::LightEditorInit( dict );
 	} else if ( tool & EDITOR_PARTICLE ) {
-		ParticleEditorInit( dict );
+		ImGuiTools::ParticleEditorInit( dict );
 	} else if ( tool & EDITOR_AF ) {
-		AFEditorInit( dict );
+		ImGuiTools::AfEditorInit(); // TODO: dict ?
+	//} else if ( tool & EDITOR_PDA ) {
+	//	ImGuiTools::PDAEditorInit( dict );
+	} else if ( tool & EDITOR_SCRIPT ) {
+		ImGuiTools::ScriptEditorInit( dict );
+	} else if ( tool & EDITOR_DECL ) {
+		ImGuiTools::DeclBrowserInit( dict );
 	}
 #endif
 }
@@ -1188,17 +1198,6 @@ Com_EditGUIs_f
 static void Com_EditGUIs_f( const idCmdArgs &args ) {
 	GUIEditorInit();
 }
-
-/*
-=============
-Com_MaterialEditor_f
-=============
-*/
-static void Com_MaterialEditor_f( const idCmdArgs &args ) {
-	// Turn off sounds
-	soundSystem->SetMute( true );
-	MaterialEditorInit();
-}
 #endif // ID_ALLOW_TOOLS
 
 /*
@@ -1242,34 +1241,19 @@ static void PrintMemInfo_f( const idCmdArgs &args ) {
 	fileSystem->CloseFile( f );
 }
 
-#ifdef ID_ALLOW_TOOLS
+
 /*
 ==================
 Com_EditLights_f
 ==================
 */
 static void Com_EditLights_f( const idCmdArgs &args ) {
-	LightEditorInit( NULL );
+#ifndef IMGUI_DISABLE
+	D3::ImGuiHooks::ShowInfoOverlay( "Shoot a light to open it in the Light Editor" );
 	cvarSystem->SetCVarInteger( "g_editEntityMode", 1 );
-}
-
-/*
-==================
-Com_EditSounds_f
-==================
-*/
-static void Com_EditSounds_f( const idCmdArgs &args ) {
-	SoundEditorInit( NULL );
-	cvarSystem->SetCVarInteger( "g_editEntityMode", 2 );
-}
-
-/*
-==================
-Com_EditDecls_f
-==================
-*/
-static void Com_EditDecls_f( const idCmdArgs &args ) {
-	DeclBrowserInit( NULL );
+#else
+	common->Warning( "Editors not available because the engine was built without ImGui or MFC Tools" );
+#endif
 }
 
 /*
@@ -1278,7 +1262,12 @@ Com_EditAFs_f
 ==================
 */
 static void Com_EditAFs_f( const idCmdArgs &args ) {
-	AFEditorInit( NULL );
+#ifndef IMGUI_DISABLE
+	ImGuiTools::AfEditorInit();
+	cvarSystem->SetCVarInteger( "g_editEntityMode", 3 );
+#else
+	common->Warning( "Editors not available because the engine was built without ImGui or MFC Tools" );
+#endif
 }
 
 /*
@@ -1286,8 +1275,25 @@ static void Com_EditAFs_f( const idCmdArgs &args ) {
 Com_EditParticles_f
 ==================
 */
-static void Com_EditParticles_f( const idCmdArgs &args ) {
-	ParticleEditorInit( NULL );
+static void Com_EditParticles_f(const idCmdArgs& args) {
+#ifndef IMGUI_DISABLE
+	ImGuiTools::ParticleEditorInit( NULL );
+#else
+	common->Warning( "Editors not available because the engine was built without ImGui or MFC Tools" );
+#endif
+}
+
+/*
+==================
+Com_EditDecls_f
+==================
+*/
+static void Com_EditDecls_f( const idCmdArgs &args ) {
+#ifndef IMGUI_DISABLE
+	ImGuiTools::DeclBrowserInit( NULL );
+#else
+	common->Warning("Editors not available because the engine was built without ImGui or MFC Tools");
+#endif
 }
 
 /*
@@ -1296,9 +1302,43 @@ Com_EditScripts_f
 ==================
 */
 static void Com_EditScripts_f( const idCmdArgs &args ) {
-	ScriptEditorInit( NULL );
+#ifndef IMGUI_DISABLE
+	ImGuiTools::ScriptEditorInit( NULL );
+#else
+	common->Warning("Editors not available because the engine was built without ImGui or MFC Tools");
+#endif
 }
-#endif // ID_ALLOW_TOOLS
+
+/*
+=============
+Com_MaterialEditor_f
+=============
+*/
+static void Com_MaterialEditor_f( const idCmdArgs &args ) {
+	// Turn off sounds
+	soundSystem->SetMute( true );
+#ifndef IMGUI_DISABLE
+	ImGuiTools::MaterialEditorInit();
+#elif defined(ID_ALLOW_TOOLS)
+	MaterialEditorInit();
+#else
+	common->Warning("Editors not available because the engine was built without ImGui or MFC Tools");
+#endif
+}
+
+/*
+==================
+Com_EditSounds_f
+==================
+*/
+static void Com_EditSounds_f( const idCmdArgs &args ) {
+#ifndef IMGUI_DISABLE
+	ImGuiTools::SoundEditorInit( NULL );
+	cvarSystem->SetCVarInteger( "g_editEntityMode", 2 );
+#else
+	common->Warning( "Editors not available because the engine was built without ImGui or MFC Tools" );
+#endif
+}
 
 /*
 ==================
@@ -1462,7 +1502,7 @@ void Com_ExecMachineSpec_f( const idCmdArgs &args ) {
 		cvarSystem->SetCVarInteger( "s_maxSoundsPerShader", 0, CVAR_ARCHIVE );
 		cvarSystem->SetCVarInteger( "image_useNormalCompression", 0, CVAR_ARCHIVE );
 		if ( !nores ) // DG: added optional "nores" argument
-			cvarSystem->SetCVarInteger( "", 4, CVAR_ARCHIVE );
+			cvarSystem->SetCVarInteger( "r_mode", 4, CVAR_ARCHIVE );
 		cvarSystem->SetCVarInteger( "r_multiSamples", 0, CVAR_ARCHIVE );
 	} else if ( com_imageQuality.GetInteger() == 1 ) { // medium
 		cvarSystem->SetCVarString( "image_filter", "GL_LINEAR_MIPMAP_LINEAR", CVAR_ARCHIVE );
@@ -2303,7 +2343,9 @@ void idCommonLocal::InitCommands( void ) {
 	cmdSystem->AddCommand( "setMachineSpec", Com_SetMachineSpec_f, CMD_FL_SYSTEM, "detects system capabilities and sets com_machineSpec to appropriate value" );
 	cmdSystem->AddCommand( "execMachineSpec", Com_ExecMachineSpec_f, CMD_FL_SYSTEM, "execs the appropriate config files and sets cvars based on com_machineSpec" );
 
-#if	!defined( ID_DEDICATED )
+	cmdSystem->AddCommand( "dhewm3Settings", Com_Dhewm3Settings_f, CMD_FL_SYSTEM, "Toggles (opens/closes) the (advanced) settings menu" );
+
+#if	!defined( ID_DEMO_BUILD ) && !defined( ID_DEDICATED )
 	// compilers
 	cmdSystem->AddCommand( "dmap", Dmap_f, CMD_FL_TOOL, "compiles a map", idCmdSystem::ArgCompletion_MapName );
 	cmdSystem->AddCommand( "renderbump", RenderBump_f, CMD_FL_TOOL, "renders a bump map", idCmdSystem::ArgCompletion_ModelName );
@@ -2312,22 +2354,27 @@ void idCommonLocal::InitCommands( void ) {
 	cmdSystem->AddCommand( "runAASDir", RunAASDir_f, CMD_FL_TOOL, "compiles AAS files for all maps in a folder", idCmdSystem::ArgCompletion_MapName );
 	cmdSystem->AddCommand( "runReach", RunReach_f, CMD_FL_TOOL, "calculates reachability for an AAS file", idCmdSystem::ArgCompletion_MapName );
 	cmdSystem->AddCommand( "roq", RoQFileEncode_f, CMD_FL_TOOL, "encodes a roq file" );
+	cmdSystem->AddCommand( "MatbuildDir", MatBuildDir_f, CMD_FL_TOOL, "builds interaction materials for a given directory.", idCmdSystem::ArgCompletion_MapName );
+#endif
+
+#ifndef IMGUI_DISABLE
+	// editors
+	cmdSystem->AddCommand( "editLights", Com_EditLights_f, CMD_FL_TOOL, "launches the in-game Light Editor" );
+	cmdSystem->AddCommand( "editSounds", Com_EditSounds_f, CMD_FL_TOOL, "launches the in-game Sound Editor" );
+	cmdSystem->AddCommand( "editAFs", Com_EditAFs_f, CMD_FL_TOOL, "launches the in-game Articulated Figure Editor" );
+	cmdSystem->AddCommand( "editDecls", Com_EditDecls_f, CMD_FL_TOOL, "launches the in-game Declaration Editor" );
+	cmdSystem->AddCommand( "editParticles", Com_EditParticles_f, CMD_FL_TOOL, "launches the in-game Particle Editor" );
+	cmdSystem->AddCommand( "editScripts", Com_EditScripts_f, CMD_FL_TOOL, "launches the in-game Script Editor" );
+	//BSM Nerve: Add support for the material editor
+	cmdSystem->AddCommand( "materialEditor", Com_MaterialEditor_f, CMD_FL_TOOL, "launches the Material Editor" );
 #endif
 
 #ifdef ID_ALLOW_TOOLS
-	// editors
+#ifdef _WIN32
 	cmdSystem->AddCommand( "editor", Com_Editor_f, CMD_FL_TOOL, "launches the level editor Radiant" );
-	cmdSystem->AddCommand( "editLights", Com_EditLights_f, CMD_FL_TOOL, "launches the in-game Light Editor" );
-	cmdSystem->AddCommand( "editSounds", Com_EditSounds_f, CMD_FL_TOOL, "launches the in-game Sound Editor" );
-	cmdSystem->AddCommand( "editDecls", Com_EditDecls_f, CMD_FL_TOOL, "launches the in-game Declaration Editor" );
-	cmdSystem->AddCommand( "editAFs", Com_EditAFs_f, CMD_FL_TOOL, "launches the in-game Articulated Figure Editor" );
-	cmdSystem->AddCommand( "editParticles", Com_EditParticles_f, CMD_FL_TOOL, "launches the in-game Particle Editor" );
-	cmdSystem->AddCommand( "editScripts", Com_EditScripts_f, CMD_FL_TOOL, "launches the in-game Script Editor" );
 	cmdSystem->AddCommand( "editGUIs", Com_EditGUIs_f, CMD_FL_TOOL, "launches the GUI Editor" );
 	cmdSystem->AddCommand( "debugger", Com_ScriptDebugger_f, CMD_FL_TOOL, "launches the Script Debugger" );
-
-	//BSM Nerve: Add support for the material editor
-	cmdSystem->AddCommand( "materialEditor", Com_MaterialEditor_f, CMD_FL_TOOL, "launches the Material Editor" );
+#endif
 #endif
 
 	cmdSystem->AddCommand( "printMemInfo", PrintMemInfo_f, CMD_FL_SYSTEM, "prints memory debugging data" );
@@ -2423,6 +2470,9 @@ void idCommonLocal::Frame( void ) {
 		}
 
 		eventLoop->RunEventLoop();
+
+		// DG: prepare new ImGui frame - I guess this is a good place, as all new events should be available?
+		D3::ImGuiHooks::NewFrame();
 
 		com_frameTime = com_ticNumber * USERCMD_MSEC;
 
@@ -2588,78 +2638,31 @@ void idCommonLocal::Async( void ) {
 
 /*
 =================
-idCommonLocal::LoadGameDLLbyName
-
-Helper for LoadGameDLL() to make it less painful to try different dll names.
-=================
-*/
-void idCommonLocal::LoadGameDLLbyName( const char *dll, idStr& s ) {
-	s.CapLength(0);
-	// try next to the binary first (build tree)
-	if (Sys_GetPath(PATH_EXE, s)) {
-		// "s = " seems superfluous, but works around g++ 4.7 bug else StripFilename()
-		// (and possibly even CapLength()) seems to be "optimized" away and the string contains garbage
-		s = s.StripFilename();
-		s.AppendPath(dll);
-		gameDLL = sys->DLL_Load(s);
-	}
-
-	#if defined(_WIN32)
-		// then the lib/ dir relative to the binary on windows
-		if (!gameDLL && Sys_GetPath(PATH_EXE, s)) {
-			s.StripFilename();
-			s.AppendPath("lib");
-			s.AppendPath(dll);
-			gameDLL = sys->DLL_Load(s);
-		}
-	#else
-		// then the install folder on *nix
-		if (!gameDLL) {
-			s = BUILD_LIBDIR;
-			s.AppendPath(dll);
-			gameDLL = sys->DLL_Load(s);
-		}
-	#endif
-}
-
-/*
-=================
 idCommonLocal::LoadGameDLL
 =================
 */
 void idCommonLocal::LoadGameDLL( void ) {
 #ifdef __DOOM_DLL__
-	const char		*fs_game;
-	char			dll[MAX_OSPATH];
-	idStr			s;
+	char			dllPath[ MAX_OSPATH ];
 
 	gameImport_t	gameImport;
 	gameExport_t	gameExport;
 	GetGameAPI_t	GetGameAPI;
 
-	fs_game = cvarSystem->GetCVarString("fs_game");
-	if (!fs_game || !fs_game[0])
-		fs_game = BASE_GAMEDIR;
+	fileSystem->FindDLL( "game" D3_ARCH, dllPath, true );
 
-	gameDLL = 0;
-
-	sys->DLL_GetFileName(fs_game, dll, sizeof(dll));
-	LoadGameDLLbyName(dll, s);
-
-	// there was no gamelib for this mod, use default one from base game
-	if (!gameDLL) {
-		common->Printf( "\n" );
-		common->Warning( "couldn't load mod-specific %s, defaulting to base game's library!\n", dll );
-		sys->DLL_GetFileName(BASE_GAMEDIR, dll, sizeof(dll));
-		LoadGameDLLbyName(dll, s);
+	if ( !dllPath[ 0 ] ) {
+		common->FatalError( "couldn't find game dynamic library" );
+		return;
 	}
+
+	common->DPrintf( "Loading game DLL: '%s'\n", dllPath );
+	gameDLL = sys->DLL_Load( dllPath );
 
 	if ( !gameDLL ) {
 		common->FatalError( "couldn't load game dynamic library" );
 		return;
 	}
-
-	common->Printf("loaded game library '%s'.\n", s.c_str());
 
 	GetGameAPI = (GetGameAPI_t) Sys_DLL_GetProcAddress( gameDLL, "GetGameAPI" );
 	if ( !GetGameAPI ) {
@@ -2726,9 +2729,6 @@ void idCommonLocal::UnloadGameDLL( void ) {
 	gameEdit = NULL;
 
 #endif
-
-	com_debuggerSupported = false; // HvG: Reset debugger availability.
-	gameCallbacks.Reset(); // DG: these callbacks are invalid now because DLL has been unloaded
 }
 
 /*
@@ -2805,7 +2805,7 @@ static bool checkForHelp(int argc, char **argv)
 				// write it to stdout
 				#define WriteString(s) fputs(s, stdout);
 #endif // _WIN32
-				WriteString(ENGINE_VERSION " - http://dhewm3.org\n");
+				WriteString(ENGINE_VERSION " - https://krispy-the-goat.itch.io/prey-2006\n");
 				WriteString("Commandline arguments:\n");
 				WriteString("-h or --help: Show this help\n");
 				WriteString("+<command> [command arguments]\n");
@@ -2905,7 +2905,9 @@ void idCommonLocal::Init( int argc, char **argv ) {
 	// we want to use the SDL event queue for dedicated servers. That
 	// requires video to be initialized, so we just use the dummy
 	// driver for headless boxen
-#if SDL_VERSION_ATLEAST(2, 0, 0)
+#if SDL_VERSION_ATLEAST(3, 0, 0)
+	SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "dummy");
+#elif SDL_VERSION_ATLEAST(2, 0, 0)
 	SDL_setenv("SDL_VIDEODRIVER", "dummy", 1);
 #else
 	char dummy[] = "SDL_VIDEODRIVER=dummy\0";
@@ -2913,8 +2915,21 @@ void idCommonLocal::Init( int argc, char **argv ) {
 #endif
 #endif
 
-	if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK)) // init joystick to work around SDL 2.0.9 bug #4391
-		Sys_Error("Error while initializing SDL: %s", SDL_GetError());
+#if SDL_VERSION_ATLEAST(3, 0, 0)
+	if ( ! SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMEPAD ) ) {
+		if ( SDL_Init( SDL_INIT_VIDEO ) ) { // retry without joystick/gamepad if it failed
+			Sys_Printf( "WARNING: Couldn't get SDL gamepad support! Gamepads won't work!\n" );
+		} else
+#elif SDL_VERSION_ATLEAST(2, 0, 0)
+	if ( SDL_Init( SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER ) != 0 ) {
+		if ( SDL_Init( SDL_INIT_TIMER | SDL_INIT_VIDEO) == 0 ) { // retry without joystick/gamecontroller if it failed
+			Sys_Printf( "WARNING: Couldn't get SDL gamecontroller support! Gamepads won't work!\n" );
+		} else
+#endif
+		{
+			Sys_Error("Error while initializing SDL: %s", SDL_GetError());
+		}
+	}
 
 	Sys_InitThreads();
 
@@ -2959,14 +2974,22 @@ void idCommonLocal::Init( int argc, char **argv ) {
 		idCVar::RegisterStaticVars();
 
 		// print engine version
-#if SDL_VERSION_ATLEAST(2, 0, 0)
+#if SDL_VERSION_ATLEAST(3, 0, 0)
+		int sdlv = SDL_GetVersion();
+		int sdlvmaj = SDL_VERSIONNUM_MAJOR(sdlv);
+		int sdlvmin = SDL_VERSIONNUM_MINOR(sdlv);
+		int sdlvmicro = SDL_VERSIONNUM_MICRO(sdlv);
+		Printf( "%s using SDL v%d.%d.%d\n", version.string, sdlvmaj, sdlvmin, sdlvmicro );
+#else
+  #if SDL_VERSION_ATLEAST(2, 0, 0)
 		SDL_version sdlv;
 		SDL_GetVersion(&sdlv);
-#else
+  #else
 		SDL_version sdlv = *SDL_Linked_Version();
-#endif
+  #endif
 		Printf( "%s using SDL v%u.%u.%u\n",
 				version.string, sdlv.major, sdlv.minor, sdlv.patch );
+#endif
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 		Printf( "SDL video driver: %s\n", SDL_GetCurrentVideoDriver() );
@@ -3025,9 +3048,6 @@ void idCommonLocal::Init( int argc, char **argv ) {
 
 		ClearCommandLine();
 
-		// load the persistent console history
-		console->LoadHistory();
-
 		com_fullyInitialized = true;
 	}
 
@@ -3055,9 +3075,6 @@ void idCommonLocal::Shutdown( void ) {
 
 	idAsyncNetwork::server.Kill();
 	idAsyncNetwork::client.Shutdown();
-
-	// save persistent console history
-	console->SaveHistory();
 
 	// game specific shut down
 	ShutdownGame( false );
@@ -3274,7 +3291,7 @@ void idCommonLocal::ShutdownGame( bool reloading ) {
 	UnloadGameDLL();
 
 	// dump warnings to "warnings.txt"
-#ifdef DEBUG
+#ifdef _DEBUG
 	DumpWarnings();
 #endif
 
@@ -3282,87 +3299,15 @@ void idCommonLocal::ShutdownGame( bool reloading ) {
 	fileSystem->Shutdown( reloading );
 }
 
-// DG: below here are hacks to allow adding callbacks and exporting additional functions to the
-//     Game DLL without breaking the ABI. See Common.h for longer explanation...
-
-
-// returns true if setting the callback was successful, else false
-// When a game DLL is unloaded the callbacks are automatically removed from the Engine
-// so you usually don't have to worry about that; but you can call this with cb = NULL
-// and userArg = NULL to remove a callback manually (e.g. if userArg refers to an object you deleted)
-bool idCommonLocal::SetCallback(idCommon::CallbackType cbt, idCommon::FunctionPointer cb, void* userArg)
-{
-	switch(cbt)
-	{
-		case idCommon::CB_ReloadImages:
-			gameCallbacks.reloadImagesCB = (idGameCallbacks::ReloadImagesCallback)cb;
-			gameCallbacks.reloadImagesUserArg = userArg;
-			return true;
-
-		default:
-			Warning("Called idCommon::SetCallback() with unknown CallbackType %d!\n", cbt);
-			return false;
-	}
-}
-
-static bool isDemo( void )
-{
-	return sessLocal.IsDemoVersion();
-}
-
-static bool updateDebugger( idInterpreter *interpreter, idProgram *program, int instructionPointer )
-{
-	if (com_editors & EDITOR_DEBUGGER)
-	{
+/*
+=================
+idCommonLocal::DebuggerCheckBreakpoint
+=================
+*/
+void idCommonLocal::DebuggerCheckBreakpoint( idInterpreter *interpreter, idProgram *program, int instructionPointer ) {
+	if ( com_enableDebuggerServer.GetBool() ) {
 		DebuggerServerCheckBreakpoint( interpreter, program, instructionPointer );
-		return true;
 	}
-	return false;
-}
-
-// returns true if that function is available in this version of dhewm3
-// *out_fnptr will be the function (you'll have to cast it probably)
-// *out_userArg will be an argument you have to pass to the function, if appropriate (else NULL)
-bool idCommonLocal::GetAdditionalFunction(idCommon::FunctionType ft, idCommon::FunctionPointer* out_fnptr, void** out_userArg)
-{
-	if(out_userArg != NULL)
-		*out_userArg = NULL;
-
-	if(out_fnptr == NULL)
-	{
-		Warning("Called idCommon::GetAdditionalFunction() with out_fnptr == NULL!\n");
-		return false;
-	}
-
-	switch(ft)
-	{
-		case idCommon::FT_IsDemo:
-			*out_fnptr = (idCommon::FunctionPointer)isDemo;
-			// don't set *out_userArg, this function takes no arguments
-			return true;
-
-		case idCommon::FT_UpdateDebugger:
-			*out_fnptr = (idCommon::FunctionPointer)updateDebugger;
-			com_debuggerSupported = true;
-			return true;
-
-		default:
-			*out_fnptr = NULL;
-			Warning("Called idCommon::SetCallback() with unknown FunctionType %d!\n", ft);
-			return false;
-	}
-}
-
-idGameCallbacks gameCallbacks;
-
-idGameCallbacks::idGameCallbacks()
-: reloadImagesCB(NULL), reloadImagesUserArg(NULL)
-{}
-
-void idGameCallbacks::Reset()
-{
-	reloadImagesCB = NULL;
-	reloadImagesUserArg = NULL;
 }
 
 /*

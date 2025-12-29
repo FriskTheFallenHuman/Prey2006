@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -32,54 +33,71 @@ If you have questions concerning this license or the applicable additional terms
 
 // CDialogTextures dialog
 
-class CDialogTextures : public CDialogEx {
-// Construction
+class CDialogTextures : public CDialogEx
+{
+	// Construction
 public:
-	enum { NONE, TEXTURES, MATERIALS, MODELS, SCRIPTS, SOUNDS, SOUNDPARENT, GUIS, PARTICLES, FX, NUMIDS };
-	static const char * TypeNames[NUMIDS];
-	CDialogTextures( CWnd* pParent = NULL );   // standard constructor
+	enum
+	{
+		NONE,
+		TEXTURES,
+		MATERIALS,
+		MODELS,
+		SCRIPTS,
+		SOUNDS,
+		SOUNDPARENT,
+		GUIS,
+		PARTICLES,
+		FX,
+		NUMIDS
+	};
+	static const char* TypeNames[NUMIDS];
+	CDialogTextures( CWnd* pParent = NULL ); // standard constructor
 	void OnCancel();
 	void CollapseEditor();
-	void SelectCurrentItem( bool collapse, const char * name, int id );
+	void SelectCurrentItem( bool collapse, const char* name, int id );
 
-	enum { IDD = IDD_DIALOG_TEXTURELIST };
-	CButton	m_chkHideRoot;
-	CButton	m_btnRefresh;
-	CButton	m_btnLoad;
-	idGLWidget m_wndPreview;
-	CImageList m_treeimageList;
-	CBitmap m_treebitmap;
-	CTreeCtrl	m_treeTextures;
+	enum
+	{
+		IDD = IDD_DIALOG_TEXTURELIST
+	};
+	CButton				 m_chkHideRoot;
+	CButton				 m_btnRefresh;
+	CButton				 m_btnLoad;
+	idGLWidget			 m_wndPreview;
+	CImageList			 m_treeimageList;
+	CBitmap				 m_treebitmap;
+	CTreeCtrl			 m_treeTextures;
 
-	idGLDrawable m_testDrawable;
+	idGLDrawable		 m_testDrawable;
 	idGLDrawableMaterial m_drawMaterial;
-	idGLDrawableModel m_drawModel;
-	const idMaterial * editMaterial;
-	idStr editGui;
-	idStr currentFile;
-	idStr mediaName;
-	bool setTexture;
-	bool ignoreCollapse;
-	int mode;
+	idGLDrawableModel	 m_drawModel;
+	const idMaterial*	 editMaterial;
+	idStr				 editGui;
+	idStr				 currentFile;
+	idStr				 mediaName;
+	bool				 setTexture;
+	bool				 ignoreCollapse;
+	int					 mode;
 
 protected:
-	virtual void DoDataExchange( CDataExchange* pDX );    // DDX/DDV support
+	virtual void DoDataExchange( CDataExchange* pDX ); // DDX/DDV support
 	virtual BOOL PreCreateWindow( CREATESTRUCT& cs );
 
 protected:
-	void addStrList( const char * root, const idStrList& list, int id );
-	void addScripts( bool rootItems );
-	void addModels( bool rootItems );
-	void addMaterials( bool rootItems );
-	void addSounds( bool rootItems );
-	void addGuis( bool rootItems );
-	void addFXs( bool rootItems );
-	void addParticles( bool rootItems );
-	void BuildTree();
-	void CollapseChildren( HTREEITEM parent );
-	const char * buildItemName( HTREEITEM item, const char * rootName );
-	bool loadTree( HTREEITEM item, const idStr& name, CWaitDlg* dlg );
-	HTREEITEM findItem( const char * name, HTREEITEM item, HTREEITEM* foundItem );
+	void		 addStrList( const char* root, const idStrList& list, int id );
+	void		 addScripts( bool rootItems );
+	void		 addModels( bool rootItems );
+	void		 addMaterials( bool rootItems );
+	void		 addSounds( bool rootItems );
+	void		 addGuis( bool rootItems );
+	void		 addFXs( bool rootItems );
+	void		 addParticles( bool rootItems );
+	void		 BuildTree();
+	void		 CollapseChildren( HTREEITEM parent );
+	const char*	 buildItemName( HTREEITEM item, const char* rootName );
+	bool		 loadTree( HTREEITEM item, const idStr& name, CWaitDlg* dlg );
+	HTREEITEM	 findItem( const char* name, HTREEITEM item, HTREEITEM* foundItem );
 
 	virtual void OnOK();
 	virtual BOOL OnInitDialog();
@@ -91,14 +109,14 @@ protected:
 	afx_msg void OnPreview();
 	afx_msg void OnMaterialEdit();
 	afx_msg void OnMaterialInfo();
-	afx_msg int OnCreate( LPCREATESTRUCT lpCreateStruct );
+	afx_msg int	 OnCreate( LPCREATESTRUCT lpCreateStruct );
 	afx_msg void OnSize( UINT nType, int cx, int cy );
 	afx_msg void OnCheckHideroot();
 
 	DECLARE_MESSAGE_MAP()
 
-	idHashTable<HTREEITEM>	quickTree;
-	idStr					itemName;
+	idHashTable<HTREEITEM> quickTree;
+	idStr				   itemName;
 
 public:
 	virtual BOOL PreTranslateMessage( MSG* pMsg );

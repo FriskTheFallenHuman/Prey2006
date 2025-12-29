@@ -504,7 +504,7 @@ void hhTalon::Think(void) {
 	}
 
 	// Shadow suppression based upon the player
-	if ( g_showPlayerShadow.GetBool() ) {
+	if ( cvarSystem->GetCVarInteger( "r_shadows" ) == 2 ) {
 		renderEntity.suppressShadowInViewID	= 0;
 	}
 	else {

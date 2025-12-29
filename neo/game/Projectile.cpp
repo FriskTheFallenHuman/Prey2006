@@ -933,7 +933,7 @@ void idProjectile::Explode( const trace_t &collision, idEntity *ignore ) {
 
 				gameLocal.SpawnEntityDef( *debris, &ent, false );
 				if ( !ent || !ent->IsType( idDebris::Type ) ) {
-					gameLocal.Error( "idProjectile: 'projectile_debris' is not an idDebris" );
+					gameLocal.Error( "'projectile_debris' is not an idDebris" );
 				}
 
 				idDebris *debris = static_cast<idDebris *>(ent);
@@ -1263,7 +1263,7 @@ void idProjectile::ReadFromSnapshot( const idBitMsgDelta &msg ) {
 				case COLLIDED:	//HUMANHEAD bjk
 				case EXPLODED: {
 					StopSound( SND_CHANNEL_BODY2, false );
-					gameEdit->ParseSpawnArgsToRenderEntity( &spawnArgs, &renderEntity );
+					gameEditLocal.ParseSpawnArgsToRenderEntity( &spawnArgs, &renderEntity );
 					state = SPAWNED;
 					break;
 				}
@@ -1327,7 +1327,7 @@ void idProjectile::ReadFromSnapshot( const idBitMsgDelta &msg ) {
 			case FIZZLED:
 			case EXPLODED: {
 				StopSound( SND_CHANNEL_BODY2, false );
-				gameEdit->ParseSpawnArgsToRenderEntity( &spawnArgs, &renderEntity );
+				gameEditLocal.ParseSpawnArgsToRenderEntity( &spawnArgs, &renderEntity );
 				state = SPAWNED;
 				break;
 			}

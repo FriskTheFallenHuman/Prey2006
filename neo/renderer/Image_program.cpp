@@ -222,7 +222,7 @@ static void R_AddNormalMaps( byte *data1, int width1, int height1, byte *data2, 
 			// this screws up compression, so we try to correct that here by instead fading it to 0,0,1
 			len = n.LengthFast();
 			if ( len < 1.0f ) {
-				n[2] = idMath::Sqrt(idMath::ClampFloat(0.0f, 1.0f, 1.0 - (n[0] * n[0]) - (n[1] * n[1])));
+				n[2] = idMath::Sqrt( idMath::ClampFloat( 0.0f, 1.0f, 1.0 - (n[0] * n[0]) - (n[1] * n[1] ) ) );
 			}
 
 			n[0] += ( d2[0] - 128 ) / 127.0;

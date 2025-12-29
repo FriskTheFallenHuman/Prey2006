@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -34,8 +35,8 @@ If you have questions concerning this license or the applicable additional terms
 #include "MaskEdit.h"
 #include "../../sys/win32/rc/resource.h"
 
-static HHOOK	gAlphaHook = NULL;
-static HWND		gAlphaDlg  = NULL;
+static HHOOK gAlphaHook = NULL;
+static HWND	 gAlphaDlg	= NULL;
 
 /*
 ================
@@ -44,7 +45,8 @@ AlphaSlider_DrawArrow
 Draws the arrow under alpha slider
 ================
 */
-static void AlphaSlider_DrawArrow( HDC hDC, RECT* pRect, COLORREF color ) {
+static void	 AlphaSlider_DrawArrow( HDC hDC, RECT* pRect, COLORREF color )
+{
 	POINT ptsArrow[3];
 
 	ptsArrow[0].x = pRect->left;
@@ -54,11 +56,11 @@ static void AlphaSlider_DrawArrow( HDC hDC, RECT* pRect, COLORREF color ) {
 	ptsArrow[2].x = pRect->right;
 	ptsArrow[2].y = pRect->bottom;
 
-	HBRUSH arrowBrush = CreateSolidBrush( color );
-	HPEN   arrowPen   = CreatePen( PS_SOLID, 1, color );
+	HBRUSH	arrowBrush = CreateSolidBrush( color );
+	HPEN	arrowPen   = CreatePen( PS_SOLID, 1, color );
 
 	HGDIOBJ oldBrush = SelectObject( hDC, arrowBrush );
-	HGDIOBJ oldPen   = SelectObject( hDC, arrowPen );
+	HGDIOBJ oldPen	 = SelectObject( hDC, arrowPen );
 
 	SetPolyFillMode( hDC, WINDING );
 	Polygon( hDC, ptsArrow, 3 );
@@ -77,18 +79,23 @@ AlphaSlider_WndProc
 Window procedure for the alpha slider control
 ================
 */
-LRESULT CALLBACK AlphaSlider_WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam ) {
-	switch ( msg ) {
-		case WM_LBUTTONDOWN: {
+LRESULT CALLBACK AlphaSlider_WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+	switch( msg )
+	{
+		case WM_LBUTTONDOWN:
+		{
 			RECT  rClient;
 			float v;
 
 			GetClientRect( hwnd, &rClient );
 			v = ( float )( ( short )LOWORD( lParam ) - 5 ) / ( float )( rClient.right - rClient.left - 10 );
-			if ( v < 0 ) {
+			if( v < 0 )
+			{
 				v = 0;
 			}
-			if ( v > 1.0f ) {
+			if( v > 1.0f )
+			{
 				v = 1.0f;
 			}
 			SetWindowLongPtr( hwnd, GWLP_USERDATA, MAKELONG( 0x8000, ( unsigned short )( 255.0f * v ) ) );
@@ -100,16 +107,19 @@ LRESULT CALLBACK AlphaSlider_WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM
 		}
 
 		case WM_MOUSEMOVE:
-			if ( LOWORD( GetWindowLongPtr( hwnd, GWLP_USERDATA ) ) & 0x8000 ) {
+			if( LOWORD( GetWindowLongPtr( hwnd, GWLP_USERDATA ) ) & 0x8000 )
+			{
 				RECT  rClient;
 				float v;
 
 				GetClientRect( hwnd, &rClient );
 				v = ( float )( ( short )LOWORD( lParam ) - 5 ) / ( float )( rClient.right - rClient.left - 10 );
-				if ( v < 0 ) {
+				if( v < 0 )
+				{
 					v = 0;
 				}
-				if ( v > 1.0f ) {
+				if( v > 1.0f )
+				{
 					v = 1.0f;
 				}
 				SetWindowLongPtr( hwnd, GWLP_USERDATA, MAKELONG( 0x8000, ( unsigned short )( 255.0f * v ) ) );
@@ -118,31 +128,35 @@ LRESULT CALLBACK AlphaSlider_WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM
 			break;
 
 		case WM_LBUTTONUP:
-			if ( LOWORD( GetWindowLongPtr( hwnd, GWLP_USERDATA ) ) & 0x8000 ) {
+			if( LOWORD( GetWindowLongPtr( hwnd, GWLP_USERDATA ) ) & 0x8000 )
+			{
 				RECT  rClient;
 				float v;
 
 				GetClientRect( hwnd, &rClient );
 				v = ( float )( ( short )LOWORD( lParam ) - 5 ) / ( float )( rClient.right - rClient.left - 10 );
-				if ( v < 0 ) {
+				if( v < 0 )
+				{
 					v = 0;
 				}
-				if ( v > 1.0f ) {
+				if( v > 1.0f )
+				{
 					v = 1.0f;
 				}
 				SetWindowLongPtr( hwnd, GWLP_USERDATA, MAKELONG( 0x8000, ( unsigned short )( 255.0f * v ) ) );
 				InvalidateRect( hwnd, NULL, FALSE );
-				ReleaseCapture( );
+				ReleaseCapture();
 				SendMessage( GetParent( hwnd ), WM_COMMAND, MAKELONG( GetWindowLong( hwnd, GWL_ID ), 0 ), 0 );
 			}
 			break;
 
-		case WM_PAINT: {
+		case WM_PAINT:
+		{
 			PAINTSTRUCT ps;
-			HDC hDC = BeginPaint( hwnd, &ps );
+			HDC			hDC = BeginPaint( hwnd, &ps );
 
-			RECT rDraw;
-			RECT rClient;
+			RECT		rDraw;
+			RECT		rClient;
 			GetClientRect( hwnd, &rClient );
 
 			// Setup the gradient rect
@@ -152,14 +166,15 @@ LRESULT CALLBACK AlphaSlider_WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM
 			rDraw.bottom -= 6;
 
 			// Draw the gradient
-			int parts = 20;
-			RECT rColor;
+			int	  parts = 20;
+			RECT  rColor;
 			float step = ( float )( rDraw.right - rDraw.left ) / ( float )parts;
 			CopyRect( &rColor, &rDraw );
-			for ( int i = 0; i < parts; i ++ ) {
+			for( int i = 0; i < parts; i++ )
+			{
 				float color = ( ( float )i / ( float )parts ) * 255.0f;
 
-				rColor.left = rDraw.left + i * step;
+				rColor.left	 = rDraw.left + i * step;
 				rColor.right = rColor.left + step + 1;
 
 				HBRUSH brush = CreateSolidBrush( RGB( ( int )color, ( int )color, ( int )color ) );
@@ -175,14 +190,14 @@ LRESULT CALLBACK AlphaSlider_WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM
 			FillRect( hDC, &rClient, GetSysColorBrush( COLOR_3DFACE ) );
 
 			// Draw the thumb
-			RECT rThumb;
-			short s = HIWORD( GetWindowLongPtr( hwnd, GWLP_USERDATA ) );
+			RECT  rThumb;
+			short s		= HIWORD( GetWindowLongPtr( hwnd, GWLP_USERDATA ) );
 			float thumb = ( float )( short )s;
 			thumb /= 255.0f;
 			thumb *= ( float )( rDraw.right - rDraw.left );
-			rThumb.left = rDraw.left - 5 + thumb;
-			rThumb.right = rThumb.left + 10;
-			rThumb.top = rDraw.bottom + 1;
+			rThumb.left	  = rDraw.left - 5 + thumb;
+			rThumb.right  = rThumb.left + 10;
+			rThumb.top	  = rDraw.bottom + 1;
 			rThumb.bottom = rThumb.top + 5;
 			AlphaSlider_DrawArrow( hDC, &rThumb, RGB( 0, 0, 0 ) );
 
@@ -201,13 +216,17 @@ AlphaSelectDlg_GetMsgProc
 Ensures normal dialog functions work in the alpha select dialog
 ================
 */
-LRESULT FAR PASCAL AlphaSelectDlg_GetMsgProc( int nCode, WPARAM wParam, LPARAM lParam ) {
-	LPMSG lpMsg = ( LPMSG ) lParam;
+LRESULT FAR PASCAL AlphaSelectDlg_GetMsgProc( int nCode, WPARAM wParam, LPARAM lParam )
+{
+	LPMSG lpMsg = ( LPMSG )lParam;
 
-	if ( nCode >= 0 && PM_REMOVE == wParam ) {
+	if( nCode >= 0 && PM_REMOVE == wParam )
+	{
 		// Don't translate non-input events.
-		if ( ( lpMsg->message >= WM_KEYFIRST && lpMsg->message <= WM_KEYLAST ) ) {
-			if ( IsDialogMessage( gAlphaDlg, lpMsg ) ) {
+		if( ( lpMsg->message >= WM_KEYFIRST && lpMsg->message <= WM_KEYLAST ) )
+		{
+			if( IsDialogMessage( gAlphaDlg, lpMsg ) )
+			{
 				// The value returned from this hookproc is ignored,
 				// and it cannot be used to tell Windows the message has been handled.
 				// To avoid further processing, convert the message to WM_NULL
@@ -229,14 +248,17 @@ AlphaSelectDlg_WndProc
 Window procedure for the alpha select dialog
 ================
 */
-INT_PTR CALLBACK AlphaSelectDlg_WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam ) {
-	switch ( msg ) {
-		case WM_INITDIALOG: {
+INT_PTR CALLBACK AlphaSelectDlg_WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+	switch( msg )
+	{
+		case WM_INITDIALOG:
+		{
 			int color;
 
 			gAlphaDlg  = hwnd;
 			gAlphaHook = SetWindowsHookEx( WH_GETMESSAGE, AlphaSelectDlg_GetMsgProc, NULL, GetCurrentThreadId() );
-			color      = GetRValue( ColorButton_GetColor( ( HWND )lParam ) );
+			color	   = GetRValue( ColorButton_GetColor( ( HWND )lParam ) );
 
 			// The lParam for the alpha select dialog is the window handle of the button pressed
 			SetWindowLongPtr( hwnd, GWLP_USERDATA, lParam );
@@ -252,29 +274,35 @@ INT_PTR CALLBACK AlphaSelectDlg_WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPA
 
 		case WM_DESTROY:
 			UnhookWindowsHookEx( gAlphaHook );
-			ReleaseCapture( );
+			ReleaseCapture();
 			gAlphaDlg = NULL;
 			break;
 
 		case WM_ACTIVATE:
-			if ( !LOWORD( wParam ) ) {
+			if( !LOWORD( wParam ) )
+			{
 				EndDialog( hwnd, 0 );
 			}
 			break;
 
 		case WM_COMMAND:
-			switch ( LOWORD( wParam ) ) {
-				case IDC_GUIED_ALPHA: {
-					char	temp[64];
-					float	value;
+			switch( LOWORD( wParam ) )
+			{
+				case IDC_GUIED_ALPHA:
+				{
+					char  temp[64];
+					float value;
 
 					// Get the current text in the window and convert it to a float
 					GetDlgItemText( hwnd, IDC_GUIED_ALPHA, temp, 64 );
 					value = atof( temp );
 
-					if ( value < 0.0f ) {
+					if( value < 0.0f )
+					{
 						value = 0.0f;
-					} else if ( value > 1.0f ) {
+					}
+					else if( value > 1.0f )
+					{
 						value = 1.0f;
 					}
 
@@ -284,7 +312,8 @@ INT_PTR CALLBACK AlphaSelectDlg_WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPA
 				}
 
 				case IDC_GUIED_ALPHASLIDER:
-				case IDOK: {
+				case IDOK:
+				{
 					int color = ( short )HIWORD( GetWindowLongPtr( GetDlgItem( hwnd, IDC_GUIED_ALPHASLIDER ), GWLP_USERDATA ) );
 					ColorButton_SetColor( ( HWND )GetWindowLongPtr( hwnd, GWLP_USERDATA ), RGB( color, color, color ) );
 					EndDialog( hwnd, 0 );
@@ -308,17 +337,18 @@ AlphaButton_OpenPopup
 Opens the popup window under the alpha button
 ================
 */
-void AlphaButton_OpenPopup( HWND button ) {
-	RECT		rWindow;
-	WNDCLASSEX	wndClass;
-	HWND		dlg;
+void AlphaButton_OpenPopup( HWND button )
+{
+	RECT	   rWindow;
+	WNDCLASSEX wndClass;
+	HWND	   dlg;
 
 	// Make sure the alpha slider window class is registered
 	memset( &wndClass, 0, sizeof( wndClass ) );
-	wndClass.cbSize			= sizeof( WNDCLASSEX );
-	wndClass.lpszClassName	= "GUIED_ALPHASLIDER";
-	wndClass.lpfnWndProc	= AlphaSlider_WndProc;
-	wndClass.hInstance		= win32.hInstance;
+	wndClass.cbSize		   = sizeof( WNDCLASSEX );
+	wndClass.lpszClassName = "GUIED_ALPHASLIDER";
+	wndClass.lpfnWndProc   = AlphaSlider_WndProc;
+	wndClass.hInstance	   = win32.hInstance;
 	RegisterClassEx( &wndClass );
 
 	GetWindowRect( button, &rWindow );

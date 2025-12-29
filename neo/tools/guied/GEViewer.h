@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -29,45 +30,44 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef GEVIEWER_H_
 #define GEVIEWER_H_
 
-class rvGEViewer {
+class rvGEViewer
+{
 public:
+	rvGEViewer();
 
-	rvGEViewer( );
+	bool Create( HWND parent );
+	bool Destroy( void );
+	bool OpenFile( const char* filename );
 
-	bool				Create( HWND parent );
-	bool				Destroy();
-	bool				OpenFile( const char * filename );
+	void RunFrame( void );
 
-	void				RunFrame();
-
-	HWND				GetWindow();
+	HWND GetWindow( void );
 
 protected:
+	void				  Render( HDC dc );
+	void				  Play( void );
+	void				  Pause( void );
 
-	void				Render( HDC dc );
-	void				Play();
-	void				Pause();
+	HWND				  mWnd;
+	int					  mWindowWidth;
+	int					  mWindowHeight;
+	int					  mToolbarHeight;
+	idUserInterfaceLocal* mInterface;
+	bool				  mPaused;
+	HWND				  mToolbar;
+	int					  mLastTime;
+	int					  mTime;
 
-	HWND					mWnd;
-	int						mWindowWidth;
-	int						mWindowHeight;
-	int						mToolbarHeight;
-	idUserInterfaceLocal	* mInterface;
-	bool					mPaused;
-	HWND					mToolbar;
-	int						mLastTime;
-	int						mTime;
-
-	LRESULT		HandlePaint( WPARAM wParam, LPARAM lParam );
+	LRESULT				  HandlePaint( WPARAM wParam, LPARAM lParam );
 
 private:
-
-	bool	SetupPixelFormat();
+	bool					SetupPixelFormat( void );
 
 	static LRESULT CALLBACK WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
 };
 
-ID_INLINE HWND rvGEViewer::GetWindow() {
+ID_INLINE HWND rvGEViewer::GetWindow( void )
+{
 	return mWnd;
 }
 

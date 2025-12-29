@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -31,8 +32,8 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "ColorButton.h"
 
-static const int ARROW_SIZE_CX = 4 ;
-static const int ARROW_SIZE_CY = 2 ;
+static const int ARROW_SIZE_CX = 4;
+static const int ARROW_SIZE_CY = 2;
 
 /*
 ================
@@ -41,21 +42,25 @@ ColorButton_SetColor
 Sets the current color button color
 ================
 */
-void ColorButton_SetColor( HWND hWnd, COLORREF color ) {
-	if ( NULL == hWnd ) {
+void			 ColorButton_SetColor( HWND hWnd, COLORREF color )
+{
+	if( NULL == hWnd )
+	{
 		return;
 	}
 	SetWindowLongPtr( hWnd, GWLP_USERDATA, color );
 	InvalidateRect( hWnd, NULL, FALSE );
 }
 
-void ColorButton_SetColor( HWND hWnd, const char * color ) {
+void ColorButton_SetColor( HWND hWnd, const char* color )
+{
 	float red;
 	float green;
 	float blue;
 	float alpha;
 
-	if ( NULL == hWnd ) {
+	if( NULL == hWnd )
+	{
 		return;
 	}
 
@@ -64,13 +69,15 @@ void ColorButton_SetColor( HWND hWnd, const char * color ) {
 	ColorButton_SetColor( hWnd, RGB( red * 255.0f, green * 255.0f, blue * 255.0f ) );
 }
 
-void AlphaButton_SetColor( HWND hWnd, const char * color ) {
+void AlphaButton_SetColor( HWND hWnd, const char* color )
+{
 	float red;
 	float green;
 	float blue;
 	float alpha;
 
-	if ( NULL == hWnd ) {
+	if( NULL == hWnd )
+	{
 		return;
 	}
 
@@ -86,8 +93,9 @@ ColorButton_GetColor
 Retrieves the current color button color
 ================
 */
-COLORREF ColorButton_GetColor( HWND hWnd ) {
-	return ( COLORREF ) GetWindowLongPtr( hWnd, GWLP_USERDATA );
+COLORREF ColorButton_GetColor( HWND hWnd )
+{
+	return ( COLORREF )GetWindowLongPtr( hWnd, GWLP_USERDATA );
 }
 
 /*
@@ -97,7 +105,8 @@ ColorButton_DrawArrow
 Draws the arrow on the color button
 ================
 */
-static void ColorButton_DrawArrow( HDC hDC, RECT* pRect, COLORREF color ) {
+static void ColorButton_DrawArrow( HDC hDC, RECT* pRect, COLORREF color )
+{
 	POINT ptsArrow[3];
 
 	ptsArrow[0].x = pRect->left;
@@ -107,11 +116,11 @@ static void ColorButton_DrawArrow( HDC hDC, RECT* pRect, COLORREF color ) {
 	ptsArrow[2].x = ( pRect->left + pRect->right ) / 2;
 	ptsArrow[2].y = pRect->bottom;
 
-	HBRUSH arrowBrush = CreateSolidBrush( color );
-	HPEN   arrowPen   = CreatePen( PS_SOLID, 1, color );
+	HBRUSH	arrowBrush = CreateSolidBrush( color );
+	HPEN	arrowPen   = CreatePen( PS_SOLID, 1, color );
 
 	HGDIOBJ oldBrush = SelectObject( hDC, arrowBrush );
-	HGDIOBJ oldPen   = SelectObject( hDC, arrowPen );
+	HGDIOBJ oldPen	 = SelectObject( hDC, arrowPen );
 
 	SetPolyFillMode( hDC, WINDING );
 	Polygon( hDC, ptsArrow, 3 );
@@ -130,38 +139,39 @@ ColorButton_DrawItem
 Draws the actual color button as as reponse to a WM_DRAWITEM message
 ================
 */
-void ColorButton_DrawItem( HWND hWnd, LPDRAWITEMSTRUCT dis ) {
+void ColorButton_DrawItem( HWND hWnd, LPDRAWITEMSTRUCT dis )
+{
 	assert( dis );
 
-	HDC		hDC		 = dis->hDC;
-	UINT    state    = dis->itemState;
-	RECT	rDraw    = dis->rcItem;
-	RECT	rArrow;
+	HDC	 hDC   = dis->hDC;
+	UINT state = dis->itemState;
+	RECT rDraw = dis->rcItem;
+	RECT rArrow;
 
 	// Draw outter edge
 	UINT uFrameState = DFCS_BUTTONPUSH | DFCS_ADJUSTRECT;
 
-	if ( state & ODS_SELECTED ) {
+	if( state & ODS_SELECTED )
+	{
 		uFrameState |= DFCS_PUSHED;
 	}
 
-	if ( state & ODS_DISABLED ) {
+	if( state & ODS_DISABLED )
+	{
 		uFrameState |= DFCS_INACTIVE;
 	}
 
 	DrawFrameControl( hDC, &rDraw, DFC_BUTTON, uFrameState );
 
 	// Draw Focus
-	if ( state & ODS_SELECTED ) {
+	if( state & ODS_SELECTED )
+	{
 		OffsetRect( &rDraw, 1, 1 );
 	}
 
-	if ( state & ODS_FOCUS ) {
-		RECT rFocus = {rDraw.left,
-					   rDraw.top,
-					   rDraw.right - 1,
-					   rDraw.bottom
-					  };
+	if( state & ODS_FOCUS )
+	{
+		RECT rFocus = { rDraw.left, rDraw.top, rDraw.right - 1, rDraw.bottom };
 
 		DrawFocusRect( hDC, &rFocus );
 	}
@@ -169,10 +179,10 @@ void ColorButton_DrawItem( HWND hWnd, LPDRAWITEMSTRUCT dis ) {
 	InflateRect( &rDraw, -GetSystemMetrics( SM_CXEDGE ), -GetSystemMetrics( SM_CYEDGE ) );
 
 	// Draw the arrow
-	rArrow.left		= rDraw.right - ARROW_SIZE_CX - GetSystemMetrics( SM_CXEDGE ) / 2;
-	rArrow.right	= rArrow.left + ARROW_SIZE_CX;
-	rArrow.top		= ( rDraw.bottom + rDraw.top ) / 2 - ARROW_SIZE_CY / 2;
-	rArrow.bottom	= ( rDraw.bottom + rDraw.top ) / 2 + ARROW_SIZE_CY / 2;
+	rArrow.left	  = rDraw.right - ARROW_SIZE_CX - GetSystemMetrics( SM_CXEDGE ) / 2;
+	rArrow.right  = rArrow.left + ARROW_SIZE_CX;
+	rArrow.top	  = ( rDraw.bottom + rDraw.top ) / 2 - ARROW_SIZE_CY / 2;
+	rArrow.bottom = ( rDraw.bottom + rDraw.top ) / 2 + ARROW_SIZE_CY / 2;
 
 	ColorButton_DrawArrow( hDC, &rArrow, ( state & ODS_DISABLED ) ? ::GetSysColor( COLOR_GRAYTEXT ) : RGB( 0, 0, 0 ) );
 
@@ -181,10 +191,11 @@ void ColorButton_DrawItem( HWND hWnd, LPDRAWITEMSTRUCT dis ) {
 	// Draw separator
 	DrawEdge( hDC, &rDraw, EDGE_ETCHED, BF_RIGHT );
 
-	rDraw.right -= ( GetSystemMetrics( SM_CXEDGE ) * 2 ) + 1 ;
+	rDraw.right -= ( GetSystemMetrics( SM_CXEDGE ) * 2 ) + 1;
 
 	// Draw Color
-	if ( ( state & ODS_DISABLED ) == 0 ) {
+	if( ( state & ODS_DISABLED ) == 0 )
+	{
 		HBRUSH color = CreateSolidBrush( ( COLORREF )GetWindowLongPtr( hWnd, GWLP_USERDATA ) );
 		FillRect( hDC, &rDraw, color );
 		FrameRect( hDC, &rDraw, ( HBRUSH )::GetStockObject( BLACK_BRUSH ) );

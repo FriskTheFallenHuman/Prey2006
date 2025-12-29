@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -36,23 +37,27 @@ If you have questions concerning this license or the applicable additional terms
 
 // CGetString dialog
 
-CGetString::CGetString( LPCSTR pPrompt, CString* pFeedback, CWnd* pParent )
-	: CDialogEx( CGetString::IDD, pParent ) {
+CGetString::CGetString( LPCSTR pPrompt, CString* pFeedback, CWnd* pParent ) :
+	CDialogEx( CGetString::IDD, pParent )
+{
 	m_strEditBox = _T( "" );
 
 	m_pFeedback = pFeedback;
 	m_pPrompt	= pPrompt;
 }
 
-CGetString::~CGetString() {
+CGetString::~CGetString()
+{
 }
 
-void CGetString::DoDataExchange( CDataExchange* pDX ) {
+void CGetString::DoDataExchange( CDataExchange* pDX )
+{
 	CDialogEx::DoDataExchange( pDX );
 	DDX_Text( pDX, IDC_EDIT1, m_strEditBox );
 }
 
-BOOL CGetString::OnInitDialog() {
+BOOL CGetString::OnInitDialog()
+{
 	CDialogEx::OnInitDialog();
 
 	GetDlgItem( IDC_PROMPT )->SetWindowText( m_pPrompt );
@@ -62,7 +67,8 @@ BOOL CGetString::OnInitDialog() {
 BEGIN_MESSAGE_MAP( CGetString, CDialogEx )
 END_MESSAGE_MAP()
 
-void CGetString::OnOK() {
+void CGetString::OnOK()
+{
 	UpdateData( DIALOG_TO_DATA );
 
 	*m_pFeedback = m_strEditBox;
@@ -71,11 +77,13 @@ void CGetString::OnOK() {
 }
 
 // returns NULL if CANCEL, else input string
-LPCSTR GetString( LPCSTR psPrompt ) {
+LPCSTR GetString( LPCSTR psPrompt )
+{
 	static CString strReturn;
 
-	CGetString Input( psPrompt, &strReturn );
-	if ( Input.DoModal() == IDOK ) {
+	CGetString	   Input( psPrompt, &strReturn );
+	if( Input.DoModal() == IDOK )
+	{
 		strReturn.TrimLeft();
 		strReturn.TrimRight();
 
@@ -85,30 +93,36 @@ LPCSTR GetString( LPCSTR psPrompt ) {
 	return NULL;
 }
 
-
-bool GetYesNo( const char * psQuery ) {
-	if ( MessageBoxA( g_pParentWnd->GetSafeHwnd(), psQuery, "Query", MB_YESNO | MB_ICONWARNING ) == IDYES ) {
+bool GetYesNo( const char* psQuery )
+{
+	if( MessageBoxA( g_pParentWnd->GetSafeHwnd(), psQuery, "Query", MB_YESNO | MB_ICONWARNING ) == IDYES )
+	{
 		return true;
 	}
 
 	return false;
 }
 
-void ErrorBox( const char * sString ) {
-	if ( ( rand() & 31 ) == 30 ) {
+void ErrorBox( const char* sString )
+{
+	if( ( rand() & 31 ) == 30 )
+	{
 		static bool bPlayed = false;
-		if ( !bPlayed ) {
+		if( !bPlayed )
+		{
 			bPlayed = true;
 			PlaySound( "k:\\util\\overlay.bin", NULL, SND_FILENAME | SND_ASYNC );
 		}
 	}
-	MessageBoxA( g_pParentWnd->GetSafeHwnd(), sString, "Error",		MB_OK | MB_ICONERROR | MB_TASKMODAL );
+	MessageBoxA( g_pParentWnd->GetSafeHwnd(), sString, "Error", MB_OK | MB_ICONERROR | MB_TASKMODAL );
 }
 
-void InfoBox( const char * sString ) {
-	MessageBoxA( g_pParentWnd->GetSafeHwnd(), sString, "Info",		MB_OK | MB_ICONINFORMATION | MB_TASKMODAL );
+void InfoBox( const char* sString )
+{
+	MessageBoxA( g_pParentWnd->GetSafeHwnd(), sString, "Info", MB_OK | MB_ICONINFORMATION | MB_TASKMODAL );
 }
 
-void WarningBox( const char * sString ) {
-	MessageBoxA( g_pParentWnd->GetSafeHwnd(), sString, "Warning",	MB_OK | MB_ICONWARNING | MB_TASKMODAL );
+void WarningBox( const char* sString )
+{
+	MessageBoxA( g_pParentWnd->GetSafeHwnd(), sString, "Warning", MB_OK | MB_ICONWARNING | MB_TASKMODAL );
 }

@@ -461,6 +461,48 @@ int idFile::ReadMat3( idMat3 &mat ) {
 
 /*
  =================
+ idFile::ReadToken
+ =================
+ */
+bool idFile::ReadToken( idStr &token ) {
+	token.Clear();
+	char ch;
+	while ( Read( &ch, 1 ) == 1 ) {
+		if ( !isspace( ch ) ) {
+			token.Append( ch );
+		} else if ( token.Length() > 0 ) {
+			// Return token if we have read some characters and encounter whitespace
+			return true;
+		}
+	}
+
+	// Return token if we reached the end of the file
+	return token.Length() > 0;
+}
+
+/*
+ =================
+ idFile::ReadLine
+ =================
+ */
+bool idFile::ReadLine( idStr &line ) {
+	line.Clear();
+	char ch;
+	while ( Read( &ch, 1 ) == 1 ) {
+		if ( ch == '\n' ) {
+			return true;
+		}
+		if ( ch != '\r' ) {
+			line.Append( ch );
+		}
+	}
+
+	// Return true if we have read some characters
+	return line.Length() > 0;
+}
+
+/*
+ =================
  idFile::WriteInt
  =================
  */

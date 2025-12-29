@@ -699,6 +699,8 @@ public:
 	virtual bool			IsFullScreen( void ) const;
 	virtual int				GetScreenWidth( void ) const;
 	virtual int				GetScreenHeight( void ) const;
+	virtual int				GetWindowsWidth( void ) const;
+	virtual int				GetWindowsHeight( void ) const;
 	virtual idRenderWorld *	AllocRenderWorld( void );
 	virtual void			FreeRenderWorld( idRenderWorld *rw );
 	virtual void			BeginLevelLoad( void );
@@ -716,14 +718,14 @@ public:
 	virtual void			PrintMemInfo( MemInfo_t *mi );
 
 	virtual void			DrawSmallChar( int x, int y, int ch, const idMaterial *material );
-	virtual void			DrawSmallStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor, const idMaterial *material );
+	virtual void			DrawSmallStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor, bool shadow, int maxChars, const idMaterial *material );
 	virtual void			DrawBigChar( int x, int y, int ch, const idMaterial *material );
-	virtual void			DrawBigStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor, const idMaterial *material );
+	virtual void			DrawBigStringExt( int x, int y, const char *string, const idVec4 &setColor, bool forceColor, bool shadow, int maxChars, const idMaterial *material );
 	virtual void			WriteDemoPics();
 	virtual void			DrawDemoPics();
 	virtual void			BeginFrame( int windowWidth, int windowHeight );
 	virtual void			EndFrame( int *frontEndMsec, int *backEndMsec );
-	virtual void			TakeScreenshot( int width, int height, const char *fileName, int downSample, renderView_t *ref );
+	virtual void			TakeScreenshot( int width, int height, const char *fileName, int downSample, renderView_t *ref, SShotFormat_t overrideFormat );
 	virtual void			CropRenderSize( int width, int height, bool makePowerOfTwo = false, bool forceDimensions = false );
 	virtual void			CaptureRenderToImage( const char *imageName );
 	virtual void			CaptureRenderToFile( const char *fileName, bool fixAlpha );
@@ -772,6 +774,12 @@ public:
 
 	int						viewportOffset[2];	// for doing larger-than-window tiled renderings
 	int						tiledViewport[2];
+
+	// determines which back end to use, and if vertex programs are in use
+
+	const float			backEndRendererMaxLight;	// 1.0 for standard, unlimited for floats
+														// determines how much overbrighting needs
+														// to be done post-process
 
 	idVec4					ambientLightVector;	// used for "ambient bump mapping"
 
@@ -884,7 +892,7 @@ extern idCVar r_useScissor;				// 1 = scissor clip as portals and lights are pro
 extern idCVar r_usePortals;				// 1 = use portals to perform area culling, otherwise draw everything
 extern idCVar r_useStateCaching;		// avoid redundant state changes in GL_*() calls
 extern idCVar r_useCombinerDisplayLists;// if 1, put all nvidia register combiner programming in display lists
-extern idCVar r_useVertexBuffers;		// if 0, don't use ARB_vertex_buffer_object for vertexes
+
 extern idCVar r_useIndexBuffers;		// if 0, don't use ARB_vertex_buffer_object for indexes
 extern idCVar r_useEntityCallbacks;		// if 0, issue the callback immediately at update time, rather than defering
 extern idCVar r_lightAllBackFaces;		// light all the back faces, even when they would be shadowed
@@ -966,8 +974,6 @@ extern idCVar r_jointNameOffset;		// offset of joint names when r_showskel is se
 extern idCVar r_testGamma;				// draw a grid pattern to test gamma levels
 extern idCVar r_testStepGamma;			// draw a grid pattern to test gamma levels
 extern idCVar r_testGammaBias;			// draw a grid pattern to test gamma levels
-
-extern idCVar r_testARBProgram;			// experiment with vertex/fragment programs
 
 extern idCVar r_singleLight;			// suppress all but one light
 extern idCVar r_singleEntity;			// suppress all but one entity
@@ -1078,7 +1084,7 @@ typedef struct {
 	bool		fullScreen;
 	bool		fullScreenDesktop;
 	bool		stereo;
-	int			displayHz;
+	int			displayHz; // TODO: SDL3 uses float
 	int			multiSamples;
 } glimpParms_t;
 
@@ -1087,8 +1093,9 @@ bool		GLimp_Init( glimpParms_t parms );
 // The renderer will then reset the glimpParms to "safe mode" of 640x480
 // fullscreen and try again.  If that also fails, the error will be fatal.
 
-bool		GLimp_SetScreenParms( glimpParms_t parms );
-// will set up gl up with the new parms
+bool		GLimp_SetScreenParms( glimpParms_t parms, bool fromInit = false );
+// will set up gl up with the new parms (set multisamples to -1 if you don't care about them)
+// fromInit should only be set when called from GLimp_Init()
 
 void		GLimp_Shutdown( void );
 // Destroys the rendering context, closes the window, resets the resolution,
@@ -1124,6 +1131,7 @@ void		GLimp_DeactivateContext( void );
 const int GRAB_GRABMOUSE	= (1 << 0);
 const int GRAB_HIDECURSOR	= (1 << 1);
 const int GRAB_RELATIVEMOUSE = (1 << 2);
+const int GRAB_ENABLETEXTINPUT = (1 << 3); // only used with SDL3, where textinput must be explicitly activated
 
 void GLimp_GrabInput(int flags);
 
@@ -1131,7 +1139,7 @@ bool GLimp_SetSwapInterval( int swapInterval );
 bool GLimp_SetWindowResizable( bool enableResizable );
 void GLimp_UpdateWindowSize();
 
-glimpParms_t GLimp_GetCurState();
+glimpParms_t GLimp_GetCurState( bool checkConsistency = true );
 
 /*
 ====================================================================
@@ -1317,13 +1325,9 @@ typedef enum {
 	VPROG_ENVIRONMENT,
 	VPROG_BUMPY_ENVIRONMENT,
 	VPROG_STENCIL_SHADOW,
-	VPROG_TEST,
 	FPROG_INTERACTION,
 	FPROG_ENVIRONMENT,
 	FPROG_BUMPY_ENVIRONMENT,
-	FPROG_TEST,
-	VPROG_AMBIENT,
-	FPROG_AMBIENT,
 	VPROG_GLASSWARP,
 	FPROG_GLASSWARP,
 	PROG_USER
@@ -1478,6 +1482,8 @@ void				R_ResizeStaticTriSurfShadowVerts( srfTriangles_t *tri, int numVerts );
 void				R_ReferenceStaticTriSurfVerts( srfTriangles_t *tri, const srfTriangles_t *reference );
 void				R_ReferenceStaticTriSurfIndexes( srfTriangles_t *tri, const srfTriangles_t *reference );
 void				R_FreeStaticTriSurfSilIndexes( srfTriangles_t *tri );
+void				R_FreeStaticTriSurfSilEdges( srfTriangles_t *tri );
+void				R_FreeStaticTriSurfIndexes( srfTriangles_t *tri );
 void				R_FreeStaticTriSurf( srfTriangles_t *tri );
 void				R_FreeStaticTriSurfVertexCaches( srfTriangles_t *tri );
 void				R_ReallyFreeStaticTriSurf( srfTriangles_t *tri );
@@ -1487,6 +1493,7 @@ int					R_TriSurfMemory( const srfTriangles_t *tri );
 void				R_BoundTriSurf( srfTriangles_t *tri );
 void				R_RemoveDuplicatedTriangles( srfTriangles_t *tri );
 void				R_CreateSilIndexes( srfTriangles_t *tri );
+void				R_IdentifySilEdges( srfTriangles_t *tri, bool omitCoplanarEdges );
 void				R_RemoveDegenerateTriangles( srfTriangles_t *tri );
 void				R_RemoveUnusedVerts( srfTriangles_t *tri );
 void				R_RangeCheckIndexes( const srfTriangles_t *tri );
@@ -1623,6 +1630,27 @@ void R_RenderGuiSurf( idUserInterface *gui, drawSurf_t *drawSurf );
 /*
 =============================================================
 
+TR_MIKKTSPACE
+
+=============================================================
+*/
+
+#include "libs/mikktspace/mikktspace.h"
+
+// Helper class for loading in the interface functions for mikktspace.
+class idMikkTSpaceInterface {
+public:
+	idMikkTSpaceInterface();
+	SMikkTSpaceInterface mkInterface;
+};
+
+extern idMikkTSpaceInterface mikkTSpaceInterface;
+
+bool R_DeriveMikktspaceTangents( srfTriangles_t *tri );
+
+/*
+=============================================================
+
 TR_ORDERINDEXES
 
 =============================================================
@@ -1669,6 +1697,17 @@ TR_SHADOWBOUNDS
 idScreenRect R_CalcIntersectionScissor( const idRenderLightLocal * lightDef,
 										const idRenderEntityLocal * entityDef,
 										const viewDef_t * viewDef );
+
+/*
+=============================================================
+
+TR_FONT
+
+=============================================================
+*/
+
+void R_InitFreeType();
+void R_DoneFreeType();
 
 //=============================================
 

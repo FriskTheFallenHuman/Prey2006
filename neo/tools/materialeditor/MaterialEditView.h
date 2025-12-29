@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -34,54 +35,57 @@ If you have questions concerning this license or the applicable additional terms
 #include "../comafx/CSyntaxRichEditCtrl.h"
 
 /**
-* View that contains the material edit controls. These controls include
-* the stage view, the properties view and the source view.
-*/
-class MaterialEditView : public CFormView, public MaterialView, SourceModifyOwner {
+ * View that contains the material edit controls. These controls include
+ * the stage view, the properties view and the source view.
+ */
+class MaterialEditView : public CFormView, public MaterialView, SourceModifyOwner
+{
+public:
+	enum
+	{
+		IDD = IDD_MATERIALEDIT_FORM
+	};
+
+	CEdit				  m_nameEdit;
+	CSplitterWnd		  m_editSplitter;
+
+	StageView*			  m_stageView;
+	MaterialPropTreeView* m_materialPropertyView;
+	CTabCtrl			  m_tabs;
+	CSyntaxRichEditCtrl	  m_textView;
 
 public:
-	enum { IDD = IDD_MATERIALEDIT_FORM };
+	virtual ~MaterialEditView();
 
-	CEdit						m_nameEdit;
-	CSplitterWnd				m_editSplitter;
+	// MaterialView Interface
+	virtual void  MV_OnMaterialSelectionChange( MaterialDoc* pMaterial );
+	virtual void  MV_OnMaterialNameChanged( MaterialDoc* pMaterial, const char* oldName );
 
-	StageView			*		m_stageView;
-	MaterialPropTreeView	*	m_materialPropertyView;
-	CTabCtrl					m_tabs;
-	CSyntaxRichEditCtrl			m_textView;
-
-public:
-	virtual			~MaterialEditView();
-
-	//MaterialView Interface
-	virtual void	MV_OnMaterialSelectionChange( MaterialDoc* pMaterial );
-	virtual void	MV_OnMaterialNameChanged( MaterialDoc* pMaterial, const char * oldName );
-
-	//SourceModifyOwner Interface
+	// SourceModifyOwner Interface
 	virtual idStr GetSourceText();
 
 protected:
 	MaterialEditView();
 	DECLARE_DYNCREATE( MaterialEditView )
 
-	void			GetMaterialSource();
-	void			ApplyMaterialSource();
+	void		 GetMaterialSource();
+	void		 ApplyMaterialSource();
 
-	//CFormView Overrides
-	virtual void	DoDataExchange( CDataExchange* pDX );
-	virtual void	OnInitialUpdate();
+	// CFormView Overrides
+	virtual void DoDataExchange( CDataExchange* pDX );
+	virtual void OnInitialUpdate();
 
-	//Message Handlers
-	afx_msg int		OnCreate( LPCREATESTRUCT lpCreateStruct );
-	afx_msg void	OnSize( UINT nType, int cx, int cy );
-	afx_msg void	OnTcnSelChange( NMHDR* pNMHDR, LRESULT* pResult );
-	afx_msg void	OnEnChangeEdit( NMHDR* pNMHDR, LRESULT* pResult );
+	// Message Handlers
+	afx_msg int	 OnCreate( LPCREATESTRUCT lpCreateStruct );
+	afx_msg void OnSize( UINT nType, int cx, int cy );
+	afx_msg void OnTcnSelChange( NMHDR* pNMHDR, LRESULT* pResult );
+	afx_msg void OnEnChangeEdit( NMHDR* pNMHDR, LRESULT* pResult );
 	DECLARE_MESSAGE_MAP()
 
 protected:
-	bool initHack;
-	bool sourceInit;
+	bool  initHack;
+	bool  sourceInit;
 
-	bool	sourceChanged;
-	idStr	currentMaterialName;
+	bool  sourceChanged;
+	idStr currentMaterialName;
 };

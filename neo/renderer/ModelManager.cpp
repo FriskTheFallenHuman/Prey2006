@@ -292,12 +292,23 @@ idRenderModel *idRenderModelManagerLocal::GetModel( const char *modelName, bool 
 	if ( ( extension.Icmp( "ase" ) == 0 ) || ( extension.Icmp( "lwo" ) == 0 ) || ( extension.Icmp( "flt" ) == 0 ) ) {
 		model = new idRenderModelStatic;
 		model->InitFromFile( modelName );
+#ifdef ID_MAYA_IMPORT_TOOL
+	} else if ( extension.Icmp( "ma" ) == 0 ) {
+		model = new idRenderModelStatic;
+		model->InitFromFile( modelName );
+#endif
 	} else if ( extension.Icmp( MD5_MESH_EXT ) == 0 ) {
 		model = new idRenderModelMD5;
 		model->InitFromFile( modelName );
 	} else if ( extension.Icmp( "md3" ) == 0 ) {
 		model = new idRenderModelMD3;
 		model->InitFromFile( modelName );
+		// DG: no idea why this needs special treatment, but otherwise
+		//     idRenderModelMD3::InstantiateDynamicModel() is called all the time
+		if ( model->IsDefaultModel() ) {
+			delete model;
+			return NULL;
+		}
 	} else if ( extension.Icmp( "prt" ) == 0  ) {
 		model = new idRenderModelPrt;
 		model->InitFromFile( modelName );
@@ -458,7 +469,7 @@ void idRenderModelManagerLocal::ReloadModels( bool forceAll ) {
 			}
 		}
 
-		common->DPrintf( "reloading '%s'.\n", model->Name() );
+		common->DPrintf( "reloading %s.\n", model->Name() );
 
 		model->LoadModel();
 	}

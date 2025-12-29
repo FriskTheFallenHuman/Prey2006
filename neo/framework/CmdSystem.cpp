@@ -62,7 +62,7 @@ public:
 	virtual void			BufferCommandText( cmdExecution_t exec, const char *text );
 	virtual void			ExecuteCommandBuffer( void );
 
-	virtual void			ArgCompletion_FolderExtension( const idCmdArgs &args, void(*callback)( const char *s ), const char *folder, bool stripFolder, ... );
+	virtual void			ArgCompletion_FolderExtension( const idCmdArgs &args, void(*callback)( const char *s ), bool stripFolder, const char *folder, ... );
 	virtual void			ArgCompletion_DeclName( const idCmdArgs &args, void(*callback)( const char *s ), int type );
 
 	virtual void			BufferCommandArgs( cmdExecution_t exec, const idCmdArgs &args );
@@ -234,7 +234,7 @@ void idCmdSystemLocal::Exec_f( const idCmdArgs &args ) {
 	filename.DefaultFileExtension( ".cfg" );
 	fileSystem->ReadFile( filename, reinterpret_cast<void **>(&f), NULL );
 	if ( !f ) {
-		common->Printf( "couldn't exec %s\n", args.Argv(1) );
+		common->Printf( "Couldn't exec %s - file does not exist.\n", args.Argv(1) );
 		return;
 	}
 	common->Printf( "execing %s\n", args.Argv(1) );
@@ -679,7 +679,7 @@ void idCmdSystemLocal::ExecuteCommandBuffer( void ) {
 idCmdSystemLocal::ArgCompletion_FolderExtension
 ============
 */
-void idCmdSystemLocal::ArgCompletion_FolderExtension( const idCmdArgs &args, void(*callback)( const char *s ), const char *folder, bool stripFolder, ... ) {
+void idCmdSystemLocal::ArgCompletion_FolderExtension( const idCmdArgs &args, void(*callback)( const char *s ), bool stripFolder, const char *folder, ... ) {
 	int i;
 	idStr string;
 	const char *extension;
@@ -718,7 +718,7 @@ void idCmdSystemLocal::ArgCompletion_FolderExtension( const idCmdArgs &args, voi
 		fileSystem->FreeFileList( names );
 
 		// list files
-		va_start( argPtr, stripFolder );
+		va_start( argPtr, folder );
 		for ( extension = va_arg( argPtr, const char * ); extension; extension = va_arg( argPtr, const char * ) ) {
 			names = fileSystem->ListFiles( path, extension, true, true );
 			for ( i = 0; i < names->GetNumFiles(); i++ ) {

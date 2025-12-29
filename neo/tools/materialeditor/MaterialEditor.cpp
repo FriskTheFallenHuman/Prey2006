@@ -19,7 +19,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Doom 3 Source Code.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
+In addition, the Doom 3 Source Code is also subject to certain additional terms. You should have received a copy of these additional terms immediately following the terms and conditions of the GNU
+General Public License which accompanied the Doom 3 Source Code.  If not, please request a copy in writing from id Software at the address below.
 
 If you have questions concerning this license or the applicable additional terms, you may contact in writing id Software LLC, c/o ZeniMax Media Inc., Suite 120, Rockville, Maryland 20850 USA.
 
@@ -34,29 +35,29 @@ If you have questions concerning this license or the applicable additional terms
 #include "MEMainFrame.h"
 
 #ifdef _DEBUG
-#define new DEBUG_NEW
+	#define new DEBUG_NEW
 #endif
 
-MEMainFrame * meMainFrame = NULL;
+MEMainFrame* meMainFrame = NULL;
 
-CFont * materialEditorFont = NULL;
+CFont*		 materialEditorFont = NULL;
 
 /**
-* Initializes the material editor tool.
-*/
-void MaterialEditorInit() {
-
+ * Initializes the material editor tool.
+ */
+void		 MaterialEditorInit( void )
+{
 	InitPropTree( win32.hInstance );
 
 	com_editors = EDITOR_MATERIAL;
-
 
 	InitAfx();
 
 	InitCommonControls();
 
 	// Initialize OLE libraries
-	if ( !AfxOleInit() ) {
+	if( !AfxOleInit() )
+	{
 		return;
 	}
 	AfxEnableControlContainer();
@@ -82,14 +83,12 @@ void MaterialEditorInit() {
 	materialEditorFont = new CFont;
 	materialEditorFont->CreateFontIndirect( &lf );
 
-
 	// To create the main window, this code creates a new frame window
 	// object and then sets it as the application's main window object
 	meMainFrame = new MEMainFrame;
 
 	// create and load the frame with its resources
 	meMainFrame->LoadFrame( IDR_ME_MAINFRAME, WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, NULL, NULL );
-
 
 	// hide the doom window by default
 	::ShowWindow( win32.hWnd, SW_HIDE );
@@ -100,24 +99,26 @@ void MaterialEditorInit() {
 }
 
 /**
-* Called every frame by the doom engine to allow the material editor to process messages.
-*/
-void MaterialEditorRun() {
-
+ * Called every frame by the doom engine to allow the material editor to process messages.
+ */
+void MaterialEditorRun( void )
+{
 	MSG* msg = AfxGetCurrentMessage();
 
-	while ( ::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) ) {
+	while( ::PeekMessage( msg, NULL, NULL, NULL, PM_NOREMOVE ) )
+	{
 		// pump message
-		if ( !AfxGetApp()->PumpMessage() ) {
+		if( !AfxGetApp()->PumpMessage() )
+		{
 		}
 	}
 }
 
 /**
-* Called by the doom engine when the material editor needs to be destroyed.
-*/
-void MaterialEditorShutdown() {
-
+ * Called by the doom engine when the material editor needs to be destroyed.
+ */
+void MaterialEditorShutdown( void )
+{
 	delete meMainFrame;
 
 	delete materialEditorFont;
@@ -126,18 +127,21 @@ void MaterialEditorShutdown() {
 }
 
 /**
-* Allows the doom engine to reflect console output to the material editors console.
-*/
-void MaterialEditorPrintConsole( const char * msg ) {
-	//meMainFrame can be null when starting immedeatly from commandline.
-	if ( meMainFrame && com_editors & EDITOR_MATERIAL ) {
+ * Allows the doom engine to reflect console output to the material editors console.
+ */
+void MaterialEditorPrintConsole( const char* msg )
+{
+	// meMainFrame can be null when starting immedeatly from commandline.
+	if( meMainFrame && com_editors & EDITOR_MATERIAL )
+	{
 		meMainFrame->PrintConsoleMessage( msg );
 	}
 }
 
 /**
-* Returns the handle to the main Material Editor Window
-*/
-HWND GetMaterialEditorWindow() {
+ * Returns the handle to the main Material Editor Window
+ */
+HWND GetMaterialEditorWindow()
+{
 	return meMainFrame->GetSafeHwnd();
 }

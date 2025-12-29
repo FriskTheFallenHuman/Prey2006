@@ -317,7 +317,7 @@ public:
 
 							// When media files are loaded, a reference line can be printed at a
 							// proper indentation if decl_show is set
-	virtual void			MediaPrint( const char *fmt, ... ) id_attribute((format(printf,2,3))) = 0;
+	virtual void			MediaPrint( VERIFY_FORMAT_STRING const char *fmt, ... ) = 0;
 
 	virtual void			WritePrecacheCommands( idFile *f ) = 0;
 

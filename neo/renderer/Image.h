@@ -120,6 +120,23 @@ typedef struct
 	unsigned int dwReserved2[3];
 } ddsFileHeader_t;
 
+// DG: additional header that's right behind the ddsFileHeader_t
+//     ONLY IF ddsHeader.ddspf.dwFourCC == 'DX10'
+// https://learn.microsoft.com/en-us/windows/win32/direct3ddds/dds-header-dxt10
+typedef struct
+{
+	// https://learn.microsoft.com/en-us/windows/win32/api/dxgiformat/ne-dxgiformat-dxgi_format
+	unsigned int dxgiFormat; // we only support DXGI_FORMAT_BC7_UNORM = 98;
+	// we *could* probably support DXGI_FORMAT_BC1_UNORM = 71, DXGI_FORMAT_BC2_UNORM = 74, DXGI_FORMAT_BC3_UNORM = 77
+	// and map that to the old S3TC stuff, but I hope that tools writing those formats
+	// stick to just DX9-style ddsFileHeader_t to be more compatible?
+
+	unsigned int resourceDimension; // 0: unknown, 2: Texture1D, 3: Texture2D, 4: Texture3D
+	unsigned int miscFlag;   // 4 if 2D texture is cubemap, else 0
+	unsigned int arraySize;  // number of elements in texture array
+	unsigned int miscFlags2; // must be 0 for DX10, for DX11 has info about alpha channel (in lower 3 bits)
+} ddsDXT10addHeader_t;
+
 
 // increasing numeric values imply more information is stored
 typedef enum {
@@ -139,9 +156,11 @@ typedef enum {
 } textureType_t;
 
 typedef enum {
-	CF_2D,			// not a cube map
-	CF_NATIVE,		// _px, _nx, _py, etc, directly sent to GL
-	CF_CAMERA		// _forward, _back, etc, rotated and flipped as needed before sending to GL
+	CF_2D,				// not a cube map
+	CF_NATIVE,			// _px, _nx, _py, etc, directly sent to GL
+	CF_CAMERA,			// _forward, _back, etc, rotated and flipped as needed before sending to GL
+	CF_CAMERA_ALT,		// motorsep 12-30-2022; to use with cubemaps created from equirectangular panoramas in Bixorama (or perhaps any other similar software)
+	CF_CAMERA_SOURCE	// Source Engine style cubemap system
 } cubeFiles_t;
 
 #define	MAX_IMAGE_NAME	256
@@ -291,7 +310,7 @@ ID_INLINE idImage::idImage() {
 
 
 // data is RGBA
-void	R_WriteTGA( const char *filename, const byte *data, int width, int height, bool flipVertical = false );
+void	R_WriteTGA( const char *filename, const byte *data, int width, int height, bool flipVertical = false, const char* basePath = "fs_savepath" );
 // data is an 8 bit index into palette, which is RGB (no A)
 void	R_WritePalTGA( const char *filename, const byte *data, const byte *palette, int width, int height, bool flipVertical = false );
 // data is in top-to-bottom raster order unless flipVertical is set
@@ -363,7 +382,7 @@ public:
 	static idCVar		image_roundDown;			// round bad sizes down to nearest power of two
 	static idCVar		image_colorMipLevels;		// development aid to see texture mip usage
 	static idCVar		image_downSize;				// controls texture downsampling
-	static idCVar		image_useCompression;		// 0 = force everything to high quality
+	static idCVar		image_useCompression;		// 0 = force everything to high quality 1 = compress with S3TC (DXT) 2 = compress with BPTC if possible
 	static idCVar		image_filter;				// changes texture filtering on mipmapped images
 	static idCVar		image_anisotropy;			// set the maximum texture anisotropy if available
 	static idCVar		image_lodbias;				// change lod bias on mipmapped images
@@ -459,7 +478,7 @@ FIXME: make an "imageBlock" type to hold byte*,width,height?
 byte *R_Dropsample( const byte *in, int inwidth, int inheight,
 							int outwidth, int outheight );
 byte *R_ResampleTexture( const byte *in, int inwidth, int inheight,
-							int outwidth, int outheight );
+							int& outwidth, int& outheight );
 byte *R_MipMapWithAlphaSpecularity( const byte *in, int width, int height );
 byte *R_MipMap( const byte *in, int width, int height, bool preserveBorder );
 byte *R_MipMap3D( const byte *in, int width, int height, int depth, bool preserveBorder );

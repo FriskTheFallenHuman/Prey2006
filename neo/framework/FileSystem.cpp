@@ -109,24 +109,6 @@ can still be written out in restricted mode, so screenshots and demos are allowe
 Restricted mode can be tested by setting "+set fs_restrict 1" on the command line, even
 if there is a valid product.txt under the basepath or cdpath.
 
-If the "fs_copyfiles" cvar is set to 1, then every time a file is sourced from the cd
-path, it will be copied over to the save path. This is a development aid to help build
-test releases and to copy working sets of files.
-
-If the "fs_copyfiles" cvar is set to 2, any file found in fs_cdpath that is newer than
-it's fs_savepath version will be copied to fs_savepath (in addition to the fs_copyfiles 1
-behaviour).
-
-If the "fs_copyfiles" cvar is set to 3, files from both basepath and cdpath will be copied
-over to the save path. This is useful when copying working sets of files mainly from base
-path with an additional cd path (which can be a slower network drive for instance).
-
-If the "fs_copyfiles" cvar is set to 4, files that exist in the cd path but NOT the base path
-will be copied to the save path
-
-NOTE: fs_copyfiles and case sensitivity. On fs_caseSensitiveOS 0 filesystems ( win32 ), the
-copied files may change casing when copied over.
-
 The relative path "sound/newstuff/test.wav" would be searched for in the following places:
 
 for save path, dev path, base path, cd path:
@@ -257,6 +239,12 @@ typedef struct fileInPack_s {
 } fileInPack_t;
 
 typedef enum {
+	BINARY_UNKNOWN = 0,
+	BINARY_YES,
+	BINARY_NO
+} binaryStatus_t;
+
+typedef enum {
 	PURE_UNKNOWN = 0,	// need to run the pak through GetPackStatus
 	PURE_NEUTRAL,	// neutral regarding pureness. gets in the pure list if referenced
 	PURE_ALWAYS,	// always referenced - for pak* named files, unless NEVER
@@ -275,6 +263,7 @@ typedef struct {
 	int					numfiles;
 	int					length;
 	bool				referenced;
+	binaryStatus_t		binary;
 	bool				addon;						// this is an addon pack - addon_search tells if it's 'active'
 	bool				addon_search;				// is in the search list
 	addonInfo_t			*addon_info;
@@ -299,6 +288,7 @@ typedef struct searchpath_s {
 #define FSFLAG_SEARCH_DIRS		( 1 << 0 )
 #define FSFLAG_SEARCH_PAKS		( 1 << 1 )
 #define FSFLAG_PURE_NOREF		( 1 << 2 )
+#define FSFLAG_BINARY_ONLY		( 1 << 3 )
 #define FSFLAG_SEARCH_ADDONS	( 1 << 4 )
 
 // 3 search path (fs_savepath fs_basepath fs_cdpath)
@@ -306,6 +296,7 @@ typedef struct searchpath_s {
 #define MAX_CACHED_DIRS 6
 
 // how many OSes to handle game paks for ( we don't have to know them precisely )
+#define MAX_GAME_OS	6
 #define BINARY_CONFIG "binary.conf"
 #define ADDON_CONFIG "addon.conf"
 
@@ -344,10 +335,12 @@ public:
 	virtual void			CreateOSPath( const char *OSPath );
 	virtual bool			FileIsInPAK( const char *relativePath );
 	virtual void			UpdatePureServerChecksums( void );
-	virtual fsPureReply_t	SetPureServerChecksums( const int pureChecksums[ MAX_PURE_PAKS ], int missingChecksums[ MAX_PURE_PAKS ] );
-	virtual void			GetPureServerChecksums( int checksums[ MAX_PURE_PAKS ] );
-	virtual void			SetRestartChecksums( const int pureChecksums[ MAX_PURE_PAKS ] );
+	virtual bool			UpdateGamePakChecksums( void );
+	virtual fsPureReply_t	SetPureServerChecksums( const int pureChecksums[ MAX_PURE_PAKS ], int gamePakChecksum, int missingChecksums[ MAX_PURE_PAKS ], int *missingGamePakChecksum );
+	virtual void			GetPureServerChecksums( int checksums[ MAX_PURE_PAKS ], int OS, int *gamePakChecksum );
+	virtual void			SetRestartChecksums( const int pureChecksums[ MAX_PURE_PAKS ], int gamePakChecksum );
 	virtual	void			ClearPureChecksums( void );
+	virtual int				GetOSMask( void );
 	virtual int				ReadFile( const char *relativePath, void **buffer, ID_TIME_T *timestamp );
 	virtual void			FreeFile( void *buffer );
 	virtual int				WriteFile( const char *relativePath, const void *buffer, int size, const char *basePath = "fs_savepath" );
@@ -372,10 +365,10 @@ public:
 							// sets the current read count
 	virtual void			SetReadCount( int count )  { readCount = count; }
 	//HUMANHEAD END
-	virtual void			FindDLL( const char *basename, char dllPath[ MAX_OSPATH ] );
+	virtual void			FindDLL( const char *basename, char dllPath[ MAX_OSPATH ], bool updateChecksum );
 	virtual void			ClearDirCache( void );
 	virtual void			CopyFile( const char *fromOSPath, const char *toOSPath );
-	virtual int				ValidateDownloadPakForChecksum( int checksum, char path[ MAX_STRING_CHARS ] );
+	virtual int				ValidateDownloadPakForChecksum( int checksum, char path[ MAX_STRING_CHARS ], bool isBinary );
 	virtual idFile *		MakeTemporaryFile( void );
 	virtual int				AddZipFile( const char *path );
 	virtual findFile_t		FindFile( const char *path, bool scheduleAddons );
@@ -425,6 +418,11 @@ private:
 	bool					loadedFileFromDir;		// set to true once a file was loaded from a directory - can't switch to pure anymore
 	idList<int>				restartChecksums;		// used during a restart to set things in right order
 	idList<int>				addonChecksums;			// list of checksums that should go to the search list directly ( for restarts )
+	int						restartGamePakChecksum;
+	int						gameDLLChecksum;		// the checksum of the last loaded game DLL
+	int						gamePakChecksum;		// the checksum of the pak holding the loaded game DLL
+
+	int						gamePakForOS[ MAX_GAME_OS ];
 
 	idDEntry				dir_cache[ MAX_CACHED_DIRS ]; // fifo
 	int						dir_cache_index;
@@ -447,6 +445,7 @@ private:
 	void					AddGameDirectory( const char *path, const char *dir );
 	void					SetupGameDirectories( const char *gameName );
 	void					Startup( void );
+	void					SetRestrictions( void );
 							// some files can be obtained from directories without compromising si_pure
 	bool					FileAllowedFromDir( const char *path );
 							// searches all the paks, no pure check
@@ -466,7 +465,7 @@ private:
 
 idCVar	idFileSystemLocal::fs_restrict( "fs_restrict", "", CVAR_SYSTEM | CVAR_INIT | CVAR_BOOL, "" );
 idCVar	idFileSystemLocal::fs_debug( "fs_debug", "0", CVAR_SYSTEM | CVAR_INTEGER, "", 0, 2, idCmdSystem::ArgCompletion_Integer<0,2> );
-idCVar	idFileSystemLocal::fs_copyfiles( "fs_copyfiles", "0", CVAR_SYSTEM | CVAR_INIT | CVAR_INTEGER, "", 0, 4, idCmdSystem::ArgCompletion_Integer<0,3> );
+idCVar	idFileSystemLocal::fs_copyfiles( "fs_copyfiles", "0", CVAR_SYSTEM | CVAR_INIT | CVAR_BOOL, "Copy every file touched to fs_savepath" );
 idCVar	idFileSystemLocal::fs_basepath( "fs_basepath", "", CVAR_SYSTEM | CVAR_INIT, "" );
 idCVar	idFileSystemLocal::fs_configpath( "fs_configpath", "", CVAR_SYSTEM | CVAR_INIT, "" );
 idCVar	idFileSystemLocal::fs_savepath( "fs_savepath", "", CVAR_SYSTEM | CVAR_INIT, "" );
@@ -497,6 +496,7 @@ idFileSystemLocal::idFileSystemLocal( void ) {
 	dir_cache_index = 0;
 	dir_cache_count = 0;
 	loadedFileFromDir = false;
+	restartGamePakChecksum = 0;
 	memset( &backgroundThread, 0, sizeof( backgroundThread ) );
 	backgroundThread_exit = false;
 	addonPaks = NULL;
@@ -794,8 +794,10 @@ const char *idFileSystemLocal::BuildOSPath( const char *base, const char *game, 
 		testPath.StripFilename();
 
 		if ( testPath.HasUpper() ) {
-
-			//common->DPrintf( "Non-portable: path contains uppercase characters: %s\n", testPath.c_str() );	// Too noisy
+			// This doesn't mean much under windows, for Linux systems
+#if defined ( DEBUG )
+			common->DPrintf( "Non-portable: path contains uppercase characters: %s\n", testPath.c_str() );
+#endif // DEBUG
 
 			// attempt a fixup on the fly
 			if ( fs_caseSensitiveOS.GetBool() ) {
@@ -804,7 +806,7 @@ const char *idFileSystemLocal::BuildOSPath( const char *base, const char *game, 
 				fileName.StripPath();
 				sprintf( newPath, "%s/%s/%s", base, testPath.c_str(), fileName.c_str() );
 				ReplaceSeparators( newPath );
-				common->DPrintf( "Fixed up to '%s'\n", newPath.c_str() );
+				common->DPrintf( "Fixed up to %s\n", newPath.c_str() );
 				idStr::Copynz( OSPath, newPath, sizeof( OSPath ) );
 				return OSPath;
 			}
@@ -843,6 +845,18 @@ const char *idFileSystemLocal::OSPathToRelativePath( const char *OSPath ) {
 	// "//Purgatory/purgatory/doom/base/models/mapobjects/bitch/hologirl.tga"
 	// which won't match any of our drive letter based search paths
 	// look for the first complete directory name
+	bool ignoreWarning = false;
+#ifdef ID_DEMO_BUILD
+	base = strstr( OSPath, BASE_GAMEDIR );
+	idStr tempStr = OSPath;
+	tempStr.ToLower();
+	if ( ( strstr( tempStr, "//" ) || strstr( tempStr, "w:" ) ) && strstr( tempStr, "/doom/" BASE_GAMEDIR "/") ) {
+		// will cause a warning but will load the file. ase models have
+		// hard coded doom/base/ in the material names
+		base = strstr( OSPath, BASE_GAMEDIR );
+		ignoreWarning = true;
+	}
+#else
 	base = strstr( OSPath, BASE_GAMEDIR );
 	while ( base ) {
 		char c1 = '\0', c2;
@@ -855,7 +869,7 @@ const char *idFileSystemLocal::OSPathToRelativePath( const char *OSPath ) {
 		}
 		base = strstr( base + 1, BASE_GAMEDIR );
 	}
-
+#endif
 	// fs_game and fs_game_base support - look for first complete name with a mod path
 	// ( fs_game searched before fs_game_base )
 	const char *fsgame = NULL;
@@ -906,7 +920,9 @@ const char *idFileSystemLocal::OSPathToRelativePath( const char *OSPath ) {
 		}
 	}
 
-	common->Warning( "idFileSystem::OSPathToRelativePath failed on %s", OSPath );
+	if ( !ignoreWarning ) {
+		common->Warning( "idFileSystem::OSPathToRelativePath failed on %s", OSPath );
+	}
 
 	strcpy( relativePath, "" );
 	return relativePath;
@@ -1053,7 +1069,7 @@ int idFileSystemLocal::ReadFile( const char *relativePath, void **buffer, ID_TIM
 			loadCount++;
 			loadStack++;
 
-			common->DPrintf( "Loading '%s' from journal file.\n", relativePath );
+			common->DPrintf( "Loading %s from journal file.\n", relativePath );
 			len = 0;
 			r = eventLoop->com_journalDataFile->Read( &len, sizeof( len ) );
 			if ( r != sizeof( len ) ) {
@@ -1109,7 +1125,7 @@ int idFileSystemLocal::ReadFile( const char *relativePath, void **buffer, ID_TIM
 
 	// if we are journalling and it is a config file, write it to the journal file
 	if ( isConfig && eventLoop && eventLoop->JournalLevel() == 1 ) {
-		common->DPrintf( "Writing '%s' to journal file.\n", relativePath );
+		common->DPrintf( "Writing %s to journal file.\n", relativePath );
 		eventLoop->com_journalDataFile->Write( &len, sizeof( len ) );
 		eventLoop->com_journalDataFile->Write( buf, len );
 		eventLoop->com_journalDataFile->Flush();
@@ -1313,6 +1329,7 @@ pack_t *idFileSystemLocal::LoadZipFile( const char *zipfile ) {
 	pack->numfiles = gi.number_entry;
 	pack->buildBuffer = buildBuffer;
 	pack->referenced = false;
+	pack->binary = BINARY_UNKNOWN;
 	pack->addon = false;
 	pack->addon_search = false;
 	pack->addon_info = NULL;
@@ -1342,18 +1359,6 @@ pack_t *idFileSystemLocal::LoadZipFile( const char *zipfile ) {
 		pack->hashTable[hash] = &buildBuffer[i];
 		// go to the next file in the zip
 		unzGoToNextFile(uf);
-	}
-
-	// ignore all binary paks
-	confHash = HashFileName(BINARY_CONFIG);
-	for (pakFile = pack->hashTable[confHash]; pakFile; pakFile = pakFile->next) {
-		if (!FilenameCompare(pakFile->name, BINARY_CONFIG)) {
-			unzClose(uf);
-			delete[] buildBuffer;
-			delete pack;
-			Mem_Free( fs_headerLongs );
-			return NULL;
-		}
 	}
 
 	// check if this is an addon pak
@@ -1738,10 +1743,7 @@ idModList *idFileSystemLocal::ListMods( void ) {
 			ListOSFiles( gamepath, ".pk4", pk4s );
 			if ( pk4s.Num() ) {
 				if ( !list->mods.Find( dirs[ i ] ) ) {
-					// DG: ignore d3xp, it's added explicitly later, if available
-					if ( dirs[ i ].Icmp( "d3xp" ) ) {
-						list->mods.Append( dirs[ i ] );
-					}
+					list->mods.Append( dirs[ i ] );
 				}
 			}
 		}
@@ -1775,7 +1777,7 @@ idModList *idFileSystemLocal::ListMods( void ) {
 	}
 
 	list->mods.Insert( "" );
-	list->descriptions.Insert( GAME_NAME );
+	list->descriptions.Insert( "Prey (base game)" );
 
 	assert( list->mods.Num() == list->descriptions.Num() );
 
@@ -1971,6 +1973,7 @@ idFileSystemLocal::Path_f
 */
 void idFileSystemLocal::Path_f( const idCmdArgs &args ) {
 	searchpath_t *sp;
+	int i;
 	idStr status;
 
 	common->Printf( "Current search path:\n" );
@@ -1998,7 +2001,15 @@ void idFileSystemLocal::Path_f( const idCmdArgs &args ) {
 			common->Printf( "%s/%s\n", sp->dir->path.c_str(), sp->dir->gamedir.c_str() );
 		}
 	}
-
+	common->Printf( "game DLL: 0x%x in pak: 0x%x\n", fileSystemLocal.gameDLLChecksum, fileSystemLocal.gamePakChecksum );
+#if ID_FAKE_PURE
+	common->Printf( "Note: ID_FAKE_PURE is enabled\n" );
+#endif
+	for( i = 0; i < MAX_GAME_OS; i++ ) {
+		if ( fileSystemLocal.gamePakForOS[ i ] ) {
+			common->Printf( "OS %d - pak 0x%x\n", i, fileSystemLocal.gamePakForOS[ i ] );
+		}
+	}
 	// show addon packs that are *not* in the search lists
 	common->Printf( "Addon pk4s:\n" );
 	for ( sp = fileSystemLocal.addonPaks; sp; sp = sp->next ) {
@@ -2008,6 +2019,24 @@ void idFileSystemLocal::Path_f( const idCmdArgs &args ) {
 			common->Printf( "%s (%i files)\n", sp->pack->pakFilename.c_str(), sp->pack->numfiles );
 		}
 	}
+}
+
+/*
+============
+idFileSystemLocal::GetOSMask
+============
+*/
+int idFileSystemLocal::GetOSMask( void ) {
+	int i, ret = 0;
+	for( i = 0; i < MAX_GAME_OS; i++ ) {
+		if ( fileSystemLocal.gamePakForOS[ i ] ) {
+			ret |= ( 1 << i );
+		}
+	}
+	if ( !ret ) {
+		return -1;
+	}
+	return ret;
 }
 
 /*
@@ -2359,6 +2388,9 @@ void idFileSystemLocal::Startup( void ) {
 			}
 			common->FatalError( "Failed to restart with pure mode restrictions for server connect" );
 		}
+		// also the game pak checksum
+		// we could check if the game pak is actually present, but we would not be restarting if there wasn't one @ first pure check
+		gamePakChecksum = restartGamePakChecksum;
 	}
 
 	// add our commands
@@ -2370,6 +2402,31 @@ void idFileSystemLocal::Startup( void ) {
 
 	// print the current search paths
 	Path_f( idCmdArgs() );
+}
+
+/*
+===================
+idFileSystemLocal::SetRestrictions
+
+Looks for product keys and restricts media add on ability
+if the full version is not found
+===================
+*/
+void idFileSystemLocal::SetRestrictions( void ) {
+#ifdef ID_DEMO_BUILD
+	common->Printf( "\nRunning in restricted demo mode.\n\n" );
+	// make sure that the pak file has the header checksum we expect
+	searchpath_t	*search;
+	for ( search = searchPaths; search; search = search->next ) {
+		if ( search->pack ) {
+			// a tiny attempt to keep the checksum from being scannable from the exe
+			if ( ( search->pack->checksum ^ 0x84268436u ) != ( DEMO_PAK_CHECKSUM ^ 0x84268436u ) ) {
+				common->FatalError( "Corrupted %s: 0x%x", search->pack->pakFilename.c_str(), search->pack->checksum );
+			}
+		}
+	}
+	cvarSystem->SetCVarBool( "fs_restrict", true );
+#endif
 }
 
 /*
@@ -2411,6 +2468,71 @@ void idFileSystemLocal::UpdatePureServerChecksums( void ) {
 
 /*
 =====================
+idFileSystemLocal::UpdateGamePakChecksums
+=====================
+*/
+bool idFileSystemLocal::UpdateGamePakChecksums( void ) {
+	searchpath_t	*search;
+	fileInPack_t	*pakFile;
+	int				confHash;
+	idFile			*confFile;
+	char			*buf;
+	idLexer			*lexConf;
+	idToken			token;
+	int				id;
+
+	confHash = HashFileName( BINARY_CONFIG );
+
+	memset( gamePakForOS, 0, sizeof( gamePakForOS ) );
+	for ( search = searchPaths; search; search = search->next ) {
+		if ( !search->pack ) {
+			continue;
+		}
+		search->pack->binary = BINARY_NO;
+		for ( pakFile = search->pack->hashTable[confHash]; pakFile; pakFile = pakFile->next ) {
+			if ( !FilenameCompare( pakFile->name, BINARY_CONFIG ) ) {
+				search->pack->binary = BINARY_YES;
+				confFile = ReadFileFromZip( search->pack, pakFile, BINARY_CONFIG );
+				buf = new char[ confFile->Length() + 1 ];
+				confFile->Read( (void *)buf, confFile->Length() );
+				buf[ confFile->Length() ] = '\0';
+				lexConf = new idLexer( buf, confFile->Length(), confFile->GetFullPath() );
+				while ( lexConf->ReadToken( &token ) ) {
+					if ( token.IsNumeric() ) {
+						id = atoi( token );
+						if ( id < MAX_GAME_OS && !gamePakForOS[ id ] ) {
+							if ( fs_debug.GetBool() ) {
+								common->Printf( "Adding game pak checksum for OS %d: %s 0x%x\n", id, confFile->GetFullPath(), search->pack->checksum );
+							}
+							gamePakForOS[ id ] = search->pack->checksum;
+						}
+					}
+				}
+				CloseFile( confFile );
+				delete lexConf;
+				delete[] buf;
+			}
+		}
+	}
+
+	// some sanity checks on the game code references
+	// make sure that at least the local OS got a pure reference
+	if ( !gamePakForOS[ BUILD_OS_ID ] ) {
+		common->Warning( "No game code pak reference found for the local OS" );
+		return false;
+	}
+
+	if ( !cvarSystem->GetCVarBool( "net_serverAllowServerMod" ) &&
+		gamePakChecksum != gamePakForOS[ BUILD_OS_ID ] ) {
+		common->Warning( "The current game code doesn't match pak files (net_serverAllowServerMod is off)" );
+		return false;
+	}
+
+	return true;
+}
+
+/*
+=====================
 idFileSystemLocal::GetPackForChecksum
 =====================
 */
@@ -2440,11 +2562,12 @@ pack_t* idFileSystemLocal::GetPackForChecksum( int checksum, bool searchAddons )
 idFileSystemLocal::ValidateDownloadPakForChecksum
 ===============
 */
-int idFileSystemLocal::ValidateDownloadPakForChecksum( int checksum, char path[ MAX_STRING_CHARS ] ) {
+int idFileSystemLocal::ValidateDownloadPakForChecksum( int checksum, char path[ MAX_STRING_CHARS ], bool isBinary ) {
 	int			i;
 	idStrList	testList;
 	idStr		name;
 	idStr		relativePath;
+	bool		pakBinary;
 	pack_t		*pak = GetPackForChecksum( checksum );
 
 	if ( !pak ) {
@@ -2456,7 +2579,15 @@ int idFileSystemLocal::ValidateDownloadPakForChecksum( int checksum, char path[ 
 	name = pak->pakFilename;
 	name.StripPath();
 	if ( strstr( name.c_str(), "pak" ) == name.c_str() ) {
-		common->DPrintf( "'%s' is not a donwloadable pak\n", pak->pakFilename.c_str() );
+		common->DPrintf( "%s is not a donwloadable pak\n", pak->pakFilename.c_str() );
+		return 0;
+	}
+	// check the binary
+	// a pure server sets the binary flag when starting the game
+	assert( pak->binary != BINARY_UNKNOWN );
+	pakBinary = ( pak->binary == BINARY_YES ) ? true : false;
+	if ( isBinary != pakBinary ) {
+		common->DPrintf( "%s binary flag mismatch\n", pak->pakFilename.c_str() );
 		return 0;
 	}
 
@@ -2504,14 +2635,22 @@ DLL:
   the checksum of the pak containing the DLL is maintained seperately, the server can send different replies by OS
 =====================
 */
-fsPureReply_t idFileSystemLocal::SetPureServerChecksums( const int pureChecksums[ MAX_PURE_PAKS ], int missingChecksums[ MAX_PURE_PAKS ] ) {
+fsPureReply_t idFileSystemLocal::SetPureServerChecksums( const int pureChecksums[ MAX_PURE_PAKS ], int _gamePakChecksum, int missingChecksums[ MAX_PURE_PAKS ], int *missingGamePakChecksum ) {
 	pack_t			*pack;
 	int				i, j, imissing;
 	bool			success = true;
 	bool			canPrepend = true;
+	char			dllName[MAX_OSPATH];
+	int				dllHash;
+	fileInPack_t *	pakFile;
+
+	sys->DLL_GetFileName( "game" D3_ARCH, dllName, MAX_OSPATH );
+	dllHash = HashFileName( dllName );
 
 	imissing = 0;
 	missingChecksums[ 0 ] = 0;
+	assert( missingGamePakChecksum );
+	*missingGamePakChecksum = 0;
 
 	if ( pureChecksums[ 0 ] == 0 ) {
 		ClearPureChecksums();
@@ -2585,6 +2724,48 @@ fsPureReply_t idFileSystemLocal::SetPureServerChecksums( const int pureChecksums
 		j++;
 	}
 
+	// DLL checksuming
+	if ( !_gamePakChecksum ) {
+		// server doesn't have knowledge of code we can use ( OS issue )
+		return PURE_NODLL;
+	}
+	assert( gameDLLChecksum );
+#if ID_FAKE_PURE
+	gamePakChecksum = _gamePakChecksum;
+#endif
+	if ( _gamePakChecksum != gamePakChecksum ) {
+		// current DLL is wrong, search for a pak with the approriate checksum
+		// ( search all paks, the pure list is not relevant here )
+		pack = GetPackForChecksum( _gamePakChecksum );
+		if ( !pack ) {
+			if ( fs_debug.GetBool() ) {
+				common->Printf( "missing the game code pak ( 0x%x )\n", _gamePakChecksum );
+			}
+			// if there are other paks missing they have also been marked above
+			*missingGamePakChecksum = _gamePakChecksum;
+			return PURE_MISSING;
+		}
+		// if assets paks are missing, don't try any of the DLL restart / NODLL
+		if ( imissing ) {
+			return PURE_MISSING;
+		}
+		// we have a matching pak
+		if ( fs_debug.GetBool() ) {
+			common->Printf( "server's game code pak candidate is '%s' ( 0x%x )\n", pack->pakFilename.c_str(), pack->checksum );
+		}
+		// make sure there is a valid DLL for us
+		if ( pack->hashTable[ dllHash ] ) {
+			for ( pakFile = pack->hashTable[ dllHash ]; pakFile; pakFile = pakFile->next ) {
+				if ( !FilenameCompare( pakFile->name, dllName ) ) {
+					gamePakChecksum = _gamePakChecksum;		// this will be used to extract the DLL in pure mode FindDLL
+					return PURE_RESTART;
+				}
+			}
+		}
+		common->Warning( "media is misconfigured. server claims pak '%s' ( 0x%x ) has media for us, but '%s' is not found\n", pack->pakFilename.c_str(), pack->checksum, dllName );
+		return PURE_NODLL;
+	}
+
 	// we reply to missing after DLL check so it can be part of the list
 	if ( imissing ) {
 		return PURE_MISSING;
@@ -2605,13 +2786,20 @@ fsPureReply_t idFileSystemLocal::SetPureServerChecksums( const int pureChecksums
 idFileSystemLocal::GetPureServerChecksums
 =====================
 */
-void idFileSystemLocal::GetPureServerChecksums( int checksums[ MAX_PURE_PAKS ] ) {
+void idFileSystemLocal::GetPureServerChecksums( int checksums[ MAX_PURE_PAKS ], int OS, int *_gamePakChecksum ) {
 	int i;
 
 	for ( i = 0; i < serverPaks.Num(); i++ ) {
 		checksums[ i ] = serverPaks[ i ]->checksum;
 	}
 	checksums[ i ] = 0;
+	if ( _gamePakChecksum ) {
+		if ( OS >= 0 ) {
+			*_gamePakChecksum = gamePakForOS[ OS ];
+		} else {
+			*_gamePakChecksum = gamePakChecksum;
+		}
+	}
 }
 
 /*
@@ -2619,7 +2807,7 @@ void idFileSystemLocal::GetPureServerChecksums( int checksums[ MAX_PURE_PAKS ] )
 idFileSystemLocal::SetRestartChecksums
 =====================
 */
-void idFileSystemLocal::SetRestartChecksums( const int pureChecksums[ MAX_PURE_PAKS ] ) {
+void idFileSystemLocal::SetRestartChecksums( const int pureChecksums[ MAX_PURE_PAKS ], int gamePakChecksum ) {
 	int		i;
 	pack_t	*pack;
 
@@ -2637,6 +2825,7 @@ void idFileSystemLocal::SetRestartChecksums( const int pureChecksums[ MAX_PURE_P
 		restartChecksums.Append( pureChecksums[ i ] );
 		i++;
 	}
+	restartGamePakChecksum = gamePakChecksum;
 }
 
 /*
@@ -2684,23 +2873,18 @@ void idFileSystemLocal::Init( void ) {
 	// try to start up normally
 	Startup( );
 
+	// see if we are going to allow add-ons
+	SetRestrictions();
+
 	// spawn a thread to handle background file reads
 	StartBackgroundDownloadThread();
 
+	// if we can't find default.cfg, assume that the paths are
+	// busted and error out now, rather than getting an unreadable
+	// graphics screen when the font fails to load
+	// Dedicated servers can run with no outside files at all
 	if ( ReadFile( "default.cfg", NULL, NULL ) <= 0 ) {
-		// DG: the demo gamedata is in demo/ instead of base/. to make it "just work", add a fallback for that
-		if(fs_game.GetString()[0] == '\0' || idStr::Icmp(fs_game.GetString(), BASE_GAMEDIR) == 0) {
-			common->Warning("Couldn't find default.cfg in %s/, trying again with demo/\n", BASE_GAMEDIR);
-			fs_game.SetString("demo");
-			fs_game_base.SetString("demo");
-			Restart();
-		} else {
-			// if we can't find default.cfg, assume that the paths are
-			// busted and error out now, rather than getting an unreadable
-			// graphics screen when the font fails to load
-			// Dedicated servers can run with no outside files at all
-			common->FatalError( "Couldn't load default.cfg" );
-		}
+		common->FatalError( "Couldn't load default.cfg" );
 	}
 }
 
@@ -2715,8 +2899,8 @@ void idFileSystemLocal::Restart( void ) {
 
 	Startup( );
 
-	// spawn a thread to handle background file reads
-	StartBackgroundDownloadThread();
+	// see if we are going to allow add-ons
+	SetRestrictions();
 
 	// if we can't find default.cfg, assume that the paths are
 	// busted and error out now, rather than getting an unreadable
@@ -2749,6 +2933,8 @@ void idFileSystemLocal::Shutdown( bool reloading ) {
 		addonChecksums.Clear();
 	}
 	loadedFileFromDir = false;
+	gameDLLChecksum = 0;
+	gamePakChecksum = 0;
 
 	ClearDirCache();
 
@@ -3048,7 +3234,7 @@ idFile *idFileSystemLocal::OpenFileReadFlags( const char *relativePath, int sear
 			}
 
 			// if fs_copyfiles is set
-			if ( allowCopyFiles && fs_copyfiles.GetInteger() ) {
+			if ( allowCopyFiles ) {
 
 				idStr copypath;
 				idStr name;
@@ -3058,49 +3244,8 @@ idFile *idFileSystemLocal::OpenFileReadFlags( const char *relativePath, int sear
 				copypath += PATHSEPERATOR_STR;
 				copypath += name;
 
-				bool isFromCDPath = !dir->path.Cmp( fs_cdpath.GetString() );
-				bool isFromSavePath = !dir->path.Cmp( fs_savepath.GetString() );
-				bool isFromBasePath = !dir->path.Cmp( fs_basepath.GetString() );
-
-				switch ( fs_copyfiles.GetInteger() ) {
-					case 1:
-						// copy from cd path only
-						if ( isFromCDPath ) {
-							CopyFile( netpath, copypath );
-						}
-						break;
-					case 2:
-						// from cd path + timestamps
-						if ( isFromCDPath ) {
-							CopyFile( netpath, copypath );
-						} else if ( isFromSavePath || isFromBasePath ) {
-							idStr sourcepath;
-							sourcepath = BuildOSPath( fs_cdpath.GetString(), dir->gamedir, relativePath );
-							FILE *f1 = OpenOSFile( sourcepath, "r" );
-							if ( f1 ) {
-								ID_TIME_T t1 = Sys_FileTimeStamp( f1 );
-								fclose( f1 );
-								FILE *f2 = OpenOSFile( copypath, "r" );
-								if ( f2 ) {
-									ID_TIME_T t2 = Sys_FileTimeStamp( f2 );
-									fclose( f2 );
-									if ( t1 > t2 ) {
-										CopyFile( sourcepath, copypath );
-									}
-								}
-							}
-						}
-						break;
-					case 3:
-						if ( isFromCDPath || isFromBasePath ) {
-							CopyFile( netpath, copypath );
-						}
-						break;
-					case 4:
-						if ( isFromCDPath && !isFromBasePath ) {
-							CopyFile( netpath, copypath );
-						}
-						break;
+				if ( fs_copyfiles.GetBool() ) {
+					CopyFile( netpath, copypath );
 				}
 			}
 
@@ -3121,6 +3266,26 @@ idFile *idFileSystemLocal::OpenFileReadFlags( const char *relativePath, int sear
 
 			// look through all the pak file elements
 			pak = search->pack;
+
+			if ( searchFlags & FSFLAG_BINARY_ONLY ) {
+				// make sure this pak is tagged as a binary file
+				if ( pak->binary == BINARY_UNKNOWN ) {
+					int				confHash;
+					fileInPack_t	*pakFile;
+					confHash = HashFileName( BINARY_CONFIG );
+					pak->binary = BINARY_NO;
+					for ( pakFile = search->pack->hashTable[confHash]; pakFile; pakFile = pakFile->next ) {
+						if ( !FilenameCompare( pakFile->name, BINARY_CONFIG ) ) {
+							pak->binary = BINARY_YES;
+							break;
+						}
+					}
+				}
+				if ( pak->binary == BINARY_NO ) {
+					continue; // not a binary pak, skip
+				}
+			}
+
 			for ( pakFile = pak->hashTable[hash]; pakFile; pakFile = pakFile->next ) {
 				// case and separator insensitive comparisons
 				if ( !FilenameCompare( pakFile->name, relativePath ) ) {
@@ -3213,7 +3378,7 @@ idFile *idFileSystemLocal::OpenFileWrite( const char *relativePath, const char *
 	// so just flush everything
 	ClearDirCache();
 
-	common->DPrintf( "writing to: '%s'\n", OSpath.c_str() );
+	common->DPrintf( "writing to: %s\n", OSpath.c_str() );
 	CreateOSPath( OSpath );
 
 	f = new idFile_Permanent();
@@ -3244,10 +3409,10 @@ idFile *idFileSystemLocal::OpenExplicitFileRead( const char *OSPath ) {
 	}
 
 	if ( fs_debug.GetInteger() ) {
-		common->Printf( "idFileSystem::OpenExplicitFileRead: '%s'\n", OSPath );
+		common->Printf( "idFileSystem::OpenExplicitFileRead: %s\n", OSPath );
 	}
 
-	common->DPrintf( "idFileSystem::OpenExplicitFileRead - reading from: '%s'\n", OSPath );
+	common->DPrintf( "idFileSystem::OpenExplicitFileRead - reading from: %s\n", OSPath );
 
 	f = new idFile_Permanent();
 	f->o = OpenOSFile( OSPath, "rb" );
@@ -3277,10 +3442,10 @@ idFile *idFileSystemLocal::OpenExplicitFileWrite( const char *OSPath ) {
 	}
 
 	if ( fs_debug.GetInteger() ) {
-		common->Printf( "idFileSystem::OpenExplicitFileWrite: '%s'\n", OSPath );
+		common->Printf( "idFileSystem::OpenExplicitFileWrite: %s\n", OSPath );
 	}
 
-	common->DPrintf( "writing to: '%s'\n", OSPath );
+	common->DPrintf( "writing to: %s\n", OSPath );
 	CreateOSPath( OSPath );
 
 	f = new idFile_Permanent();
@@ -3584,7 +3749,7 @@ idFileSystemLocal::PerformingCopyFiles
 =================
 */
 bool idFileSystemLocal::PerformingCopyFiles( void ) const {
-	return fs_copyfiles.GetInteger() > 0;
+	return fs_copyfiles.GetBool();
 }
 
 /*
@@ -3655,23 +3820,96 @@ int idFileSystemLocal::GetFileChecksum( idFile *file ) {
 idFileSystemLocal::FindDLL
 =================
 */
-void idFileSystemLocal::FindDLL( const char *name, char _dllPath[ MAX_OSPATH ] ) {
+void idFileSystemLocal::FindDLL( const char *name, char _dllPath[ MAX_OSPATH ], bool updateChecksum ) {
 	idFile			*dllFile = NULL;
 	char			dllName[MAX_OSPATH];
 	idStr			dllPath;
+	int				dllHash;
+	pack_t			*inPak;
+	pack_t			*pak;
+	fileInPack_t	*pakFile;
 
 	sys->DLL_GetFileName( name, dllName, MAX_OSPATH );
+	dllHash = HashFileName( dllName );
 
+#if ID_FAKE_PURE
+	if ( 1 ) {
+#else
 	if (!serverPaks.Num() && Sys_GetPath(PATH_EXE, dllPath)) {
+#endif
 		// from executable directory first - this is handy for developement
 		dllPath.StripFilename( );
 		dllPath.AppendPath( dllName );
 		dllFile = OpenExplicitFileRead( dllPath );
 	}
-
-	if ( !dllFile && !serverPaks.Num() )
-		dllFile = OpenFileReadFlags( dllName, FSFLAG_SEARCH_DIRS );
-
+	if ( !dllFile ) {
+		if ( !serverPaks.Num() ) {
+			// not running in pure mode, try to extract from a pak file first
+			dllFile = OpenFileReadFlags( dllName, FSFLAG_SEARCH_PAKS | FSFLAG_PURE_NOREF | FSFLAG_BINARY_ONLY, &inPak );
+			if ( dllFile ) {
+				common->Printf( "found DLL in pak file: %s\n", dllFile->GetFullPath() );
+				dllPath = RelativePathToOSPath( dllName, "fs_savepath" );
+				CopyFile( dllFile, dllPath );
+				CloseFile( dllFile );
+				dllFile = OpenFileReadFlags( dllName, FSFLAG_SEARCH_DIRS );
+				if ( !dllFile ) {
+					common->Error( "DLL extraction to fs_savepath failed\n" );
+				} else if ( updateChecksum ) {
+					gameDLLChecksum = GetFileChecksum( dllFile );
+					gamePakChecksum = inPak->checksum;
+					updateChecksum = false;	// don't try again below
+				}
+			} else {
+				// didn't find a source in a pak file, try in the directory
+				dllFile = OpenFileReadFlags( dllName, FSFLAG_SEARCH_DIRS );
+				if ( dllFile ) {
+					if ( updateChecksum ) {
+						gameDLLChecksum = GetFileChecksum( dllFile );
+						// see if we can mark a pak file
+						pak = FindPakForFileChecksum( dllName, gameDLLChecksum, false );
+						pak ? gamePakChecksum = pak->checksum : gamePakChecksum = 0;
+						updateChecksum = false;
+					}
+				}
+			}
+		} else {
+			// we are in pure mode. this path to be reached only for game DLL situations
+			// with a code pak checksum given by server
+			assert( gamePakChecksum );
+			assert( updateChecksum );
+			pak = GetPackForChecksum( gamePakChecksum );
+			if ( !pak ) {
+				// not supposed to happen, bug in pure code?
+				common->Warning( "FindDLL in pure mode: game pak not found ( 0x%x )\n", gamePakChecksum );
+			} else {
+				// extract and copy
+				for ( pakFile = pak->hashTable[dllHash]; pakFile; pakFile = pakFile->next ) {
+					if ( !FilenameCompare( pakFile->name, dllName ) ) {
+						dllFile = ReadFileFromZip( pak, pakFile, dllName );
+						common->Printf( "found DLL in game pak file: %s\n", pak->pakFilename.c_str() );
+						dllPath = RelativePathToOSPath( dllName, "fs_savepath" );
+						CopyFile( dllFile, dllPath );
+						CloseFile( dllFile );
+						dllFile = OpenFileReadFlags( dllName, FSFLAG_SEARCH_DIRS );
+						if ( !dllFile ) {
+							common->Error( "DLL extraction to fs_savepath failed\n" );
+						} else {
+							gameDLLChecksum = GetFileChecksum( dllFile );
+							updateChecksum = false;	// don't try again below
+						}
+					}
+				}
+			}
+		}
+	}
+	if ( updateChecksum ) {
+		if ( dllFile ) {
+			gameDLLChecksum = GetFileChecksum( dllFile );
+		} else {
+			gameDLLChecksum = 0;
+		}
+		gamePakChecksum = 0;
+	}
 	if ( dllFile ) {
 		dllPath = dllFile->GetFullPath( );
 		CloseFile( dllFile );
