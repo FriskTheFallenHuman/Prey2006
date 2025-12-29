@@ -3560,7 +3560,7 @@ void idAI::Killed( idEntity *inflictor, idEntity *attacker, int damage, const id
 	EndAttack();
 
 	if ( g_debugDamage.GetBool() ) {
-		gameLocal.Printf( "Damage: joint: '%s', zone '%s'\n", animator.GetJointName( ( jointHandle_t )location ),
+		gameLocal.Printf( "Damage: joint: '%s', zone '%s'\n", animator.GetJointName( location ),
 			GetDamageGroup( location ) );
 	}
 

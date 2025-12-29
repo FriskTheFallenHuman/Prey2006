@@ -2535,7 +2535,6 @@ idSessionLocal::Frame
 ===============
 */
 extern bool CheckOpenALDeviceAndRecoverIfNeeded();
-extern int g_screenshotFormat;
 void idSessionLocal::Frame() {
 
 	if ( com_asyncSound.GetInteger() == 0 ) {

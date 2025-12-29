@@ -187,7 +187,7 @@ ID_INLINE void idCmdSystem::ArgCompletion_SaveGame( const idCmdArgs &args, void(
 }
 
 ID_INLINE void idCmdSystem::ArgCompletion_DemoName( const idCmdArgs &args, void(*callback)( const char *s ) ) {
-	cmdSystem->ArgCompletion_FolderExtension( args, callback, true, "demos/", true, ".demo", NULL );
+	cmdSystem->ArgCompletion_FolderExtension( args, callback, true, "demos/", ".demo", NULL );
 }
 
 #ifdef HUMANHEAD	// HUMANHEAD pdm

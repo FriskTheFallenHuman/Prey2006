@@ -30,7 +30,7 @@ jobs:
         os: [ubuntu-latest]
     steps:
       - name: Download dependencies
-        run: sudo apt update && sudo apt install libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build
+        run: sudo apt update && sudo apt install libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build libfreetype6-dev
 
       - name: Check out repository code
         uses: actions/checkout@v4

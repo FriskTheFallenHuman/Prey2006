@@ -2782,10 +2782,6 @@ static unsigned int AsyncTimer(unsigned int interval, void *) {
 	return tick - now;
 }
 
-#ifdef _WIN32
-#include "../sys/win32/win_local.h" // for Conbuf_AppendText()
-#endif // _WIN32
-
 static bool checkForHelp(int argc, char **argv)
 {
 	const char* helpArgs[] = { "--help", "-h", "-help", "-?", "/?" };
