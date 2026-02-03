@@ -1,5 +1,8 @@
 <p align="center"> <img src="https://cdn2.steamgriddb.com/logo_thumb/c5ab0bc60ac7929182aadd08703f1ec6.png">
 
+> [!TIP]
+> We have a discord server, feel free to join the discussion, the invite is [here.](https://discord.gg/tJDGrk6w4H)
+
 >[!CAUTION]
 > You **MUST** source your own legal copy of Prey (2006) to run this, i wouldn't provide any links for this.
 > i've been getting a lot of questions about but, please keep in mind this is just a source port.
