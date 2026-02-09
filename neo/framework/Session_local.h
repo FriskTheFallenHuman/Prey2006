@@ -167,6 +167,8 @@ public:
 
 	const char			*GetAuthMsg( void );
 
+	void				RescanMaps();
+
 	//=====================================
 
 	static idCVar		com_showAngles;

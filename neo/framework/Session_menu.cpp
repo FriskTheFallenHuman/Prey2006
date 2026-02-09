@@ -319,6 +319,8 @@ void idSessionLocal::SetMainMenuGuiVars( void ) {
 
 	guiMainMenu->SetStateString( "driver_prompt", "0" );
 
+	RescanMaps();
+
 	SetPbMenuGuiVars();
 }
 
@@ -526,6 +528,50 @@ void idSessionLocal::UpdateMPLevelShot( void ) {
 	guiMainMenu->SetStateString( "current_levelshot", screenshot );
 }
 
+/*
+==============
+idSessionLocal::RescanMaps
+==============
+*/
+void idSessionLocal::RescanMaps() {
+	const char *gametype = cvarSystem->GetCVarString( "si_gameType" );
+	if ( gametype == NULL || *gametype == 0 || idStr::Icmp( gametype, "singleplayer" ) == 0 ) {
+		gametype = "Deathmatch";
+	}
+
+	int i, num;
+	idStr si_map = cvarSystem->GetCVarString("si_map");
+	const idDict *dict;
+
+	guiMainMenu_MapList->Clear();
+	guiMainMenu_MapList->SetSelection( 0 );
+	num = fileSystem->GetNumMaps();
+	for ( i = 0; i < num; i++ ) {
+		dict = fileSystem->GetMapDecl( i );
+		if ( dict && dict->GetBool( gametype ) ) {
+			const char *mapName = dict->GetString( "name" );
+			if ( mapName[ 0 ] == '\0' ) {
+				mapName = dict->GetString( "path" );
+			}
+			mapName = common->GetLanguageDict()->GetString( mapName );
+			guiMainMenu_MapList->Add( i, mapName );
+			if ( !si_map.Icmp( dict->GetString( "path" ) ) ) {
+				guiMainMenu_MapList->SetSelection( guiMainMenu_MapList->Num() - 1 );
+			}
+		}
+	}
+	i = guiMainMenu_MapList->GetSelection( NULL, 0 );
+	if ( i >= 0 ) {
+		dict = fileSystem->GetMapDecl( i);
+	} else {
+		dict = NULL;
+	}
+	cvarSystem->SetCVarString( "si_map", ( dict ? dict->GetString( "path" ) : "" ) );
+
+	// set the current level shot
+	UpdateMPLevelShot();
+}
+
 // helper function to load a mod (from mods menu)
 static void loadMod ( const idStr& modName ) {
 	cvarSystem->SetCVarString( "fs_game", modName );
@@ -656,42 +702,7 @@ void idSessionLocal::HandleMainMenuCommands( const char *menuCommand ) {
 		}
 
 		if ( !idStr::Icmp( cmd, "MAPScan" ) ) {
-			const char *gametype = cvarSystem->GetCVarString( "si_gameType" );
-			if ( gametype == NULL || *gametype == 0 || idStr::Icmp( gametype, "singleplayer" ) == 0 ) {
-				gametype = "Deathmatch";
-			}
-
-			int i, num;
-			idStr si_map = cvarSystem->GetCVarString("si_map");
-			const idDict *dict;
-
-			guiMainMenu_MapList->Clear();
-			guiMainMenu_MapList->SetSelection( 0 );
-			num = fileSystem->GetNumMaps();
-			for ( i = 0; i < num; i++ ) {
-				dict = fileSystem->GetMapDecl( i );
-				if ( dict && dict->GetBool( gametype ) ) {
-					const char *mapName = dict->GetString( "name" );
-					if ( mapName[ 0 ] == '\0' ) {
-						mapName = dict->GetString( "path" );
-					}
-					mapName = common->GetLanguageDict()->GetString( mapName );
-					guiMainMenu_MapList->Add( i, mapName );
-					if ( !si_map.Icmp( dict->GetString( "path" ) ) ) {
-						guiMainMenu_MapList->SetSelection( guiMainMenu_MapList->Num() - 1 );
-					}
-				}
-			}
-			i = guiMainMenu_MapList->GetSelection( NULL, 0 );
-			if ( i >= 0 ) {
-				dict = fileSystem->GetMapDecl( i);
-			} else {
-				dict = NULL;
-			}
-			cvarSystem->SetCVarString( "si_map", ( dict ? dict->GetString( "path" ) : "" ) );
-
-			// set the current level shot
-			UpdateMPLevelShot();
+			RescanMaps();
 			continue;
 		}
 
