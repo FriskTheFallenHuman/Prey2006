@@ -244,7 +244,8 @@ bool idListWindow::ParseInternalVar(const char *_name, idParser *src) {
 		horizontal = src->ParseBool();
 		return true;
 	}
-	if (idStr::Icmp(_name, "listname") == 0) {
+	// Xanz - Probably doesn't matter but match the names
+	if (idStr::Icmp(_name, "listName") == 0) {
 		ParseString(src, listName);
 		return true;
 	}

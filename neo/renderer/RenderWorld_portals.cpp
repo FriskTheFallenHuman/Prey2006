@@ -1298,52 +1298,57 @@ void idRenderWorldLocal::RegisterGamePortals( idMapFile *mapFile ) {
 
 	doublePortals = gameDoublePortals;
 
+	// Xanz - This is a bug, we resize the list but never fill.
 	gamePortalInfos.Resize(numGamePortals);
 
 	for ( i = 0; i < numGamePortals; i++ ) {
 		const gamePortalSource_t &gps = sources[i];
+
+// Xanz - this is a regression. We need to populate this list at some point.
+// I would take a look at BFG and possibly replace with that implementation
+#ifdef RENDER_PORTAL_MULTIPLAYER_FIX
 		gamePortalInfo_t &gpInfo = gamePortalInfos[i];
-		int index = start + i;
+			int index = start + i;
 
-		w = new idWinding(4);
-		w->SetNumPoints(4);
+			w = new idWinding(4);
+			w->SetNumPoints(4);
 
-		for ( int j = 0; j < 4; j++ ) {
-			const idVec3 &point = gps.points[j];
-			(*w)[j][0] = point[0];
-			(*w)[j][1] = point[1];
-			(*w)[j][2] = point[2];
-			(*w)[j][3] = 0;
-			(*w)[j][4] = 0;
-		}
+			for ( int j = 0; j < 4; j++ ) {
+				const idVec3 &point = gps.points[j];
+				(*w)[j][0] = point[0];
+				(*w)[j][1] = point[1];
+				(*w)[j][2] = point[2];
+				(*w)[j][3] = 0;
+				(*w)[j][4] = 0;
+			}
 
-		a1 = gps.srcArea;
-		a2 = gps.dstArea;
+			a1 = gps.srcArea;
+			a2 = gps.dstArea;
 
-		p = (portal_t *)R_ClearedStaticAlloc(sizeof(*p));
-		p->intoArea = a2;
-		p->doublePortal = &doublePortals[index];
-		p->w = w;
-		p->w->GetPlane(p->plane);
+			p = (portal_t *)R_ClearedStaticAlloc(sizeof(*p));
+			p->intoArea = a2;
+			p->doublePortal = &doublePortals[index];
+			p->w = w;
+			p->w->GetPlane(p->plane);
 
-		p->next = portalAreas[a1].portals;
-		portalAreas[a1].portals = p;
+			p->next = portalAreas[a1].portals;
+			portalAreas[a1].portals = p;
 
-		p->isGamePortal = true;
-		doublePortals[index].portals[0] = p;
-		doublePortals[index].portals[1] = NULL;
+			p->isGamePortal = true;
+			doublePortals[index].portals[0] = p;
+			doublePortals[index].portals[1] = NULL;
 
-		gpInfo.name = gps.name;
-		gpInfo.srcArea = gps.srcArea;
-		gpInfo.dstArea = gps.dstArea;
-		gpInfo.srcPosition = gps.srcPosition;
-		gpInfo.dstPosition = gps.dstPosition;
+			gpInfo.name = gps.name;
+			gpInfo.srcArea = gps.srcArea;
+			gpInfo.dstArea = gps.dstArea;
+			gpInfo.srcPosition = gps.srcPosition;
+			gpInfo.dstPosition = gps.dstPosition;
 
-		idStr point0 = gps.points[0].ToString(6);
-		idStr point1 = gps.points[1].ToString(6);
-		idStr point2 = gps.points[2].ToString(6);
-		idStr point3 = gps.points[3].ToString(6);
-
+			idStr point0 = gps.points[0].ToString(6);
+			idStr point1 = gps.points[1].ToString(6);
+			idStr point2 = gps.points[2].ToString(6);
+			idStr point3 = gps.points[3].ToString(6);
+#endif
 		//common->Printf("Add game portal: /* iap %d */ %d %d %d ( %s ) ( %s ) ( %s ) ( %s ) \n", i + numMapInterAreaPortals, 4, a1, a2, point0.c_str(), point1.c_str(), point2.c_str(), point3.c_str());
 	}
 
