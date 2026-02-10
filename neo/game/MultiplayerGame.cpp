@@ -1988,6 +1988,9 @@ idUserInterface* idMultiplayerGame::StartMenu( void ) {
 				j++;
 			}
 		}
+
+		ScanMapList();
+
 		mainGui->SetStateString( "kickChoices", kickList );
 
 		mainGui->SetStateString( "chattext", "" );
@@ -2247,66 +2250,7 @@ const char* idMultiplayerGame::HandleGuiCommands( const char *_menuCommand ) {
 		// HUMANHEAD END
 
 		} else if (	!idStr::Icmp( cmd, "MAPScan" ) ) {
-			const char *gametype = gameLocal.serverInfo.GetString( "si_gameType" );
-			if ( gametype == NULL || *gametype == 0 || idStr::Icmp( gametype, "singleplayer" ) == 0 ) {
-				gametype = "Deathmatch";
-			}
-
-			int i, num;
-			idStr si_map = gameLocal.serverInfo.GetString("si_map");
-			const idDict *dict;
-
-			//HUMANHEAD PCF rww 05/09/06 - avoid caching map dictionary media when we run through the map defs
-			assert(cvarSystem);
-			bool oldPrecache = cvarSystem->GetCVarBool("com_precache");
-			cvarSystem->SetCVarBool("com_precache", false);
-			//HUMANHEAD END
-
-			mapList->Clear();
-			mapList->SetSelection( -1 );
-			num = fileSystem->GetNumMaps();
-			for ( i = 0; i < num; i++ ) {
-				dict = fileSystem->GetMapDecl( i );
-				if ( dict ) {
-					// any MP gametype supported
-					bool isMP = false;
-					int igt = GAME_SP + 1;
-					while ( si_gameTypeArgs[ igt ] ) {
-						if ( dict->GetBool( si_gameTypeArgs[ igt ] ) ) {
-							isMP = true;
-							break;
-						}
-						igt++;
-					}
-					if ( isMP ) {
-						//HUMANHEAD PCF rww 05/27/06 - demo map check
-						#ifdef ID_DEMO_BUILD
-						if (dict->GetBool("indemo")) {
-						#endif
-						//HUMANHEAD END
-						const char *mapName = dict->GetString( "name" );
-						if ( mapName[0] == '\0' ) {
-							mapName = dict->GetString( "path" );
-						}
-						mapName = common->GetLanguageDict()->GetString( mapName );
-						mapList->Add( i, mapName );
-						if ( !si_map.Icmp( dict->GetString( "path" ) ) ) {
-							mapList->SetSelection( mapList->Num() - 1 );
-						}
-						//HUMANHEAD PCF rww 05/27/06 - demo map check
-						#ifdef ID_DEMO_BUILD
-						}
-						#endif
-						//HUMANHEAD END
-					}
-				}
-			}
-			//HUMANHEAD PCF rww 05/09/06 - avoid caching map dictionary media when we run through the map defs
-			cvarSystem->SetCVarBool("com_precache", oldPrecache);
-			//HUMANHEAD END
-
-			// set the current level shot
-			SetMapShot(	);
+			ScanMapList();
 			return "continue";
 		} else if (	!idStr::Icmp( cmd, "click_maplist" ) ) {
 			SetMapShot(	);
@@ -3220,6 +3164,70 @@ void idMultiplayerGame::SuddenRespawn( void ) {
 		}
 		static_cast< idPlayer * >( gameLocal.entities[ i ] )->lastManPlayAgain = true;
 	}
+}
+
+void idMultiplayerGame::ScanMapList()
+{
+	const char* gametype = gameLocal.serverInfo.GetString("si_gameType");
+	if (gametype == NULL || *gametype == 0 || idStr::Icmp(gametype, "singleplayer") == 0) {
+		gametype = "Deathmatch";
+	}
+
+	int i, num;
+	idStr si_map = gameLocal.serverInfo.GetString("si_map");
+	const idDict* dict;
+
+	//HUMANHEAD PCF rww 05/09/06 - avoid caching map dictionary media when we run through the map defs
+	assert(cvarSystem);
+	bool oldPrecache = cvarSystem->GetCVarBool("com_precache");
+	cvarSystem->SetCVarBool("com_precache", false);
+	//HUMANHEAD END
+
+	mapList->Clear();
+	mapList->SetSelection(-1);
+	num = fileSystem->GetNumMaps();
+	for (i = 0; i < num; i++) {
+		dict = fileSystem->GetMapDecl(i);
+		if (dict) {
+			// any MP gametype supported
+			bool isMP = false;
+			int igt = GAME_SP + 1;
+			while (si_gameTypeArgs[igt]) {
+				if (dict->GetBool(si_gameTypeArgs[igt])) {
+					isMP = true;
+					break;
+				}
+				igt++;
+			}
+			if (isMP) {
+				//HUMANHEAD PCF rww 05/27/06 - demo map check
+#ifdef ID_DEMO_BUILD
+				if (dict->GetBool("indemo")) {
+#endif
+					//HUMANHEAD END
+					const char* mapName = dict->GetString("name");
+					if (mapName[0] == '\0') {
+						mapName = dict->GetString("path");
+					}
+					mapName = common->GetLanguageDict()->GetString(mapName);
+					mapList->Add(i, mapName);
+					if (!si_map.Icmp(dict->GetString("path"))) {
+						mapList->SetSelection(mapList->Num() - 1);
+					}
+					//HUMANHEAD PCF rww 05/27/06 - demo map check
+#ifdef ID_DEMO_BUILD
+				}
+#endif
+				//HUMANHEAD END
+			}
+		}
+	}
+	//HUMANHEAD PCF rww 05/09/06 - avoid caching map dictionary media when we run through the map defs
+	cvarSystem->SetCVarBool("com_precache", oldPrecache);
+	//HUMANHEAD END
+
+	// set the current level shot
+	SetMapShot();
 }
 
 /*

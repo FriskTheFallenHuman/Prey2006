@@ -399,6 +399,9 @@ private:
 	void			VoiceChat( const idCmdArgs &args, bool team );
 	void			DumpTourneyLine( void );
 	void			SuddenRespawn( void );
+
+
+	void ScanMapList();
 };
 
 ID_INLINE idMultiplayerGame::gameState_t idMultiplayerGame::GetGameState( void ) const {
