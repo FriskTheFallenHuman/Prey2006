@@ -4069,7 +4069,8 @@ void idFileSystemLocal::FindMapScreenshot( const char *path, char *buf, int len 
 	mapname.StripPath();
 	mapname.StripFileExtension();
 
-	idStr::snPrintf( buf, len, "guis/assets/splash/%s.tga", mapname.c_str() );
+	// Xanz - This is the correct path for Prey thumbs
+	idStr::snPrintf( buf, len, "guis/assets/loading/thumbs/%s.tga", mapname.c_str() );
 	if ( ReadFile( buf, NULL, NULL ) == -1 ) {
 		// try to extract from an addon
 		file = OpenFileReadFlags( buf, FSFLAG_SEARCH_ADDONS );
