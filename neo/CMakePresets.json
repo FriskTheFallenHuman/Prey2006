@@ -41,28 +41,28 @@
 				{
 						"name": "ninja-vcpkg-debug",
 						"configurePreset": "ninja-multi-vcpkg",
-						"displayName": "Build (Debug)",
+						"displayName": "Build (Debug x86_64)",
 						"description": "Build with Ninja/vcpkg (Debug x86_64)",
 						"configuration": "Debug"
 				},
 				{
 						"name": "ninja-vcpkg-release",
 						"configurePreset": "ninja-multi-vcpkg",
-						"displayName": "Build (Release)",
+						"displayName": "Build (Release x86_64)",
 						"description": "Build with Ninja/vcpkg (Release x86_64)",
 						"configuration": "Release"
 				},
 				{
 						"name": "ninja-vcpkg-debug-x86",
 						"configurePreset": "ninja-multi-vcpkg-x86",
-						"displayName": "Build (Debug)",
+						"displayName": "Build (Debug x86)",
 						"description": "Build with Ninja/vcpkg (Debug x86)",
 						"configuration": "Debug"
 				},
 				{
 						"name": "ninja-vcpkg-release-x86",
 						"configurePreset": "ninja-multi-vcpkg-x86",
-						"displayName": "Build (Release)",
+						"displayName": "Build (Release  x86)",
 						"description": "Build with Ninja/vcpkg (Release x86)",
 						"configuration": "Release"
 				},
@@ -70,13 +70,13 @@
 						"name": "ninja-vcpkg",
 						"configurePreset": "ninja-multi-vcpkg",
 						"displayName": "Build x86_64",
-						"description": "Build with Ninja/vcpkg"
+						"description": "Build x86_64 with Ninja/vcpkg"
 				},
 				{
 						"name": "ninja-vcpkg-x86",
 						"configurePreset": "ninja-multi-vcpkg-x86",
 						"displayName": "Build x86",
-						"description": "Build with Ninja/vcpkg"
+						"description": "Build x86 with Ninja/vcpkg"
 				}
 		]
 }
