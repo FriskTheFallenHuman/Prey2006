@@ -46,7 +46,7 @@ const char *gui_translateAlienFontArgs[] = {
 	NULL
 };
 
-idCVar gui_smallFontLimit( "gui_smallFontLimit", "0.30", CVAR_GUI | CVAR_ARCHIVE, "" );
+idCVar gui_smallFontLimit( "gui_smallFontLimit", "0.10", CVAR_GUI | CVAR_ARCHIVE, "" );
 idCVar gui_mediumFontLimit( "gui_mediumFontLimit", "0.60", CVAR_GUI | CVAR_ARCHIVE, "" );
 idCVar gui_translateAlienFont( "gui_translateAlienFont", gui_translateAlienFontArgs[0], CVAR_GUI | CVAR_ARCHIVE, "Setup font name for automitic translate `alien` font text of GUI(empty to disable).", idCmdSystem::ArgCompletion_String<gui_translateAlienFontArgs> );
 idCVar gui_translateAlienFontDistance( "gui_translateAlienFontDistance", "200", CVAR_GUI | CVAR_FLOAT | CVAR_ARCHIVE, "Setup max distance of GUI to view origin for enable translate `alien` font text(0 = disable; -1 = always; positive: distance value)." );
