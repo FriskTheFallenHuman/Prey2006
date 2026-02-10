@@ -134,6 +134,9 @@ public:
 	void				ShowSubtitle( const idStrList &strList );
 	void				HideSubtitle( void ) const;
 
+	// scans maps on demand
+	virtual void		RescanMaps( void );
+
 	//=====================================
 
 	int					GetLocalClientNum();
@@ -166,8 +169,6 @@ public:
 	bool				QuickLoad();
 
 	const char			*GetAuthMsg( void );
-
-	void				RescanMaps();
 
 	//=====================================
 

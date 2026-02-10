@@ -152,6 +152,9 @@ public:
 	virtual bool ShouldAppendLevel( void ) const = 0;
 	virtual const char * GetDeathwalkMapName( void ) const = 0;
 
+	// scans maps on demand
+	virtual void	RescanMaps( void ) = 0;
+
 	// The render world and sound world used for this session.
 	idRenderWorld *	rw;
 	idSoundWorld *	sw;

@@ -701,6 +701,54 @@ void idSessionLocal::HandleMainMenuCommands( const char *menuCommand ) {
 			return;
 		}
 
+		// HUMANHEAD pdm: Model list
+		if ( !idStr::Icmp( cmd, "ModelScan" ) ) {
+			idStr name;
+			idStr text;
+
+			// skip precaching all player models
+			const idDecl *playerDef = declManager->FindType(DECL_ENTITYDEF, GAME_PLAYERDEFNAME_MP, false);
+			if ( playerDef ) {
+				const idDict *playerDict = &static_cast<const idDeclEntityDef *>(playerDef)->dict;
+				const idKeyValue *kv = playerDict->MatchPrefix("model_mp", NULL);
+				while (kv != NULL) {
+					idStr tmp = kv->GetKey();
+					tmp.StripLeading("model_mp");
+					int index = atoi(tmp.c_str());
+
+					text = playerDict->GetString(va("mtr_modelPortrait%d", index), "guis/assets/menu/questionmark");
+					guiMainMenu->SetStateString(va("mp_modelportrait%d", index), text);
+
+					text = playerDict->GetString(va("text_modelname%d", index));
+					text = common->GetLanguageDict()->GetString(text.c_str());
+					guiMainMenu->SetStateString(va("mp_modelname%d", index), text);
+
+					kv = playerDict->MatchPrefix("model_mp", kv);
+				}
+
+				// set current selection
+				int currentModel = cvarSystem->GetCVarInteger("ui_modelNum");
+				guiMainMenu->SetStateString("mp_currentmodelportrait", guiMainMenu->GetStateString(va("mp_modelportrait%d", currentModel)));
+				guiMainMenu->SetStateString("mp_currentmodelname", guiMainMenu->GetStateString(va("mp_modelname%d", currentModel)));
+			}
+			continue;
+		}
+
+		if ( !idStr::Icmp( cmd, "click_modelList" ) ) {
+			if ( icmd < args.Argc() ) {
+				int modelNum = atoi( args.Argv( icmd++ ) );
+				idStr modelPortrait = guiMainMenu->GetStateString(va("mp_modelportrait%d", modelNum));
+				if (modelPortrait.Length()) {
+					cvarSystem->SetCVarInteger("ui_modelNum", modelNum);
+					guiMainMenu->SetStateString("mp_currentmodelportrait", modelPortrait.c_str());
+					guiMainMenu->SetStateString("mp_currentmodelname", guiMainMenu->GetStateString(va("mp_modelname%d", modelNum)));
+				}
+			}
+			continue;
+		}
+		// HUMANHEAD END
+
+
 		if ( !idStr::Icmp( cmd, "MAPScan" ) ) {
 			RescanMaps();
 			continue;
