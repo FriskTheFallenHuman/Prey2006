@@ -72,21 +72,34 @@ void	RB_ARB2_DrawInteraction( const drawInteraction_t *din ) {
 	static const float zero[4] = { 0, 0, 0, 0 };
 	static const float one[4] = { 1, 1, 1, 1 };
 	static const float negOne[4] = { -1, -1, -1, -1 };
+	float modulate = 0.0f;
+	float add = 1.0f;
 
 	switch ( din->vertexColor ) {
 	case SVC_IGNORE:
+		modulate = 0.0f;
+		add = 1.0f;
 		qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, zero );
 		qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, one );
 		break;
 	case SVC_MODULATE:
+		modulate = 1.0f;
+		add = 0.0f;
 		qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, one );
 		qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, zero );
 		break;
 	case SVC_INVERSE_MODULATE:
+		modulate = -1.0f;
+		add = 1.0f;
 		qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, negOne );
 		qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, one );
 		break;
 	}
+
+	// the interaction.vfp shader packs vertex-color mode as env[16].xy.
+	const float packed[4] = { modulate, add, 0.0f, 0.0f };
+	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, packed );
+	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, zero );
 
 	// set the constant colors
 	qglProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 0, din->diffuseColor.ToFloatPtr() );
