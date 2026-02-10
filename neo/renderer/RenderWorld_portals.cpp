@@ -949,6 +949,9 @@ qhandle_t idRenderWorldLocal::FindPortal( const idBounds &b ) const {
 
 	for ( i = 0 ; i < numInterAreaPortals ; i++ ) {
 		portal = &doublePortals[i];
+		if ( !portal->portals[0] || !portal->portals[0]->w ) {
+			continue;
+		}
 		w = portal->portals[0]->w;
 
 		wb.Clear();
