@@ -1,4 +1,4 @@
-name: Windows x86_64 Build
+name: Windows x86 Build
 on:
   push:
     branches:
@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   job:
-    name: Windows Github Auto-Builds
+    name: Windows (x86) Github Auto-Builds
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false

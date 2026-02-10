@@ -22,7 +22,7 @@ concurrency:
 
 jobs:
   job:
-    name: Windows Github Auto-Builds
+    name: Windows (x86_64) Github Auto-Builds
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
