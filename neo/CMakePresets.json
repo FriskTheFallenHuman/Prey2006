@@ -14,7 +14,7 @@
 						"generator": "Ninja Multi-Config",
 						"toolchainFile": "${sourceDir}/../vcpkg/scripts/buildsystems/vcpkg.cmake",
 						"cacheVariables": {
-							"VCPKG_TARGET_TRIPLET": "x64-windows-static-md"
+							"VCPKG_TARGET_TRIPLET": "x64-windows"
 						}
 				},
 				{
@@ -25,7 +25,7 @@
 						"generator": "Ninja Multi-Config",
 						"toolchainFile": "${sourceDir}/../vcpkg/scripts/buildsystems/vcpkg.cmake",
 						"cacheVariables": {
-							"VCPKG_TARGET_TRIPLET": "x86-windows-static-md"
+							"VCPKG_TARGET_TRIPLET": "x86-windows"
 						}
 				}
 		],
