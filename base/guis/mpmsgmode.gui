@@ -1,0 +1,117 @@
+/*
+messagemode - one line prompt for quick chatting
+*/
+
+#include "guis/mainmenu/menucolors.guifragment"
+#include "guis/anchors.guifragment"
+
+windowDef Desktop {
+	rect		0, 0, 640, 480
+	backcolor	0, 0, 0, 0
+	menugui		1
+
+	onActivate {
+		if ("gui::messagemode" == 1) {
+			set "MessageMode::activeTab" "1";
+			setFocus "TeamChat" ;
+		}
+		else {
+			set "MessageMode::activeTab" "0";
+			setFocus "GlobalChat" ;
+		}
+	}
+
+	onESC {
+		set "cmd" "close" ;
+	}
+
+	tabContainerDef MessageMode {
+		rect		90, 420, 400, 55
+		anchor		ANCHOR_BOTTOM_CENTER
+		backcolor	0, 0, 0, 0
+		sepcolor	0.74, 0.81, 0.88, 1
+		activetab	0
+		tabMargins	140, 0
+		tabHeight	15
+
+		tabDef MessageMode_Global {
+			rect			0, 15, 400, 40
+			backcolor		0.29, 0.32, 0.39, 1			// Made opaque since it potentially draws over the ready tip
+			background		"guis/assets/menu/fadebg_top.tga"
+			forecolor		TABTOP_FORECOLOR_COMMA
+			hovercolor		TABTOP_HOVERCOLOR_COMMA
+			activeColor		TABTOP_ACTIVECOLOR_COMMA
+			hoverMatColor	TABTOP_HOVERMAT_COLOR_COMMA
+			text			"#str_20600"
+			textscale		0.25
+			textaligny		-2
+			seperatorLines	1, 1, 1, 1
+			seperatorMargin	1
+
+			onTabActivate {
+				set "cmd" "play guisounds_menu_tabflip" ;
+				set "gui::messagemode" "0" ;
+				setFocus "GlobalChat";
+			}
+
+			editDef GlobalChat {
+				rect		10, 10, 380, 20
+				backcolor	0, 0, 0, 1
+				forecolor	1, 1, 1, 1
+				bordercolor	0.7, 0.8, 0.9, 1
+				bordersize	1
+				text		"gui::chattext"
+				textscale	0.25
+				textalign	0
+				cursorvar	"chatcursor"
+				showcursor	1
+				textaligny	-2
+				maxchars 	80
+
+				onEnterRelease {
+					set "cmd" "chatmessage" ;
+				}
+			}
+		}
+
+		tabDef MessageMode_Team {
+			rect			0, 15, 400, 40
+			backcolor		0.29, 0.32, 0.39, 1			// Made opaque since it potentially draws over the ready tip
+			background		"guis/assets/menu/fadebg_top.tga"
+			forecolor		TABTOP_FORECOLOR_COMMA
+			hovercolor		TABTOP_HOVERCOLOR_COMMA
+			activeColor		TABTOP_ACTIVECOLOR_COMMA
+			hoverMatColor	TABTOP_HOVERMAT_COLOR_COMMA
+			text			"#str_20601"
+			textscale		0.25
+			textaligny		-2
+			seperatorLines	1, 1, 1, 1
+			seperatorMargin	1
+
+			onTabActivate {
+				set "cmd" "play guisounds_menu_tabflip" ;
+				set "gui::messagemode" "1" ;
+				setFocus "TeamChat";
+			}
+
+			editDef TeamChat {
+				rect		10, 10, 380, 20
+				backcolor	0, 0, 0, 1
+				forecolor	1, 1, 1, 1
+				bordercolor	0.7, 0.8, 0.9, 1
+				bordersize	1
+				text		"gui::chattext"
+				textscale	0.25
+				textalign	0
+				cursorvar	"chatcursor"
+				showcursor	1
+				textaligny	-2
+				maxchars 	80
+
+				onEnterRelease {
+					set "cmd" "chatmessage" ;
+				}
+			}
+		}
+	}
+}

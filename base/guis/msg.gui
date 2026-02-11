@@ -1,0 +1,401 @@
+
+// Dialog box engine uses to give popup window messages
+
+#include "guis/mainmenu/menucolors.guifragment"
+#include "guis/anchors.guifragment"
+
+windowDef Desktop {
+	rect		0, 0, 640, 480
+	backcolor	0, 0, 0, 0.6
+	selected	0
+	menugui     1
+	scaleto43	0
+
+    /*
+    onTime 0 {
+		set "gui::visible_msgbox" "0" ;
+		set "gui::visible_waitbox" "0" ;
+		set "gui::visible_entry" "0" ;
+		set "gui::visible_cdkey" "1" ;
+
+		set "gui::visible_cdchk" "0" ;
+		set "gui::visible_xpchk" "0" ;
+		set "gui::visible_hasxp" "0" ;
+
+		set "gui::visible_left" "1" ;
+		set "gui::visible_mid" "1" ;
+		set "gui::visible_right" "1" ;
+		set "gui::title" "Title" ;
+		set "gui::message" "Message" ;
+		set "gui::str_entry" "str_entry" ;
+		set "gui::str_cdkey" "str_cdkey" ;
+		set "gui::str_xpkey" "str_xpkey" ;
+		set "gui::str_cdchk" "str_cdchk" ;
+		set "gui::left" "left" ;
+		set "gui::mid" "mid" ;
+		set "gui::right" "right" ;
+	}
+    //	onTime 100 {
+    */
+
+	onNamedEvent CDKey {
+		setFocus "CDBox_CDKeyEntryBox" ;
+		// visible_cdchk and visible_xpchk tell wether a valid key is displayed already for read and optional update
+		if ( "gui::visible_cdchk" == "0" ) {
+		   set "CDBox_CDKeyEntryBox::visible" "0" ;
+		   set "CDBox_CDKeyDisplay::visible" "1" ;
+		} else {
+		   set "CDBox_CDKeyEntryBox::visible" "1" ;
+		   set "CDBox_CDKeyDisplay::visible" "0" ;
+		}
+		if ( "gui::visible_xpchk" == "0" ) {
+		   set "CDBox_CDKeyEntryBoxXP::visible" "0" ;
+		   set "CDBox_CDKeyDisplayXP::visible" "1" ;
+		} else {
+		   set "CDBox_CDKeyEntryBoxXP::visible" "1" ;
+		   set "CDBox_CDKeyDisplayXP::visible" "0" ;
+		}
+		if ( "gui::visible_hasxp" == "0" ) {
+		   set "CDBox_CDKey::rect" "30 130 260 32" ;
+		} else {
+		   set "CDBox_CDKey::rect" "30 130 260 62" ;
+		}
+	}
+
+	onNamedEvent Prompt {
+		setFocus "Dialog_EntryBox" ;
+	}
+
+	superWindowDef DialogBox {
+		rect		160, 170, 320, 140
+		anchor		ANCHOR_BOTTOM_CENTER
+		matcolor	1, 1, 1, 0.7
+		backColor	0, 0, 0, 0
+		cornerMat	"guis/assets/menu/window_cornerUL"
+		topMat		"guis/assets/menu/window_top"
+		background	"_black"
+		margins		25, 25, 1, 0	// left, right, top, bottom
+		cornerSize	38, 32
+		edgeSize	4, 4
+		visible		"gui::visible_msgbox"
+
+		buttonDef Dialog_Titlebar {
+			rect		30, 7, 260, 20
+			leftMat		"guis/assets/menu/titlebar_corner.tga"
+			middleMat	"guis/assets/menu/titlebarstrip.tga"
+			edgeWidth	12
+			forecolor	SUBMENU_TITLEBAR_FORECOLOR_COMMA
+			textscale	0.25
+			textalign	1
+			textaligny	0
+			text		"gui::title"
+			noevents	1
+		}
+
+		windowDef Dialog_Message {
+			rect		30, 30, 260, 61
+			bordercolor	DIALOGBOX_BORDERCOLOR_COMMA
+			bordersize	1
+			text		"gui::message"
+			textscale	0.25
+		}
+
+		editDef Dialog_EntryBox {
+			rect		30, 90, 260, 20
+			bordercolor	DIALOGBOX_BORDERCOLOR_COMMA
+			bordersize	1
+			text		"gui::str_entry"
+			textaligny	-1
+			textscale	0.25
+			visible		"gui::visible_entry"
+		}
+
+		buttonDef Dialog_ButtonLeft {
+			rect			30, 114, 85, 22
+			forecolor		BUTTON_FORECOLOR_COMMA
+			hoverColor		BUTTON_HOVERCOLOR_COMMA
+			leftMat			"guis/assets/menu/button/corner"
+			middleMat		"guis/assets/menu/button/strip"
+			leftHoverMat	"guis/assets/menu/button/rollover_corner"
+			middleHoverMat	"guis/assets/menu/button/rollover_strip"
+			rightMat		"guis/assets/menu/button/invcorner"
+			rightHoverMat	"guis/assets/menu/button/rollover_invcorner"
+			text			"gui::left"
+			textalign		1
+			textscale		0.25
+			visible			"gui::visible_left"
+
+			onActionRelease {
+				set "cmd" "left";
+			}
+		}
+
+		buttonDef Dialog_ButtonMid {
+			rect			118, 114, 85, 22
+			forecolor		BUTTON_FORECOLOR_COMMA
+			hoverColor		BUTTON_HOVERCOLOR_COMMA
+			leftMat			"guis/assets/menu/button/corner"
+			middleMat		"guis/assets/menu/button/strip"
+			leftHoverMat	"guis/assets/menu/button/rollover_corner"
+			middleHoverMat	"guis/assets/menu/button/rollover_strip"
+			rightMat		"guis/assets/menu/button/invcorner"
+			rightHoverMat	"guis/assets/menu/button/rollover_invcorner"
+			text			"gui::mid"
+			textalign		1
+			textscale		0.25
+			visible			"gui::visible_mid"
+
+			onActionRelease {
+				set "cmd" "mid";
+			}
+		}
+
+		buttonDef Dialog_ButtonRight {
+			rect			205, 114, 85, 22
+			forecolor		BUTTON_FORECOLOR_COMMA
+			hoverColor		BUTTON_HOVERCOLOR_COMMA
+			leftMat			"guis/assets/menu/button/corner"
+			middleMat		"guis/assets/menu/button/strip"
+			leftHoverMat	"guis/assets/menu/button/rollover_corner"
+			middleHoverMat	"guis/assets/menu/button/rollover_strip"
+			rightMat		"guis/assets/menu/button/invcorner"
+			rightHoverMat	"guis/assets/menu/button/rollover_invcorner"
+			text			"gui::right"
+			textalign		1
+			textscale		0.25
+			visible			"gui::visible_right"
+
+			onActionRelease {
+				set "cmd" "right";
+			}
+		}
+	}
+
+	superWindowDef WaitBox {
+		rect		160, 170, 320, 140
+		anchor		ANCHOR_BOTTOM_CENTER
+		matcolor	1, 1, 1, 0.7
+		backColor	0, 0, 0, 0
+		cornerMat	"guis/assets/menu/window_cornerUL"
+		topMat		"guis/assets/menu/window_top"
+		background	"_black"
+		margins		25, 25, 1, 0	// left, right, top, bottom
+		cornerSize	38, 32
+		edgeSize	4, 4
+		visible		"gui::visible_waitbox"
+
+		buttonDef Wait_TitleBar {
+			rect		30, 7, 260, 20
+			leftMat		"guis/assets/menu/titlebar_corner.tga"
+			middleMat	"guis/assets/menu/titlebarstrip.tga"
+			edgeWidth	12
+			forecolor	SUBMENU_TITLEBAR_FORECOLOR_COMMA
+			textscale	0.25
+			textalign	1
+			textaligny	-1
+			text		"#str_20602"
+			noevents	1
+		}
+
+		buttonDef Multiplayer_TitlebarBottom {
+			rect		30, 115, 260, 19
+			backcolor	0, 0, 0, 0
+			leftMat		"guis/assets/menu/titlebar_corner.tga"
+			middleMat	"guis/assets/menu/titlebarstrip.tga"
+			edgeWidth	8
+		}
+
+		windowDef Wait_Message {
+			rect		30, 30, 260, 81
+			bordercolor	DIALOGBOX_BORDERCOLOR_COMMA
+			bordersize	1
+			text		"gui::message"
+			textscale	0.25
+		}
+	}
+
+	superWindowDef CDBox {
+		rect		160, 170, 320, 205
+		anchor		ANCHOR_BOTTOM_CENTER
+		matcolor	1, 1, 1, 0.7
+		backColor	0, 0, 0, 0
+		cornerMat	"guis/assets/menu/window_cornerUL"
+		topMat		"guis/assets/menu/window_top"
+		background	"_black"
+		margins		25, 25, 1, 0	// left, right, top, bottom
+		cornerSize	38, 32
+		edgeSize	4, 4
+		visible		"gui::visible_cdkey"
+
+		buttonDef CDBox_Titlebar {
+			rect		30, 7, 260, 20
+			leftMat		"guis/assets/menu/titlebar_corner.tga"
+			middleMat	"guis/assets/menu/titlebarstrip.tga"
+			edgeWidth	12
+			forecolor	SUBMENU_TITLEBAR_FORECOLOR_COMMA
+			textscale	0.25
+			textalign	1
+			textaligny	0
+			text		"gui::title"
+			noevents	1
+		}
+
+		// NOTE: gui::message for a CD key dialog may take up to 4 lines
+		windowDef CDBox_Message {
+			rect		30, 30, 260, 100
+			bordercolor	DIALOGBOX_BORDERCOLOR_COMMA
+			bordersize	1
+			text		"gui::message"
+			textscale	0.25
+		}
+
+		windowDef CDBox_CDKey {
+			rect		30, 130, 260, 30
+			bordercolor	DIALOGBOX_BORDERCOLOR_COMMA
+			bordersize	1
+
+			windowDef CDBox_CDKeyDisplay {
+				rect		5, 5, 247, 20
+				textscale	0.25
+				maxchars	16
+				backcolor	0.5,0.5,0.5,0.5
+				text		"gui::str_cdkey"
+				visible		0
+
+				onAction {
+					// enter edit mode. a checksum will be required to validate the key
+					set "gui::visible_cdchk" "1" ;
+					set "CDBox_CDKeyEntryBox::visible" "1" ;
+					set "CDBox_CDKeyDisplay::visible" "0" ;
+				}
+			}
+
+			editDef CDBox_CDKeyEntryBox {
+				rect		5, 5, 195, 20
+				backcolor	0, 0, 0, 0.5
+				bordercolor	0.7, 0.8, 0.9, 0.9
+				bordersize	1
+				text		"gui::str_cdkey"
+				textscale	0.25
+				textaligny	-1
+				maxchars	16
+				visible		0
+				onMaxChars {
+					setfocus "CDBox_CDKeyCheckBox";
+				}
+			}
+
+			editDef CDBox_CDKeyCheckBox {
+				rect		210, 5, 40, 20
+				backcolor	0, 0, 0, 0.5
+				bordercolor	0.7, 0.8, 0.9, 0.9
+				bordersize	1
+				text		"gui::str_cdchk"
+				textscale	0.25
+				maxchars	2
+				visible		"gui::visible_cdchk"
+			}
+
+			windowDef CDBox_CDKeyFrameXP {
+				rect	0, 0, 260, 62
+				visible	"gui::visible_hasxp"
+
+				windowDef CDBox_CDKeyDisplayXP {
+					rect		5, 35, 247, 20
+					textscale	0.25
+					maxchars	16
+					backcolor	0.5,0.5,0.5,0.5
+					text		"gui::str_xpkey"
+					visible		0
+
+					onAction {
+						// enter edit mode. a checksum will be required to validate the key
+						set "gui::visible_xpchk" "1" ;
+						set "XPCDKeyEntryBox::visible" "1" ;
+						set "XPCDKeyDisplay::visible" "0" ;
+					}
+				}
+				editDef CDBox_CDKeyEntryBoxXP {
+					rect		5, 35, 195, 20
+					textscale	0.25
+					maxchars	16
+					bordersize	1
+					bordercolor	0,0,0,1
+					backcolor	0,0,0,0.5
+					text		"gui::str_xpkey"
+					visible		0
+				}
+				editDef CDBox_CDKeyChkBoxXP {
+					rect		210, 35, 40, 20
+					textscale	0.25
+					maxchars	2
+					bordersize	1
+					bordercolor	0,0,0,1
+					backcolor	0,0,0,0.5
+					text		"gui::str_xpchk"
+					visible		"gui::visible_xpchk"
+				}
+			}
+		}
+
+		buttonDef CDBox_ButtonLeft {
+			rect			30, 174, 85, 22
+			forecolor		BUTTON_FORECOLOR_COMMA
+			hoverColor		BUTTON_HOVERCOLOR_COMMA
+			leftMat			"guis/assets/menu/button/corner"
+			middleMat		"guis/assets/menu/button/strip"
+			leftHoverMat	"guis/assets/menu/button/rollover_corner"
+			middleHoverMat	"guis/assets/menu/button/rollover_strip"
+			rightMat		"guis/assets/menu/button/invcorner"
+			rightHoverMat	"guis/assets/menu/button/rollover_invcorner"
+			text			"gui::left"
+			textalign		1
+			textscale		0.25
+			visible			"gui::visible_left"
+
+			onActionRelease {
+				set "cmd" "left";
+			}
+		}
+
+		buttonDef CDBox_ButtonMid {
+			rect			118, 174, 85, 22
+			forecolor		BUTTON_FORECOLOR_COMMA
+			hoverColor		BUTTON_HOVERCOLOR_COMMA
+			leftMat			"guis/assets/menu/button/corner"
+			middleMat		"guis/assets/menu/button/strip"
+			leftHoverMat	"guis/assets/menu/button/rollover_corner"
+			middleHoverMat	"guis/assets/menu/button/rollover_strip"
+			rightMat		"guis/assets/menu/button/invcorner"
+			rightHoverMat	"guis/assets/menu/button/rollover_invcorner"
+			text			"gui::mid"
+			textalign		1
+			textscale		0.25
+			visible			"gui::visible_mid"
+
+			onActionRelease {
+				set "cmd" "mid";
+			}
+		}
+
+		buttonDef CDBox_ButtonRight {
+			rect			205, 174, 85, 22
+			forecolor		BUTTON_FORECOLOR_COMMA
+			hoverColor		BUTTON_HOVERCOLOR_COMMA
+			leftMat			"guis/assets/menu/button/corner"
+			middleMat		"guis/assets/menu/button/strip"
+			leftHoverMat	"guis/assets/menu/button/rollover_corner"
+			middleHoverMat	"guis/assets/menu/button/rollover_strip"
+			rightMat		"guis/assets/menu/button/invcorner"
+			rightHoverMat	"guis/assets/menu/button/rollover_invcorner"
+			text			"gui::right"
+			textalign		1
+			textscale		0.25
+			visible			"gui::visible_right"
+
+			onActionRelease {
+				set "cmd" "right";
+			}
+		}
+	}
+}

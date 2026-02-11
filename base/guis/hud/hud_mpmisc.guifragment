@@ -23,13 +23,14 @@
 	}
 */
 
-// Misc multiplayer components
+    // Misc multiplayer components
 	windowDef MultiplayerElements {
 		rect		0, 0, 640, 480
 		visible		"gui::ismultiplayer"
 
 		windowDef VoteWin {
-			rect		0, 50, 320, 30
+			rect		200, 350, 320, 30
+			cstAnchor	CST_ANCHOR_BOTTOM_CENTER
 			text		"gui::vote"
 			forecolor	1, 1, 1, 0.8
 			textscale	0.31
@@ -39,11 +40,11 @@
 		windowDef TopFourArea {
 			rect		0, 0, 640, 480
 			visible		"gui::gameon"
-			
+
 			windowDef TopFourBG_team {
 				rect		505, 5, 146, 64
 				visible		"gui::teamdm"
-				
+
 				windowDef TopFourDividerA_team {
 					rect		17, 16, 110, 31
 					backcolor	0, 0, 0, 0.5
@@ -115,11 +116,12 @@
 					textaligny	-4
 				}
 			}
-			
+
 			windowDef TopFourBG {
 				rect		505, 5, 146, 64
+				anchor      ANCHOR_TOP_RIGHT
 				visible		("gui::teamdm" == 0)
-				
+
 				windowDef TopFourDividerD {
 					rect		17, 0, 110, 64
 					backcolor	0, 0, 0, 0.5
@@ -141,7 +143,7 @@
 					bordercolor	0.4, 0.45, 0.55, 1
 					bordersize	1
 				}
-				
+
 				windowDef TopFourIcon1 {
 					rect		0, 0, 16, 15
 					background	"gui::player1_portrait"
@@ -228,17 +230,20 @@
 				}
 			}
 
-//			windowDef SelfRank {
-//				rect		510, 72, 40, 25
-//				text		"gui::self_rankstring"
-//				textscale	0.53
-//				textalign	2
-//				textaligny	-5
-//				forecolor	0.7, 0.8, 0.9, 0.7
-//			}
+            /*
+			windowDef SelfRank {
+				rect		510, 72, 40, 25
+				text		"gui::self_rankstring"
+				textscale	0.53
+				textalign	2
+				textaligny	-5
+				forecolor	0.7, 0.8, 0.9, 0.7
+			}
+            */
 
 			windowDef FragStuff {
 				rect		0, 0, 640, 480
+				anchor      ANCHOR_TOP_RIGHT
 				visible		("gui::fraglimit" && "gui::gameon")
 
 				windowDef FragIcon {
@@ -260,8 +265,9 @@
 
 			windowDef TimerStuff {
 				rect		0, 0, 640, 480
+				anchor      ANCHOR_TOP_RIGHT
 				visible		("gui::timelimit" && "gui::gameon")
-				
+
 				windowDef TimerIcon {
 					rect		608, 70, 26, 26
 					background	"guis/assets/hud/timer.tga"
@@ -282,6 +288,7 @@
 
 		windowDef GameStateText {
 			rect		0, 23, 640, 480
+			cstAnchor	CST_ANCHOR_CENTER_CENTER
 			forecolor	1, 1, 1, 1
 			text		"gui::gamestatetext"
 			textscale	0.40
@@ -289,8 +296,10 @@
 			textaligny	40
 		}
 
-/*		windowDef WarmupParent {
+        /*
+        windowDef WarmupParent {
 			rect		0, 0, 640, 480
+			cstAnchor	CST_ANCHOR_CENTER_CENTER
 			visible		"gui::warmup"
 
 			windowDef PressReady {	// Press ready key when ready
@@ -303,7 +312,7 @@
 				visible		("gui::ready_self" == 0)
 			}
 		}
-*/
+        */
 
 		windowDef Lag {
 			rect		15, 15, 32, 32
@@ -312,8 +321,9 @@
 			visible		"gui::hudLag"
 		}
 
-		//rww - TEMPORARY - print the health for testing the spirit pipe in mp stuff	
-/*		windowDef health {
+		//rww - TEMPORARY - print the health for testing the spirit pipe in mp stuff
+        /*
+        windowDef health {
 			rect		10, 400, 80, 80
 			text		"gui::player_health"
 			shadow		1
@@ -322,5 +332,5 @@
 			textscale	0.8
 			visible		("gui::player_maxhealth" > 100)
 		}
-*/
+        */
 	}

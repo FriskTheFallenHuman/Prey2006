@@ -5,6 +5,7 @@
 
 	windowDef PlayerName {
 		rect		0, 462, 90, 15
+        anchor		ANCHOR_CENTER_CENTER
 		text		"gui::playername"
 		forecolor	"gui::team_R", "gui::team_G", "gui::team_B", 1
 		textscale	0.25
@@ -15,6 +16,7 @@
 
 	windowDef AimingIndicatorTeammate {
 		rect		200, 210, 240, 20
+		anchor		ANCHOR_CENTER_CENTER
 		forecolor	"gui::aim_R", "gui::aim_G", "gui::aim_B", 1
 		text		"gui::aim_text"
 		textscale	0.25
@@ -22,11 +24,12 @@
 		shadow		1
 		visible		"gui::ismultiplayer"
 	}
-	
+
 	//rww - show health of target (for weapon damage testing purposes)
 	windowDef AimingTargetHealth {
 		text		"gui::aim_health"
 		rect		0, 240, 640, 80
+		anchor		ANCHOR_CENTER_CENTER
 		shadow		1
 		textalign	1
 		forecolor	1.0, 1.0, 1.0, 1.0

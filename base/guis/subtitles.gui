@@ -13,15 +13,15 @@ windowDef Desktop {
 	nocursor		1
 	menugui			1
 	scaleto43		0
-	
-	
+
+
 	windowDef subtitles1 {
 		anchor		ANCHOR_CENTER_CENTER
 		text		"gui::subtitleText1"
 		rect		70, 360, 500, 40
 		backcolor	0, 0, 0, 0
 		forecolor	1, 1, 1, "gui::subtitleAlpha1"
-		textscale	0.35 // 0.3
+		textscale	0.3
 		textalign	1
 		center		1
 		noclip		1
@@ -34,7 +34,7 @@ windowDef Desktop {
 		rect		70, 400, 500, 40
 		backcolor	0, 0, 0, 0
 		forecolor	1, 1, 1, "gui::subtitleAlpha2"
-		textscale	0.35 // 0.3
+		textscale	0.3
 		textalign	1
 		center		1
 		noclip		1
@@ -47,7 +47,7 @@ windowDef Desktop {
 		rect		70, 440, 500, 40
 		backcolor	0, 0, 0, 0
 		forecolor	1, 1, 1, "gui::subtitleAlpha3"
-		textscale	0.35 // 0.3
+		textscale	0.3
 		textalign	1
 		center		1
 		noclip		1
@@ -60,7 +60,7 @@ windowDef Desktop {
 		rect		70, 440, 500, 40
 		backcolor	0, 0, 0, 0
 		forecolor	1, 1, 1, "gui::subtitleAlpha4"
-		textscale	0.35
+		textscale	0.3
 		textalign	1
 		center		1
 		noclip		1
@@ -73,7 +73,7 @@ windowDef Desktop {
 		rect		70, 220, 500, 20
 		backcolor	0, 0, 0, 0
 		forecolor	1, 1, 1, "gui::subtitleAlpha5"
-		textscale	0.35
+		textscale	0.3
 		textalign	1
 		center		1
 		noclip		1

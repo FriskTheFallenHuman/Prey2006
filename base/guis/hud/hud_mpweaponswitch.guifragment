@@ -13,6 +13,7 @@
 
 	windowDef WeaponSwitchBar {
 		rect		(640-510)*0.5, 5, 490, 60
+		anchor		ANCHOR_TOP_CENTER
 		notime		1
 		visible		0
 		float		fadealpha 1
@@ -62,7 +63,7 @@
 
 		windowDef WeaponSlot2 {
 			rect		66, 0, 60, 50
-			
+
 			windowDef WeaponBG2 {
 				rect		0, 0, 60, 50
 				matcolor	1, 1, 1, "WeaponSwitchBar::fadealpha"
@@ -105,7 +106,7 @@
 
 		windowDef WeaponSlot3 {
 			rect		126, 0, 60, 50
-			
+
 			windowDef WeaponBG2 {
 				rect		0, 0, 60, 50
 				matcolor	1, 1, 1, "WeaponSwitchBar::fadealpha"
@@ -324,10 +325,10 @@
 				visible		("gui::weapon7_altammolow")
 			}
 		}
-		
+
 		windowDef WeaponSelectionParent {
-			rect		5, 0, 640, 480			
-		
+			rect		5, 0, 640, 480
+
 			windowDef WeaponSelectionOverlay {
 				rect		("gui::idealweapon" - 1) * 60, 0, 60, 50
 				matcolor	1, 1, 1, "WeaponSwitchBar::fadealpha"
@@ -337,4 +338,3 @@
 			}
 		}
 	}
-	

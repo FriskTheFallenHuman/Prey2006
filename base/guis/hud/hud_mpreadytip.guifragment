@@ -5,6 +5,7 @@
 
 	windowDef Ready_TipWindow {
 		rect		220, 340, 420, 164
+		anchor		ANCHOR_BOTTOM_CENTER
 		visible		"gui::readytipvisible"
 
 		windowDef Ready_TipKey {
@@ -46,4 +47,4 @@
 			shadow		1
 			text		"#str_41131"
 		}
-	}	
+	}

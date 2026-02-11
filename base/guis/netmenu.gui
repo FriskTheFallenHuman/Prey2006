@@ -1,0 +1,63 @@
+
+#include "guis/mainmenu/menucolors.guifragment"
+#include "guis/anchors.guifragment"
+
+windowDef Desktop {
+	rect		0, 0, 640, 480
+	backcolor	1, 1, 1, 0.2
+	menugui		1
+    scaleto43	0
+
+	superWindowDef Connecting {
+		rect		120, 120, 400, 160
+		anchor		ANCHOR_CENTER_CENTER
+		matcolor	1, 1, 1, 0.7
+		backColor	0, 0, 0, 0
+		cornerMat	"guis/assets/menu/window_cornerUL"
+		topMat		"guis/assets/menu/window_top"
+		background	"_black"
+		margins		25, 25, 1, 0	// left, right, top, bottom
+		cornerSize	38, 32
+		edgeSize	4, 4
+
+		buttonDef Connecting_Titlebar {
+			rect		40, 7, 320, 20
+			leftMat		"guis/assets/menu/titlebar_corner.tga"
+			middleMat	"guis/assets/menu/titlebarstrip.tga"
+			edgeWidth	12
+			forecolor	0.7, 0.8, 0.9, 0.9
+			textscale	0.4
+			textalign	1
+			textaligny	-5
+			font		"fonts/menu"
+			text		"#str_20603"
+			noevents	1
+		}
+
+		windowDef Connecting_Status {
+			rect		40, 40, 320, 80
+			text		"gui::status"
+			forecolor	1, 1, 1, 1
+			textscale	0.25
+		}
+
+		buttonDef Connecting_Cancel {
+			rect			140, 125, 120, 25
+			text			"#str_20328"
+			textalign		1
+			textaligny		-2
+			forecolor		BUTTON_FORECOLOR_COMMA
+			hoverColor		BUTTON_HOVERCOLOR_COMMA
+			leftMat			"guis/assets/menu/button/corner"
+			middleMat		"guis/assets/menu/button/strip"
+			leftHoverMat	"guis/assets/menu/button/rollover_corner"
+			middleHoverMat	"guis/assets/menu/button/rollover_strip"
+			rightMat		"guis/assets/menu/button/invcorner"
+			rightHoverMat	"guis/assets/menu/button/rollover_invcorner"
+			edgeWidth		16
+			onAction { //rww - was onActionRelease, causing menu to exit prematurely
+				set "cmd" "abort";
+			}
+		}
+	}
+}
