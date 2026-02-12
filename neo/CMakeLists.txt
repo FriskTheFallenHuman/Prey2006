@@ -93,8 +93,13 @@ if(UNIX)
 find_package(PkgConfig REQUIRED)
 endif()
 
-find_package(OpenAL REQUIRED)
-include_directories(${OPENAL_INCLUDE_DIR})
+if(UNIX)
+	find_package(OpenAL REQUIRED)
+	include_directories(${OPENAL_INCLUDE_DIR})
+else()
+	add_subdirectory(libs/OpenalSoft)
+	set(OPENAL_LIBRARY OpenAL::OpenAL)
+endif()
 list(APPEND sys_thirdparty_libs ${OPENAL_LIBRARY})
 
 if (SDL3)
@@ -1420,6 +1425,13 @@ if(ENGINE)
 			$<TARGET_FILE_DIR:${ENGINE_BINARY}>
 		  VERBATIM 
 		)
+		add_custom_command(
+		  TARGET ${ENGINE_BINARY} POST_BUILD COMMAND
+		  ${CMAKE_COMMAND} -E copy_if_different 
+			$<TARGET_FILE:OpenAL>
+			$<TARGET_FILE_DIR:${ENGINE_BINARY}>
+		  VERBATIM 
+		)
 	endif()
 endif()
 
@@ -1462,7 +1474,9 @@ if(DEDICATED)
 	set_target_properties(${DEDICATED_BINARY} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
 	set_target_properties(${DEDICATED_BINARY} PROPERTIES FOLDER "exes")
 
-	list(REMOVE_ITEM sys_thirdparty_libs ${OPENAL_LIBRARY})
+	if(NOT WIN32)
+		list(REMOVE_ITEM sys_thirdparty_libs ${OPENAL_LIBRARY})
+	endif()
 
 	target_link_libraries(${DEDICATED_BINARY}
 		idlib
@@ -1481,6 +1495,13 @@ if(DEDICATED)
 		  TARGET ${DEDICATED_BINARY} POST_BUILD COMMAND
 		  ${CMAKE_COMMAND} -E copy_if_different 
 			$<TARGET_FILE:SDL2>
+			$<TARGET_FILE_DIR:${DEDICATED_BINARY}>
+		  VERBATIM 
+		)
+		add_custom_command(
+		  TARGET ${DEDICATED_BINARY} POST_BUILD COMMAND
+		  ${CMAKE_COMMAND} -E copy_if_different 
+			$<TARGET_FILE:OpenAL>
 			$<TARGET_FILE_DIR:${DEDICATED_BINARY}>
 		  VERBATIM 
 		)

@@ -6,7 +6,6 @@
 			"name": "curl",
 			"platform": "!linux"
 		},
-		"openal-soft",
 		"sdl3",
 		{
 			"name": "libbacktrace",

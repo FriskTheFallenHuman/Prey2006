@@ -1,0 +1,15 @@
+build*/
+winbuild
+win64build
+.vs/
+
+## kdevelop
+*.kdev4
+
+## qt-creator
+CMakeLists.txt.user*
+
+## CLion
+.idea
+
+__pycache__/
