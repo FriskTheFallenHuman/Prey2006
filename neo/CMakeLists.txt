@@ -112,8 +112,7 @@ else()
 		link_directories(${SDL2_LIBRARY_DIRS})
 		set(SDLX_LIBRARY ${SDL2_LIBRARIES})
 	else()
-		find_package(SDL2 REQUIRED)
-		include_directories(${SDL2_INCLUDE_DIR})
+		add_subdirectory(libs/SDL2)
 		set(SDLX_LIBRARY SDL2::SDL2)
 	endif()
 endif()
@@ -1343,6 +1342,9 @@ endif()
 
 target_include_directories(idlib PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
 target_precompile_headers(idlib PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
+if (WIN32)
+target_link_libraries(idlib PRIVATE ${SDLX_LIBRARY})
+endif()
 
 set_target_properties(idlib PROPERTIES FOLDER "libs")
 
@@ -1410,6 +1412,14 @@ if(ENGINE)
 				LIBRARY DESTINATION "${libdir}"
 				ARCHIVE DESTINATION "${libdir}"
 		)
+	else()
+		add_custom_command(
+		  TARGET ${ENGINE_BINARY} POST_BUILD COMMAND
+		  ${CMAKE_COMMAND} -E copy_if_different 
+			$<TARGET_FILE:SDL2>
+			$<TARGET_FILE_DIR:${ENGINE_BINARY}>
+		  VERBATIM 
+		)
 	endif()
 endif()
 
@@ -1465,6 +1475,14 @@ if(DEDICATED)
 				RUNTIME DESTINATION "${bindir}"
 				LIBRARY DESTINATION "${libdir}"
 				ARCHIVE DESTINATION "${libdir}"
+		)
+	else()
+		add_custom_command(
+		  TARGET ${DEDICATED_BINARY} POST_BUILD COMMAND
+		  ${CMAKE_COMMAND} -E copy_if_different 
+			$<TARGET_FILE:SDL2>
+			$<TARGET_FILE_DIR:${DEDICATED_BINARY}>
+		  VERBATIM 
 		)
 	endif()
 endif()
@@ -1560,7 +1578,11 @@ if(BASE AND NOT HARDLINK_GAME)
 	target_include_directories(Game${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/game" "${CMAKE_SOURCE_DIR}/Prey")
 	set_target_properties(Game${cpu} PROPERTIES LINK_FLAGS "${ldflags}")
 	set_target_properties(Game${cpu} PROPERTIES INSTALL_NAME_DIR "@executable_path")
-	target_link_libraries(Game${cpu} idlib)
+	if (WIN32)
+		target_link_libraries(Game${cpu} PRIVATE idlib ${SDLX_LIBRARY})
+	else()
+		target_link_libraries(Game${cpu} idlib)
+	endif()
 	set_target_properties(Game${cpu} PROPERTIES OUTPUT_NAME "game${cpu}" RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER}/base LIBRARY_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER}/base)
 	set_target_properties(Game${cpu} PROPERTIES FOLDER "dlls")
 

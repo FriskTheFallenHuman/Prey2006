@@ -7,7 +7,6 @@
 			"platform": "!linux"
 		},
 		"openal-soft",
-		"sdl2",
 		"sdl3",
 		{
 			"name": "libbacktrace",

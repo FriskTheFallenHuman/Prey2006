@@ -8,7 +8,11 @@
   #define SDL_oldnames_h_
   #include <SDL3/SDL.h>
 #else // SDL1.2 or SDL2
-  #include <SDL.h>
+	#ifdef _WIN32
+	  #include "SDL.h"
+	#else
+	  #include <SDL.h>
+	#endif
 #endif
 
 #endif /* NEO_SYS_SYS_SDL_H_ */
