@@ -1,0 +1,121 @@
+#include "guis/anchors.guifragment"
+
+windowDef desktop {
+	rect		0, 0, 640, 480
+	backcolor	0, 0, 0, 0
+	nocursor	1
+
+	windowDef combatcrosshair1 {
+		rect		304, 224, 32, 32
+		anchor		ANCHOR_CENTER_CENTER
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/crosshair1"
+		visible		("gui::crosshair" == 1 && "gui::combatcursor" != 0)
+	}
+	windowDef activecombatcrosshair1 {
+		rect		304, 224, 32, 32
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/crosshair1locked"
+		visible		("gui::crosshair" == 1 && "gui::activecombatcursor" != 0)
+	}
+
+	windowDef combatcrosshair2 {
+		rect		304, 224, 32, 32
+		anchor		ANCHOR_CENTER_CENTER
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/crosshair2"
+		visible		("gui::crosshair" == 2 && "gui::combatcursor" != 0)
+	}
+	windowDef activecombatcrosshair2 {
+		rect		304, 224, 32, 32
+		anchor		ANCHOR_CENTER_CENTER
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/crosshair2locked"
+		visible		("gui::crosshair" == 2 && "gui::activecombatcursor" != 0)
+	}
+
+	windowDef combatcrosshair3 {
+		rect		304, 224, 32, 32
+		anchor		ANCHOR_CENTER_CENTER
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/crosshair3"
+		visible		("gui::crosshair" == 3 && "gui::combatcursor" != 0)
+	}
+	windowDef activecombatcrosshair3 {
+		rect		304, 224, 32, 32
+		anchor		ANCHOR_CENTER_CENTER
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/crosshair3locked"
+		visible		("gui::crosshair" == 3 && "gui::activecombatcursor" != 0)
+	}
+	windowDef combatcrosshair4 {
+		rect		304, 224, 32, 32
+		anchor		ANCHOR_CENTER_CENTER
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/crosshair4"
+		visible		("gui::crosshair" == 4 && "gui::combatcursor" != 0)
+	}
+	windowDef activecombatcrosshair4 {
+		rect		304, 224, 32, 32
+		anchor		ANCHOR_CENTER_CENTER
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/crosshair4locked"
+		visible		("gui::crosshair" == 4 && "gui::activecombatcursor" != 0)
+	}
+	windowDef combatcrosshair5 {
+		rect		304, 224, 32, 32
+		anchor		ANCHOR_CENTER_CENTER
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/crosshair5"
+		visible		("gui::crosshair" == 5 && "gui::combatcursor" != 0)
+	}
+	windowDef activecombatcrosshair5 {
+		rect		304, 224, 32, 32
+		anchor		ANCHOR_CENTER_CENTER
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/crosshair5locked"
+		visible		("gui::crosshair" == 5 && "gui::activecombatcursor" != 0)
+	}
+	windowDef combatcrosshair6 {
+		rect		304, 224, 32, 32
+		anchor		ANCHOR_CENTER_CENTER
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/crosshair6"
+		visible		("gui::crosshair" == 6 && "gui::combatcursor" != 0)
+	}
+	windowDef activecombatcrosshair6 {
+		rect		304, 224, 32, 32
+		anchor		ANCHOR_CENTER_CENTER
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/crosshair6locked"
+		visible		("gui::crosshair" == 6 && "gui::activecombatcursor" != 0)
+	}
+	windowDef combatcrosshair7 {
+		rect		304, 224, 32, 32
+		anchor		ANCHOR_CENTER_CENTER
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/crosshair7"
+		visible		("gui::crosshair" == 7 && "gui::combatcursor" != 0)
+	}
+	windowDef activecombatcrosshair7 {
+		rect		304, 224, 32, 32
+		anchor		ANCHOR_CENTER_CENTER
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/crosshair7locked"
+		visible		("gui::crosshair" == 7 && "gui::activecombatcursor" != 0)
+	}
+	windowDef combatcrosshair8 {
+		rect		304, 224, 32, 32
+		anchor		ANCHOR_CENTER_CENTER
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/crosshair8"
+		visible		("gui::crosshair" == 8 && "gui::combatcursor" != 0)
+	}
+	windowDef activecombatcrosshair8 {
+		rect		304, 224, 32, 32
+		anchor		ANCHOR_CENTER_CENTER
+		matcolor	1, 1, 1, 1
+		background	"textures/interface/crosshairs/crosshair8locked"
+		visible		("gui::crosshair" == 8 && "gui::activecombatcursor" != 0)
+	}
+}
