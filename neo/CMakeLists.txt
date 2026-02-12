@@ -480,6 +480,7 @@ add_globbed_headers(src_aas_file "aas")
 set(src_renderer
 	renderer/Cinematic.cpp
 	renderer/DeviceContext.cpp
+	renderer/DeclRenderProg.cpp
 	renderer/GuiModel.cpp
 	renderer/Image_files.cpp
 	renderer/Image_init.cpp
@@ -513,6 +514,7 @@ set(src_renderer
 	renderer/stblib_impls.c
 	renderer/VertexCache.cpp
 	renderer/draw_arb2.cpp
+	renderer/draw_exp.cpp
 	renderer/draw_common.cpp
 	renderer/tr_backend.cpp
 	renderer/tr_deform.cpp
@@ -526,7 +528,6 @@ set(src_renderer
 	renderer/tr_render.cpp
 	renderer/tr_rendertools.cpp
 	renderer/tr_shadowbounds.cpp
-	renderer/tr_stencilshadow.cpp
 	renderer/tr_subview.cpp
 	renderer/tr_trace.cpp
 	renderer/tr_trisurf.cpp
@@ -625,7 +626,6 @@ set(src_dmap
 	tools/compilers/dmap/optimize.cpp
 	tools/compilers/dmap/output.cpp
 	tools/compilers/dmap/portals.cpp
-	tools/compilers/dmap/shadowopt3.cpp
 	tools/compilers/dmap/tritjunction.cpp
 	tools/compilers/dmap/tritools.cpp
 	tools/compilers/dmap/ubrush.cpp

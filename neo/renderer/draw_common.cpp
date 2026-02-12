@@ -33,6 +33,17 @@ If you have questions concerning this license or the applicable additional terms
 extern idCVar r_useCarmacksReverse;
 extern idCVar r_useStencilOpSeparate;
 
+
+/*
+====================
+GL_SelectTextureNoClient
+====================
+*/
+void GL_SelectTextureNoClient(int unit) {
+	backEnd.glState.currenttmu = unit;
+	qglActiveTextureARB(GL_TEXTURE0_ARB + unit);
+}
+
 /*
 =====================
 RB_BakeTextureMatrixIntoTexgen
@@ -1691,13 +1702,13 @@ void	RB_STD_DrawView( void ) {
 	RB_STD_FillDepthBuffer( drawSurfs, numDrawSurfs );
 
 	// main light renderer
-	RB_ARB2_DrawInteractions();
+	RB_EXP_DrawInteractions();
 
 	// disable stencil shadow test
 	qglStencilFunc( GL_ALWAYS, 128, 255 );
 
 	// uplight the entire screen to crutch up not having better blending range
-	RB_STD_LightScale();
+	//RB_STD_LightScale();
 
 	// now draw any non-light dependent shading passes
 	int	processed = RB_STD_DrawShaderPasses( drawSurfs, numDrawSurfs );

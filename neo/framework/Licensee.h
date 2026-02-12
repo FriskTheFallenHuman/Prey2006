@@ -182,7 +182,7 @@ If you have questions concerning this license or the applicable additional terms
 #else
 #define _HH_SECUROM						0
 #endif
-#define _HH_INLINED_PROC_CLIPMODELS		0		//rww - enables crazy last-minute proc geometry clipmodel support
+#define _HH_INLINED_PROC_CLIPMODELS		1		//rww - enables crazy last-minute proc geometry clipmodel support
 
 #ifdef ID_DEDICATED
 #define _HH_MYGAMES_SAVES				0

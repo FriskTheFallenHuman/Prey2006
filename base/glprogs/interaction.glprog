@@ -1,0 +1,318 @@
+glprog interaction
+{
+    vertex
+    {
+        // Uniforms
+        uniform vec4 lightOrigin;
+        uniform vec4 viewOrigin;
+        uniform vec4 lightProjectS;
+        uniform vec4 lightProjectT;
+        uniform vec4 lightProjectQ;
+        uniform vec4 lightFalloffS;
+        uniform vec4 bumpMatrixS;
+        uniform vec4 bumpMatrixT;
+        uniform vec4 diffuseMatrixS;
+        uniform vec4 diffuseMatrixT;
+        uniform vec4 specularMatrixS;
+        uniform vec4 specularMatrixT;
+        uniform vec4 colorModulate;
+        uniform vec4 colorAdd;
+        uniform mat4 lightMatrices[6];
+        uniform mat4 modelMatrix;
+
+        // Varying variables
+        varying vec3 lightVector;
+        varying vec2 bumpST;
+        varying vec2 lightFalloff;
+        varying vec3 lightProjection;
+        varying vec2 diffuseST;
+        varying vec2 specularST;
+        varying vec3 halfAngleVector;
+        varying vec4 primaryColor;
+        varying vec3 viewDir;
+        varying vec4 shadowCoords[6];
+
+        // Attributes
+        attribute vec4 aPosition;
+        attribute vec4 aTexCoord;
+        attribute vec3 aNormal;
+        attribute vec3 aTangent0;
+        attribute vec3 aTangent1;
+        attribute vec4 aColor;
+
+        void main()
+        {
+            // Fetch fixed-function attributes
+            vec4 position = gl_Vertex;
+            vec4 texCoord = aTexCoord;
+            vec3 normal = aNormal;
+            vec3 tangent0 = aTangent0;
+            vec3 tangent1 = aTangent1;
+            vec4 color = aColor;
+
+            for (int i = 0; i < 6; i++) {
+                shadowCoords[i] = lightMatrices[i] * (modelMatrix * vec4(gl_Vertex.xyz, 1.0));
+            }
+
+            // Normal map texgen
+            bumpST = vec2(dot(bumpMatrixS, texCoord), dot(bumpMatrixT, texCoord));
+
+            // Light falloff texgen
+            lightFalloff = vec2(dot(lightFalloffS, position), 0.5);
+
+            // Light projection texgen
+            lightProjection = vec3(dot(lightProjectS, position), dot(lightProjectT, position), dot(lightProjectQ, position));
+
+            // Diffuse map texgen
+            diffuseST = vec2(dot(diffuseMatrixS, texCoord), dot(diffuseMatrixT, texCoord));
+
+            // Specular map texgen
+            specularST = vec2(dot(specularMatrixS, texCoord), dot(specularMatrixT, texCoord));
+
+            // Light and half-angle vectors
+            mat3 TBN = mat3(tangent0, tangent1, normal);
+
+            vec3 L = lightOrigin.xyz - position.xyz;
+            vec3 V = viewOrigin.xyz - position.xyz;
+            vec3 H = normalize(L) + normalize(V);
+
+            lightVector = vec3(
+                dot(L, tangent0),
+                dot(L, tangent1),
+                dot(L, normal));
+
+            halfAngleVector = vec3(
+                dot(H, tangent0),
+                dot(H, tangent1),
+                dot(H, normal));
+
+            viewDir = normalize(vec3(dot(V, tangent0), dot(V, tangent1), dot(V, normal)));
+
+            // Primary color
+            primaryColor = color * colorModulate + colorAdd;
+
+            // Position
+            gl_Position = ftransform();
+        }
+    }
+
+    pixel
+    {
+        // Varying variables from the vertex shader
+        varying vec4 primaryColor;
+        varying vec3 lightVector;
+        varying vec2 bumpST;
+        varying vec2 lightFalloff;
+        varying vec3 lightProjection;
+        varying vec2 diffuseST;
+        varying vec2 specularST;
+        varying vec3 halfAngleVector;
+        varying vec3 viewDir;
+        varying vec4 shadowCoords[6];
+
+        // Uniforms
+        uniform vec4 diffuse;
+        uniform vec4 specular;
+        uniform int numSides;
+        uniform sampler2D bumpImage;
+        uniform sampler2D lightFalloffImage;
+        uniform sampler2D lightImage;
+        uniform sampler2D diffuseImage;
+        uniform sampler2D specularImage;
+        uniform int shadowMapSize;	
+        uniform sampler2D shadowMaps[6];
+        uniform float maxPOMDistance; // Add this uniform to control POM distance
+
+        float shadowFactor(int index)
+        {
+            vec3 coord = shadowCoords[index].xyz / shadowCoords[index].w;
+            coord = coord * 0.5 + 0.5;
+
+            if (coord.z > 1.0 || coord.x < 0.0 || coord.x > 1.0 || coord.y < 0.0 || coord.y > 1.0)
+                return 1.0; // Outside shadow map bounds
+
+            // Calculate slope-scaled bias based on surface normal
+            vec3 L = normalize(lightVector);
+            vec3 N = normalize(texture2D(bumpImage, bumpST).xyz * 2.0 - 1.0);
+            float cosTheta = clamp(dot(N, L), 0.0, 1.0);
+
+            // Smaller base bias to reduce peter panning
+            float baseBias = 0.0003;
+            // Scale bias based on slope - more bias for shallow angles
+            float bias = baseBias * (1.0 - cosTheta);
+
+            // For very shallow angles, use a minimum bias to prevent artifacts
+            bias = max(bias, 0.0001);
+
+            // Poisson disk sampling for irregular PCF
+            vec2 poissonDisk[16] = vec2[](
+                vec2(-0.94201624, -0.39906216),
+                vec2(0.94558609, -0.76890725),
+                vec2(-0.094184101, -0.92938870),
+                vec2(0.34495938, 0.29387760),
+                vec2(-0.91588581, 0.45771432),
+                vec2(-0.81544232, -0.87912464),
+                vec2(-0.38277543, 0.27676845),
+                vec2(0.97484398, 0.75648379),
+                vec2(0.44323325, -0.97511554),
+                vec2(0.53742981, -0.47373420),
+                vec2(-0.26496911, -0.41893023),
+                vec2(0.79197514, 0.19090188),
+                vec2(-0.24188840, 0.99706507),
+                vec2(-0.81409955, 0.91437590),
+                vec2(0.19984126, 0.78641367),
+                vec2(0.14383161, -0.14100790));
+
+            // Generate a random rotation based on screen position to reduce banding
+            float screenSize = 1024.0;
+            vec2 screenPos = gl_FragCoord.xy / screenSize;
+            float randomAngle = fract(sin(dot(screenPos, vec2(12.9898, 78.233))) * 43758.5453) * 6.283185; // 2*PI
+            float s = sin(randomAngle);
+            float c = cos(randomAngle);
+
+            float filterSize = 3.0 / shadowMapSize;
+
+            float factor = 0.0;
+
+            // Could increase this to 16 or 32 for better quality
+            int samples = 16;
+
+            for (int i = 0; i < samples; i++) {
+                // Rotate the sample position
+                vec2 rotatedOffset = vec2(
+                    poissonDisk[i].x * c - poissonDisk[i].y * s,
+                    poissonDisk[i].x * s + poissonDisk[i].y * c);
+
+                // Apply scaled offset
+                vec2 sampleCoord = coord.xy + rotatedOffset * filterSize;
+
+                float depth = texture2D(shadowMaps[index], sampleCoord).r;
+                factor += (coord.z - bias) < depth ? 1.0 : 0.0;
+            }
+
+            factor = factor / float(samples);
+            return factor;
+        }
+
+        void main()
+        {
+            // Apply the offset to the texture coordinates
+            vec2 bumpedST = bumpST;
+            vec2 diffuseST = diffuseST;
+            vec2 specularST = specularST;
+
+            // Compute view direction in tangent space
+            vec3 V = normalize(viewDir);
+
+            // Distance-based POM quality scaling
+            float viewDistance = length(lightVector);
+            float pomQualityFactor = clamp(1.0 - viewDistance / maxPOMDistance, 0.0, 1.0);
+
+            // Only perform POM if the quality factor is significant
+            if (pomQualityFactor > 0.01) {
+                // Fewer layers for distant objects
+                float numLayers = mix(5.0, 16.0, pomQualityFactor);
+                // Less height effect for distant objects
+                float layerHeight = 0.01 * pomQualityFactor;
+
+                // Initialize parallax mapping
+                float layerDepth = 1.0 / numLayers;
+                // Prevent division by near-zero, use a small epsilon
+                vec2 P = V.xy * layerHeight / max(V.z, 0.05);
+                float currentLayerDepth = 0.0;
+                vec2 deltaTexCoords = P / numLayers;
+
+                int numSearches = int(mix(4.0, 8.0, pomQualityFactor));
+                for (int i = 0; i < numSearches; i++) {
+                    // Sample height from the normal map's alpha/blue channel (assuming height is stored there)
+                    // Or derive from normal length if appropriate for your encoding
+                    float height = texture(bumpImage, bumpedST).b;
+
+                    if (currentLayerDepth >= height) {
+                        break;
+                    }
+
+                    bumpedST -= deltaTexCoords;
+                    diffuseST -= deltaTexCoords;
+                    specularST -= deltaTexCoords;
+                    currentLayerDepth += layerDepth;
+                }
+
+                // Then do binary search refinement for accuracy (only if close enough)
+                if (pomQualityFactor > 0.5) {
+                    vec2 prevTexCoords = bumpedST + deltaTexCoords;
+                    vec2 prevDiffuse = diffuseST + deltaTexCoords;
+                    vec2 prevSpecular = specularST + deltaTexCoords;
+
+                    // Binary search to refine the depth
+                    for (int i = 0; i < 4; i++) {
+                        deltaTexCoords *= 0.5;
+                        currentLayerDepth -= layerDepth * 0.5;
+
+                        float height = texture(bumpImage, bumpedST).b;
+
+                        // Check if current depth is below or above the surface
+                        if (currentLayerDepth > height) {
+                            bumpedST += deltaTexCoords;
+                            diffuseST += deltaTexCoords;
+                            specularST += deltaTexCoords;
+                            currentLayerDepth += layerDepth * 0.5;
+                        } else {
+                            bumpedST -= deltaTexCoords;
+                            diffuseST -= deltaTexCoords;
+                            specularST -= deltaTexCoords;
+                            currentLayerDepth -= layerDepth * 0.5;
+                        }
+                        layerDepth *= 0.5;
+                    }
+                }
+            }
+
+            // Sample the bump map *once* after POM and adjust range to [-1, 1]
+            vec3 N = normalize(texture(bumpImage, bumpedST).xyz * 2.0 - 1.0);
+
+            // Sample the light vector and normalize it
+            vec3 L = normalize(lightVector);
+
+            // Compute dot product of normal and light vector and clamp to [0, 1]
+            float NdotL = clamp(dot(N, L), 0.0, 1.0);
+
+            // Sample the diffuse map with the offset coordinates
+            vec4 Cd = diffuse * texture(diffuseImage, diffuseST);
+
+            // Sample the half-angle vector and normalize it
+            vec3 H = normalize(halfAngleVector);
+
+            // Compute dot product of normal and half-angle vector and clamp to [0, 1]
+            float NdotH = clamp(dot(N, H), 0.0, 1.0);
+
+            // Compute specular power
+            const float specularPower = 10.0f;
+            float specPower = pow(NdotH, specularPower);
+            vec4 spec = specular * specPower;
+
+            // Sample the light image using projective texturing and the light falloff image
+            vec4 Cl = textureProj(lightImage, vec3(lightProjection)) * texture(lightFalloffImage, lightFalloff);
+
+            // Skip shadow calculations for fully lit areas
+            float shadow = 1.0;
+            if (numSides > 0 && NdotL > 0.0) // Only calculate shadows when needed
+            {
+                for (int i = 0; i < numSides; i++) {
+                    float factor = shadowFactor(i);
+                    shadow *= factor;
+
+                    // Early out if already in full shadow
+                    if (shadow < 0.01) {
+                        shadow = 0.0;
+                        break;
+                    }
+                }
+            }
+
+            // Compute final color
+            gl_FragColor = primaryColor * Cl * NdotL * (Cd + spec * 2.0 * texture(specularImage, specularST));
+            gl_FragColor *= shadow;
+        }
+    }
+}

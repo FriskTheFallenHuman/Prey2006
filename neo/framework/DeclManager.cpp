@@ -131,7 +131,7 @@ protected:
 	void						SetTextLocal( const char *text, const int length );
 
 private:
-	idDecl *					self = nullptr;
+	idDecl *					self = NULL;
 
 	idStr						name;					// name of the decl
 	char *						textSource;				// decl text definition
@@ -826,11 +826,13 @@ void idDeclManagerLocal::Init( void ) {
 	RegisterDeclType( "particle",			DECL_PARTICLE,		idDeclAllocator<idDeclParticle> );
 	RegisterDeclType( "articulatedFigure",	DECL_AF,			idDeclAllocator<idDeclAF> );
 	RegisterDeclType( "beam",				DECL_BEAM,			idDeclAllocator<hhDeclBeam> );
+	RegisterDeclType( "glprog",				DECL_RENDERPROG,	idDeclAllocator<idDeclRenderProg> );
 
 	RegisterDeclFolder( "materials",		".mtr",				DECL_MATERIAL );
 	RegisterDeclFolder( "skins",			".skin",			DECL_SKIN );
 	RegisterDeclFolder( "sound",			".sndshd",			DECL_SOUND );
 	RegisterDeclFolder( "beams",			".beam",			DECL_BEAM );
+	RegisterDeclFolder( "glprogs",			".glprog",			DECL_RENDERPROG );
 
 	// add console commands
 	cmdSystem->AddCommand( "listDecls", ListDecls_f, CMD_FL_SYSTEM, "lists all decls" );

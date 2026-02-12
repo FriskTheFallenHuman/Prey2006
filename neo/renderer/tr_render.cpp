@@ -737,6 +737,7 @@ void RB_CreateSingleDrawInteractions( const drawSurf_t *surf, void (*DrawInterac
 	inter.localLightOrigin[3] = 0;
 	inter.localViewOrigin[3] = 1;
 	inter.ambientLight = lightShader->IsAmbientLight();
+	memcpy(inter.surfModelMatrix, surf->space->modelMatrix, sizeof(float) * 16);
 
 	// the base projections may be modified by texture matrix on light stages
 	idPlane lightProject[4];

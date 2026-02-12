@@ -212,7 +212,7 @@ private:
 	bool					RebuildTextSource( void );
 	void					CalcBounds();		//HUMANHEAD bjk
 #ifdef PARTICLE_BOUNDS
-	void					GetStageBounds( idParticleStage *stage, idDrawVert *particleVerts = nullptr );
+	void					GetStageBounds( idParticleStage *stage, idDrawVert *particleVerts = NULL );
 #else
 	void					GetStageBounds( idParticleStage *stage );
 #endif

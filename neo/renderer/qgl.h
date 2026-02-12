@@ -131,6 +131,38 @@ extern PFNGLPROGRAMLOCALPARAMETER4FVARBPROC	qglProgramLocalParameter4fvARB;
 // GL_EXT_depth_bounds_test
 extern PFNGLDEPTHBOUNDSEXTPROC              qglDepthBoundsEXT;
 
+extern PFNGLGENERATEMIPMAPEXTPROC			qglGenerateMipmapEXT;
+
+extern PFNGLCREATEPROGRAMPROC qglCreateProgram;
+extern PFNGLCREATESHADERPROC qglCreateShader;
+extern PFNGLSHADERSOURCEPROC qglShaderSource;
+extern PFNGLCOMPILESHADERPROC qglCompileShader;
+extern PFNGLATTACHSHADERPROC qglAttachShader;
+extern PFNGLLINKPROGRAMPROC qglLinkProgram;
+extern PFNGLUSEPROGRAMPROC qglUseProgram;
+extern PFNGLGETSHADERIVPROC qglGetShaderiv;
+extern PFNGLGETSHADERINFOLOGPROC qglGetShaderInfoLog;
+extern PFNGLGETPROGRAMIVPROC qglGetProgramiv;
+extern PFNGLGETPROGRAMINFOLOGPROC qglGetProgramInfoLog;
+extern PFNGLDELETEPROGRAMPROC qglDeleteProgram;
+extern PFNGLDELETESHADERPROC qglDeleteShader;
+extern PFNGLUNIFORM4FVPROC qglUniform4fv;
+extern PFNGLGETUNIFORMLOCATIONPROC qglGetUniformLocation;
+extern PFNGLUNIFORM1IPROC qglUniform1i;
+extern PFNGLBINDATTRIBLOCATIONPROC qglBindAttribLocation;
+
+extern PFNGLUNIFORMMATRIX4FVPROC qglUniformMatrix4fv;
+extern PFNGLGENFRAMEBUFFERSEXTPROC            qglGenFramebuffersEXT;
+extern PFNGLDELETEFRAMEBUFFERSEXTPROC         qglDeleteFramebuffersEXT;
+extern PFNGLBINDFRAMEBUFFEREXTPROC            qglBindFramebufferEXT;
+extern PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC     qglCheckFramebufferStatusEXT;
+extern PFNGLFRAMEBUFFERTEXTURE2DEXTPROC       qglFramebufferTexture2DEXT;
+extern PFNGLGENRENDERBUFFERSEXTPROC           qglGenRenderbuffersEXT;
+extern PFNGLDELETERENDERBUFFERSEXTPROC        qglDeleteRenderbuffersEXT;
+extern PFNGLBINDRENDERBUFFEREXTPROC           qglBindRenderbufferEXT;
+extern PFNGLRENDERBUFFERSTORAGEEXTPROC        qglRenderbufferStorageEXT;
+extern PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC    qglFramebufferRenderbufferEXT;
+
 // GL_ARB_debug_output
 extern PFNGLDEBUGMESSAGECALLBACKARBPROC    qglDebugMessageCallbackARB;
 

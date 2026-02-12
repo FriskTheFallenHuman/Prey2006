@@ -58,7 +58,7 @@ idCVar r_useConstantMaterials( "r_useConstantMaterials", "1", CVAR_RENDERER | CV
 idCVar r_useSilRemap( "r_useSilRemap", "1", CVAR_RENDERER | CVAR_BOOL, "consider verts with the same XYZ, but different ST the same for shadows" );
 idCVar r_useNodeCommonChildren( "r_useNodeCommonChildren", "1", CVAR_RENDERER | CVAR_BOOL, "stop pushing reference bounds early when possible" );
 idCVar r_useShadowProjectedCull( "r_useShadowProjectedCull", "1", CVAR_RENDERER | CVAR_BOOL, "discard triangles outside light volume before shadowing" );
-idCVar r_useShadowVertexProgram( "r_useShadowVertexProgram", "1", CVAR_RENDERER | CVAR_BOOL, "do the shadow projection in the vertex program on capable cards" );
+idCVar r_useShadowVertexProgram( "r_useShadowVertexProgram", "0", CVAR_RENDERER | CVAR_BOOL, "do the shadow projection in the vertex program on capable cards" );
 idCVar r_useShadowSurfaceScissor( "r_useShadowSurfaceScissor", "1", CVAR_RENDERER | CVAR_BOOL, "scissor shadows by the scissor rect of the interaction surfaces" );
 idCVar r_useInteractionTable( "r_useInteractionTable", "1", CVAR_RENDERER | CVAR_BOOL, "create a full entityDefs * lightDefs table to make finding interactions faster" );
 idCVar r_useTurboShadow( "r_useTurboShadow", "1", CVAR_RENDERER | CVAR_BOOL, "use the infinite projection with W technique for dynamic shadows" );
@@ -268,6 +268,38 @@ PFNGLPROGRAMLOCALPARAMETER4FVARBPROC	qglProgramLocalParameter4fvARB;
 
 // GL_EXT_depth_bounds_test
 PFNGLDEPTHBOUNDSEXTPROC                 qglDepthBoundsEXT;
+
+PFNGLGENERATEMIPMAPEXTPROC              qglGenerateMipmapEXT;
+
+PFNGLCREATEPROGRAMPROC qglCreateProgram = NULL;
+PFNGLCREATESHADERPROC qglCreateShader = NULL;
+PFNGLSHADERSOURCEPROC qglShaderSource = NULL;
+PFNGLCOMPILESHADERPROC qglCompileShader = NULL;
+PFNGLATTACHSHADERPROC qglAttachShader = NULL;
+PFNGLLINKPROGRAMPROC qglLinkProgram = NULL;
+PFNGLUSEPROGRAMPROC qglUseProgram = NULL;
+PFNGLGETSHADERIVPROC qglGetShaderiv = NULL;
+PFNGLGETSHADERINFOLOGPROC qglGetShaderInfoLog = NULL;
+PFNGLGETPROGRAMIVPROC qglGetProgramiv = NULL;
+PFNGLGETPROGRAMINFOLOGPROC qglGetProgramInfoLog = NULL;
+PFNGLDELETEPROGRAMPROC qglDeleteProgram = NULL;
+PFNGLDELETESHADERPROC qglDeleteShader = NULL;
+PFNGLUNIFORM4FVPROC qglUniform4fv = NULL;
+PFNGLGETUNIFORMLOCATIONPROC qglGetUniformLocation = NULL;
+PFNGLUNIFORM1IPROC qglUniform1i = NULL;
+PFNGLBINDATTRIBLOCATIONPROC qglBindAttribLocation = NULL;
+PFNGLUNIFORMMATRIX4FVPROC qglUniformMatrix4fv = NULL;
+
+PFNGLGENFRAMEBUFFERSEXTPROC            qglGenFramebuffersEXT = NULL;
+PFNGLDELETEFRAMEBUFFERSEXTPROC         qglDeleteFramebuffersEXT = NULL;
+PFNGLBINDFRAMEBUFFEREXTPROC            qglBindFramebufferEXT = NULL;
+PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC     qglCheckFramebufferStatusEXT = NULL;
+PFNGLFRAMEBUFFERTEXTURE2DEXTPROC       qglFramebufferTexture2DEXT = NULL;
+PFNGLGENRENDERBUFFERSEXTPROC           qglGenRenderbuffersEXT = NULL;
+PFNGLDELETERENDERBUFFERSEXTPROC        qglDeleteRenderbuffersEXT = NULL;
+PFNGLBINDRENDERBUFFEREXTPROC           qglBindRenderbufferEXT = NULL;
+PFNGLRENDERBUFFERSTORAGEEXTPROC        qglRenderbufferStorageEXT = NULL;
+PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC    qglFramebufferRenderbufferEXT = NULL;
 
 // DG: couldn't find any extension for this, it's supported in GL2.0 and newer, incl OpenGL ES2.0
 PFNGLSTENCILOPSEPARATEPROC qglStencilOpSeparate;
@@ -518,6 +550,40 @@ static void R_CheckPortableExtensions( void ) {
 	if ( glConfig.depthBoundsTestAvailable ) {
 		qglDepthBoundsEXT = (PFNGLDEPTHBOUNDSEXTPROC)GLimp_ExtensionPointer( "glDepthBoundsEXT" );
 	}
+
+    // Shader extensions
+    qglGenerateMipmapEXT = (PFNGLGENERATEMIPMAPEXTPROC)GLimp_ExtensionPointer("glGenerateMipmapEXT");
+
+    qglCreateProgram = (PFNGLCREATEPROGRAMPROC)GLimp_ExtensionPointer("glCreateProgram");
+    qglCreateShader = (PFNGLCREATESHADERPROC)GLimp_ExtensionPointer("glCreateShader");
+    qglShaderSource = (PFNGLSHADERSOURCEPROC)GLimp_ExtensionPointer("glShaderSource");
+    qglCompileShader = (PFNGLCOMPILESHADERPROC)GLimp_ExtensionPointer("glCompileShader");
+    qglAttachShader = (PFNGLATTACHSHADERPROC)GLimp_ExtensionPointer("glAttachShader");
+    qglLinkProgram = (PFNGLLINKPROGRAMPROC)GLimp_ExtensionPointer("glLinkProgram");
+    qglUseProgram = (PFNGLUSEPROGRAMPROC)GLimp_ExtensionPointer("glUseProgram");
+    qglGetShaderiv = (PFNGLGETSHADERIVPROC)GLimp_ExtensionPointer("glGetShaderiv");
+    qglGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)GLimp_ExtensionPointer("glGetShaderInfoLog");
+    qglGetProgramiv = (PFNGLGETPROGRAMIVPROC)GLimp_ExtensionPointer("glGetProgramiv");
+    qglGetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)GLimp_ExtensionPointer("glGetProgramInfoLog");
+    qglDeleteProgram = (PFNGLDELETEPROGRAMPROC)GLimp_ExtensionPointer("glDeleteProgram");
+    qglDeleteShader = (PFNGLDELETESHADERPROC)GLimp_ExtensionPointer("glDeleteShader");
+    qglUniform4fv = (PFNGLUNIFORM4FVPROC)GLimp_ExtensionPointer("glUniform4fv");
+    qglGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)GLimp_ExtensionPointer("glGetUniformLocation");
+    qglUniform1i = (PFNGLUNIFORM1IPROC)GLimp_ExtensionPointer("glUniform1i");
+    qglBindAttribLocation = (PFNGLBINDATTRIBLOCATIONPROC)GLimp_ExtensionPointer("glBindAttribLocation");
+
+    qglUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)GLimp_ExtensionPointer("glUniformMatrix4fv");
+
+    qglGenFramebuffersEXT = (PFNGLGENFRAMEBUFFERSEXTPROC)GLimp_ExtensionPointer("glGenFramebuffersEXT");
+    qglDeleteFramebuffersEXT = (PFNGLDELETEFRAMEBUFFERSEXTPROC)GLimp_ExtensionPointer("glDeleteFramebuffersEXT");
+    qglBindFramebufferEXT = (PFNGLBINDFRAMEBUFFEREXTPROC)GLimp_ExtensionPointer("glBindFramebufferEXT");
+    qglCheckFramebufferStatusEXT = (PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC)GLimp_ExtensionPointer("glCheckFramebufferStatusEXT");
+    qglFramebufferTexture2DEXT = (PFNGLFRAMEBUFFERTEXTURE2DEXTPROC)GLimp_ExtensionPointer("glFramebufferTexture2DEXT");
+    qglGenRenderbuffersEXT = (PFNGLGENRENDERBUFFERSEXTPROC)GLimp_ExtensionPointer("glGenRenderbuffersEXT");
+    qglDeleteRenderbuffersEXT = (PFNGLDELETERENDERBUFFERSEXTPROC)GLimp_ExtensionPointer("glDeleteRenderbuffersEXT");
+    qglBindRenderbufferEXT = (PFNGLBINDRENDERBUFFEREXTPROC)GLimp_ExtensionPointer("glBindRenderbufferEXT");
+    qglRenderbufferStorageEXT = (PFNGLRENDERBUFFERSTORAGEEXTPROC)GLimp_ExtensionPointer("glRenderbufferStorageEXT");
+    qglFramebufferRenderbufferEXT = (PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC)GLimp_ExtensionPointer("glFramebufferRenderbufferEXT");
 
 	// GL_ARB_debug_output
 	glConfig.glDebugOutputAvailable = false;
@@ -818,6 +884,7 @@ void R_InitOpenGL( void ) {
 
 	// parse our vertex and fragment programs, possibly disably support for
 	// one of the paths if there was an error
+    RB_EXP_Init();
 	R_ARB2_Init();
 
 	cmdSystem->AddCommand( "reloadARBprograms", R_ReloadARBPrograms_f, CMD_FL_RENDERER, "reloads ARB programs" );
@@ -837,6 +904,8 @@ void R_InitOpenGL( void ) {
 		common->Printf( "Will apply r_gamma and r_brightness in hardware (possibly on all screens; r_gammaInShader 0)\n" );
 		R_SetColorMappings();
 	}
+
+    //tr.interactionProgram = renderSystem->FindRenderProgram("interaction", false);
 
 #ifdef _WIN32
 	static bool glCheck = false;
@@ -2355,6 +2424,8 @@ void idRenderSystemLocal::Shutdown( void ) {
 	idCinematic::ShutdownCinematic( );
 
 	globalImages->Shutdown();
+
+    RB_EXP_Shutdown();
 
 	// free frame memory
 	R_ShutdownFrameData();

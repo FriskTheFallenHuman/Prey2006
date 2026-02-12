@@ -462,6 +462,8 @@ typedef struct {
 	idVec4				bumpMatrix[2];
 	idVec4				diffuseMatrix[2];
 	idVec4				specularMatrix[2];
+
+	float				surfModelMatrix[16];
 } drawInteraction_t;
 
 
@@ -604,7 +606,7 @@ typedef struct {
 	textureType_t	textureType;
 } tmu_t;
 
-const int MAX_MULTITEXTURE_UNITS =	8;
+const int MAX_MULTITEXTURE_UNITS =16;
 typedef struct {
 	tmu_t		tmu[MAX_MULTITEXTURE_UNITS];
 	int			currenttmu;
@@ -731,6 +733,7 @@ public:
 	virtual void			CaptureRenderToFile( const char *fileName, bool fixAlpha );
 	virtual void			UnCrop();
 	virtual bool			UploadImage( const char *imageName, const byte *data, int width, int height );
+	virtual const idDeclRenderProg* FindRenderProgram(const char* name, bool makeDefault);
 
 	virtual void			SetEntireSceneMaterial(idMaterial* material) { (void)material; }; // HUMANHEAD CJR
 	virtual bool			IsScopeView() { return scopeView; };// HUMANHEAD CJR
@@ -818,6 +821,8 @@ public:
 	int						guiRecursionLevel;		// to prevent infinite overruns
 	class idGuiModel *		guiModel;
 	class idGuiModel *		demoGuiModel;
+
+	const idDeclRenderProg*	interactionProgram;
 
 	// DG: remember the original glConfig.vidWidth/Height values that get overwritten in BeginFrame()
 	//     so they can be reset in EndFrame() (Editors tend to mess up the viewport by using BeginFrame())
@@ -1313,11 +1318,58 @@ DRAW_*
 
 ============================================================
 */
+// Define attribute locations
+
+
+
+enum AttributeLocations {
+	ATTR_POSITION = 0,
+	ATTR_TEXCOORD = 1,
+	ATTR_NORMAL = 2,
+	ATTR_TANGENT0 = 3,
+	ATTR_TANGENT1 = 4,
+	ATTR_COLOR = 5
+};
+
+void	RB_EXP_Init(void);
+void	RB_EXP_Shutdown(void);
+void	RB_EXP_DrawInteractions(void);
 
 void	R_ARB2_Init( void );
 void	RB_ARB2_DrawInteractions( void );
 void	R_ReloadARBPrograms_f( const idCmdArgs &args );
 int		R_FindARBProgram( GLenum target, const char *program );
+
+// Define the struct to hold uniform locations
+struct idInteractionUniformState {
+	GLint lightMatrices;
+	GLint modelMatrix;
+	GLint lightOrigin;
+	GLint viewOrigin;
+	GLint lightProjectS;
+	GLint lightProjectT;
+	GLint lightProjectQ;
+	GLint lightFalloffS;
+	GLint bumpMatrixS;
+	GLint bumpMatrixT;
+	GLint diffuseMatrixS;
+	GLint diffuseMatrixT;
+	GLint specularMatrixS;
+	GLint specularMatrixT;
+	GLint colorModulate;
+	GLint colorAdd;
+	GLint diffuse;
+	GLint specular;
+	GLint bumpImage;
+	GLint lightFalloffImage;
+	GLint lightImage;
+	GLint diffuseImage;
+	GLint specularImage;
+	GLint specularTableImage;
+	GLfloat shadowMapSize;
+	GLint shadowMaps[6];
+	GLint numSides;
+};
 
 typedef enum {
 	PROG_INVALID,
@@ -1401,10 +1453,6 @@ typedef enum {
 	SG_OFFLINE		// perform very time consuming optimizations
 } shadowGen_t;
 
-srfTriangles_t *R_CreateShadowVolume( const idRenderEntityLocal *ent,
-									 const srfTriangles_t *tri, const idRenderLightLocal *light,
-									 shadowGen_t optimize, srfCullInfo_t &cullInfo );
-
 /*
 ============================================================
 
@@ -1425,35 +1473,6 @@ srfTriangles_t *R_CreateVertexProgramTurboShadowVolume( const idRenderEntityLoca
 srfTriangles_t *R_CreateTurboShadowVolume( const idRenderEntityLocal *ent,
 									 const srfTriangles_t *tri, const idRenderLightLocal *light,
 									 srfCullInfo_t &cullInfo );
-
-/*
-============================================================
-
-util/shadowopt3
-
-dmap time optimization of shadow volumes, called from R_CreateShadowVolume
-
-============================================================
-*/
-
-
-typedef struct {
-	idVec3	*verts;			// includes both front and back projections, caller should free
-	int		numVerts;
-	glIndex_t	*indexes;	// caller should free
-
-	// indexes must be sorted frontCap, rearCap, silPlanes so the caps can be removed
-	// when the viewer is in a position that they don't need to see them
-	int		numFrontCapIndexes;
-	int		numRearCapIndexes;
-	int		numSilPlaneIndexes;
-	int		totalIndexes;
-} optimizedShadow_t;
-
-optimizedShadow_t SuperOptimizeOccluders( idVec4 *verts, glIndex_t *indexes, int numIndexes,
-										 idPlane projectionPlane, idVec3 projectionOrigin );
-
-void CleanupOptimizedShadowTris( srfTriangles_t *tri );
 
 /*
 ============================================================

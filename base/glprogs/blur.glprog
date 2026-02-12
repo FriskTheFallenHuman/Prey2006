@@ -1,0 +1,57 @@
+postprocess/blur
+{
+    vertex
+    {
+        varying vec2 diffuseST;
+
+        void main() {
+            diffuseST = gl_MultiTexCoord0.xy;
+            diffuseST.y = 1.0 - diffuseST.y;
+            gl_Position = ftransform();
+        }
+    }
+
+    pixel
+    {
+        varying vec2 diffuseST;
+        uniform sampler2D brightTexture;
+
+        void main()
+        {
+            vec2 texelSize = vec2(1.0) / vec2(textureSize(brightTexture, 0));
+            vec4 color = vec4(0.0);
+
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2(-2.0, -2.0)) * 1.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2(-1.0, -2.0)) * 2.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2( 0.0, -2.0)) * 3.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2( 1.0, -2.0)) * 2.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2( 2.0, -2.0)) * 1.0/16.0;
+            
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2(-2.0, -1.0)) * 2.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2(-1.0, -1.0)) * 4.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2( 0.0, -1.0)) * 6.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2( 1.0, -1.0)) * 4.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2( 2.0, -1.0)) * 2.0/16.0;
+
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2(-2.0,  0.0)) * 3.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2(-1.0,  0.0)) * 6.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2( 0.0,  0.0)) * 9.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2( 1.0,  0.0)) * 6.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2( 2.0,  0.0)) * 3.0/16.0;
+
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2(-2.0,  1.0)) * 2.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2(-1.0,  1.0)) * 4.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2( 0.0,  1.0)) * 6.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2( 1.0,  1.0)) * 4.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2( 2.0,  1.0)) * 2.0/16.0;
+
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2(-2.0,  2.0)) * 1.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2(-1.0,  2.0)) * 2.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2( 0.0,  2.0)) * 3.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2( 1.0,  2.0)) * 2.0/16.0;
+            color += texture2D(brightTexture, diffuseST + texelSize * vec2( 2.0,  2.0)) * 1.0/16.0;
+
+            gl_FragColor = color;
+        }
+    }
+}
