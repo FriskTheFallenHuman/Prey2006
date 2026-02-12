@@ -75,6 +75,7 @@ typedef enum {
 	DECL_AF,
 	DECL_MODELEXPORT,
 	DECL_MAPDEF,
+	DECL_RENDERPROG,
 
 	// new decl types can be added here
 	// HUMANHEAD mdl:  Keep these in sync with the defines in prey_defs.h

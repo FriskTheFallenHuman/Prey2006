@@ -741,22 +741,5 @@ void WriteOutputFile( void )
 		WriteOutputEntity( i );
 	}
 
-	// write the shadow volumes
-	for( i = 0; i < dmapGlobals.mapLights.Num(); i++ )
-	{
-		mapLight_t* light = dmapGlobals.mapLights[i];
-		if( !light->shadowTris )
-		{
-			continue;
-		}
-
-		procFile->WriteFloatString( "shadowModel { /* name = */ \"_prelight_%s\"\n\n", light->name );
-		WriteShadowTriangles( light->shadowTris );
-		procFile->WriteFloatString( "}\n\n" );
-
-		R_FreeStaticTriSurf( light->shadowTris );
-		light->shadowTris = NULL;
-	}
-
 	fileSystem->CloseFile( procFile );
 }

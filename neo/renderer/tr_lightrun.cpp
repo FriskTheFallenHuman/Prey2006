@@ -343,6 +343,173 @@ void R_FreeLightDefFrustum( idRenderLightLocal *ldef ) {
 }
 
 /*
+===================
+R_MakeShadowFrustums
+
+Called at definition derivation time
+===================
+*/
+void R_MakeShadowFrustums(idRenderLightLocal* light) {
+	int		i, j;
+
+	if (light->parms.pointLight) {
+#if 0
+		idVec3	adjustedRadius;
+
+		// increase the light radius to cover any origin offsets.
+		// this will cause some shadows to extend out of the exact light
+		// volume, but is simpler than adjusting all the frustums
+		adjustedRadius[0] = light->parms.lightRadius[0] + idMath::Fabs(light->parms.lightCenter[0]);
+		adjustedRadius[1] = light->parms.lightRadius[1] + idMath::Fabs(light->parms.lightCenter[1]);
+		adjustedRadius[2] = light->parms.lightRadius[2] + idMath::Fabs(light->parms.lightCenter[2]);
+
+		light->numShadowFrustums = 0;
+		// a point light has to project against six planes
+		for (i = 0; i < 6; i++) {
+			shadowFrustum_t* frust = &light->shadowFrustums[light->numShadowFrustums];
+
+			frust->numPlanes = 6;
+			frust->makeClippedPlanes = false;
+			for (j = 0; j < 6; j++) {
+				idPlane& plane = frust->planes[j];
+				plane[0] = pointLightFrustums[i][j][0] / adjustedRadius[0];
+				plane[1] = pointLightFrustums[i][j][1] / adjustedRadius[1];
+				plane[2] = pointLightFrustums[i][j][2] / adjustedRadius[2];
+				plane.Normalize();
+				plane[3] = -(plane.Normal() * light->globalLightOrigin);
+				if (j == 5) {
+					plane[3] += adjustedRadius[i >> 1];
+				}
+			}
+
+			light->numShadowFrustums++;
+		}
+#else
+		// exact projection,taking into account asymetric frustums when
+		// globalLightOrigin isn't centered
+
+		static int	faceCorners[6][4] = {
+			{ 7, 5, 1, 3 },		// positive X side
+			{ 4, 6, 2, 0 },		// negative X side
+			{ 6, 7, 3, 2 },		// positive Y side
+			{ 5, 4, 0, 1 },		// negative Y side
+			{ 6, 4, 5, 7 },		// positive Z side
+			{ 3, 1, 0, 2 }		// negative Z side
+		};
+		static int	faceEdgeAdjacent[6][4] = {
+			{ 4, 4, 2, 2 },		// positive X side
+			{ 7, 7, 1, 1 },		// negative X side
+			{ 5, 5, 0, 0 },		// positive Y side
+			{ 6, 6, 3, 3 },		// negative Y side
+			{ 0, 0, 3, 3 },		// positive Z side
+			{ 5, 5, 6, 6 }		// negative Z side
+		};
+
+		bool	centerOutside = false;
+
+		// if the light center of projection is outside the light bounds,
+		// we will need to build the planes a little differently
+		if (fabs(light->parms.lightCenter[0]) > light->parms.lightRadius[0]
+			|| fabs(light->parms.lightCenter[1]) > light->parms.lightRadius[1]
+			|| fabs(light->parms.lightCenter[2]) > light->parms.lightRadius[2]) {
+			centerOutside = true;
+		}
+
+		// make the corners
+		idVec3	corners[8];
+
+		for (i = 0; i < 8; i++) {
+			idVec3	temp;
+			for (j = 0; j < 3; j++) {
+				if (i & (1 << j)) {
+					temp[j] = light->parms.lightRadius[j];
+				}
+				else {
+					temp[j] = -light->parms.lightRadius[j];
+				}
+			}
+
+			// transform to global space
+			corners[i] = light->parms.origin + light->parms.axis * temp;
+		}
+
+		light->numShadowFrustums = 0;
+		for (int side = 0; side < 6; side++) {
+			shadowFrustum_t* frust = &light->shadowFrustums[light->numShadowFrustums];
+			idVec3& p1 = corners[faceCorners[side][0]];
+			idVec3& p2 = corners[faceCorners[side][1]];
+			idVec3& p3 = corners[faceCorners[side][2]];
+			idPlane backPlane;
+
+			// plane will have positive side inward
+			backPlane.FromPoints(p1, p2, p3);
+
+			// if center of projection is on the wrong side, skip
+			float d = backPlane.Distance(light->globalLightOrigin);
+			if (d < 0) {
+				continue;
+			}
+
+			frust->numPlanes = 6;
+			frust->planes[5] = backPlane;
+			frust->planes[4] = backPlane;	// we don't really need the extra plane
+
+			// make planes with positive side facing inwards in light local coordinates
+			for (int edge = 0; edge < 4; edge++) {
+				idVec3& p1 = corners[faceCorners[side][edge]];
+				idVec3& p2 = corners[faceCorners[side][(edge + 1) & 3]];
+
+				// create a plane that goes through the center of projection
+				frust->planes[edge].FromPoints(p2, p1, light->globalLightOrigin);
+
+				// see if we should use an adjacent plane instead
+				if (centerOutside) {
+					idVec3& p3 = corners[faceEdgeAdjacent[side][edge]];
+					idPlane sidePlane;
+
+					sidePlane.FromPoints(p2, p1, p3);
+					d = sidePlane.Distance(light->globalLightOrigin);
+					if (d < 0) {
+						// use this plane instead of the edged plane
+						frust->planes[edge] = sidePlane;
+					}
+					// we can't guarantee a neighbor, so add sill planes at edge
+					light->shadowFrustums[light->numShadowFrustums].makeClippedPlanes = true;
+				}
+			}
+			light->numShadowFrustums++;
+		}
+
+#endif
+		return;
+	}
+
+	// projected light
+
+	light->numShadowFrustums = 1;
+	shadowFrustum_t* frust = &light->shadowFrustums[0];
+
+	// flip and transform the frustum planes so the positive side faces
+	// inward in local coordinates
+
+	// it is important to clip against even the near clip plane, because
+	// many projected lights that are faking area lights will have their
+	// origin behind solid surfaces.
+	for (i = 0; i < 6; i++) {
+		idPlane& plane = frust->planes[i];
+
+		plane.SetNormal(-light->frustum[i].Normal());
+		plane.SetDist(-light->frustum[i].Dist());
+	}
+
+	frust->numPlanes = 6;
+
+	frust->makeClippedPlanes = true;
+	// projected lights don't have shared frustums, so any clipped edges
+	// right on the planes must have a sil plane created for them
+}
+
+/*
 =================
 R_DeriveLightData
 

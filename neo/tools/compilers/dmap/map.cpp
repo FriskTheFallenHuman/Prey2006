@@ -490,9 +490,8 @@ static void CreateMapLight( const idMapEntity* mapEnt )
 		return;
 	}
 
-	light			  = new mapLight_t;
-	light->name[0]	  = '\0';
-	light->shadowTris = NULL;
+	light = new mapLight_t;
+	light->name[0] = '\0';
 
 	// parse parms exactly as the game do
 	// use the game's epair parsing code so

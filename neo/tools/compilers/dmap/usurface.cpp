@@ -998,15 +998,6 @@ static void BuildLightShadows( uEntity_t* e, mapLight_t* light )
 		}
 	}
 
-	// take the shadower group list and create a beam tree and shadow volume
-	light->shadowTris = CreateLightShadow( shadowerGroups, light );
-
-	if( light->shadowTris && hasPerforatedSurface )
-	{
-		// can't ever remove front faces, because we can see through some of them
-		light->shadowTris->numShadowIndexesNoCaps = light->shadowTris->numShadowIndexesNoFrontCaps = light->shadowTris->numIndexes;
-	}
-
 	// we don't need the original shadower triangles for anything else
 	FreeOptimizeGroupList( shadowerGroups );
 }

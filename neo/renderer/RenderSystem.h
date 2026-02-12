@@ -299,6 +299,9 @@ public:
 	// returns false if the image wasn't found
 	virtual bool			UploadImage( const char *imageName, const byte *data, int width, int height ) = 0;
 
+	// Loads in a Render Program.
+	virtual const idDeclRenderProg* FindRenderProgram(const char* name, bool makeDefault) = 0;
+
 #if _HH_RENDERDEMO_HACKS //HUMANHEAD rww
 	virtual void			LogViewRender(const struct renderView_s *view) = 0;
 #endif //HUMANHEAD END

@@ -354,7 +354,7 @@ public:
 	virtual idFile *		OpenExplicitFileWrite( const char *OSPath );
 	// HUMANHEAD pdm
 							// Opens a file for appending to a full OS path
-	virtual idFile *		OpenExplicitFileAppend( const char *OSPath, bool sync = false ) { return nullptr; };
+	virtual idFile *		OpenExplicitFileAppend( const char *OSPath, bool sync = false ) { return NULL; };
 	// HUMANHEAD END
 	virtual void			CloseFile( idFile *f );
 	virtual void			BackgroundDownload( backgroundDownload_t *bgl );
