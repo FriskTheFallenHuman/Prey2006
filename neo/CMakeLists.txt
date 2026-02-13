@@ -37,7 +37,7 @@ option(IMGUI						"Build with Dear ImGui integration - requires SDL2/SDL3 and C+
 option(REPRODUCIBLE_BUILD			"Replace __DATE__ and __TIME__ by hardcoded values for reproducible builds." OFF)
 option(LINUX_RELEASE_BINS			"Set RPATH to \$ORIGIN/libs/ for Linux binary releases" OFF)
 option(HARDLINK_GAME				"Compile gamecode into executable (no game DLLs)" OFF)
-option(FREETYPE					"Enable Freetype support." ON)
+option(FREETYPE					"Enable Freetype support." OFF)
 if(NOT MSVC) # GCC/clang or compatible, hopefully
 	option(FORCE_COLORED_OUTPUT	"Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
 	option(ASAN					"Enable GCC/Clang Adress Sanitizer (ASan)" OFF) # TODO: MSVC might also support this, somehow?
@@ -126,8 +126,7 @@ if (FREETYPE)
 		set(FT_LIBRARY Freetype::Freetype)
 	else()
 		add_subdirectory(libs/Freetype)
-		find_path(FREETYPE_INCLUDE_DIR "fttypes.h" PATH_SUFFIXES "freetype")
-		include_directories(${FREETYPE_INCLUDE_DIR})
+		include_directories(libs/Freetype/include)
 		set(FT_LIBRARY freetype)
 	endif()
 	add_definitions(-DID_BUILD_FREETYPE)
