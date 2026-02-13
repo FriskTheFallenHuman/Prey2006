@@ -131,7 +131,7 @@ void Com_DrawDhewm3ServerBrowser() {
 		}
 
 		// format the row
-			idStr row = va( "%s   [%d/%d]   %s   %dms", display, srv.clients, srv.serverInfo.GetInt( "si_maxplayers", 0 ), map ? map : "?", srv.ping );
+		idStr row = va( "%s   [%d/%d]   %s   %dms", display, srv.clients, srv.serverInfo.GetInt( "si_maxplayers", 0 ), map ? map : "?", srv.ping );
 
 		if ( ImGui::Selectable( row.c_str(), g_selectedServer == i ) ) {
 			if ( g_selectedServer == i ) {
@@ -204,6 +204,10 @@ void Com_DrawDhewm3ServerBrowser() {
 	ImGui::Columns( 1 );
 
 	ImGui::End();
+
+	if ( !g_serverBrowserOpen ) {
+		D3::ImGuiHooks::CloseWindow( D3::ImGuiHooks::D3_ImGuiWin_ServerBrowser );
+	}
 }
 
 void Com_OpenCloseDhewm3ServerBrowser( bool open ) {
