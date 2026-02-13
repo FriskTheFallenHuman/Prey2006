@@ -260,17 +260,27 @@ void Script_NamedEvent( idWindow *window, idList<idGSWinVar> *src ) {
 
 	int p = idStr::FindText( parm->c_str(), "::" );
 	if ( p <= 0 ) {
-		window->RunNamedEvent( parm->c_str() );
+		if ( window && window->GetGui() ) {
+			window->GetGui()->HandleNamedEvent( parm->c_str() );
+		} else if ( window ) {
+			window->RunNamedEvent( parm->c_str() );
+		}
 	} else {
-		idStr windowName = parmStr.Mid( 0, p );
-		idStr varName = parmStr.Mid( p + 2, parmStr.Length() - ( p + 2 ) );
+		idStr windowName = parmStr.Mid(0, p);
+		idStr varName = parmStr.Mid(p + 2, parmStr.Length() - (p + 2));
 
-		//k drawWin_t *childWindow = window->FindChildByName(windowName);
-		drawWin_t *childWindow = window->GetGui()->GetDesktop()->FindChildByName( windowName );
+		drawWin_t *childWindow = NULL;
+		if ( window && window->GetGui() && window->GetGui()->GetDesktop() ) {
+			childWindow = window->GetGui()->GetDesktop()->FindChildByName( windowName );
+		} else if ( window ) {
+			childWindow = window->FindChildByName( windowName );
+		}
 		if ( childWindow ) {
 			childWindow->win->RunNamedEvent( varName );
 		} else {
-			common->Warning( "GUI: %s: unknown window %s for named event %s\n", window->GetName(), windowName.c_str(), varName.c_str() );
+			if ( cvarSystem->GetCVarBool( "gui_debug" ) ) {
+				common->Warning( "GUI: %s: unknown window %s for named event %s\n", window->GetName(), windowName.c_str(), varName.c_str() );
+			}
 		}
 	}
 }
