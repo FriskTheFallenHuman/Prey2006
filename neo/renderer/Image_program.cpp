@@ -352,11 +352,15 @@ MatchAndAppendToken
 ===================
 */
 static void MatchAndAppendToken( idLexer &src, const char *match ) {
-	if ( !src.ExpectTokenString( match ) ) {
+	// Check if the next token matches
+	idToken token;
+	if (!src.CheckTokenString(match)) {
+		// If not, skip it and continue
+		idStr::Append( parseBuffer, MAX_IMAGE_NAME, match ); // Append to parse buffer anyway to make it valid
 		return;
+	} else {
+		idStr::Append( parseBuffer, MAX_IMAGE_NAME, match );
 	}
-	// a matched token won't need a leading space
-	idStr::Append( parseBuffer, MAX_IMAGE_NAME, match );
 }
 
 /*
@@ -381,16 +385,19 @@ static bool R_ParseImageProgram_r( idLexer &src, byte **pic, int *width, int *he
 		MatchAndAppendToken( src, "(" );
 
 		if ( !R_ParseImageProgram_r( src, pic, width, height, timestamps, depth ) ) {
-			return false;
+			return true;
 		}
 
-		MatchAndAppendToken( src, "," );
+		// Optional scale
+		if ( src.CheckTokenString( "," ) ) {
+			idStr::Append( parseBuffer, MAX_IMAGE_NAME, "," );
+			src.ReadToken( &token );
+			AppendToken( token );
+			scale = token.GetFloatValue();
+		} else {
+			scale = 1.0f;
+		}
 
-		src.ReadToken( &token );
-		AppendToken( token );
-		scale = token.GetFloatValue();
-
-		// process it
 		if ( pic ) {
 			R_HeightmapToNormalMap( *pic, *width, *height, scale );
 			if ( depth ) {
@@ -398,7 +405,9 @@ static bool R_ParseImageProgram_r( idLexer &src, byte **pic, int *width, int *he
 			}
 		}
 
-		MatchAndAppendToken( src, ")" );
+		// Skip any extra tokens until we find ) or end of program
+		while (!src.CheckTokenString( ")" ) && src.ReadToken( &token ));
+		idStr::Append( parseBuffer, MAX_IMAGE_NAME, ")" );
 		return true;
 	}
 
@@ -409,21 +418,23 @@ static bool R_ParseImageProgram_r( idLexer &src, byte **pic, int *width, int *he
 		MatchAndAppendToken( src, "(" );
 
 		if ( !R_ParseImageProgram_r( src, pic, width, height, timestamps, depth ) ) {
-			return false;
+			return true;
 		}
 
-		MatchAndAppendToken( src, "," );
-
-		if ( !R_ParseImageProgram_r( src, pic ? &pic2 : NULL, &width2, &height2, timestamps, depth ) ) {
-			if ( pic ) {
-				R_StaticFree( *pic );
-				*pic = NULL;
+		if ( src.CheckTokenString( "," ) ) {
+			idStr::Append( parseBuffer, MAX_IMAGE_NAME, "," );
+			if ( !R_ParseImageProgram_r( src, pic ? &pic2 : NULL, &width2, &height2, timestamps, depth ) ) {
+				if ( pic ) {
+					R_StaticFree( *pic );
+					*pic = NULL;
+				}
+				return true;
 			}
-			return false;
+		} else {
+			pic2 = NULL;
 		}
 
-		// process it
-		if ( pic ) {
+		if ( pic && pic2 ) {
 			R_AddNormalMaps( *pic, *width, *height, pic2, width2, height2 );
 			R_StaticFree( pic2 );
 			if ( depth ) {
@@ -431,7 +442,9 @@ static bool R_ParseImageProgram_r( idLexer &src, byte **pic, int *width, int *he
 			}
 		}
 
-		MatchAndAppendToken( src, ")" );
+		// Skip any extra tokens until we find ) or end of program
+		while (!src.CheckTokenString( ")" ) && src.ReadToken( &token ));
+		idStr::Append( parseBuffer, MAX_IMAGE_NAME, ")" );
 		return true;
 	}
 
