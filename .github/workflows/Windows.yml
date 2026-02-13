@@ -36,19 +36,12 @@ jobs:
       - name: Get latest CMake if possible
         uses: lukka/get-cmake@latest
 
-      - name: Restore from cache and setup vcpkg executable and data files.
-        uses: lukka/run-vcpkg@v11
-        with:
-          vcpkgDirectory: "${{github.workspace}}/vcpkg"
-          runVcpkgInstall: true
-          vcpkgJsonGlob: "**/neo/vcpkg.json"
-
-      - name: Run CMake+vcpkg+Ninja to build the engine.
+      - name: Run CMake+Ninja to build the engine.
         uses: lukka/run-cmake@v10
         with:
           cmakeListsTxtPath: "${{github.workspace}}/neo/CMakeLists.txt"
-          configurePreset: "ninja-multi-vcpkg"
-          buildPreset: "ninja-vcpkg-release"
+          configurePreset: "ninja-multi"
+          buildPreset: "ninja-release"
 
       - name: Create binary.conf
         shell: pwsh
