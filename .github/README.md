@@ -11,7 +11,7 @@
 > We are currently looking for contributors that wants to contribute into this project.
 
 > [!CAUTION]
-> This project is far from being completed, currently there is a lot of visual problems with guis and the game ports.
+> This project is far from being completed, currently there is a lot of visual problems with guis and the game portals.
 > 
 > The binaries are provide as-is, support may be limited due to my lack of knowledge,
 > This project was create due to the insatisfaction of some source ports barely fixing or improving
