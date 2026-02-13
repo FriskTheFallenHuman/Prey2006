@@ -103,12 +103,17 @@ endif()
 list(APPEND sys_thirdparty_libs ${OPENAL_LIBRARY})
 
 if (SDL3)
-	# 1. Look for a SDL3 package,
-	# 2. look for the SDL3-shared component, and
-	# 3. fail if the shared component cannot be found.
-	find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3-shared)
+	if(UNIX)
+		# 1. Look for a SDL3 package,
+		# 2. look for the SDL3-shared component, and
+		# 3. fail if the shared component cannot be found.
+		find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3-shared)
+		set(SDLX_LIBRARY SDL3::SDL3)
+	else()
+		add_subdirectory(libs/SDL3)
+		set(SDLX_LIBRARY SDL3::SDL3)
+	endif()
 	# TODO: include dirs?
-	set(SDLX_LIBRARY SDL3::SDL3)
 	add_definitions(-DD3_SDL3=1)
 else()
 	if(UNIX)
@@ -1344,6 +1349,8 @@ include_directories(${CMAKE_SOURCE_DIR})
 add_library(idlib STATIC ${src_idlib})
 if(SDL3)
 	target_link_libraries(idlib SDL3::Headers) # so it can use SDL_Endian.h
+elseif(MSVC AND NOT SDL3)
+	target_link_libraries(idlib ${SDLX_LIBRARY})
 endif()
 if(D3_COMPILER_IS_GCC_OR_CLANG AND NOT MINGW)
 	set_target_properties(idlib PROPERTIES COMPILE_FLAGS "-fPIC")
@@ -1356,9 +1363,6 @@ endif()
 
 target_include_directories(idlib PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
 target_precompile_headers(idlib PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
-if (WIN32)
-target_link_libraries(idlib PRIVATE ${SDLX_LIBRARY})
-endif()
 
 set_target_properties(idlib PROPERTIES FOLDER "libs")
 
@@ -1427,13 +1431,23 @@ if(ENGINE)
 				ARCHIVE DESTINATION "${libdir}"
 		)
 	else()
-		add_custom_command(
-		  TARGET ${ENGINE_BINARY} POST_BUILD COMMAND
-		  ${CMAKE_COMMAND} -E copy_if_different 
-			$<TARGET_FILE:SDL2>
-			$<TARGET_FILE_DIR:${ENGINE_BINARY}>
-		  VERBATIM 
-		)
+		if (SDL3)
+			add_custom_command(
+			  TARGET ${ENGINE_BINARY} POST_BUILD COMMAND
+			  ${CMAKE_COMMAND} -E copy_if_different 
+				$<TARGET_FILE:SDL3::SDL3>
+				$<TARGET_FILE_DIR:${ENGINE_BINARY}>
+			  VERBATIM 
+			)
+		else()
+			add_custom_command(
+			  TARGET ${ENGINE_BINARY} POST_BUILD COMMAND
+			  ${CMAKE_COMMAND} -E copy_if_different 
+				$<TARGET_FILE:SDL2>
+				$<TARGET_FILE_DIR:${ENGINE_BINARY}>
+			  VERBATIM 
+			)
+		endif()
 		add_custom_command(
 		  TARGET ${ENGINE_BINARY} POST_BUILD COMMAND
 		  ${CMAKE_COMMAND} -E copy_if_different 
@@ -1500,13 +1514,23 @@ if(DEDICATED)
 				ARCHIVE DESTINATION "${libdir}"
 		)
 	else()
-		add_custom_command(
-		  TARGET ${DEDICATED_BINARY} POST_BUILD COMMAND
-		  ${CMAKE_COMMAND} -E copy_if_different 
-			$<TARGET_FILE:SDL2>
-			$<TARGET_FILE_DIR:${DEDICATED_BINARY}>
-		  VERBATIM 
-		)
+		if (SDL3)
+			add_custom_command(
+			  TARGET ${DEDICATED_BINARY} POST_BUILD COMMAND
+			  ${CMAKE_COMMAND} -E copy_if_different 
+				$<TARGET_FILE:SDL3::SDL3>
+				$<TARGET_FILE_DIR:${DEDICATED_BINARY}>
+			  VERBATIM 
+			)
+		else()
+			add_custom_command(
+			  TARGET ${DEDICATED_BINARY} POST_BUILD COMMAND
+			  ${CMAKE_COMMAND} -E copy_if_different 
+				$<TARGET_FILE:SDL2>
+				$<TARGET_FILE_DIR:${DEDICATED_BINARY}>
+			  VERBATIM 
+			)
+		endif()
 		add_custom_command(
 		  TARGET ${DEDICATED_BINARY} POST_BUILD COMMAND
 		  ${CMAKE_COMMAND} -E copy_if_different 
