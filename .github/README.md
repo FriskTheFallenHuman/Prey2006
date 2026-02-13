@@ -3,7 +3,7 @@
 > [!TIP]
 > We have a discord server, feel free to join the discussion, the invite is [here.](https://discord.gg/tJDGrk6w4H)
 
->[!CAUTION]
+> [!CAUTION]
 > You **MUST** source your own legal copy of Prey (2006) to run this, i wouldn't provide any links for this.
 > i've been getting a lot of questions about but, please keep in mind this is just a source port.
 
@@ -11,9 +11,8 @@
 > We are currently looking for contributors that wants to contribute into this project.
 
 > [!CAUTION]
-> This project is far from being completed, currently there is ~~2~~ a lot of major blockers that prevent this from being playable.
-> 1. Multiplayer may work but has not been tested
->
+> This project is far from being completed, currently there is a lot of visual problems with guis and the game portals.
+> 
 > The binaries are provide as-is, support may be limited due to my lack of knowledge,
 > This project was create due to the insatisfaction of some source ports barely fixing or improving
 > and or sacrificing features for other platforms.
@@ -35,7 +34,7 @@ This runs in a semi vanilla Dhewm3 v1.5.4 fork that specifically removes imgui, 
 
 For Windows:
 
-- Clone the repo with submodules
+- Clone the repo.
 - Install [Visual Studio 2019](https://visualstudio.microsoft.com/vs/older-downloads/) or Visual [Visual Studio 2022](https://visualstudio.microsoft.com/vs/)
 - [CMake](https://cmake.org/download/)
 - Run either **cmake_msvc2019.cmd** or **cmake_msvc2022.cmd**

@@ -124,11 +124,11 @@ extern idCVar in_grabKeyboard;
 
 static void SetSDLIcon()
 {
-	#include "doom_icon.h" // contains the struct d3_icon
+	#include "prey_icon.h" // contains the struct prey_icon
 
-	SDL_Surface* icon = SDL_CreateSurfaceFrom(d3_icon.width, d3_icon.height,
-	                                          SDL_PIXELFORMAT_RGBA32, (void*)d3_icon.pixel_data,
-	                                          d3_icon.bytes_per_pixel*d3_icon.width);
+	SDL_Surface* icon = SDL_CreateSurfaceFrom(prey_icon.width, prey_icon.height,
+	                                          SDL_PIXELFORMAT_RGBA32, (void*)prey_icon.pixel_data,
+	                                          prey_icon.bytes_per_pixel* prey_icon.width);
 
 	SDL_SetWindowIcon(window, icon);
 	SDL_DestroySurface(icon);

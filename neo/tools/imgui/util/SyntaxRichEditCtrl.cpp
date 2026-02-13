@@ -1084,13 +1084,13 @@ bool SyntaxRichEditCtrl::OnKeyDown()
 		}
 	}
 
-	if( ImGui::IsKeyChordPressed( ImGuiKey_ModCtrl | ImGuiKey_G ) )
+	if( ImGui::IsKeyChordPressed( ImGuiMod_Ctrl | ImGuiKey_G ) )
 	{
 		OnEditGoToLine();
 
 		return true;
 	}
-	else if( ImGui::IsKeyChordPressed( ImGuiKey_ModCtrl | ImGuiKey_F ) )
+	else if( ImGui::IsKeyChordPressed( ImGuiMod_Ctrl | ImGuiKey_F ) )
 	{
 		idStr selText = scriptEdit->GetSelectedText().c_str();
 
@@ -1098,7 +1098,7 @@ bool SyntaxRichEditCtrl::OnKeyDown()
 
 		return true;
 	}
-	else if( ImGui::IsKeyChordPressed( ImGuiKey_ModCtrl | ImGuiKey_H ) )
+	else if( ImGui::IsKeyChordPressed( ImGuiMod_Ctrl | ImGuiKey_H ) )
 	{
 		idStr selText = scriptEdit->GetSelectedText().c_str();
 

@@ -2765,7 +2765,12 @@ void idCommonLocal::SetMachineSpec( void ) {
 	}
 }
 
-static unsigned int AsyncTimer(unsigned int interval, void *) {
+#if SDL_VERSION_ATLEAST(3, 0, 0)
+static Uint32 AsyncTimer(void *userdata, SDL_TimerID timerID, Uint32 interval)
+#else
+static unsigned int AsyncTimer(unsigned int interval, void *)
+#endif
+{
 	common->Async();
 	Sys_TriggerEvent(TRIGGER_EVENT_ONE);
 

@@ -1,16 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 set(APPSTREAM_APP_ID "io.github.friskthefallenhuman.prey2006")
 
-# Only use vcpkg in win32 since there we dont have package managers
-if(WIN32)
-	# Check if vcpkg exist in our source folder
-	if (EXISTS "${CMAKE_SOURCE_DIR}/../vcpkg/scripts/buildsystems/vcpkg.cmake")
-		set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/../vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
-	else()
-		message(FATAL_ERROR "Vcpkg wasn't not found, aborting, make sure to git clone this with all submodules!")
-	endif()
-endif()
-
 # Enable folder groups
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER  "")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -90,20 +80,30 @@ set(sys_thirdparty_libs)
 
 # libs
 if(UNIX)
-find_package(PkgConfig REQUIRED)
+	find_package(PkgConfig REQUIRED)
 endif()
 
-find_package(OpenAL REQUIRED)
-include_directories(${OPENAL_INCLUDE_DIR})
+if(UNIX)
+	find_package(OpenAL REQUIRED)
+	include_directories(${OPENAL_INCLUDE_DIR})
+else()
+	add_subdirectory(libs/OpenalSoft)
+	set(OPENAL_LIBRARY OpenAL::OpenAL)
+endif()
 list(APPEND sys_thirdparty_libs ${OPENAL_LIBRARY})
 
 if (SDL3)
-	# 1. Look for a SDL3 package,
-	# 2. look for the SDL3-shared component, and
-	# 3. fail if the shared component cannot be found.
-	find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3-shared)
+	if(UNIX)
+		# 1. Look for a SDL3 package,
+		# 2. look for the SDL3-shared component, and
+		# 3. fail if the shared component cannot be found.
+		find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3-shared)
+		set(SDLX_LIBRARY SDL3::SDL3)
+	else()
+		add_subdirectory(libs/SDL3)
+		set(SDLX_LIBRARY SDL3::SDL3)
+	endif()
 	# TODO: include dirs?
-	set(SDLX_LIBRARY SDL3::SDL3)
 	add_definitions(-DD3_SDL3=1)
 else()
 	if(UNIX)
@@ -112,19 +112,25 @@ else()
 		link_directories(${SDL2_LIBRARY_DIRS})
 		set(SDLX_LIBRARY ${SDL2_LIBRARIES})
 	else()
-		find_package(SDL2 REQUIRED)
-		include_directories(${SDL2_INCLUDE_DIR})
+		add_subdirectory(libs/SDL2)
 		set(SDLX_LIBRARY SDL2::SDL2)
 	endif()
 endif()
 list(APPEND sys_thirdparty_libs ${SDLX_LIBRARY})
 
 if (FREETYPE)
-	find_package(Freetype REQUIRED)
-	find_path(FREETYPE_INCLUDE_DIR "fttypes.h" PATH_SUFFIXES "freetype")
-	include_directories(${FREETYPE_INCLUDE_DIR})
+	if(UNIX)
+		find_package(Freetype REQUIRED)
+		find_path(FREETYPE_INCLUDE_DIR "fttypes.h" PATH_SUFFIXES "freetype")
+		include_directories(${FREETYPE_INCLUDE_DIR})
+		set(FT_LIBRARY Freetype::Freetype)
+	else()
+		add_subdirectory(libs/Freetype)
+		include_directories(libs/Freetype/include)
+		set(FT_LIBRARY freetype)
+	endif()
 	add_definitions(-DID_BUILD_FREETYPE)
-	list(APPEND sys_thirdparty_libs Freetype::Freetype)
+	list(APPEND sys_thirdparty_libs ${FT_LIBRARY})
 endif()
 
 if(IMGUI)
@@ -147,9 +153,18 @@ if(CURL_FOUND)
 	message(STATUS "libcurl found and enabled")
 	list(APPEND sys_thirdparty_libs ${CURL_LIBRARY})
 else()
-	message(WARNING "libcurl not found, server downloads won't be available (apart from that the engine will work)")
-	set(ID_ENABLE_CURL OFF)
-	set(CURL_LIBRARY "")
+	# Can't use WIN32 has we use MingW for compiling
+	if (MSVC)
+		set(ID_ENABLE_CURL ON)
+		add_subdirectory(libs/Curl)
+		message(STATUS "libcurl locally found and enabled")
+		set(CURL_LIBRARY CURL::libcurl_static)
+		list(APPEND sys_thirdparty_libs ${CURL_LIBRARY})
+	else()
+		message(WARNING "libcurl not found, server downloads won't be available (apart from that the engine will work)")
+		set(ID_ENABLE_CURL OFF)
+		set(CURL_LIBRARY "")
+	endif()
 endif()
 
 # MayaImport currently doesn't work in Linux/Mac
@@ -906,6 +921,8 @@ if(IMGUI)
 		PROPERTIES
 		SKIP_PRECOMPILE_HEADERS ON
 	)
+
+	include_directories("libs/imgui")
 else()
 	set(src_imgui
 		sys/sys_imgui.h
@@ -1331,6 +1348,8 @@ include_directories(${CMAKE_SOURCE_DIR})
 add_library(idlib STATIC ${src_idlib})
 if(SDL3)
 	target_link_libraries(idlib SDL3::Headers) # so it can use SDL_Endian.h
+elseif(MSVC AND NOT SDL3)
+	target_link_libraries(idlib ${SDLX_LIBRARY})
 endif()
 if(D3_COMPILER_IS_GCC_OR_CLANG AND NOT MINGW)
 	set_target_properties(idlib PROPERTIES COMPILE_FLAGS "-fPIC")
@@ -1410,6 +1429,31 @@ if(ENGINE)
 				LIBRARY DESTINATION "${libdir}"
 				ARCHIVE DESTINATION "${libdir}"
 		)
+	else()
+		if (SDL3)
+			add_custom_command(
+			  TARGET ${ENGINE_BINARY} POST_BUILD COMMAND
+			  ${CMAKE_COMMAND} -E copy_if_different 
+				$<TARGET_FILE:SDL3::SDL3>
+				$<TARGET_FILE_DIR:${ENGINE_BINARY}>
+			  VERBATIM 
+			)
+		else()
+			add_custom_command(
+			  TARGET ${ENGINE_BINARY} POST_BUILD COMMAND
+			  ${CMAKE_COMMAND} -E copy_if_different 
+				$<TARGET_FILE:SDL2>
+				$<TARGET_FILE_DIR:${ENGINE_BINARY}>
+			  VERBATIM 
+			)
+		endif()
+		add_custom_command(
+		  TARGET ${ENGINE_BINARY} POST_BUILD COMMAND
+		  ${CMAKE_COMMAND} -E copy_if_different 
+			$<TARGET_FILE:OpenAL>
+			$<TARGET_FILE_DIR:${ENGINE_BINARY}>
+		  VERBATIM 
+		)
 	endif()
 endif()
 
@@ -1452,7 +1496,9 @@ if(DEDICATED)
 	set_target_properties(${DEDICATED_BINARY} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
 	set_target_properties(${DEDICATED_BINARY} PROPERTIES FOLDER "exes")
 
-	list(REMOVE_ITEM sys_thirdparty_libs ${OPENAL_LIBRARY})
+	if(NOT WIN32)
+		list(REMOVE_ITEM sys_thirdparty_libs ${OPENAL_LIBRARY})
+	endif()
 
 	target_link_libraries(${DEDICATED_BINARY}
 		idlib
@@ -1465,6 +1511,31 @@ if(DEDICATED)
 				RUNTIME DESTINATION "${bindir}"
 				LIBRARY DESTINATION "${libdir}"
 				ARCHIVE DESTINATION "${libdir}"
+		)
+	else()
+		if (SDL3)
+			add_custom_command(
+			  TARGET ${DEDICATED_BINARY} POST_BUILD COMMAND
+			  ${CMAKE_COMMAND} -E copy_if_different 
+				$<TARGET_FILE:SDL3::SDL3>
+				$<TARGET_FILE_DIR:${DEDICATED_BINARY}>
+			  VERBATIM 
+			)
+		else()
+			add_custom_command(
+			  TARGET ${DEDICATED_BINARY} POST_BUILD COMMAND
+			  ${CMAKE_COMMAND} -E copy_if_different 
+				$<TARGET_FILE:SDL2>
+				$<TARGET_FILE_DIR:${DEDICATED_BINARY}>
+			  VERBATIM 
+			)
+		endif()
+		add_custom_command(
+		  TARGET ${DEDICATED_BINARY} POST_BUILD COMMAND
+		  ${CMAKE_COMMAND} -E copy_if_different 
+			$<TARGET_FILE:OpenAL>
+			$<TARGET_FILE_DIR:${DEDICATED_BINARY}>
+		  VERBATIM 
 		)
 	endif()
 endif()
@@ -1560,7 +1631,11 @@ if(BASE AND NOT HARDLINK_GAME)
 	target_include_directories(Game${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/game" "${CMAKE_SOURCE_DIR}/Prey")
 	set_target_properties(Game${cpu} PROPERTIES LINK_FLAGS "${ldflags}")
 	set_target_properties(Game${cpu} PROPERTIES INSTALL_NAME_DIR "@executable_path")
-	target_link_libraries(Game${cpu} idlib)
+	if (WIN32)
+		target_link_libraries(Game${cpu} PRIVATE idlib ${SDLX_LIBRARY})
+	else()
+		target_link_libraries(Game${cpu} idlib)
+	endif()
 	set_target_properties(Game${cpu} PROPERTIES OUTPUT_NAME "game${cpu}" RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER}/base LIBRARY_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER}/base)
 	set_target_properties(Game${cpu} PROPERTIES FOLDER "dlls")
 

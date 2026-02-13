@@ -1,0 +1,796 @@
+/* This is free and unencumbered software released into the public domain.
+ *
+ * Anyone is free to copy, modify, publish, use, compile, sell, or
+ * distribute this software, either in source code form or as a compiled
+ * binary, for any purpose, commercial or non-commercial, and by any
+ * means.
+ *
+ * In jurisdictions that recognize copyright laws, the author or authors
+ * of this software dedicate any and all copyright interest in the
+ * software to the public domain. We make this dedication for the benefit
+ * of the public at large and to the detriment of our heirs and
+ * successors. We intend this dedication to be an overt act of
+ * relinquishment in perpetuity of all present and future rights to this
+ * software under copyright law.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * For more information, please refer to <http://unlicense.org/>
+ */
+
+/* This file is auto-generated! Please do not edit it manually.
+ * Instead, modify the API in al.xml and regenerate using genheaders.py.
+ *
+ * Last regenerated: 2025-10-13 19:40:01.687690+00:00
+ */
+
+module;
+
+#include <array>
+#include <cfloat>
+
+#ifndef AL_API
+ #if defined(AL_LIBTYPE_STATIC)
+  #define AL_API
+ #elif defined(_WIN32)
+  #define AL_API __declspec(dllimport)
+ #else
+  #define AL_API extern
+ #endif
+#endif
+
+#ifdef _WIN32
+ #define AL_APIENTRY __cdecl
+#else
+ #define AL_APIENTRY
+#endif
+
+#ifndef AL_DISABLE_NOEXCEPT
+ #define AL_API_NOEXCEPT noexcept
+#else
+ #define AL_API_NOEXCEPT
+#endif
+
+#define ENUMDCL inline constexpr auto
+
+export module openal.efx;
+
+import openal.std;
+
+export extern "C" {
+/*** ALC_EXT_EFX ***/
+inline constexpr auto ALC_EXT_EFX_NAME =         std::to_array<const ALCchar>("ALC_EXT_EFX");
+
+ENUMDCL ALC_EFX_MAJOR_VERSION =                  0x20001;
+ENUMDCL ALC_EFX_MINOR_VERSION =                  0x20002;
+ENUMDCL ALC_MAX_AUXILIARY_SENDS =                0x20003;
+
+/* Listener properties */
+ENUMDCL AL_METERS_PER_UNIT =                     0x20004;
+
+/* Source properties. */
+ENUMDCL AL_DIRECT_FILTER =                       0x20005;
+ENUMDCL AL_AUXILIARY_SEND_FILTER =               0x20006;
+ENUMDCL AL_AIR_ABSORPTION_FACTOR =               0x20007;
+ENUMDCL AL_ROOM_ROLLOFF_FACTOR =                 0x20008;
+ENUMDCL AL_CONE_OUTER_GAINHF =                   0x20009;
+ENUMDCL AL_DIRECT_FILTER_GAINHF_AUTO =           0x2000A;
+ENUMDCL AL_AUXILIARY_SEND_FILTER_GAIN_AUTO =     0x2000B;
+ENUMDCL AL_AUXILIARY_SEND_FILTER_GAINHF_AUTO =   0x2000C;
+
+/* Reverb effect parameters */
+ENUMDCL AL_REVERB_DENSITY =                      0x0001;
+ENUMDCL AL_REVERB_DIFFUSION =                    0x0002;
+ENUMDCL AL_REVERB_GAIN =                         0x0003;
+ENUMDCL AL_REVERB_GAINHF =                       0x0004;
+ENUMDCL AL_REVERB_DECAY_TIME =                   0x0005;
+ENUMDCL AL_REVERB_DECAY_HFRATIO =                0x0006;
+ENUMDCL AL_REVERB_REFLECTIONS_GAIN =             0x0007;
+ENUMDCL AL_REVERB_REFLECTIONS_DELAY =            0x0008;
+ENUMDCL AL_REVERB_LATE_REVERB_GAIN =             0x0009;
+ENUMDCL AL_REVERB_LATE_REVERB_DELAY =            0x000A;
+ENUMDCL AL_REVERB_AIR_ABSORPTION_GAINHF =        0x000B;
+ENUMDCL AL_REVERB_ROOM_ROLLOFF_FACTOR =          0x000C;
+ENUMDCL AL_REVERB_DECAY_HFLIMIT =                0x000D;
+
+/* EAX Reverb effect parameters */
+ENUMDCL AL_EAXREVERB_DENSITY =                   0x0001;
+ENUMDCL AL_EAXREVERB_DIFFUSION =                 0x0002;
+ENUMDCL AL_EAXREVERB_GAIN =                      0x0003;
+ENUMDCL AL_EAXREVERB_GAINHF =                    0x0004;
+ENUMDCL AL_EAXREVERB_GAINLF =                    0x0005;
+ENUMDCL AL_EAXREVERB_DECAY_TIME =                0x0006;
+ENUMDCL AL_EAXREVERB_DECAY_HFRATIO =             0x0007;
+ENUMDCL AL_EAXREVERB_DECAY_LFRATIO =             0x0008;
+ENUMDCL AL_EAXREVERB_REFLECTIONS_GAIN =          0x0009;
+ENUMDCL AL_EAXREVERB_REFLECTIONS_DELAY =         0x000A;
+ENUMDCL AL_EAXREVERB_REFLECTIONS_PAN =           0x000B;
+ENUMDCL AL_EAXREVERB_LATE_REVERB_GAIN =          0x000C;
+ENUMDCL AL_EAXREVERB_LATE_REVERB_DELAY =         0x000D;
+ENUMDCL AL_EAXREVERB_LATE_REVERB_PAN =           0x000E;
+ENUMDCL AL_EAXREVERB_ECHO_TIME =                 0x000F;
+ENUMDCL AL_EAXREVERB_ECHO_DEPTH =                0x0010;
+ENUMDCL AL_EAXREVERB_MODULATION_TIME =           0x0011;
+ENUMDCL AL_EAXREVERB_MODULATION_DEPTH =          0x0012;
+ENUMDCL AL_EAXREVERB_AIR_ABSORPTION_GAINHF =     0x0013;
+ENUMDCL AL_EAXREVERB_HFREFERENCE =               0x0014;
+ENUMDCL AL_EAXREVERB_LFREFERENCE =               0x0015;
+ENUMDCL AL_EAXREVERB_ROOM_ROLLOFF_FACTOR =       0x0016;
+ENUMDCL AL_EAXREVERB_DECAY_HFLIMIT =             0x0017;
+
+/* Chorus effect parameters */
+ENUMDCL AL_CHORUS_WAVEFORM =                     0x0001;
+ENUMDCL AL_CHORUS_PHASE =                        0x0002;
+ENUMDCL AL_CHORUS_RATE =                         0x0003;
+ENUMDCL AL_CHORUS_DEPTH =                        0x0004;
+ENUMDCL AL_CHORUS_FEEDBACK =                     0x0005;
+ENUMDCL AL_CHORUS_DELAY =                        0x0006;
+
+/* Distortion effect parameters */
+ENUMDCL AL_DISTORTION_EDGE =                     0x0001;
+ENUMDCL AL_DISTORTION_GAIN =                     0x0002;
+ENUMDCL AL_DISTORTION_LOWPASS_CUTOFF =           0x0003;
+ENUMDCL AL_DISTORTION_EQCENTER =                 0x0004;
+ENUMDCL AL_DISTORTION_EQBANDWIDTH =              0x0005;
+
+/* Echo effect parameters */
+ENUMDCL AL_ECHO_DELAY =                          0x0001;
+ENUMDCL AL_ECHO_LRDELAY =                        0x0002;
+ENUMDCL AL_ECHO_DAMPING =                        0x0003;
+ENUMDCL AL_ECHO_FEEDBACK =                       0x0004;
+ENUMDCL AL_ECHO_SPREAD =                         0x0005;
+
+/* Flanger effect parameters */
+ENUMDCL AL_FLANGER_WAVEFORM =                    0x0001;
+ENUMDCL AL_FLANGER_PHASE =                       0x0002;
+ENUMDCL AL_FLANGER_RATE =                        0x0003;
+ENUMDCL AL_FLANGER_DEPTH =                       0x0004;
+ENUMDCL AL_FLANGER_FEEDBACK =                    0x0005;
+ENUMDCL AL_FLANGER_DELAY =                       0x0006;
+
+/* Frequency shifter effect parameters */
+ENUMDCL AL_FREQUENCY_SHIFTER_FREQUENCY =         0x0001;
+ENUMDCL AL_FREQUENCY_SHIFTER_LEFT_DIRECTION =    0x0002;
+ENUMDCL AL_FREQUENCY_SHIFTER_RIGHT_DIRECTION =   0x0003;
+
+/* Vocal morpher effect parameters */
+ENUMDCL AL_VOCAL_MORPHER_PHONEMEA =              0x0001;
+ENUMDCL AL_VOCAL_MORPHER_PHONEMEA_COARSE_TUNING = 0x0002;
+ENUMDCL AL_VOCAL_MORPHER_PHONEMEB =              0x0003;
+ENUMDCL AL_VOCAL_MORPHER_PHONEMEB_COARSE_TUNING = 0x0004;
+ENUMDCL AL_VOCAL_MORPHER_WAVEFORM =              0x0005;
+ENUMDCL AL_VOCAL_MORPHER_RATE =                  0x0006;
+
+/* Pitchshifter effect parameters */
+ENUMDCL AL_PITCH_SHIFTER_COARSE_TUNE =           0x0001;
+ENUMDCL AL_PITCH_SHIFTER_FINE_TUNE =             0x0002;
+
+/* Ringmodulator effect parameters */
+ENUMDCL AL_RING_MODULATOR_FREQUENCY =            0x0001;
+ENUMDCL AL_RING_MODULATOR_HIGHPASS_CUTOFF =      0x0002;
+ENUMDCL AL_RING_MODULATOR_WAVEFORM =             0x0003;
+
+/* Autowah effect parameters */
+ENUMDCL AL_AUTOWAH_ATTACK_TIME =                 0x0001;
+ENUMDCL AL_AUTOWAH_RELEASE_TIME =                0x0002;
+ENUMDCL AL_AUTOWAH_RESONANCE =                   0x0003;
+ENUMDCL AL_AUTOWAH_PEAK_GAIN =                   0x0004;
+
+/* Compressor effect parameters */
+ENUMDCL AL_COMPRESSOR_ONOFF =                    0x0001;
+
+/* Equalizer effect parameters */
+ENUMDCL AL_EQUALIZER_LOW_GAIN =                  0x0001;
+ENUMDCL AL_EQUALIZER_LOW_CUTOFF =                0x0002;
+ENUMDCL AL_EQUALIZER_MID1_GAIN =                 0x0003;
+ENUMDCL AL_EQUALIZER_MID1_CENTER =               0x0004;
+ENUMDCL AL_EQUALIZER_MID1_WIDTH =                0x0005;
+ENUMDCL AL_EQUALIZER_MID2_GAIN =                 0x0006;
+ENUMDCL AL_EQUALIZER_MID2_CENTER =               0x0007;
+ENUMDCL AL_EQUALIZER_MID2_WIDTH =                0x0008;
+ENUMDCL AL_EQUALIZER_HIGH_GAIN =                 0x0009;
+ENUMDCL AL_EQUALIZER_HIGH_CUTOFF =               0x000A;
+
+/* Effect type */
+ENUMDCL AL_EFFECT_FIRST_PARAMETER =              0x0000;
+ENUMDCL AL_EFFECT_LAST_PARAMETER =               0x8000;
+ENUMDCL AL_EFFECT_TYPE =                         0x8001;
+
+/* Effect types, used with the AL_EFFECT_TYPE property */
+ENUMDCL AL_EFFECT_NULL =                         0x0000;
+ENUMDCL AL_EFFECT_REVERB =                       0x0001;
+ENUMDCL AL_EFFECT_CHORUS =                       0x0002;
+ENUMDCL AL_EFFECT_DISTORTION =                   0x0003;
+ENUMDCL AL_EFFECT_ECHO =                         0x0004;
+ENUMDCL AL_EFFECT_FLANGER =                      0x0005;
+ENUMDCL AL_EFFECT_FREQUENCY_SHIFTER =            0x0006;
+ENUMDCL AL_EFFECT_VOCAL_MORPHER =                0x0007;
+ENUMDCL AL_EFFECT_PITCH_SHIFTER =                0x0008;
+ENUMDCL AL_EFFECT_RING_MODULATOR =               0x0009;
+ENUMDCL AL_EFFECT_AUTOWAH =                      0x000A;
+ENUMDCL AL_EFFECT_COMPRESSOR =                   0x000B;
+ENUMDCL AL_EFFECT_EQUALIZER =                    0x000C;
+ENUMDCL AL_EFFECT_EAXREVERB =                    0x8000;
+
+/* Auxiliary Effect Slot properties. */
+ENUMDCL AL_EFFECTSLOT_EFFECT =                   0x0001;
+ENUMDCL AL_EFFECTSLOT_GAIN =                     0x0002;
+ENUMDCL AL_EFFECTSLOT_AUXILIARY_SEND_AUTO =      0x0003;
+
+/* NULL Auxiliary Slot ID to disable a source send. */
+ENUMDCL AL_EFFECTSLOT_NULL =                     0x0000;
+
+/* Lowpass filter parameters */
+ENUMDCL AL_LOWPASS_GAIN =                        0x0001;
+ENUMDCL AL_LOWPASS_GAINHF =                      0x0002;
+
+/* Highpass filter parameters */
+ENUMDCL AL_HIGHPASS_GAIN =                       0x0001;
+ENUMDCL AL_HIGHPASS_GAINLF =                     0x0002;
+
+/* Bandpass filter parameters */
+ENUMDCL AL_BANDPASS_GAIN =                       0x0001;
+ENUMDCL AL_BANDPASS_GAINLF =                     0x0002;
+ENUMDCL AL_BANDPASS_GAINHF =                     0x0003;
+
+/* Filter type */
+ENUMDCL AL_FILTER_FIRST_PARAMETER =              0x0000;
+ENUMDCL AL_FILTER_LAST_PARAMETER =               0x8000;
+ENUMDCL AL_FILTER_TYPE =                         0x8001;
+
+/* Filter types, used with the AL_FILTER_TYPE property */
+ENUMDCL AL_FILTER_NULL =                         0x0000;
+ENUMDCL AL_FILTER_LOWPASS =                      0x0001;
+ENUMDCL AL_FILTER_HIGHPASS =                     0x0002;
+ENUMDCL AL_FILTER_BANDPASS =                     0x0003;
+
+/* Lowpass filter */
+ENUMDCL AL_LOWPASS_MIN_GAIN =                    0.0f;
+ENUMDCL AL_LOWPASS_MAX_GAIN =                    1.0f;
+ENUMDCL AL_LOWPASS_DEFAULT_GAIN =                1.0f;
+
+ENUMDCL AL_LOWPASS_MIN_GAINHF =                  0.0f;
+ENUMDCL AL_LOWPASS_MAX_GAINHF =                  1.0f;
+ENUMDCL AL_LOWPASS_DEFAULT_GAINHF =              1.0f;
+
+/* Highpass filter */
+ENUMDCL AL_HIGHPASS_MIN_GAIN =                   0.0f;
+ENUMDCL AL_HIGHPASS_MAX_GAIN =                   1.0f;
+ENUMDCL AL_HIGHPASS_DEFAULT_GAIN =               1.0f;
+
+ENUMDCL AL_HIGHPASS_MIN_GAINLF =                 0.0f;
+ENUMDCL AL_HIGHPASS_MAX_GAINLF =                 1.0f;
+ENUMDCL AL_HIGHPASS_DEFAULT_GAINLF =             1.0f;
+
+/* Bandpass filter */
+ENUMDCL AL_BANDPASS_MIN_GAIN =                   0.0f;
+ENUMDCL AL_BANDPASS_MAX_GAIN =                   1.0f;
+ENUMDCL AL_BANDPASS_DEFAULT_GAIN =               1.0f;
+
+ENUMDCL AL_BANDPASS_MIN_GAINHF =                 0.0f;
+ENUMDCL AL_BANDPASS_MAX_GAINHF =                 1.0f;
+ENUMDCL AL_BANDPASS_DEFAULT_GAINHF =             1.0f;
+
+ENUMDCL AL_BANDPASS_MIN_GAINLF =                 0.0f;
+ENUMDCL AL_BANDPASS_MAX_GAINLF =                 1.0f;
+ENUMDCL AL_BANDPASS_DEFAULT_GAINLF =             1.0f;
+
+/* Standard reverb effect */
+ENUMDCL AL_REVERB_MIN_DENSITY =                  0.0f;
+ENUMDCL AL_REVERB_MAX_DENSITY =                  1.0f;
+ENUMDCL AL_REVERB_DEFAULT_DENSITY =              1.0f;
+
+ENUMDCL AL_REVERB_MIN_DIFFUSION =                0.0f;
+ENUMDCL AL_REVERB_MAX_DIFFUSION =                1.0f;
+ENUMDCL AL_REVERB_DEFAULT_DIFFUSION =            1.0f;
+
+ENUMDCL AL_REVERB_MIN_GAIN =                     0.0f;
+ENUMDCL AL_REVERB_MAX_GAIN =                     1.0f;
+ENUMDCL AL_REVERB_DEFAULT_GAIN =                 0.32f;
+
+ENUMDCL AL_REVERB_MIN_GAINHF =                   0.0f;
+ENUMDCL AL_REVERB_MAX_GAINHF =                   1.0f;
+ENUMDCL AL_REVERB_DEFAULT_GAINHF =               0.89f;
+
+ENUMDCL AL_REVERB_MIN_DECAY_TIME =               0.1f;
+ENUMDCL AL_REVERB_MAX_DECAY_TIME =               20.0f;
+ENUMDCL AL_REVERB_DEFAULT_DECAY_TIME =           1.49f;
+
+ENUMDCL AL_REVERB_MIN_DECAY_HFRATIO =            0.1f;
+ENUMDCL AL_REVERB_MAX_DECAY_HFRATIO =            2.0f;
+ENUMDCL AL_REVERB_DEFAULT_DECAY_HFRATIO =        0.83f;
+
+ENUMDCL AL_REVERB_MIN_REFLECTIONS_GAIN =         0.0f;
+ENUMDCL AL_REVERB_MAX_REFLECTIONS_GAIN =         3.16f;
+ENUMDCL AL_REVERB_DEFAULT_REFLECTIONS_GAIN =     0.05f;
+
+ENUMDCL AL_REVERB_MIN_REFLECTIONS_DELAY =        0.0f;
+ENUMDCL AL_REVERB_MAX_REFLECTIONS_DELAY =        0.3f;
+ENUMDCL AL_REVERB_DEFAULT_REFLECTIONS_DELAY =    0.007f;
+
+ENUMDCL AL_REVERB_MIN_LATE_REVERB_GAIN =         0.0f;
+ENUMDCL AL_REVERB_MAX_LATE_REVERB_GAIN =         10.0f;
+ENUMDCL AL_REVERB_DEFAULT_LATE_REVERB_GAIN =     1.26f;
+
+ENUMDCL AL_REVERB_MIN_LATE_REVERB_DELAY =        0.0f;
+ENUMDCL AL_REVERB_MAX_LATE_REVERB_DELAY =        0.1f;
+ENUMDCL AL_REVERB_DEFAULT_LATE_REVERB_DELAY =    0.011f;
+
+ENUMDCL AL_REVERB_MIN_AIR_ABSORPTION_GAINHF =    0.892f;
+ENUMDCL AL_REVERB_MAX_AIR_ABSORPTION_GAINHF =    1.0f;
+ENUMDCL AL_REVERB_DEFAULT_AIR_ABSORPTION_GAINHF = 0.994f;
+
+ENUMDCL AL_REVERB_MIN_ROOM_ROLLOFF_FACTOR =      0.0f;
+ENUMDCL AL_REVERB_MAX_ROOM_ROLLOFF_FACTOR =      10.0f;
+ENUMDCL AL_REVERB_DEFAULT_ROOM_ROLLOFF_FACTOR =  0.0f;
+
+ENUMDCL AL_REVERB_MIN_DECAY_HFLIMIT =            AL_FALSE;
+ENUMDCL AL_REVERB_MAX_DECAY_HFLIMIT =            AL_TRUE;
+ENUMDCL AL_REVERB_DEFAULT_DECAY_HFLIMIT =        AL_TRUE;
+
+/* EAX reverb effect */
+ENUMDCL AL_EAXREVERB_MIN_DENSITY =               0.0f;
+ENUMDCL AL_EAXREVERB_MAX_DENSITY =               1.0f;
+ENUMDCL AL_EAXREVERB_DEFAULT_DENSITY =           1.0f;
+
+ENUMDCL AL_EAXREVERB_MIN_DIFFUSION =             0.0f;
+ENUMDCL AL_EAXREVERB_MAX_DIFFUSION =             1.0f;
+ENUMDCL AL_EAXREVERB_DEFAULT_DIFFUSION =         1.0f;
+
+ENUMDCL AL_EAXREVERB_MIN_GAIN =                  0.0f;
+ENUMDCL AL_EAXREVERB_MAX_GAIN =                  1.0f;
+ENUMDCL AL_EAXREVERB_DEFAULT_GAIN =              0.32f;
+
+ENUMDCL AL_EAXREVERB_MIN_GAINHF =                0.0f;
+ENUMDCL AL_EAXREVERB_MAX_GAINHF =                1.0f;
+ENUMDCL AL_EAXREVERB_DEFAULT_GAINHF =            0.89f;
+
+ENUMDCL AL_EAXREVERB_MIN_GAINLF =                0.0f;
+ENUMDCL AL_EAXREVERB_MAX_GAINLF =                1.0f;
+ENUMDCL AL_EAXREVERB_DEFAULT_GAINLF =            1.0f;
+
+ENUMDCL AL_EAXREVERB_MIN_DECAY_TIME =            0.1f;
+ENUMDCL AL_EAXREVERB_MAX_DECAY_TIME =            20.0f;
+ENUMDCL AL_EAXREVERB_DEFAULT_DECAY_TIME =        1.49f;
+
+ENUMDCL AL_EAXREVERB_MIN_DECAY_HFRATIO =         0.1f;
+ENUMDCL AL_EAXREVERB_MAX_DECAY_HFRATIO =         2.0f;
+ENUMDCL AL_EAXREVERB_DEFAULT_DECAY_HFRATIO =     0.83f;
+
+ENUMDCL AL_EAXREVERB_MIN_DECAY_LFRATIO =         0.1f;
+ENUMDCL AL_EAXREVERB_MAX_DECAY_LFRATIO =         2.0f;
+ENUMDCL AL_EAXREVERB_DEFAULT_DECAY_LFRATIO =     1.0f;
+
+ENUMDCL AL_EAXREVERB_MIN_REFLECTIONS_GAIN =      0.0f;
+ENUMDCL AL_EAXREVERB_MAX_REFLECTIONS_GAIN =      3.16f;
+ENUMDCL AL_EAXREVERB_DEFAULT_REFLECTIONS_GAIN =  0.05f;
+
+ENUMDCL AL_EAXREVERB_MIN_REFLECTIONS_DELAY =     0.0f;
+ENUMDCL AL_EAXREVERB_MAX_REFLECTIONS_DELAY =     0.3f;
+ENUMDCL AL_EAXREVERB_DEFAULT_REFLECTIONS_DELAY = 0.007f;
+
+ENUMDCL AL_EAXREVERB_DEFAULT_REFLECTIONS_PAN_XYZ = 0.0f;
+
+ENUMDCL AL_EAXREVERB_MIN_LATE_REVERB_GAIN =      0.0f;
+ENUMDCL AL_EAXREVERB_MAX_LATE_REVERB_GAIN =      10.0f;
+ENUMDCL AL_EAXREVERB_DEFAULT_LATE_REVERB_GAIN =  1.26f;
+
+ENUMDCL AL_EAXREVERB_MIN_LATE_REVERB_DELAY =     0.0f;
+ENUMDCL AL_EAXREVERB_MAX_LATE_REVERB_DELAY =     0.1f;
+ENUMDCL AL_EAXREVERB_DEFAULT_LATE_REVERB_DELAY = 0.011f;
+
+ENUMDCL AL_EAXREVERB_DEFAULT_LATE_REVERB_PAN_XYZ = 0.0f;
+
+ENUMDCL AL_EAXREVERB_MIN_ECHO_TIME =             0.075f;
+ENUMDCL AL_EAXREVERB_MAX_ECHO_TIME =             0.25f;
+ENUMDCL AL_EAXREVERB_DEFAULT_ECHO_TIME =         0.25f;
+
+ENUMDCL AL_EAXREVERB_MIN_ECHO_DEPTH =            0.0f;
+ENUMDCL AL_EAXREVERB_MAX_ECHO_DEPTH =            1.0f;
+ENUMDCL AL_EAXREVERB_DEFAULT_ECHO_DEPTH =        0.0f;
+
+ENUMDCL AL_EAXREVERB_MIN_MODULATION_TIME =       0.04f;
+ENUMDCL AL_EAXREVERB_MAX_MODULATION_TIME =       4.0f;
+ENUMDCL AL_EAXREVERB_DEFAULT_MODULATION_TIME =   0.25f;
+
+ENUMDCL AL_EAXREVERB_MIN_MODULATION_DEPTH =      0.0f;
+ENUMDCL AL_EAXREVERB_MAX_MODULATION_DEPTH =      1.0f;
+ENUMDCL AL_EAXREVERB_DEFAULT_MODULATION_DEPTH =  0.0f;
+
+ENUMDCL AL_EAXREVERB_MIN_AIR_ABSORPTION_GAINHF = 0.892f;
+ENUMDCL AL_EAXREVERB_MAX_AIR_ABSORPTION_GAINHF = 1.0f;
+ENUMDCL AL_EAXREVERB_DEFAULT_AIR_ABSORPTION_GAINHF = 0.994f;
+
+ENUMDCL AL_EAXREVERB_MIN_HFREFERENCE =           1000.0f;
+ENUMDCL AL_EAXREVERB_MAX_HFREFERENCE =           20000.0f;
+ENUMDCL AL_EAXREVERB_DEFAULT_HFREFERENCE =       5000.0f;
+
+ENUMDCL AL_EAXREVERB_MIN_LFREFERENCE =           20.0f;
+ENUMDCL AL_EAXREVERB_MAX_LFREFERENCE =           1000.0f;
+ENUMDCL AL_EAXREVERB_DEFAULT_LFREFERENCE =       250.0f;
+
+ENUMDCL AL_EAXREVERB_MIN_ROOM_ROLLOFF_FACTOR =   0.0f;
+ENUMDCL AL_EAXREVERB_MAX_ROOM_ROLLOFF_FACTOR =   10.0f;
+ENUMDCL AL_EAXREVERB_DEFAULT_ROOM_ROLLOFF_FACTOR = 0.0f;
+
+ENUMDCL AL_EAXREVERB_MIN_DECAY_HFLIMIT =         AL_FALSE;
+ENUMDCL AL_EAXREVERB_MAX_DECAY_HFLIMIT =         AL_TRUE;
+ENUMDCL AL_EAXREVERB_DEFAULT_DECAY_HFLIMIT =     AL_TRUE;
+
+ENUMDCL AL_CHORUS_WAVEFORM_SINUSOID =            0;
+ENUMDCL AL_CHORUS_WAVEFORM_TRIANGLE =            1;
+
+ENUMDCL AL_CHORUS_MIN_WAVEFORM =                 0;
+ENUMDCL AL_CHORUS_MAX_WAVEFORM =                 1;
+ENUMDCL AL_CHORUS_DEFAULT_WAVEFORM =             1;
+
+ENUMDCL AL_CHORUS_MIN_PHASE =                    -180;
+ENUMDCL AL_CHORUS_MAX_PHASE =                    180;
+ENUMDCL AL_CHORUS_DEFAULT_PHASE =                90;
+
+ENUMDCL AL_CHORUS_MIN_RATE =                     0.0f;
+ENUMDCL AL_CHORUS_MAX_RATE =                     10.0f;
+ENUMDCL AL_CHORUS_DEFAULT_RATE =                 1.1f;
+
+ENUMDCL AL_CHORUS_MIN_DEPTH =                    0.0f;
+ENUMDCL AL_CHORUS_MAX_DEPTH =                    1.0f;
+ENUMDCL AL_CHORUS_DEFAULT_DEPTH =                0.1f;
+
+ENUMDCL AL_CHORUS_MIN_FEEDBACK =                 -1.0f;
+ENUMDCL AL_CHORUS_MAX_FEEDBACK =                 1.0f;
+ENUMDCL AL_CHORUS_DEFAULT_FEEDBACK =             0.25f;
+
+ENUMDCL AL_CHORUS_MIN_DELAY =                    0.0f;
+ENUMDCL AL_CHORUS_MAX_DELAY =                    0.016f;
+ENUMDCL AL_CHORUS_DEFAULT_DELAY =                0.016f;
+
+/* Distortion effect */
+ENUMDCL AL_DISTORTION_MIN_EDGE =                 0.0f;
+ENUMDCL AL_DISTORTION_MAX_EDGE =                 1.0f;
+ENUMDCL AL_DISTORTION_DEFAULT_EDGE =             0.2f;
+
+ENUMDCL AL_DISTORTION_MIN_GAIN =                 0.01f;
+ENUMDCL AL_DISTORTION_MAX_GAIN =                 1.0f;
+ENUMDCL AL_DISTORTION_DEFAULT_GAIN =             0.05f;
+
+ENUMDCL AL_DISTORTION_MIN_LOWPASS_CUTOFF =       80.0f;
+ENUMDCL AL_DISTORTION_MAX_LOWPASS_CUTOFF =       24000.0f;
+ENUMDCL AL_DISTORTION_DEFAULT_LOWPASS_CUTOFF =   8000.0f;
+
+ENUMDCL AL_DISTORTION_MIN_EQCENTER =             80.0f;
+ENUMDCL AL_DISTORTION_MAX_EQCENTER =             24000.0f;
+ENUMDCL AL_DISTORTION_DEFAULT_EQCENTER =         3600.0f;
+
+ENUMDCL AL_DISTORTION_MIN_EQBANDWIDTH =          80.0f;
+ENUMDCL AL_DISTORTION_MAX_EQBANDWIDTH =          24000.0f;
+ENUMDCL AL_DISTORTION_DEFAULT_EQBANDWIDTH =      3600.0f;
+
+/* Echo effect */
+ENUMDCL AL_ECHO_MIN_DELAY =                      0.0f;
+ENUMDCL AL_ECHO_MAX_DELAY =                      0.207f;
+ENUMDCL AL_ECHO_DEFAULT_DELAY =                  0.1f;
+
+ENUMDCL AL_ECHO_MIN_LRDELAY =                    0.0f;
+ENUMDCL AL_ECHO_MAX_LRDELAY =                    0.404f;
+ENUMDCL AL_ECHO_DEFAULT_LRDELAY =                0.1f;
+
+ENUMDCL AL_ECHO_MIN_DAMPING =                    0.0f;
+ENUMDCL AL_ECHO_MAX_DAMPING =                    0.99f;
+ENUMDCL AL_ECHO_DEFAULT_DAMPING =                0.5f;
+
+ENUMDCL AL_ECHO_MIN_FEEDBACK =                   0.0f;
+ENUMDCL AL_ECHO_MAX_FEEDBACK =                   1.0f;
+ENUMDCL AL_ECHO_DEFAULT_FEEDBACK =               0.5f;
+
+ENUMDCL AL_ECHO_MIN_SPREAD =                     -1.0f;
+ENUMDCL AL_ECHO_MAX_SPREAD =                     1.0f;
+ENUMDCL AL_ECHO_DEFAULT_SPREAD =                 -1.0f;
+
+/* Flanger effect */
+ENUMDCL AL_FLANGER_WAVEFORM_SINUSOID =           0;
+ENUMDCL AL_FLANGER_WAVEFORM_TRIANGLE =           1;
+
+ENUMDCL AL_FLANGER_MIN_WAVEFORM =                0;
+ENUMDCL AL_FLANGER_MAX_WAVEFORM =                1;
+ENUMDCL AL_FLANGER_DEFAULT_WAVEFORM =            1;
+
+ENUMDCL AL_FLANGER_MIN_PHASE =                   -180;
+ENUMDCL AL_FLANGER_MAX_PHASE =                   180;
+ENUMDCL AL_FLANGER_DEFAULT_PHASE =               0;
+
+ENUMDCL AL_FLANGER_MIN_RATE =                    0.0f;
+ENUMDCL AL_FLANGER_MAX_RATE =                    10.0f;
+ENUMDCL AL_FLANGER_DEFAULT_RATE =                0.27f;
+
+ENUMDCL AL_FLANGER_MIN_DEPTH =                   0.0f;
+ENUMDCL AL_FLANGER_MAX_DEPTH =                   1.0f;
+ENUMDCL AL_FLANGER_DEFAULT_DEPTH =               1.0f;
+
+ENUMDCL AL_FLANGER_MIN_FEEDBACK =                -1.0f;
+ENUMDCL AL_FLANGER_MAX_FEEDBACK =                1.0f;
+ENUMDCL AL_FLANGER_DEFAULT_FEEDBACK =            -0.5f;
+
+ENUMDCL AL_FLANGER_MIN_DELAY =                   0.0f;
+ENUMDCL AL_FLANGER_MAX_DELAY =                   0.004f;
+ENUMDCL AL_FLANGER_DEFAULT_DELAY =               0.002f;
+
+/* Frequency shifter effect */
+ENUMDCL AL_FREQUENCY_SHIFTER_MIN_FREQUENCY =     0.0f;
+ENUMDCL AL_FREQUENCY_SHIFTER_MAX_FREQUENCY =     24000.0f;
+ENUMDCL AL_FREQUENCY_SHIFTER_DEFAULT_FREQUENCY = 0.0f;
+
+ENUMDCL AL_FREQUENCY_SHIFTER_MIN_LEFT_DIRECTION = 0;
+ENUMDCL AL_FREQUENCY_SHIFTER_MAX_LEFT_DIRECTION = 2;
+ENUMDCL AL_FREQUENCY_SHIFTER_DEFAULT_LEFT_DIRECTION = 0;
+
+ENUMDCL AL_FREQUENCY_SHIFTER_DIRECTION_DOWN =    0;
+ENUMDCL AL_FREQUENCY_SHIFTER_DIRECTION_UP =      1;
+ENUMDCL AL_FREQUENCY_SHIFTER_DIRECTION_OFF =     2;
+
+ENUMDCL AL_FREQUENCY_SHIFTER_MIN_RIGHT_DIRECTION = 0;
+ENUMDCL AL_FREQUENCY_SHIFTER_MAX_RIGHT_DIRECTION = 2;
+ENUMDCL AL_FREQUENCY_SHIFTER_DEFAULT_RIGHT_DIRECTION = 0;
+
+/* Vocal morpher effect */
+ENUMDCL AL_VOCAL_MORPHER_MIN_PHONEMEA =          0;
+ENUMDCL AL_VOCAL_MORPHER_MAX_PHONEMEA =          29;
+ENUMDCL AL_VOCAL_MORPHER_DEFAULT_PHONEMEA =      0;
+
+ENUMDCL AL_VOCAL_MORPHER_MIN_PHONEMEA_COARSE_TUNING = -24;
+ENUMDCL AL_VOCAL_MORPHER_MAX_PHONEMEA_COARSE_TUNING = 24;
+ENUMDCL AL_VOCAL_MORPHER_DEFAULT_PHONEMEA_COARSE_TUNING = 0;
+
+ENUMDCL AL_VOCAL_MORPHER_MIN_PHONEMEB =          0;
+ENUMDCL AL_VOCAL_MORPHER_MAX_PHONEMEB =          29;
+ENUMDCL AL_VOCAL_MORPHER_DEFAULT_PHONEMEB =      10;
+
+ENUMDCL AL_VOCAL_MORPHER_MIN_PHONEMEB_COARSE_TUNING = -24;
+ENUMDCL AL_VOCAL_MORPHER_MAX_PHONEMEB_COARSE_TUNING = 24;
+ENUMDCL AL_VOCAL_MORPHER_DEFAULT_PHONEMEB_COARSE_TUNING = 0;
+
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_A =             0;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_E =             1;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_I =             2;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_O =             3;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_U =             4;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_AA =            5;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_AE =            6;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_AH =            7;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_AO =            8;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_EH =            9;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_ER =            10;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_IH =            11;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_IY =            12;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_UH =            13;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_UW =            14;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_B =             15;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_D =             16;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_F =             17;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_G =             18;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_J =             19;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_K =             20;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_L =             21;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_M =             22;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_N =             23;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_P =             24;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_R =             25;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_S =             26;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_T =             27;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_V =             28;
+ENUMDCL AL_VOCAL_MORPHER_PHONEME_Z =             29;
+
+ENUMDCL AL_VOCAL_MORPHER_WAVEFORM_SINUSOID =     0;
+ENUMDCL AL_VOCAL_MORPHER_WAVEFORM_TRIANGLE =     1;
+ENUMDCL AL_VOCAL_MORPHER_WAVEFORM_SAWTOOTH =     2;
+
+ENUMDCL AL_VOCAL_MORPHER_MIN_WAVEFORM =          0;
+ENUMDCL AL_VOCAL_MORPHER_MAX_WAVEFORM =          2;
+ENUMDCL AL_VOCAL_MORPHER_DEFAULT_WAVEFORM =      0;
+
+ENUMDCL AL_VOCAL_MORPHER_MIN_RATE =              0.0f;
+ENUMDCL AL_VOCAL_MORPHER_MAX_RATE =              10.0f;
+ENUMDCL AL_VOCAL_MORPHER_DEFAULT_RATE =          1.41f;
+
+/* Pitch shifter effect */
+ENUMDCL AL_PITCH_SHIFTER_MIN_COARSE_TUNE =       -12;
+ENUMDCL AL_PITCH_SHIFTER_MAX_COARSE_TUNE =       12;
+ENUMDCL AL_PITCH_SHIFTER_DEFAULT_COARSE_TUNE =   12;
+
+ENUMDCL AL_PITCH_SHIFTER_MIN_FINE_TUNE =         -50;
+ENUMDCL AL_PITCH_SHIFTER_MAX_FINE_TUNE =         50;
+ENUMDCL AL_PITCH_SHIFTER_DEFAULT_FINE_TUNE =     0;
+
+/* Ring modulator effect */
+ENUMDCL AL_RING_MODULATOR_MIN_FREQUENCY =        0.0f;
+ENUMDCL AL_RING_MODULATOR_MAX_FREQUENCY =        8000.0f;
+ENUMDCL AL_RING_MODULATOR_DEFAULT_FREQUENCY =    440.0f;
+
+ENUMDCL AL_RING_MODULATOR_MIN_HIGHPASS_CUTOFF =  0.0f;
+ENUMDCL AL_RING_MODULATOR_MAX_HIGHPASS_CUTOFF =  24000.0f;
+ENUMDCL AL_RING_MODULATOR_DEFAULT_HIGHPASS_CUTOFF = 800.0f;
+
+ENUMDCL AL_RING_MODULATOR_SINUSOID =             0;
+ENUMDCL AL_RING_MODULATOR_SAWTOOTH =             1;
+ENUMDCL AL_RING_MODULATOR_SQUARE =               2;
+
+ENUMDCL AL_RING_MODULATOR_MIN_WAVEFORM =         0;
+ENUMDCL AL_RING_MODULATOR_MAX_WAVEFORM =         2;
+ENUMDCL AL_RING_MODULATOR_DEFAULT_WAVEFORM =     0;
+
+/* Autowah effect */
+ENUMDCL AL_AUTOWAH_MIN_ATTACK_TIME =             0.0001f;
+ENUMDCL AL_AUTOWAH_MAX_ATTACK_TIME =             1.0f;
+ENUMDCL AL_AUTOWAH_DEFAULT_ATTACK_TIME =         0.06f;
+
+ENUMDCL AL_AUTOWAH_MIN_RELEASE_TIME =            0.0001f;
+ENUMDCL AL_AUTOWAH_MAX_RELEASE_TIME =            1.0f;
+ENUMDCL AL_AUTOWAH_DEFAULT_RELEASE_TIME =        0.06f;
+
+ENUMDCL AL_AUTOWAH_MIN_RESONANCE =               2.0f;
+ENUMDCL AL_AUTOWAH_MAX_RESONANCE =               1000.0f;
+ENUMDCL AL_AUTOWAH_DEFAULT_RESONANCE =           1000.0f;
+
+ENUMDCL AL_AUTOWAH_MIN_PEAK_GAIN =               0.00003f;
+ENUMDCL AL_AUTOWAH_MAX_PEAK_GAIN =               31621.0f;
+ENUMDCL AL_AUTOWAH_DEFAULT_PEAK_GAIN =           11.22f;
+
+/* Compressor effect */
+ENUMDCL AL_COMPRESSOR_MIN_ONOFF =                0;
+ENUMDCL AL_COMPRESSOR_MAX_ONOFF =                1;
+ENUMDCL AL_COMPRESSOR_DEFAULT_ONOFF =            1;
+
+/* Equalizer effect */
+ENUMDCL AL_EQUALIZER_MIN_LOW_GAIN =              0.126f;
+ENUMDCL AL_EQUALIZER_MAX_LOW_GAIN =              7.943f;
+ENUMDCL AL_EQUALIZER_DEFAULT_LOW_GAIN =          1.0f;
+
+ENUMDCL AL_EQUALIZER_MIN_LOW_CUTOFF =            50.0f;
+ENUMDCL AL_EQUALIZER_MAX_LOW_CUTOFF =            800.0f;
+ENUMDCL AL_EQUALIZER_DEFAULT_LOW_CUTOFF =        200.0f;
+
+ENUMDCL AL_EQUALIZER_MIN_MID1_GAIN =             0.126f;
+ENUMDCL AL_EQUALIZER_MAX_MID1_GAIN =             7.943f;
+ENUMDCL AL_EQUALIZER_DEFAULT_MID1_GAIN =         1.0f;
+
+ENUMDCL AL_EQUALIZER_MIN_MID1_CENTER =           200.0f;
+ENUMDCL AL_EQUALIZER_MAX_MID1_CENTER =           3000.0f;
+ENUMDCL AL_EQUALIZER_DEFAULT_MID1_CENTER =       500.0f;
+
+ENUMDCL AL_EQUALIZER_MIN_MID1_WIDTH =            0.01f;
+ENUMDCL AL_EQUALIZER_MAX_MID1_WIDTH =            1.0f;
+ENUMDCL AL_EQUALIZER_DEFAULT_MID1_WIDTH =        1.0f;
+
+ENUMDCL AL_EQUALIZER_MIN_MID2_GAIN =             0.126f;
+ENUMDCL AL_EQUALIZER_MAX_MID2_GAIN =             7.943f;
+ENUMDCL AL_EQUALIZER_DEFAULT_MID2_GAIN =         1.0f;
+
+ENUMDCL AL_EQUALIZER_MIN_MID2_CENTER =           1000.0f;
+ENUMDCL AL_EQUALIZER_MAX_MID2_CENTER =           8000.0f;
+ENUMDCL AL_EQUALIZER_DEFAULT_MID2_CENTER =       3000.0f;
+
+ENUMDCL AL_EQUALIZER_MIN_MID2_WIDTH =            0.01f;
+ENUMDCL AL_EQUALIZER_MAX_MID2_WIDTH =            1.0f;
+ENUMDCL AL_EQUALIZER_DEFAULT_MID2_WIDTH =        1.0f;
+
+ENUMDCL AL_EQUALIZER_MIN_HIGH_GAIN =             0.126f;
+ENUMDCL AL_EQUALIZER_MAX_HIGH_GAIN =             7.943f;
+ENUMDCL AL_EQUALIZER_DEFAULT_HIGH_GAIN =         1.0f;
+
+ENUMDCL AL_EQUALIZER_MIN_HIGH_CUTOFF =           4000.0f;
+ENUMDCL AL_EQUALIZER_MAX_HIGH_CUTOFF =           16000.0f;
+ENUMDCL AL_EQUALIZER_DEFAULT_HIGH_CUTOFF =       6000.0f;
+
+/* Source parameter value ranges and defaults. */
+ENUMDCL AL_MIN_AIR_ABSORPTION_FACTOR =           0.0f;
+ENUMDCL AL_MAX_AIR_ABSORPTION_FACTOR =           10.0f;
+ENUMDCL AL_DEFAULT_AIR_ABSORPTION_FACTOR =       0.0f;
+
+ENUMDCL AL_MIN_ROOM_ROLLOFF_FACTOR =             0.0f;
+ENUMDCL AL_MAX_ROOM_ROLLOFF_FACTOR =             10.0f;
+ENUMDCL AL_DEFAULT_ROOM_ROLLOFF_FACTOR =         0.0f;
+
+ENUMDCL AL_MIN_CONE_OUTER_GAINHF =               0.0f;
+ENUMDCL AL_MAX_CONE_OUTER_GAINHF =               1.0f;
+ENUMDCL AL_DEFAULT_CONE_OUTER_GAINHF =           1.0f;
+
+ENUMDCL AL_MIN_DIRECT_FILTER_GAINHF_AUTO =       AL_FALSE;
+ENUMDCL AL_MAX_DIRECT_FILTER_GAINHF_AUTO =       AL_TRUE;
+ENUMDCL AL_DEFAULT_DIRECT_FILTER_GAINHF_AUTO =   AL_TRUE;
+
+ENUMDCL AL_MIN_AUXILIARY_SEND_FILTER_GAIN_AUTO = AL_FALSE;
+ENUMDCL AL_MAX_AUXILIARY_SEND_FILTER_GAIN_AUTO = AL_TRUE;
+ENUMDCL AL_DEFAULT_AUXILIARY_SEND_FILTER_GAIN_AUTO = AL_TRUE;
+
+ENUMDCL AL_MIN_AUXILIARY_SEND_FILTER_GAINHF_AUTO = AL_FALSE;
+ENUMDCL AL_MAX_AUXILIARY_SEND_FILTER_GAINHF_AUTO = AL_TRUE;
+ENUMDCL AL_DEFAULT_AUXILIARY_SEND_FILTER_GAINHF_AUTO = AL_TRUE;
+
+/* Listener parameter value ranges and defaults */
+ENUMDCL AL_MIN_METERS_PER_UNIT =                 FLT_MIN;
+ENUMDCL AL_MAX_METERS_PER_UNIT =                 FLT_MAX;
+ENUMDCL AL_DEFAULT_METERS_PER_UNIT =             1.0f;
+using LPALGENEFFECTS = auto (AL_APIENTRY*)(ALsizei n, ALuint *effects) AL_API_NOEXCEPT -> void;
+using LPALDELETEEFFECTS = auto (AL_APIENTRY*)(ALsizei n, const ALuint *effects) AL_API_NOEXCEPT -> void;
+using LPALISEFFECT = auto (AL_APIENTRY*)(ALuint effect) AL_API_NOEXCEPT -> ALboolean;
+using LPALEFFECTI = auto (AL_APIENTRY*)(ALuint effect, ALenum param, ALint iValue) AL_API_NOEXCEPT -> void;
+using LPALEFFECTIV = auto (AL_APIENTRY*)(ALuint effect, ALenum param, const ALint *piValues) AL_API_NOEXCEPT -> void;
+using LPALEFFECTF = auto (AL_APIENTRY*)(ALuint effect, ALenum param, ALfloat flValue) AL_API_NOEXCEPT -> void;
+using LPALEFFECTFV = auto (AL_APIENTRY*)(ALuint effect, ALenum param, const ALfloat *pflValues) AL_API_NOEXCEPT -> void;
+using LPALGETEFFECTI = auto (AL_APIENTRY*)(ALuint effect, ALenum param, ALint *iValue) AL_API_NOEXCEPT -> void;
+using LPALGETEFFECTIV = auto (AL_APIENTRY*)(ALuint effect, ALenum param, ALint *piValues) AL_API_NOEXCEPT -> void;
+using LPALGETEFFECTF = auto (AL_APIENTRY*)(ALuint effect, ALenum param, ALfloat *flValue) AL_API_NOEXCEPT -> void;
+using LPALGETEFFECTFV = auto (AL_APIENTRY*)(ALuint effect, ALenum param, ALfloat *pflValues) AL_API_NOEXCEPT -> void;
+
+using LPALGENFILTERS = auto (AL_APIENTRY*)(ALsizei n, ALuint *filters) AL_API_NOEXCEPT -> void;
+using LPALDELETEFILTERS = auto (AL_APIENTRY*)(ALsizei n, const ALuint *filters) AL_API_NOEXCEPT -> void;
+using LPALISFILTER = auto (AL_APIENTRY*)(ALuint filter) AL_API_NOEXCEPT -> ALboolean;
+using LPALFILTERI = auto (AL_APIENTRY*)(ALuint filter, ALenum param, ALint iValue) AL_API_NOEXCEPT -> void;
+using LPALFILTERIV = auto (AL_APIENTRY*)(ALuint filter, ALenum param, const ALint *piValues) AL_API_NOEXCEPT -> void;
+using LPALFILTERF = auto (AL_APIENTRY*)(ALuint filter, ALenum param, ALfloat flValue) AL_API_NOEXCEPT -> void;
+using LPALFILTERFV = auto (AL_APIENTRY*)(ALuint filter, ALenum param, const ALfloat *pflValues) AL_API_NOEXCEPT -> void;
+using LPALGETFILTERI = auto (AL_APIENTRY*)(ALuint filter, ALenum param, ALint *iValue) AL_API_NOEXCEPT -> void;
+using LPALGETFILTERIV = auto (AL_APIENTRY*)(ALuint filter, ALenum param, ALint *piValues) AL_API_NOEXCEPT -> void;
+using LPALGETFILTERF = auto (AL_APIENTRY*)(ALuint filter, ALenum param, ALfloat *flValue) AL_API_NOEXCEPT -> void;
+using LPALGETFILTERFV = auto (AL_APIENTRY*)(ALuint filter, ALenum param, ALfloat *pflValues) AL_API_NOEXCEPT -> void;
+
+using LPALGENAUXILIARYEFFECTSLOTS = auto (AL_APIENTRY*)(ALsizei n, ALuint *effectslots) AL_API_NOEXCEPT -> void;
+using LPALDELETEAUXILIARYEFFECTSLOTS = auto (AL_APIENTRY*)(ALsizei n, const ALuint *effectslots) AL_API_NOEXCEPT -> void;
+using LPALISAUXILIARYEFFECTSLOT = auto (AL_APIENTRY*)(ALuint effectslot) AL_API_NOEXCEPT -> ALboolean;
+using LPALAUXILIARYEFFECTSLOTI = auto (AL_APIENTRY*)(ALuint effectslot, ALenum param, ALint iValue) AL_API_NOEXCEPT -> void;
+using LPALAUXILIARYEFFECTSLOTIV = auto (AL_APIENTRY*)(ALuint effectslot, ALenum param, const ALint *piValues) AL_API_NOEXCEPT -> void;
+using LPALAUXILIARYEFFECTSLOTF = auto (AL_APIENTRY*)(ALuint effectslot, ALenum param, ALfloat flValue) AL_API_NOEXCEPT -> void;
+using LPALAUXILIARYEFFECTSLOTFV = auto (AL_APIENTRY*)(ALuint effectslot, ALenum param, const ALfloat *pflValues) AL_API_NOEXCEPT -> void;
+using LPALGETAUXILIARYEFFECTSLOTI = auto (AL_APIENTRY*)(ALuint effectslot, ALenum param, ALint *iValue) AL_API_NOEXCEPT -> void;
+using LPALGETAUXILIARYEFFECTSLOTIV = auto (AL_APIENTRY*)(ALuint effectslot, ALenum param, ALint *piValues) AL_API_NOEXCEPT -> void;
+using LPALGETAUXILIARYEFFECTSLOTF = auto (AL_APIENTRY*)(ALuint effectslot, ALenum param, ALfloat *flValue) AL_API_NOEXCEPT -> void;
+using LPALGETAUXILIARYEFFECTSLOTFV = auto (AL_APIENTRY*)(ALuint effectslot, ALenum param, ALfloat *pflValues) AL_API_NOEXCEPT -> void;
+
+#ifdef AL_ALEXT_PROTOTYPES
+/* Effect object function types. */
+AL_API auto AL_APIENTRY alGenEffects(ALsizei n, ALuint *effects) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alDeleteEffects(ALsizei n, const ALuint *effects) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alIsEffect(ALuint effect) AL_API_NOEXCEPT -> ALboolean;
+AL_API auto AL_APIENTRY alEffecti(ALuint effect, ALenum param, ALint iValue) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alEffectiv(ALuint effect, ALenum param, const ALint *piValues) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alEffectf(ALuint effect, ALenum param, ALfloat flValue) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alEffectfv(ALuint effect, ALenum param, const ALfloat *pflValues) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alGetEffecti(ALuint effect, ALenum param, ALint *iValue) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alGetEffectiv(ALuint effect, ALenum param, ALint *piValues) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alGetEffectf(ALuint effect, ALenum param, ALfloat *flValue) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alGetEffectfv(ALuint effect, ALenum param, ALfloat *pflValues) AL_API_NOEXCEPT -> void;
+
+/* Filter object function types. */
+AL_API auto AL_APIENTRY alGenFilters(ALsizei n, ALuint *filters) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alDeleteFilters(ALsizei n, const ALuint *filters) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alIsFilter(ALuint filter) AL_API_NOEXCEPT -> ALboolean;
+AL_API auto AL_APIENTRY alFilteri(ALuint filter, ALenum param, ALint iValue) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alFilteriv(ALuint filter, ALenum param, const ALint *piValues) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alFilterf(ALuint filter, ALenum param, ALfloat flValue) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alFilterfv(ALuint filter, ALenum param, const ALfloat *pflValues) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alGetFilteri(ALuint filter, ALenum param, ALint *iValue) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alGetFilteriv(ALuint filter, ALenum param, ALint *piValues) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alGetFilterf(ALuint filter, ALenum param, ALfloat *flValue) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alGetFilterfv(ALuint filter, ALenum param, ALfloat *pflValues) AL_API_NOEXCEPT -> void;
+
+/* Auxiliary Effect Slot object function types. */
+AL_API auto AL_APIENTRY alGenAuxiliaryEffectSlots(ALsizei n, ALuint *effectslots) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alDeleteAuxiliaryEffectSlots(ALsizei n, const ALuint *effectslots) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alIsAuxiliaryEffectSlot(ALuint effectslot) AL_API_NOEXCEPT -> ALboolean;
+AL_API auto AL_APIENTRY alAuxiliaryEffectSloti(ALuint effectslot, ALenum param, ALint iValue) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alAuxiliaryEffectSlotiv(ALuint effectslot, ALenum param, const ALint *piValues) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alAuxiliaryEffectSlotf(ALuint effectslot, ALenum param, ALfloat flValue) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alAuxiliaryEffectSlotfv(ALuint effectslot, ALenum param, const ALfloat *pflValues) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alGetAuxiliaryEffectSloti(ALuint effectslot, ALenum param, ALint *iValue) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alGetAuxiliaryEffectSlotiv(ALuint effectslot, ALenum param, ALint *piValues) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alGetAuxiliaryEffectSlotf(ALuint effectslot, ALenum param, ALfloat *flValue) AL_API_NOEXCEPT -> void;
+AL_API auto AL_APIENTRY alGetAuxiliaryEffectSlotfv(ALuint effectslot, ALenum param, ALfloat *pflValues) AL_API_NOEXCEPT -> void;
+
+#endif
+
+} /* extern "C" */
