@@ -2451,7 +2451,7 @@ static void DrawOtherOptionsMenu()
 
 static bool BeginTabChild( const char* name )
 {
-	bool ret = ImGui::BeginChild( name, ImVec2(0, 0), 0, ImGuiWindowFlags_NavFlattened );
+	bool ret = ImGui::BeginChild( name, ImVec2(0, 0), 0, ImGuiChildFlags_NavFlattened );
 	float itemWidth = fminf( ImGui::GetWindowWidth() * 0.5f, ImGui::GetFontSize() * 20.0f );
 	ImGui::PushItemWidth( itemWidth );
 	return ret;

@@ -384,7 +384,7 @@ void NewFrame()
 		imgui_scale.ClearModified();
 		ImGuiIO& io = ImGui::GetIO();
 		io.Fonts->Clear();
-		ImGui_ImplOpenGL2_DestroyFontsTexture();
+		//ImGui_ImplOpenGL2_DestroyFontsTexture();
 		ImFontConfig fontCfg;
 		strcpy( fontCfg.Name, "ProggyVector" );
 		float fontSize = 18.0f * GetScale();

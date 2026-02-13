@@ -922,6 +922,8 @@ if(IMGUI)
 		PROPERTIES
 		SKIP_PRECOMPILE_HEADERS ON
 	)
+
+	include_directories("libs/imgui")
 else()
 	set(src_imgui
 		sys/sys_imgui.h

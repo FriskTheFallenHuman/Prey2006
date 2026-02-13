@@ -94,11 +94,15 @@ namespace DG {
 // this table contains all members of struct ImGuiStyle that come before the Colors array
 // when updating Dear ImGui, this might have to be adjusted for members that have been added/removed/renamed
 #define D3_IMSTYLE_ATTRS \
+	D3_IMATTR_FLOAT( FontSizeBase                ) \
+	D3_IMATTR_FLOAT( FontScaleMain               ) \
+	D3_IMATTR_FLOAT( FontScaleDpi                ) \
 	D3_IMATTR_FLOAT( Alpha                       ) \
 	D3_IMATTR_FLOAT( DisabledAlpha               ) \
 	D3_IMATTR_VEC2(  WindowPadding               ) \
 	D3_IMATTR_FLOAT( WindowRounding              ) \
 	D3_IMATTR_FLOAT( WindowBorderSize            ) \
+	D3_IMATTR_FLOAT( WindowBorderHoverPadding    ) \
 	D3_IMATTR_VEC2(  WindowMinSize               ) \
 	D3_IMATTR_VEC2(  WindowTitleAlign            ) \
 	D3_IMATTR_DIR(   WindowMenuButtonPosition    ) \
@@ -117,16 +121,27 @@ namespace DG {
 	D3_IMATTR_FLOAT( ColumnsMinSpacing           ) \
 	D3_IMATTR_FLOAT( ScrollbarSize               ) \
 	D3_IMATTR_FLOAT( ScrollbarRounding           ) \
+	D3_IMATTR_FLOAT( ScrollbarPadding            ) \
 	D3_IMATTR_FLOAT( GrabMinSize                 ) \
 	D3_IMATTR_FLOAT( GrabRounding                ) \
 	D3_IMATTR_FLOAT( LogSliderDeadzone           ) \
+	D3_IMATTR_FLOAT( ImageBorderSize             ) \
 	D3_IMATTR_FLOAT( TabRounding                 ) \
 	D3_IMATTR_FLOAT( TabBorderSize               ) \
-	D3_IMATTR_FLOAT( TabMinWidthForCloseButton   ) \
+	D3_IMATTR_FLOAT( TabMinWidthBase             ) \
+	D3_IMATTR_FLOAT( TabMinWidthShrink           ) \
+	D3_IMATTR_FLOAT( TabCloseButtonMinWidthSelected   ) \
+	D3_IMATTR_FLOAT( TabCloseButtonMinWidthUnselected ) \
 	D3_IMATTR_FLOAT( TabBarBorderSize            ) \
 	D3_IMATTR_FLOAT( TabBarOverlineSize          ) \
 	D3_IMATTR_FLOAT( TableAngledHeadersAngle     ) \
 	D3_IMATTR_VEC2(  TableAngledHeadersTextAlign ) \
+	D3_IMATTR_TREENODEFLAGS( TreeLinesFlags    ) \
+	D3_IMATTR_FLOAT( TreeLinesSize               ) \
+	D3_IMATTR_FLOAT( TreeLinesRounding           ) \
+	D3_IMATTR_FLOAT( DragDropTargetRounding      ) \
+	D3_IMATTR_FLOAT( DragDropTargetBorderSize    ) \
+	D3_IMATTR_FLOAT( DragDropTargetPadding       ) \
 	D3_IMATTR_DIR(   ColorButtonPosition         ) \
 	D3_IMATTR_VEC2(  ButtonTextAlign             ) \
 	D3_IMATTR_VEC2(  SelectableTextAlign         ) \
@@ -135,7 +150,8 @@ namespace DG {
 	D3_IMATTR_VEC2(  SeparatorTextPadding        ) \
 	D3_IMATTR_VEC2(  DisplayWindowPadding        ) \
 	D3_IMATTR_VEC2(  DisplaySafeAreaPadding      ) \
-	DGIMST_ENABLE_IF_DOCKING( D3_IMATTR_FLOAT( DockingSeparatorSize ) ) \
+	D3_IMATTR_BOOL(  DockingNodeHasCloseButton   ) \
+	D3_IMATTR_FLOAT( DockingSeparatorSize        ) \
 	D3_IMATTR_FLOAT( MouseCursorScale            ) \
 	D3_IMATTR_BOOL(  AntiAliasedLines            ) \
 	D3_IMATTR_BOOL(  AntiAliasedLinesUseTex      ) \
@@ -149,8 +165,8 @@ namespace DG {
 	D3_IMATTR_FLOAT( HoverStationaryDelay        ) \
 	D3_IMATTR_FLOAT( HoverDelayShort             ) \
 	D3_IMATTR_FLOAT( HoverDelayNormal            ) \
-	D3_IMATTR_INT(   HoverFlagsForTooltipMouse   ) \
-	D3_IMATTR_INT(   HoverFlagsForTooltipNav     )
+	D3_IMATTR_HOVEREDFLAGS( HoverFlagsForTooltipMouse ) \
+	D3_IMATTR_HOVEREDFLAGS( HoverFlagsForTooltipNav   )
 
 // this table contains one entry for every value of enum ImGuiCol_ (except for ImGuiCol_COUNT)
 // as you can see, the "ImGuiCol_" prefix is left out in this table,
@@ -190,6 +206,7 @@ namespace DG {
 	D3_IMSTYLE_COLOR( ResizeGrip            ) \
 	D3_IMSTYLE_COLOR( ResizeGripHovered     ) \
 	D3_IMSTYLE_COLOR( ResizeGripActive      ) \
+	D3_IMSTYLE_COLOR( InputTextCursor       ) \
 	D3_IMSTYLE_COLOR( TabHovered            ) \
 	D3_IMSTYLE_COLOR( Tab                   ) \
 	D3_IMSTYLE_COLOR( TabSelected           ) \
@@ -197,8 +214,8 @@ namespace DG {
 	D3_IMSTYLE_COLOR( TabDimmed             ) \
 	D3_IMSTYLE_COLOR( TabDimmedSelected     ) \
 	D3_IMSTYLE_COLOR( TabDimmedSelectedOverline ) \
-	DGIMST_ENABLE_IF_DOCKING( D3_IMSTYLE_COLOR( DockingPreview ) ) \
-	DGIMST_ENABLE_IF_DOCKING( D3_IMSTYLE_COLOR( DockingEmptyBg ) ) \
+	D3_IMSTYLE_COLOR( DockingPreview        ) \
+	D3_IMSTYLE_COLOR( DockingEmptyBg        ) \
 	D3_IMSTYLE_COLOR( PlotLines             ) \
 	D3_IMSTYLE_COLOR( PlotLinesHovered      ) \
 	D3_IMSTYLE_COLOR( PlotHistogram         ) \
@@ -210,7 +227,10 @@ namespace DG {
 	D3_IMSTYLE_COLOR( TableRowBgAlt         ) \
 	D3_IMSTYLE_COLOR( TextLink              ) \
 	D3_IMSTYLE_COLOR( TextSelectedBg        ) \
+	D3_IMSTYLE_COLOR( TreeLines             ) \
 	D3_IMSTYLE_COLOR( DragDropTarget        ) \
+	D3_IMSTYLE_COLOR( DragDropTargetBg      ) \
+	D3_IMSTYLE_COLOR( UnsavedMarker         ) \
 	D3_IMSTYLE_COLOR( NavCursor             ) \
 	D3_IMSTYLE_COLOR( NavWindowingHighlight ) \
 	D3_IMSTYLE_COLOR( NavWindowingDimBg     ) \
@@ -249,6 +269,18 @@ static inline char* skipWhitespace( const char* s ) {
 #define D3_IMATTR_BOOL( NAME )  \
 	if ( sscanf( line, #NAME " = %d", &i ) == 1 ) { \
 		s . NAME = ( i != 0 ); \
+		return; \
+	}
+
+#define D3_IMATTR_TREENODEFLAGS( NAME )   \
+	if ( sscanf( line, #NAME " = %d", &i ) == 1 ) { \
+		s . NAME = (ImGuiTreeNodeFlags)i; \
+		return; \
+	}
+
+#define D3_IMATTR_HOVEREDFLAGS( NAME )   \
+	if ( sscanf( line, #NAME " = %d", &i ) == 1 ) { \
+		s . NAME = (ImGuiHoveredFlags)i; \
 		return; \
 	}
 
@@ -421,6 +453,10 @@ bool WriteImGuiStyle( const ImGuiStyle& s, const char* filename ) {
 	fprintf( f, "%s = %d\n", #NAME, s . NAME );
 #define D3_IMATTR_BOOL( NAME ) \
 	fprintf( f, "%s = %d\n", #NAME, (int)( s . NAME ) );
+#define D3_IMATTR_TREENODEFLAGS( NAME ) \
+	fprintf( f, "%s = %d\n", #NAME, (int)( s . NAME ) );
+#define D3_IMATTR_HOVEREDFLAGS( NAME ) \
+	fprintf( f, "%s = %d\n", #NAME, (int)( s . NAME ) );
 
 	// this (together with the D3_IMATTR_* defines in the previous lines)
 	// expands the D3_IMSTYLE_ATTRS table to
@@ -440,6 +476,8 @@ bool WriteImGuiStyle( const ImGuiStyle& s, const char* filename ) {
 #undef D3_IMATTR_INT
 #undef D3_IMATTR_DIR
 #undef D3_IMATTR_BOOL
+#undef D3_IMATTR_TREENODEFLAGS
+#undef D3_IMATTR_HOVEREDFLAGS
 
 	fprintf( f, "\n[colors]\n" );
 
@@ -495,6 +533,14 @@ ImGuiTextBuffer WriteImGuiStyleToCode( const ImGuiStyle& s, const ImGuiStyle* re
 	if ( refStyle == nullptr || s. NAME != refStyle-> NAME ) { \
 		ret.appendf( "style.%s %*s= %s;\n", #NAME, numSpaces( #NAME , 27 ), "", s. NAME ? "true" : "false" ); \
 	}
+#define D3_IMATTR_TREENODEFLAGS( NAME ) \
+	if ( refStyle == nullptr || s. NAME != refStyle-> NAME ) { \
+		ret.appendf( "style.%s = %d;\n", #NAME, s. NAME ); \
+	}
+#define D3_IMATTR_HOVEREDFLAGS( NAME ) \
+	if ( refStyle == nullptr || s. NAME != refStyle-> NAME ) { \
+		ret.appendf( "style.%s = %d;\n", #NAME, s. NAME ); \
+	}
 
 	D3_IMSTYLE_ATTRS
 
@@ -507,6 +553,8 @@ ImGuiTextBuffer WriteImGuiStyleToCode( const ImGuiStyle& s, const ImGuiStyle* re
 #undef D3_IMATTR_INT
 #undef D3_IMATTR_DIR
 #undef D3_IMATTR_BOOL
+#undef D3_IMATTR_TREENODEFLAGS
+#undef D3_IMATTR_HOVEREDFLAGS
 
 	ret.append( "\nImVec4* colors = style.Colors;\n" );
 
@@ -566,6 +614,8 @@ struct D3_ImGuiStyle_Check {
 #define D3_IMATTR_INT( NAME )   int NAME ;
 #define D3_IMATTR_DIR( NAME )   ImGuiDir NAME ;
 #define D3_IMATTR_BOOL( NAME )  bool NAME ;
+#define D3_IMATTR_TREENODEFLAGS( NAME )  ImGuiTreeNodeFlags NAME ;
+#define D3_IMATTR_HOVEREDFLAGS( NAME )  ImGuiHoveredFlags NAME ;
 
 	// this expands to all the ImGuiStyle members, up to (excluding) Colors
 	// exactly like in ImGuiStyle (except the pseudo-enums like ImGuiDir are plain ints here)
@@ -576,11 +626,16 @@ struct D3_ImGuiStyle_Check {
 	// just like the other members/attributes, expand the behaviors
 	D3_IMSTYLE_BEHAVIORS
 
+	// Internal fields (present in real ImGuiStyle)
+	float _MainScale;
+	float _NextFrameFontSizeBase;
+
 #undef D3_IMATTR_FLOAT
 #undef D3_IMATTR_VEC2
 #undef D3_IMATTR_INT
 #undef D3_IMATTR_DIR
 #undef D3_IMATTR_BOOL
+#undef D3_IMATTR_TREENODEFLAGS
 
 };
 
@@ -619,6 +674,16 @@ struct is_same<T, T> {
 			"member " #NAME " not at expected offset - is the member before it missing from the list, or moved to another position?" ); \
 	static_assert( is_same< decltype( ImGuiStyle :: NAME ), bool >::value, "expected member " #NAME " to be a bool - adjust the list!" );
 
+#define D3_IMATTR_TREENODEFLAGS( NAME ) \
+	static_assert( offsetof( ImGuiStyle, NAME ) == offsetof( D3_ImGuiStyle_Check, NAME ), \
+			"member " #NAME " not at expected offset - is the member before it missing from the list, or moved to another position?" ); \
+	static_assert( is_same< decltype( ImGuiStyle :: NAME ), ImGuiTreeNodeFlags >::value, "expected member " #NAME " to be an ImGuiTreeNodeFlags - adjust the list!" );
+
+#define D3_IMATTR_HOVEREDFLAGS( NAME ) \
+	static_assert( offsetof( ImGuiStyle, NAME ) == offsetof( D3_ImGuiStyle_Check, NAME ), \
+			"member " #NAME " not at expected offset - is the member before it missing from the list, or moved to another position?" ); \
+	static_assert( is_same< decltype( ImGuiStyle :: NAME ), ImGuiHoveredFlags >::value, "expected member " #NAME " to be an ImGuiHoveredFlags - adjust the list!" );
+
 // expanding those static assertions for offset and type for all attributes and behaviors
 
 D3_IMSTYLE_ATTRS
@@ -628,7 +693,10 @@ D3_IMSTYLE_BEHAVIORS
 #undef D3_IMATTR_FLOAT
 #undef D3_IMATTR_VEC2
 #undef D3_IMATTR_INT
+#undef D3_IMATTR_DIR
 #undef D3_IMATTR_BOOL
+#undef D3_IMATTR_TREENODEFLAGS
+#undef D3_IMATTR_HOVEREDFLAGS
 
 static_assert( offsetof( ImGuiStyle, Colors ) == offsetof( D3_ImGuiStyle_Check, Colors ), "member Colors not at expected offset" );
 
