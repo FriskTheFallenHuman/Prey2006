@@ -433,12 +433,12 @@ idServerScan::GUIAdd
 */
 void idServerScan::GUIAdd( int id, const networkServer_t server ) {
 	idStr name = server.serverInfo.GetString( "si_name", GAME_NAME " Server" );
-	bool d3xp = false;
+	bool exp = false;
 	bool mod = false;
 
 	if ( !idStr::Icmp( server.serverInfo.GetString( "fs_game" ), "d3xp" ) ||
 		 !idStr::Icmp( server.serverInfo.GetString( "fs_game_base" ), "d3xp" ) ) {
-		d3xp = true;
+		exp = true;
 	}
 	if ( server.serverInfo.GetString( "fs_game" )[ 0 ] != '\0' ) {
 		mod = true;
@@ -450,14 +450,13 @@ void idServerScan::GUIAdd( int id, const networkServer_t server ) {
 	}
 
 	name += "\t";
-	if ( d3xp ) {
-		// FIXME: even for a 'D3XP mod'
-		// could have a specific icon for this case
-		name += "mtr_doom3XPIcon";
+	if (exp) {
+		// PREY - Never had an expansion, but lets have this here just in case
+		name += "mtr_preyXPIcon";
 	} else if ( mod ) {
-		name += "mtr_doom3Mod";
+		name += "mtr_modIcon";
 	} else {
-		name += "mtr_doom3Icon";
+		name += "mtr_preyIcon";
 	}
 	name += "\t";
 	name += va( "%i/%i\t", server.clients, server.serverInfo.GetInt( "si_maxPlayers" ) );
