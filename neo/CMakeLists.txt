@@ -1,16 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 set(APPSTREAM_APP_ID "io.github.friskthefallenhuman.prey2006")
 
-# Only use vcpkg in win32 since there we dont have package managers
-if(WIN32)
-	# Check if vcpkg exist in our source folder
-	if (EXISTS "${CMAKE_SOURCE_DIR}/../vcpkg/scripts/buildsystems/vcpkg.cmake")
-		set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/../vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
-	else()
-		message(FATAL_ERROR "Vcpkg wasn't not found, aborting, make sure to git clone this with all submodules!")
-	endif()
-endif()
-
 # Enable folder groups
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER  "")
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -42,12 +32,12 @@ if(MSVC)
 endif()
 option(BASE						"Build the base game code" ON)
 option(ONATIVE						"Optimize for the host CPU" OFF)
-option(SDL3							"Use SDL3 instead of SDL2" OFF)
+option(SDL3							"Use SDL3 instead of SDL2" ON)
 option(IMGUI						"Build with Dear ImGui integration - requires SDL2/SDL3 and C++11" ON)
 option(REPRODUCIBLE_BUILD			"Replace __DATE__ and __TIME__ by hardcoded values for reproducible builds." OFF)
 option(LINUX_RELEASE_BINS			"Set RPATH to \$ORIGIN/libs/ for Linux binary releases" OFF)
 option(HARDLINK_GAME				"Compile gamecode into executable (no game DLLs)" OFF)
-option(FREETYPE					"Enable Freetype support." OFF)
+option(FREETYPE					"Enable Freetype support." ON)
 if(NOT MSVC) # GCC/clang or compatible, hopefully
 	option(FORCE_COLORED_OUTPUT	"Always produce ANSI-colored compiler warnings/errors (GCC/Clang only; esp. useful with ninja)." OFF)
 	option(ASAN					"Enable GCC/Clang Adress Sanitizer (ASan)" OFF) # TODO: MSVC might also support this, somehow?
@@ -90,7 +80,7 @@ set(sys_thirdparty_libs)
 
 # libs
 if(UNIX)
-find_package(PkgConfig REQUIRED)
+	find_package(PkgConfig REQUIRED)
 endif()
 
 if(UNIX)
@@ -129,11 +119,19 @@ endif()
 list(APPEND sys_thirdparty_libs ${SDLX_LIBRARY})
 
 if (FREETYPE)
-	find_package(Freetype REQUIRED)
-	find_path(FREETYPE_INCLUDE_DIR "fttypes.h" PATH_SUFFIXES "freetype")
-	include_directories(${FREETYPE_INCLUDE_DIR})
+	if(UNIX)
+		find_package(Freetype REQUIRED)
+		find_path(FREETYPE_INCLUDE_DIR "fttypes.h" PATH_SUFFIXES "freetype")
+		include_directories(${FREETYPE_INCLUDE_DIR})
+		set(FT_LIBRARY Freetype::Freetype)
+	else()
+		add_subdirectory(libs/Freetype)
+		find_path(FREETYPE_INCLUDE_DIR "fttypes.h" PATH_SUFFIXES "freetype")
+		include_directories(${FREETYPE_INCLUDE_DIR})
+		set(FT_LIBRARY freetype)
+	endif()
 	add_definitions(-DID_BUILD_FREETYPE)
-	list(APPEND sys_thirdparty_libs Freetype::Freetype)
+	list(APPEND sys_thirdparty_libs ${FT_LIBRARY})
 endif()
 
 if(IMGUI)
