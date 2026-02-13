@@ -157,7 +157,7 @@ private:
 
 	int					endWaitTime;		// when to stop waiting on a port init
 
-private:
+public:
 	void				LocalClear( );		// we need to clear some internal data as well
 
 	void				EmitGetInfo( netadr_t &serv );

@@ -585,6 +585,7 @@ set(src_framework
 	framework/DeclSkin.cpp
 	framework/DeclTable.cpp
 	framework/Dhewm3SettingsMenu.cpp
+	framework/Dhewm3ServerBrowserMenu.cpp
 	framework/EditField.cpp
 	framework/EventLoop.cpp
 	framework/File.cpp

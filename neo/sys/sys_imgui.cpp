@@ -37,6 +37,8 @@
 
 extern void Com_DrawDhewm3SettingsMenu(); // in framework/dhewm3SettingsMenu.cpp
 extern void Com_OpenCloseDhewm3SettingsMenu( bool open ); // ditto
+extern void Com_DrawDhewm3ServerBrowser(); // in framework/Dhewm3ServerBrowserMenu.cpp
+extern void Com_OpenCloseDhewm3ServerBrowser( bool open ); // ditto
 
 static idCVar imgui_scale( "imgui_scale", "-1.0", CVAR_SYSTEM|CVAR_FLOAT|CVAR_ARCHIVE|CVAR_NEW, "factor to scale ImGUI menus by (-1: auto)" ); // TODO: limit values?
 
@@ -428,6 +430,10 @@ void NewFrame()
 	if (openImguiWindows & D3_ImGuiWin_AnyEditor) {
 		ImGuiTools::DrawToolWindows();
 	}
+
+	if (openImguiWindows & D3_ImGuiWin_ServerBrowser) {
+		Com_DrawDhewm3ServerBrowser();
+	}
 }
 
 bool keybindModeEnabled = false;
@@ -662,6 +668,9 @@ void OpenWindow( D3ImGuiWindow win )
 		case D3_ImGuiWin_Settings:
 			Com_OpenCloseDhewm3SettingsMenu( true );
 			break;
+		case D3_ImGuiWin_ServerBrowser:
+			Com_OpenCloseDhewm3ServerBrowser( true );
+			break;
 		case D3_ImGuiWin_PDAEditor:
 			
 			break;
@@ -679,6 +688,9 @@ void CloseWindow( D3ImGuiWindow win )
 	switch ( win ) {
 		case D3_ImGuiWin_Settings:
 			Com_OpenCloseDhewm3SettingsMenu( false );
+			break;
+		case D3_ImGuiWin_ServerBrowser:
+			Com_OpenCloseDhewm3ServerBrowser( false );
 			break;
 		case D3_ImGuiWin_PDAEditor:
 			

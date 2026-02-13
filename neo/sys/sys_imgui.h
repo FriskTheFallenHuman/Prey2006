@@ -22,6 +22,7 @@ enum D3ImGuiWindow {
 	D3_ImGuiWin_ScriptEditor = 128, // new Script Editor
 	D3_ImGuiWin_DeclBrowser = 256, // new Decl Browser
 	D3_ImGuiWin_MaterialEditor = 512, // next should be 1024, then 2048, etc so a bitmask can be used
+	D3_ImGuiWin_ServerBrowser = 1024, // server browser window
 
 	D3_ImGuiWin_AnyEditor = D3_ImGuiWin_LightEditor
 		| D3_ImGuiWin_SoundEditor

@@ -478,18 +478,20 @@ void idServerScan::ApplyFilter( ) {
 	networkServer_t serv;
 	idStr s;
 
-	listGUI->SetStateChanges( false );
-	listGUI->Clear();
-	for ( i = m_sortAscending ? 0 : m_sortedServers.Num() - 1;
-			m_sortAscending ? i < m_sortedServers.Num() : i >= 0;
-			m_sortAscending ? i++ : i-- ) {
-		serv = (*this)[ m_sortedServers[ i ] ];
-		if ( !IsFiltered( serv ) ) {
-			GUIAdd( m_sortedServers[ i ], serv );
+	if ( listGUI ) {
+		listGUI->SetStateChanges( false );
+		listGUI->Clear();
+		for ( i = m_sortAscending ? 0 : m_sortedServers.Num() - 1;
+				m_sortAscending ? i < m_sortedServers.Num() : i >= 0;
+				m_sortAscending ? i++ : i-- ) {
+			serv = (*this)[ m_sortedServers[ i ] ];
+			if ( !IsFiltered( serv ) ) {
+				GUIAdd( m_sortedServers[ i ], serv );
+			}
 		}
+		GUIUpdateSelected();
+		listGUI->SetStateChanges( true );
 	}
-	GUIUpdateSelected();
-	listGUI->SetStateChanges( true );
 }
 
 /*
@@ -625,4 +627,21 @@ void idServerScan::SetSorting( serverSort_t sort ) {
 	}
 	// trigger a redraw
 	ApplyFilter();
+}
+
+/*
+================
+idServerScan::SetState
+================
+*/
+void idServerScan::SetState( scan_state_t s ) {
+	scan_state = s;
+	if ( scan_state == IDLE ) {
+		incoming_net = false;
+		incoming_useTimeout = false;
+		net_servers.Clear();
+		net_info.Clear();
+		m_sortedServers.Clear();
+		cur_info = 0;
+	}
 }

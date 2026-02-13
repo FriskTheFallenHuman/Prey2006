@@ -49,6 +49,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // DG: implemented in Dhewm3SettingsMenu.cpp (the only Com_*_f() function not implemented in this file)
 extern void Com_Dhewm3Settings_f( const idCmdArgs &args );
+extern void Com_Dhewm3ServerBrowser_f( const idCmdArgs &args );
 
 typedef enum {
 	ERP_NONE,
@@ -2344,6 +2345,7 @@ void idCommonLocal::InitCommands( void ) {
 	cmdSystem->AddCommand( "execMachineSpec", Com_ExecMachineSpec_f, CMD_FL_SYSTEM, "execs the appropriate config files and sets cvars based on com_machineSpec" );
 
 	cmdSystem->AddCommand( "dhewm3Settings", Com_Dhewm3Settings_f, CMD_FL_SYSTEM, "Toggles (opens/closes) the (advanced) settings menu" );
+	cmdSystem->AddCommand( "serverbrowser", Com_Dhewm3ServerBrowser_f, CMD_FL_SYSTEM, "Toggles (opens/closes) the server browser menu" );
 
 #if	!defined( ID_DEMO_BUILD ) && !defined( ID_DEDICATED )
 	// compilers
