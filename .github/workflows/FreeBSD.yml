@@ -1,0 +1,110 @@
+name: FreeBSD Auto-Builds
+on:
+  push:
+    branches:
+      - 'main'
+    paths-ignore:
+      - .github/workflows/Linux.yml
+      - .github/workflows/Windows.yml
+  pull_request:
+    types:
+      - edited
+      - opened
+      - synchronize
+    paths-ignore:
+      - .github/workflows/Linux.yml
+      - .github/workflows/Windows.yml
+  workflow_dispatch:
+concurrency:
+  # Cancel concurrent workflows for the same PR or commit hash.
+  group: ${{github.workflow}}-${{github.event_name == 'pull_request' && github.head_ref || github.sha}}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: FreeBSD Auto-Build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86_64]
+        include:
+          - arch: x86_64
+            dll_name: gamex86_64.so
+    steps:
+
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
+    
+    - name: Run build in FreeBSD VM
+      uses: vmactions/freebsd-vm@966989c456d41351f095a421f60e71342d3bce41
+      with:
+        release: "15.0"
+        prepare: |
+          # Prefer pkg-static (statically linked) to avoid dynamic lib upgrade failures.
+          if [ -x /usr/sbin/pkg-static ]; then
+            /usr/sbin/pkg-static bootstrap -f || true
+            attempt=0
+            until [ "$attempt" -ge 3 ]
+            do
+              /usr/sbin/pkg-static update -f && /usr/sbin/pkg-static install -y cmake ccache influx pkg-config ninja openal-soft sdl2 tree zip && break
+              attempt=$((attempt+1))
+              echo "pkg-static install failed, retrying ($attempt/3)" >&2
+              sleep $((attempt * 5))
+            done
+          else
+            attempt=0
+            until [ "$attempt" -ge 3 ]
+            do
+              pkg update -f && pkg install -y cmake ccache influx pkg-config ninja openal-soft sdl2 tree zip && break
+              attempt=$((attempt+1))
+              echo "pkg install failed, retrying ($attempt/3)" >&2
+              sleep $((attempt * 5))
+            done
+          fi
+        run: |
+          echo "::group::Configure"
+          mkdir -p build
+          cd build
+          cmake -G Ninja -DDEDICATED=ON -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ../neo/
+          echo "::endgroup::"
+          echo "::group::Build"
+          ninja
+          echo "::endgroup::"
+          echo "::group::Build artifacts"
+          ls -lh ../build
+          echo "::endgroup::"
+          echo "::group::Create binary.conf"
+          (
+            cat <<'EOF'
+          // add flags for supported operating systems in this pak
+          // one id per line
+          // name the file binary.conf and place it in the game pak
+          // 0 win-x86
+          // 1 mac-ppc
+          // 2 linux-x86
+          2
+          EOF
+          ) > ../base/binary.conf
+          echo "::endgroup::"
+          echo "::group::Package game01.pk4"
+          cd ../base
+          rm -f game01.pk4
+          zip -r -q game01.pk4 binary.conf "${{ matrix.dll_name }}"
+          echo "::endgroup::"
+
+    - name: Prepare output
+      shell: pwsh
+      run: |
+        New-Item -ItemType Directory -Path "output/freebsd" -Force | Out-Null
+        Copy-Item -Path "base" -Destination "output/freebsd/base" -Recurse -Force
+        Copy-Item -Path "libs" -Destination "output/freebsd/libs" -Recurse -Force
+        Copy-Item -Path ".github/Changelog.md", ".github/Configuration.md", ".github/README.md" "output/freebsd/"
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: prey2006-freebsd
+        path: output/freebsd/
+        compression-level: 6

@@ -1,0 +1,19 @@
+* text=auto
+
+*.sh text eol=lf
+*.bat text eol=crlf
+*.py text
+*.cfg text
+*.def text
+*.gui text
+*.guifragment text
+
+.gitignore text
+README.md text
+Changelog text
+Configuration text
+COPYING.txt text
+MaterialEditorDefs.med text
+
+*.lang binary
+*.vfp binary

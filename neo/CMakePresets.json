@@ -1,70 +1,104 @@
 {
-		"version": 8,
-		"cmakeMinimumRequired": {
-				"major": 3,
-				"minor": 21,
-				"patch": 0
+	"version": 8,
+	"cmakeMinimumRequired": {
+		"major": 3,
+		"minor": 21,
+		"patch": 0
+	},
+	"configurePresets": [
+		{
+			"name": "ninja-x86_64",
+			"displayName": "Ninja (x86_64)",
+			"description": "Single-config Ninja generator for 64-bit builds",
+			"binaryDir": "${sourceDir}/builds/${presetName}",
+			"generator": "Ninja"
 		},
-		"configurePresets": [
-				{
-						"name": "ninja-multi",
-						"displayName": "Ninja Multi-Config x86_64",
-						"description": "Configure and generate Ninja project files for all configurations",
-						"binaryDir": "${sourceDir}/builds/${presetName}",
-						"generator": "Ninja Multi-Config"
-				},
-				{
-						"name": "ninja-multi-x86",
-						"displayName": "Ninja Multi-Config x86",
-						"description": "Configure and generate Ninja project files for all configurations",
-						"binaryDir": "${sourceDir}/builds/${presetName}",
-						"generator": "Ninja Multi-Config",
-						"architecture": {
-							"value": "Win32",
-							"strategy": "set"
-						}
-				}
-		],
-		"buildPresets": [
-				{
-						"name": "ninja-debug",
-						"configurePreset": "ninja-multi",
-						"displayName": "Build (Debug x86_64)",
-						"description": "Build with Ninja (Debug x86_64)",
-						"configuration": "Debug"
-				},
-				{
-						"name": "ninja-release",
-						"configurePreset": "ninja-multi",
-						"displayName": "Build (Release x86_64)",
-						"description": "Build with Ninja (Release x86_64)",
-						"configuration": "Release"
-				},
-				{
-						"name": "ninja-debug-x86",
-						"configurePreset": "ninja-multi-x86",
-						"displayName": "Build (Debug x86)",
-						"description": "Build with Ninja (Debug x86)",
-						"configuration": "Debug"
-				},
-				{
-						"name": "ninja-release-x86",
-						"configurePreset": "ninja-multi-x86",
-						"displayName": "Build (Release  x86)",
-						"description": "Build with Ninja (Release x86)",
-						"configuration": "Release"
-				},
-				{
-						"name": "ninja",
-						"configurePreset": "ninja-multi",
-						"displayName": "Build x86_64",
-						"description": "Build x86_64 with Ninja"
-				},
-				{
-						"name": "ninja-x86",
-						"configurePreset": "ninja-multi-x86",
-						"displayName": "Build x86",
-						"description": "Build x86 with Ninja"
-				}
-		]
+		{
+			"name": "ninja-x86",
+			"displayName": "Ninja (x86)",
+			"description": "Single-config Ninja generator for 32-bit builds",
+			"binaryDir": "${sourceDir}/builds/${presetName}",
+			"generator": "Ninja"
+		},
+		{
+			"name": "vs-x86_64",
+			"displayName": "Visual Studio (x86_64)",
+			"description": "Visual Studio 17 2022 generator for 64-bit builds",
+			"binaryDir": "${sourceDir}/builds/${presetName}",
+			"generator": "Visual Studio 17 2022",
+			"architecture": {
+				"value": "x64",
+				"strategy": "set"
+			}
+		},
+		{
+			"name": "vs-x86",
+			"displayName": "Visual Studio (x86)",
+			"description": "Visual Studio 17 2022 generator for 32-bit builds",
+			"binaryDir": "${sourceDir}/builds/${presetName}",
+			"generator": "Visual Studio 17 2022",
+			"architecture": {
+				"value": "Win32",
+				"strategy": "set"
+			}
+		}
+	],
+	"buildPresets": [
+		{
+			"name": "ninja-debug",
+			"configurePreset": "ninja-x86_64",
+			"displayName": "Ninja: Debug (x86_64)",
+			"description": "Debug build with single-config Ninja",
+			"configuration": "Debug"
+		},
+		{
+			"name": "ninja-release",
+			"configurePreset": "ninja-x86_64",
+			"displayName": "Ninja: Release (x86_64)",
+			"description": "Release build with single-config Ninja",
+			"configuration": "Release"
+		},
+		{
+			"name": "ninja-debug-x86",
+			"configurePreset": "ninja-x86",
+			"displayName": "Ninja: Debug (x86)",
+			"description": "Debug build with single-config Ninja for 32-bit",
+			"configuration": "Debug"
+		},
+		{
+			"name": "ninja-release-x86",
+			"configurePreset": "ninja-x86",
+			"displayName": "Ninja: Release (x86)",
+			"description": "Release build with single-config Ninja for 32-bit",
+			"configuration": "Release"
+		},
+		{
+			"name": "vs-debug-x86_64",
+			"configurePreset": "vs-x86_64",
+			"displayName": "VS: Debug (x86_64)",
+			"description": "Debug build with Visual Studio",
+			"configuration": "Debug"
+		},
+		{
+			"name": "vs-release-x86_64",
+			"configurePreset": "vs-x86_64",
+			"displayName": "VS: Release (x86_64)",
+			"description": "Release build with Visual Studio",
+			"configuration": "Release"
+		},
+		{
+			"name": "vs-debug-x86",
+			"configurePreset": "vs-x86",
+			"displayName": "VS: Debug (x86)",
+			"description": "Debug build with Visual Studio for 32-bit",
+			"configuration": "Debug"
+		},
+		{
+			"name": "vs-release-x86",
+			"configurePreset": "vs-x86",
+			"displayName": "VS: Release (x86)",
+			"description": "Release build with Visual Studio for 32-bit",
+			"configuration": "Release"
+		}
+	]
 }
