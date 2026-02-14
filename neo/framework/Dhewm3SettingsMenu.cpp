@@ -58,7 +58,7 @@ const char* GetLocalizedString( const char* id, const char* fallback )
 	}
 	const char* ret = common->GetLanguageDict()->GetString( id );
 	if ( ret == nullptr || ret[0] == '\0'
-	    || ( ret[0] == '#' && idStr::Cmpn( ret, STRTABLE_ID, STRTABLE_ID_LENGTH ) == 0 ) ) {
+		|| ( ret[0] == '#' && idStr::Cmpn( ret, STRTABLE_ID, STRTABLE_ID_LENGTH ) == 0 ) ) {
 		ret = fallback;
 	}
 	return ret;
@@ -108,13 +108,13 @@ static bool IsKeyPressed( ImGuiKey key ) {
 // used for confirmation in popup dialogs, and to initiate key binding in the binding tables
 static bool IsConfirmKeyPressed() {
 	return IsKeyPressed( ImGuiKey_Enter ) || IsKeyPressed( ImGuiKey_KeypadEnter )
-	       || IsKeyPressed( ImGuiKey_GamepadFaceDown );
+		   || IsKeyPressed( ImGuiKey_GamepadFaceDown );
 }
 
 // is Delete, Backspace or gamepad Y (or equivalent on non-xinput-devices) pressed?
 static bool IsClearKeyPressed() {
 	return IsKeyPressed( ImGuiKey_Delete ) || IsKeyPressed( ImGuiKey_Backspace )
-	       || IsKeyPressed( ImGuiKey_GamepadFaceUp );
+		   || IsKeyPressed( ImGuiKey_GamepadFaceUp );
 }
 
 // is Escape or gamepad Start or gamepad B (or equivalents on non-xinput-devices) pressed?
@@ -126,7 +126,7 @@ static bool IsCancelKeyPressed() {
 	// Note: The engine expects Escape to open/close the main menu, so in here the gamepad Start button
 	//       behaves the same, incl. the specialty that it can't be bound by the user
 	return IsKeyPressed( ImGuiKey_Escape ) || IsKeyPressed( ImGuiKey_GamepadFaceRight )
-	       || IsKeyPressed( ImGuiKey_GamepadStart );
+		   || IsKeyPressed( ImGuiKey_GamepadStart );
 }
 
 static const char* GetGamepadStartName() {
@@ -949,11 +949,11 @@ struct BindingEntry {
 
 			if ( rebindOtherEntry != nullptr ) {
 				ImGui::Text( "Key '%s' is already bound to command %s !\nBind to %s instead?",
-				             keyName, rebindOtherEntry->displayName.c_str(), displayName.c_str() );
+							 keyName, rebindOtherEntry->displayName.c_str(), displayName.c_str() );
 			} else {
 				const char* commandName = idKeyInput::GetBinding( rebindKeyNum );
 				ImGui::Text( "Key '%s' is already bound to command '%s'\n (not handled by this menu)!\nBind to %s instead?",
-				             keyName, commandName, displayName.c_str() );
+							 keyName, commandName, displayName.c_str() );
 			}
 
 			ImGui::NewLine();
@@ -1094,54 +1094,62 @@ static void InitBindingEntries()
 	bindingEntries.Clear();
 
 	const BindingEntryTemplate betsMoveLookAttack[] = {
-		{ "_forward",       "Forward"    , "#str_02100" },
-		{ "_back",          "Backpedal"  , "#str_02101" },
-		{ "_moveLeft",      "Move Left"  , "#str_02102" },
-		{ "_moveRight",     "Move Right" , "#str_02103" },
-		{ "_moveUp",        "Jump"       , "#str_02104" },
-		{ "_moveDown",      "Crouch"     , "#str_02105" },
-		{ "_left",          "Turn Left"  , "#str_02106" },
-		{ "_right",         "Turn Right" , "#str_02107" },
+		{ nullptr,          "Movement",		"#str_20211" },
 
-		{ "_speed",         "Sprint"     , "#str_02109" },
+		{ "_forward",       "Forward",		"#str_20214" },
+		{ "_back",          "Backward",		"#str_20215" },
+		{ "_moveLeft",      "Move Left",	"#str_20216" },
+		{ "_moveRight",     "Move Right",	"#str_20217" },
+		{ "_moveUp",        "Jump",			"#str_20218" },
+		{ "_moveDown",      "Crouch",		"#str_20219" },
+		{ "_strafe",        "Strafe",		"#str_20220" },
 
-		{ "_strafe",        "Strafe"     , "#str_02108" },
+		{ nullptr,			"Combat",		"#str_20229" },
 
-		{ "_lookUp",        "Look Up"    , "#str_02116" },
-		{ "_lookDown",      "Look Down"  , "#str_02117" },
+		{ "_attack",        "Attack",			"#str_20230" },
+		{ "_attackalt",		"Alternate Attack",	"#str_20231" },
+		{ "_impulse14",     "Previous Weapon",	"#str_20232" },
+		{ "_impulse15",     "Next Weapon",		"#str_20233" },
+		{ "_impulse16",     "Toggle Light",		"#str_20234" },
+		{ "_impulse54",     "Spirit Walk",		"#str_20235" },
+		{ "_impulse25",     "Throw Crawler Grenade",		"#str_41185" },
 
-		{ "_mlook",         "Mouse Look" , "#str_02118", "only really relevant if in_freeLook = 0" },
-		{ "_impulse18",     "Center View", "#str_02119" },
+		{ nullptr,			"Look",			"#str_20236" },
 
-		{ nullptr,          "Attack"     , "#str_02112" },
-
-		{ "_attack",        "Attack"     , "#str_02112" },
-		{ "_impulse13",     "Reload"     , "#str_02115" },
-		{ "_impulse14",     "Prev. Weapon" , "#str_02113" },
-		{ "_impulse15",     "Next Weapon"  , "#str_02114" },
-		{ "_zoom",          "Zoom View"    , "#str_02120" },
-		{ "clientDropWeapon", "Drop Weapon", "#str_04071" },
+		{ "_left",          "Turn Left",	"#str_20237" },
+		{ "_right",         "Turn Right",	"#str_20238" },
+		{ "_lookUp",        "Look Up",		"#str_20239" },
+		{ "_lookDown",      "Look Down",	"#str_20240" },
+		{ "_mlook",         "Mouse Look",	"#str_20241", "only really relevant if in_freeLook = 0" },
+		{ "_impulse18",     "Center View",	"#str_20242" },
+		{ "_zoom",          "Zoom View",	"#str_20243", "Not used by the final game." },
 
 		// also the heading for weapons, but the weapons entries are generated below..
-		{ nullptr,          "Weapons"    , "#str_01416" },
+		{ nullptr,          "Weapons"    , "#str_20221" },
 	};
 
 	const BindingEntryTemplate betsOther[] = {
-		{ nullptr,          "Other"          , "#str_04064" }, // TODO: or "#str_02406"	"Misc"
+		{ nullptr,					"System",			"#str_20244" },
 
-		{ "_impulse19",     "PDA / Score"    , "#str_04066" },
-		{ "dhewm3Settings", "dhewm3 settings menu", nullptr },
-		{ "savegame quick", "Quick Save"     , "#str_04067" },
-		{ "loadgame quick", "Quick Load"     , "#str_04068" },
-		{ "screenshot",     "Screenshot"     , "#str_04069" },
-		{ "clientMessageMode",   "Chat"      , "#str_02068" },
-		{ "clientMessageMode 1", "Team Chat" , "#str_02122" },
-		{ "_impulse20",     "Toggle Team"    , "#str_04070" },
-		{ "_impulse22",     "Spectate"       , "#str_02125" },
-		{ "_impulse17",     "Ready"          , "#str_02126" },
-		{ "_impulse28",     "Vote Yes"       , "#str_02127" },
-		{ "_impulse29",     "Vote No"        , "#str_02128" },
-		{ "_impulse40",     "Use Vehicle"    , nullptr },
+		{ "savegame quick",			"Quick Save",		"#str_20245" },
+		{ "loadgame quick",			"Quick Load",		"#str_20246" },
+		{ "screenshot",				"Screenshot",		"#str_20247" },
+
+		{ nullptr,					"MultiPrey",		"#str_20135" },
+
+		{ "clientMessageMode",		"Chat",				"#str_20249" },
+		{ "clientMessageMode 1",	"Team Chat",		"#str_20250" },
+		{ "_impulse20",				"Switch Teams",		"#str_20251" },
+		{ "_impulse22",				"Spectate",			"#str_20252" },
+		{ "_impulse17",				"Ready",			"#str_20253" },
+		{ "_impulse28",				"Vote Yes",			"#str_20254" },
+		{ "_impulse29",				"Vote No",			"#str_20255" },
+		{ "_impulse19",				"Score Board",		"#str_20256" },
+
+		{ nullptr,					"Other",			"#str_20213" }, // TODO: or "#str_02406"	"Misc"
+
+		{ "dhewm3Settings",			"Advanced settings menu",	nullptr },
+		{ "serverBrowser",			"Server Browser",			nullptr },
 	};
 
 	int numReserve = IM_ARRAYSIZE(betsMoveLookAttack) + IM_ARRAYSIZE(betsOther);
@@ -1151,12 +1159,6 @@ static void InitBindingEntries()
 		bindingEntries.Resize( numReserve );
 	}
 
-	idStr moveLookHeading = GetLocalizedString( "#str_02404", "Move" );
-	moveLookHeading += " / ";
-	moveLookHeading += GetLocalizedString( "#str_02403", "Look" );
-
-	bindingEntries.Append( BindingEntry( moveLookHeading ) );
-
 	for ( const BindingEntryTemplate& bet : betsMoveLookAttack ) {
 		bindingEntries.Append( BindingEntry( bet ) );
 	}
@@ -1164,7 +1166,7 @@ static void InitBindingEntries()
 	// grab the weapon bindings from the player entitydef
 	const idDict* playerDict = GetEntityDefDict( GAME_PLAYERDEFNAME );
 	const idDict* playerDictMP = GetEntityDefDict( GAME_PLAYERDEFNAME_MP );
-	bool impulse27used = false;
+
 	for ( int i = 0; i <= 13; ++i ) {
 		int weapNum = i;
 		int impulseNum = i;
@@ -1179,15 +1181,13 @@ static void InitBindingEntries()
 		if ( weapName != nullptr && weapName[0] != '\0' ) {
 			const idDict* weapDict = GetEntityDefDict( weapName );
 			if ( weapDict != nullptr ) {
-				const char* displayName = weapDict->GetString( "inv_name", nullptr );
+				const char* displayName = weapDict->GetString( "weaponname", nullptr );
 				if ( displayName == nullptr ) {
 					displayName = weapName;
 				} else if ( idStr::Cmpn( displayName, STRTABLE_ID, STRTABLE_ID_LENGTH ) == 0 ) {
 					displayName = GetLocalizedString( displayName, weapName );
 				}
 				bindingEntries.Append( BindingEntry( idStr::Format("_impulse%d", impulseNum), displayName ) );
-				if ( impulseNum == 27 )
-					impulse27used = true;
 			}
 		}
 	}
@@ -1198,18 +1198,13 @@ static void InitBindingEntries()
 
 	firstObscureEntryIndex = bindingEntries.Num();
 
-	bindingEntries.Append( BindingEntry( "_impulse16", "_impulse16" ) );
-	bindingEntries.Append( BindingEntry( "_impulse21", "_impulse21" ) );
-	// _impulse22 is "spectate", handled in "Other" section
-	bindingEntries.Append( BindingEntry( "_impulse23", "_impulse23" ) );
-	bindingEntries.Append( BindingEntry( "_impulse24", "_impulse24" ) );
-	bindingEntries.Append( BindingEntry( "_impulse26", "_impulse26" ) );
-	if ( !impulse27used ) {
-		bindingEntries.Append( BindingEntry( "_impulse27", "_impulse27" ) );
-	}
-	for ( int i=28; i <= 63; ++i ) {
-		if ( i == 40 ) // _impulse40 is "use vehicle", handled above in "Other" section
+	for ( int i = 0; i <= 63; ++i ) {
+		// impulses already handled in betsMoveLookAttack or betsOther
+		if ( i == 14 || i == 15 || i == 16 || i == 18 ||
+			 i == 17 || i == 19 || i == 20 || i == 22 ||
+			 i == 25 || i == 28 || i == 29 || i == 54 ) {
 			continue;
+		}
 
 		idStr impName = idStr::Format( "_impulse%d", i );
 		bindingEntries.Append( BindingEntry( impName, impName ) );
@@ -1279,12 +1274,12 @@ static void DrawBindingsMenu()
 			ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyle().Colors[ImGuiCol_TextDisabled]);
 
 			ImGui::TextWrapped( "Double click a keybinding entry below to bind a (different) key, or select it by clicking it once or navigating to it with cursor keys or gamepad and pressing Enter (or %s) to (re)bind it.",
-			                    GetGamepadBindNowButtonName() );
+								GetGamepadBindNowButtonName() );
 			ImGui::TextWrapped( "Remove a key binding (unbind) by selecting it and pressing Backspace or Delete (or %s).",
-			                    GetGamepadUnbindButtonName() );
+								GetGamepadUnbindButtonName() );
 			ImGui::TextWrapped( "If you select the first column (with the command name), you can unbind all keybindings for that command, or add another keybinding for it without overwriting an existing one." );
 			ImGui::TextWrapped( "You can unselect the currently selected binding by clicking it again or by pressing Escape (or %s).",
-			                    GetGamepadCancelButtonNames() );
+								GetGamepadCancelButtonNames() );
 			ImGui::TextWrapped( "The [++] button on the right opens (or closes) a window that shows all keys bound to the corresponding command (even if it's more than the number of binding columns) and has buttons to configure them. It's red when there actually are more key bound than can be shown in the columns of this window." );
 
 			ImGui::PopStyleColor(); // ImGuiCol_Text
@@ -1633,8 +1628,8 @@ static CVarOption videoOptionsImmediately[] = {
 			int texAni = cvar.GetInteger();
 			const char* fmtStr = (texAni > 1) ? "%d" : "No Anisotropic Filtering";
 			ImGui::SliderInt( "Anisotropic Filtering", &texAni, 1,
-			                  glConfig.maxTextureAnisotropy, fmtStr,
-			                  ImGuiSliderFlags_AlwaysClamp );
+							  glConfig.maxTextureAnisotropy, fmtStr,
+							  ImGuiSliderFlags_AlwaysClamp );
 			if ( texAni != cvar.GetInteger() ) {
 				cvar.SetInteger( texAni );
 			}
@@ -1729,12 +1724,12 @@ static bool VideoHasResettableChanges()
 	if ( curMode != initialMode )
 		return true;
 	if ( curMode == -1 && ( initialCustomVidRes[0] != r_customWidth.GetInteger()
-	                     || initialCustomVidRes[1] != r_customHeight.GetInteger() ) )
+						 || initialCustomVidRes[1] != r_customHeight.GetInteger() ) )
 	{
 		return true;
 	}
 	if ( r_fullscreen.GetBool() != initialFullscreen
-	     || r_fullscreenDesktop.GetBool() != initialFullscreenDesktop )
+		 || r_fullscreenDesktop.GetBool() != initialFullscreenDesktop )
 	{
 		return true;
 	}
@@ -1765,7 +1760,7 @@ static bool VideoHasApplyableChanges()
 		return true;
 	}
 	if ( r_fullscreen.GetBool() != curState.fullScreen
-	    || (curState.fullScreen && r_fullscreenDesktop.GetBool() != curState.fullScreenDesktop) )
+		|| (curState.fullScreen && r_fullscreenDesktop.GetBool() != curState.fullScreenDesktop) )
 	{
 		return true;
 	}
@@ -1778,8 +1773,8 @@ static bool VideoHasApplyableChanges()
 	}
 	// Note: value of image_useNormalCompression is only relevant if image_usePrecompressedTextures is enabled
 	if ( initialUsePrecomprTextures
-	    && (initialUseNormalCompr != globalImages->image_useNormalCompression.GetInteger()
-	       || initialUseCompression != globalImages->image_useCompression.GetInteger()) )
+		&& (initialUseNormalCompr != globalImages->image_useNormalCompression.GetInteger()
+		   || initialUseCompression != globalImages->image_useCompression.GetInteger()) )
 	{
 		return true;
 	}
@@ -1792,8 +1787,8 @@ static void ApplyVideoSettings()
 {
 	const char* cmd = "vid_restart partial\n";
 	if ( initialUsePrecomprTextures != globalImages->image_usePrecompressedTextures.GetInteger()
-	    || initialUseNormalCompr != globalImages->image_useNormalCompression.GetInteger()
-	    || initialUseCompression != globalImages->image_useCompression.GetInteger() )
+		|| initialUseNormalCompr != globalImages->image_useNormalCompression.GetInteger()
+		|| initialUseCompression != globalImages->image_useCompression.GetInteger() )
 	{
 		// these need a full restart (=> textures must be reloaded)
 		cmd = "vid_restart\n";
@@ -1934,9 +1929,9 @@ static void DrawVideoOptionsMenu()
 	SDL_GetDisplayBounds( sdlDisplayId_x, &displayRect );
 	if ( (int)glConfig.winWidth != glConfig.vidWidth ) {
 		ImGui::TextDisabled( "Current Resolution: %g x %g (Physical: %d x %d)",
-		                     glConfig.winWidth, glConfig.winHeight, glConfig.vidWidth, glConfig.vidHeight );
+							 glConfig.winWidth, glConfig.winHeight, glConfig.vidWidth, glConfig.vidHeight );
 		AddDescrTooltip( "Apparently your system is using a HighDPI mode, where the logical resolution (used to specify"
-		                 " window sizes) is lower than the physical resolution (number of pixels actually rendered)." );
+						 " window sizes) is lower than the physical resolution (number of pixels actually rendered)." );
 		float scale = float(glConfig.vidWidth)/glConfig.winWidth;
 		int pw = scale * displayRect.w;
 		int ph = scale * displayRect.h;
@@ -1959,7 +1954,7 @@ static void DrawVideoOptionsMenu()
 
 	int usePreComprTex = globalImages->image_usePrecompressedTextures.GetInteger();
 	if ( ImGui::Combo( "Use precompressed (.dds) textures", &usePreComprTex,
-	                   "No, only uncompressed\0Yes, no matter which format\0Only if high quality (BPCT/BC7)\0" ) )
+					   "No, only uncompressed\0Yes, no matter which format\0Only if high quality (BPCT/BC7)\0" ) )
 	{
 		globalImages->image_usePrecompressedTextures.SetInteger(usePreComprTex);
 		// by default I guess people also want compressed normal maps when using this
@@ -1975,7 +1970,7 @@ static void DrawVideoOptionsMenu()
 
 	int useCompression = globalImages->image_useCompression.GetInteger();
 	if ( ImGui::Combo( "Compress uncompressed textures on load", &useCompression,
-	                   "Leave uncompressed (best quality)\0Compress with S3TC (aka DXT aka BC1-3)\0Compress with BPCT (BC7)\0" ) )
+					   "Leave uncompressed (best quality)\0Compress with S3TC (aka DXT aka BC1-3)\0Compress with BPCT (BC7)\0" ) )
 	{
 		globalImages->image_useCompression.SetInteger(useCompression);
 	}
@@ -1991,8 +1986,8 @@ static void DrawVideoOptionsMenu()
 	}
 	if ( usePreComprTex ) {
 		const char* descr = "Also use precompressed textures for normalmaps or compress them on load.\n"
-		                    "Uncompressed often has better quality, but uses more VRAM.\n"
-		                    "When using highres retexturing packs, you should definitely enable this.";
+							"Uncompressed often has better quality, but uses more VRAM.\n"
+							"When using highres retexturing packs, you should definitely enable this.";
 		AddCVarOptionTooltips( globalImages->image_useNormalCompression, descr );
 	} else {
 		AddTooltip( "Can only be used if (pre)compressed textures are enabled!" );
@@ -2321,69 +2316,13 @@ static CVarOption gameOptions[] = {
 	CVarOption( "g_doubleVision", "Show Double Vision when Taking Damage", OT_BOOL ),
 	CVarOption( "g_hitEffect", "Mess Up Player Camera when Taking Damage", OT_BOOL ),
 	CVarOption( "con_noPrint", "Print console output only to console, don't show when it's closed", OT_BOOL ),
+	CVarOption( "Other Options" ),
 };
-
-static char playerNameBuf[128] = {};
-static idCVar* ui_nameVar = nullptr;
 
 void InitGameOptionsMenu()
 {
-	ui_nameVar = cvarSystem->Find( "ui_name" );
-
-	// Note: ImGui uses UTF-8 for strings, Doom3 uses ISO8859-1, so we need to translate
-	if ( D3_ISO8859_1toUTF8( ui_nameVar->GetString(), playerNameBuf, sizeof(playerNameBuf) ) == nullptr ) {
-		// returning NULL means playerNameBuf wasn't big enough - that shouldn't happen,
-		// at least the player name input in the original menu only allowed 40 chars
-		playerNameBuf[sizeof(playerNameBuf)-1] = '\0';
-	}
-
 	InitOptions( gameOptions, IM_ARRAYSIZE(gameOptions) );
 }
-
-static int PlayerNameInputTextCallback(ImGuiInputTextCallbackData* data)
-{
-	if ( data->EventChar > 0xFF ) { // some unicode char that ISO8859-1 can't represent
-		data->EventChar = 0;
-		return 1;
-	}
-
-	if ( data->Buf ) {
-		// we want at most 40 codepoints
-		int newLen = D3_UTF8CutOffAfterNCodepoints( data->Buf, 40 );
-		if ( newLen != data->BufTextLen ) {
-			data->BufTextLen = newLen;
-			data->BufDirty = true;
-		}
-	}
-
-	return 0;
-}
-
-void DrawGameOptionsMenu()
-{
-	ImGui::Spacing();
-
-	ImGuiInputTextFlags flags = ImGuiInputTextFlags_CallbackEdit | ImGuiInputTextFlags_CallbackCharFilter;
-	if ( ImGui::InputText( "Player Name", playerNameBuf, sizeof(playerNameBuf), flags, PlayerNameInputTextCallback )
-	     && playerNameBuf[0] != '\0' )
-	{
-		char playerNameIso[128] = {};
-		if ( D3_UTF8toISO8859_1( playerNameBuf, playerNameIso, sizeof(playerNameIso), '!' ) != NULL ) {
-			playerNameIso[40] = '\0'; // limit to 40 chars, like the original menu
-			ui_nameVar->SetString( playerNameIso );
-			// update the playerNameBuf to reflect the name as it is now: limited to 40 chars
-			// and possibly containing '!' from non-translatable unicode chars
-			D3_ISO8859_1toUTF8( ui_nameVar->GetString(), playerNameBuf, sizeof(playerNameBuf) );
-		} else {
-			D3::ImGuiHooks::ShowWarningOverlay( "Player Name way too long (max 40 chars) or contains invalid UTF-8 encoding!" );
-			playerNameBuf[0] = '\0';
-		}
-	}
-	AddTooltip( "ui_name" );
-
-	DrawOptions( gameOptions, IM_ARRAYSIZE(gameOptions) );
-}
-
 
 static bool showStyleEditor = false;
 
@@ -2445,6 +2384,14 @@ static void DrawOtherOptionsMenu()
 	if ( ImGui::Button( "Show ImGui Demo" ) ) {
 		D3::ImGuiHooks::OpenWindow( D3::ImGuiHooks::D3_ImGuiWin_Demo );
 	}
+}
+
+void DrawGameOptionsMenu()
+{
+	ImGui::Spacing();
+
+	DrawOptions( gameOptions, IM_ARRAYSIZE(gameOptions) );
+	DrawOtherOptionsMenu();
 }
 
 } //anon namespace
@@ -2545,13 +2492,6 @@ void Com_DrawDhewm3SettingsMenu()
 		{
 			BeginTabChild( "gamechild" );
 			DrawGameOptionsMenu();
-			ImGui::EndChild();
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem("Other Options"))
-		{
-			BeginTabChild( "otherchild" );
-			DrawOtherOptionsMenu();
 			ImGui::EndChild();
 			ImGui::EndTabItem();
 		}
