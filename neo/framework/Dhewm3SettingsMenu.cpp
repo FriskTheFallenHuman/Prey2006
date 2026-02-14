@@ -2406,11 +2406,11 @@ static void DrawOtherOptionsMenu()
 	AddDescrTooltip( "Allows docking ImGui windows to each other (or the edge of real windows, if enables it, which it currently does not, but might for tools..)" );
 
 	int style_idx = imgui_style.GetInteger();
-	if ( ImGui::Combo( "ImGui Style", &style_idx, "dhewm3\0ImGui Default\0Userstyle\0") )
+	if ( ImGui::Combo( "ImGui Style", &style_idx, "Prey\0ImGui Default\0Userstyle\0") )
 	{
 		switch( style_idx )
 		{
-			case 0: D3::ImGuiHooks::SetImGuiStyle( D3::ImGuiHooks::Style::Dhewm3 ); break;
+			case 0: D3::ImGuiHooks::SetImGuiStyle( D3::ImGuiHooks::Style::Prey ); break;
 			case 1: D3::ImGuiHooks::SetImGuiStyle( D3::ImGuiHooks::Style::ImGui_Default ); break;
 			case 2: D3::ImGuiHooks::SetImGuiStyle( D3::ImGuiHooks::Style::User ); break;
 		}

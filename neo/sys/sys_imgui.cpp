@@ -42,7 +42,7 @@ extern void Com_OpenCloseDhewm3ServerBrowser( bool open ); // ditto
 
 static idCVar imgui_scale( "imgui_scale", "-1.0", CVAR_SYSTEM|CVAR_FLOAT|CVAR_ARCHIVE|CVAR_NEW, "factor to scale ImGUI menus by (-1: auto)" ); // TODO: limit values?
 
-idCVar imgui_style( "imgui_style", "0", CVAR_SYSTEM|CVAR_INTEGER|CVAR_ARCHIVE|CVAR_NEW, "Which ImGui style to use. 0: Dhewm3 theme, 1: Default ImGui theme, 2: User theme", 0.0f, 2.0f );
+idCVar imgui_style( "imgui_style", "0", CVAR_SYSTEM|CVAR_INTEGER|CVAR_ARCHIVE|CVAR_NEW, "Which ImGui style to use. 0: Prey theme, 1: Default ImGui theme, 2: User theme", 0.0f, 2.0f );
 
 extern idCVar r_scaleMenusTo43;
 
@@ -286,7 +286,7 @@ bool Init(void* _sdlWindow, void* sdlGlContext)
 	iniPath += "/imgui.ini";
 	io.IniFilename = iniPath.c_str();
 
-	SetImGuiStyle( Style::Dhewm3 );
+	SetImGuiStyle( Style::Prey );
 	userStyle = ImGui::GetStyle(); // set dhewm3 style as default, in case the user style is missing values
 	if ( DG::ReadImGuiStyle( userStyle, GetUserStyleFilename() ) && imgui_style.GetInteger() == 2 ) {
 		ImGui::GetStyle() = userStyle;
@@ -481,7 +481,7 @@ bool ProcessEvent(const void* sdlEvent)
 	}
 
 	if ( ImGui::IsWindowFocused( ImGuiFocusedFlags_AnyWindow )
-	    && (ev->type == SDL_CONTROLLERAXISMOTION || ev->type == SDL_CONTROLLERBUTTONDOWN) ) {
+		&& (ev->type == SDL_CONTROLLERAXISMOTION || ev->type == SDL_CONTROLLERBUTTONDOWN) ) {
 		// don't pass on controller axis events to avoid moving the mouse cursor
 		// and controller button events to avoid emulating mouse clicks
 		return true;
@@ -634,17 +634,17 @@ void EndFrame()
 
 	ImGui_ImplOpenGL2_RenderDrawData( ImGui::GetDrawData() );
 
-    // Update and Render additional Platform Windows
-    // (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
-    //  For this specific demo app we could also call SDL_GL_MakeCurrent(window, gl_context) directly)
-    if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-    {
-        SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
-        SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
-        ImGui::UpdatePlatformWindows();
-        ImGui::RenderPlatformWindowsDefault();
-        SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
-    }
+	// Update and Render additional Platform Windows
+	// (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
+	//  For this specific demo app we could also call SDL_GL_MakeCurrent(window, gl_context) directly)
+	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		SDL_Window* backup_current_window = SDL_GL_GetCurrentWindow();
+		SDL_GLContext backup_current_context = SDL_GL_GetCurrentContext();
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+		SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
+	}
 
 	if ( curArrayBuffer != 0 ) {
 		qglBindBufferARB( GL_ARRAY_BUFFER_ARB, curArrayBuffer );
@@ -709,7 +709,7 @@ int GetOpenWindowsMask()
 ImGuiStyle GetImGuiStyle( Style d3style )
 {
 	ImGuiStyle style; // default style
-	if ( d3style == Style::Dhewm3 ) {
+	if ( d3style == Style::Prey ) {
 		// make it look a bit nicer with rounded edges
 		style.WindowRounding = 2.0f;
 		style.FrameRounding = 3.0f;
@@ -718,7 +718,7 @@ ImGuiStyle GetImGuiStyle( Style d3style )
 		style.ScrollbarRounding = 8.0f;
 		style.GrabRounding = 3.0f;
 		style.PopupRounding = 2.0f;
-		SetDhewm3StyleColors( &style );
+		SetPreyStyleColors( &style );
 	} else if ( d3style == Style::User ) {
 		style = userStyle;
 	} else {
@@ -733,20 +733,91 @@ void SetImGuiStyle( Style d3style )
 	ImGui::GetStyle() = GetImGuiStyle( d3style );
 }
 
-void SetDhewm3StyleColors( ImGuiStyle* dst )
+void SetPreyStyleColors( ImGuiStyle* dst )
 {
 	if ( dst == nullptr )
 		dst = &ImGui::GetStyle();
-	ImGui::StyleColorsDark( dst );
+
 	ImVec4* colors = dst->Colors;
-	//colors[ImGuiCol_TitleBg]       = ImVec4(0.28f, 0.36f, 0.48f, 0.88f);
-	//colors[ImGuiCol_TitleBg]       = ImVec4(0.09f, 0.23f, 0.22f, 0.90f);
-	//colors[ImGuiCol_TitleBgActive] = ImVec4(0.02f, 0.52f, 0.53f, 1.00f);
-	colors[ImGuiCol_TitleBg]       = ImVec4(0.09f, 0.13f, 0.12f, 0.90f);
-	colors[ImGuiCol_TitleBgActive] = ImVec4(0.03f, 0.33f, 0.33f, 1.00f);
-	//colors[ImGuiCol_TitleBg]       = ImVec4(0.12f, 0.17f, 0.16f, 0.90f);
-	colors[ImGuiCol_TabHovered]    = ImVec4(0.42f, 0.69f, 1.00f, 0.80f);
-	colors[ImGuiCol_TabSelected]     = ImVec4(0.24f, 0.51f, 0.83f, 1.00f);
+
+	// Base colors for a pleasant and modern dark theme with dark accents
+	colors[ImGuiCol_Text] = ImVec4(0.92f, 0.93f, 0.94f, 1.00f);                  // Light grey text for readability
+	colors[ImGuiCol_TextDisabled] = ImVec4(0.50f, 0.52f, 0.54f, 1.00f);          // Subtle grey for disabled text
+	colors[ImGuiCol_WindowBg] = ImVec4(0.14f, 0.14f, 0.16f, 1.00f);              // Dark background with a hint of blue
+	colors[ImGuiCol_ChildBg] = ImVec4(0.16f, 0.16f, 0.18f, 1.00f);               // Slightly lighter for child elements
+	colors[ImGuiCol_PopupBg] = ImVec4(0.18f, 0.18f, 0.20f, 1.00f);               // Popup background
+	colors[ImGuiCol_Border] = ImVec4(0.28f, 0.29f, 0.30f, 0.60f);                // Soft border color
+	colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);          // No border shadow
+	colors[ImGuiCol_FrameBg] = ImVec4(0.20f, 0.22f, 0.24f, 1.00f);               // Frame background
+	colors[ImGuiCol_FrameBgHovered] = ImVec4(0.22f, 0.24f, 0.26f, 1.00f);        // Frame hover effect
+	colors[ImGuiCol_FrameBgActive] = ImVec4(0.24f, 0.26f, 0.28f, 1.00f);         // Active frame background
+	colors[ImGuiCol_TitleBg] = ImVec4(0.14f, 0.14f, 0.16f, 1.00f);               // Title background
+	colors[ImGuiCol_TitleBgActive] = ImVec4(0.16f, 0.16f, 0.18f, 1.00f);         // Active title background
+	colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.14f, 0.14f, 0.16f, 1.00f);      // Collapsed title background
+	colors[ImGuiCol_MenuBarBg] = ImVec4(0.20f, 0.20f, 0.22f, 1.00f);             // Menu bar background
+	colors[ImGuiCol_ScrollbarBg] = ImVec4(0.16f, 0.16f, 0.18f, 1.00f);           // Scrollbar background
+	colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.24f, 0.26f, 0.28f, 1.00f);         // Dark accent for scrollbar grab
+	colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.28f, 0.30f, 0.32f, 1.00f);  // Scrollbar grab hover
+	colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.32f, 0.34f, 0.36f, 1.00f);   // Scrollbar grab active
+	colors[ImGuiCol_CheckMark] = ImVec4(0.46f, 0.56f, 0.66f, 1.00f);             // Dark blue checkmark
+	colors[ImGuiCol_SliderGrab] = ImVec4(0.36f, 0.46f, 0.56f, 1.00f);            // Dark blue slider grab
+	colors[ImGuiCol_SliderGrabActive] = ImVec4(0.40f, 0.50f, 0.60f, 1.00f);      // Active slider grab
+	colors[ImGuiCol_Button] = ImVec4(0.24f, 0.34f, 0.44f, 1.00f);                // Dark blue button
+	colors[ImGuiCol_ButtonHovered] = ImVec4(0.28f, 0.38f, 0.48f, 1.00f);         // Button hover effect
+	colors[ImGuiCol_ButtonActive] = ImVec4(0.32f, 0.42f, 0.52f, 1.00f);          // Active button
+	colors[ImGuiCol_Header] = ImVec4(0.24f, 0.34f, 0.44f, 1.00f);                // Header color similar to button
+	colors[ImGuiCol_HeaderHovered] = ImVec4(0.28f, 0.38f, 0.48f, 1.00f);         // Header hover effect
+	colors[ImGuiCol_HeaderActive] = ImVec4(0.32f, 0.42f, 0.52f, 1.00f);          // Active header
+	colors[ImGuiCol_Separator] = ImVec4(0.28f, 0.29f, 0.30f, 1.00f);             // Separator color
+	colors[ImGuiCol_SeparatorHovered] = ImVec4(0.46f, 0.56f, 0.66f, 1.00f);      // Hover effect for separator
+	colors[ImGuiCol_SeparatorActive] = ImVec4(0.46f, 0.56f, 0.66f, 1.00f);       // Active separator
+	colors[ImGuiCol_ResizeGrip] = ImVec4(0.36f, 0.46f, 0.56f, 1.00f);            // Resize grip
+	colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.40f, 0.50f, 0.60f, 1.00f);     // Hover effect for resize grip
+	colors[ImGuiCol_ResizeGripActive] = ImVec4(0.44f, 0.54f, 0.64f, 1.00f);      // Active resize grip
+	colors[ImGuiCol_Tab] = ImVec4(0.20f, 0.22f, 0.24f, 1.00f);                   // Inactive tab
+	colors[ImGuiCol_TabHovered] = ImVec4(0.28f, 0.38f, 0.48f, 1.00f);            // Hover effect for tab
+	colors[ImGuiCol_TabActive] = ImVec4(0.24f, 0.34f, 0.44f, 1.00f);             // Active tab color
+	colors[ImGuiCol_TabUnfocused] = ImVec4(0.20f, 0.22f, 0.24f, 1.00f);          // Unfocused tab
+	colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.24f, 0.34f, 0.44f, 1.00f);    // Active but unfocused tab
+	colors[ImGuiCol_PlotLines] = ImVec4(0.46f, 0.56f, 0.66f, 1.00f);             // Plot lines
+	colors[ImGuiCol_PlotLinesHovered] = ImVec4(0.46f, 0.56f, 0.66f, 1.00f);      // Hover effect for plot lines
+	colors[ImGuiCol_PlotHistogram] = ImVec4(0.36f, 0.46f, 0.56f, 1.00f);         // Histogram color
+	colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.40f, 0.50f, 0.60f, 1.00f);  // Hover effect for histogram
+	colors[ImGuiCol_TableHeaderBg] = ImVec4(0.20f, 0.22f, 0.24f, 1.00f);         // Table header background
+	colors[ImGuiCol_TableBorderStrong] = ImVec4(0.28f, 0.29f, 0.30f, 1.00f);     // Strong border for tables
+	colors[ImGuiCol_TableBorderLight] = ImVec4(0.24f, 0.25f, 0.26f, 1.00f);      // Light border for tables
+	colors[ImGuiCol_TableRowBg] = ImVec4(0.20f, 0.22f, 0.24f, 1.00f);            // Table row background
+	colors[ImGuiCol_TableRowBgAlt] = ImVec4(0.22f, 0.24f, 0.26f, 1.00f);         // Alternate row background
+	colors[ImGuiCol_TextSelectedBg] = ImVec4(0.24f, 0.34f, 0.44f, 0.35f);        // Selected text background
+	colors[ImGuiCol_DragDropTarget] = ImVec4(0.46f, 0.56f, 0.66f, 0.90f);        // Drag and drop target
+	colors[ImGuiCol_NavHighlight] = ImVec4(0.46f, 0.56f, 0.66f, 1.00f);          // Navigation highlight
+	colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f); // Windowing highlight
+	colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);     // Dim background for windowing
+	colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);      // Dim background for modal windows
+
+	// Style adjustments
+	dst->WindowPadding = ImVec2(8.00f, 8.00f);
+	dst->FramePadding = ImVec2(5.00f, 2.00f);
+	dst->CellPadding = ImVec2(6.00f, 6.00f);
+	dst->ItemSpacing = ImVec2(6.00f, 6.00f);
+	dst->ItemInnerSpacing = ImVec2(6.00f, 6.00f);
+	dst->TouchExtraPadding = ImVec2(0.00f, 0.00f);
+	dst->IndentSpacing = 25;
+	dst->ScrollbarSize = 11;
+	dst->GrabMinSize = 10;
+	dst->WindowBorderSize = 1;
+	dst->ChildBorderSize = 1;
+	dst->PopupBorderSize = 1;
+	dst->FrameBorderSize = 1;
+	dst->TabBorderSize = 1;
+	dst->WindowRounding = 7;
+	dst->ChildRounding = 4;
+	dst->FrameRounding = 3;
+	dst->PopupRounding = 4;
+	dst->ScrollbarRounding = 9;
+	dst->GrabRounding = 3;
+	dst->LogSliderDeadzone = 4;
+	dst->TabRounding = 4;
 }
 
 void SetUserStyleColors()

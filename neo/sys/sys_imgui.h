@@ -88,7 +88,7 @@ extern void ShowWarningOverlay( const char* text );
 extern void ShowInfoOverlay( const char* text );
 
 enum Style {
-	Dhewm3,
+	Prey,
 	ImGui_Default,
 	User
 };
@@ -97,7 +97,7 @@ enum Style {
 extern void SetImGuiStyle( Style style );
 
 // set the default dhewm3 imgui style colors
-extern void SetDhewm3StyleColors( ImGuiStyle* dst = nullptr );
+extern void SetPreyStyleColors( ImGuiStyle* dst = nullptr );
 extern void SetUserStyleColors();
 
 // write current style settings (incl. colors) as userStyle
