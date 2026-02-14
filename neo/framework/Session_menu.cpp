@@ -822,8 +822,8 @@ void idSessionLocal::HandleMainMenuCommands( const char *menuCommand ) {
 			}
 
 			if ( !dedicated && !cvarSystem->GetCVarBool( "net_LANServer" ) && cvarSystem->GetCVarInteger("si_maxPlayers") > 4 ) {
-				// "Dedicated server mode is recommended for internet servers with more than 4 players. Continue in listen mode?"
-				if ( !MessageBox( MSG_YESNO, common->GetLanguageDict()->GetString ( "#str_00100625" ), common->GetLanguageDict()->GetString ( "#str_00100626" ), true, "yes" )[ 0 ] ) {
+				// "Dedicated server mode is recommended for Internet servers with more than 4 players. Continue in listen mode?"
+				if ( !MessageBox( MSG_YESNO, common->GetLanguageDict()->GetString ( "#str_00625" ), common->GetLanguageDict()->GetString ( "#str_00626" ), true, "yes" )[ 0 ] ) {
 					continue;
 				}
 			}
