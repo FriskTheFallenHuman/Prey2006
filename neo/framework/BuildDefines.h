@@ -91,6 +91,8 @@ If you have questions concerning this license or the applicable additional terms
 	#define	ID_ALLOW_TOOLS
 #endif
 
+#define ID_FAKE_PURE 1
+
 //#define ID_ENFORCE_KEY 0
 
 // HUMANHEAD mdl:  Moved to licensee.h
