@@ -53,6 +53,7 @@ void Com_DrawDhewm3ServerBrowser() {
 	idServerScan &serverScan = idAsyncNetwork::client.serverList;
 	serverScan.RunFrame();	// Make sure the scan state advances each frame
 
+	ImGui::SetNextWindowSizeConstraints( ImVec2(1270, 650), ImVec2(FLT_MAX, FLT_MAX) );
 	ImGui::SetNextWindowSize( ImVec2( 900, 480 ), ImGuiCond_FirstUseEver );
 	if ( !ImGui::Begin( "Server Browser", &g_serverBrowserOpen, ImGuiWindowFlags_NoCollapse ) ) {
 		ImGui::End();
