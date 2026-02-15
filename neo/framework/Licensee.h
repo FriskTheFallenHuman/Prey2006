@@ -69,7 +69,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef IDNET_HOST
 	//Q4MASTER
 	//#define IDNET_HOST				"q4master.idsoftware.com"
-	#define IDNET_HOST					"localhost"
+	#define IDNET_HOST					"prey-master.xanz-servers.co.uk"
 #endif
 
 // default idnet master port
