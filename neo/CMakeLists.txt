@@ -472,8 +472,17 @@ configure_file(
 	"${CMAKE_BINARY_DIR}/config.h"
 )
 
+set(cpu_arch)
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+	set(cpu_arch "x86_64")
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+	set(cpu_arch "x86")
+endif()
+
 if(NOT MSVC)
 	message(STATUS "Building ${CMAKE_BUILD_TYPE} for ${os}-${cpu}")
+else()
+	message(STATUS "Building ${CMAKE_BUILD_TYPE} for ${os}-${cpu_arch} with Visual Studio ${CMAKE_VS_VERSION}")
 endif()
 
 if(NOT WIN32)
@@ -1573,39 +1582,39 @@ if(TOOLS AND MAYA_IMPORT)
 		${src_enginestub}
 	)
 
-	add_dependencies(MayaImport${MAYA_VERSION}${cpu} MayaDevKit)
+	add_dependencies(MayaImport${MAYA_VERSION}${cpu_arch} MayaDevKit)
 	
 	if(MSVC)
 		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_mayaimport} ${src_toolsupportsrc} ${src_enginestub})
 	endif()
 	
-	target_precompile_headers(MayaImport${MAYA_VERSION}${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
+	target_precompile_headers(MayaImport${MAYA_VERSION}${cpu_arch} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
 	
-	target_include_directories(MayaImport${MAYA_VERSION}${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
+	target_include_directories(MayaImport${MAYA_VERSION}${cpu_arch} PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
 
 	if(HARDLINK_GAME)
 		if (MSVC)
-			set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;ID_MAYA_IMPORT_API=__declspec(dllexport)")
+			set_target_properties(MayaImport${MAYA_VERSION}${cpu_arch} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;ID_MAYA_IMPORT_API=__declspec(dllexport)")
 		else()
-			set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;ID_MAYA_IMPORT_API=__attribute__ ((visibility (\"default\")))")
+			set_target_properties(MayaImport${MAYA_VERSION}${cpu_arch} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;ID_MAYA_IMPORT_API=__attribute__ ((visibility (\"default\")))")
 		endif()
-		target_include_directories(MayaImport${MAYA_VERSION}${cpu} PRIVATE ${game_includes})
+		target_include_directories(MayaImport${MAYA_VERSION}${cpu_arch} PRIVATE ${game_includes})
 	else()
 		if (MSVC)
-			set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;__DOOM_DLL__;ID_MAYA_IMPORT_API=__declspec(dllexport)")
+			set_target_properties(MayaImport${MAYA_VERSION}${cpu_arch} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;__DOOM_DLL__;ID_MAYA_IMPORT_API=__declspec(dllexport)")
 		else()
-			set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;__DOOM_DLL__;ID_MAYA_IMPORT_API=__attribute__ ((visibility (\"default\")))")
+			set_target_properties(MayaImport${MAYA_VERSION}${cpu_arch} PROPERTIES COMPILE_DEFINITIONS "ID_MAYA_IMPORT;__DOOM_DLL__;ID_MAYA_IMPORT_API=__attribute__ ((visibility (\"default\")))")
 		endif()
 	endif()
-	set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES LINK_FLAGS "${ldflags}")
-	target_include_directories(MayaImport${MAYA_VERSION}${cpu} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/libs/MayaSDKDevKit/include")
-	target_link_directories(MayaImport${MAYA_VERSION}${cpu} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/libs/MayaSDKDevKit/lib")
-	target_link_libraries(MayaImport${MAYA_VERSION}${cpu} idlib Foundation OpenMaya OpenMayaAnim)
-	set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES FOLDER "dlls")
-	set_target_properties(MayaImport${MAYA_VERSION}${cpu} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER} LIBRARY_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
+	set_target_properties(MayaImport${MAYA_VERSION}${cpu_arch} PROPERTIES LINK_FLAGS "${ldflags}")
+	target_include_directories(MayaImport${MAYA_VERSION}${cpu_arch} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/libs/MayaSDKDevKit/include")
+	target_link_directories(MayaImport${MAYA_VERSION}${cpu_arch} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/libs/MayaSDKDevKit/lib")
+	target_link_libraries(MayaImport${MAYA_VERSION}${cpu_arch} idlib Foundation OpenMaya OpenMayaAnim)
+	set_target_properties(MayaImport${MAYA_VERSION}${cpu_arch} PROPERTIES FOLDER "dlls")
+	set_target_properties(MayaImport${MAYA_VERSION}${cpu_arch} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER} LIBRARY_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
 
 	if(NOT APPLE AND NOT WIN32)
-		install(TARGETS MayaImport${MAYA_VERSION}${cpu}
+		install(TARGETS MayaImport${MAYA_VERSION}${cpu_arch}
 				RUNTIME DESTINATION "${bindir}"
 				LIBRARY DESTINATION "${libdir}"
 				ARCHIVE DESTINATION "${libdir}"
@@ -1616,32 +1625,32 @@ endif()
 # ============================== Prey ================================
 
 if(BASE AND NOT HARDLINK_GAME)
-	add_library(Game${cpu} SHARED ${src_game} ${src_prey})
+	add_library(Game${cpu_arch} SHARED ${src_game} ${src_prey})
 
 	if (MSVC)
-		target_sources(Game${cpu} PRIVATE "sys/win32/natvis/game.natvis")
+		target_sources(Game${cpu_arch} PRIVATE "sys/win32/natvis/game.natvis")
 		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_game} ${src_prey})
 	endif()
 
-	target_precompile_headers(Game${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
+	target_precompile_headers(Game${cpu_arch} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
 
-	target_include_directories(Game${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
+	target_include_directories(Game${cpu_arch} PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
 
-	set_target_properties(Game${cpu} PROPERTIES PREFIX "")
-	set_target_properties(Game${cpu} PROPERTIES COMPILE_DEFINITIONS "GAME_DLL;HUMANHEAD")
-	target_include_directories(Game${cpu} PRIVATE "${CMAKE_SOURCE_DIR}/game" "${CMAKE_SOURCE_DIR}/Prey")
-	set_target_properties(Game${cpu} PROPERTIES LINK_FLAGS "${ldflags}")
-	set_target_properties(Game${cpu} PROPERTIES INSTALL_NAME_DIR "@executable_path")
+	set_target_properties(Game${cpu_arch} PROPERTIES PREFIX "")
+	set_target_properties(Game${cpu_arch} PROPERTIES COMPILE_DEFINITIONS "GAME_DLL;HUMANHEAD")
+	target_include_directories(Game${cpu_arch} PRIVATE "${CMAKE_SOURCE_DIR}/game" "${CMAKE_SOURCE_DIR}/Prey")
+	set_target_properties(Game${cpu_arch} PROPERTIES LINK_FLAGS "${ldflags}")
+	set_target_properties(Game${cpu_arch} PROPERTIES INSTALL_NAME_DIR "@executable_path")
 	if (WIN32)
-		target_link_libraries(Game${cpu} PRIVATE idlib ${SDLX_LIBRARY})
+		target_link_libraries(Game${cpu_arch} PRIVATE idlib ${SDLX_LIBRARY})
 	else()
-		target_link_libraries(Game${cpu} idlib)
+		target_link_libraries(Game${cpu_arch} idlib)
 	endif()
-	set_target_properties(Game${cpu} PROPERTIES OUTPUT_NAME "game${cpu}" RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER}/base LIBRARY_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER}/base)
-	set_target_properties(Game${cpu} PROPERTIES FOLDER "dlls")
+	set_target_properties(Game${cpu_arch} PROPERTIES OUTPUT_NAME "game${cpu_arch}" RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER}/base LIBRARY_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER}/base)
+	set_target_properties(Game${cpu_arch} PROPERTIES FOLDER "dlls")
 
 	if(NOT WIN32)
-		install(TARGETS Game${cpu}
+		install(TARGETS Game${cpu_arch}
 				RUNTIME DESTINATION "${bindir}"
 				LIBRARY DESTINATION "${datadir}/base"
 				ARCHIVE DESTINATION "${libdir}"

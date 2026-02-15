@@ -69,7 +69,9 @@ public:
 	idEventArg( const char *data )				{ type = D_EVENT_STRING; value = reinterpret_cast<intptr_t>( data ); };
 	idEventArg( const class idEntity *data )	{ type = D_EVENT_ENTITY; value = reinterpret_cast<intptr_t>( data ); };
 	idEventArg( const struct trace_s *data )	{ type = D_EVENT_TRACE; value = reinterpret_cast<intptr_t>( data ); };
+#if defined(__x86_64__) || defined(_M_X64)
 	idEventArg( intptr_t data )					{ type = D_EVENT_INTPTR; value = data; };
+#endif
 };
 
 class idAllocError : public idException {
