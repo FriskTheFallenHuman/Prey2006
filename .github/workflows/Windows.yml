@@ -1,4 +1,5 @@
 name: Windows Build (x86_64 & x86)
+
 on:
   push:
     branches:
@@ -7,10 +8,7 @@ on:
       - .github/workflows/FreeBSD.yml
       - .github/workflows/Linux.yml
   pull_request:
-    types:
-      - edited
-      - opened
-      - synchronize
+    types: [edited, opened, synchronize]
     paths-ignore:
       - .github/workflows/FreeBSD.yml
       - .github/workflows/Linux.yml
@@ -77,7 +75,6 @@ jobs:
 
           $archArg = if ($env:ARCH -eq 'x86_64') { '-arch=x64' } else { '-arch=win32' }
 
-          # Run VsDevCmd.bat in cmd, then run `set` to dump the environment.
           $vsDevCmd = Join-Path $inst 'Common7\Tools\VsDevCmd.bat'
           if (-not (Test-Path $vsDevCmd)) {
             Write-Error "VsDevCmd.bat not found at $vsDevCmd"
@@ -90,64 +87,27 @@ jobs:
             exit 1
           }
 
-          # Write each environment variable into $GITHUB_ENV so subsequent steps inherit them
           foreach ($line in $envDump) {
             if ($line -match '^(.*?)=(.*)$') {
               $name = $matches[1]
               $value = $matches[2]
-              # Skip some very large or irrelevant variables if desired (optional)
               Add-Content -Path $env:GITHUB_ENV -Value "$name=$value"
             }
           }
 
           Write-Host "MSVC environment exported to GITHUB_ENV"
 
-      - name: Build with CMake+Ninja
-        uses: lukka/run-cmake@v10
-        with:
-          cmakeListsTxtPath: "${{github.workspace}}/neo/CMakeLists.txt"
-          configurePreset: "${{ matrix.preset_config }}"
-          buildPreset: "${{ matrix.preset_build }}"
-          vcpkg: false
+      - name: Build the engine
+        run: |
+          mkdir build
+          cd build
+          cmake -G Ninja -DDEDICATED=ON ../neo/
+          ninja
 
-      - name: Create binary.conf
+      - name: Copy base files and create gamepack
         shell: pwsh
         run: |
-          @'
-          // add flags for supported operating systems in this pak
-          // one id per line
-          // name the file binary.conf and place it in the game pak
-          // 0 windows
-          // 1 macosx
-          // 2 linux/freebsd
-          0
-
-          '@ | Out-File -FilePath "${{ github.workspace }}\base\binary.conf" -Encoding utf8
-
-      - name: Package into game00.pk4
-        shell: pwsh
-        run: |
-          cd "${{ github.workspace }}\base"
-          $files = @("binary.conf", "${{ matrix.dll_name }}")
-          if (Test-Path game00.pk4) { Remove-Item game00.pk4 -Force }
-          Compress-Archive -Path $files -DestinationPath game00.pk4 -Force
-
-          # Remove binary.conf only if the pak was created
-          if (Test-Path game00.pk4) {
-            Write-Host "game00.pk4 created, removing binary.conf from base"
-            Remove-Item -Path "binary.conf" -Force -ErrorAction SilentlyContinue
-          } else {
-            Write-Host "game00.pk4 not found; keeping binary.conf"
-          }
-
-      - name: Copy base files to the output folder
-        shell: pwsh
-        run: |
-          cd ${{github.workspace}}
-          Copy-Item -Path "base" -Destination "output/windows/base" -Recurse
-          Copy-Item -Path ".github/Changelog.md" -Destination "output/windows"
-          Copy-Item -Path ".github/Configuration.md" -Destination "output/windows"
-          Copy-Item -Path ".github/README.md" -Destination "output/windows"
+          ./scripts/package_pk4.ps1 -DllName "${{ matrix.dll_name }}" -OsName windows
 
       - name: Artifacts
         uses: actions/upload-artifact@v4

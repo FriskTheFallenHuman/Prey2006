@@ -1,4 +1,5 @@
 name: Linux Builds (x86_64 & x86)
+
 on:
   push:
     branches:
@@ -7,14 +8,12 @@ on:
       - .github/workflows/FreeBSD.yml
       - .github/workflows/Windows.yml
   pull_request:
-    types:
-      - edited
-      - opened
-      - synchronize
+    types: [edited, opened, synchronize]
     paths-ignore:
       - .github/workflows/FreeBSD.yml
       - .github/workflows/Windows.yml
   workflow_dispatch:
+
 concurrency:
   # Cancel concurrent workflows for the same PR or commit hash.
   group: ${{github.workflow}}-${{github.event_name == 'pull_request' && github.head_ref || github.sha}}
@@ -43,7 +42,7 @@ jobs:
       - name: Restore apt cache
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build libfreetype6-dev ccache
+          packages: libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build libfreetype6-dev ccache zip
           version: 1.0
 
       - name: Ensure ccache dir exists and init
@@ -67,55 +66,15 @@ jobs:
           cmake -G Ninja -DDEDICATED=ON -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ../neo/
           ninja
 
-      - name: Make package script executable
-        run: chmod +x "${{ github.workspace }}/scripts/package_pk4.py"
-
-      - name: Create binary.conf
-        run: |
-          cat > "${{ github.workspace }}/base/binary.conf" <<'EOF'
-          // add flags for supported operating systems in this pak
-          // one id per line
-          // name the file binary.conf and place it in the game pak
-          // 0 windows
-          // 1 macosx
-          // 2 linux/freebsd
-          2
-          EOF
-
-      - name: Package into game01.pk4
-        env:
-          DLL_NAME: ${{ matrix.dll_name }}
-        run: |
-          cd "${{ github.workspace }}/output/linux/base"
-          if command -v zip >/dev/null 2>&1; then
-            rm -f game01.pk4
-            zip -r -q -FS game01.pk4 binary.conf "${DLL_NAME}"
-            if [ -f game01.pk4 ]; then
-              rm -f binary.conf
-            fi
-          else
-            python3 "${{ github.workspace }}/scripts/package_pk4.py"
-            if [ -f game01.pk4 ]; then
-              rm -f binary.conf
-            fi
-          fi
-
       - name: Chmod game executables
         run: |
           chmod +x "${{ github.workspace }}/output/linux/prey06"
           chmod +x "${{ github.workspace }}/output/linux/prey06ded"
 
-      - name: Copy base files to the output folder
+      - name: Copy base files and create gamepack
         shell: pwsh
         run: |
-          cd ${{ github.workspace }}
-          New-Item -ItemType Directory -Path "output/linux/base" -Force | Out-Null
-          New-Item -ItemType Directory -Path "output/linux/libs" -Force | Out-Null
-          Copy-Item -Path "base\*" -Destination "output/linux/base" -Recurse -Force
-          Copy-Item -Path "libs\*" -Destination "output/linux/libs" -Recurse -Force
-          Copy-Item -Path ".github/Changelog.md" -Destination "output/linux" -Force
-          Copy-Item -Path ".github/Configuration.md" -Destination "output/linux" -Force
-          Copy-Item -Path ".github/README.md" -Destination "output/linux" -Force
+          ./scripts/package_pk4.ps1 -DllName "${{ matrix.dll_name }}" -OsName linux
 
       - name: Artifacts
         uses: actions/upload-artifact@v4
