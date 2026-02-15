@@ -52,16 +52,18 @@ jobs:
 
       - name: Build the engine (x86_64)
         if: matrix.arch == 'x86_64'
+        shell: cmd
         run: |
-          mkdir build
+          if not exist build mkdir build
           cd build
           cmake -G "Visual Studio 17" -A x64 -DDEDICATED=ON ../neo/
           cmake --build . --config Release
 
       - name: Build the engine (x86)
         if: matrix.arch == 'x86'
+        shell: cmd
         run: |
-          mkdir build
+          if not exist build mkdir build
           cd build
           cmake -G "Visual Studio 17" -A Win32 -DDEDICATED=ON ../neo/
           cmake --build . --config Release
