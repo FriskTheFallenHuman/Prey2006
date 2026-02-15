@@ -42,6 +42,7 @@ jobs:
       with:
         release: "15.0"
         prepare: |
+          export IGNORE_OSVERSION=yes
           # Prefer pkg-static (statically linked) to avoid dynamic lib upgrade failures.
           if [ -x /usr/sbin/pkg-static ]; then
             /usr/sbin/pkg-static bootstrap -f || true
