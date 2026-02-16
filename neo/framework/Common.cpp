@@ -2473,15 +2473,15 @@ void idCommonLocal::Frame( void ) {
 
 		eventLoop->RunEventLoop();
 
-		// DG: prepare new ImGui frame - I guess this is a good place, as all new events should be available?
-		D3::ImGuiHooks::NewFrame();
-
 		com_frameTime = com_ticNumber * USERCMD_MSEC;
 
 		idAsyncNetwork::RunFrame();
 
 		if ( idAsyncNetwork::IsActive() ) {
 			if ( idAsyncNetwork::serverDedicated.GetInteger() != 1 ) {
+				// DG: prepare new ImGui frame - I guess this is a good place, as all new events should be available?
+				D3::ImGuiHooks::NewFrame();
+
 				session->GuiFrameEvents();
 				session->UpdateScreen( false );
 			}
