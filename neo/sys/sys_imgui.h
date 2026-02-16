@@ -14,24 +14,25 @@ enum D3ImGuiWindow {
 	D3_ImGuiWin_None        = 0,
 	D3_ImGuiWin_Settings    = 1, // advanced dhewm3 settings menu
 	D3_ImGuiWin_Demo        = 2, // ImGui demo window
-	D3_ImGuiWin_LightEditor = 4, // new ingame Light Editor
-	D3_ImGuiWin_SoundEditor = 8, // new ingame Sound Editor
-	D3_ImGuiWin_AfEditor    = 16, // new AF Editor
-	D3_ImGuiWin_PDAEditor	= 32, // new PDA Editor
-	D3_ImGuiWin_ParticleEditor = 64, // new Particle Editor
-	D3_ImGuiWin_ScriptEditor = 128, // new Script Editor
-	D3_ImGuiWin_DeclBrowser = 256, // new Decl Browser
-	D3_ImGuiWin_MaterialEditor = 512, // next should be 1024, then 2048, etc so a bitmask can be used
-	D3_ImGuiWin_ServerBrowser = 1024, // server browser window
+	D3_ImGuiWin_ServerBrowser = 4, // server browser window
+	D3_ImGuiWin_Unused = 8, // <unused>
+	D3_ImGuiWin_LightEditor = 16, // new ingame Light Editor
+	D3_ImGuiWin_SoundEditor = 32, // new ingame Sound Editor
+	D3_ImGuiWin_AfEditor    = 64, // new AF Editor
+	D3_ImGuiWin_ParticleEditor = 128, // new Particle Editor
+	D3_ImGuiWin_ScriptEditor = 256, // new Script Editor
+	D3_ImGuiWin_DeclBrowser = 512, // new Decl Browser
+	D3_ImGuiWin_MaterialEditor = 1024, // material editor
+	D3_ImGuiWin_PDAEditor = 2048, // PDA editor
 
 	D3_ImGuiWin_AnyEditor = D3_ImGuiWin_LightEditor
 		| D3_ImGuiWin_SoundEditor
 		| D3_ImGuiWin_AfEditor
-		| D3_ImGuiWin_PDAEditor
 		| D3_ImGuiWin_ParticleEditor
 		| D3_ImGuiWin_ScriptEditor
 		| D3_ImGuiWin_DeclBrowser
-		| D3_ImGuiWin_MaterialEditor // to decide whether to call DrawToolWindows()
+		| D3_ImGuiWin_MaterialEditor
+		| D3_ImGuiWin_PDAEditor // to decide whether to call DrawToolWindows()
 };
 
 #ifndef IMGUI_DISABLE
@@ -86,6 +87,14 @@ extern void ShowWarningOverlay( const char* text );
 // show a little overlay-window at the upper left of the screen showing the given text
 // disappears after a few seconds or when a key is pressed or the mouse is moved
 extern void ShowInfoOverlay( const char* text );
+
+// add a tooltip with the given text to the last item, if it's hovered
+extern void AddTooltip( const char* text );
+
+// add a little "(?)" after the last item, and show a tooltip with the given text when it's hovered
+extern void AddDescrTooltip( const char* description );
+
+extern const char* GetLocalizedString( const char* id, const char* fallback );
 
 enum Style {
 	Prey,

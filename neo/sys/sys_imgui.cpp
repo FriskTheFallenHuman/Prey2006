@@ -39,6 +39,8 @@ extern void Com_DrawDhewm3SettingsMenu(); // in framework/dhewm3SettingsMenu.cpp
 extern void Com_OpenCloseDhewm3SettingsMenu( bool open ); // ditto
 extern void Com_DrawDhewm3ServerBrowser(); // in framework/Dhewm3ServerBrowserMenu.cpp
 extern void Com_OpenCloseDhewm3ServerBrowser( bool open ); // ditto
+extern void Com_DrawDhewm3CreateServer(); // in framework/Dhewm3ServerBrowserMenu.cpp
+extern void Com_DrawDhewm3PlayerSetup(); // in framework/Dhewm3ServerBrowserMenu.cpp
 
 static idCVar imgui_scale( "imgui_scale", "-1.0", CVAR_SYSTEM|CVAR_FLOAT|CVAR_ARCHIVE|CVAR_NEW, "factor to scale ImGUI menus by (-1: auto)" ); // TODO: limit values?
 
@@ -216,6 +218,39 @@ void ShowInfoOverlay( const char* text )
 	infoOverlayStartTime = ImGui::GetTime();
 	infoOverlayStartPos = ImGui::GetMousePos();
 	infoOverlayOpen = true;
+}
+
+void AddTooltip( const char* text )
+{
+	if ( ImGui::BeginItemTooltip() )
+	{
+		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+		ImGui::TextUnformatted( text );
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
+	}
+}
+
+void AddDescrTooltip( const char* description )
+{
+	if ( description != nullptr ) {
+		ImGui::SameLine();
+		ImGui::TextDisabled( "(?)" );
+		AddTooltip( description );
+	}
+}
+
+const char* GetLocalizedString( const char* id, const char* fallback )
+{
+	if ( id == nullptr || id[0] == '\0' ) {
+		return fallback;
+	}
+	const char* ret = common->GetLanguageDict()->GetString( id );
+	if ( ret == nullptr || ret[0] == '\0'
+		|| ( ret[0] == '#' && idStr::Cmpn( ret, STRTABLE_ID, STRTABLE_ID_LENGTH ) == 0 ) ) {
+		ret = fallback;
+	}
+	return ret;
 }
 
 static float GetDefaultScale()
@@ -433,6 +468,8 @@ void NewFrame()
 
 	if (openImguiWindows & D3_ImGuiWin_ServerBrowser) {
 		Com_DrawDhewm3ServerBrowser();
+		Com_DrawDhewm3CreateServer();
+		Com_DrawDhewm3PlayerSetup();
 	}
 }
 
@@ -671,9 +708,6 @@ void OpenWindow( D3ImGuiWindow win )
 		case D3_ImGuiWin_ServerBrowser:
 			Com_OpenCloseDhewm3ServerBrowser( true );
 			break;
-		case D3_ImGuiWin_PDAEditor:
-			
-			break;
 		// TODO: other windows that need explicit opening
 	}
 
@@ -691,9 +725,6 @@ void CloseWindow( D3ImGuiWindow win )
 			break;
 		case D3_ImGuiWin_ServerBrowser:
 			Com_OpenCloseDhewm3ServerBrowser( false );
-			break;
-		case D3_ImGuiWin_PDAEditor:
-			
 			break;
 		// TODO: other windows that need explicit closing
 	}

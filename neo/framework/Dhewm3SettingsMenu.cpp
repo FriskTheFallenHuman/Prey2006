@@ -51,42 +51,6 @@ extern bool R_GetModeInfo( int *width, int *height, int mode );
 
 namespace {
 
-const char* GetLocalizedString( const char* id, const char* fallback )
-{
-	if ( id == nullptr || id[0] == '\0' ) {
-		return fallback;
-	}
-	const char* ret = common->GetLanguageDict()->GetString( id );
-	if ( ret == nullptr || ret[0] == '\0'
-		|| ( ret[0] == '#' && idStr::Cmpn( ret, STRTABLE_ID, STRTABLE_ID_LENGTH ) == 0 ) ) {
-		ret = fallback;
-	}
-	return ret;
-}
-
-// TODO: move the following two functions into sys_imgui.cpp ?
-static void AddTooltip( const char* text )
-{
-	if ( ImGui::BeginItemTooltip() )
-	{
-		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-		ImGui::TextUnformatted( text );
-		ImGui::PopTextWrapPos();
-		ImGui::EndTooltip();
-	}
-}
-
-static void AddDescrTooltip( const char* description )
-{
-	if ( description != nullptr ) {
-		ImGui::SameLine();
-		ImGui::TextDisabled( "(?)" );
-		AddTooltip( description );
-	}
-}
-
-
-
 /*************************
  *                       *
  *    Keybinding Menu    *
@@ -268,7 +232,7 @@ struct BindingEntry {
 
 	BindingEntry( const BindingEntryTemplate& bet )
 	: command( bet.command ), description( bet.description ) {
-		displayName = GetLocalizedString( bet.nameLocStr, bet.name );
+		displayName = D3::ImGuiHooks::GetLocalizedString( bet.nameLocStr, bet.name );
 		displayName.StripTrailingWhitespace();
 	}
 
@@ -463,7 +427,7 @@ struct BindingEntry {
 						keyName = bindings[bnd].keyName.c_str();
 						ImGui::AlignTextToFramePadding();
 						ImGui::TextUnformatted( keyName );
-						AddTooltip( bindings[bnd].internalKeyName.c_str() );
+						D3::ImGuiHooks::AddTooltip( bindings[bnd].internalKeyName.c_str() );
 					}
 
 					if ( selectedBinding == BIND_ALL ) {
@@ -554,7 +518,7 @@ struct BindingEntry {
 		if ( IsHeading() ) {
 			ImGui::SeparatorText( displayName );
 			if ( description ) {
-				AddDescrTooltip( description );
+				D3::ImGuiHooks::AddDescrTooltip( description );
 			}
 		} else {
 			ImGui::PushID( command );
@@ -577,10 +541,10 @@ struct BindingEntry {
 			ImGui::SameLine();
 			ImGui::TextUnformatted( displayName );
 
-			AddTooltip( command );
+			D3::ImGuiHooks::AddTooltip( command );
 
 			if ( description ) {
-				AddDescrTooltip( description );
+				D3::ImGuiHooks::AddDescrTooltip( description );
 			}
 
 			const int numBindingColumns = imgui_numBindingColumns.GetInteger();
@@ -599,7 +563,7 @@ struct BindingEntry {
 				UpdateSelectionState( bnd, newSelState );
 
 				if ( colHasBinding ) {
-					AddTooltip( bindings[bnd].internalKeyName.c_str() );
+					D3::ImGuiHooks::AddTooltip( bindings[bnd].internalKeyName.c_str() );
 				}
 			}
 
@@ -1185,7 +1149,7 @@ static void InitBindingEntries()
 				if ( displayName == nullptr ) {
 					displayName = weapName;
 				} else if ( idStr::Cmpn( displayName, STRTABLE_ID, STRTABLE_ID_LENGTH ) == 0 ) {
-					displayName = GetLocalizedString( displayName, weapName );
+					displayName = D3::ImGuiHooks::GetLocalizedString( displayName, weapName );
 				}
 				bindingEntries.Append( BindingEntry( idStr::Format("_impulse%d", impulseNum), displayName ) );
 			}
@@ -1285,7 +1249,7 @@ static void DrawBindingsMenu()
 			ImGui::PopStyleColor(); // ImGuiCol_Text
 			ImGui::TreePop();
 		} else {
-			AddTooltip( "Click to show help text" );
+			D3::ImGuiHooks::AddTooltip( "Click to show help text" );
 		}
 	}
 
@@ -1365,7 +1329,7 @@ static void DrawBindingsMenu()
 	const int numBindingEntries = bindingEntries.Num();
 	// now the obscure impulses, unless they're hidden
 	bool showObscImp = ImGui::CollapsingHeader( "Obscure Impulses" );
-	AddDescrTooltip( "_impulseXY commands that are usually unused, but might be used by some mods, e.g. for additional weapons" );
+	D3::ImGuiHooks::AddDescrTooltip( "_impulseXY commands that are usually unused, but might be used by some mods, e.g. for additional weapons" );
 	if (showObscImp) {
 		if ( ImGui::BeginTable( "bindTabObsc", numBindingColumns + 2, tableFlags ) ) {
 			ImGui::TableSetupScrollFreeze(1, 0);
@@ -1423,8 +1387,8 @@ static void DrawBindingsMenu()
 
 static void AddCVarOptionTooltips( const idCVar& cvar, const char* desc = nullptr )
 {
-	AddTooltip( cvar.GetName() );
-	AddDescrTooltip( desc ? desc : cvar.GetDescription() );
+	D3::ImGuiHooks::AddTooltip( cvar.GetName() );
+	D3::ImGuiHooks::AddDescrTooltip( desc ? desc : cvar.GetDescription() );
 }
 
 enum OptionType {
@@ -1617,9 +1581,9 @@ static CVarOption videoOptionsImmediately[] = {
 				D3::ImGuiHooks::ShowWarningOverlay( "Setting VSync (GL SwapInterval) failed, maybe try another mode" );
 			}
 		} else {
-			AddTooltip( "r_swapInterval" );
+			D3::ImGuiHooks::AddTooltip( "r_swapInterval" );
 		}
-		AddDescrTooltip( "Note: Not all GPUs/drivers support Adaptive VSync" );
+		D3::ImGuiHooks::AddDescrTooltip( "Note: Not all GPUs/drivers support Adaptive VSync" );
 	} ),
 	CVarOption( "image_anisotropy", []( idCVar& cvar ) {
 		const char* descr = "Max Texture Anisotropy";
@@ -1653,7 +1617,7 @@ static CVarOption videoOptionsImmediately[] = {
 		if ( ImGui::Combo( "Screenshot Format", &curFormat, "TGA\0BMP\0PNG\0JPG\0" ) ) {
 			cvar.SetInteger( curFormat );
 		}
-		AddTooltip( "r_screenshotFormat" );
+		D3::ImGuiHooks::AddTooltip( "r_screenshotFormat" );
 	} ),
 	CVarOption( "r_screenshotPngCompression", "Compression level for PNG screenshots", OT_INT, 0, 9 ),
 	CVarOption( "r_screenshotJpgQuality", "Quality level for JPG screenshots", OT_INT, 1, 100 ),
@@ -1666,7 +1630,7 @@ static CVarOption videoOptionsImmediately[] = {
 		if ( ImGui::Combo( "Enable Shadows", &shadows, "No Shadows\0Draw Shadows\0Shadows + Extra Shadows\0" ) ) {
 			cvar.SetInteger( shadows );
 		}
-		AddTooltip( "r_shadows" );
+		D3::ImGuiHooks::AddTooltip( "r_shadows" );
 	} ),
 	CVarOption( "r_skipSpecular", "Disable Specular", OT_BOOL ),
 	CVarOption( "r_skipBump", "Disable Bump Maps", OT_BOOL ),
@@ -1842,7 +1806,7 @@ static void DrawVideoOptionsMenu()
 {
 	ImGui::Spacing();
 	ImGui::Combo( "##qualPresets", &qualityPreset, "Low Quality\0Medium Quality\0High Quality\0Ultra Quality\0" );
-	AddTooltip( "com_machineSpec" );
+	D3::ImGuiHooks::AddTooltip( "com_machineSpec" );
 	ImGui::SameLine();
 	if ( ImGui::Button( "Load Quality Preset" ) ) {
 		com_imageQuality.SetInteger( qualityPreset ); // TODO: or always set this even if button is not pressed?
@@ -1856,7 +1820,7 @@ static void DrawVideoOptionsMenu()
 			r_multiSamples.SetInteger( oldMSAA );
 		}
 	}
-	AddTooltip( "Sets lots of rendering-related CVars based on the selected quality" );
+	D3::ImGuiHooks::AddTooltip( "Sets lots of rendering-related CVars based on the selected quality" );
 
 	ImGui::SeparatorText( "Options that must be applied" );
 
@@ -1865,13 +1829,13 @@ static void DrawVideoOptionsMenu()
 	if ( ImGui::Combo( "Window Mode", &fullscreenChoice, "Windowed\0Fullscreen\0" ) ) {
 		r_fullscreen.SetBool( fullscreenChoice != 0 );
 	}
-	AddTooltip( "r_fullscreen" );
+	D3::ImGuiHooks::AddTooltip( "r_fullscreen" );
 	bool fullscreenDesktop = r_fullscreenDesktop.GetBool();
 	if ( ImGui::Checkbox( "Fullscreen Desktop Mode: Use borderless window at desktop resolution for fullscreen", &fullscreenDesktop ) ) {
 		r_fullscreenDesktop.SetBool( fullscreenDesktop );
 	}
-	AddTooltip( "r_fullscreenDesktop" );
-	AddDescrTooltip( "ignores the resolution configured in the engine, doesn't switch the display resolution, can prevent issues like desktop icons being rearranged after running the game" );
+	D3::ImGuiHooks::AddTooltip( "r_fullscreenDesktop" );
+	D3::ImGuiHooks::AddDescrTooltip( "ignores the resolution configured in the engine, doesn't switch the display resolution, can prevent issues like desktop icons being rearranged after running the game" );
 
 	// Video Mode / Resolution
 	static int selModeIdx = -1; // index within our vidModes array
@@ -1904,7 +1868,7 @@ static void DrawVideoOptionsMenu()
 		selMode = vidModes[selModeIdx].mode;
 		r_mode.SetInteger( selMode );
 	}
-	AddTooltip( "r_mode" );
+	D3::ImGuiHooks::AddTooltip( "r_mode" );
 
 	if ( selMode == -1 ) {
 		int vidRes[2] = { r_customWidth.GetInteger(), r_customHeight.GetInteger() };
@@ -1914,7 +1878,7 @@ static void DrawVideoOptionsMenu()
 			r_customWidth.SetInteger( vidRes[0] );
 			r_customHeight.SetInteger( vidRes[1] );
 		}
-		AddTooltip( "r_customWidth / r_customHeight" );
+		D3::ImGuiHooks::AddTooltip( "r_customWidth / r_customHeight" );
 	}
 
 	// resolution info text
@@ -1930,7 +1894,7 @@ static void DrawVideoOptionsMenu()
 	if ( (int)glConfig.winWidth != glConfig.vidWidth ) {
 		ImGui::TextDisabled( "Current Resolution: %g x %g (Physical: %d x %d)",
 							 glConfig.winWidth, glConfig.winHeight, glConfig.vidWidth, glConfig.vidHeight );
-		AddDescrTooltip( "Apparently your system is using a HighDPI mode, where the logical resolution (used to specify"
+		D3::ImGuiHooks::AddDescrTooltip( "Apparently your system is using a HighDPI mode, where the logical resolution (used to specify"
 						 " window sizes) is lower than the physical resolution (number of pixels actually rendered)." );
 		float scale = float(glConfig.vidWidth)/glConfig.winWidth;
 		int pw = scale * displayRect.w;
@@ -1990,7 +1954,7 @@ static void DrawVideoOptionsMenu()
 							"When using highres retexturing packs, you should definitely enable this.";
 		AddCVarOptionTooltips( globalImages->image_useNormalCompression, descr );
 	} else {
-		AddTooltip( "Can only be used if (pre)compressed textures are enabled!" );
+		D3::ImGuiHooks::AddTooltip( "Can only be used if (pre)compressed textures are enabled!" );
 	}
 	ImGui::EndDisabled();
 
@@ -1998,13 +1962,13 @@ static void DrawVideoOptionsMenu()
 	if ( !VideoHasApplyableChanges() ) {
 		ImGui::BeginDisabled();
 		ImGui::Button( "Apply" );
-		AddTooltip( "No changes were made, so there's nothing to apply" );
+		D3::ImGuiHooks::AddTooltip( "No changes were made, so there's nothing to apply" );
 		ImGui::EndDisabled();
 	} else {
 		if ( ImGui::Button( "Apply" ) ) {
 			ApplyVideoSettings();
 		}
-		AddTooltip( "Click to apply the settings above, might restart the renderer (but not the game)" );
+		D3::ImGuiHooks::AddTooltip( "Click to apply the settings above, might restart the renderer (but not the game)" );
 	}
 
 	ImGui::SameLine();
@@ -2013,14 +1977,14 @@ static void DrawVideoOptionsMenu()
 	if ( !VideoHasResettableChanges() ) {
 		ImGui::BeginDisabled();
 		ImGui::Button( "Reset" );
-		AddTooltip( "The window's current state is like it was when opening the menu, so there's nothing to reset" );
+		D3::ImGuiHooks::AddTooltip( "The window's current state is like it was when opening the menu, so there's nothing to reset" );
 		ImGui::EndDisabled();
 	} else {
 		ImGui::SameLine();
 		if ( ImGui::Button("Reset") ) {
 			VideoResetChanges();
 		}
-		AddTooltip( "Click to restore the settings as the were when opening this menu" );
+		D3::ImGuiHooks::AddTooltip( "Click to restore the settings as the were when opening this menu" );
 	}
 
 	// options that take effect immediately, just by modifying their CVar:
@@ -2043,7 +2007,7 @@ static void DrawVideoOptionsMenu()
 		ImGui::EndDisabled();
 		ImGui::TreePop();
 	} else {
-		AddTooltip( "Click to show information about the currently used Graphics Card (GPU)" );
+		D3::ImGuiHooks::AddTooltip( "Click to show information about the currently used Graphics Card (GPU)" );
 	}
 }
 
@@ -2111,13 +2075,13 @@ static void DrawAudioOptionsMenu()
 		}
 		D3::ImGuiHooks::ShowWarningOverlay( "Changing the sound device only takes effect after restarting!" );
 	}
-	AddTooltip( "s_device" );
+	D3::ImGuiHooks::AddTooltip( "s_device" );
 
 	if ( !idSoundSystemLocal::EFXAvailable ) {
 		ImGui::BeginDisabled();
 		bool b = false;
 		ImGui::Checkbox( "Use EAX/EFX Reverb Effects", &b );
-		AddTooltip( "EFX effects are not available in your OpenAL implementation.\nConsider using OpenAL-Soft." );
+		D3::ImGuiHooks::AddTooltip( "EFX effects are not available in your OpenAL implementation.\nConsider using OpenAL-Soft." );
 		ImGui::EndDisabled();
 	} else {
 		bool useReverb = idSoundSystemLocal::s_useEAXReverb.GetBool();
@@ -2127,7 +2091,7 @@ static void DrawAudioOptionsMenu()
 				D3::ImGuiHooks::ShowWarningOverlay( "Enabling/disabling EFX only takes effect after restarting!" );
 			}
 		}
-		AddTooltip( "s_useEAXReverb" );
+		D3::ImGuiHooks::AddTooltip( "s_useEAXReverb" );
 	}
 
 	ImGui::SeparatorText( "Settings that take effect immediately" );
@@ -2139,8 +2103,8 @@ static void DrawAudioOptionsMenu()
 	if ( ImGui::SliderFloat( "Volume", &vol, -40, 10, "%.1f" ) ) {
 		idSoundSystemLocal::s_volume.SetFloat( vol );
 	}
-	AddTooltip( "s_volume_dB" );
-	AddDescrTooltip( "The game's main volume in dB. 0 is the regular maximum volume" );
+	D3::ImGuiHooks::AddTooltip( "s_volume_dB" );
+	D3::ImGuiHooks::AddDescrTooltip( "The game's main volume in dB. 0 is the regular maximum volume" );
 
 	bool scaleDownAndClamp = idSoundSystemLocal::s_scaleDownAndClamp.GetBool();
 	if ( ImGui::Checkbox( "Scale down and clamp all sound volumes", &scaleDownAndClamp ) ) {
@@ -2158,7 +2122,7 @@ static void DrawAudioOptionsMenu()
 		ImGui::BeginDisabled();
 		int c = 0;
 		ImGui::Combo( "OpenAL output limiter", &c, "Auto (let OpenAL decide)\0" );
-		AddTooltip( "Your OpenAL version doesn't support configuring output-limiter (needs ALC_SOFT_output_limiter extension)" );
+		D3::ImGuiHooks::AddTooltip( "Your OpenAL version doesn't support configuring output-limiter (needs ALC_SOFT_output_limiter extension)" );
 		ImGui::EndDisabled();
 	}
 
@@ -2172,7 +2136,7 @@ static void DrawAudioOptionsMenu()
 		ImGui::BeginDisabled();
 		int c = 0;
 		ImGui::Combo( "Use HRTF", &c, "Auto (let OpenAL decide)\0" );
-		AddTooltip( "Your OpenAL version doesn't support configuring HRTF (needs ALC_SOFT_HRTF extension)" );
+		D3::ImGuiHooks::AddTooltip( "Your OpenAL version doesn't support configuring HRTF (needs ALC_SOFT_HRTF extension)" );
 		ImGui::EndDisabled();
 	}
 
@@ -2183,16 +2147,16 @@ static void DrawAudioOptionsMenu()
 		{
 			idSoundSystemLocal::s_alReverbGain.SetFloat( reverbGain );
 		}
-		AddTooltip( "s_alReverbGain" );
-		AddDescrTooltip( "the default value is 0.5" );
+		D3::ImGuiHooks::AddTooltip( "s_alReverbGain" );
+		D3::ImGuiHooks::AddDescrTooltip( "the default value is 0.5" );
 	} else {
 		ImGui::BeginDisabled();
 		float f = 0.0f;
 		ImGui::SliderFloat( "Strength of EFX Reverb Effects", &f, 0, 1, "Disabled" );
 		if ( !idSoundSystemLocal::EFXAvailable ) {
-			AddTooltip( "Your OpenAL version doesn't support EFX" );
+			D3::ImGuiHooks::AddTooltip( "Your OpenAL version doesn't support EFX" );
 		} else {
-			AddTooltip( "EFX reverb effects are currently disabled" );
+			D3::ImGuiHooks::AddTooltip( "EFX reverb effects are currently disabled" );
 		}
 		ImGui::EndDisabled();
 	}
@@ -2295,7 +2259,7 @@ static void DrawAudioOptionsMenu()
 		ImGui::EndDisabled();
 		ImGui::TreePop();
 	} else {
-		AddTooltip( "Click to show information about the current OpenAL device" );
+		D3::ImGuiHooks::AddTooltip( "Click to show information about the current OpenAL device" );
 	}
 }
 
@@ -2305,8 +2269,6 @@ static CVarOption gameOptions[] = {
 	CVarOption( "in_toggleCrouch", "Toggle Crouch", OT_BOOL ),
 	CVarOption( "in_toggleRun", "Toggle Run", OT_BOOL ),
 	CVarOption( "in_toggleZoom", "Toggle Zoom", OT_BOOL ),
-	CVarOption( "ui_autoReload", "Auto Weapon Reload", OT_BOOL ),
-	CVarOption( "ui_autoSwitch", "Auto Weapon Switch", OT_BOOL ),
 	CVarOption( "Visual" ),
 	CVarOption( "g_showHud", "Show HUD", OT_BOOL ),
 	CVarOption( "com_showFPS", "Show Framerate (FPS)", OT_BOOL ),
@@ -2339,10 +2301,10 @@ static void DrawOtherOptionsMenu()
 	}
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui::CheckboxFlags( "Enable multiple ImGui Viewports", &io.ConfigFlags, ImGuiConfigFlags_ViewportsEnable );
-	AddDescrTooltip( "Allows dragging ImGui windows out of the main window. Might not work (well) on all platforms or window managers" );
+	D3::ImGuiHooks::AddDescrTooltip( "Allows dragging ImGui windows out of the main window. Might not work (well) on all platforms or window managers" );
 
 	ImGui::CheckboxFlags( "Enable ImGui Docking support", &io.ConfigFlags, ImGuiConfigFlags_DockingEnable );
-	AddDescrTooltip( "Allows docking ImGui windows to each other (or the edge of real windows, if enables it, which it currently does not, but might for tools..)" );
+	D3::ImGuiHooks::AddDescrTooltip( "Allows docking ImGui windows to each other (or the edge of real windows, if enables it, which it currently does not, but might for tools..)" );
 
 	int style_idx = imgui_style.GetInteger();
 	if ( ImGui::Combo( "ImGui Style", &style_idx, "Prey\0ImGui Default\0Userstyle\0") )
@@ -2366,18 +2328,18 @@ static void DrawOtherOptionsMenu()
 		D3::ImGuiHooks::WriteUserStyle();
 		imgui_style.SetInteger( 2 );
 	}
-	AddTooltip( "Writes the current style settings (incl. colors) as userstyle" );
+	D3::ImGuiHooks::AddTooltip( "Writes the current style settings (incl. colors) as userstyle" );
 
 	static bool onlyChanges = false;
 	if ( ImGui::Button( "Copy style code to clipboard" ) ) {
 		D3::ImGuiHooks::CopyCurrentStyle( onlyChanges );
 	}
-	AddTooltip( "Generates C++ code for the current style settings (incl. colors) and copies it into the clipboard" );
+	D3::ImGuiHooks::AddTooltip( "Generates C++ code for the current style settings (incl. colors) and copies it into the clipboard" );
 
 	ImGui::SameLine();
 
 	ImGui::Checkbox( "Only changed settings", &onlyChanges );
-	AddTooltip( "Only generate C++ code for attributes/colors that are changed compared to the default (dark) ImGui theme" );
+	D3::ImGuiHooks::AddTooltip( "Only generate C++ code for attributes/colors that are changed compared to the default (dark) ImGui theme" );
 
 	ImGui::Spacing();
 

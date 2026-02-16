@@ -237,17 +237,6 @@ void AfEditorInit() // TODO: why no passed spawnargs?
 	impl::SetReleaseToolMouse( true );
 }
 
-/*
-void PDAEditorInit(const idDict* dict)
-{
-	PDAEditor::Instance().Reset();
-	PDAEditor::Instance().ShowIt( true );
-	impl::SetReleaseToolMouse( true );
-
-	D3::ImGuiHooks::OpenWindow(D3::ImGuiHooks::D3_ImGuiWin_PDAEditor);
-}
-*/
-
 void ParticleEditorInit( const idDict* spawnArgs )
 {
 	ParticleEditor::Instance().Reset();
