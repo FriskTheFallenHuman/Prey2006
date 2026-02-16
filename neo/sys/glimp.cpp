@@ -1087,7 +1087,7 @@ void GLimp_SetGamma(unsigned short red[256], unsigned short green[256], unsigned
 	}
 #else // SDL2 and SDL1.2
 	if (!window) {
-		common->Warning("GLimp_SetGamma called without window");
+		//common->Warning("GLimp_SetGamma called without window");
 		return;
 	}
 
@@ -1170,7 +1170,7 @@ GLExtension_t GLimp_ExtensionPointer(const char *name) {
 
 void GLimp_GrabInput(int flags) {
 	if (!window) {
-		common->DWarning("GLimp_GrabInput called without window");
+		//common->DWarning("GLimp_GrabInput called without window");
 		return;
 	}
 #if SDL_VERSION_ATLEAST(3, 0, 0)
