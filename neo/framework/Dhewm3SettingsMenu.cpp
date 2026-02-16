@@ -1072,8 +1072,8 @@ static void InitBindingEntries()
 
 		{ "_attack",        "Attack",			"#str_20230" },
 		{ "_attackalt",		"Alternate Attack",	"#str_20231" },
-		{ "_impulse14",     "Previous Weapon",	"#str_20232" },
-		{ "_impulse15",     "Next Weapon",		"#str_20233" },
+		{ "_impulse15",     "Previous Weapon",	"#str_20232" },
+		{ "_impulse14",     "Next Weapon",		"#str_20233" },
 		{ "_impulse16",     "Toggle Light",		"#str_20234" },
 		{ "_impulse54",     "Spirit Walk",		"#str_20235" },
 		{ "_impulse25",     "Throw Crawler Grenade",		"#str_41185" },

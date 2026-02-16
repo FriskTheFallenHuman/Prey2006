@@ -35,12 +35,12 @@ If you have questions concerning this license or the applicable additional terms
 */
 
 #define GAME_NAME						"Prey"		// appears in errors
-#define	ENGINE_VERSION					"Prey 1.5.4 - Pre release 1"	// printed in console, used for window title
+#define	ENGINE_VERSION					"Prey 1.5.4 - Pre release 2"	// printed in console, used for window title
 
 #ifdef ID_REPRODUCIBLE_BUILD
 	// for reproducible builds we hardcode values that would otherwise come from __DATE__ and __TIME__
 	// NOTE: remember to update esp. the date for (pre-) releases and RCs and the like
-	#define ID__DATE__  "Jul 29 2024"
+	#define ID__DATE__  "Jan 11 2026"
 	#define ID__TIME__  "13:37:42"
 
 #else // not reproducible build, use __DATE__ and __TIME__ macros

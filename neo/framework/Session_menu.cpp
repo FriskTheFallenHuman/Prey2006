@@ -243,6 +243,8 @@ void idSessionLocal::SetModsMenuGuiVars( void ) {
 idSessionLocal::SetMainMenuSkin
 ===============
 */
+// HUMANHEAD pdm: removed
+/*
 void idSessionLocal::SetMainMenuSkin( void ) {
 	// skins
 	idStr str = cvarSystem->GetCVarString( "mod_validSkins" );
@@ -270,6 +272,7 @@ void idSessionLocal::SetMainMenuSkin( void ) {
 	}
 	guiMainMenu->SetStateInt( va( "skin%i", skinId ), 1 );
 }
+*/
 
 /*
 ===============
@@ -313,7 +316,8 @@ void idSessionLocal::SetMainMenuGuiVars( void ) {
 	guiMainMenu->SetStateString( "roadhouseCompleted", cvarSystem->GetCVarBool( "g_roadhouseCompleted" ) ? "1" : "0" );
 	guiMainMenu->SetStateString( "browser_levelshot", "guis/assets/loading/thumbs/nothing" );
 
-	SetMainMenuSkin();
+	// HUMANHEAD pdm: removed
+	//SetMainMenuSkin();
 	// Mods Menu
 	SetModsMenuGuiVars();
 
@@ -842,6 +846,8 @@ void idSessionLocal::HandleMainMenuCommands( const char *menuCommand ) {
 			return;
 		}
 
+		// HUMANHEAD pdm: removed
+		/*
 		if ( !idStr::Icmp( cmd, "mpSkin")) {
 			idStr skin;
 			if ( args.Argc() - icmd >= 1 ) {
@@ -851,6 +857,8 @@ void idSessionLocal::HandleMainMenuCommands( const char *menuCommand ) {
 			}
 			continue;
 		}
+		*/
+		// HUMANHEAD End
 
 		if ( !idStr::Icmp( cmd, "close" ) ) {
 			// if we aren't in a game, the menu can't be closed

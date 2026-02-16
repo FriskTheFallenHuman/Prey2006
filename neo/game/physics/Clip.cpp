@@ -1209,7 +1209,7 @@ idClip::TestHugeTranslation
 */
 ID_INLINE bool TestHugeTranslation( trace_t &results, const idClipModel *mdl, const idVec3 &start, const idVec3 &end, const idMat3 &trmAxis ) {
 	if ( mdl != NULL && ( end - start ).LengthSqr() > Square( CM_MAX_TRACE_DIST ) ) {
-		assert( 0 );
+		// assert( 0 ); DG: this was annoying and not really necessary, a Warning should suffice.
 
 		results.fraction = 0.0f;
 		results.endpos = start;
@@ -1218,9 +1218,9 @@ ID_INLINE bool TestHugeTranslation( trace_t &results, const idClipModel *mdl, co
 		results.c.point = start;
 
 		if ( mdl->GetEntity() ) {
-			gameLocal.Printf( "huge translation for clip model %d on entity %d '%s'\n", mdl->GetId(), mdl->GetEntity()->entityNumber, mdl->GetEntity()->GetName() );
+			gameLocal.Warning( "huge translation for clip model %d on entity %d '%s'\n", mdl->GetId(), mdl->GetEntity()->entityNumber, mdl->GetEntity()->GetName() );
 		} else {
-			gameLocal.Printf( "huge translation for clip model %d\n", mdl->GetId() );
+			gameLocal.Warning( "huge translation for clip model %d\n", mdl->GetId() );
 		}
 		return true;
 	}
