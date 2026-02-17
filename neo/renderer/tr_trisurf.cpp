@@ -1417,9 +1417,9 @@ this version only handles bilateral symetry
 void R_DeriveTangentsWithoutNormals( srfTriangles_t *tri ) {
 #if 1	// New Normal Calculation - Mikktspace
 	if ( !R_DeriveMikktspaceTangents( tri ) ) {
-		idLib::DWarningIf( !com_editorCMDActive, "Mikkelsen tangent space calculation failed" );
+		//idLib::DWarningIf( !com_editorCMDActive, "Mikkelsen tangent space calculation failed" );
 	} else {
-		idLib::DWarningIf( !com_editorCMDActive, "Mikkelsen tangent space calculation success" );
+		//idLib::DWarningIf( !com_editorCMDActive, "Mikkelsen tangent space calculation success" );
 		tri->tangentsCalculated = true;
 		return;
 	}

@@ -225,8 +225,8 @@ public:
 	idDeclType *				GetDeclType( int type ) const { return declTypes[type]; }
 	const idDeclFile *			GetImplicitDeclFile( void ) const { return &implicitDecls; }
 
-    virtual void				SetInsideLevelLoad( bool b ) { insideLevelLoad = b; }
-    virtual bool				GetInsideLevelLoad( void ) { return insideLevelLoad; }
+	virtual void				SetInsideLevelLoad( bool b ) { insideLevelLoad = b; }
+	virtual bool				GetInsideLevelLoad( void ) { return insideLevelLoad; }
 
 	virtual void				ForceLoadAndParseDeclFile( const char* fileName, declType_t defaultType ) {} 
 
@@ -1032,34 +1032,47 @@ unsigned int idDeclManagerLocal::GetChecksum( void ) const {
 	int i, j, total, num;
 	int *checksumData;
 
-	// get the total number of decls
-	total = 0;
-	for ( i = 0; i < DECL_MAX_TYPES; i++ ) {
-		total += linearLists[i].Num();
-	}
+	idList<idStr> declNames;
+	idList<int> declChecksums;
 
-	checksumData = (int *) _alloca16( total * 2 * sizeof( int ) );
-
-	total = 0;
 	for ( i = 0; i < DECL_MAX_TYPES; i++ ) {
 		declType_t type = (declType_t) i;
-
 		num = linearLists[i].Num();
 		for ( j = 0; j < num; j++ ) {
 			idDeclLocal *decl = linearLists[i][j];
-
 			if ( decl->sourceFile == &implicitDecls ) {
 				continue;
 			}
-
-			checksumData[total*2+0] = total;
-			checksumData[total*2+1] = decl->checksum;
-			total++;
+			declNames.Append( decl->name );
+			declChecksums.Append( decl->checksum );
 		}
 	}
 
-	LittleRevBytes( checksumData, sizeof(int), total * 2 );
-	return MD5_BlockChecksum( checksumData, total * 2 * sizeof( int ) );
+	// Sort the checksums by decl name for cross-platform consistency
+	for ( i = 0; i < declNames.Num(); i++ ) {
+		for ( j = i + 1; j < declNames.Num(); j++ ) {
+			if ( declNames[i].Icmp( declNames[j] ) > 0 ) {
+				idStr tempName = declNames[i];
+				declNames[i] = declNames[j];
+				declNames[j] = tempName;
+
+				int tempChecksum = declChecksums[i];
+				declChecksums[i] = declChecksums[j];
+				declChecksums[j] = tempChecksum;
+			}
+		}
+	}
+
+	// Build the checksum array
+	checksumData = (int *) _alloca16( declNames.Num() * 2 * sizeof( int ) );
+	for ( i = 0; i < declNames.Num(); i++ ) {
+		checksumData[i*2+0] = i;
+		checksumData[i*2+1] = declChecksums[i];
+	}
+
+	LittleRevBytes( checksumData, sizeof(int), declNames.Num() * 2 );
+	unsigned int finalChecksum = MD5_BlockChecksum( checksumData, declNames.Num() * 2 * sizeof( int ) );
+	return finalChecksum;
 }
 
 /*

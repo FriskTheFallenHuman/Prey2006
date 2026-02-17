@@ -335,6 +335,8 @@ static void parseBehaviorLine( ImGuiStyle& s, const char* line )
 #undef D3_IMATTR_INT
 #undef D3_IMATTR_DIR
 #undef D3_IMATTR_BOOL
+#undef D3_IMATTR_TREENODEFLAGS
+#undef D3_IMATTR_HOVEREDFLAGS
 
 namespace {
 // for renamed colors
@@ -636,6 +638,7 @@ struct D3_ImGuiStyle_Check {
 #undef D3_IMATTR_DIR
 #undef D3_IMATTR_BOOL
 #undef D3_IMATTR_TREENODEFLAGS
+#undef D3_IMATTR_HOVEREDFLAGS
 
 };
 

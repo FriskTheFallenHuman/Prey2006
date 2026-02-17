@@ -330,7 +330,8 @@ public:
 	void				SetSaveGameGuiVars( void );
 	void				SetMainMenuGuiVars( void );
 	void				SetModsMenuGuiVars( void );
-	void				SetMainMenuSkin( void );
+	// HUMANHEAD pdm: removed
+	//void				SetMainMenuSkin( void );
 	void				SetPbMenuGuiVars( void );
 
 private:
