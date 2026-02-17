@@ -38,7 +38,7 @@ jobs:
         fetch-depth: 1
 
     - name: Run build in FreeBSD VM
-      uses: vmactions/freebsd-vm@1.4.8
+      uses: vmactions/freebsd-vm@v1.4.2
       with:
         release: "15.0"
         prepare: |
