@@ -3,7 +3,7 @@
 
 #include "prey_local.h"
 
-const idEventDef EV_KillBeam( "killBeam", NULL, NULL );
+const idEventDef EV_KillBeam( "killBeam" );
 
 CLASS_DECLARATION( hhWeaponFireController, hhSoulStripperAltFireController )
 END_CLASS

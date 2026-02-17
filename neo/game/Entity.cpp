@@ -130,8 +130,8 @@ const idEventDef EV_SetClipMask( "setClipmask", "d" );
 const idEventDef EV_SetPortalCollision( "setPortalCollision", "d" ); // HUMANHEAD CJR
 
 //#if GAMEPAD_SUPPORT	// VENOM BEGIN
-const idEventDef EV_PlayRumbleEffect( "playRumble", "d", NULL );
-const idEventDef EV_StopRumbleEffect( "stopRumble", NULL, NULL );
+const idEventDef EV_PlayRumbleEffect( "playRumble", "d" );
+const idEventDef EV_StopRumbleEffect( "stopRumble" );
 //#endif // VENOM END
 
 ABSTRACT_DECLARATION( idClass, idEntity )
@@ -3257,7 +3257,7 @@ void idEntity::AddDamageEffect( const trace_t &collision, const idVec3 &velocity
 	}
 }
 #else
-void idEntity::AddDamageEffect( const trace_t &collision, const idVec3 &velocity, const char *damageDefName ) {
+void idEntity::AddDamageEffect( const trace_t &collision, const idVec3 &velocity, const char *damageDefName, bool broadcast ) {
 	const char *sound, *decal, *key;
 
 	const idDeclEntityDef *def = gameLocal.FindEntityDef( damageDefName, false );

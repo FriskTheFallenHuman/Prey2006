@@ -3,8 +3,8 @@
 
 #include "prey_local.h"
 
-const idEventDef MA_AttackMissileEx("<attackMissileEx>", "sd",NULL);
-const idEventDef MA_SetMeleeRange("setMeleeRange", "f",NULL);
+const idEventDef MA_AttackMissileEx("<attackMissileEx>", "sd");
+const idEventDef MA_SetMeleeRange("setMeleeRange", "f");
 const idEventDef MA_FindReaction("findReaction", "s", 'E');
 const idEventDef MA_UseReaction("useReaction");
 const idEventDef MA_EnemyOnSide("enemyOnSide", NULL, 'f');
@@ -16,11 +16,11 @@ const idEventDef MA_InitialWallwalk("<initialWallwalk>");
 const idEventDef MA_GetVehicle("getVehicle",NULL,'E');
 const idEventDef MA_EnemyAimingAtMe("enemyAimingAtMe",NULL,'d');
 const idEventDef MA_ReachedEntity("reachedEntity","e",'d');
-const idEventDef MA_EnemyOnSpawn("<enemyOnSpawn>",NULL,NULL);
+const idEventDef MA_EnemyOnSpawn("<enemyOnSpawn>");
 const idEventDef MA_SpawnFX( "spawnFX", "s" );
 const idEventDef MA_SplashDamage( "splashDamage", "s" );
-const idEventDef MA_SetVehicleState( "<setVehicleState>",NULL,NULL );
-const idEventDef MA_FollowPath( "followPath", "s", NULL );
+const idEventDef MA_SetVehicleState( "<setVehicleState>" );
+const idEventDef MA_FollowPath( "followPath", "s" );
 const idEventDef MA_GetLastReachableEnemyPos( "getLastReachableEnemyPos", "", 'v' );
 const idEventDef MA_OnProjectileLaunch("<onProjectileLaunch>", "e");
 const idEventDef MA_EnemyIsA("enemyIsA", "s", 'd');

@@ -6,8 +6,8 @@
 
 const idEventDef MA_KeeperStartBlast("keeper_StartBlast", "e"); 
 const idEventDef MA_KeeperEndBlast("keeper_EndBlast", NULL); 
-const idEventDef MA_KeeperUpdateTelepathicThrow("keeper_UpdateTelepathicThrow", NULL, NULL);
-const idEventDef MA_KeeperTelepathicThrow("keeper_TelepathicThrow", NULL, NULL);
+const idEventDef MA_KeeperUpdateTelepathicThrow("keeper_UpdateTelepathicThrow");
+const idEventDef MA_KeeperTelepathicThrow("keeper_TelepathicThrow");
 const idEventDef MA_KeeperStartTeleport("keeper_StartTeleport", NULL);
 const idEventDef MA_KeeperEndTeleport("keeper_EndTeleport", NULL);
 const idEventDef MA_KeeperTeleportExit("keeper_TeleportExit", NULL);
@@ -15,7 +15,7 @@ const idEventDef MA_KeeperCreatePortal("keeper_createPortal", NULL);
 const idEventDef MA_KeeperEnableShield("keeper_enableShield", NULL);
 const idEventDef MA_KeeperDisableShield("keeper_disableShield", NULL);
 const idEventDef MA_KeeperAssignShieldFx( "<assignShieldFx>", "e" );
-const idEventDef MA_KeeperTrigger("keeper_Trigger", NULL, NULL);
+const idEventDef MA_KeeperTrigger("keeper_Trigger");
 const idEventDef MA_KeeperTeleportEnter("keeper_TeleportEnter", NULL);
 const idEventDef MA_KeeperStartHeadFx("keeper_StartHeadFx");
 const idEventDef MA_KeeperEndHeadFx("keeper_EndHeadFx");

@@ -36,9 +36,9 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 1
-    
+
     - name: Run build in FreeBSD VM
-      uses: vmactions/freebsd-vm@966989c456d41351f095a421f60e71342d3bce41
+      uses: vmactions/freebsd-vm@1.4.2
       with:
         release: "15.0"
         prepare: |
@@ -49,7 +49,7 @@ jobs:
             attempt=0
             until [ "$attempt" -ge 3 ]
             do
-              /usr/sbin/pkg-static update -f && /usr/sbin/pkg-static install -y cmake ccache influx pkg-config ninja openal-soft sdl2 tree zip && break
+              /usr/sbin/pkg-static update -f && /usr/sbin/pkg-static install -y cmake ccache pkgconf ninja openal-soft sdl2 tree zip git && break
               attempt=$((attempt+1))
               echo "pkg-static install failed, retrying ($attempt/3)" >&2
               sleep $((attempt * 5))
@@ -58,7 +58,7 @@ jobs:
             attempt=0
             until [ "$attempt" -ge 3 ]
             do
-              pkg update -f && pkg install -y cmake ccache influx pkg-config ninja openal-soft sdl2 tree zip && break
+              pkg update -f && pkg install -y cmake ccache pkgconf ninja openal-soft sdl2 tree zip git && break
               attempt=$((attempt+1))
               echo "pkg install failed, retrying ($attempt/3)" >&2
               sleep $((attempt * 5))

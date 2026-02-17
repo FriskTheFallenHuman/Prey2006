@@ -154,7 +154,7 @@ int	hhHealthBasin::PlayAnim( const char* pName, int iBlendTime ) {
 	pAnim = GetAnimator()->GetAnim( pName );
 	GetAnimator()->PlayAnim( ANIMCHANNEL_ALL, pAnim, gameLocal.time, FRAME2MS( iBlendTime ) );
 
-	return (pAnim != NULL) ? GetAnimator()->GetAnim( pAnim )->Length() : 0;
+	return (pAnim != 0) ? GetAnimator()->GetAnim( pAnim )->Length() : 0;
 }
 
 /*

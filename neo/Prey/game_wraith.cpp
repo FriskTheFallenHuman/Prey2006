@@ -47,7 +47,7 @@ void hhWraith::Spawn(void) {
 	fleeAnim		= GetAnimator()->GetAnim( "flee" );
 	fleeInAnim		= GetAnimator()->GetAnim( "fleeIn" );
 
-	lastAnim		= NULL;
+	lastAnim		= 0;
 
 	canPossess	= spawnArgs.GetBool( "possess", "1" );
 
