@@ -6,9 +6,9 @@
 const idEventDef MA_AntiProjectileAttack("<antiProjectileAttack>", "e");
 const idEventDef MA_StartPreDeath("<startPreDeath>" );
 const idEventDef MA_HandlePassageway("<handlePassageway>", NULL);
-const idEventDef MA_EnterPassageway("<enterPassageway>", "e",NULL);
-const idEventDef MA_ExitPassageway("<exitPassageway>", "e",NULL);
-const idEventDef MA_UseThisPassageway("useThisPassageway", "ed",NULL);
+const idEventDef MA_EnterPassageway("<enterPassageway>", "e");
+const idEventDef MA_ExitPassageway("<exitPassageway>", "e");
+const idEventDef MA_UseThisPassageway("useThisPassageway", "ed");
 const idEventDef MA_GibOnDeath("gibOnDeath", "d");
 
 CLASS_DECLARATION( hhMonsterAI, hhHarvesterSimple )

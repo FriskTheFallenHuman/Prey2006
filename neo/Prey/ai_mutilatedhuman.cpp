@@ -3,7 +3,7 @@
 
 #include "prey_local.h"
 
-const idEventDef MH_AlertFriends("alertFriends", NULL, NULL);
+const idEventDef MH_AlertFriends("alertFriends");
 const idEventDef MH_DropBinds("dropBinds");
 const idEventDef MH_DropProjectiles("<dropProjectiles>" );
 
