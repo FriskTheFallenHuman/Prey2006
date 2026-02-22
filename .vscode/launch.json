@@ -1,0 +1,24 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Engine: Debug EXE (VS Debugger)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}\\build\\Debug\\Prey2006.exe",
+      "cwd": "${workspaceFolder}\\output\\windows",
+      "args": ["+set", "developer", "1"],
+    },
+    {
+      "name": "Engine: Debug Optimized EXE (VS Debugger)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}\\build\\RelWithDebInfo\\Prey2006.exe",
+      "cwd": "${workspaceFolder}\\output\\windows",
+      "args": ["+set", "developer", "1"],
+    },
+  ],
+}

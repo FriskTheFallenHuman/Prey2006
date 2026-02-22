@@ -12,6 +12,7 @@
 /neo/out*
 /neo/build*
 /.vs*
+!/.vscode
 
 /neo/CMakeSettings.json
 output

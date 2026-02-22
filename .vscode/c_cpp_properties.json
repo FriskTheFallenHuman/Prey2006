@@ -1,0 +1,53 @@
+{
+	"env": {
+		"EnginePath": [
+			"${workspaceFolder}/neo/**"
+		],
+		"EngineDefinitions": [
+			"_DEBUG",
+			"UNICODE",
+			"_UNICODE"
+		],
+		"EnginePrecompiled": [
+			"neo/idlib/precompiled.h"
+		]
+	},
+	"configurations": [
+		{
+			"name": "Win32",
+			"includePath": [
+				"${EnginePath}"
+			],
+			"defines": [
+				"${EngineDefinitions}"
+			],
+			"windowsSdkVersion": "10.0.22621.0",
+			"compilerPath": "cl.exe",
+			"cStandard": "c17",
+			"cppStandard": "c++17",
+			"intelliSenseMode": "windows-msvc-x64",
+			"configurationProvider": "ms-vscode.cmake-tools",
+			"forcedInclude": [
+				"${EnginePrecompiled}"
+			]
+		},
+		{
+			"name": "Linux",
+			"includePath": [
+				"${EnginePath}"
+			],
+			"defines": [
+				"${EngineDefinitions}"
+			],
+			"compilerPath": "gcc",
+			"cStandard": "c17",
+			"cppStandard": "c++17",
+			"intelliSenseMode": "linux-gcc-x64",
+			"configurationProvider": "ms-vscode.cmake-tools",
+			"forcedInclude": [
+				"${EnginePrecompiled}"
+			]
+		}
+	],
+	"version": 4
+}

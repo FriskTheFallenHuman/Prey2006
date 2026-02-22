@@ -1,0 +1,97 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Engine: CMake Configure (Clean, MSBUILD, VS2026 x64)",
+      "type": "shell",
+      "command": "cmd.exe",
+      "args": ["/c", "call .\\cmake_msvc2026.cmd"],
+      "options": {
+        "cwd": "${workspaceFolder}",
+      },
+      "presentation": {
+        "panel": "new",
+      },
+    },
+    {
+      "label": "Engine: CMake Configure (Clean, Ninja, Linux)",
+      "type": "shell",
+      "command": "./cmake_linux.sh gcc debug",
+      "options": {
+        "cwd": "${workspaceFolder}",
+      },
+      "presentation": {
+        "panel": "new",
+      },
+    },
+    {
+      "label": "Engine: Build Debug",
+      "type": "shell",
+      "command": "cmake --build . --config Debug -j",   
+      "windows": {
+        "options": {
+          "cwd": "${workspaceFolder}/build/msvc2026",
+        },
+      },
+      "linux": {
+        "options": {
+          "cwd": "${workspaceFolder}/build/ninja",
+        },
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true,
+      },
+      "presentation": {
+        "panel": "new",
+      },
+    },
+    {
+      "label": "Engine: Build RelWithDebInfo",
+      "type": "shell",
+      "command": "cmake --build build --config RelWithDebInfo -j",
+      "windows": {
+        "options": {
+          "cwd": "${workspaceFolder}/build/msvc2026",
+        },
+      },
+      "linux": {
+        "options": {
+          "cwd": "${workspaceFolder}/build/ninja",
+        },
+      },
+      "presentation": {
+        "panel": "new",
+      },
+    },
+    {
+      "label": "Engine: Build Release",
+      "type": "shell",
+      "command": "cmake --build build --config Release -j",
+      "windows": {
+        "options": {
+          "cwd": "${workspaceFolder}/build/msvc2026",
+        },
+      },
+      "linux": {
+        "options": {
+          "cwd": "${workspaceFolder}/build/ninja",
+        },
+      },
+      "presentation": {
+        "panel": "new",
+      },
+    },
+    {
+      "label": "Engine: Win64 Clean",
+      "type": "shell",
+      "command": "cmake --build build --target clean",
+      "options": {
+        "cwd": "${workspaceFolder}/build/msvc2026",
+      },
+      "presentation": {
+        "panel": "new",
+      },
+    },
+  ],
+}
