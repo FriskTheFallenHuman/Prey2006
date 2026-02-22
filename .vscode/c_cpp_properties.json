@@ -6,7 +6,9 @@
 		"EngineDefinitions": [
 			"_DEBUG",
 			"UNICODE",
-			"_UNICODE"
+			"_UNICODE",
+			"HUMANHEAD",
+			"__DOOM_DLL__"
 		],
 		"EnginePrecompiled": [
 			"neo/idlib/precompiled.h"
