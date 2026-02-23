@@ -1,7 +1,8 @@
 {
 	"env": {
 		"EnginePath": [
-			"${workspaceFolder}/neo/**"
+			"${workspaceFolder}/neo/**",
+			"${workspaceFolder}/build/**"
 		],
 		"EngineDefinitions": [
 			"_DEBUG",
@@ -11,6 +12,7 @@
 			"__DOOM_DLL__"
 		],
 		"EnginePrecompiled": [
+			"**/config.h",
 			"neo/idlib/precompiled.h"
 		]
 	},
