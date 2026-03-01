@@ -155,7 +155,11 @@ If you have questions concerning this license or the applicable additional terms
 
 // Unix
 #ifdef __unix__
-	#define BUILD_OS_ID					3
+	#if defined( __linux__ )
+		#define BUILD_OS_ID				2
+	#elif defined( __FreeBSD__ )
+		#define BUILD_OS_ID				3
+	#endif
 	
 	#ifdef	__GNUC__
 	  // NOTE: Do *not* use __builtin_alloca_with_align(), unlike regular alloca it frees at end of block instead of end of function !

@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     container: ghcr.io/flathub/flatpak-builder-lint:latest
     steps:
-
       - name: Checkout
         uses: actions/checkout@v4
         with:

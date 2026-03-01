@@ -55,7 +55,7 @@ $osIdMap = @{
   'windows' = 0
   'macosx'  = 1
   'linux'   = 2
-  'freebsd' = 2
+  'freebsd' = 3
 }
 $binaryConfPath = Join-Path $OutBase 'binary.conf'
 if (-not (Test-Path $binaryConfPath)) {
@@ -66,7 +66,8 @@ if (-not (Test-Path $binaryConfPath)) {
 // name the file binary.conf and place it in the game pak
 // 0 windows
 // 1 macosx
-// 2 linux/freebsd
+// 2 linux
+// 3 freebsd
 $id
 "@
   $binaryConfContent.Trim() | Out-File -FilePath $binaryConfPath -Encoding utf8 -Force

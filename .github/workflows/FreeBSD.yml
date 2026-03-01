@@ -2,7 +2,7 @@ name: FreeBSD Auto-Builds
 on:
   push:
     branches:
-      - 'main'
+      - "main"
     paths-ignore:
       - .github/workflows/Linux.yml
       - .github/workflows/Windows.yml
@@ -32,80 +32,80 @@ jobs:
           - arch: x86_64
             dll_name: gamex86_64.so
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 1
+      - name: Run build in FreeBSD VM
+        uses: vmactions/freebsd-vm@v1.4.2
+        with:
+          release: "15.0"
+          prepare: |
+            export IGNORE_OSVERSION=yes
+            # Prefer pkg-static (statically linked) to avoid dynamic lib upgrade failures.
+            if [ -x /usr/sbin/pkg-static ]; then
+              /usr/sbin/pkg-static bootstrap -f || true
+              attempt=0
+              until [ "$attempt" -ge 3 ]
+              do
+                /usr/sbin/pkg-static update -f && /usr/sbin/pkg-static install -y cmake ccache pkgconf ninja openal-soft sdl2 tree zip git && break
+                attempt=$((attempt+1))
+                echo "pkg-static install failed, retrying ($attempt/3)" >&2
+                sleep $((attempt * 5))
+              done
+            else
+              attempt=0
+              until [ "$attempt" -ge 3 ]
+              do
+                pkg update -f && pkg install -y cmake ccache pkgconf ninja openal-soft sdl2 tree zip git && break
+                attempt=$((attempt+1))
+                echo "pkg install failed, retrying ($attempt/3)" >&2
+                sleep $((attempt * 5))
+              done
+            fi
+          run: |
+            echo "::group::Configure"
+            mkdir -p build
+            cd build
+            cmake -G Ninja -DDEDICATED=ON -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ../neo/
+            echo "::endgroup::"
+            echo "::group::Build"
+            ninja
+            echo "::endgroup::"
+            echo "::group::Build artifacts"
+            ls -lh ../build
+            echo "::endgroup::"
+            echo "::group::Create binary.conf"
+            (
+              cat <<'EOF'
+            // add flags for supported operating systems in this pak
+            // one id per line
+            // name the file binary.conf and place it in the game pak
+            // 0 windows
+            // 1 macosx
+            // 2 linux
+            // 3 freebsd
+            2
+            EOF
+            ) > ../base/binary.conf
+            echo "::endgroup::"
+            echo "::group::Package game03.pk4"
+            cd ../base
+            rm -f game03.pk4
+            zip -r -q game03.pk4 binary.conf "${{ matrix.dll_name }}"
+            echo "::endgroup::"
 
-    - name: Run build in FreeBSD VM
-      uses: vmactions/freebsd-vm@v1.4.2
-      with:
-        release: "15.0"
-        prepare: |
-          export IGNORE_OSVERSION=yes
-          # Prefer pkg-static (statically linked) to avoid dynamic lib upgrade failures.
-          if [ -x /usr/sbin/pkg-static ]; then
-            /usr/sbin/pkg-static bootstrap -f || true
-            attempt=0
-            until [ "$attempt" -ge 3 ]
-            do
-              /usr/sbin/pkg-static update -f && /usr/sbin/pkg-static install -y cmake ccache pkgconf ninja openal-soft sdl2 tree zip git && break
-              attempt=$((attempt+1))
-              echo "pkg-static install failed, retrying ($attempt/3)" >&2
-              sleep $((attempt * 5))
-            done
-          else
-            attempt=0
-            until [ "$attempt" -ge 3 ]
-            do
-              pkg update -f && pkg install -y cmake ccache pkgconf ninja openal-soft sdl2 tree zip git && break
-              attempt=$((attempt+1))
-              echo "pkg install failed, retrying ($attempt/3)" >&2
-              sleep $((attempt * 5))
-            done
-          fi
+      - name: Prepare output
+        shell: pwsh
         run: |
-          echo "::group::Configure"
-          mkdir -p build
-          cd build
-          cmake -G Ninja -DDEDICATED=ON -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ../neo/
-          echo "::endgroup::"
-          echo "::group::Build"
-          ninja
-          echo "::endgroup::"
-          echo "::group::Build artifacts"
-          ls -lh ../build
-          echo "::endgroup::"
-          echo "::group::Create binary.conf"
-          (
-            cat <<'EOF'
-          // add flags for supported operating systems in this pak
-          // one id per line
-          // name the file binary.conf and place it in the game pak
-          // 0 win-x86
-          // 1 mac-ppc
-          // 2 linux-x86
-          2
-          EOF
-          ) > ../base/binary.conf
-          echo "::endgroup::"
-          echo "::group::Package game01.pk4"
-          cd ../base
-          rm -f game01.pk4
-          zip -r -q game01.pk4 binary.conf "${{ matrix.dll_name }}"
-          echo "::endgroup::"
+          New-Item -ItemType Directory -Path "output/freebsd" -Force | Out-Null
+          Copy-Item -Path "base" -Destination "output/freebsd/base" -Recurse -Force
+          Copy-Item -Path "libs" -Destination "output/freebsd/libs" -Recurse -Force
+          Copy-Item -Path ".github/Changelog.md", ".github/Configuration.md", ".github/README.md" "output/freebsd/"
 
-    - name: Prepare output
-      shell: pwsh
-      run: |
-        New-Item -ItemType Directory -Path "output/freebsd" -Force | Out-Null
-        Copy-Item -Path "base" -Destination "output/freebsd/base" -Recurse -Force
-        Copy-Item -Path "libs" -Destination "output/freebsd/libs" -Recurse -Force
-        Copy-Item -Path ".github/Changelog.md", ".github/Configuration.md", ".github/README.md" "output/freebsd/"
-
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: prey2006-freebsd
-        path: output/freebsd/
-        compression-level: 6
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: prey2006-freebsd
+          path: output/freebsd/
+          compression-level: 6

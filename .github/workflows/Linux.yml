@@ -3,7 +3,7 @@ name: Linux Builds (x86_64 & x86)
 on:
   push:
     branches:
-      - 'main'
+      - "main"
     paths-ignore:
       - .github/workflows/FreeBSD.yml
       - .github/workflows/Windows.yml
@@ -193,7 +193,7 @@ jobs:
       - name: Copy base files and create gamepack
         shell: pwsh
         run: |
-          ./scripts/package_pk4.ps1 -PkgName "game01.pk4" -DllName "${{ matrix.dll_name }}" -OsName linux
+          ./scripts/package_pk4.ps1 -PkgName "game02.pk4" -DllName "${{ matrix.dll_name }}" -OsName linux
 
       - name: Artifacts
         uses: actions/upload-artifact@v4
