@@ -5,6 +5,7 @@
 
 #include <algorithm> // std::sort - TODO: replace with something custom..
 #include <vector>
+#include <string>
 
 #include "../libs/imgui/imgui_internal.h"
 
@@ -64,6 +65,9 @@ static idStrList g_playerModelNameList;
 static idStrList g_playerModelPortraitList;
 static idList<int> g_playerModelIndexList;
 static int g_playerSelectedModelIndex = 0;
+
+// Misc
+static double lastMasterServerRefreshTime = -1e9;
 
 void Com_OpenDhewm3CreateServer();
 void Com_OpenDhewm3PlayerSetup();
@@ -191,8 +195,20 @@ void Com_DrawDhewm3ServerBrowser() {
 					RefreshServers();
 				}
 
-				if ( ImGui::MenuItem("Refresh List") ) {
-					RefreshServers();
+				double now = ImGui::GetTime(); // seconds since app start
+				const double cooldown = 30.0;
+				bool canClickRefresh = (now - lastMasterServerRefreshTime) >= cooldown;
+
+				// show remaining seconds in the label (optional)
+				if ( !canClickRefresh ) {
+					int remaining = static_cast<int>(idMath::Ceil(cooldown - (now - lastMasterServerRefreshTime)));
+					// show disabled menu item with countdown
+					ImGui::MenuItem(("Can't Refresh Again (" + std::to_string(remaining) + "s)").c_str(), NULL, false, false);
+				} else {
+					if ( ImGui::MenuItem("Refresh List") ) {
+						lastMasterServerRefreshTime = now;
+						RefreshServers();
+					}
 				}
 
 				if ( ImGui::MenuItem("Stop Searching") ) {
