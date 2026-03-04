@@ -98,10 +98,7 @@ jobs:
       - name: Prepare output
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Path "output/freebsd" -Force | Out-Null
-          Copy-Item -Path "base" -Destination "output/freebsd/base" -Recurse -Force
-          Copy-Item -Path "libs" -Destination "output/freebsd/libs" -Recurse -Force
-          Copy-Item -Path ".github/Changelog.md", ".github/Configuration.md", ".github/README.md" "output/freebsd/"
+          ./scripts/package_pk4.ps1 -PkgName "game03.pk4" -DllName "${{ matrix.dll_name }}" -OsName freebsd
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
