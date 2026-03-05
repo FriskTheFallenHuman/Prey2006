@@ -56,11 +56,6 @@ idCVar				idAsyncNetwork::clientMaxPrediction( "net_clientMaxPrediction", "1000"
 idCVar				idAsyncNetwork::clientUsercmdBackup( "net_clientUsercmdBackup", "5", CVAR_SYSTEM | CVAR_INTEGER | CVAR_NOCHEAT, "number of usercmds to resend" );
 idCVar				idAsyncNetwork::clientRemoteConsoleAddress( "net_clientRemoteConsoleAddress", "localhost", CVAR_SYSTEM | CVAR_NOCHEAT, "remote console address" );
 idCVar				idAsyncNetwork::clientRemoteConsolePassword( "net_clientRemoteConsolePassword", "", CVAR_SYSTEM | CVAR_NOCHEAT, "remote console password" );
-idCVar				idAsyncNetwork::master0( "net_master0", IDNET_HOST ":" IDNET_MASTER_PORT, CVAR_SYSTEM | CVAR_ROM, "idnet master server address" );
-idCVar				idAsyncNetwork::master1( "net_master1", "", CVAR_SYSTEM | CVAR_ARCHIVE, "1st master server address" );
-idCVar				idAsyncNetwork::master2( "net_master2", "", CVAR_SYSTEM | CVAR_ARCHIVE, "2nd master server address" );
-idCVar				idAsyncNetwork::master3( "net_master3", "", CVAR_SYSTEM | CVAR_ARCHIVE, "3rd master server address" );
-idCVar				idAsyncNetwork::master4( "net_master4", "", CVAR_SYSTEM | CVAR_ARCHIVE, "4th master server address" );
 idCVar				idAsyncNetwork::LANServer( "net_LANServer", "0", CVAR_SYSTEM | CVAR_BOOL | CVAR_NOCHEAT, "config LAN games only - affects clients and servers" );
 idCVar				idAsyncNetwork::serverReloadEngine( "net_serverReloadEngine", "0", CVAR_SYSTEM | CVAR_INTEGER | CVAR_NOCHEAT, "perform a full reload on next map restart (including flushing referenced pak files) - decreased if > 0" );
 idCVar				idAsyncNetwork::serverAllowServerMod( "net_serverAllowServerMod", "0", CVAR_SYSTEM | CVAR_BOOL | CVAR_NOCHEAT, "allow server-side mods" );
@@ -69,6 +64,7 @@ idCVar				idAsyncNetwork::clientDownload( "net_clientDownload", "1", CVAR_SYSTEM
 
 int					idAsyncNetwork::realTime;
 master_t			idAsyncNetwork::masters[ MAX_MASTER_SERVERS ];
+idMasterServerDecl	idAsyncNetwork::masterServerDecl;
 
 /*
 ==================
@@ -87,12 +83,19 @@ void idAsyncNetwork::Init( void ) {
 
 	realTime = 0;
 
+	if ( !masterServerDecl.LoadFile( "masterservers.lst", false ) ) {
+		common->Warning( "Failed to load master servers list\n" );
+	}
+
 	memset( masters, 0, sizeof( masters ) );
-	masters[0].var = &master0;
-	masters[1].var = &master1;
-	masters[2].var = &master2;
-	masters[3].var = &master3;
-	masters[4].var = &master4;
+	for ( int i = 0; i < MAX_MASTER_SERVERS && i < masterServerDecl.GetServerCount(); i++ ) {
+		idMasterServer *server = masterServerDecl.GetServerByIndex(i);
+		common->Printf( "Master %d: %s (%s:%s)\n", i, server->GetName().c_str(), server->GetAddress().c_str(), server->GetPorts().c_str() );
+		if ( server ) {
+			masters[i].masterServer = server;
+			//masters[i].resolved = false;
+		}
+	}
 
 #ifndef	ID_DEMO_BUILD
 	cmdSystem->AddCommand( "spawnServer", SpawnServer_f, CMD_FL_SYSTEM, "spawns a server", idCmdSystem::ArgCompletion_MapName );
@@ -127,23 +130,29 @@ idAsyncNetwork::GetMasterAddress
 ==================
 */
 bool idAsyncNetwork::GetMasterAddress( int index, netadr_t &adr ) {
-	if ( !masters[ index ].var ) {
+	if ( !masters[ index ].masterServer ) {
 		return false;
 	}
-	if ( masters[ index ].var->GetString()[0] == '\0' ) {
+	idStr addressStr = masters[ index ].masterServer->GetAddress();
+	if ( addressStr.IsEmpty() ) {
 		return false;
 	}
-	if ( !masters[ index ].resolved || masters[ index ].var->IsModified() ) {
-		masters[ index ].var->ClearModified();
-		if ( !Sys_StringToNetAdr( masters[ index ].var->GetString(), &masters[ index ].address, true ) ) {
-			common->Printf( "Failed to resolve master %d: %s\n", index, masters[ index ].var->GetString() );
+	
+	if ( !masters[ index ].resolved ) {
+		if ( !Sys_StringToNetAdr( addressStr.c_str(), &masters[ index ].address, true ) ) {
+			common->Printf( "Failed to resolve master %d: %s\n", index, addressStr.c_str() );
 			memset( &masters[ index ].address, 0, sizeof( netadr_t ) );
 			masters[ index ].resolved = true;
 			return false;
 		}
 		if ( masters[ index ].address.port == 0 ) {
-			masters[ index ].address.port = atoi( IDNET_MASTER_PORT );
-		}
+			idStr portStr = masters[ index ].masterServer->GetPorts();
+			if ( !portStr.IsEmpty() ) {
+				masters[ index ].address.port = atoi( portStr.c_str() );
+			} else {
+				masters[ index ].address.port = atoi( IDNET_MASTER_PORT );
+			}
+		}	
 		masters[ index ].resolved = true;
 	}
 	adr = masters[ index ].address;
@@ -162,6 +171,7 @@ void idAsyncNetwork::Shutdown( void ) {
 	client.ClosePort();
 	server.Kill();
 	server.ClosePort();
+	masterServerDecl.Clear();
 }
 
 /*

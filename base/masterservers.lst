@@ -1,0 +1,14 @@
+/*
+Master Server List format:
+{
+	name: name of the server
+	address: url or ip address of the server
+	port:  port of the master server, if none use the default one
+}
+*/
+
+{
+    name "Prey Master Server"
+    address "prey-master.xanz-servers.co.uk"
+    port "27650"
+}

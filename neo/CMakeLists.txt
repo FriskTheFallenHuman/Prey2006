@@ -618,6 +618,7 @@ set(src_framework
 	framework/async/AsyncClient.cpp
 	framework/async/AsyncNetwork.cpp
 	framework/async/AsyncServer.cpp
+	framework/async/MasterServerList.cpp
 	framework/async/MsgChannel.cpp
 	framework/async/NetworkSystem.cpp
 	framework/async/ServerScan.cpp

@@ -33,6 +33,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "AsyncServer.h"
 #include "ServerScan.h"
 #include "AsyncClient.h"
+#include "MasterServerList.h"
 
 /*
 ===============================================================================
@@ -102,7 +103,7 @@ enum {
 };
 
 typedef struct master_s {
-	idCVar *		var;
+	idMasterServer * masterServer;
 	netadr_t		address;
 	bool			resolved;
 } master_t;
@@ -152,11 +153,6 @@ public:
 	static idCVar			clientUsercmdBackup;			// how many usercmds the client sends from previous frames
 	static idCVar			clientRemoteConsoleAddress;		// remote console address
 	static idCVar			clientRemoteConsolePassword;	// remote console password
-	static idCVar			master0;						// idnet master server
-	static idCVar			master1;						// 1st master server
-	static idCVar			master2;						// 2nd master server
-	static idCVar			master3;						// 3rd master server
-	static idCVar			master4;						// 4th master server
 	static idCVar			LANServer;						// LAN mode
 	static idCVar			serverReloadEngine;				// reload engine on map change instead of growing the referenced paks
 	static idCVar			serverAllowServerMod;			// let a pure server start with a different game code than what is referenced in game code
@@ -169,6 +165,7 @@ public:
 private:
 	static int				realTime;
 	static master_t			masters[ MAX_MASTER_SERVERS];	// master1 etc.
+	static idMasterServerDecl masterServerDecl;
 
 	static void				SpawnServer_f( const idCmdArgs &args );
 	static void				NextMap_f( const idCmdArgs &args );

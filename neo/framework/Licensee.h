@@ -66,11 +66,13 @@ If you have questions concerning this license or the applicable additional terms
 
 
 // default idnet host address
+/*
 #ifndef IDNET_HOST
 	//Q4MASTER
 	//#define IDNET_HOST				"q4master.idsoftware.com"
-	#define IDNET_HOST					"prey-master.xanz-servers.co.uk"
+	#define IDNET_HOST					"preymaster.humanhead.com"
 #endif
+*/
 
 // default idnet master port
 #ifndef IDNET_MASTER_PORT
