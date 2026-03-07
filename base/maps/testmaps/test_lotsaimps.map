@@ -1,0 +1,467 @@
+Version 2
+// entity 0
+{
+"classname" "worldspawn"
+// primitive 0
+{
+ brushDef3
+ {
+  ( 0 0 -1 -64 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 17.875 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 0 1 -448 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 -17.875 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 -1 0 -344 ) ( ( 0.0078125 0 -8.9375 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 1 0 -424 ) ( ( 0.0078125 0 8.9375 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( -1 0 0 824 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 1 0 0 -832 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+ }
+}
+// primitive 1
+{
+ brushDef3
+ {
+  ( 0 0 -1 -64 ) ( ( 0.0078125 0 3.625 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 0 1 -448 ) ( ( 0.0078125 0 3.625 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 -1 0 -336 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 1 0 0 -576 ) ( ( 0.0078125 0 3.625 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 1 0 40 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( -1 0 0 568 ) ( ( 0.0078125 0 -3.625 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+ }
+}
+// primitive 2
+{
+ brushDef3
+ {
+  ( 0 0 -1 448 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( -1 0 0 -320 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 2.125 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 1 0 -424 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 2.125 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 1 0 0 -832 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 2.125 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 -1 0 -344 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 2.125 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 0 1 -456 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+ }
+}
+// primitive 3
+{
+ brushDef3
+ {
+  ( 0 0 -1 -64 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 0 1 -448 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 -1 0 -344 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 1 0 -424 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( -1 0 0 -320 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 1 0 0 312 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+ }
+}
+// primitive 4
+{
+ brushDef3
+ {
+  ( 0 0 -1 -64 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 0 1 -448 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 1 0 0 -832 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 1 0 -424 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( -1 0 0 -320 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 -1 0 416 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+ }
+}
+// primitive 5
+{
+ brushDef3
+ {
+  ( 0 0 -1 -64 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 0 1 -448 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 -1 0 128 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 1 0 0 -576 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 1 0 -424 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( -1 0 0 568 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+ }
+}
+// primitive 6
+{
+ brushDef3
+ {
+  ( 0 0 -1 -64 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 0 1 -448 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 -1 0 -344 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 1 0 0 -832 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( -1 0 0 -320 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 1 0 336 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+ }
+}
+// primitive 7
+{
+ brushDef3
+ {
+  ( 0 0 -1 -64 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 -1 0 -344 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 1 0 0 -832 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 1 0 -424 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( -1 0 0 -320 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+  ( 0 0 1 56 ) ( ( 0.0078125 0 0 ) ( 0 0.015625 0 ) ) "textures/base_wall/snpanel2rust" 0 0 0
+ }
+}
+}
+// entity 1
+{
+"anim" "idle"
+"classname" "monster_demon_cherub"
+"name" "monster_demon_cherub_1"
+"origin" "200 -72 24"
+}
+// entity 2
+{
+"classname" "monster_demon_trite"
+"name" "monster_demon_trite_1"
+"origin" "288 320 48"
+}
+// entity 3
+{
+"classname" "monster_zombie_fat"
+"name" "monster_zombie_fat_1"
+"origin" "80 352 48"
+}
+// entity 4
+{
+"classname" "monster_zombie_commando"
+"name" "monster_zombie_commando_1"
+"origin" "-24 352 16"
+}
+// entity 5
+{
+"classname" "monster_demon_pinky"
+"name" "monster_demon_pinky_1"
+"origin" "-152 352 -16"
+}
+// entity 6
+{
+"classname" "monster_demon_imp"
+"name" "monster_demon_imp_1"
+"origin" "-272 352 -48"
+}
+// entity 7
+{
+"classname" "light"
+"name" "light_4"
+"origin" "336 232 112"
+"noshadows" "0"
+"nospecular" "0"
+"nodiffuse" "0"
+"falloff" "0"
+"_color" "1 1 1"
+"light_radius" "150 150 150"
+}
+// entity 8
+{
+"classname" "light"
+"name" "light_1"
+"origin" "-104 -152 120"
+"color_demonic" "1 0 0"
+"noshadows" "0"
+"nospecular" "0"
+"nodiffuse" "0"
+"falloff" "0"
+"_color" "0.97 1 0.99"
+"light_radius" "300 300 300"
+}
+// entity 9
+{
+"classname" "info_player_start"
+"name" "info_player_start_1"
+"origin" "624 376 -40"
+"angle" "270"
+}
+// entity 10
+{
+"classname" "light"
+"name" "light_2"
+"origin" "304 -104 128"
+"color_demonic" "1 0 0"
+"noshadows" "0"
+"nospecular" "0"
+"nodiffuse" "0"
+"falloff" "0"
+"_color" "0.97 1 0.99"
+"light_radius" "300 300 300"
+}
+// entity 11
+{
+"classname" "light"
+"name" "light_3"
+"origin" "-144 264 160"
+"color_demonic" "1 0 0"
+"noshadows" "0"
+"nospecular" "0"
+"nodiffuse" "0"
+"falloff" "0"
+"_color" "0.97 1 0.99"
+"light_radius" "300 300 300"
+}
+// entity 12
+{
+"classname" "monster_demon_imp"
+"name" "monster_demon_imp_2"
+"origin" "-272 256 -48"
+}
+// entity 13
+{
+"classname" "monster_demon_imp"
+"name" "monster_demon_imp_3"
+"origin" "-272 160 -48"
+}
+// entity 14
+{
+"classname" "monster_demon_imp"
+"name" "monster_demon_imp_4"
+"origin" "-272 64 -48"
+}
+// entity 15
+{
+"classname" "monster_demon_imp"
+"name" "monster_demon_imp_5"
+"origin" "-272 -24 -48"
+}
+// entity 16
+{
+"classname" "monster_demon_imp"
+"name" "monster_demon_imp_6"
+"origin" "-272 -120 -48"
+}
+// entity 17
+{
+"classname" "monster_demon_imp"
+"name" "monster_demon_imp_7"
+"origin" "-272 -208 -48"
+}
+// entity 18
+{
+"classname" "monster_demon_pinky"
+"name" "monster_demon_pinky_2"
+"origin" "-144 240 -16"
+}
+// entity 19
+{
+"classname" "monster_demon_pinky"
+"name" "monster_demon_pinky_3"
+"origin" "-144 120 -16"
+}
+// entity 20
+{
+"classname" "monster_demon_pinky"
+"name" "monster_demon_pinky_4"
+"origin" "-136 8 -16"
+}
+// entity 21
+{
+"classname" "monster_demon_pinky"
+"name" "monster_demon_pinky_5"
+"origin" "-128 -104 -16"
+}
+// entity 22
+{
+"classname" "monster_demon_pinky"
+"name" "monster_demon_pinky_6"
+"origin" "-136 -224 -16"
+}
+// entity 23
+{
+"classname" "monster_zombie_commando"
+"name" "monster_zombie_commando_2"
+"origin" "-24 256 16"
+}
+// entity 24
+{
+"classname" "monster_zombie_commando"
+"name" "monster_zombie_commando_3"
+"origin" "-16 168 16"
+}
+// entity 25
+{
+"classname" "monster_zombie_commando"
+"name" "monster_zombie_commando_4"
+"origin" "-16 88 16"
+}
+// entity 26
+{
+"classname" "monster_zombie_commando"
+"name" "monster_zombie_commando_5"
+"origin" "-16 8 16"
+}
+// entity 27
+{
+"classname" "monster_zombie_commando"
+"name" "monster_zombie_commando_6"
+"origin" "-16 -72 16"
+}
+// entity 28
+{
+"classname" "monster_zombie_commando"
+"name" "monster_zombie_commando_7"
+"origin" "-8 -152 16"
+}
+// entity 29
+{
+"classname" "monster_zombie_commando"
+"name" "monster_zombie_commando_8"
+"origin" "-8 -248 16"
+}
+// entity 30
+{
+"classname" "monster_zombie_fat"
+"name" "monster_zombie_fat_2"
+"origin" "80 264 48"
+}
+// entity 31
+{
+"classname" "monster_zombie_fat"
+"name" "monster_zombie_fat_3"
+"origin" "80 176 48"
+}
+// entity 32
+{
+"classname" "monster_zombie_fat"
+"name" "monster_zombie_fat_4"
+"origin" "80 88 48"
+}
+// entity 33
+{
+"classname" "monster_zombie_fat"
+"name" "monster_zombie_fat_5"
+"origin" "88 8 48"
+}
+// entity 34
+{
+"classname" "monster_zombie_fat"
+"name" "monster_zombie_fat_6"
+"origin" "88 -64 48"
+}
+// entity 35
+{
+"classname" "monster_zombie_fat"
+"name" "monster_zombie_fat_7"
+"origin" "96 -144 48"
+}
+// entity 36
+{
+"classname" "monster_zombie_fat"
+"name" "monster_zombie_fat_8"
+"origin" "96 -216 48"
+}
+// entity 37
+{
+"classname" "monster_zombie_fat"
+"name" "monster_zombie_fat_9"
+"origin" "96 -288 48"
+}
+// entity 38
+{
+"classname" "monster_demon_trite"
+"name" "monster_demon_trite_2"
+"origin" "288 216 48"
+}
+// entity 39
+{
+"classname" "monster_demon_trite"
+"name" "monster_demon_trite_3"
+"origin" "288 96 48"
+}
+// entity 40
+{
+"classname" "monster_demon_trite"
+"name" "monster_demon_trite_4"
+"origin" "296 -8 48"
+}
+// entity 41
+{
+"classname" "monster_demon_trite"
+"name" "monster_demon_trite_5"
+"origin" "296 -112 48"
+}
+// entity 42
+{
+"classname" "monster_demon_trite"
+"name" "monster_demon_trite_6"
+"origin" "304 -216 48"
+}
+// entity 43
+{
+"classname" "monster_demon_trite"
+"name" "monster_demon_trite_7"
+"origin" "384 -112 48"
+}
+// entity 44
+{
+"classname" "monster_demon_trite"
+"name" "monster_demon_trite_8"
+"origin" "384 -8 48"
+}
+// entity 45
+{
+"classname" "monster_demon_trite"
+"name" "monster_demon_trite_9"
+"origin" "384 96 48"
+}
+// entity 46
+{
+"classname" "monster_demon_trite"
+"name" "monster_demon_trite_10"
+"origin" "384 216 48"
+}
+// entity 47
+{
+"classname" "monster_demon_trite"
+"name" "monster_demon_trite_11"
+"origin" "384 320 48"
+}
+// entity 48
+{
+"anim" "idle"
+"classname" "monster_demon_cherub"
+"name" "monster_demon_cherub_2"
+"origin" "200 8 24"
+}
+// entity 49
+{
+"anim" "idle"
+"classname" "monster_demon_cherub"
+"name" "monster_demon_cherub_3"
+"origin" "200 88 24"
+}
+// entity 50
+{
+"anim" "idle"
+"classname" "monster_demon_cherub"
+"name" "monster_demon_cherub_4"
+"origin" "200 184 24"
+}
+// entity 51
+{
+"anim" "idle"
+"classname" "monster_demon_cherub"
+"name" "monster_demon_cherub_5"
+"origin" "200 272 24"
+}
+// entity 52
+{
+"anim" "idle"
+"classname" "monster_demon_cherub"
+"name" "monster_demon_cherub_6"
+"origin" "200 352 24"
+}
+// entity 53
+{
+"anim" "idle"
+"classname" "monster_demon_cherub"
+"name" "monster_demon_cherub_7"
+"origin" "200 -152 24"
+}
+// entity 54
+{
+"anim" "idle"
+"classname" "monster_demon_cherub"
+"name" "monster_demon_cherub_8"
+"origin" "200 -232 24"
+}
+// entity 55
+{
+"classname" "monster_demon_trite"
+"name" "monster_demon_trite_12"
+"origin" "384 -216 48"
+}

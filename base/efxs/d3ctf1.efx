@@ -1,0 +1,1810 @@
+Version 1
+// reverb 1
+reverb "1" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 7
+reverb "7" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 8
+reverb "8" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 10
+reverb "10" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 11
+reverb "11" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 16
+reverb "16" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 17
+reverb "17" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 25
+reverb "25" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 26
+reverb "26" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 28
+reverb "28" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 29
+reverb "29" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 30
+reverb "30" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 31
+reverb "31" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 32
+reverb "32" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 34
+reverb "34" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 37
+reverb "37" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 49
+reverb "49" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 51
+reverb "51" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 53
+reverb "53" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 55
+reverb "55" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 56
+reverb "56" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 61
+reverb "61" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 62
+reverb "62" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 63
+reverb "63" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 65
+reverb "65" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 66
+reverb "66" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 68
+reverb "68" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 69
+reverb "69" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 70
+reverb "70" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 75
+reverb "75" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 76
+reverb "76" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 77
+reverb "77" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 78
+reverb "78" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 79
+reverb "79" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 80
+reverb "80" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 82
+reverb "82" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 83
+reverb "83" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 84
+reverb "84" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 85
+reverb "85" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 89
+reverb "89" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 90
+reverb "90" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 91
+reverb "91" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 92
+reverb "92" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 95
+reverb "95" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 98
+reverb "98" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 100
+reverb "100" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 102
+reverb "102" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 103
+reverb "103" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 109
+reverb "109" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 114
+reverb "114" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 118
+reverb "118" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 119
+reverb "119" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 120
+reverb "120" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 122
+reverb "122" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 4.3307
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 480
+"reflections delay" 0.0083
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 771
+"reverb delay" 0.0441
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 123
+reverb "123" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 124
+reverb "124" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 125
+reverb "125" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 126
+reverb "126" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 127
+reverb "127" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 129
+reverb "129" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 130
+reverb "130" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 131
+reverb "131" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 2.6071
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0283
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 134
+reverb "134" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 135
+reverb "135" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 136
+reverb "136" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb 137
+reverb "137" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+
+// reverb default
+reverb "default" {
+"environment" 26
+"environment size" 1.7000
+"environment diffusion" 0.9606
+"room" -1000
+"room hf" -551
+"room lf" -314
+"decay time" 1.1969
+"decay hf ratio" 0.3693
+"decay lf ratio" 1.0425
+"reflections" 653
+"reflections delay" 0.0140
+"reflections pan" 0.0000 0.0000 0.0000
+"reverb" 1149
+"reverb delay" 0.0210
+"reverb pan" 0.0000 0.0000 0.0000
+"echo time" 0.0874
+"echo depth" 0.1102
+"modulation time" 0.2500
+"modulation depth" 0.0000
+"hf reference" 5000.0000
+"lf reference" 250.0000
+"room rolloff factor" 0.0000
+"flags" 63
+}
+

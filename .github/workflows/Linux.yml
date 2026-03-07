@@ -1,0 +1,203 @@
+name: Linux Builds (x86_64 & x86)
+
+on:
+  push:
+    branches:
+      - "main"
+    paths-ignore:
+      - .github/workflows/FreeBSD.yml
+      - .github/workflows/Windows.yml
+  pull_request:
+    types: [edited, opened, synchronize]
+    paths-ignore:
+      - .github/workflows/FreeBSD.yml
+      - .github/workflows/Windows.yml
+  workflow_dispatch:
+
+concurrency:
+  # Cancel concurrent workflows for the same PR or commit hash.
+  group: ${{github.workflow}}-${{github.event_name == 'pull_request' && github.head_ref || github.sha}}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Linux (${{ matrix.arch }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x86_64, x86]
+        include:
+          - arch: x86_64
+            dll_name: gamex86_64.so
+          - arch: x86
+            dll_name: gamex86.so
+
+    env:
+      CHROOT_REL_PATH: ubuntu-i386
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Restore apt cache
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build libfreetype6-dev ccache zip gcc-multilib g++-multilib debootstrap rsync util-linux file
+          version: 1.0
+
+      - name: Ensure ccache dir exists and init
+        run: |
+          mkdir -p ~/.ccache
+          ccache --max-size=10G || true
+
+      - name: Restore ccache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ccache
+          key: ${{ runner.os }}-ccache-${{ matrix.arch }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-ccache-${{ matrix.arch }}-
+            ${{ runner.os }}-ccache-
+
+      - name: Build the engine (x86_64)
+        if: matrix.arch == 'x86_64'
+        run: |
+          set -eux
+          rm -rf build
+          mkdir -p build
+          cd build
+          cmake -G Ninja \
+            -DDEDICATED=ON \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ../neo/
+          ninja
+
+      - name: Restore chroot cache (x86)
+        if: matrix.arch == 'x86'
+        id: restore-chroot
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/chroot/${{ env.CHROOT_REL_PATH }}
+          key: chroot-ubuntu-i386-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            chroot-ubuntu-i386-${{ runner.os }}-
+
+      - name: Bootstrap chroot if cache miss (x86)
+        if: matrix.arch == 'x86' && steps.restore-chroot.outputs.cache-hit != 'true'
+        run: |
+          set -eux
+          CHROOT_DIR="${RUNNER_TEMP}/chroot/${CHROOT_REL_PATH}"
+          sudo rm -rf "$CHROOT_DIR"
+          sudo mkdir -p "$CHROOT_DIR"
+          # bootstrap minimal i386 Debian bookworm
+          sudo debootstrap --arch=i386 --variant=minbase bookworm "$CHROOT_DIR" http://deb.debian.org/debian
+          # make runner user owner of chroot workspace so rsync can write
+          sudo chown -R $USER:$USER "$CHROOT_DIR"
+
+      - name: Ensure chroot exists and perms (x86)
+        if: matrix.arch == 'x86'
+        run: |
+          set -eux
+          CHROOT_DIR="${RUNNER_TEMP}/chroot/${CHROOT_REL_PATH}"
+          if [ ! -d "$CHROOT_DIR" ]; then
+            echo "Chroot missing after bootstrap step; aborting"
+            exit 1
+          fi
+          sudo chown -R $USER:$USER "$CHROOT_DIR"
+          ls -la "$CHROOT_DIR" | sed -n '1,20p'
+
+      - name: Save chroot to cache (x86)
+        if: matrix.arch == 'x86' && steps.restore-chroot.outputs.cache-hit != 'true'
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ runner.temp }}/chroot/${{ env.CHROOT_REL_PATH }}
+            !${{ runner.temp }}/chroot/${{ env.CHROOT_REL_PATH }}/var/lib/apt/lists/lock
+            !${{ runner.temp }}/chroot/${{ env.CHROOT_REL_PATH }}/var/lib/apt/lists/partial
+            !${{ runner.temp }}/chroot/${{ env.CHROOT_REL_PATH }}/var/cache/apt/archives/lock
+            !${{ runner.temp }}/chroot/${{ env.CHROOT_REL_PATH }}/var/cache/apt/archives/partial
+            !${{ runner.temp }}/chroot/${{ env.CHROOT_REL_PATH }}/var/cache/ldconfig/aux-cache
+          key: chroot-ubuntu-i386-${{ runner.os }}-${{ github.sha }}
+
+      - name: Prepare chroot mounts and sync repo (x86)
+        if: matrix.arch == 'x86'
+        run: |
+          set -eux
+          CHROOT_DIR="${RUNNER_TEMP}/chroot/${CHROOT_REL_PATH}"
+          # bind mount required pseudo-filesystems
+          sudo mount --bind /dev  "$CHROOT_DIR/dev"
+          sudo mount --bind /dev/pts "$CHROOT_DIR/dev/pts"
+          sudo mount -t proc proc "$CHROOT_DIR/proc"
+          sudo mount -t sysfs sys "$CHROOT_DIR/sys"
+          # copy DNS so apt works inside chroot
+          sudo cp /etc/resolv.conf "$CHROOT_DIR/etc/resolv.conf"
+          # sync repo into chroot workspace
+          sudo mkdir -p "$CHROOT_DIR/work"
+          sudo rsync -a --delete "${GITHUB_WORKSPACE}/" "$CHROOT_DIR/work/"
+          sudo chown -R $USER:$USER "$CHROOT_DIR/work"
+
+      - name: Build inside chroot (x86)
+        if: matrix.arch == 'x86'
+        run: |
+          set -eux
+          CHROOT_DIR="${RUNNER_TEMP}/chroot/${CHROOT_REL_PATH}"
+          # run the build inside the chroot under linux32 personality
+          sudo linux32 chroot "$CHROOT_DIR" /bin/bash -lc "
+            set -eux
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update
+            apt-get install -y --no-install-recommends build-essential git cmake ninja-build ccache zip gcc-multilib g++-multilib libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev libfreetype6-dev file
+            mkdir -p /root/.ccache
+            ccache --max-size=10G || true
+
+            cd /work
+            rm -rf build
+            mkdir -p build
+            cd build
+            cmake -G Ninja -DDEDICATED=ON -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_SYSTEM_PROCESSOR=i686 ../neo/
+            ninja
+
+            mkdir -p /work/output/linux
+            # copy the produced .so (adjust name/path if your build places it elsewhere)
+            find . -type f -name '${{ matrix.dll_name }}' -exec cp -v {} /work/output/linux/ \\; || true
+          "
+
+      - name: Copy artifacts out of chroot to workspace (x86)
+        if: matrix.arch == 'x86'
+        run: |
+          set -eux
+          CHROOT_DIR="${RUNNER_TEMP}/chroot/${CHROOT_REL_PATH}"
+          mkdir -p "${GITHUB_WORKSPACE}/output/linux"
+          # copy files from chroot -> workspace as runner user (no sudo)
+          rsync -a "$CHROOT_DIR/work/output/linux/" "${GITHUB_WORKSPACE}/output/linux/" || true
+          ls -la "${GITHUB_WORKSPACE}/output/linux" || true
+
+      - name: Cleanup chroot mounts (x86)
+        if: matrix.arch == 'x86' && always()
+        run: |
+          set -eux
+          CHROOT_DIR="${RUNNER_TEMP}/chroot/${CHROOT_REL_PATH}"
+          sudo umount -l "$CHROOT_DIR/dev/pts" || true
+          sudo umount -l "$CHROOT_DIR/dev" || true
+          sudo umount -l "$CHROOT_DIR/proc" || true
+          sudo umount -l "$CHROOT_DIR/sys" || true
+
+      - name: Chmod game executables
+        run: |
+          chmod +x "${{ github.workspace }}/output/linux/prey06"
+          chmod +x "${{ github.workspace }}/output/linux/prey06ded"
+
+      - name: Copy base files and create gamepack
+        shell: pwsh
+        run: |
+          ./scripts/package_pk4.ps1 -PkgName "game02.pk4" -DllName "${{ matrix.dll_name }}" -OsName linux
+
+      - name: Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: prey2006-linux-${{ matrix.arch }}
+          path: output/linux/
+          compression-level: 6
