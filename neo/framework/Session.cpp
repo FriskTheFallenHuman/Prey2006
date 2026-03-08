@@ -45,7 +45,9 @@ idCVar	idSessionLocal::com_showDemo( "com_showDemo", "0", CVAR_SYSTEM | CVAR_BOO
 idCVar	idSessionLocal::com_skipGameDraw( "com_skipGameDraw", "0", CVAR_SYSTEM | CVAR_BOOL, "" );
 idCVar	idSessionLocal::com_wipeSeconds( "com_wipeSeconds", "1", CVAR_SYSTEM, "" );
 idCVar	idSessionLocal::com_guid( "com_guid", "", CVAR_SYSTEM | CVAR_ARCHIVE | CVAR_ROM, "" );
+#ifdef MUSICAL_LEVELLOADS
 static idCVar g_levelloadmusic( "g_levelloadmusic", "1", CVAR_GAME | CVAR_ARCHIVE | CVAR_BOOL, "play music during level loads" );
+#endif
 idCVar	idSessionLocal::com_numQuicksaves( "com_numQuicksaves", "4", CVAR_SYSTEM|CVAR_ARCHIVE|CVAR_INTEGER|CVAR_NEW,
 										   "number of quicksaves to keep before overwriting the oldest", 1, 99 );
 idCVar	idSessionLocal::com_disableAutoSaves( "com_disableAutoSaves", "0", CVAR_SYSTEM|CVAR_ARCHIVE|CVAR_BOOL|CVAR_NEW,
@@ -1499,6 +1501,7 @@ void idSessionLocal::ExecuteMapChange( bool noFadeWipe ) {
 		soundSystem->BeginLevelLoad();
 	}
 
+#ifdef MUSICAL_LEVELLOADS
 	if ( g_levelloadmusic.GetBool() ) {
 		soundSystem->SetMute( false );
 		soundSystem->SetPlayingSoundWorld( menuSoundWorld );
@@ -1511,6 +1514,7 @@ void idSessionLocal::ExecuteMapChange( bool noFadeWipe ) {
 			}
 		}
 	}
+#endif
 
 	uiManager->BeginLevelLoad();
 	uiManager->Reload( true );
