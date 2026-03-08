@@ -436,10 +436,13 @@ void idServerScan::GUIAdd( int id, const networkServer_t server ) {
 	bool exp = false;
 	bool mod = false;
 
-	if ( !idStr::Icmp( server.serverInfo.GetString( "fs_game" ), "d3xp" ) ||
-		 !idStr::Icmp( server.serverInfo.GetString( "fs_game_base" ), "d3xp" ) ) {
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+	if ( !idStr::Icmp( server.serverInfo.GetString( "fs_game" ), BASEXP_GAMEDIR ) ||
+		 !idStr::Icmp( server.serverInfo.GetString( "fs_game_base" ), BASEXP_GAMEDIR ) ) {
 		exp = true;
 	}
+#endif // HUMANHEAD END
+
 	if ( server.serverInfo.GetString( "fs_game" )[ 0 ] != '\0' ) {
 		mod = true;
 	}

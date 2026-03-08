@@ -1694,11 +1694,15 @@ void idAsyncClient::SetupConnection( void ) {
 			msg.WriteByte( cvarSystem->GetCVarString( "com_guid" )[0] ? 1 : 0 );
 			// send the main key, and flag an extra byte to add XP key
 			msg.WriteString( session->GetCDKey( false ) );
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
 			const char *xpkey = session->GetCDKey( true );
 			msg.WriteByte( xpkey ? 1 : 0 );
 			if ( xpkey ) {
 				msg.WriteString( xpkey );
 			}
+#else
+			msg.WriteByte( 0 );
+#endif // HUMANHEAD END
 			clientPort.SendPacket( idAsyncNetwork::GetMasterAddress(), msg.GetData(), msg.GetSize() );
 		}
 #else

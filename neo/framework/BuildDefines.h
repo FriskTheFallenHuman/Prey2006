@@ -91,7 +91,9 @@ If you have questions concerning this license or the applicable additional terms
 	#define	ID_ALLOW_TOOLS
 #endif
 
-#define ID_FAKE_PURE 1
+#ifdef _DEBUG
+	#define ID_FAKE_PURE 1
+#endif
 
 //#define ID_ENFORCE_KEY 0
 

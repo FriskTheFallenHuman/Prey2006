@@ -2136,7 +2136,7 @@ void Com_LocalizeGuis_f( const idCmdArgs &args ) {
 		if(game.Length()) {
 			files = fileSystem->ListFilesTree( "guis", "*.pd", true, game );
 		} else {
-			files = fileSystem->ListFilesTree( "guis", "*.pd", true, "d3xp" );
+			files = fileSystem->ListFilesTree( "guis", "*.pd", true, BASEXP_GAMEDIR );
 		}
 
 		for ( int i = 0; i < files->GetNumFiles(); i++ ) {

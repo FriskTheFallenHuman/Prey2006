@@ -351,6 +351,10 @@ private:
 
 	char				cdkey[ CDKEY_BUF_LEN ];
 	cdKeyState_t		cdkey_state;
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+	char				xpkey[ CDKEY_BUF_LEN ];
+	cdKeyState_t		xpkey_state;
+#endif // HUMANHEAD END
 
 	int					authEmitTimeout;
 	bool				authWaitBox;

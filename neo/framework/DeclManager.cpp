@@ -1029,9 +1029,10 @@ idDeclManagerLocal::GetChecksum
 ===================
 */
 unsigned int idDeclManagerLocal::GetChecksum( void ) const {
-	int i, j, total, num;
+	int i, j, num;
 	int *checksumData;
 
+#if ID_FAKE_PURE
 	idList<idStr> declNames;
 	idList<int> declChecksums;
 
@@ -1073,6 +1074,38 @@ unsigned int idDeclManagerLocal::GetChecksum( void ) const {
 	LittleRevBytes( checksumData, sizeof(int), declNames.Num() * 2 );
 	unsigned int finalChecksum = MD5_BlockChecksum( checksumData, declNames.Num() * 2 * sizeof( int ) );
 	return finalChecksum;
+#else
+	int total;
+
+	// get the total number of decls
+	total = 0;
+	for ( i = 0; i < DECL_MAX_TYPES; i++ ) {
+		total += linearLists[i].Num();
+	}
+
+	checksumData = (int *) _alloca16( total * 2 * sizeof( int ) );
+
+	total = 0;
+	for ( i = 0; i < DECL_MAX_TYPES; i++ ) {
+		declType_t type = (declType_t) i;
+
+		num = linearLists[i].Num();
+		for ( j = 0; j < num; j++ ) {
+			idDeclLocal *decl = linearLists[i][j];
+
+			if ( decl->sourceFile == &implicitDecls ) {
+				continue;
+			}
+
+			checksumData[total*2+0] = total;
+			checksumData[total*2+1] = decl->checksum;
+			total++;
+		}
+	}
+
+	LittleRevBytes( checksumData, sizeof(int), total * 2 );
+	return MD5_BlockChecksum( checksumData, total * 2 * sizeof( int ) );
+#endif
 }
 
 /*

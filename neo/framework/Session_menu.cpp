@@ -1359,7 +1359,10 @@ const char* idSessionLocal::MessageBox( msgBoxType_t type, const char *message, 
 			guiMsg->SetStateString( "right", common->GetLanguageDict()->GetString( "#str_04340" ) );
 			guiMsg->SetStateString( "visible_msgbox", "0" );
 			guiMsg->SetStateString( "visible_cdkey", "1" );
-			// the current cdkey values may have bad/random data in them
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+			guiMsg->SetStateString( "visible_hasxp", fileSystem->HasD3XP() ? "1" : "0" );
+#endif // HUMANHEAD END
+			// the current cdkey / xpkey values may have bad/random data in them
 			// it's best to avoid printing them completely, unless the key is good
 			if ( cdkey_state == CDKEY_OK ) {
 				guiMsg->SetStateString( "str_cdkey", cdkey );
@@ -1369,6 +1372,16 @@ const char* idSessionLocal::MessageBox( msgBoxType_t type, const char *message, 
 				guiMsg->SetStateString( "visible_cdchk", "1" );
 			}
 			guiMsg->SetStateString( "str_cdchk", "" );
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+			if ( xpkey_state == CDKEY_OK ) {
+				guiMsg->SetStateString( "str_xpkey", xpkey );
+				guiMsg->SetStateString( "visible_xpchk", "0" );
+			} else {
+				guiMsg->SetStateString( "str_xpkey", "" );
+				guiMsg->SetStateString( "visible_xpchk", "1" );
+			}
+#endif // HUMANHEAD END
+			guiMsg->SetStateString( "str_xpchk", "" );
 			guiMsg->HandleNamedEvent( "CDKey" );
 			break;
 		case MSG_WAIT:
@@ -1407,13 +1420,22 @@ const char* idSessionLocal::MessageBox( msgBoxType_t type, const char *message, 
 		} else if ( type == MSG_CDKEY ) {
 			if ( msgRetIndex == 0 ) {
 				// the visible_ values distinguish looking at a valid key, or editing it
-				sprintf( msgFireBack[ 0 ], "%1s;%16s;%2s;%1s;%16s;%2s",
+				sprintf( 
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+						 msgFireBack[ 0 ], "%1s;%16s;%2s;%1s;%16s;%2s",
+#else
+						 msgFireBack[ 0 ], "%1s;%16s;%2s",
+#endif // HUMANHEAD END
 						 guiMsg->State().GetString( "visible_cdchk" ),
 						 guiMsg->State().GetString( "str_cdkey" ),
-						 guiMsg->State().GetString( "str_cdchk" ),
-						 guiMsg->State().GetString( "visible_xpchk" ),
+						 guiMsg->State().GetString( "str_cdchk" )
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+						 ,guiMsg->State().GetString( "visible_xpchk" ),
 						 guiMsg->State().GetString( "str_xpkey" ),
-						 guiMsg->State().GetString( "str_xpchk" ) );
+						 guiMsg->State().GetString( "str_xpchk" )
+#endif // HUMANHEAD END
+					)
+					;
 				return msgFireBack[ 0 ].c_str();
 			} else {
 				return NULL;
@@ -1564,4 +1586,7 @@ void idSessionLocal::SetCDKeyGuiVars( void ) {
 		return;
 	}
 	guiMainMenu->SetStateString( "str_d3key_state", common->GetLanguageDict()->GetString( va( "#str_071%d", 86 + cdkey_state ) ) );
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+	guiMainMenu->SetStateString( "str_xpkey_state", common->GetLanguageDict()->GetString( va( "#str_071%d", 86 + xpkey_state ) ) );
+#endif // HUMANHEAD END
 }

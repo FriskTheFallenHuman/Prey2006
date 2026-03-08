@@ -33,6 +33,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "../sound/snd_local.h"
 
 #define CDKEY_FILEPATH "../" BASE_GAMEDIR "/" CDKEY_FILE
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+#define XPKEY_FILEPATH "../" BASE_GAMEDIR "/" XPKEY_FILE
+#endif // HUMANHEAD END
 
 idCVar	idSessionLocal::com_showAngles( "com_showAngles", "0", CVAR_SYSTEM | CVAR_BOOL, "" );
 idCVar	idSessionLocal::com_minTics( "com_minTics", "1", CVAR_SYSTEM, "" );
@@ -2611,6 +2614,11 @@ void idSessionLocal::Frame() {
 			if ( cdkey_state == CDKEY_CHECKING ) {
 				cdkey_state = CDKEY_OK;
 			}
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+			if ( xpkey_state == CDKEY_CHECKING ) {
+				xpkey_state = CDKEY_OK;
+			}
+#endif // HUMANHEAD END
 			// maintain this empty as it's set by auth denials
 			authMsg.Empty();
 			authEmitTimeout = 0;
@@ -3004,6 +3012,26 @@ void idSessionLocal::ReadCDKey( void ) {
 		fileSystem->CloseFile( f );
 		idStr::Copynz( cdkey, buffer, CDKEY_BUF_LEN );
 	}
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+	xpkey_state = CDKEY_UNKNOWN;
+
+	filename = XPKEY_FILEPATH;
+	f = fileSystem->OpenExplicitFileRead( fileSystem->RelativePathToOSPath( filename, "fs_configpath" ) );
+
+	// try the install path, which is where the cd installer and steam put it
+	if ( !f )
+		f = fileSystem->OpenExplicitFileRead( fileSystem->RelativePathToOSPath( filename, "fs_basepath" ) );
+
+	if ( !f ) {
+		common->Printf( "Couldn't read %s.\n", filename.c_str() );
+		xpkey[ 0 ] = '\0';
+	} else {
+		memset( buffer, 0, sizeof(buffer) );
+		f->Read( buffer, CDKEY_BUF_LEN - 1 );
+		fileSystem->CloseFile( f );
+		idStr::Copynz( xpkey, buffer, CDKEY_BUF_LEN );
+	}
+#endif // HUMANHEAD END
 }
 
 /*
@@ -3028,6 +3056,16 @@ void idSessionLocal::WriteCDKey( void ) {
 	}
 	f->Printf( "%s%s", cdkey, CDKEY_TEXT );
 	fileSystem->CloseFile( f );
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+	filename = XPKEY_FILEPATH;
+	f = fileSystem->OpenFileWrite( filename, "fs_configpath" );
+	if ( !f ) {
+		common->Printf( "Couldn't write %s.\n", filename.c_str() );
+		return;
+	}
+	f->Printf( "%s%s", xpkey, CDKEY_TEXT );
+	fileSystem->CloseFile( f );
+#endif // HUMANHEAD END
 }
 
 /*
@@ -3043,7 +3081,14 @@ void idSessionLocal::ClearCDKey( bool valid[ 2 ] ) {
 		// if a key was in checking and not explicitely asked for clearing, put it back to ok
 		cdkey_state = CDKEY_OK;
 	}
-
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+	if ( !valid[ 1 ] ) {
+		memset( xpkey, 0, CDKEY_BUF_LEN );
+		xpkey_state = CDKEY_UNKNOWN;
+	} else if ( xpkey_state == CDKEY_CHECKING ) {
+		xpkey_state = CDKEY_OK;
+	}
+#endif // HUMANHEAD END
 	WriteCDKey( );
 }
 
@@ -3056,11 +3101,16 @@ const char *idSessionLocal::GetCDKey( bool xp ) {
 	if ( cdkey_state == CDKEY_OK || cdkey_state == CDKEY_CHECKING ) {
 		return cdkey;
 	}
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+	if ( xpkey_state == CDKEY_OK || xpkey_state == CDKEY_CHECKING ) {
+		return xpkey;
+	}
+#endif // HUMANHEAD END
 	return NULL;
 }
 
 // digits to letters table
-#define CDKEY_DIGITS "TWSBJCGD7PA23RLH"
+#define CDKEY_DIGITS "SHT7CADJPGSH2TRA"
 
 /*
 ===============
@@ -3071,7 +3121,11 @@ we toggled some key state to CDKEY_CHECKING. send a standalone auth packet to va
 void idSessionLocal::EmitGameAuth( void ) {
 	// make sure the auth reply is empty, we use it to indicate an auth reply
 	authMsg.Empty();
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+	if ( idAsyncNetwork::client.SendAuthCheck( cdkey_state == CDKEY_CHECKING ? cdkey : NULL, xpkey_state == CDKEY_CHECKING ? xpkey : NULL ) ) {
+#else
 	if ( idAsyncNetwork::client.SendAuthCheck( cdkey_state == CDKEY_CHECKING ? cdkey : NULL, NULL ) ) {
+#endif // HUMANHEAD END
 		authEmitTimeout = Sys_Milliseconds() + CDKEY_AUTH_TIMEOUT;
 		common->DPrintf( "authing with the master..\n" );
 	} else {
@@ -3080,6 +3134,11 @@ void idSessionLocal::EmitGameAuth( void ) {
 		if ( cdkey_state == CDKEY_CHECKING ) {
 			cdkey_state = CDKEY_OK;
 		}
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+		if ( xpkey_state == CDKEY_CHECKING ) {
+			xpkey_state = CDKEY_OK;
+		}
+#endif // HUMANHEAD END
 	}
 }
 
@@ -3094,7 +3153,7 @@ bool idSessionLocal::CheckKey( const char *key, bool netConnect, bool offline_va
 	char lkey[ 2 ][ CDKEY_BUF_LEN ];
 	char l_chk[ 2 ][ 3 ];
 	char s_chk[ 3 ];
-	int i_key;
+	int imax,i_key;
 	unsigned int checksum, chk8;
 	bool edited_key[ 2 ];
 
@@ -3106,9 +3165,23 @@ bool idSessionLocal::CheckKey( const char *key, bool netConnect, bool offline_va
 	idStr::ToUpper( lkey[0] );
 	idStr::Copynz( l_chk[0], key + CDKEY_BUF_LEN + 2, 3 );
 	idStr::ToUpper( l_chk[0] );
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+	edited_key[ 1 ] = ( key[ CDKEY_BUF_LEN + 2 + 3 ] == '1' );
+	idStr::Copynz( lkey[1], key + CDKEY_BUF_LEN + 7, CDKEY_BUF_LEN );
+	idStr::ToUpper( lkey[1] );
+	idStr::Copynz( l_chk[1], key + CDKEY_BUF_LEN * 2 + 7, 3 );
+	idStr::ToUpper( l_chk[1] );
 
+	if ( fileSystem->HasD3XP() ) {
+		imax = 2;
+	}
+	else
+#endif // HUMANHEAD END
+	{
+		imax = 1;
+	}
 	offline_valid[ 0 ] = offline_valid[ 1 ] = true;
-	for( i_key = 0; i_key < 1; i_key++ ) {
+	for( i_key = 0; i_key < imax; i_key++ ) {
 		// check that the characters are from the valid set
 		int i;
 		for ( i = 0; i < CDKEY_BUF_LEN - 1; i++ ) {
@@ -3140,6 +3213,14 @@ bool idSessionLocal::CheckKey( const char *key, bool netConnect, bool offline_va
 	// set the keys, don't send a game auth if we are net connecting
 	idStr::Copynz( cdkey, lkey[0], CDKEY_BUF_LEN );
 	netConnect ? cdkey_state = CDKEY_OK : cdkey_state = CDKEY_CHECKING;
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+	if ( fileSystem->HasD3XP() ) {
+		idStr::Copynz( xpkey, lkey[1], CDKEY_BUF_LEN );
+		netConnect ? xpkey_state = CDKEY_OK : xpkey_state = CDKEY_CHECKING;
+	} else {
+		xpkey_state = CDKEY_NA;
+	}
+#endif // HUMANHEAD END
 	if ( !netConnect ) {
 		EmitGameAuth();
 	}
@@ -3176,16 +3257,44 @@ bool idSessionLocal::CDKeysAreValid( bool strict ) {
 			emitAuth = true;
 		}
 	}
-
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+	if ( xpkey_state == CDKEY_UNKNOWN ) {
+		if ( fileSystem->HasD3XP() ) {
+			if ( strlen( xpkey ) != CDKEY_BUF_LEN -1 ) {
+				xpkey_state = CDKEY_INVALID;
+			} else {
+				for ( i = 0; i < CDKEY_BUF_LEN-1; i++ ) {
+					if ( !strchr( CDKEY_DIGITS, xpkey[i] ) ) {
+						xpkey_state = CDKEY_INVALID;
+					}
+				}
+			}
+			if ( xpkey_state == CDKEY_UNKNOWN ) {
+				xpkey_state = CDKEY_CHECKING;
+				emitAuth = true;
+			}
+		} else {
+			xpkey_state = CDKEY_NA;
+		}
+	}
+#endif // HUMANHEAD END
 	if ( emitAuth ) {
 		EmitGameAuth();
 	}
 	// make sure to keep the mainmenu gui up to date in case we made state changes
 	SetCDKeyGuiVars();
 	if ( strict ) {
-		return cdkey_state == CDKEY_OK;
+		return cdkey_state == CDKEY_OK
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+			&& ( xpkey_state == CDKEY_OK || xpkey_state == CDKEY_NA )
+#endif // HUMANHEAD END
+			;
 	} else {
-		return ( cdkey_state == CDKEY_OK || cdkey_state == CDKEY_CHECKING );
+		return ( cdkey_state == CDKEY_OK || cdkey_state == CDKEY_CHECKING )
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+			&& ( xpkey_state == CDKEY_OK || xpkey_state == CDKEY_CHECKING || xpkey_state == CDKEY_NA )
+#endif // HUMANHEAD END
+			;
 	}
 }
 
@@ -3216,11 +3325,21 @@ void idSessionLocal::CDKeysAuthReply( bool valid, const char *auth_msg ) {
 		if ( cdkey_state == CDKEY_CHECKING ) {
 			cdkey_state = CDKEY_INVALID;
 		}
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+		if ( xpkey_state == CDKEY_CHECKING ) {
+			xpkey_state = CDKEY_INVALID;
+		}
+#endif // HUMANHEAD END
 	} else {
 		common->DPrintf( "client is authed in\n" );
 		if ( cdkey_state == CDKEY_CHECKING ) {
 			cdkey_state = CDKEY_OK;
 		}
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+		if ( xpkey_state == CDKEY_CHECKING ) {
+			xpkey_state = CDKEY_OK;
+		}
+#endif // HUMANHEAD END
 	}
 	authEmitTimeout = 0;
 	SetCDKeyGuiVars();

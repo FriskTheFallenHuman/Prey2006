@@ -55,6 +55,7 @@ If you have questions concerning this license or the applicable additional terms
 //#else
 	#define	BASE_GAMEDIR				"base"
 //#endif
+#define		BASEXP_GAMEDIR				"basexp"
 
 // filenames
 #ifndef CONFIG_FILE
@@ -248,7 +249,9 @@ If you have questions concerning this license or the applicable additional terms
 //#define _HH_FLOAT_PROTECTION
 #endif
 
-#define ID_ENFORCE_KEY 0
+#ifdef _DEBUG
+	#define ID_ENFORCE_KEY 0
+#endif
 
 // mdl:  Moved here from BuildDefines.h because we need GOLD and _SYSTEM_BUILD_ defined
 #ifndef ID_ENFORCE_KEY

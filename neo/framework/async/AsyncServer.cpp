@@ -1547,7 +1547,11 @@ void idAsyncServer::ProcessChallengeMessage( const netadr_t from, const idBitMsg
 			outMsg.WriteNetadr( from );
 			outMsg.WriteInt( -1 ); // this identifies "challenge" auth vs "connect" auth
 			// protocol 1.37 addition
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
 			outMsg.WriteByte( fileSystem->RunningD3XP() );
+#else
+			outMsg.WriteByte( 0 ); // This used to be fileSystem->RunningD3XP()
+#endif // HUMANHEAD END
 			serverPort.SendPacket( idAsyncNetwork::GetMasterAddress(), outMsg.GetData(), outMsg.GetSize() );
 		}
 	}

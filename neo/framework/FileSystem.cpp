@@ -367,6 +367,10 @@ public:
 	//HUMANHEAD END
 	virtual void			FindDLL( const char *basename, char dllPath[ MAX_OSPATH ], bool updateChecksum );
 	virtual void			ClearDirCache( void );
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+	virtual bool			HasD3XP( void );
+	virtual bool			RunningD3XP( void );
+#endif // HUMANHEAD END
 	virtual void			CopyFile( const char *fromOSPath, const char *toOSPath );
 	virtual int				ValidateDownloadPakForChecksum( int checksum, char path[ MAX_STRING_CHARS ], bool isBinary );
 	virtual idFile *		MakeTemporaryFile( void );
@@ -427,6 +431,10 @@ private:
 	idDEntry				dir_cache[ MAX_CACHED_DIRS ]; // fifo
 	int						dir_cache_index;
 	int						dir_cache_count;
+
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+	int						d3xp;	// 0: didn't check, -1: not installed, 1: installed
+#endif // HUMANHEAD END
 
 private:
 	void					ReplaceSeparators( idStr &path, char sep = PATHSEPERATOR_CHAR );
@@ -495,6 +503,9 @@ idFileSystemLocal::idFileSystemLocal( void ) {
 	loadStack = 0;
 	dir_cache_index = 0;
 	dir_cache_count = 0;
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+	d3xp = 0;
+#endif // HUMANHEAD END
 	loadedFileFromDir = false;
 	restartGamePakChecksum = 0;
 	memset( &backgroundThread, 0, sizeof( backgroundThread ) );
@@ -1743,7 +1754,14 @@ idModList *idFileSystemLocal::ListMods( void ) {
 			ListOSFiles( gamepath, ".pk4", pk4s );
 			if ( pk4s.Num() ) {
 				if ( !list->mods.Find( dirs[ i ] ) ) {
-					list->mods.Append( dirs[ i ] );
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+					// DG: ignore d3xp, it's added explicitly later, if available
+					if ( dirs[ i ].Icmp( BASEXP_GAMEDIR ) ) {
+#endif // HUMANHEAD END
+						list->mods.Append( dirs[ i ] );
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+					}
+#endif // HUMANHEAD END
 				}
 			}
 		}
@@ -1778,6 +1796,14 @@ idModList *idFileSystemLocal::ListMods( void ) {
 
 	list->mods.Insert( "" );
 	list->descriptions.Insert( "Prey (base game)" );
+
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+	// DG: if installed, add d3xp with useful description, right below the base game
+	if ( HasD3XP() ) {
+		list->mods.Insert( BASEXP_GAMEDIR, 1 );
+		list->descriptions.Insert( "Prey Expansion Pack (basexp)", 1 );
+	}
+#endif // HUMANHEAD END
 
 	assert( list->mods.Num() == list->descriptions.Num() );
 
@@ -2902,6 +2928,9 @@ void idFileSystemLocal::Restart( void ) {
 	// see if we are going to allow add-ons
 	SetRestrictions();
 
+	// spawn a thread to handle background file reads
+	StartBackgroundDownloadThread();
+
 	// if we can't find default.cfg, assume that the paths are
 	// busted and error out now, rather than getting an unreadable
 	// graphics screen when the font fails to load
@@ -3179,7 +3208,11 @@ idFile *idFileSystemLocal::OpenFileReadFlags( const char *relativePath, int sear
 
 	// make sure the doomkey file is only readable by game at initialization
 	// any other time the key should only be accessed in memory using the provided functions
-	if( common->IsInitialized() && ( idStr::Icmp( relativePath, CDKEY_FILE ) == 0 ) ) {
+	if( common->IsInitialized() && ( idStr::Icmp( relativePath, CDKEY_FILE ) == 0 
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+		|| idStr::Icmp( relativePath, XPKEY_FILE ) == 0
+#endif // HUMANHEAD END
+		) ) {
 		return NULL;
 	}
 
@@ -3934,6 +3967,93 @@ void idFileSystemLocal::ClearDirCache( void ) {
 		dir_cache[ i ].Clear();
 	}
 }
+
+#ifdef HUMANHEAD_XP // HUMANHEAD mdl
+/*
+===============
+idFileSystemLocal::HasD3XP
+===============
+*/
+bool idFileSystemLocal::HasD3XP( void ) {
+	int			i;
+	idStrList	dirs, pk4s;
+	idStr		gamepath;
+
+	if ( d3xp == -1 ) {
+		return false;
+	} else if ( d3xp == 1 ) {
+		return true;
+	}
+
+#if 0
+	// check for a d3xp directory with a pk4 file
+	// copied over from ListMods - only looks in basepath
+	ListOSFiles( fs_basepath.GetString(), "/", dirs );
+	for ( i = 0; i < dirs.Num(); i++ ) {
+		if ( dirs[i].Icmp( BASEXP_GAMEDIR ) == 0 ) {
+			gamepath = BuildOSPath( fs_basepath.GetString(), dirs[ i ], "" );
+			ListOSFiles( gamepath, ".pk4", pk4s );
+			if ( pk4s.Num() ) {
+				d3xp = 1;
+				return true;
+			}
+		}
+	}
+#else
+	// check for d3xp's d3xp/pak000.pk4 in any search path
+	// checking wether the pak is loaded by checksum wouldn't be enough:
+	// we may have a different fs_game right now but still need to reply that it's installed
+	const char	*search[4];
+	idFile		*pakfile;
+	search[0] = fs_savepath.GetString();
+	search[1] = fs_devpath.GetString();
+	search[2] = fs_basepath.GetString();
+	search[3] = fs_cdpath.GetString();
+	for ( i = 0; i < 4; i++ ) {
+		pakfile = OpenExplicitFileRead( BuildOSPath( search[ i ], BASEXP_GAMEDIR, "pak000.pk4" ) );
+		if ( pakfile ) {
+			CloseFile( pakfile );
+			d3xp = 1;
+			return true;
+		}
+	}
+#endif
+
+	// if we didn't find a pk4 file then the user might have unpacked so look for default.cfg file
+	// that's the old way mostly used during developement. don't think it hurts to leave it there
+	ListOSFiles( fs_basepath.GetString(), "/", dirs );
+	for ( i = 0; i < dirs.Num(); i++ ) {
+		if ( dirs[i].Icmp( BASEXP_GAMEDIR ) == 0 ) {
+
+			gamepath = BuildOSPath( fs_configpath.GetString(), dirs[ i ], "default.cfg" );
+			idFile* cfg = OpenExplicitFileRead(gamepath);
+			if(cfg) {
+				CloseFile(cfg);
+				d3xp = 1;
+				return true;
+			}
+		}
+	}
+
+	d3xp = -1;
+	return false;
+}
+
+/*
+===============
+idFileSystemLocal::RunningD3XP
+===============
+*/
+bool idFileSystemLocal::RunningD3XP( void ) {
+	// TODO: mark the checksum of the gold XP and check for it being referenced ( for double mod support )
+	// a simple fs_game check should be enough for now..
+	if ( !idStr::Icmp( fs_game.GetString(), BASEXP_GAMEDIR ) ||
+		 !idStr::Icmp( fs_game_base.GetString(), BASEXP_GAMEDIR ) ) {
+		return true;
+	}
+	return false;
+}
+#endif // HUMANHEAD END
 
 /*
 ===============

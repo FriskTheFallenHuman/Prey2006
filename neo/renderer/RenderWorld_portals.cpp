@@ -1150,8 +1150,13 @@ karin: add game portals into doublePortals
 */
 void idRenderWorldLocal::RegisterGamePortals( idMapFile *mapFile ) {
 	idMapEntity     *entity;
-	int             numEntities, i, a1, a2;
+	int             numEntities, i;
+	// Xanz - this is a regression. We need to populate this list at some point.
+	// I would take a look at BFG and possibly replace with that implementation
+#ifdef RENDER_PORTAL_MULTIPLAYER_FIX
+	int a1, a2;
 	idWinding       *w;
+#endif
 	portal_t        *p;
 	portalArea_t    *area;
 	const char      *classname, *spawnclass, *cameraTarget, *name;
