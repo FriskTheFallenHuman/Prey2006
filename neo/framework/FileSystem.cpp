@@ -3881,12 +3881,12 @@ void idFileSystemLocal::FindDLL( const char *name, char _dllPath[ MAX_OSPATH ], 
 			dllFile = OpenFileReadFlags( dllName, FSFLAG_SEARCH_PAKS | FSFLAG_PURE_NOREF | FSFLAG_BINARY_ONLY, &inPak );
 			if ( dllFile ) {
 				common->Printf( "found DLL in pak file: %s\n", dllFile->GetFullPath() );
-				dllPath = RelativePathToOSPath( dllName, "fs_savepath" );
+				dllPath = RelativePathToOSPath( dllName, "fs_basepath" );
 				CopyFile( dllFile, dllPath );
 				CloseFile( dllFile );
 				dllFile = OpenFileReadFlags( dllName, FSFLAG_SEARCH_DIRS );
 				if ( !dllFile ) {
-					common->Error( "DLL extraction to fs_savepath failed\n" );
+					common->Error( "DLL extraction to fs_basepath failed\n" );
 				} else if ( updateChecksum ) {
 					gameDLLChecksum = GetFileChecksum( dllFile );
 					gamePakChecksum = inPak->checksum;
@@ -3920,12 +3920,12 @@ void idFileSystemLocal::FindDLL( const char *name, char _dllPath[ MAX_OSPATH ], 
 					if ( !FilenameCompare( pakFile->name, dllName ) ) {
 						dllFile = ReadFileFromZip( pak, pakFile, dllName );
 						common->Printf( "found DLL in game pak file: %s\n", pak->pakFilename.c_str() );
-						dllPath = RelativePathToOSPath( dllName, "fs_savepath" );
+						dllPath = RelativePathToOSPath( dllName, "fs_basepath" );
 						CopyFile( dllFile, dllPath );
 						CloseFile( dllFile );
 						dllFile = OpenFileReadFlags( dllName, FSFLAG_SEARCH_DIRS );
 						if ( !dllFile ) {
-							common->Error( "DLL extraction to fs_savepath failed\n" );
+							common->Error( "DLL extraction to fs_basepath failed\n" );
 						} else {
 							gameDLLChecksum = GetFileChecksum( dllFile );
 							updateChecksum = false;	// don't try again below
