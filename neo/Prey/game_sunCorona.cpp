@@ -107,8 +107,8 @@ void hhSunCorona::Draw( hhPlayer *player ) {
 		player->GetViewPos( origin, axis );
 		idVec3 end = origin - sunVector * sunDistance;
 		gameLocal.clip.TracePoint( trace, origin, end, MASK_SOLID, player );
-
-		if ( trace.c.material->NoFragment() ) { // Trace succeeded, or it hit a skybox
+		// less crashy trace hit test for corona rendering. material is not NULL or skybox.
+		if ( trace.fraction < 1.0f && trace.c.material != NULL && trace.c.material->NoFragment() && corona != NULL ) { 
 			// Draw a corona on the screen
 			renderSystem->SetColor4( -dot[0], -dot[0], -dot[0], -dot[0] );
 			float hFov = idMath::Sin( g_fov.GetFloat() * 0.5 );

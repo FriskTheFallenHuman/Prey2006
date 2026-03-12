@@ -995,7 +995,13 @@ int idRenderWorldLocal::BoundsInAreas( const idBounds &bounds, int *areas, int m
 		return numAreas;
 	}
 
-	assert( bounds[1][0] - bounds[0][0] < 1e4f && bounds[1][1] - bounds[0][1] < 1e4f && bounds[1][2] - bounds[0][2] < 1e4f );
+	// Check if bounds are reasonable size to avoid potential issues
+	// Increased limit from 1e4f to 3e4f to handle very large levels (keeperfortress, spherebrain)
+	if ( bounds[1][0] - bounds[0][0] >= 3e4f || bounds[1][1] - bounds[0][1] >= 3e4f || bounds[1][2] - bounds[0][2] >= 3e4f ) {
+		common->Warning( "idRenderWorld::BoundsInAreas() called with excessively large bounds: { { %f %f %f }, { %f %f %f } } !",
+		                 bounds[0][0], bounds[0][1], bounds[0][2], bounds[1][0], bounds[1][1], bounds[1][2] );
+		return numAreas;
+	}
 
 	if ( !areaNodes ) {
 		return numAreas;
