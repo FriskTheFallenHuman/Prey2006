@@ -15,11 +15,6 @@ on:
   workflow_dispatch:
   workflow_call:
 
-concurrency:
-  # Cancel concurrent workflows for the same PR or commit hash.
-  group: ${{github.workflow}}-${{github.event_name == 'pull_request' && github.head_ref || github.sha}}
-  cancel-in-progress: true
-
 jobs:
   build:
     name: FreeBSD Auto-Build
