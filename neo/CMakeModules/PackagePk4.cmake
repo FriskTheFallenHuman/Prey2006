@@ -160,7 +160,7 @@ endforeach()
 	set(_script_path "${CMAKE_BINARY_DIR}/PackagePk4_run.cmake")
 	file(GENERATE OUTPUT "${_script_path}" CONTENT "${_script_configured}")
 
-	add_custom_target(package_pk4
+	add_custom_target(package_pk4 ALL
 		COMMAND "${CMAKE_COMMAND}"
 		"-DDLL_SRC=$<TARGET_FILE:${_A_GAME_TARGET}>"
 		-P "${_script_path}"
