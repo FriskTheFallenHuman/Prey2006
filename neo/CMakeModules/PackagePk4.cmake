@@ -86,9 +86,6 @@ if(_base_rel_files)
 		message(FATAL_ERROR "Failed to create pak007.pk4")
 	endif()
 	
-	# Install the pk4 to the /base/ folder
-	file(INSTALL DESTINATION "${CMAKE_INSTALL_DATADIR}/base" FILES "${_pak007}")
-
 	message(STATUS "Created Assets PK4 => ${_pak007}")
 else()
 	message(STATUS "Couldn't find any files in base/, skipping")
@@ -141,9 +138,6 @@ if(NOT _result EQUAL 0)
 	message(FATAL_ERROR "Failed To Create PK4 => @_pkg_path@")
 endif()
 
-# Install the pk4 to the /base/ folder
-file(INSTALL DESTINATION "${CMAKE_INSTALL_DATADIR}/base" FILES "@_pkg_path@")
-
 message(STATUS "Created Game PK4 File => @_pkg_path@")
 
 # Clean up staging files and MSVC debug artifacts
@@ -159,6 +153,10 @@ endforeach()
 	string(CONFIGURE "${_script}" _script_configured @ONLY)
 	set(_script_path "${CMAKE_BINARY_DIR}/PackagePk4_run.cmake")
 	file(GENERATE OUTPUT "${_script_path}" CONTENT "${_script_configured}")
+
+	# Install the generated files
+	install(FILES "${_out_base}/pak007.pk4" DESTINATION "${CMAKE_INSTALL_DATADIR}/base")
+	install(FILES "${_pkg_path}"            DESTINATION "${CMAKE_INSTALL_DATADIR}/base")
 
 	add_custom_target(package_pk4 ALL
 		COMMAND "${CMAKE_COMMAND}"
