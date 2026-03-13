@@ -1,4 +1,5 @@
 name: FreeBSD Auto-Builds
+
 on:
   push:
     branches:
@@ -7,14 +8,12 @@ on:
       - .github/workflows/Linux.yml
       - .github/workflows/Windows.yml
   pull_request:
-    types:
-      - edited
-      - opened
-      - synchronize
+    types: [edited, opened, synchronize]
     paths-ignore:
       - .github/workflows/Linux.yml
       - .github/workflows/Windows.yml
   workflow_dispatch:
+
 concurrency:
   # Cancel concurrent workflows for the same PR or commit hash.
   group: ${{github.workflow}}-${{github.event_name == 'pull_request' && github.head_ref || github.sha}}
@@ -24,13 +23,12 @@ jobs:
   build:
     name: FreeBSD Auto-Build
     runs-on: ubuntu-latest
+
     strategy:
       fail-fast: false
       matrix:
         arch: [x86_64]
-        include:
-          - arch: x86_64
-            dll_name: gamex86_64.so
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -72,33 +70,6 @@ jobs:
             echo "::group::Build"
             ninja
             echo "::endgroup::"
-            echo "::group::Build artifacts"
-            ls -lh ../build
-            echo "::endgroup::"
-            echo "::group::Create binary.conf"
-            (
-              cat <<'EOF'
-            // add flags for supported operating systems in this pak
-            // one id per line
-            // name the file binary.conf and place it in the game pak
-            // 0 windows
-            // 1 macosx
-            // 2 linux
-            // 3 freebsd
-            2
-            EOF
-            ) > ../base/binary.conf
-            echo "::endgroup::"
-            echo "::group::Package game03.pk4"
-            cd ../base
-            rm -f game03.pk4
-            zip -r -q game03.pk4 binary.conf "${{ matrix.dll_name }}"
-            echo "::endgroup::"
-
-      - name: Prepare output
-        shell: pwsh
-        run: |
-          ./scripts/package_pk4.ps1 -PkgName "game03.pk4" -DllName "${{ matrix.dll_name }}" -OsName freebsd
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.20)
-set(APPSTREAM_APP_ID "io.github.friskthefallenhuman.prey2006")
 
 # Enable folder groups
 set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER  "")
@@ -23,6 +22,7 @@ include(GNUInstallDirs OPTIONAL RESULT_VARIABLE GNUINSTALLDIRS)
 include(TestBigEndian)
 include(GitBranch)
 include(GlobbedHeaders)
+include(PackagePk4)
 
 option(ENGINE						"Build the main executable." ON)
 option(DEDICATED					"Build the dedicated server executable." ON)
@@ -184,7 +184,7 @@ if(TOOLS)
 		# Locate and download MayaSDK, change MAYASDK_URL to one of the urls listed here: https://aps.autodesk.com/developer/overview/maya
 		# (Rigth click in anyone > Copy Url)
 		set(MAYASDK_URL "https://autodesk-adn-transfer.s3-us-west-2.amazonaws.com/ADN+Extranet/M%26E/Maya/devkit+2019/Autodesk_Maya_2019_3_Update_DEVKIT_Windows.zip" CACHE STRING "")
-	
+
 		# The downloaded Hash & MD5 of the MAYASDK_URL download
 		# These ones are from 2019 make sure to generate one for newer releases!
 		set(MAYASDK_HASH "2332C6C79B8C7974A5645523E395962BBB19901289AAAEE129D3BF2B630829C7" CACHE STRING "")
@@ -192,7 +192,7 @@ if(TOOLS)
 
 		# Set the maya version (mainly for the project creation + reference)
 		set(MAYA_VERSION 2019)
-	
+
 		ExternalProject_Add(MayaDevKit
 			URL ${MAYASDK_URL}
 			URL_HASH SHA256=${MAYASDK_HASH}
@@ -841,13 +841,13 @@ if(IMGUI)
 
 	set(src_imgui ${src_imgui}
 		libs/imgui/backends/imgui_impl_opengl2.cpp
-	
+
 		libs/imgui/imgui.h
 		libs/imgui/imgui.cpp
 		libs/imgui/imgui_draw.cpp
 		libs/imgui/imgui_tables.cpp
 		libs/imgui/imgui_widgets.cpp
-	
+
 		libs/imgui/imgui_demo.cpp
 
 		libs/ImGuiColorTextEdit/TextEditor.h
@@ -856,7 +856,7 @@ if(IMGUI)
 		sys/sys_imgui.h
 		sys/sys_imgui.cpp
 		sys/imgui_savestyle.cpp
-	
+
 		tools/imgui/ImGuiTools.cpp
 		tools/imgui/util/ImGui_IdWidgets.h
 		tools/imgui/util/ImGui_IdWidgets.cpp
@@ -1456,26 +1456,26 @@ if(ENGINE)
 		if (SDL3)
 			add_custom_command(
 			  TARGET ${ENGINE_BINARY} POST_BUILD COMMAND
-			  ${CMAKE_COMMAND} -E copy_if_different 
+			  ${CMAKE_COMMAND} -E copy_if_different
 				$<TARGET_FILE:SDL3::SDL3>
 				$<TARGET_FILE_DIR:${ENGINE_BINARY}>
-			  VERBATIM 
+			  VERBATIM
 			)
 		else()
 			add_custom_command(
 			  TARGET ${ENGINE_BINARY} POST_BUILD COMMAND
-			  ${CMAKE_COMMAND} -E copy_if_different 
+			  ${CMAKE_COMMAND} -E copy_if_different
 				$<TARGET_FILE:SDL2>
 				$<TARGET_FILE_DIR:${ENGINE_BINARY}>
-			  VERBATIM 
+			  VERBATIM
 			)
 		endif()
 		add_custom_command(
 		  TARGET ${ENGINE_BINARY} POST_BUILD COMMAND
-		  ${CMAKE_COMMAND} -E copy_if_different 
+		  ${CMAKE_COMMAND} -E copy_if_different
 			$<TARGET_FILE:OpenAL>
 			$<TARGET_FILE_DIR:${ENGINE_BINARY}>
-		  VERBATIM 
+		  VERBATIM
 		)
 	endif()
 endif()
@@ -1539,26 +1539,26 @@ if(DEDICATED)
 		if (SDL3)
 			add_custom_command(
 			  TARGET ${DEDICATED_BINARY} POST_BUILD COMMAND
-			  ${CMAKE_COMMAND} -E copy_if_different 
+			  ${CMAKE_COMMAND} -E copy_if_different
 				$<TARGET_FILE:SDL3::SDL3>
 				$<TARGET_FILE_DIR:${DEDICATED_BINARY}>
-			  VERBATIM 
+			  VERBATIM
 			)
 		else()
 			add_custom_command(
 			  TARGET ${DEDICATED_BINARY} POST_BUILD COMMAND
-			  ${CMAKE_COMMAND} -E copy_if_different 
+			  ${CMAKE_COMMAND} -E copy_if_different
 				$<TARGET_FILE:SDL2>
 				$<TARGET_FILE_DIR:${DEDICATED_BINARY}>
-			  VERBATIM 
+			  VERBATIM
 			)
 		endif()
 		add_custom_command(
 		  TARGET ${DEDICATED_BINARY} POST_BUILD COMMAND
-		  ${CMAKE_COMMAND} -E copy_if_different 
+		  ${CMAKE_COMMAND} -E copy_if_different
 			$<TARGET_FILE:OpenAL>
 			$<TARGET_FILE_DIR:${DEDICATED_BINARY}>
-		  VERBATIM 
+		  VERBATIM
 		)
 	endif()
 endif()
@@ -1566,13 +1566,13 @@ endif()
 # ============================== Maya Import ================================
 
 if(TOOLS AND MAYA_IMPORT)
-	set(src_mayaimport 
+	set(src_mayaimport
 		MayaImport/exporter.h
 		MayaImport/maya_main.cpp
 		MayaImport/maya_main.h
 	)
 
-	set (src_toolsupportsrc 
+	set (src_toolsupportsrc
 		framework/CmdSystem.cpp
 		framework/CVarSystem.cpp
 		framework/File.cpp
@@ -1585,7 +1585,7 @@ if(TOOLS AND MAYA_IMPORT)
 		framework/minizip/unzip.h
 	)
 
-	set (src_enginestub 
+	set (src_enginestub
 		tools/tool_idcommon_stub.cpp
 	)
 
@@ -1596,13 +1596,13 @@ if(TOOLS AND MAYA_IMPORT)
 	)
 
 	add_dependencies(MayaImport${MAYA_VERSION}${cpu_arch} MayaDevKit)
-	
+
 	if(MSVC)
 		source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} PREFIX neo FILES ${src_mayaimport} ${src_toolsupportsrc} ${src_enginestub})
 	endif()
-	
+
 	target_precompile_headers(MayaImport${MAYA_VERSION}${cpu_arch} PRIVATE "${CMAKE_SOURCE_DIR}/idlib/precompiled.h")
-	
+
 	target_include_directories(MayaImport${MAYA_VERSION}${cpu_arch} PRIVATE "${CMAKE_SOURCE_DIR}/idlib")
 
 	if(HARDLINK_GAME)
@@ -1659,26 +1659,15 @@ if(BASE AND NOT HARDLINK_GAME)
 	else()
 		target_link_libraries(Game${cpu_arch} idlib)
 	endif()
-	set_target_properties(Game${cpu_arch} PROPERTIES OUTPUT_NAME "game${cpu_arch}" RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER}/base LIBRARY_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER}/base)
+	set_target_properties(Game${cpu_arch} PROPERTIES OUTPUT_NAME "game${cpu_arch}")
 	set_target_properties(Game${cpu_arch} PROPERTIES FOLDER "dlls")
+
+	add_gamepak(GAME_TARGET Game${cpu_arch} $<TARGET_FILE:Game${cpu_arch}>)
 
 	if(NOT WIN32)
 		install(TARGETS Game${cpu_arch}
 				RUNTIME DESTINATION "${bindir}"
-				LIBRARY DESTINATION "${datadir}/base"
 				ARCHIVE DESTINATION "${libdir}"
 		)
-		install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../dist/${APPSTREAM_APP_ID}.svg
-			DESTINATION share/icons/hicolor/scalable/apps
-			PERMISSIONS WORLD_READ GROUP_READ OWNER_READ OWNER_WRITE)
-		install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../dist/${APPSTREAM_APP_ID}.png
-			DESTINATION share/icons/hicolor/256x256/apps
-			PERMISSIONS WORLD_READ GROUP_READ OWNER_READ OWNER_WRITE)
-		install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../dist/linux/${APPSTREAM_APP_ID}.desktop
-			DESTINATION share/applications
-			PERMISSIONS WORLD_READ GROUP_READ OWNER_READ OWNER_WRITE)
-		install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../dist/linux/${APPSTREAM_APP_ID}.metainfo.xml
-			DESTINATION share/metainfo
-			PERMISSIONS WORLD_READ GROUP_READ OWNER_READ OWNER_WRITE)
-  endif()
+	endif()
 endif()

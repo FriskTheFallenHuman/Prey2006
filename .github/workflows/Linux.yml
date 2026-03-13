@@ -28,11 +28,6 @@ jobs:
       fail-fast: false
       matrix:
         arch: [x86_64, x86]
-        include:
-          - arch: x86_64
-            dll_name: gamex86_64.so
-          - arch: x86
-            dll_name: gamex86.so
 
     env:
       CHROOT_REL_PATH: ubuntu-i386
@@ -144,7 +139,7 @@ jobs:
         run: |
           set -eux
           CHROOT_DIR="${RUNNER_TEMP}/chroot/${CHROOT_REL_PATH}"
-          # run the build inside the chroot under linux32 personality
+          # run the build inside the chroot under linux32
           sudo linux32 chroot "$CHROOT_DIR" /bin/bash -lc "
             set -eux
             export DEBIAN_FRONTEND=noninteractive
@@ -161,7 +156,7 @@ jobs:
             ninja
 
             mkdir -p /work/output/linux
-            # copy the produced .so (adjust name/path if your build places it elsewhere)
+            # copy the produced .so
             find . -type f -name '${{ matrix.dll_name }}' -exec cp -v {} /work/output/linux/ \\; || true
           "
 
@@ -171,7 +166,7 @@ jobs:
           set -eux
           CHROOT_DIR="${RUNNER_TEMP}/chroot/${CHROOT_REL_PATH}"
           mkdir -p "${GITHUB_WORKSPACE}/output/linux"
-          # copy files from chroot -> workspace as runner user (no sudo)
+          # copy files from chroot -> workspace
           rsync -a "$CHROOT_DIR/work/output/linux/" "${GITHUB_WORKSPACE}/output/linux/" || true
           ls -la "${GITHUB_WORKSPACE}/output/linux" || true
 
@@ -189,11 +184,6 @@ jobs:
         run: |
           chmod +x "${{ github.workspace }}/output/linux/prey06"
           chmod +x "${{ github.workspace }}/output/linux/prey06ded"
-
-      - name: Copy base files and create gamepack
-        shell: pwsh
-        run: |
-          ./scripts/package_pk4.ps1 -PkgName "game02.pk4" -DllName "${{ matrix.dll_name }}" -OsName linux
 
       - name: Artifacts
         uses: actions/upload-artifact@v4
