@@ -249,9 +249,10 @@ If you have questions concerning this license or the applicable additional terms
 //#define _HH_FLOAT_PROTECTION
 #endif
 
-#ifdef _DEBUG
+// Krispy: Don't enforce the Key *sight* the GUI for this is broken too
+//#ifdef _DEBUG
 	#define ID_ENFORCE_KEY 0
-#endif
+//#endif
 
 // mdl:  Moved here from BuildDefines.h because we need GOLD and _SYSTEM_BUILD_ defined
 #ifndef ID_ENFORCE_KEY
