@@ -8,7 +8,7 @@ Master Server List format:
 */
 
 {
-    name "Prey Master Server"
-    address "prey-master.xanz-servers.co.uk"
+    name "333networks Master Server"
+    address "id4.exsurge.net"
     port "27650"
 }
