@@ -1,0 +1,81 @@
+name: macOS Builds (arm64 & x86_64)
+
+on:
+  push:
+    branches:
+      - "main"
+    paths-ignore:
+      - .github/workflows/FreeBSD.yml
+      - .github/workflows/Linux.yml
+      - .github/workflows/LinuxARM64.yml
+      - .github/workflows/Windows.yml
+  pull_request:
+    types: [edited, opened, synchronize]
+    paths-ignore:
+      - .github/workflows/FreeBSD.yml
+      - .github/workflows/Linux.yml
+      - .github/workflows/LinuxARM64.yml
+      - .github/workflows/Windows.yml
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  build:
+    name: macOS (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            runner: macos-latest
+          - arch: x86_64
+            runner: macos-13
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install dependencies
+        run: |
+          brew install sdl2 openal-soft ninja ccache pkg-config
+
+      - name: Ensure ccache dir exists and init
+        run: |
+          mkdir -p ~/.ccache
+          ccache --max-size=10G || true
+
+      - name: Restore ccache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ccache
+          key: ${{ runner.os }}-ccache-${{ matrix.arch }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-ccache-${{ matrix.arch }}-
+            ${{ runner.os }}-ccache-
+
+      - name: Build the engine
+        run: |
+          set -eux
+          rm -rf build
+          mkdir -p build
+          cd build
+          cmake -G Ninja \
+            -DDEDICATED=ON \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ../neo/
+          ninja
+
+      - name: Chmod game executables
+        run: |
+          chmod +x "${{ github.workspace }}/output/macosx/prey06"
+          chmod +x "${{ github.workspace }}/output/macosx/prey06ded"
+
+      - name: Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: prey2006-macos-${{ matrix.arch }}
+          path: output/macosx/
+          compression-level: 6
