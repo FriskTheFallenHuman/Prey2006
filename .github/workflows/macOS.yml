@@ -62,8 +62,11 @@ jobs:
           rm -rf build
           mkdir -p build
           cd build
+          OPENAL_PREFIX="$(brew --prefix openal-soft)"
           cmake -G Ninja \
             -DDEDICATED=ON \
+            -DOPENAL_INCLUDE_DIR="${OPENAL_PREFIX}/include" \
+            -DOPENAL_LIBRARY="${OPENAL_PREFIX}/lib/libopenal.dylib" \
             -DCMAKE_PREFIX_PATH="$(brew --prefix)" \
             -DCMAKE_C_COMPILER_LAUNCHER=ccache \
             -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ../neo/
