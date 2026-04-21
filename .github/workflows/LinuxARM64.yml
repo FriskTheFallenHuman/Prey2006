@@ -1,0 +1,72 @@
+name: Linux Builds (arm64)
+
+on:
+  push:
+    branches:
+      - "main"
+    paths-ignore:
+      - .github/workflows/FreeBSD.yml
+      - .github/workflows/macOS.yml
+      - .github/workflows/Windows.yml
+  pull_request:
+    types: [edited, opened, synchronize]
+    paths-ignore:
+      - .github/workflows/FreeBSD.yml
+      - .github/workflows/macOS.yml
+      - .github/workflows/Windows.yml
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  build:
+    name: Linux (arm64)
+    runs-on: ubuntu-24.04-arm
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Restore apt cache
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build libfreetype6-dev ccache zip
+          version: 1.0
+
+      - name: Ensure ccache dir exists and init
+        run: |
+          mkdir -p ~/.ccache
+          ccache --max-size=10G || true
+
+      - name: Restore ccache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ccache
+          key: ${{ runner.os }}-ccache-arm64-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-ccache-arm64-
+            ${{ runner.os }}-ccache-
+
+      - name: Build the engine
+        run: |
+          set -eux
+          rm -rf build
+          mkdir -p build
+          cd build
+          cmake -G Ninja \
+            -DDEDICATED=ON \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ../neo/
+          ninja
+
+      - name: Chmod game executables
+        run: |
+          chmod +x "${{ github.workspace }}/output/linux/prey06"
+          chmod +x "${{ github.workspace }}/output/linux/prey06ded"
+
+      - name: Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: prey2006-linux-arm64
+          path: output/linux/
+          compression-level: 6

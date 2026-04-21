@@ -1,0 +1,76 @@
+name: macOS Builds (arm64)
+
+on:
+  push:
+    branches:
+      - "main"
+    paths-ignore:
+      - .github/workflows/FreeBSD.yml
+      - .github/workflows/Linux.yml
+      - .github/workflows/LinuxARM64.yml
+      - .github/workflows/Windows.yml
+  pull_request:
+    types: [edited, opened, synchronize]
+    paths-ignore:
+      - .github/workflows/FreeBSD.yml
+      - .github/workflows/Linux.yml
+      - .github/workflows/LinuxARM64.yml
+      - .github/workflows/Windows.yml
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  build:
+    name: macOS (arm64)
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install dependencies
+        run: |
+          brew install sdl2 openal-soft ninja ccache pkg-config
+
+      - name: Ensure ccache dir exists and init
+        run: |
+          mkdir -p ~/.ccache
+          ccache --max-size=10G || true
+
+      - name: Restore ccache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ccache
+          key: ${{ runner.os }}-ccache-arm64-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-ccache-arm64-
+            ${{ runner.os }}-ccache-
+
+      - name: Build the engine
+        run: |
+          set -eux
+          rm -rf build
+          mkdir -p build
+          cd build
+          OPENAL_PREFIX="$(brew --prefix openal-soft)"
+          cmake -G Ninja \
+            -DDEDICATED=ON \
+            -DOPENAL_INCLUDE_DIR="${OPENAL_PREFIX}/include" \
+            -DOPENAL_LIBRARY="${OPENAL_PREFIX}/lib/libopenal.dylib" \
+            -DCMAKE_PREFIX_PATH="$(brew --prefix)" \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ../neo/
+          ninja
+
+      - name: Chmod game executables
+        run: |
+          chmod +x "${{ github.workspace }}/output/macosx/prey06"
+          chmod +x "${{ github.workspace }}/output/macosx/prey06ded"
+
+      - name: Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: prey2006-macos-arm64
+          path: output/macosx/
+          compression-level: 6
