@@ -1,4 +1,4 @@
-name: macOS Builds (arm64 & x86_64)
+name: macOS Builds (arm64)
 
 on:
   push:
@@ -21,17 +21,8 @@ on:
 
 jobs:
   build:
-    name: macOS (${{ matrix.arch }})
-    runs-on: ${{ matrix.runner }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - arch: arm64
-            runner: macos-latest
-          - arch: x86_64
-            runner: macos-13
+    name: macOS (arm64)
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -51,9 +42,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.ccache
-          key: ${{ runner.os }}-ccache-${{ matrix.arch }}-${{ github.sha }}
+          key: ${{ runner.os }}-ccache-arm64-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-ccache-${{ matrix.arch }}-
+            ${{ runner.os }}-ccache-arm64-
             ${{ runner.os }}-ccache-
 
       - name: Build the engine
@@ -80,6 +71,6 @@ jobs:
       - name: Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: prey2006-macos-${{ matrix.arch }}
+          name: prey2006-macos-arm64
           path: output/macosx/
           compression-level: 6

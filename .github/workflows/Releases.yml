@@ -44,9 +44,8 @@ jobs:
           tar czf prey2006-linux-x86_64.tar.gz -C prey2006-linux-x86_64 .
           tar czf prey2006-linux-arm64.tar.gz -C prey2006-linux-arm64 .
 
-          # macOS tarballs
+          # macOS tarball
           tar czf prey2006-macos-arm64.tar.gz -C prey2006-macos-arm64 .
-          tar czf prey2006-macos-x86_64.tar.gz -C prey2006-macos-x86_64 .
 
           # Windows zips
           cd prey2006-windows-x86
@@ -68,5 +67,4 @@ jobs:
             artifacts/prey2006-linux-x86_64.tar.gz
             artifacts/prey2006-linux-arm64.tar.gz
             artifacts/prey2006-macos-arm64.tar.gz
-            artifacts/prey2006-macos-x86_64.tar.gz
             artifacts/prey2006-freebsd.zip
