@@ -151,7 +151,7 @@ bool hhAnim::CallFrameCommandsExtra( const frameCommand_t &command, idEntity *en
 	switch( command.type ) {
 		case FC_EVENT_ARGS: {
 			if ( command.function && command.parmList && command.function->eventdef ) {
-				ent->ProcessEvent( command.function->eventdef, (int)(intptr_t)command.parmList );
+				ent->ProcessEvent( command.function->eventdef, (intptr_t)command.parmList );
 			}	
 			return( true );
 		}
