@@ -84,7 +84,7 @@ idGame *					game = &gameLocal;	// statically pointed at an idGameLocal
 //NOTE: Duplicated in tr_rendertools and CamWnd, make any changes there also
 const char *idGameLocal::sufaceTypeNames[ MAX_SURFACE_TYPES ] = {
 	"none",	"metal", "stone", "flesh", "wood", "cardboard", "liquid", "glass", "tile",
-	"wallwalk", "altmetal", "forcefield", "pipe", "spirit", "chaff"
+	"plastic", "wallwalk", "altmetal", "forcefield", "pipe", "spirit", "chaff"
 };
 #else
 const char *idGameLocal::sufaceTypeNames[ MAX_SURFACE_TYPES ] = {
