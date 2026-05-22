@@ -159,12 +159,17 @@ idRenderModel *idRenderModelPrt::InstantiateDynamicModel( const struct renderEnt
 		int numVerts = 0;
 		idDrawVert *verts = surf->geometry->verts;
 
+		const bool lowDetail = r_lowParticleDetail.GetBool();
 		for ( int index = 0; index < stage->totalParticles; index++ ) {
 			g.index = index;
 
 			// bump the random
 			steppingRandom.RandomInt();
 			steppingRandom2.RandomInt();
+
+			if ( lowDetail && ( index & 1 ) ) {
+				continue;
+			}
 
 			// calculate local age for this index
 			int	bunchOffset = stage->particleLife * 1000 * stage->spawnBunching * index / stage->totalParticles;

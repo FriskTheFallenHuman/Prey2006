@@ -707,6 +707,10 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 			}
 		}
 
+		if ( pStage->isGlow && r_skipGlowOverlay.GetBool() ) {
+			continue;
+		}
+
 		// check the enable condition
 		if ( regs[ pStage->conditionRegister ] == 0 ) {
 			continue;
@@ -731,7 +735,7 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 			//
 			//--------------------------
 
-			if ( r_skipNewAmbient.GetBool() ) {
+			if ( r_skipNewAmbient.GetBool() || r_shaderlevel.GetInteger() < 1 ) {
 				continue;
 			}
 
