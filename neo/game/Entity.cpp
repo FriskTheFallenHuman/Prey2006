@@ -888,6 +888,10 @@ bool idEntity::DoDormantTests( void ) {
 		return false;
 	}
 
+	if ( gameLocal.InSubviewCameraArea( this ) ) { // ftbHugeHunter: keep ticking in subview camera areas
+		return false;
+	}
+
 	// if the monster area is not topologically connected to a player
 	if ( !gameLocal.InPlayerConnectedArea( this ) ) {
 		if ( dormantStart == 0 ) {
