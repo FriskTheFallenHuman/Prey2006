@@ -1230,6 +1230,7 @@ void hhGameLocal::Restore( idRestoreGame *savefile ) {
 	for ( i = 0; i < num; i++ ) {
 		hands[i].Restore( savefile );
 	}
+		InvalidateSubviewCameraAreas(); // ftbHugeHunter cutscene
 }
 
 bool hhGameLocal::InhibitEntitySpawn( idDict &spawnArgs ) {

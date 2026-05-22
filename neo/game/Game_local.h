@@ -475,6 +475,12 @@ public:
 	bool					InPlayerPVS( idEntity *ent ) const;
 	bool					InPlayerConnectedArea( idEntity *ent ) const;
 
+	idList<int>				subviewCameraAreas;
+	bool					subviewCameraAreasBuilt;
+	void					BuildSubviewCameraAreas( void );
+	void					InvalidateSubviewCameraAreas( void ) { subviewCameraAreasBuilt = false; subviewCameraAreas.Clear(); }
+	bool					InSubviewCameraArea( idEntity *ent );
+
 	void					SetCamera( idCamera *cam );
 	idCamera *				GetCamera( void ) const;
 	bool					SkipCinematic( void );

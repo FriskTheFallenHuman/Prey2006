@@ -200,6 +200,8 @@ void idGameLocal::Clear( void ) {
 	spawnedEntities.Clear();
 	activeEntities.Clear();
 	numEntitiesToDeactivate = 0;
+	subviewCameraAreas.Clear();
+	subviewCameraAreasBuilt = false;
 	sortPushers = false;
 	sortTeamMasters = false;
 	//HUMANHEAD rww
@@ -1004,6 +1006,8 @@ void idGameLocal::LoadMap( const char *mapName, int randseed ) {
 	spawnedEntities.Clear();
 	activeEntities.Clear();
 	numEntitiesToDeactivate = 0;
+	subviewCameraAreas.Clear();
+	subviewCameraAreasBuilt = false;
 	sortTeamMasters = false;
 	sortPushers = false;
 	//HUMANHEAD rww
@@ -2517,6 +2521,45 @@ bool idGameLocal::InPlayerConnectedArea( idEntity *ent ) const {
 		return false;
 	}
 	return pvs.InCurrentPVS( playerConnectedAreas, ent->GetPVSAreas(), ent->GetNumPVSAreas() );
+}
+
+// ftbHugeHunter - subview camera functions
+void idGameLocal::BuildSubviewCameraAreas( void ) { 
+	subviewCameraAreas.Clear();
+	for ( idEntity *src = spawnedEntities.Next(); src != NULL; src = src->spawnNode.Next() ) {
+		// look up by spawnArgs — src->cameraTarget wired by deferred event
+		const char *targetName = src->spawnArgs.GetString( "cameraTarget" );
+		if ( !targetName || !targetName[0] ) {
+			continue;
+		}
+		idEntity *tgt = src->cameraTarget ? src->cameraTarget : FindEntity( targetName );
+		if ( !tgt ) {
+			continue;
+		}
+		const int *areas = tgt->GetPVSAreas();
+		const int n = tgt->GetNumPVSAreas();
+		for ( int i = 0; i < n; i++ ) {
+			subviewCameraAreas.AddUnique( areas[i] );
+		}
+	}
+	subviewCameraAreasBuilt = true;
+}
+
+bool idGameLocal::InSubviewCameraArea( idEntity *ent ) {
+	if ( !subviewCameraAreasBuilt ) {
+		BuildSubviewCameraAreas();
+	}
+	if ( subviewCameraAreas.Num() == 0 ) {
+		return false;
+	}
+	const int *areas = ent->GetPVSAreas();
+	const int n = ent->GetNumPVSAreas();
+	for ( int i = 0; i < n; i++ ) {
+		if ( subviewCameraAreas.FindIndex( areas[i] ) >= 0 ) {
+			return true;
+		}
+	}
+	return false;
 }
 
 /*
