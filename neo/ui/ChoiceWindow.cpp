@@ -45,15 +45,16 @@ void idChoiceWindow::InitVars( ) {
 			if (strcmp(cvarStr.c_str(), "s_driver") &&
 				strcmp(cvarStr.c_str(), "net_serverAllowServerMod") &&
 				strcmp(cvarStr.c_str(), "com_profanity") &&
-				strcmp(cvarStr.c_str(), "r_shaderlevel") &&
-				strcmp(cvarStr.c_str(), "r_correctspecular") &&
+// commented out a few cvars; advanced video settings should now work --morb
+//				strcmp(cvarStr.c_str(), "r_shaderlevel") &&
+//				strcmp(cvarStr.c_str(), "r_correctspecular") &&
 				strcmp(cvarStr.c_str(), "gui_filter_pb") &&
-				strcmp(cvarStr.c_str(), "r_normalizebumpmap") &&
-				strcmp(cvarStr.c_str(), "r_lowParticleDetail") &&
-				strcmp(cvarStr.c_str(), "r_useFastSkinning") &&
+//				strcmp(cvarStr.c_str(), "r_normalizebumpmap") &&
+//				strcmp(cvarStr.c_str(), "r_lowParticleDetail") &&
+//				strcmp(cvarStr.c_str(), "r_useFastSkinning") &&
 				strcmp(cvarStr.c_str(), "s_musicvolume_dB") &&
 				strcmp(cvarStr.c_str(), "s_useOpenAL") &&
-				strcmp(cvarStr.c_str(), "r_skipGlowOverlay") &&
+//				strcmp(cvarStr.c_str(), "r_skipGlowOverlay") &&
 				strcmp(cvarStr.c_str(), "s_deviceName")
 				)
 				common->Warning( "idChoiceWindow::InitVars: gui '%s' window '%s' references undefined cvar '%s'", gui->GetSourceFile(), name.c_str(), cvarStr.c_str() );
@@ -208,6 +209,12 @@ const char *idChoiceWindow::HandleEvent(const sysEvent_t *event, bool *updateVis
 	}
 
 	UpdateVars( false );
+
+	// some advanced video menu choicedefs omit `onAction { namedEvent "NeedVidRestart"; }`
+	// so the apply button stays disabled. broadcast renderer cvars. --morb
+	if ( runAction && cvar && ( cvar->GetFlags() & CVAR_RENDERER ) && GetGui() ) {
+		GetGui()->HandleNamedEvent( "NeedVidRestart" );
+	}
 
 	if ( runAction2 ) {
 		RunScript( ON_ACTIONRELEASE );

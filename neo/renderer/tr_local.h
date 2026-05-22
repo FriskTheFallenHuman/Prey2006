@@ -923,6 +923,12 @@ extern idCVar r_skipSpecular;			// use black for specular
 extern idCVar r_skipDiffuse;			// use black for diffuse
 extern idCVar r_skipOverlays;			// skip overlay surfaces
 extern idCVar r_skipROQ;
+extern idCVar r_shaderlevel;
+extern idCVar r_correctspecular;
+extern idCVar r_normalizebumpmap;
+extern idCVar r_skipGlowOverlay;
+extern idCVar r_lowParticleDetail;
+extern idCVar r_useFastSkinning;
 
 extern idCVar r_ignoreGLErrors;
 

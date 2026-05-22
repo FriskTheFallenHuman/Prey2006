@@ -662,10 +662,11 @@ static void RB_SubmittInteraction( drawInteraction_t *din, void (*DrawInteractio
 	if ( !din->diffuseImage || r_skipDiffuse.GetBool() ) {
 		din->diffuseImage = globalImages->blackImage;
 	}
-	if ( !din->specularImage || r_skipSpecular.GetBool() || din->ambientLight ) {
+	if ( !din->specularImage || r_skipSpecular.GetBool() || din->ambientLight
+		 || !r_correctspecular.GetBool() || r_shaderlevel.GetInteger() < 2 ) {
 		din->specularImage = globalImages->blackImage;
 	}
-	if ( !din->bumpImage || r_skipBump.GetBool() ) {
+	if ( !din->bumpImage || r_skipBump.GetBool() || r_shaderlevel.GetInteger() < 1 ) {
 		din->bumpImage = globalImages->flatNormalMap;
 	}
 

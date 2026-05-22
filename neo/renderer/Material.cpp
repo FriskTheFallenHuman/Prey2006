@@ -759,6 +759,7 @@ void idMaterial::ClearStage( shaderStage_t *ss ) {
 	ss->isSpiritWalk = false;
 	ss->isNotSpiritWalk = false;
 	ss->isShuttleView = false;
+	ss->isGlow = false;
 }
 
 /*
@@ -1588,6 +1589,7 @@ void idMaterial::ParseStage( idLexer &src, const textureRepeat_t trpDefault ) {
 		}
 
 		if ( !token.Icmp( "glowStage" ) ) {
+			ss->isGlow = true;
 			continue;
 		}
 
