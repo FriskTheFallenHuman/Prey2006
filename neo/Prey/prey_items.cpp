@@ -198,6 +198,9 @@ hhItem::SinglePlayerPickup
 */
 void hhItem::SinglePlayerPickup( idPlayer *player ) {
 	if ( !GiveToPlayer( player ) ) {
+		if ( fl.onlySpiritWalkTouch && targets.Num() > 0 ) {
+			DetermineRemoveOrRespawn( AnnouncePickup( player ) );
+		}
 		return;
 	}
 
