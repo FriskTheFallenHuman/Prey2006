@@ -90,10 +90,10 @@ idWinding::Split
 =============
 */
 int idWinding::Split( const idPlane &plane, const float epsilon, idWinding **front, idWinding **back ) const {
-	float *			dists;
+	double *		dists;
 	byte *			sides;
 	int				counts[3];
-	float			dot;
+	double			dot;
 	int				i, j;
 	const idVec5 *	p1, *p2;
 	idVec5			mid;
@@ -107,14 +107,18 @@ int idWinding::Split( const idPlane &plane, const float epsilon, idWinding **fro
 		return 0; // it's not like the callers check the return value anyway..
 	}
 
-	dists = (float *) _alloca( (numPoints+4) * sizeof( float ) );
+	dists = (double *) _alloca( (numPoints+4) * sizeof( double ) );
 	sides = (byte *) _alloca( (numPoints+4) * sizeof( byte ) );
 
 	counts[0] = counts[1] = counts[2] = 0;
 
+	// morb: per-point distance in double to match x87 80-bit 
+	const idVec3 &pn = plane.Normal();
+	double pa = pn[0], pb = pn[1], pc = pn[2], pd = plane[3];
+
 	// determine sides for each point
 	for ( i = 0; i < numPoints; i++ ) {
-		dists[i] = dot = plane.Distance( p[i].ToVec3() );
+		dists[i] = dot = pa * (double)p[i].x + pb * (double)p[i].y + pc * (double)p[i].z + pd;
 		if ( dot > epsilon ) {
 			sides[i] = SIDE_FRONT;
 		} else if ( dot < -epsilon ) {
@@ -188,8 +192,9 @@ int idWinding::Split( const idPlane &plane, const float epsilon, idWinding **fro
 
 		// always calculate the split going from the same side
 		// or minor epsilon issues can happen
+		// morb: long double (x86_64 = 80-bit) lerp to match x87 intermediates.
 		if ( sides[i] == SIDE_FRONT ) {
-			dot = dists[i] / ( dists[i] - dists[i+1] );
+			long double dotd = (long double)dists[i] / ( (long double)dists[i] - (long double)dists[i+1] );
 			for ( j = 0; j < 3; j++ ) {
 				// avoid round off error when possible
 				if ( plane.Normal()[j] == 1.0f ) {
@@ -197,13 +202,13 @@ int idWinding::Split( const idPlane &plane, const float epsilon, idWinding **fro
 				} else if ( plane.Normal()[j] == -1.0f ) {
 					mid[j] = -plane.Dist();
 				} else {
-					mid[j] = (*p1)[j] + dot * ( (*p2)[j] - (*p1)[j] );
+					mid[j] = (float)( (long double)(*p1)[j] + dotd * ( (long double)(*p2)[j] - (long double)(*p1)[j] ) );
 				}
 			}
-			mid.s = p1->s + dot * ( p2->s - p1->s );
-			mid.t = p1->t + dot * ( p2->t - p1->t );
+			mid.s = (float)( (long double)p1->s + dotd * ( (long double)p2->s - (long double)p1->s ) );
+			mid.t = (float)( (long double)p1->t + dotd * ( (long double)p2->t - (long double)p1->t ) );
 		} else {
-			dot = dists[i+1] / ( dists[i+1] - dists[i] );
+			long double dotd = (long double)dists[i+1] / ( (long double)dists[i+1] - (long double)dists[i] );
 			for ( j = 0; j < 3; j++ ) {
 				// avoid round off error when possible
 				if ( plane.Normal()[j] == 1.0f ) {
@@ -211,12 +216,13 @@ int idWinding::Split( const idPlane &plane, const float epsilon, idWinding **fro
 				} else if ( plane.Normal()[j] == -1.0f ) {
 					mid[j] = -plane.Dist();
 				} else {
-					mid[j] = (*p2)[j] + dot * ( (*p1)[j] - (*p2)[j] );
+					mid[j] = (float)( (long double)(*p2)[j] + dotd * ( (long double)(*p1)[j] - (long double)(*p2)[j] ) );
 				}
 			}
-			mid.s = p2->s + dot * ( p1->s - p2->s );
-			mid.t = p2->t + dot * ( p1->t - p2->t );
+			mid.s = (float)( (long double)p2->s + dotd * ( (long double)p1->s - (long double)p2->s ) );
+			mid.t = (float)( (long double)p2->t + dotd * ( (long double)p1->t - (long double)p2->t ) );
 		}
+
 
 		f->p[f->numPoints] = mid;
 		f->numPoints++;
@@ -237,12 +243,12 @@ idWinding::Clip
 =============
 */
 idWinding *idWinding::Clip( const idPlane &plane, const float epsilon, const bool keepOn ) {
-	float *		dists;
+	double *	dists;
 	byte *		sides;
 	idVec5 *	newPoints;
 	int			newNumPoints;
 	int			counts[3];
-	float		dot;
+	double		dot;
 	int			i, j;
 	idVec5 *	p1, *p2;
 	idVec5		mid;
@@ -256,14 +262,18 @@ idWinding *idWinding::Clip( const idPlane &plane, const float epsilon, const boo
 		return NULL;
 	}
 
-	dists = (float *) _alloca( (numPoints+4) * sizeof( float ) );
+	dists = (double *) _alloca( (numPoints+4) * sizeof( double ) );
 	sides = (byte *) _alloca( (numPoints+4) * sizeof( byte ) );
 
 	counts[SIDE_FRONT] = counts[SIDE_BACK] = counts[SIDE_ON] = 0;
 
+	// morb: distance in double precision (see idWinding::Split)
+	const idVec3 &pn = plane.Normal();
+	double pa = pn[0], pb = pn[1], pc = pn[2], pd = plane[3];
+
 	// determine sides for each point
 	for ( i = 0; i < numPoints; i++ ) {
-		dists[i] = dot = plane.Distance( p[i].ToVec3() );
+		dists[i] = dot = pa * (double)p[i].x + pb * (double)p[i].y + pc * (double)p[i].z + pd;
 		if ( dot > epsilon ) {
 			sides[i] = SIDE_FRONT;
 		} else if ( dot < -epsilon ) {
@@ -324,19 +334,22 @@ idWinding *idWinding::Clip( const idPlane &plane, const float epsilon, const boo
 		// generate a split point
 		p2 = &p[(i+1)%numPoints];
 
-		dot = dists[i] / (dists[i] - dists[i+1]);
-		for ( j = 0; j < 3; j++ ) {
-			// avoid round off error when possible
-			if ( plane.Normal()[j] == 1.0f ) {
-				mid[j] = plane.Dist();
-			} else if ( plane.Normal()[j] == -1.0f ) {
-				mid[j] = -plane.Dist();
-			} else {
-				mid[j] = (*p1)[j] + dot * ( (*p2)[j] - (*p1)[j] );
+		// morb: lerp in long double (80-bit) to match x87 intermediates.
+		{
+			long double dotd = (long double)dists[i] / ( (long double)dists[i] - (long double)dists[i+1] );
+			for ( j = 0; j < 3; j++ ) {
+				// avoid round off error when possible
+				if ( plane.Normal()[j] == 1.0f ) {
+					mid[j] = plane.Dist();
+				} else if ( plane.Normal()[j] == -1.0f ) {
+					mid[j] = -plane.Dist();
+				} else {
+					mid[j] = (float)( (long double)(*p1)[j] + dotd * ( (long double)(*p2)[j] - (long double)(*p1)[j] ) );
+				}
 			}
+			mid.s = (float)( (long double)p1->s + dotd * ( (long double)p2->s - (long double)p1->s ) );
+			mid.t = (float)( (long double)p1->t + dotd * ( (long double)p2->t - (long double)p1->t ) );
 		}
-		mid.s = p1->s + dot * ( p2->s - p1->s );
-		mid.t = p1->t + dot * ( p2->t - p1->t );
 
 		newPoints[newNumPoints] = mid;
 		newNumPoints++;
@@ -358,12 +371,12 @@ idWinding::ClipInPlace
 =============
 */
 bool idWinding::ClipInPlace( const idPlane &plane, const float epsilon, const bool keepOn ) {
-	float*		dists;
+	double*		dists;
 	byte *		sides;
 	idVec5 *	newPoints;
 	int			newNumPoints;
 	int			counts[3];
-	float		dot;
+	double		dot;
 	int			i, j;
 	idVec5 *	p1, *p2;
 	idVec5		mid;
@@ -371,14 +384,18 @@ bool idWinding::ClipInPlace( const idPlane &plane, const float epsilon, const bo
 
 	assert( this );
 
-	dists = (float *) _alloca( (numPoints+4) * sizeof( float ) );
+	dists = (double *) _alloca( (numPoints+4) * sizeof( double ) );
 	sides = (byte *) _alloca( (numPoints+4) * sizeof( byte ) );
 
 	counts[SIDE_FRONT] = counts[SIDE_BACK] = counts[SIDE_ON] = 0;
 
+	// morb: distance in double precision (see idWinding::Split)
+	const idVec3 &pn = plane.Normal();
+	double pa = pn[0], pb = pn[1], pc = pn[2], pd = plane[3];
+
 	// determine sides for each point
 	for ( i = 0; i < numPoints; i++ ) {
-		dists[i] = dot = plane.Distance( p[i].ToVec3() );
+		dists[i] = dot = pa * (double)p[i].x + pb * (double)p[i].y + pc * (double)p[i].z + pd;
 		if ( dot > epsilon ) {
 			sides[i] = SIDE_FRONT;
 		} else if ( dot < -epsilon ) {
@@ -439,19 +456,22 @@ bool idWinding::ClipInPlace( const idPlane &plane, const float epsilon, const bo
 		// generate a split point
 		p2 = &p[(i+1)%numPoints];
 
-		dot = dists[i] / (dists[i] - dists[i+1]);
-		for ( j = 0; j < 3; j++ ) {
-			// avoid round off error when possible
-			if ( plane.Normal()[j] == 1.0f ) {
-				mid[j] = plane.Dist();
-			} else if ( plane.Normal()[j] == -1.0f ) {
-				mid[j] = -plane.Dist();
-			} else {
-				mid[j] = (*p1)[j] + dot * ( (*p2)[j] - (*p1)[j] );
+		// morb: lerp in long double (80-bit) to match x87 intermediates.
+		{
+			long double dotd = (long double)dists[i] / ( (long double)dists[i] - (long double)dists[i+1] );
+			for ( j = 0; j < 3; j++ ) {
+				// avoid round off error when possible
+				if ( plane.Normal()[j] == 1.0f ) {
+					mid[j] = plane.Dist();
+				} else if ( plane.Normal()[j] == -1.0f ) {
+					mid[j] = -plane.Dist();
+				} else {
+					mid[j] = (float)( (long double)(*p1)[j] + dotd * ( (long double)(*p2)[j] - (long double)(*p1)[j] ) );
+				}
 			}
+			mid.s = (float)( (long double)p1->s + dotd * ( (long double)p2->s - (long double)p1->s ) );
+			mid.t = (float)( (long double)p1->t + dotd * ( (long double)p2->t - (long double)p1->t ) );
 		}
-		mid.s = p1->s + dot * ( p2->s - p1->s );
-		mid.t = p1->t + dot * ( p2->t - p1->t );
 
 		newPoints[newNumPoints] = mid;
 		newNumPoints++;
@@ -766,11 +786,13 @@ void idWinding::RemoveColinearPoints( const idVec3 &normal, const float epsilon 
 	idVec3 edgeNormal;
 	float dist;
 
-	if ( numPoints <= 3 ) {
-		return;
-	}
-
 	for ( i = 0; i < numPoints; i++ ) {
+
+		// c/o TDM - don't remove any points when there are only 3 or less left to avoid
+		// degenerating the winding, otherwise this may result in windings with numPoints = 0
+		if ( numPoints <= 3 ) {
+			return;
+		}
 
 		// create plane through edge orthogonal to winding plane
 		edgeNormal = (p[i].ToVec3() - p[(i+numPoints-1)%numPoints].ToVec3()).Cross( normal );
@@ -1303,12 +1325,16 @@ idWinding::PlaneSide
 int idWinding::PlaneSide( const idPlane &plane, const float epsilon ) const {
 	bool	front, back;
 	int		i;
-	float	d;
+	double	d;
+
+	// morb: double-precision distance to match x87
+	const idVec3 &pn = plane.Normal();
+	double pa = pn[0], pb = pn[1], pc = pn[2], pd = plane[3];
 
 	front = false;
 	back = false;
 	for ( i = 0; i < numPoints; i++ ) {
-		d = plane.Distance( p[i].ToVec3() );
+		d = pa * (double)p[i].x + pb * (double)p[i].y + pc * (double)p[i].z + pd;
 		if ( d < -epsilon ) {
 			if ( front ) {
 				return SIDE_CROSS;
@@ -1494,9 +1520,9 @@ idFixedWinding::Split
 */
 int idFixedWinding::Split( idFixedWinding *back, const idPlane &plane, const float epsilon ) {
 	int		counts[3];
-	float	dists[MAX_POINTS_ON_WINDING+4];
+	double	dists[MAX_POINTS_ON_WINDING+4];
 	byte	sides[MAX_POINTS_ON_WINDING+4];
-	float	dot;
+	double	dot;
 	int		i, j;
 	idVec5 *p1, *p2;
 	idVec5	mid;
@@ -1504,9 +1530,13 @@ int idFixedWinding::Split( idFixedWinding *back, const idPlane &plane, const flo
 
 	counts[SIDE_FRONT] = counts[SIDE_BACK] = counts[SIDE_ON] = 0;
 
+	// morb: distance in double precision (see idWinding::Split)
+	const idVec3 &pn = plane.Normal();
+	double pa = pn[0], pb = pn[1], pc = pn[2], pd = plane[3];
+
 	// determine sides for each point
 	for ( i = 0; i < numPoints; i++ ) {
-		dists[i] = dot = plane.Distance( p[i].ToVec3() );
+		dists[i] = dot = pa * (double)p[i].x + pb * (double)p[i].y + pc * (double)p[i].z + pd;
 		if ( dot > epsilon ) {
 			sides[i] = SIDE_FRONT;
 		} else if ( dot < -epsilon ) {
@@ -1584,19 +1614,22 @@ int idFixedWinding::Split( idFixedWinding *back, const idPlane &plane, const flo
 			p2 = &p[j];
 		}
 
-		dot = dists[i] / (dists[i] - dists[i+1]);
-		for ( j = 0; j < 3; j++ ) {
-			// avoid round off error when possible
-			if ( plane.Normal()[j] == 1.0f ) {
-				mid[j] = plane.Dist();
-			} else if ( plane.Normal()[j] == -1.0f ) {
-				mid[j] = -plane.Dist();
-			} else {
-				mid[j] = (*p1)[j] + dot * ( (*p2)[j] - (*p1)[j] );
+		// morb: lerp in long double (80-bit) to match x87 intermediates.
+		{
+			long double dotd = (long double)dists[i] / ( (long double)dists[i] - (long double)dists[i+1] );
+			for ( j = 0; j < 3; j++ ) {
+				// avoid round off error when possible
+				if ( plane.Normal()[j] == 1.0f ) {
+					mid[j] = plane.Dist();
+				} else if ( plane.Normal()[j] == -1.0f ) {
+					mid[j] = -plane.Dist();
+				} else {
+					mid[j] = (float)( (long double)(*p1)[j] + dotd * ( (long double)(*p2)[j] - (long double)(*p1)[j] ) );
+				}
 			}
+			mid.s = (float)( (long double)p1->s + dotd * ( (long double)p2->s - (long double)p1->s ) );
+			mid.t = (float)( (long double)p1->t + dotd * ( (long double)p2->t - (long double)p1->t ) );
 		}
-		mid.s = p1->s + dot * ( p2->s - p1->s );
-		mid.t = p1->t + dot * ( p2->t - p1->t );
 
 		out.p[out.numPoints] = mid;
 		out.numPoints++;

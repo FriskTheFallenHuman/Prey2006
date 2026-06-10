@@ -725,6 +725,13 @@ void PutPrimitivesInAreas( uEntity_t* e )
 			}
 			idRenderModel* model = renderModelManager->FindModel( modelName );
 
+			// morb: skip when FindModel returns a default model — inline func_statics aren't registered
+			// with renderModelManager, so this would inject a bogus 24-vert "_default" box.
+			if ( !model || model->IsDefaultModel() )
+			{
+				continue;
+			}
+
 			common->Printf( "inlining %s.\n", entity->mapEntity->epairs.GetString( "name" ) );
 
 			idMat3 axis;
@@ -748,6 +755,17 @@ void PutPrimitivesInAreas( uEntity_t* e )
 			{
 				const modelSurface_t* surface = model->Surface( i );
 				const srfTriangles_t* tri	  = surface->geometry;
+
+				// morb: skip non-visible model surfaces (collision-only, etc.); matches TriListForSide.
+				if ( !surface->shader || ( !surface->shader->SurfaceCastsShadow() && !surface->shader->IsDrawn() ) ) {
+					continue;
+				}
+
+				// morb: skip surfaces with material depends on per-entity shaderParm. Otherwise, inlining merges them 
+				// into worldspawn and loses the entity-specific parm values.
+				if ( !surface->shader->ConstantRegisters() ) {
+					continue;
+				}
 
 				mapTri_t			  mapTri;
 				memset( &mapTri, 0, sizeof( mapTri ) );
