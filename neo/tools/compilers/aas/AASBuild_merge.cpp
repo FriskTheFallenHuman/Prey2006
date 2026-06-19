@@ -177,11 +177,9 @@ void idAASBuild::MergeLeafNodes( idBrushBSP& bsp )
 {
 	numMergedLeafNodes = 0;
 
-	common->Printf( "[Merge Leaf Nodes]\n" );
-
-	MergeLeafNodes_r( bsp, bsp.GetRootNode() );
-	bsp.GetRootNode()->RemoveFlagRecurse( NODE_DONE );
-	bsp.PruneMergedTree_r( bsp.GetRootNode() );
-
-	common->Printf( "\r%6d leaf nodes merged\n", numMergedLeafNodes );
+	// morb: MergeLeafNodes is slow on dense Prey maps (i.e. shuttlea)
+	// partial aborts leave area/face refs that crash
+	// skipping keeps the BSP geometry consistent, AAS files are larger but valid.
+	common->Printf( "[Merge Leaf Nodes] (skipped)\n" );
+	(void)bsp;
 }

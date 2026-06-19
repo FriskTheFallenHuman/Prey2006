@@ -112,7 +112,6 @@ int idWinding::Split( const idPlane &plane, const float epsilon, idWinding **fro
 
 	counts[0] = counts[1] = counts[2] = 0;
 
-	// morb: per-point distance in double to match x87 80-bit 
 	const idVec3 &pn = plane.Normal();
 	double pa = pn[0], pb = pn[1], pc = pn[2], pd = plane[3];
 
@@ -192,9 +191,9 @@ int idWinding::Split( const idPlane &plane, const float epsilon, idWinding **fro
 
 		// always calculate the split going from the same side
 		// or minor epsilon issues can happen
-		// morb: long double (x86_64 = 80-bit) lerp to match x87 intermediates.
+		// morb: lerp in double is enough. trying to nail down x87 equivalence resulted in complexity.
 		if ( sides[i] == SIDE_FRONT ) {
-			long double dotd = (long double)dists[i] / ( (long double)dists[i] - (long double)dists[i+1] );
+			double dotd = (double)dists[i] / ( (double)dists[i] - (double)dists[i+1] );
 			for ( j = 0; j < 3; j++ ) {
 				// avoid round off error when possible
 				if ( plane.Normal()[j] == 1.0f ) {
@@ -202,13 +201,13 @@ int idWinding::Split( const idPlane &plane, const float epsilon, idWinding **fro
 				} else if ( plane.Normal()[j] == -1.0f ) {
 					mid[j] = -plane.Dist();
 				} else {
-					mid[j] = (float)( (long double)(*p1)[j] + dotd * ( (long double)(*p2)[j] - (long double)(*p1)[j] ) );
+					mid[j] = (float)( (double)(*p1)[j] + dotd * ( (double)(*p2)[j] - (double)(*p1)[j] ) );
 				}
 			}
-			mid.s = (float)( (long double)p1->s + dotd * ( (long double)p2->s - (long double)p1->s ) );
-			mid.t = (float)( (long double)p1->t + dotd * ( (long double)p2->t - (long double)p1->t ) );
+			mid.s = (float)( (double)p1->s + dotd * ( (double)p2->s - (double)p1->s ) );
+			mid.t = (float)( (double)p1->t + dotd * ( (double)p2->t - (double)p1->t ) );
 		} else {
-			long double dotd = (long double)dists[i+1] / ( (long double)dists[i+1] - (long double)dists[i] );
+			double dotd = (double)dists[i+1] / ( (double)dists[i+1] - (double)dists[i] );
 			for ( j = 0; j < 3; j++ ) {
 				// avoid round off error when possible
 				if ( plane.Normal()[j] == 1.0f ) {
@@ -216,11 +215,11 @@ int idWinding::Split( const idPlane &plane, const float epsilon, idWinding **fro
 				} else if ( plane.Normal()[j] == -1.0f ) {
 					mid[j] = -plane.Dist();
 				} else {
-					mid[j] = (float)( (long double)(*p2)[j] + dotd * ( (long double)(*p1)[j] - (long double)(*p2)[j] ) );
+					mid[j] = (float)( (double)(*p2)[j] + dotd * ( (double)(*p1)[j] - (double)(*p2)[j] ) );
 				}
 			}
-			mid.s = (float)( (long double)p2->s + dotd * ( (long double)p1->s - (long double)p2->s ) );
-			mid.t = (float)( (long double)p2->t + dotd * ( (long double)p1->t - (long double)p2->t ) );
+			mid.s = (float)( (double)p2->s + dotd * ( (double)p1->s - (double)p2->s ) );
+			mid.t = (float)( (double)p2->t + dotd * ( (double)p1->t - (double)p2->t ) );
 		}
 
 
@@ -334,9 +333,9 @@ idWinding *idWinding::Clip( const idPlane &plane, const float epsilon, const boo
 		// generate a split point
 		p2 = &p[(i+1)%numPoints];
 
-		// morb: lerp in long double (80-bit) to match x87 intermediates.
+		// morb: lerp in double.
 		{
-			long double dotd = (long double)dists[i] / ( (long double)dists[i] - (long double)dists[i+1] );
+			double dotd = (double)dists[i] / ( (double)dists[i] - (double)dists[i+1] );
 			for ( j = 0; j < 3; j++ ) {
 				// avoid round off error when possible
 				if ( plane.Normal()[j] == 1.0f ) {
@@ -344,11 +343,11 @@ idWinding *idWinding::Clip( const idPlane &plane, const float epsilon, const boo
 				} else if ( plane.Normal()[j] == -1.0f ) {
 					mid[j] = -plane.Dist();
 				} else {
-					mid[j] = (float)( (long double)(*p1)[j] + dotd * ( (long double)(*p2)[j] - (long double)(*p1)[j] ) );
+					mid[j] = (float)( (double)(*p1)[j] + dotd * ( (double)(*p2)[j] - (double)(*p1)[j] ) );
 				}
 			}
-			mid.s = (float)( (long double)p1->s + dotd * ( (long double)p2->s - (long double)p1->s ) );
-			mid.t = (float)( (long double)p1->t + dotd * ( (long double)p2->t - (long double)p1->t ) );
+			mid.s = (float)( (double)p1->s + dotd * ( (double)p2->s - (double)p1->s ) );
+			mid.t = (float)( (double)p1->t + dotd * ( (double)p2->t - (double)p1->t ) );
 		}
 
 		newPoints[newNumPoints] = mid;
@@ -456,9 +455,9 @@ bool idWinding::ClipInPlace( const idPlane &plane, const float epsilon, const bo
 		// generate a split point
 		p2 = &p[(i+1)%numPoints];
 
-		// morb: lerp in long double (80-bit) to match x87 intermediates.
+		// morb: lerp in double.
 		{
-			long double dotd = (long double)dists[i] / ( (long double)dists[i] - (long double)dists[i+1] );
+			double dotd = (double)dists[i] / ( (double)dists[i] - (double)dists[i+1] );
 			for ( j = 0; j < 3; j++ ) {
 				// avoid round off error when possible
 				if ( plane.Normal()[j] == 1.0f ) {
@@ -466,11 +465,11 @@ bool idWinding::ClipInPlace( const idPlane &plane, const float epsilon, const bo
 				} else if ( plane.Normal()[j] == -1.0f ) {
 					mid[j] = -plane.Dist();
 				} else {
-					mid[j] = (float)( (long double)(*p1)[j] + dotd * ( (long double)(*p2)[j] - (long double)(*p1)[j] ) );
+					mid[j] = (float)( (double)(*p1)[j] + dotd * ( (double)(*p2)[j] - (double)(*p1)[j] ) );
 				}
 			}
-			mid.s = (float)( (long double)p1->s + dotd * ( (long double)p2->s - (long double)p1->s ) );
-			mid.t = (float)( (long double)p1->t + dotd * ( (long double)p2->t - (long double)p1->t ) );
+			mid.s = (float)( (double)p1->s + dotd * ( (double)p2->s - (double)p1->s ) );
+			mid.t = (float)( (double)p1->t + dotd * ( (double)p2->t - (double)p1->t ) );
 		}
 
 		newPoints[newNumPoints] = mid;
@@ -1327,7 +1326,7 @@ int idWinding::PlaneSide( const idPlane &plane, const float epsilon ) const {
 	int		i;
 	double	d;
 
-	// morb: double-precision distance to match x87
+	// morb: double-precision distance for SelectSplitPlaneNum scoring.
 	const idVec3 &pn = plane.Normal();
 	double pa = pn[0], pb = pn[1], pc = pn[2], pd = plane[3];
 
@@ -1614,9 +1613,9 @@ int idFixedWinding::Split( idFixedWinding *back, const idPlane &plane, const flo
 			p2 = &p[j];
 		}
 
-		// morb: lerp in long double (80-bit) to match x87 intermediates.
+		// morb: lerp in double.
 		{
-			long double dotd = (long double)dists[i] / ( (long double)dists[i] - (long double)dists[i+1] );
+			double dotd = (double)dists[i] / ( (double)dists[i] - (double)dists[i+1] );
 			for ( j = 0; j < 3; j++ ) {
 				// avoid round off error when possible
 				if ( plane.Normal()[j] == 1.0f ) {
@@ -1624,11 +1623,11 @@ int idFixedWinding::Split( idFixedWinding *back, const idPlane &plane, const flo
 				} else if ( plane.Normal()[j] == -1.0f ) {
 					mid[j] = -plane.Dist();
 				} else {
-					mid[j] = (float)( (long double)(*p1)[j] + dotd * ( (long double)(*p2)[j] - (long double)(*p1)[j] ) );
+					mid[j] = (float)( (double)(*p1)[j] + dotd * ( (double)(*p2)[j] - (double)(*p1)[j] ) );
 				}
 			}
-			mid.s = (float)( (long double)p1->s + dotd * ( (long double)p2->s - (long double)p1->s ) );
-			mid.t = (float)( (long double)p1->t + dotd * ( (long double)p2->t - (long double)p1->t ) );
+			mid.s = (float)( (double)p1->s + dotd * ( (double)p2->s - (double)p1->s ) );
+			mid.t = (float)( (double)p1->t + dotd * ( (double)p2->t - (double)p1->t ) );
 		}
 
 		out.p[out.numPoints] = mid;
