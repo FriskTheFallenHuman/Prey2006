@@ -237,7 +237,7 @@ idAASBuild::GetFaceForPortal
 bool idAASBuild::GetFaceForPortal( idBrushBSPPortal* portal, int side, int* faceNum )
 {
 	int		   i, j, v1num;
-	int		   numFaceEdges, faceEdges[MAX_POINTS_ON_WINDING];
+	int		   numFaceEdges;
 	idWinding* w;
 	aasFace_t  face;
 
@@ -255,6 +255,10 @@ bool idAASBuild::GetFaceForPortal( idBrushBSPPortal* portal, int side, int* face
 	}
 
 	w = portal->GetWinding();
+	// morb: buffer should be sized to the winding. 
+	// modern systems otherwise detect stack-smashing here (!) with >64 points.
+	int* faceEdges = (int*)_alloca( w->GetNumPoints() * sizeof( int ) );
+
 	// turn the winding into a sequence of edges
 	numFaceEdges = 0;
 	v1num		 = -1; // first vertex unknown
@@ -553,6 +557,14 @@ bool idAASBuild::StoreFile( const idBrushBSP& bsp )
 	ShutdownHash();
 
 	common->Printf( "\r%6d areas\n", file->areas.Num() );
+
+	// morb: aasFace_t::areas[2] is `short`; >32767 areas silently truncates,
+	// dereferences indices, then segfaults.
+	if ( file->areas.Num() > 32767 ) {
+		common->Warning( "Skipping write: AAS area count %d is greater than 32767",
+		                 file->areas.Num() );
+		return false;
+	}
 
 	return true;
 }

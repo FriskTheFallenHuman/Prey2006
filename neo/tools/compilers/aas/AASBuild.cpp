@@ -863,24 +863,30 @@ bool idAASBuild::Build( const idStr& fileName, const idAASSettings* settings )
 	bsp.MeltPortals( AREACONTENTS_SOLID );
 
 	// store the file from the bsp tree
-	StoreFile( bsp );
+	bool storeOk = StoreFile( bsp );
 	file->settings = *aasSettings;
 
-	// calculate reachability
-	reach.Build( mapFile, file );
+	if ( storeOk ) {
+		// calculate reachability
+		reach.Build( mapFile, file );
 
-	// build clusters
-	cluster.Build( file );
+		// build clusters
+		cluster.Build( file );
 
-	// optimize the file
-	if( !aasSettings->noOptimize )
-	{
-		file->Optimize();
+		// optimize the file
+		if( !aasSettings->noOptimize )
+		{
+			file->Optimize();
+		}
+
+		// write the file
+		name.SetFileExtension( aasSettings->fileExtension );
+		file->Write( name, mapFile->GetGeometryCRC() );
+	} else {
+		// morb: downstream phases would dereference truncated area indices
+		common->Warning( "Skipping AAS write for %s", 
+		                 aasSettings->fileExtension.c_str() );
 	}
-
-	// write the file
-	name.SetFileExtension( aasSettings->fileExtension );
-	file->Write( name, mapFile->GetGeometryCRC() );
 
 	// delete the map file
 	delete mapFile;
