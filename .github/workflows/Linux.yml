@@ -140,15 +140,20 @@ jobs:
             set -eux
             export DEBIAN_FRONTEND=noninteractive
             apt-get update
-            apt-get install -y --no-install-recommends build-essential git cmake ninja-build ccache zip gcc-multilib g++-multilib libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev libfreetype6-dev file
+            # clang for the compiler; keep gcc-multilib for 32-bit runtime libs (libc, crt1.o, libgcc_s)
+            apt-get install -y --no-install-recommends git cmake ninja-build ccache zip clang lld gcc-multilib g++-multilib libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev libfreetype6-dev file
             mkdir -p /root/.ccache
             ccache --max-size=10G || true
+            clang --version
 
             cd /work
             rm -rf build
             mkdir -p build
             cd build
-            cmake -G Ninja -DDEDICATED=ON -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_SYSTEM_PROCESSOR=i686 ../neo/
+            cmake -G Ninja -DDEDICATED=ON \\
+              -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \\
+              -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 \\
+              -DCMAKE_SYSTEM_PROCESSOR=i686 ../neo/
             ninja
 
             mkdir -p /work/output/linux
