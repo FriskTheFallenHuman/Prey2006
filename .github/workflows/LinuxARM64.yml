@@ -31,7 +31,7 @@ jobs:
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
           packages: libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build libfreetype6-dev ccache zip clang lld
-          version: 1.0
+          version: 2.0
 
       - name: Ensure ccache dir exists and init
         run: |
