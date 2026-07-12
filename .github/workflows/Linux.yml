@@ -62,8 +62,8 @@ jobs:
           cd build
           cmake -G Ninja \
             -DDEDICATED=ON \
-            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
-            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ../neo/
+            -DCMAKE_C_COMPILER_LAUNCHER=clang \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=clang++ ../neo/
           ninja
 
       - name: Restore chroot cache (x86)
