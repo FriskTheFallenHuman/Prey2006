@@ -36,7 +36,7 @@ jobs:
       - name: Restore apt cache
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build libfreetype6-dev ccache zip gcc-multilib g++-multilib debootstrap rsync util-linux file
+          packages: libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build libfreetype6-dev clang ccache zip gcc-multilib g++-multilib debootstrap rsync util-linux file
           version: 1.0
 
       - name: Ensure ccache dir exists and init
