@@ -33,11 +33,14 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Restore apt cache
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build libfreetype6-dev clang ccache zip gcc-multilib g++-multilib debootstrap rsync util-linux file
-          version: 1.0
+      - name: Install build deps
+        run: |
+          set -eux
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev \
+            libfreetype6-dev cmake ninja-build clang lld ccache zip \
+            gcc-multilib g++-multilib debootstrap rsync util-linux file
 
       - name: Ensure ccache dir exists and init
         run: |
@@ -57,13 +60,16 @@ jobs:
         if: matrix.arch == 'x86_64'
         run: |
           set -eux
+          clang --version
           rm -rf build
           mkdir -p build
           cd build
           cmake -G Ninja \
             -DDEDICATED=ON \
-            -DCMAKE_C_COMPILER_LAUNCHER=clang \
-            -DCMAKE_CXX_COMPILER_LAUNCHER=clang++ ../neo/
+            -DCMAKE_C_COMPILER=clang \
+            -DCMAKE_CXX_COMPILER=clang++ \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ../neo/
           ninja
 
       - name: Restore chroot cache (x86)
