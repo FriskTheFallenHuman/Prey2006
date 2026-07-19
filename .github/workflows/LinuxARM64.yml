@@ -29,11 +29,10 @@ jobs:
 
       - name: Install build deps
         run: |
-          set -eux
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev \
-            libfreetype6-dev cmake ninja-build ccache zip clang lld
+            libfreetype6-dev cmake ninja-build ccache zip
 
       - name: Ensure ccache dir exists and init
         run: |
@@ -51,15 +50,11 @@ jobs:
 
       - name: Build the engine
         run: |
-          set -eux
-          clang --version
           rm -rf build
           mkdir -p build
           cd build
           cmake -G Ninja \
             -DDEDICATED=ON \
-            -DCMAKE_C_COMPILER=clang \
-            -DCMAKE_CXX_COMPILER=clang++ \
             -DCMAKE_C_COMPILER_LAUNCHER=ccache \
             -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ../neo/
           ninja
