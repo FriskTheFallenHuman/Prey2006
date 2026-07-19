@@ -33,11 +33,14 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Restore apt cache
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build libfreetype6-dev ccache zip gcc-multilib g++-multilib debootstrap rsync util-linux file
-          version: 1.0
+      - name: Install build deps
+        run: |
+          set -eux
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev \
+            libfreetype6-dev cmake ninja-build ccache zip gcc-multilib \
+            g++-multilib debootstrap rsync util-linux file
 
       - name: Ensure ccache dir exists and init
         run: |
@@ -56,7 +59,6 @@ jobs:
       - name: Build the engine (x86_64)
         if: matrix.arch == 'x86_64'
         run: |
-          set -eux
           rm -rf build
           mkdir -p build
           cd build
@@ -133,22 +135,23 @@ jobs:
       - name: Build inside chroot (x86)
         if: matrix.arch == 'x86'
         run: |
-          set -eux
           CHROOT_DIR="${RUNNER_TEMP}/chroot/${CHROOT_REL_PATH}"
           # run the build inside the chroot under linux32
           sudo linux32 chroot "$CHROOT_DIR" /bin/bash -lc "
-            set -eux
             export DEBIAN_FRONTEND=noninteractive
             apt-get update
-            apt-get install -y --no-install-recommends build-essential git cmake ninja-build ccache zip gcc-multilib g++-multilib libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev libfreetype6-dev file
+            # clang for the compiler; keep gcc-multilib for 32-bit runtime libs (libc, crt1.o, libgcc_s)
+            apt-get install -y --no-install-recommends git cmake ninja-build ccache zip gcc-multilib g++-multilib libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev libfreetype6-dev file
             mkdir -p /root/.ccache
             ccache --max-size=10G || true
-
+            
             cd /work
             rm -rf build
             mkdir -p build
             cd build
-            cmake -G Ninja -DDEDICATED=ON -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_SYSTEM_PROCESSOR=i686 ../neo/
+            cmake -G Ninja -DDEDICATED=ON \\
+              -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 \\
+              -DCMAKE_SYSTEM_PROCESSOR=i686 ../neo/
             ninja
 
             mkdir -p /work/output/linux
@@ -159,7 +162,6 @@ jobs:
       - name: Copy artifacts out of chroot to workspace (x86)
         if: matrix.arch == 'x86'
         run: |
-          set -eux
           CHROOT_DIR="${RUNNER_TEMP}/chroot/${CHROOT_REL_PATH}"
           mkdir -p "${GITHUB_WORKSPACE}/output/linux"
           # copy files from chroot -> workspace

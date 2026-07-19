@@ -27,11 +27,12 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Restore apt cache
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev cmake ninja-build libfreetype6-dev ccache zip
-          version: 1.0
+      - name: Install build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libgl1-mesa-dev libsdl2-dev libopenal-dev libcurl4-openssl-dev \
+            libfreetype6-dev cmake ninja-build ccache zip
 
       - name: Ensure ccache dir exists and init
         run: |
@@ -49,7 +50,6 @@ jobs:
 
       - name: Build the engine
         run: |
-          set -eux
           rm -rf build
           mkdir -p build
           cd build
