@@ -16,3 +16,10 @@
 
 /neo/CMakeSettings.json
 output
+
+## Compiled Files
+*.pk4
+prey06
+prey06ded
+*.exe
+*.so
